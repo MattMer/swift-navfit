@@ -1,3 +1,9 @@
+# Current delivery - explicit report assessment selections
+
+Swift NAVFIT 0.12.0-prototype, schema 11, output/Swift_NAVFIT_0.12.0-assessment.accdb. Adds manually selected whole-report Observed/NOB and the six NAVFIT reference promotion recommendation labels. Blank remains saveable. All 21 draft fields participate in snapshots, comparison, restore, duplication and recovery; assessment edits stale earlier reviews. No inference from traits and no policy/eligibility validation. See ASSESSMENT_GUIDE.md.
+
+Verification: 70 new assertions and all 469 prior assertions passed, plus 169 catalogue checks and all 2472 retained import values. Schema 10-to-11, 11-to-11 and 5-to-11 migrations preserve original rows/fields, source hashes and reopen. Legacy reports/checkpoints have null new fields. All 20 distribution user-data tables are empty; delivery matches tested candidate. Runtime/x86 and comprehensive visual verification remain pending.
+
 # Current delivery - trait summaries
 
 Swift NAVFIT 0.11.0-prototype, schema 10, output/Swift_NAVFIT_0.11.0-trait-summary.accdb. Read-only editor and latest-saved-revision arithmetic summaries show numeric average/count, NOB count and blank count. Blanks label an average partial; no numeric marks or invalid input yield unavailable. Save and checkpoint recovery refresh the summaries. No schema or derived-value storage change. See TRAIT_SUMMARY_GUIDE.md.

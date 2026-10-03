@@ -43,7 +43,7 @@ Public Function TestAdministration() As String
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "OfficialName") = values(0) And Stored(id, "MemberName") = "Local display", "Names combined"
         Check Stored(id, "UnitUIC") = "00123", "Leading zero lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 19, "Snapshot not complete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 21, "Snapshot not complete"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Local display", Null, Null, "Notes", "Omitted fields", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "UnitUIC") = "00123", "Omitted administration changed values"
         copy = DuplicateDraft(id)
@@ -84,7 +84,7 @@ Public Function TestAdministration() As String
     Check SaveEditor(), "Editor save failed"
     Check Stored(id, "OfficialName") = "UI OFFICIAL NAME" And Stored(id, "UnitUIC") = "00234", "Editor save lost administration"
     Check OpenDraftChecklist(id), "Checklist failed"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "9 missing") > 0, "Complete administration still missing"
+    Check InStr(Forms!frmChecklist!lblSummary.Caption, "11 missing") > 0, "Complete administration still missing"
     Call CloseDraftChecklist()
     Forms!frmEditor!txtOfficialName = String$(35, "P"): Forms!frmEditor!txtUnitUIC = "00789"
     Check CheckpointEditor(), "Administrative checkpoint failed"

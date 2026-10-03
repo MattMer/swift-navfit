@@ -47,6 +47,9 @@ Public Function RefreshDraftChecklist() As Boolean
             Finding CStr(key), "Missing input", "Review " & AdministrationLabel(key) & ". Presence only, not a Navy policy requirement.": missing = missing + 1
         End If
     Next
+    For Each key In AssessmentKeys()
+        If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & AssessmentLabel(key) & ". Explicit selection only; policy applicability is not assessed.": missing = missing + 1
+    Next
     For Each key In TraitKeys()
         If Not HasContent(r.Fields(key).Value) Then
             Finding CStr(key), "Missing input", "Review trait block " & Mid$(key, 6) & ". Blank is distinct from NOB; incomplete saving remains available.": missing = missing + 1
@@ -90,6 +93,8 @@ Public Function ChecklistGuidance() As Boolean
         Case Else
             If IsTraitKey(key) Then
                 guidance = "Use the form-specific trait section in the editor. Select a mark or leave it blank, then Save draft. Select a trait to read the NAVFIT reference descriptions. Recommendations, averages and observation rules are not yet validated."
+            ElseIf Len(AssessmentLabel(key)) > 0 Then
+                guidance = "Choose observation status and recommendation explicitly near the top of the editor. Individual trait NOB and averages do not set them. Incomplete saves remain available; eligibility and policy are not validated."
             ElseIf Len(AdministrationLabel(key)) > 0 Then
                 guidance = "Review the administrative fields near the top of the editor, then Save draft. Storage limits match the inspected NAVFIT schema. Values stay separate from local display fields. Codes, format, eligibility and automatic NAVFIT mapping are not validated. Incomplete drafts remain saveable."
             Else
