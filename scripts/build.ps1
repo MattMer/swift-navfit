@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.9.0-administration.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.10.0-traits.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -14,7 +14,7 @@ try {
         'CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)',
         'CREATE TABLE Workspace (WorkspaceID LONG CONSTRAINT PK_Workspace PRIMARY KEY, WorkspaceGuid TEXT(38) NOT NULL, CommandName TEXT(120) NOT NULL, ActiveProfileID LONG NOT NULL)',
         'CREATE TABLE Folder (FolderID COUNTER CONSTRAINT PK_Folder PRIMARY KEY, FolderGuid TEXT(38) NOT NULL, FolderName TEXT(80) NOT NULL, ParentFolderID LONG)',
-        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18))',
+        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3))',
         'CREATE TABLE FolderMove (FolderMoveID COUNTER CONSTRAINT PK_FolderMove PRIMARY KEY, ReportID LONG NOT NULL, OldFolderID LONG, NewFolderID LONG, AuthorProfileID LONG NOT NULL, MovedAt DATETIME)',
         'CREATE TABLE ReportRevision (RevisionID COUNTER CONSTRAINT PK_ReportRevision PRIMARY KEY, ReportID LONG NOT NULL, RevisionNumber LONG NOT NULL, ParentRevisionID LONG, AuthorProfileID LONG NOT NULL, CommittedAt DATETIME, Reason TEXT(255), SnapshotSchema LONG)',
         'CREATE TABLE RevisionValue (RevisionValueID COUNTER CONSTRAINT PK_RevisionValue PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText LONGTEXT, IsNullValue BIT)',
@@ -52,7 +52,7 @@ try {
         'CREATE TABLE ReviewTaskEvent (TaskEventID COUNTER CONSTRAINT PK_ReviewTaskEvent PRIMARY KEY, TaskID LONG NOT NULL, AuthorProfileID LONG NOT NULL, EventAt DATETIME, EventKind TEXT(20), Notes LONGTEXT)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventTask FOREIGN KEY (TaskID) REFERENCES ReviewTask (TaskID)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
-        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT)',
+        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT)',
         'CREATE UNIQUE INDEX UX_RecoverySession ON RecoveryDraft (SessionGuid)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.9.0-prototype',9,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.10.0-prototype',10,'Unverified - NAVFIT exchange disabled')"
     )
     foreach ($sql in $definitions) { $db.Execute($sql,128) }
     for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
@@ -101,6 +101,11 @@ try {
     $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
     $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
     $app.LoadFromText(5,'modReviewComments',(Join-Path $root 'src\modReviewComments.bas'))
+    $app.LoadFromText(5,'modTraits',(Join-Path $root 'src\modTraits.bas'))
+    [void](New-Item -ItemType Directory -Force -Path (Join-Path $root 'build'))
+    $navTraitModule=Join-Path $root ('build\trait-catalogue-'+[guid]::NewGuid()+'.bas')
+    & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src\trait-catalogue.json') -OutputPath $navTraitModule
+    $app.LoadFromText(5,'modTraitCatalogue',$navTraitModule)
     $app.LoadFromText(5,'modAdministration',(Join-Path $root 'src\modAdministration.bas'))
     $app.LoadFromText(5,'modRouting',(Join-Path $root 'src\modRouting.bas'))
     $app.LoadFromText(5,'modSnippets',(Join-Path $root 'src\modSnippets.bas'))
@@ -187,13 +192,13 @@ try {
     $c.RowSourceType='Value List'; $c.RowSource='Drafting;Dates;History'; $c.LimitToList=$true; $c.AfterUpdate='=ChangeLibraryViewUI()'
     [void](Control $f 104 'cmdBulkFolders' 11000 8050 1900 500 'Bulk moves' '=OpenScreen("frmBulkFolders")')
     $f.OnLoad='=LoadLibrary()'; SaveScreen $f 'frmLibrary'
-    NewScreen 'frmEditor' 'Draft editor' 21600; $f=$script:swiftForm
+    NewScreen 'frmEditor' 'Draft editor' 29400; $f=$script:swiftForm
     $f.Width=13800
     [void](Control $f 100 'lblScope' 400 900 12400 550 'Draft administration and form-specific narrative. Official validation, full NAVFIT mapping and printed fit remain pending.')
     Control $f 109 'txtReportID' 10 10 100 100; $hidden=$script:swiftControl; $hidden.Visible=$false
     [void](Control $f 100 'lblType' 400 1550 1600 350 'Report type')
     Control $f 111 'cboKind' 2100 1500 2900 400; $c=$script:swiftControl
-    $c.RowSourceType='Value List'; $c.RowSource='EVAL;CHIEFEVAL;FITREP'; $c.LimitToList=$true; $c.AfterUpdate='=RefreshNarrativeLabel()'
+    $c.RowSourceType='Value List'; $c.RowSource='EVAL;CHIEFEVAL;FITREP'; $c.LimitToList=$true; $c.AfterUpdate='=EditorTypeChanged()'
     [void](Control $f 100 'lblTitle' 5500 1550 1300 350 'Draft title')
     [void](Control $f 109 'txtTitle' 6900 1500 6100 400)
     [void](Control $f 100 'lblMember' 400 2250 1600 350 'Display name')
@@ -237,6 +242,16 @@ try {
     [void](Control $f 109 'txtUnitUIC' 2800 4900 2500 400)
     [void](Control $f 100 'lblShipStation' 6000 4950 2500 350 'Ship / station (18)')
     [void](Control $f 109 'txtShipStation' 8700 4900 4300 400)
+    foreach($navControl in $f.Controls){if($navControl.Top -ge 6900){$navControl.Top=$navControl.Top+7800}}
+    [void](Control $f 100 'lblTraits' 400 6800 12600 600 'Form-specific trait marks. Blank differs from NOB. Reference descriptions come from the inspected NAVFIT catalogue; policy, whole-report NOB status and averages are not assessed.')
+    foreach($navBlock in 33..39){
+        $navY=7550+($navBlock-33)*600
+        [void](Control $f 100 ('lblTrait'+$navBlock) 400 ($navY+50) 9600 450 '')
+        Control $f 111 ('cboTrait'+$navBlock) 10400 $navY 2600 400; $c=$script:swiftControl
+        $c.RowSourceType='Value List'; $c.RowSource='NOB;1.0;2.0;3.0;4.0;5.0'; $c.LimitToList=$false
+        $c.AfterUpdate='=ShowTraitGuidance('+$navBlock+')'; $c.OnGotFocus='=ShowTraitGuidance('+$navBlock+')'
+    }
+    Control $f 109 'txtTraitGuidance' 400 12100 12600 2100; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     $f.TimerInterval=30000; $f.OnTimer='=CheckpointEditor()'
     $f.OnLoad='=LoadEditor()'; $f.ScrollBars=2; SaveScreen $f 'frmEditor'
     NewScreen 'frmSupport' 'Support and limitations' 7400; $f=$script:swiftForm

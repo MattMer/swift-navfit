@@ -15,6 +15,7 @@ Run from the repository root in PowerShell. Use a fresh output name; the builder
 ```powershell
 powershell -NoProfile -File scripts/build.ps1 -OutputPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/smoke-test.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
+powershell -NoProfile -File scripts/test-traits.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-administration.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-review-comments.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-routing.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
@@ -43,3 +44,5 @@ Preserve committed revisions and audit history. Official narrative, local notes,
 Publish only a verified blank distribution. Check all user-data tables are empty, record its SHA256 in output/MANIFEST.json, tag the source commit and attach the blank .accdb plus manifest to a GitHub release. Never upload a candidate, working workspace or test database as a release. Keep future source changes in Git even when a release binary is available.
 
 No open-source license has been selected. The repository is private; coordinate permitted use and redistribution with the owner.
+
+The curated src/trait-catalogue.json is embedded by scripts/write-trait-catalogue.ps1. Preserve its source version/hash and exact text; test-traits.ps1 verifies 169 catalogue values. Descriptions are reference guidance; they do not implement Navy validation.

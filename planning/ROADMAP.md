@@ -1,11 +1,11 @@
 # Progress and roadmap
 
-Current prototype: **0.9.0**, Swift schema **9**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
+Current prototype: **0.10.0**, Swift schema **10**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
 
 | Area | Current progress |
 | --- | --- |
 | Workspace | Single-file blank distribution, contributor profiles, organizational folders, search and saved library presets |
-| Drafts | Three form kinds; local title/member/dates/notes, five administrative fields and form-specific official narrative; incomplete saves |
+| Drafts | Three form kinds; local title/member/dates/notes, five administrative fields, seven form-specific traits and official narrative; incomplete saves |
 | History | Committed revisions, restore as new revision, duplication, archive/recover and field-level comparison |
 | Recovery | Timed/manual pending-editor checkpoints and deliberate recovery |
 | Imports | Read-only source review, confirmed narrative-only mapping, retained source provenance and explicit two-way narrative reconciliation |
@@ -15,7 +15,7 @@ Current prototype: **0.9.0**, Swift schema **9**. This is a local Microsoft Acce
 
 ## Next implementation priorities
 
-1. Full administrative and trait models for EVAL, CHIEFEVAL and FITREP, with verified field mappings.
+1. Remaining administrative fields, trait averages and recommendation models for EVAL, CHIEFEVAL and FITREP, with verified field mappings.
 2. Summary groups independent of organizational folders; eligibility, exceptions and complete-group context.
 3. Source-linked, versioned Navy validation rules with boundary and exception tests.
 4. Reviewed defaults/inheritance and official-field bulk changes.
@@ -29,4 +29,4 @@ These are priorities, not delivery-date promises. Open issues can refine scope a
 
 ## Verified milestone
 
-The 0.9.0 release passed 350 assertions across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-8-to-9, schema-9-to-9 and schema-5-to-9 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See ADMINISTRATION_GUIDE.md and BUILD_STATUS.md for exact scope and limits.
+The 0.10.0 release passed 425 assertions plus 169 catalogue checks across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-9-to-10, schema-10-to-10 and schema-5-to-10 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See TRAITS_GUIDE.md and BUILD_STATUS.md for exact scope and limits.

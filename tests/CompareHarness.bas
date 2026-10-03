@@ -38,7 +38,7 @@ Public Function TestComparison() As String
     Check StrComp(f!txtNewValue, text, vbBinaryCompare) = 0, "Long narrative display changed"
     Check f!txtOldValue.Locked And f!txtNewValue.Locked, "Comparison values editable"
     f!chkChangedOnly = False: Call RefreshComparisonFields()
-    Check f!lstCompareFields.ListCount = 12, "All-fields filter wrong"
+    Check f!lstCompareFields.ListCount = 19, "All-fields filter wrong"
     Check CloseRevisionComparison(), "Close failed"
     Check Screen.ActiveForm.Name = "frmEditor", "Return to editor failed"
     Check Forms!frmEditor!txtTitle = "UNSAVED TITLE", "Unsaved entries lost"

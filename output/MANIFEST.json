@@ -1,12 +1,12 @@
 {
-  "AppVersion": "0.9.0-prototype",
+  "AppVersion": "0.10.0-prototype",
   "RevisionComparisonAssertions": 22,
   "DirectReviewChecks": 12,
   "SmokeChecks": 46,
-  "Migrations": "Schema 8 to 9, 9 to 9 and 5 to 9; exact row/field comparison; source unchanged; reopen",
+  "Migrations": "Schema 9 to 10, 10 to 10 and 5 to 10; exact row/field comparison; source unchanged; reopen",
   "ProvenanceAssertions": 24,
   "Runtime": "Untested",
-  "NAVFITCompatibility": "Narrative-only import/reconciliation; manual administrative entry; export unavailable",
+  "NAVFITCompatibility": "Narrative-only import/reconciliation; manual administrative and trait entry; export unavailable",
   "RecoveryAssertions": 34,
   "ImportTests": "Three narrative imports; quarantine, duplicates, rollback; all 2472 provenance values",
   "NarrativeAssertions": 39,
@@ -14,10 +14,12 @@
   "BlankUserDataVerified": true,
   "AdministrationAssertions": 53,
   "BlankUserDataTables": 20,
-  "SwiftSchemaVersion": 9,
-  "TotalAssertions": 350,
+  "SwiftSchemaVersion": 10,
+  "TotalAssertions": 425,
   "RoutingAssertions": 38,
-  "SHA256": "4AF1BD2C8D4E5255ECEF9B0D481B917CEB4C8A8A440B6B40F7E4CCA7367B41EB",
-  "Artifact": "Swift_NAVFIT_0.9.0-administration.accdb",
-  "ReviewCommentAssertions": 28
+  "SHA256": "4B2361F68527D0ADAA175DF0E7D6C80E9CAA476205391728101AB2531A947F32",
+  "Artifact": "Swift_NAVFIT_0.10.0-traits.accdb",
+  "ReviewCommentAssertions": 28,
+  "TraitAssertions": 75,
+  "CatalogueChecks": 169
 }

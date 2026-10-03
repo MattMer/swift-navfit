@@ -1,3 +1,9 @@
+# Current delivery - form-specific trait editor
+
+Swift NAVFIT 0.10.0-prototype, schema 10, output/Swift_NAVFIT_0.10.0-traits.accdb. Seven traits per form have reference descriptions, distinct blank/NOB values and marks 1.0–5.0. All 19 draft fields participate in snapshots, comparison, restore, duplicate and recovery. Trait edits stale earlier review assignments. See TRAITS_GUIDE.md.
+
+Verification: 425 behavioral assertions, 169 catalogue checks, three narrative imports and all 2472 retained-value checks passed. Schema 9-to-10, 10-to-10 and 5-to-10 migrations preserve original data, source hashes and reopen. All 20 user-data tables are empty; distribution matches tested candidate. Runtime/x86 and comprehensive visual checks remain pending. Averages, recommendations, official validation and external trait mapping/export remain pending.
+
 # Current delivery - administrative draft fields
 
 Swift NAVFIT 0.9.0-prototype, schema 9, output/Swift_NAVFIT_0.9.0-administration.accdb. Adds manually entered official full name, grade/rate, designator/designation, unit UIC and ship/station with measured storage limits and no truncation. All 12 report fields participate in snapshots, comparison, restore/duplicate and recovery. Administrative edits stale older review assignments. Missing legacy fields display Not recorded; restore clears them to null. New snapshots have a schema marker and reject missing administrative rows. See ADMINISTRATION_GUIDE.md.

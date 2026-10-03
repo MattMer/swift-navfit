@@ -7,8 +7,9 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
         If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
+        If IsTraitKey(key) And RevisionSnapshotSchema(revisionID) >= 10 Then Err.Raise vbObjectError + 800, , "Trait snapshot is incomplete."
         SavedValue = Null
     ElseIf r!IsNullValue Then
         SavedValue = Null
@@ -107,7 +108,13 @@ Private Function ComparisonFieldLabel(ByVal key As String) As String
         Case "PeriodEnd": ComparisonFieldLabel = "Period end"
         Case "DraftNotes": ComparisonFieldLabel = "General draft notes"
         Case "OfficialComments": ComparisonFieldLabel = "Official narrative"
-        Case Else: ComparisonFieldLabel = AdministrationLabel(key)
+        Case Else
+            If IsTraitKey(key) Then
+                ComparisonFieldLabel = Mid$(key, 6) & ". " & CatalogueTraitTitle(Nz(DLookup("FormKind", "Report", "ReportID=" & DLookup("ReportID", "ReportRevision", "RevisionID=" & Forms!frmRevisionCompare!txtNewer)), ""), CLng(Mid$(key, 6)))
+                ComparisonFieldLabel = Replace(Replace(ComparisonFieldLabel, vbCr, ""), vbLf, " ")
+            Else
+                ComparisonFieldLabel = AdministrationLabel(key)
+            End If
     End Select
 End Function
 
