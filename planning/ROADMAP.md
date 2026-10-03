@@ -1,11 +1,11 @@
 # Progress and roadmap
 
-Current prototype: **0.8.0**, Swift schema **8**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
+Current prototype: **0.9.0**, Swift schema **9**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
 
 | Area | Current progress |
 | --- | --- |
 | Workspace | Single-file blank distribution, contributor profiles, organizational folders, search and saved library presets |
-| Drafts | Three form kinds; local title/member/dates/notes and form-specific official narrative; incomplete saves |
+| Drafts | Three form kinds; local title/member/dates/notes, five administrative fields and form-specific official narrative; incomplete saves |
 | History | Committed revisions, restore as new revision, duplication, archive/recover and field-level comparison |
 | Recovery | Timed/manual pending-editor checkpoints and deliberate recovery |
 | Imports | Read-only source review, confirmed narrative-only mapping, retained source provenance and explicit two-way narrative reconciliation |
@@ -29,4 +29,4 @@ These are priorities, not delivery-date promises. Open issues can refine scope a
 
 ## Verified milestone
 
-The 0.8.0 release passed 38 routing, 28 comment, 24 provenance, 54 integrated workflow and 46 smoke assertions (190 total). Schema-7-to-8 and schema-8-to-8 migrations preserved every original row and field, preserved source hashes and reopened. All 20 user-data tables in the distribution are empty. Previous focused suites and their historical results are recorded in BUILD_STATUS.md; they were not all rerun for 0.8.0.
+The 0.9.0 release passed 350 assertions across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-8-to-9, schema-9-to-9 and schema-5-to-9 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See ADMINISTRATION_GUIDE.md and BUILD_STATUS.md for exact scope and limits.

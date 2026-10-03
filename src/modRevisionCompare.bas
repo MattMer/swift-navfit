@@ -7,7 +7,8 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "OfficialComments" Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
         SavedValue = Null
     ElseIf r!IsNullValue Then
         SavedValue = Null
@@ -52,7 +53,7 @@ Public Function OpenRevisionComparison(ByVal reportID As Long, ByVal older As Lo
     If older = 0 Or newer = 0 Then Err.Raise vbObjectError + 802, , "Select a saved revision first."
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & older), 0) <> reportID Or Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & newer), 0) <> reportID Then Err.Raise vbObjectError + 803, , "Both revisions must belong to this report."
     'Validate before displaying a new comparison; no writes or editor saves occur.
-    For Each key In Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
+    For Each key In DraftFieldKeys()
         ignored = SavedValue(older, CStr(key), recorded): ignored = SavedValue(newer, CStr(key), recorded)
     Next
     DoCmd.OpenForm "frmRevisionCompare"
@@ -78,7 +79,7 @@ Public Function RefreshComparisonFields() As Boolean
     Dim f As Form, key As Variant, status As String, changed As Long, shown As Long
     Set f = Forms!frmRevisionCompare
     f!lstCompareFields.RowSourceType = "Value List": f!lstCompareFields.RowSource = ""
-    For Each key In Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
+    For Each key In DraftFieldKeys()
         status = RevisionFieldStatus(CLng(f!txtOlder), CLng(f!txtNewer), CStr(key))
         If status = "Changed" Then changed = changed + 1
         If Not f!chkChangedOnly Or status = "Changed" Then
@@ -106,6 +107,7 @@ Private Function ComparisonFieldLabel(ByVal key As String) As String
         Case "PeriodEnd": ComparisonFieldLabel = "Period end"
         Case "DraftNotes": ComparisonFieldLabel = "General draft notes"
         Case "OfficialComments": ComparisonFieldLabel = "Official narrative"
+        Case Else: ComparisonFieldLabel = AdministrationLabel(key)
     End Select
 End Function
 

@@ -2,11 +2,11 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Current prototype: 0.8.0 · schema 8.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+**Current prototype: 0.9.0 · schema 9.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
 
 ## Current features
 
-- EVAL, CHIEFEVAL and FITREP drafts with form-specific official narratives and incomplete saves.
+- EVAL, CHIEFEVAL and FITREP drafts with initial administrative fields, form-specific official narratives and incomplete saves.
 - Organizational folders, search, saved library views and bulk folder moves with guarded undo.
 - Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
 - Automatic/manual pending-editor checkpoints and recovery.
@@ -19,7 +19,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the blank `.accdb` from the [0.8.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.8.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the blank `.accdb` from the [0.9.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.9.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 
@@ -43,6 +43,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 ## Progress and guides
 
 - [Roadmap and current progress](planning/ROADMAP.md)
+- [Administrative draft fields](planning/ADMINISTRATION_GUIDE.md)
+- [NAVFIT package findings](planning/NAVFIT_PACKAGE_FINDINGS.md)
 - [Review assignments and My Work](planning/REVIEW_ROUTING_GUIDE.md)
 - [Review comments](planning/REVIEW_COMMENTS_GUIDE.md)
 - [Import provenance](planning/PROVENANCE_GUIDE.md)
@@ -51,6 +53,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 - [Architecture and implementation plan](planning/IMPLEMENTATION_PLAN.md)
 - [Current release manifest](output/MANIFEST.json)
 
-The 0.8.0 build passed 190 assertions across routing, comments, provenance, workflow and smoke suites. Schema-7-to-8 and schema-8-to-8 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
+The 0.9.0 build passed 350 assertions across administrative and existing focused suites, plus exact narrative-import/provenance checks. Schema-8-to-9, schema-9-to-9 and schema-5-to-9 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.

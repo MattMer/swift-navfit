@@ -34,14 +34,19 @@ Failed:
     MsgBox Err.Description, vbInformation, "Saved draft checklist"
 End Function
 Public Function RefreshDraftChecklist() As Boolean
-    Dim r As DAO.Recordset, id As Long, missing As Long, errors As Long, context As String
+    Dim r As DAO.Recordset, id As Long, missing As Long, errors As Long, context As String, key As Variant
     id = Nz(Forms!frmChecklist!txtReportID, 0)
     Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 1001, , "Draft no longer exists."
     Forms!frmChecklist!lstFindings.RowSourceType = "Value List"
     Forms!frmChecklist!lstFindings.RowSource = ""
     If Not HasContent(r!Title) Then Finding "TITLE", "Missing input", "Add a local draft title to identify this report.": missing = missing + 1
-    If Not HasContent(r!MemberName) Then Finding "MEMBER", "Missing input", "Add a local member display name. Official identity fields are not yet modeled.": missing = missing + 1
+    If Not HasContent(r!MemberName) Then Finding "MEMBER", "Missing input", "Add a local member display name. It stays separate from the official full name.": missing = missing + 1
+    For Each key In AdministrationKeys()
+        If Not HasContent(r.Fields(key).Value) Then
+            Finding CStr(key), "Missing input", "Review " & AdministrationLabel(key) & ". Presence only, not a Navy policy requirement.": missing = missing + 1
+        End If
+    Next
     If IsNull(r!PeriodStart) Then Finding "START", "Missing input", "Enter the period start date.": missing = missing + 1
     If IsNull(r!PeriodEnd) Then Finding "END", "Missing input", "Enter the period end date.": missing = missing + 1
     If Not IsNull(r!PeriodStart) And Not IsNull(r!PeriodEnd) Then
@@ -73,7 +78,12 @@ Public Function ChecklistGuidance() As Boolean
         Case "ARCHIVED": guidance = "Use the library's Archived or All filter, select the report and choose Recover."
         Case "POLICY": guidance = "This checklist is not Navy policy validation. The versioned, source-linked rule catalogue for official fields, grouping, recommendations, dates and report conditions remains pending."
         Case "EXPORT": guidance = "A complete local checklist does not mark this report approved or ready for NAVFIT export. Export and full round-trip verification remain pending."
-        Case Else: guidance = "Select an item."
+        Case Else
+            If Len(AdministrationLabel(key)) > 0 Then
+                guidance = "Review the administrative fields near the top of the editor, then Save draft. Storage limits match the inspected NAVFIT schema. Values stay separate from local display fields. Codes, format, eligibility and automatic NAVFIT mapping are not validated. Incomplete drafts remain saveable."
+            Else
+                guidance = "Select an item."
+            End If
     End Select
     Forms!frmChecklist!txtGuidance = guidance
     ChecklistGuidance = True

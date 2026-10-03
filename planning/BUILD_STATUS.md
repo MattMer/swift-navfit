@@ -1,3 +1,9 @@
+# Current delivery - administrative draft fields
+
+Swift NAVFIT 0.9.0-prototype, schema 9, output/Swift_NAVFIT_0.9.0-administration.accdb. Adds manually entered official full name, grade/rate, designator/designation, unit UIC and ship/station with measured storage limits and no truncation. All 12 report fields participate in snapshots, comparison, restore/duplicate and recovery. Administrative edits stale older review assignments. Missing legacy fields display Not recorded; restore clears them to null. New snapshots have a schema marker and reject missing administrative rows. See ADMINISTRATION_GUIDE.md.
+
+Verification: 53 administrative assertions and all existing focused suites pass (350 assertions total), plus three narrative imports and exact 2472 retained-value checks. Schema-8-to-9, schema-9-to-9 and schema-5-to-9 migrations preserve every original field, including old checkpoints, and reopen; source hashes unchanged. All 20 user-data tables in the master are empty; delivery byte-identical to tested candidate. Full visual/Runtime/x86, administrative import mapping and complete NAVFIT export remain pending. The supplied NAVFIT bundle was inspected read-only; lookup/template findings are documented in NAVFIT_PACKAGE_FINDINGS.md.
+
 # Current delivery - review assignments and My Work
 
 Swift NAVFIT 0.8.0-prototype, schema 8, output/Swift_NAVFIT_0.8.0-review-routing.accdb. Adds one pending local review per report, revision references, requester/reviewer attribution, due dates, My Work, contributor creation/switching and accept/return/cancel event history. Later revisions block outcomes on stale assignments. Draft editing remains available; internal acceptance is not official approval. Sequential route templates and official locks remain pending. See REVIEW_ROUTING_GUIDE.md.
