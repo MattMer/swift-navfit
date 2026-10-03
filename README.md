@@ -19,7 +19,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the blank `.accdb` from this repository's Releases page and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the blank `.accdb` from the [0.8.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.8.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 
