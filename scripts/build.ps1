@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.10.0-traits.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.11.0-trait-summary.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.10.0-prototype',10,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.11.0-prototype',10,'Unverified - NAVFIT exchange disabled')"
     )
     foreach ($sql in $definitions) { $db.Execute($sql,128) }
     for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
@@ -192,7 +192,7 @@ try {
     $c.RowSourceType='Value List'; $c.RowSource='Drafting;Dates;History'; $c.LimitToList=$true; $c.AfterUpdate='=ChangeLibraryViewUI()'
     [void](Control $f 104 'cmdBulkFolders' 11000 8050 1900 500 'Bulk moves' '=OpenScreen("frmBulkFolders")')
     $f.OnLoad='=LoadLibrary()'; SaveScreen $f 'frmLibrary'
-    NewScreen 'frmEditor' 'Draft editor' 29400; $f=$script:swiftForm
+    NewScreen 'frmEditor' 'Draft editor' 31000; $f=$script:swiftForm
     $f.Width=13800
     [void](Control $f 100 'lblScope' 400 900 12400 550 'Draft administration and form-specific narrative. Official validation, full NAVFIT mapping and printed fit remain pending.')
     Control $f 109 'txtReportID' 10 10 100 100; $hidden=$script:swiftControl; $hidden.Visible=$false
@@ -243,7 +243,7 @@ try {
     [void](Control $f 100 'lblShipStation' 6000 4950 2500 350 'Ship / station (18)')
     [void](Control $f 109 'txtShipStation' 8700 4900 4300 400)
     foreach($navControl in $f.Controls){if($navControl.Top -ge 6900){$navControl.Top=$navControl.Top+7800}}
-    [void](Control $f 100 'lblTraits' 400 6800 12600 600 'Form-specific trait marks. Blank differs from NOB. Reference descriptions come from the inspected NAVFIT catalogue; policy, whole-report NOB status and averages are not assessed.')
+    [void](Control $f 100 'lblTraits' 400 6800 12600 600 'Form-specific trait marks. Blank differs from NOB. Reference descriptions come from the inspected NAVFIT catalogue; whole-report observation status and policy are not assessed.')
     foreach($navBlock in 33..39){
         $navY=7550+($navBlock-33)*600
         [void](Control $f 100 ('lblTrait'+$navBlock) 400 ($navY+50) 9600 450 '')
@@ -251,7 +251,11 @@ try {
         $c.RowSourceType='Value List'; $c.RowSource='NOB;1.0;2.0;3.0;4.0;5.0'; $c.LimitToList=$false
         $c.AfterUpdate='=ShowTraitGuidance('+$navBlock+')'; $c.OnGotFocus='=ShowTraitGuidance('+$navBlock+')'
     }
-    Control $f 109 'txtTraitGuidance' 400 12100 12600 2100; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
+    foreach($navControl in $f.Controls){if($navControl.Top -ge 12100){$navControl.Top=$navControl.Top+1600}}
+    Control $f 109 'txtPendingTraitSummary' 400 12100 12600 450; $script:swiftControl.Locked=$true
+    Control $f 109 'txtSavedTraitSummary' 400 12600 12600 450; $script:swiftControl.Locked=$true
+    [void](Control $f 100 'lblTraitSummaryScope' 400 13100 12600 450 'Arithmetic only: NOB and blanks are excluded. No recommendation, group, or Navy policy assessment.')
+    Control $f 109 'txtTraitGuidance' 400 13700 12600 2100; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     $f.TimerInterval=30000; $f.OnTimer='=CheckpointEditor()'
     $f.OnLoad='=LoadEditor()'; $f.ScrollBars=2; SaveScreen $f 'frmEditor'
     NewScreen 'frmSupport' 'Support and limitations' 7400; $f=$script:swiftForm

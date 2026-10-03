@@ -80,6 +80,44 @@ Public Function ShowTraitGuidance(ByVal block As Long) As Boolean
     mark = Nz(Forms!frmEditor.Controls("cboTrait" & block), "")
     text = block & ". " & CatalogueTraitTitle(kind, block) & vbCrLf & CatalogueTraitDescription(kind, block, "")
     If Len(mark) > 0 Then text = text & vbCrLf & vbCrLf & "Selected mark: " & mark & vbCrLf & CatalogueTraitDescription(kind, block, mark)
-    text = text & vbCrLf & vbCrLf & "NAVFIT reference descriptions. Blank differs from NOB. Whole-report observation status, averages and recommendation rules are not assessed."
+    text = text & vbCrLf & vbCrLf & "NAVFIT reference descriptions. Blank differs from NOB. Whole-report observation status and recommendation rules are not assessed."
     Forms!frmEditor!txtTraitGuidance = text: ShowTraitGuidance = True
+    Call RefreshTraitSummary()
+End Function
+Public Function TraitSummary(ByVal values As Variant) As String
+    Dim i As Long, numericCount As Long, nobCount As Long, blankCount As Long, total As Long, average As String
+    On Error GoTo Invalid
+    values = ValidateTraits(values)
+    For i = 0 To 6
+        If Len(Nz(values(i), "")) = 0 Then
+            blankCount = blankCount + 1
+        ElseIf values(i) = "NOB" Then
+            nobCount = nobCount + 1
+        Else
+            total = total + CLng(Left$(values(i), 1)): numericCount = numericCount + 1
+        End If
+    Next
+    If numericCount = 0 Then
+        average = "Unavailable (no numeric marks)"
+    Else
+        average = Format$(CDbl(total) / numericCount, "0.00")
+        If blankCount > 0 Then average = average & " (partial; blank marks remain)"
+    End If
+    TraitSummary = "Numeric average: " & average & "; numeric " & numericCount & "; NOB " & nobCount & "; blank " & blankCount
+    Exit Function
+Invalid:
+    TraitSummary = "Numeric average unavailable: unsupported pending mark. Choose listed marks or clear the input."
+End Function
+Public Function RefreshTraitSummary() As Boolean
+    Dim reportID As Long, revisionID As Long, revisionNumber As Long
+    Forms!frmEditor!txtPendingTraitSummary = "Editor values: " & TraitSummary(TraitsFromEditor())
+    reportID = Nz(Forms!frmEditor!txtReportID, 0)
+    revisionID = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
+    If revisionID = 0 Then
+        Forms!frmEditor!txtSavedTraitSummary = "Saved values: no committed revision."
+    Else
+        revisionNumber = Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & revisionID), 0)
+        Forms!frmEditor!txtSavedTraitSummary = "Saved revision " & revisionNumber & ": " & TraitSummary(TraitsFromRevision(revisionID))
+    End If
+    RefreshTraitSummary = True
 End Function

@@ -10,7 +10,7 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.10.0-prototype"
+Public Const APP_VERSION As String = "0.11.0-prototype"
 Public Const SCHEMA_VERSION As Long = 10
 
 Public Function NewIdentity() As String
@@ -316,6 +316,7 @@ Public Function SaveEditor() As Boolean
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
     Call ResetEditorBaseline()
+    Call RefreshTraitSummary()
     f!lblRecovery.Caption = "Saved; no pending recovery checkpoint."
     SaveEditor = True: Exit Function
 Failed:

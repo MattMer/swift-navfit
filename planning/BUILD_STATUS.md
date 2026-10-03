@@ -1,3 +1,9 @@
+# Current delivery - trait summaries
+
+Swift NAVFIT 0.11.0-prototype, schema 10, output/Swift_NAVFIT_0.11.0-trait-summary.accdb. Read-only editor and latest-saved-revision arithmetic summaries show numeric average/count, NOB count and blank count. Blanks label an average partial; no numeric marks or invalid input yield unavailable. Save and checkpoint recovery refresh the summaries. No schema or derived-value storage change. See TRAIT_SUMMARY_GUIDE.md.
+
+Verification: 44 new assertions and all 425 existing assertions passed, plus 169 catalogue checks and all 2472 retained import values. Populated schema-10 migration preserved original rows/fields, source hash and reopen. All 20 user-data tables in the distribution are empty; delivery matches the tested candidate. Runtime/x86 and comprehensive visual checks remain pending. Observation/recommendation rules, group context and official validation remain pending.
+
 # Current delivery - form-specific trait editor
 
 Swift NAVFIT 0.10.0-prototype, schema 10, output/Swift_NAVFIT_0.10.0-traits.accdb. Seven traits per form have reference descriptions, distinct blank/NOB values and marks 1.0–5.0. All 19 draft fields participate in snapshots, comparison, restore, duplicate and recovery. Trait edits stale earlier review assignments. See TRAITS_GUIDE.md.

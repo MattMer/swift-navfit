@@ -15,6 +15,7 @@ Run from the repository root in PowerShell. Use a fresh output name; the builder
 ```powershell
 powershell -NoProfile -File scripts/build.ps1 -OutputPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/smoke-test.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
+powershell -NoProfile -File scripts/test-trait-summary.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-traits.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-administration.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/test-review-comments.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
