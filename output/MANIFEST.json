@@ -1,0 +1,16 @@
+{
+  "BlankUserDataVerified": true,
+  "NAVFITCompatibility": "Narrative-only import/reconciliation; export unavailable",
+  "Runtime": "Untested",
+  "ProvenanceAssertions": 24,
+  "Artifact": "Swift_NAVFIT_0.8.0-review-routing.accdb",
+  "RoutingAssertions": 38,
+  "SwiftSchemaVersion": 8,
+  "AppVersion": "0.8.0-prototype",
+  "SmokeChecks": 46,
+  "BlankUserDataTables": 20,
+  "Migrations": "Schema 7 to 8 and schema 8 to 8; exact row/field comparison; source unchanged; reopen",
+  "ReviewCommentAssertions": 28,
+  "IntegratedToolsAssertions": 54,
+  "SHA256": "BE5980723A0CD2635B3717A664A6BC0583B7DD3A2337E948BACB72F7C6E0CA69"
+}

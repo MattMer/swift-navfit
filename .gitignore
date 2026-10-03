@@ -1,0 +1,29 @@
+# Access databases are local workspaces, test fixtures, or release assets.
+*.accdb
+*.laccdb
+*.mdb
+*.ldb
+*.accde
+*.bak
+*.tmp
+
+# Generated builds, test databases, and machine-specific evidence.
+/build/
+/output/*
+!/output/MANIFEST.json
+/planning/evidence/
+/NAVFIT98A_v33p2_Upgrade_Tool/
+
+# Supplied reference documents are maintained locally.
+/*.pdf
+
+# Local configuration and credentials.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+__pycache__/
+.venv/
+.DS_Store
+Thumbs.db

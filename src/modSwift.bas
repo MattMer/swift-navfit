@@ -1,0 +1,384 @@
+Attribute VB_Name = "modSwift"
+Option Compare Database
+Option Explicit
+
+Private Type SwiftGuid
+    Data1 As Long
+    Data2 As Integer
+    Data3 As Integer
+    Data4(0 To 7) As Byte
+End Type
+Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
+Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
+Public Const APP_VERSION As String = "0.8.0-prototype"
+Public Const SCHEMA_VERSION As Long = 8
+
+Public Function NewIdentity() As String
+    Dim value As SwiftGuid, buffer As String, result As Long
+    If CoCreateGuid(value) <> 0 Then Err.Raise vbObjectError + 100, , "Could not create a stable identity."
+    buffer = String$(39, vbNullChar)
+    result = StringFromGUID2(value, StrPtr(buffer), 39)
+    If result = 0 Then Err.Raise vbObjectError + 101, , "Could not format identity."
+    NewIdentity = Left$(buffer, result - 1)
+End Function
+
+Private Function ExecuteParams(ByVal statement As String, ParamArray values() As Variant) As Long
+    Dim q As DAO.QueryDef, i As Long
+    Set q = CurrentDb.CreateQueryDef("", statement)
+    For i = 0 To UBound(values)
+        q.Parameters(i).Value = values(i)
+    Next
+    q.Execute dbFailOnError
+    ExecuteParams = q.RecordsAffected
+    q.Close
+End Function
+
+Private Function ProfileID() As Long
+    ProfileID = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+    If ProfileID = 0 Then Err.Raise vbObjectError + 102, , "Complete first-run command and profile setup."
+End Function
+
+Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayName As String) As Boolean
+    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, pid As Long
+    commandName = Trim$(commandName): displayName = Trim$(displayName)
+    If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, , "Enter a command name and contributor name."
+    If Len(commandName) > 120 Or Len(displayName) > 120 Then Err.Raise vbObjectError + 104, , "Names must be 120 characters or fewer."
+    Set w = DBEngine.Workspaces(0): Set db = CurrentDb
+    On Error GoTo Failed
+    w.BeginTrans
+    pid = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+    If pid = 0 Then
+        Set r = db.OpenRecordset("UserProfile", dbOpenDynaset)
+        r.AddNew: r!ProfileGuid = NewIdentity(): r!DisplayName = displayName: r.Update
+        r.Bookmark = r.LastModified: pid = r!UserProfileID: r.Close
+        Set r = db.OpenRecordset("Workspace", dbOpenDynaset)
+        r.AddNew: r!WorkspaceID = 1: r!WorkspaceGuid = NewIdentity()
+    Else
+        ExecuteParams "PARAMETERS p Text(120), id Long; UPDATE UserProfile SET DisplayName=p WHERE UserProfileID=id", displayName, pid
+        Set r = db.OpenRecordset("SELECT * FROM Workspace WHERE WorkspaceID=1", dbOpenDynaset)
+        r.Edit
+    End If
+    r!CommandName = commandName: r!ActiveProfileID = pid: r.Update: r.Close
+    w.CommitTrans
+    ConfigureWorkspace = True
+    Exit Function
+Failed:
+    w.Rollback
+    Err.Raise Err.Number, "ConfigureWorkspace", Err.Description
+End Function
+
+Private Sub Snapshot(ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
+    r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
+    r!ValueText = value: r!IsNullValue = IsNull(value): r.Update: r.Close
+End Sub
+
+Private Sub AppendChange(ByVal revisionID As Long, ByVal fieldName As String, ByVal oldValue As Variant, ByVal newValue As Variant)
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("RevisionChange", dbOpenDynaset)
+    r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
+    r!OldValue = oldValue: r!NewValue = newValue
+    r!OldIsNull = IsNull(oldValue): r!NewIsNull = IsNull(newValue)
+    r.Update: r.Close
+End Sub
+
+Private Function FieldText(ByVal value As Variant) As Variant
+    If IsNull(value) Then
+        FieldText = Null
+    ElseIf VarType(value) = vbDate Then
+        FieldText = Format$(value, "yyyy-mm-dd")
+    Else
+        FieldText = CStr(value)
+    End If
+End Function
+
+Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant) As Long
+    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
+    Dim keys As Variant, previous(0 To 6) As Variant, current(0 To 6) As Variant, i As Long
+    Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
+    If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, , "Choose EVAL, CHIEFEVAL, or FITREP."
+    If Len(title) > 160 Or Len(memberName) > 120 Then Err.Raise vbObjectError + 106, , "Title or member name exceeds local draft capacity."
+    If Not IsNull(startDate) Then
+        If Not IsDate(startDate) Then Err.Raise vbObjectError + 107, , "Start date is not a valid date."
+        startDate = DateValue(startDate)
+    End If
+    If Not IsNull(endDate) Then
+        If Not IsDate(endDate) Then Err.Raise vbObjectError + 108, , "End date is not a valid date."
+        endDate = DateValue(endDate)
+    End If
+    pid = ProfileID()
+    keys = Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
+    For i = 0 To 6
+        previous(i) = Null
+    Next
+    current(0) = formKind: current(1) = title: current(2) = memberName
+    current(3) = FieldText(startDate): current(4) = FieldText(endDate): current(5) = notes
+    If IsMissing(officialComments) Then
+        If reportID = 0 Then current(6) = Null Else current(6) = StoredOfficialNarrative(reportID)
+    Else
+        If Not IsNull(officialComments) And VarType(officialComments) <> vbString Then Err.Raise vbObjectError + 117, , "Official narrative must be text or null."
+        current(6) = officialComments
+    End If
+    Set w = DBEngine.Workspaces(0): Set db = CurrentDb
+    On Error GoTo Failed
+    w.BeginTrans
+    If reportID = 0 Then
+        Set r = db.OpenRecordset("Report", dbOpenDynaset)
+        r.AddNew: r!ReportGuid = NewIdentity(): r!CreatedAt = Now(): r!WorkflowState = "Draft"
+        r!IsArchived = False: changed = True: seq = 1: parentID = Null
+    Else
+        Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenDynaset)
+        If r.EOF Then Err.Raise vbObjectError + 109, , "Report does not exist."
+        If r!IsArchived Then Err.Raise vbObjectError + 110, , "Recover archived reports before editing."
+        If r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 111, , "Reopen locked reports before editing."
+        If r!FormKind <> formKind Then Err.Raise vbObjectError + 112, , "Report type cannot change after creation."
+        For i = 0 To 6
+            previous(i) = FieldText(r.Fields(keys(i)).Value)
+            If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
+        Next
+        If Not changed Then
+            r.Close: w.Rollback: CommitDraft = reportID: Exit Function
+        End If
+        parentID = r!CurrentRevisionID
+        seq = Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & reportID), 0) + 1
+        r.Edit
+    End If
+    r!FormKind = formKind: r!Title = title: r!MemberName = memberName
+    r!PeriodStart = startDate: r!PeriodEnd = endDate: r!DraftNotes = notes: r!OfficialComments = current(6): r!ModifiedAt = Now()
+    r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID: r.Close
+    Set rev = db.OpenRecordset("ReportRevision", dbOpenDynaset)
+    rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
+    rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255)
+    rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close
+    For i = 0 To 6
+        Snapshot revisionID, CStr(keys(i)), current(i)
+        If seq = 1 Or IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
+            AppendChange revisionID, CStr(keys(i)), previous(i), current(i)
+        End If
+    Next
+    ExecuteParams "PARAMETERS rev Long, id Long; UPDATE Report SET CurrentRevisionID=rev WHERE ReportID=id", revisionID, reportID
+    w.CommitTrans
+    CommitDraft = reportID
+    Exit Function
+Failed:
+    Dim failure As Long, explanation As String
+    failure = Err.Number: explanation = Err.Description
+    w.Rollback
+    Err.Raise failure, "CommitDraft", explanation
+End Function
+
+Public Function ArchiveDraft(ByVal reportID As Long, ByVal archived As Boolean) As Boolean
+    Dim w As DAO.Workspace, pid As Long
+    pid = ProfileID()
+    If DCount("*", "Report", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 113, , "Report does not exist."
+    Set w = DBEngine.Workspaces(0)
+    On Error GoTo Failed
+    w.BeginTrans
+    ExecuteParams "PARAMETERS flag Bit, id Long; UPDATE Report SET IsArchived=flag, ModifiedAt=Now() WHERE ReportID=id", archived, reportID
+    ExecuteParams "PARAMETERS id Long, author Long, action Text(40); INSERT INTO ReportEvent (ReportID,AuthorProfileID,EventAt,EventKind) VALUES (id,author,Now(),action)", reportID, pid, IIf(archived, "Archived", "Recovered")
+    w.CommitTrans: ArchiveDraft = True: Exit Function
+Failed:
+    w.Rollback: Err.Raise Err.Number, "ArchiveDraft", Err.Description
+End Function
+
+Private Function RevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("SELECT ValueText, IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
+    If r.EOF Then Err.Raise vbObjectError + 114, , "Revision snapshot is incomplete."
+    If r!IsNullValue Then RevisionValue = Null Else RevisionValue = r!ValueText
+    r.Close
+End Function
+
+Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
+    If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, , "Revision belongs to another report."
+    RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID))
+End Function
+
+Public Function DuplicateDraft(ByVal reportID As Long) As Long
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    If r.EOF Then Err.Raise vbObjectError + 116, , "Report does not exist."
+    DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments)
+    r.Close
+End Function
+
+Public Function Startup() As Boolean
+    If Nz(DLookup("SchemaVersion", "AppMetadata"), 0) <> SCHEMA_VERSION Then
+        MsgBox "Unsupported Swift schema. Open this file with its matching application version.", vbCritical
+        Application.Quit acQuitSaveNone
+        Exit Function
+    End If
+    If DCount("*", "Workspace") = 0 Then DoCmd.OpenForm "frmSetup" Else DoCmd.OpenForm "frmHome"
+    Startup = True
+End Function
+
+Public Function OpenScreen(ByVal formName As String) As Boolean
+    On Error GoTo Failed
+    DoCmd.OpenForm formName
+    Forms(formName).SetFocus
+    OpenScreen = True: Exit Function
+Failed:
+    MsgBox Err.Description, vbExclamation
+End Function
+
+Public Function SaveSetup() As Boolean
+    On Error GoTo Failed
+    ConfigureWorkspace Nz(Forms!frmSetup!txtCommand, ""), Nz(Forms!frmSetup!txtProfile, "")
+    DoCmd.Close acForm, "frmSetup": DoCmd.OpenForm "frmHome": SaveSetup = True: Exit Function
+Failed:
+    MsgBox Err.Description, vbExclamation
+End Function
+
+Public Function LoadHome() As Boolean
+    Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
+    Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
+    Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
+    LoadHome = True
+End Function
+
+Public Function LoadLibrary() As Boolean
+    RefreshFolders
+    If IsNull(Forms!frmLibrary!cboArchive) Then Forms!frmLibrary!cboArchive = "Active"
+    Call RefreshLibrary()
+    LoadLibrary = True
+End Function
+
+Public Function EditSelected(Optional ByVal createNew As Boolean = False) As Boolean
+    Dim id As Long
+    If Not createNew Then
+        id = Nz(Forms!frmLibrary!lstReports.Value, 0)
+        If id = 0 Then MsgBox "Select a report first.", vbInformation: Exit Function
+    End If
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        MsgBox "Close the current editor before opening another report.", vbInformation: Exit Function
+    End If
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    EditSelected = True
+End Function
+
+Public Function LoadEditor() As Boolean
+    Dim f As Form, r As DAO.Recordset, id As Long
+    Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
+    f!cboKind = "EVAL"
+    If id > 0 Then
+        Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
+        f!cboKind = r!FormKind: f!txtTitle = r!Title: f!txtMember = r!MemberName
+        f!txtStart = r!PeriodStart: f!txtEnd = r!PeriodEnd: f!txtNotes = r!DraftNotes: f!txtOfficialComments = r!OfficialComments
+        f!lblSaved.Caption = "Last saved: " & r!ModifiedAt
+        f!cmdSave.Enabled = Not r!IsArchived
+        f!cmdRestore.Enabled = Not r!IsArchived
+        r.Close: f!cboKind.Enabled = False
+        If DCount("*", "ImportReceipt", "ReportID=" & id) > 0 Then f!lblImportOrigin.Caption = "Imported narrative only. Other official fields remain unmapped; source values retained locally."
+    End If
+    Call RefreshNarrativeLabel()
+    Call RefreshRevisions
+    Call BeginEditorRecovery()
+    LoadEditor = True
+End Function
+
+Private Sub RefreshRevisions()
+    Dim f As Form
+    Set f = Forms!frmEditor
+    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber, CommittedAt, Reason FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
+    f!lstRevisions.Requery
+End Sub
+
+Public Function SaveEditor() As Boolean
+    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean
+    On Error GoTo Failed
+    Set f = Forms!frmEditor
+    Call GuardEditorBaseline()
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments)
+    Call DiscardEditorCheckpoint()
+    w.CommitTrans: trans = False
+    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved " & Now() & " - local draft only"
+    RefreshRevisions
+    If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
+    Call ResetEditorBaseline()
+    f!lblRecovery.Caption = "Saved; no pending recovery checkpoint."
+    SaveEditor = True: Exit Function
+Failed:
+    Dim message As String
+    message = Err.Description
+    On Error Resume Next
+    If trans Then w.Rollback
+    MsgBox message, vbExclamation
+End Function
+
+Public Function CloseEditor() As Boolean
+    If MsgBox("Close the editor? Unsaved entries will be discarded. Use Save draft first to keep them.", vbOKCancel + vbQuestion) = vbOK Then
+        Call DiscardEditorCheckpoint()
+        DoCmd.Close acForm, "frmEditor", acSaveNo: CloseEditor = True
+    End If
+End Function
+
+Public Function RestoreSelected() As Boolean
+    Dim id As Long, revisionID As Long
+    On Error GoTo Failed
+    id = Nz(Forms!frmEditor!txtReportID, 0): revisionID = Nz(Forms!frmEditor!lstRevisions, 0)
+    If revisionID = 0 Then MsgBox "Select a revision first.": Exit Function
+    If MsgBox("Restore selected values as a new revision? Unsaved entries will be discarded.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+    RestoreDraft id, revisionID
+    Call DiscardEditorCheckpoint()
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    RestoreSelected = True: Exit Function
+Failed:
+    MsgBox Err.Description, vbExclamation
+End Function
+
+Public Function LibraryAction(ByVal action As String) As Boolean
+    Dim id As Long
+    On Error GoTo Failed
+    id = Nz(Forms!frmLibrary!lstReports, 0)
+    If id = 0 Then MsgBox "Select a report first.": Exit Function
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then MsgBox "Close the editor before changing library reports.": Exit Function
+    Select Case action
+        Case "Archive": ArchiveDraft id, True
+        Case "Recover": ArchiveDraft id, False
+        Case "Duplicate": DuplicateDraft id
+    End Select
+    Call LoadLibrary()
+    LibraryAction = True: Exit Function
+Failed:
+    MsgBox Err.Description, vbExclamation
+End Function
+
+Public Function LoadSupport() As Boolean
+    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: unavailable; exchange disabled" & vbCrLf & "Policy validation: not implemented" & vbCrLf & "PDF import: not implemented" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
+    LoadSupport = True
+End Function
+
+
+
+Private Function NarrativeRevisionValue(ByVal revisionID As Long) As Variant
+    'Schema 1/2 revisions predate the official narrative field.
+    If DCount("*", "RevisionValue", "RevisionID=" & revisionID & " AND FieldKey='OfficialComments'") = 0 Then
+        NarrativeRevisionValue = Null
+    Else
+        NarrativeRevisionValue = RevisionValue(revisionID, "OfficialComments")
+    End If
+End Function
+
+Private Function StoredOfficialNarrative(ByVal reportID As Long) As Variant
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("SELECT OfficialComments FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    If r.EOF Then Err.Raise vbObjectError + 109, , "Report does not exist."
+    StoredOfficialNarrative = r!OfficialComments
+    r.Close
+End Function
+
+Public Function RefreshNarrativeLabel() As Boolean
+    Dim block As String
+    Select Case Nz(Forms!frmEditor!cboKind, "")
+        Case "CHIEFEVAL": block = "40"
+        Case "EVAL": block = "43"
+        Case "FITREP": block = "41"
+        Case Else: block = "?"
+    End Select
+    Forms!frmEditor!lblOfficialComments.Caption = "Official narrative - block " & block & " (separate from draft notes)"
+    Forms!frmEditor!lblNarrativeCount.Caption = CStr(Len(Nz(Forms!frmEditor!txtOfficialComments, ""))) & " characters"
+    RefreshNarrativeLabel = True
+End Function

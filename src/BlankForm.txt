@@ -1,0 +1,12 @@
+Version =20
+VersionRequired =20
+Begin Form
+    DefaultView =0
+    Width =13800
+    Begin
+        Begin Section
+            Height =7600
+            Name ="Detail"
+        End
+    End
+End
