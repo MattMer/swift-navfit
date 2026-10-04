@@ -7,7 +7,7 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
         If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
         If key = "PromotionStatus" And RevisionSnapshotSchema(revisionID) >= 12 Then Err.Raise vbObjectError + 800, , "Promotion status snapshot is incomplete."
         If Len(ReportingSeniorLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 13 Then Err.Raise vbObjectError + 800, , "Reporting senior snapshot is incomplete."
@@ -16,6 +16,7 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
         If Len(ServiceDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 16 Then Err.Raise vbObjectError + 800, , "Service details snapshot is incomplete."
         If Len(DecisionDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 17 Then Err.Raise vbObjectError + 800, , "Recommendation and statement snapshot is incomplete."
         If Len(ReportPeopleLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 18 Then Err.Raise vbObjectError + 800, , "Reporting contact and rater snapshot is incomplete."
+        If Len(PartyNamesLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 19 Then Err.Raise vbObjectError + 800, , "Structured names snapshot is incomplete."
         If IsTraitKey(key) And RevisionSnapshotSchema(revisionID) >= 10 Then Err.Raise vbObjectError + 800, , "Trait snapshot is incomplete."
         If Len(AssessmentLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 11 Then Err.Raise vbObjectError + 800, , "Assessment snapshot is incomplete."
         SavedValue = Null
@@ -120,7 +121,9 @@ Private Function ComparisonFieldLabel(ByVal key As String) As String
         Case "PromotionStatus": ComparisonFieldLabel = "Promotion status"
         Case "OfficialComments": ComparisonFieldLabel = "Official narrative"
         Case Else
-            If Len(ReportPeopleLabel(key)) > 0 Then
+            If Len(PartyNamesLabel(key)) > 0 Then
+                ComparisonFieldLabel = PartyNamesLabel(key)
+            ElseIf Len(ReportPeopleLabel(key)) > 0 Then
                 ComparisonFieldLabel = ReportPeopleLabel(key)
             ElseIf Len(DecisionDetailsLabel(key)) > 0 Then
                 ComparisonFieldLabel = DecisionDetailsLabel(key)

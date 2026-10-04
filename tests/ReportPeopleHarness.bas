@@ -43,7 +43,7 @@ Public Function TestReportPeople() As String
     keys = ReportPeopleKeys(): limits = Array(9, 10, 30, 30, 15, 2, 9, 10, 7, 28, 10, 28, 10)
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SavePeople(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 68, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Incomplete snapshot"
         For i = 0 To 12: Check Stored(id, CStr(keys(i))) = values(i), "Saved field changed": Next
         Call CommitDraft(id, CStr(kind), "People", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted values wrote history"

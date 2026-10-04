@@ -1,3 +1,9 @@
+# Current delivery - three structured name features
+
+Swift NAVFIT 0.20.0-prototype, schema 19, output/Swift_NAVFIT_0.20.0-structured-names.accdb. Adds member first/middle/last/suffix, reporting-senior last/initials and counselor last/initials. All ten parts are explicit and separate from existing full names. Apply checkpoints pending values; Save draft commits all 78 fields atomically. See STRUCTURED_NAMES_GUIDE.md.
+
+Verification: 281 new assertions; 2001 total assertions, 218 reference checks, nine layout checks and all 2472 retained import values. Schema 18-to-19, 19-to-19 and 5-to-19 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches the tested candidate. An initial build exceeded Access's form-height limit; the final editor uses one compact details-button row. The rollback fixture was corrected to attempt a changed save. Runtime/x86, comprehensive visual inspection, Navy rules and full interchange remain pending.
+
 # Current delivery - senior identifiers, contact and raters
 
 Swift NAVFIT 0.19.0-prototype, schema 18, output/Swift_NAVFIT_0.19.0-report-people.accdb. Adds reporting-senior SSN/DoD ID, structured address/contact fields, and rater/senior-rater names/dates. Apply checkpoints pending values; Save draft commits all 68 fields atomically. Leading zeros and incomplete entries are preserved. Names/dates do not establish signatures or approval. See REPORT_PEOPLE_GUIDE.md.

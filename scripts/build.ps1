@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.19.0-report-people.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.20.0-structured-names.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -14,7 +14,7 @@ try {
         'CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)',
         'CREATE TABLE Workspace (WorkspaceID LONG CONSTRAINT PK_Workspace PRIMARY KEY, WorkspaceGuid TEXT(38) NOT NULL, CommandName TEXT(120) NOT NULL, ActiveProfileID LONG NOT NULL)',
         'CREATE TABLE Folder (FolderID COUNTER CONSTRAINT PK_Folder PRIMARY KEY, FolderGuid TEXT(38) NOT NULL, FolderName TEXT(80) NOT NULL, ParentFolderID LONG)',
-        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3), ObservationStatus TEXT(8), PromotionRecommendation TEXT(20), PromotionStatus TEXT(8), ReportingSeniorName TEXT(18), ReportingSeniorGrade TEXT(5), ReportingSeniorDesignator TEXT(5), ReportingSeniorTitle TEXT(14), ReportingSeniorUIC TEXT(5), OccasionPeriodic TEXT(3), OccasionDetachment TEXT(3), OccasionFrocking TEXT(3), OccasionSpecial TEXT(3), ReportRegular TEXT(3), ReportConcurrent TEXT(3), ReportOperationalCommander TEXT(3), PrimaryDuty TEXT(14), DutyDescription LONGTEXT, MemberSSN TEXT(9), MemberDoDID TEXT(10), ComponentActive TEXT(3), ComponentTAR TEXT(3), ComponentInactive TEXT(3), ComponentATADSW TEXT(3), DateReported TEXT(10), CounselingDate TEXT(10), CounselorName TEXT(20), ReadinessSummary TEXT(4), ReadinessDetail TEXT(15), ReadinessDate TEXT(10), BilletSubcategory TEXT(10), AssignmentRecommendationA TEXT(20), AssignmentRecommendationB TEXT(20), RetentionYes TEXT(3), RetentionNo TEXT(3), StatementYes TEXT(3), StatementNo TEXT(3), ReportingSeniorSSN TEXT(9), ReportingSeniorDoDID TEXT(10), ReportingSeniorAddress1 TEXT(30), ReportingSeniorAddress2 TEXT(30), ReportingSeniorCity TEXT(15), ReportingSeniorState TEXT(2), ReportingSeniorZip TEXT(9), ReportingSeniorPhone TEXT(10), ReportingSeniorDSN TEXT(7), RaterName TEXT(28), RaterDate TEXT(10), SeniorRaterName TEXT(28), SeniorRaterDate TEXT(10))',
+        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3), ObservationStatus TEXT(8), PromotionRecommendation TEXT(20), PromotionStatus TEXT(8), ReportingSeniorName TEXT(18), ReportingSeniorGrade TEXT(5), ReportingSeniorDesignator TEXT(5), ReportingSeniorTitle TEXT(14), ReportingSeniorUIC TEXT(5), OccasionPeriodic TEXT(3), OccasionDetachment TEXT(3), OccasionFrocking TEXT(3), OccasionSpecial TEXT(3), ReportRegular TEXT(3), ReportConcurrent TEXT(3), ReportOperationalCommander TEXT(3), PrimaryDuty TEXT(14), DutyDescription LONGTEXT, MemberSSN TEXT(9), MemberDoDID TEXT(10), ComponentActive TEXT(3), ComponentTAR TEXT(3), ComponentInactive TEXT(3), ComponentATADSW TEXT(3), DateReported TEXT(10), CounselingDate TEXT(10), CounselorName TEXT(20), ReadinessSummary TEXT(4), ReadinessDetail TEXT(15), ReadinessDate TEXT(10), BilletSubcategory TEXT(10), AssignmentRecommendationA TEXT(20), AssignmentRecommendationB TEXT(20), RetentionYes TEXT(3), RetentionNo TEXT(3), StatementYes TEXT(3), StatementNo TEXT(3), ReportingSeniorSSN TEXT(9), ReportingSeniorDoDID TEXT(10), ReportingSeniorAddress1 TEXT(30), ReportingSeniorAddress2 TEXT(30), ReportingSeniorCity TEXT(15), ReportingSeniorState TEXT(2), ReportingSeniorZip TEXT(9), ReportingSeniorPhone TEXT(10), ReportingSeniorDSN TEXT(7), RaterName TEXT(28), RaterDate TEXT(10), SeniorRaterName TEXT(28), SeniorRaterDate TEXT(10), MemberFirstName TEXT(27), MemberMiddleInitial TEXT(3), MemberLastName TEXT(27), MemberSuffix TEXT(10), ReportingSeniorLastName TEXT(18), ReportingSeniorFirstInitial TEXT(1), ReportingSeniorMiddleInitial TEXT(3), CounselorLastName TEXT(20), CounselorFirstInitial TEXT(1), CounselorMiddleInitial TEXT(3))',
         'CREATE TABLE FolderMove (FolderMoveID COUNTER CONSTRAINT PK_FolderMove PRIMARY KEY, ReportID LONG NOT NULL, OldFolderID LONG, NewFolderID LONG, AuthorProfileID LONG NOT NULL, MovedAt DATETIME)',
         'CREATE TABLE ReportRevision (RevisionID COUNTER CONSTRAINT PK_ReportRevision PRIMARY KEY, ReportID LONG NOT NULL, RevisionNumber LONG NOT NULL, ParentRevisionID LONG, AuthorProfileID LONG NOT NULL, CommittedAt DATETIME, Reason TEXT(255), SnapshotSchema LONG)',
         'CREATE TABLE RevisionValue (RevisionValueID COUNTER CONSTRAINT PK_RevisionValue PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText LONGTEXT, IsNullValue BIT)',
@@ -52,7 +52,7 @@ try {
         'CREATE TABLE ReviewTaskEvent (TaskEventID COUNTER CONSTRAINT PK_ReviewTaskEvent PRIMARY KEY, TaskID LONG NOT NULL, AuthorProfileID LONG NOT NULL, EventAt DATETIME, EventKind TEXT(20), Notes LONGTEXT)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventTask FOREIGN KEY (TaskID) REFERENCES ReviewTask (TaskID)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
-        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT, ObservationStatus LONGTEXT, PromotionRecommendation LONGTEXT, PromotionStatus LONGTEXT, ReportingSeniorName LONGTEXT, ReportingSeniorGrade LONGTEXT, ReportingSeniorDesignator LONGTEXT, ReportingSeniorTitle LONGTEXT, ReportingSeniorUIC LONGTEXT, OccasionPeriodic LONGTEXT, OccasionDetachment LONGTEXT, OccasionFrocking LONGTEXT, OccasionSpecial LONGTEXT, ReportRegular LONGTEXT, ReportConcurrent LONGTEXT, ReportOperationalCommander LONGTEXT, PrimaryDuty LONGTEXT, DutyDescription LONGTEXT, MemberSSN LONGTEXT, MemberDoDID LONGTEXT, ComponentActive LONGTEXT, ComponentTAR LONGTEXT, ComponentInactive LONGTEXT, ComponentATADSW LONGTEXT, DateReported LONGTEXT, CounselingDate LONGTEXT, CounselorName LONGTEXT, ReadinessSummary LONGTEXT, ReadinessDetail LONGTEXT, ReadinessDate LONGTEXT, BilletSubcategory LONGTEXT, AssignmentRecommendationA LONGTEXT, AssignmentRecommendationB LONGTEXT, RetentionYes LONGTEXT, RetentionNo LONGTEXT, StatementYes LONGTEXT, StatementNo LONGTEXT, ReportingSeniorSSN LONGTEXT, ReportingSeniorDoDID LONGTEXT, ReportingSeniorAddress1 LONGTEXT, ReportingSeniorAddress2 LONGTEXT, ReportingSeniorCity LONGTEXT, ReportingSeniorState LONGTEXT, ReportingSeniorZip LONGTEXT, ReportingSeniorPhone LONGTEXT, ReportingSeniorDSN LONGTEXT, RaterName LONGTEXT, RaterDate LONGTEXT, SeniorRaterName LONGTEXT, SeniorRaterDate LONGTEXT)',
+        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT, ObservationStatus LONGTEXT, PromotionRecommendation LONGTEXT, PromotionStatus LONGTEXT, ReportingSeniorName LONGTEXT, ReportingSeniorGrade LONGTEXT, ReportingSeniorDesignator LONGTEXT, ReportingSeniorTitle LONGTEXT, ReportingSeniorUIC LONGTEXT, OccasionPeriodic LONGTEXT, OccasionDetachment LONGTEXT, OccasionFrocking LONGTEXT, OccasionSpecial LONGTEXT, ReportRegular LONGTEXT, ReportConcurrent LONGTEXT, ReportOperationalCommander LONGTEXT, PrimaryDuty LONGTEXT, DutyDescription LONGTEXT, MemberSSN LONGTEXT, MemberDoDID LONGTEXT, ComponentActive LONGTEXT, ComponentTAR LONGTEXT, ComponentInactive LONGTEXT, ComponentATADSW LONGTEXT, DateReported LONGTEXT, CounselingDate LONGTEXT, CounselorName LONGTEXT, ReadinessSummary LONGTEXT, ReadinessDetail LONGTEXT, ReadinessDate LONGTEXT, BilletSubcategory LONGTEXT, AssignmentRecommendationA LONGTEXT, AssignmentRecommendationB LONGTEXT, RetentionYes LONGTEXT, RetentionNo LONGTEXT, StatementYes LONGTEXT, StatementNo LONGTEXT, ReportingSeniorSSN LONGTEXT, ReportingSeniorDoDID LONGTEXT, ReportingSeniorAddress1 LONGTEXT, ReportingSeniorAddress2 LONGTEXT, ReportingSeniorCity LONGTEXT, ReportingSeniorState LONGTEXT, ReportingSeniorZip LONGTEXT, ReportingSeniorPhone LONGTEXT, ReportingSeniorDSN LONGTEXT, RaterName LONGTEXT, RaterDate LONGTEXT, SeniorRaterName LONGTEXT, SeniorRaterDate LONGTEXT, MemberFirstName LONGTEXT, MemberMiddleInitial LONGTEXT, MemberLastName LONGTEXT, MemberSuffix LONGTEXT, ReportingSeniorLastName LONGTEXT, ReportingSeniorFirstInitial LONGTEXT, ReportingSeniorMiddleInitial LONGTEXT, CounselorLastName LONGTEXT, CounselorFirstInitial LONGTEXT, CounselorMiddleInitial LONGTEXT)',
         'CREATE UNIQUE INDEX UX_RecoverySession ON RecoveryDraft (SessionGuid)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.19.0-prototype',18,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.20.0-prototype',19,'Unverified - NAVFIT exchange disabled')"
     )
     foreach ($sql in $definitions) { $db.Execute($sql,128) }
     for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
@@ -109,6 +109,7 @@ try {
     $app.LoadFromText(5,'modServiceDetails',(Join-Path $root 'src\modServiceDetails.bas'))
     $app.LoadFromText(5,'modDecisionDetails',(Join-Path $root 'src\modDecisionDetails.bas'))
     $app.LoadFromText(5,'modReportPeople',(Join-Path $root 'src\modReportPeople.bas'))
+    $app.LoadFromText(5,'modPartyNames',(Join-Path $root 'src\modPartyNames.bas'))
     $app.LoadFromText(5,'modMemberDetails',(Join-Path $root 'src\modMemberDetails.bas'))
     $app.LoadFromText(5,'modReportContext',(Join-Path $root 'src\modReportContext.bas'))
     $app.LoadFromText(5,'modReportingSenior',(Join-Path $root 'src\modReportingSenior.bas'))
@@ -291,13 +292,17 @@ try {
         Control $f 109 ("txt"+$serviceKey) 10 10 100 100; $script:swiftControl.Visible=$false
     }
     foreach($decisionControl in $f.Controls){if($decisionControl.Top -ge 6800){$decisionControl.Top=$decisionControl.Top+550}}
-    [void](Control $f 104 'cmdDecisionDetails' 400 6750 4700 400 'Recommendations and statement' '=OpenDecisionDetails()')
+    [void](Control $f 104 'cmdDecisionDetails' 400 6750 4000 400 'Recommendations / statement' '=OpenDecisionDetails()')
     foreach($decisionKey in @('AssignmentRecommendationA','AssignmentRecommendationB','RetentionYes','RetentionNo','StatementYes','StatementNo')){
         Control $f 109 ('txt'+$decisionKey) 10 10 100 100; $script:swiftControl.Visible=$false
     }
-    [void](Control $f 104 'cmdReportPeople' 5300 6750 7700 400 'Senior contact and raters' '=OpenReportPeople()')
+    [void](Control $f 104 'cmdReportPeople' 4600 6750 4000 400 'Senior contact and raters' '=OpenReportPeople()')
     foreach($peopleKey in @('ReportingSeniorSSN','ReportingSeniorDoDID','ReportingSeniorAddress1','ReportingSeniorAddress2','ReportingSeniorCity','ReportingSeniorState','ReportingSeniorZip','ReportingSeniorPhone','ReportingSeniorDSN','RaterName','RaterDate','SeniorRaterName','SeniorRaterDate')){
         Control $f 109 ('txt'+$peopleKey) 10 10 100 100; $script:swiftControl.Visible=$false
+    }
+    [void](Control $f 104 'cmdPartyNames' 8800 6750 4200 400 'Structured names' '=OpenPartyNames()')
+    foreach($nameKey in @('MemberFirstName','MemberMiddleInitial','MemberLastName','MemberSuffix','ReportingSeniorLastName','ReportingSeniorFirstInitial','ReportingSeniorMiddleInitial','CounselorLastName','CounselorFirstInitial','CounselorMiddleInitial')){
+        Control $f 109 ('txt'+$nameKey) 10 10 100 100; $script:swiftControl.Visible=$false
     }
     $f.TimerInterval=30000; $f.OnTimer='=CheckpointEditor()'
     $f.OnLoad='=LoadEditor()'; $f.ScrollBars=2; SaveScreen $f 'frmEditor'
@@ -404,6 +409,23 @@ try {
     [void](Control $f 104 'cmdApply' 400 13700 5800 550 'Apply pending values and return' '=ApplyReportPeople()')
     [void](Control $f 104 'cmdCancel' 7000 13700 6000 550 'Cancel panel changes' '=CancelReportPeople()')
     SaveScreen $f 'frmReportPeople'
+    NewScreen 'frmPartyNames' 'Structured names' 12500; $f=$script:swiftForm; $f.PopUp=$true; $f.Modal=$true; $f.ScrollBars=2
+    [void](Control $f 100 'lblScope' 400 950 12600 650 'Apply checkpoints pending entries; Save draft commits them. These parts remain separate from full-name entries. No automatic splitting or replacement occurs. Blank remains saveable.')
+    [void](Control $f 100 'lblMemberParts' 400 1650 12600 350 'Member name parts')
+    [void](Control $f 100 'lblSeniorParts' 400 5400 12600 350 'Reporting senior name parts')
+    [void](Control $f 100 'lblCounselorParts' 400 8300 12600 350 'Counselor name parts')
+    $nameKeys=@('MemberFirstName','MemberMiddleInitial','MemberLastName','MemberSuffix','ReportingSeniorLastName','ReportingSeniorFirstInitial','ReportingSeniorMiddleInitial','CounselorLastName','CounselorFirstInitial','CounselorMiddleInitial')
+    $nameLabels=@('Member first name (27)','Member middle initial(s) (3)','Member last name (27)','Member suffix (10)','Reporting senior last name (18)','Reporting senior first initial (1)','Reporting senior middle initial(s) (3)','Counselor last name (20)','Counselor first initial (1)','Counselor middle initial(s) (3)')
+    foreach($nameIndex in 0..9){
+        $nameY=2050+$nameIndex*850
+        if($nameIndex -ge 4){$nameY+=350}
+        if($nameIndex -ge 7){$nameY+=350}
+        [void](Control $f 100 ('lbl'+$nameKeys[$nameIndex]) 400 ($nameY+50) 5000 400 $nameLabels[$nameIndex])
+        [void](Control $f 109 ('txt'+$nameKeys[$nameIndex]) 5500 $nameY 7500 450)
+    }
+    [void](Control $f 104 'cmdApply' 400 11200 5800 550 'Apply pending values and return' '=ApplyPartyNames()')
+    [void](Control $f 104 'cmdCancel' 7000 11200 6000 550 'Cancel panel changes' '=CancelPartyNames()')
+    SaveScreen $f 'frmPartyNames'
     NewScreen 'frmSupport' 'Support and limitations' 7400; $f=$script:swiftForm
     Control $f 109 'txtDiagnostics' 400 1100 12600 4500; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     [void](Control $f 104 'cmdHome' 400 6150 2800 550 'Home' '=OpenScreen("frmHome")')

@@ -39,8 +39,8 @@ Public Function TestTools(ByVal path As String) As String
     checks = 0: Call ConfigureWorkspace("SYNTHETIC TOOLS", "Synthetic Tester")
     id = CommitDraft(0, "EVAL", "", "", Null, Null, "Draft notes only", "Empty", Null)
     Check OpenDraftChecklist(id), "Checklist failed"
-    Check Forms!frmChecklist!lstFindings.ListCount = 68, "Missing-input findings wrong"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "66 missing") > 0, "Missing count wrong"
+    Check Forms!frmChecklist!lstFindings.ListCount = 78, "Missing-input findings wrong"
+    Check InStr(Forms!frmChecklist!lblSummary.Caption, "76 missing") > 0, "Missing count wrong"
     Forms!frmChecklist!lstFindings = "NARRATIVE": Check ChecklistGuidance(), "Guidance failed"
     Check InStr(Forms!frmChecklist!txtGuidance, "block 43") > 0, "Narrative guidance wrong"
     Call CloseDraftChecklist()
@@ -54,8 +54,8 @@ Public Function TestTools(ByVal path As String) As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!txtTitle = "Unsaved editor title": Call CheckpointEditor()
     Check ChecklistFromEditor(), "Editor checklist failed"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "61 missing") > 0, "Saved checklist used unsaved entries"
-    Check Forms!frmChecklist!lstFindings.ListCount = 64, "Recovery finding missing"
+    Check InStr(Forms!frmChecklist!lblSummary.Caption, "71 missing") > 0, "Saved checklist used unsaved entries"
+    Check Forms!frmChecklist!lstFindings.ListCount = 74, "Recovery finding missing"
     Call CloseDraftChecklist()
     Check Forms!frmEditor!txtTitle = "Unsaved editor title", "Checklist lost pending entry"
     Check DLookup("CurrentRevisionID", "Report", "ReportID=" & id) = revision, "Checklist changed history"

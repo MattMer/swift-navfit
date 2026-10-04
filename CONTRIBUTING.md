@@ -64,3 +64,7 @@ Run scripts/test-decision-details.ps1 with -BuildPath pointing to the fresh data
 ## Reporting senior identifiers, contact and raters
 
 Run scripts/test-report-people.ps1 with -BuildPath pointing to the fresh database. It checks all 13 fields through persistence, history, duplication/restore, rollback and raw recovery in a new Access process, plus button overlap and form bounds. Source capacities are documented in planning/REPORT_PEOPLE_GUIDE.md; signatures, authority, policy and external date conversion require separate work.
+
+## Structured member, senior and counselor names
+
+Run scripts/test-party-names.ps1 with -BuildPath pointing to the fresh database. It verifies ten name parts, preservation of full names, punctuation/accents/case, rollback, raw recovery in a new Access process, button overlap and form bounds. Capacities and source fields are documented in planning/STRUCTURED_NAMES_GUIDE.md. Do not silently split, normalize or compose names.

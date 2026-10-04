@@ -40,7 +40,7 @@ Public Function TestPromotionStatus() As String
         id = SaveStatus(0, CStr(kind), "REGULAR")
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id) = "REGULAR", "Status lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 68, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Incomplete snapshot"
         Call CommitDraft(id, CStr(kind), "Status", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id) = "REGULAR", "Omitted status changed report"
         copy = DuplicateDraft(id): Check Stored(copy) = "REGULAR", "Duplicate lost status"

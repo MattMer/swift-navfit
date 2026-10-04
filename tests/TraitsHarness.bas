@@ -48,7 +48,7 @@ Public Function TestTraits() As String
         id = SaveTraits(0, CStr(kind), values)
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "Trait33") = "NOB" And IsNull(Stored(id, "Trait39")), "NOB and blank collapsed"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 68, "Trait snapshot incomplete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Trait snapshot incomplete"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Notes", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "Trait34") = "1.0", "Omitted traits changed report"
         copy = DuplicateDraft(id)
