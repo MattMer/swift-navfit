@@ -23,13 +23,13 @@ Private Function DigitsOnly(ByVal text As String) As Boolean
         If ch < "0" Or ch > "9" Then DigitsOnly = False: Exit Function
     Next
 End Function
-Private Function ValidReportedDate(ByVal text As String) As Boolean
+Public Function IsValidIsoDate(ByVal text As String) As Boolean
     Dim d As Date
     On Error GoTo Invalid
     If Len(text) <> 10 Or Mid$(text, 5, 1) <> "-" Or Mid$(text, 8, 1) <> "-" Then Exit Function
     If Not DigitsOnly(Left$(text, 4) & Mid$(text, 6, 2) & Right$(text, 2)) Then Exit Function
     d = DateSerial(CLng(Left$(text, 4)), CLng(Mid$(text, 6, 2)), CLng(Right$(text, 2)))
-    ValidReportedDate = (Format$(d, "yyyy-mm-dd") = text)
+    IsValidIsoDate = (Format$(d, "yyyy-mm-dd") = text)
 Invalid:
 End Function
 Public Function ValidateMemberDetails(ByVal values As Variant) As Variant
@@ -49,7 +49,7 @@ Public Function ValidateMemberDetails(ByVal values As Variant) As Variant
                 Next
                 If Not allowed Then Err.Raise vbObjectError + 2603, , "Choose Yes, No or blank for each component selection."
             ElseIf Len(values(i)) > 0 Then
-                If Not ValidReportedDate(CStr(values(i))) Then Err.Raise vbObjectError + 2604, , "Date reported must be a real date in yyyy-mm-dd format, or blank."
+                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2604, , "Date reported must be a real date in yyyy-mm-dd format, or blank."
             End If
         End If
     Next

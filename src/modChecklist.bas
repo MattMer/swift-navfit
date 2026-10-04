@@ -48,6 +48,9 @@ Public Function RefreshDraftChecklist() As Boolean
         End If
     Next
     If Not HasContent(r!PromotionStatus) Then Finding "PromotionStatus", "Missing input", "Review promotion status. Presence only; eligibility is not assessed.": missing = missing + 1
+    For Each key In ServiceDetailsKeys()
+        If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & ServiceDetailsLabel(key) & ". Presence only; policy is not assessed.": missing = missing + 1
+    Next
     For Each key In MemberDetailsKeys()
         If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & MemberDetailsLabel(key) & ". Presence only; policy is not assessed.": missing = missing + 1
     Next
@@ -104,6 +107,8 @@ Public Function ChecklistGuidance() As Boolean
         Case Else
             If IsTraitKey(key) Then
                 guidance = "Use the form-specific trait section in the editor. Select a mark or leave it blank, then Save draft. Select a trait to read the NAVFIT reference descriptions. Recommendations, averages and observation rules are not yet validated."
+            ElseIf Len(ServiceDetailsLabel(key)) > 0 Then
+                guidance = "Open Counseling, readiness and billet in the editor, apply pending values, then Save draft. Suggestions are reference vocabulary; eligibility and Navy policy are not validated."
             ElseIf Len(MemberDetailsLabel(key)) > 0 Then
                 guidance = "Open Member details, apply pending values, then Save draft. Identifiers retain leading zeros; component combinations and date applicability are not policy-validated."
             ElseIf Len(ReportContextLabel(key)) > 0 Then

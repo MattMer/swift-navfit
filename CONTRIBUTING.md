@@ -52,3 +52,7 @@ Publish only a verified blank distribution. Check all user-data tables are empty
 No open-source license has been selected. The repository is private; coordinate permitted use and redistribution with the owner.
 
 The curated src/trait-catalogue.json is embedded by scripts/write-trait-catalogue.ps1. Preserve its source version/hash and exact text; test-traits.ps1 verifies 169 catalogue values. Descriptions are reference guidance; they do not implement Navy validation.
+
+## Counseling, readiness and billet checks
+
+Run scripts/test-service-details.ps1 with -BuildPath pointing to the freshly built database. src/service-reference.json contains curated suggestions from the local NAVFIT reference database; changes require source attribution and reference fidelity checks. Suggestions are not policy rules.

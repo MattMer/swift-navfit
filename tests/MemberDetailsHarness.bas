@@ -41,7 +41,7 @@ Public Function TestMemberDetails() As String
     Call ConfigureWorkspace("Member tests", "Synthetic reviewer"): keys = MemberDetailsKeys()
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveMember(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 43, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 49, "Incomplete snapshot"
         Check Stored(id, "MemberSSN") = "000123456" And Stored(id, "MemberDoDID") = "0001234567", "Leading zeros lost"
         Check Stored(id, "ComponentActive") = "Yes" And Stored(id, "ComponentTAR") = "No" And IsNull(Stored(id, "ComponentATADSW")), "Component states collapsed"
         Check Stored(id, "DateReported") = "2024-02-29", "Leap date changed"

@@ -41,7 +41,7 @@ Public Function TestReportingSenior() As String
         values = Array("O'NEIL, A", "CAPT", "00110", "COMMANDER", "00001")
         id = SaveSenior(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "ReportingSeniorName") = values(0) And Stored(id, "ReportingSeniorUIC") = "00001", "Text/zeros lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 43, "Snapshot incomplete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 49, "Snapshot incomplete"
         Call CommitDraft(id, CStr(kind), "Senior", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted senior changed history"
         copy = DuplicateDraft(id): Check Stored(copy, "ReportingSeniorName") = values(0), "Duplicate lost senior"

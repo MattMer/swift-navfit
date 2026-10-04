@@ -1,3 +1,9 @@
+# Current delivery - counseling, readiness and billet
+
+Swift NAVFIT 0.17.0-prototype, schema 16, output/Swift_NAVFIT_0.17.0-service-details.accdb. Adds counseling date/name, readiness summary/detail/date and billet subcategory. Apply checkpoints pending values; Save draft commits all 49 fields atomically. Editable reference suggestions do not enforce Navy policy. See SERVICE_DETAILS_GUIDE.md.
+
+Verification: 1158 behavioral assertions, 218 reference checks and all 2472 retained import values passed. Schema 15-to-16, 16-to-16 and 5-to-16 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty. Runtime/x86, comprehensive visual inspection and full interchange remain pending.
+
 # Current delivery - three member-detail features
 
 Swift NAVFIT 0.16.0-prototype, schema 15, output/Swift_NAVFIT_0.16.0-member-details.accdb. Adds SSN/DoD ID text entry, four Yes/No/blank component selections and canonical date reported in one details panel. Apply checkpoints pending values; Cancel preserves the editor. Save draft commits all 43 fields atomically. Incomplete identifiers/blanks remain saveable; official identity/component/date policy and external mapping remain pending. See MEMBER_DETAILS_GUIDE.md.
