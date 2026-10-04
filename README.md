@@ -8,6 +8,8 @@ See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups,
 
 ## UI redesign under review
 
+See [current state and remaining work](planning/CURRENT_STATE.md) for the latest native UX checkpoint and verification limits.
+
 The working source is 0.22.0-ux-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; it has not replaced the distributed 0.21.0 file. Visual, keyboard, screen-reader and scaling acceptance remain pending.
 
 Build reviewable native previews with `scripts/build-preview.ps1`. They include synthetic reports, groups, review work, reporting seniors/RSCA and recovery examples. Each preview has a unique `UI_Demo` filename and a visibly synthetic command name. Demo seeding refuses any populated workspace. Use `scripts/build.ps1` for separate blank templates and release verification; never migrate operational data into a seeded demo.

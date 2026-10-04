@@ -1,5 +1,7 @@
 # Working source - UI redesign preview
 
+Updated 2026-10-04: see [current-state notes](CURRENT_STATE.md). Latest review build: `Swift_NAVFIT_UI_Demo_2026-10-04-r13.accdb`, with condensed sections and visible summary-group report counts. Latest targeted verification: 108 surface/workspace assertions, 33 populated-demo assertions and both startup paths. Native visual/DPI/accessibility acceptance remains pending.
+
 Preview builds for user review now use `scripts/build-preview.ps1` and contain
 synthetic data. Blank templates remain available through `scripts/build.ps1`.
 The native rebuild replaces editor field pagination with complete sections in
