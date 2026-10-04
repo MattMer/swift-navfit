@@ -26,7 +26,7 @@ Public Function InsertNarrativeSnippet(ByVal snippetID As Long) As Boolean
     text = Nz(Forms!frmEditor!txtOfficialComments, "")
     If Len(text) > 0 Then text = text & vbCrLf
     Forms!frmEditor!txtOfficialComments = text & r!SnippetBody
-    r.Close: Call RefreshNarrativeLabel(): Call CheckpointEditor()
+    r.Close: Call RefreshNarrativeLabel(): Call CheckpointEditor(): Call UXRefreshEditor()
     Forms!frmEditor.SetFocus: InsertNarrativeSnippet = True
 End Function
 Public Function LoadSnippets() As Boolean

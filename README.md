@@ -10,7 +10,11 @@ See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups,
 
 The working source is 0.22.0-ux-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; it has not replaced the distributed 0.21.0 file. Visual, keyboard, screen-reader and scaling acceptance remain pending.
 
-Build the native preview with `scripts/build.ps1`. Transfer an existing workspace into a separate blank preview using `scripts/upgrade-workspace.ps1`; the source remains unchanged. Schema 21 adds four directory/baseline tables while retaining all 78 report fields.
+Build reviewable native previews with `scripts/build-preview.ps1`. They include synthetic reports, groups, review work, reporting seniors/RSCA and recovery examples. Each preview has a unique `UI_Demo` filename and a visibly synthetic command name. Demo seeding refuses any populated workspace. Use `scripts/build.ps1` for separate blank templates and release verification; never migrate operational data into a seeded demo.
+
+Transfer an existing workspace into a separate **blank** template using `scripts/upgrade-workspace.ps1`; the source remains unchanged. Schema 21 adds four directory/baseline tables while retaining all 78 report fields. The native redesign remains under review and has not been established as visually equivalent to the browser prototype.
+
+See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic examples and journeys to try.
 
 ## Current features
 

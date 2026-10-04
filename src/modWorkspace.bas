@@ -88,18 +88,31 @@ Public Function RefreshFolders() As Boolean
 End Function
 
 Public Function RefreshLibrary() As Boolean
-    Dim f As Form, sql As String, term As String, folderID As Long, state As String
+    Dim f As Form, sql As String, term As String, folderID As Long, state As String, selection As Long, filter As String
     Set f = Forms!frmLibrary
+    selection = Nz(f!lstReports, 0)
     sql = "SELECT " & LibraryViewSelect() & " FROM Report WHERE 1=1"
     folderID = Nz(f!lstFolders, 0): state = Nz(f!cboArchive, "Active")
     If folderID = -1 Then sql = sql & " AND FolderID IS NULL"
     If folderID > 0 Then sql = sql & " AND FolderID=" & folderID
     If state = "Active" Then sql = sql & " AND IsArchived=False"
     If state = "Archived" Then sql = sql & " AND IsArchived=True"
+    If UXHasControl(f, "uxTypeFilter") Then
+        filter = Nz(f!uxTypeFilter, "All")
+        If filter <> "All" Then sql = sql & " AND FormKind=" & QuoteSQL(filter)
+        filter = Nz(f!uxStatusFilter, "All")
+        If filter <> "All" Then sql = sql & " AND UXReportState(ReportID)=" & QuoteSQL(filter)
+    End If
     term = Replace(Trim$(Nz(f!txtSearch, "")), "'", "''")
-    If Len(term) > 0 Then sql = sql & " AND (InStr(1,Nz([Title],''),'" & term & "',1)>0 OR InStr(1,Nz([MemberName],''),'" & term & "',1)>0)"
+    If Len(term) > 0 Then sql = sql & " AND (InStr(1,Nz([Title],''),'" & term & "',1)>0 OR InStr(1,Nz([MemberName],''),'" & term & "',1)>0 OR InStr(1,Nz([OfficialName],''),'" & term & "',1)>0)"
     f!lstReports.RowSource = sql & " ORDER BY ModifiedAt DESC, ReportID DESC"
     f!lstReports.Requery
+    If selection > 0 Then
+        Dim i As Long
+        For i = 1 To f!lstReports.ListCount - 1
+            If Nz(f!lstReports.Column(0, i), 0) = selection Then f!lstReports = selection: Exit For
+        Next
+    End If
     Dim shown As Long
     shown = f!lstReports.ListCount - 1
     If shown < 0 Then shown = 0

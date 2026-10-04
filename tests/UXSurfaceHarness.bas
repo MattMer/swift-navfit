@@ -1,0 +1,91 @@
+Attribute VB_Name = "UXSurfaceHarness"
+Option Compare Binary
+Option Explicit
+Private count As Long
+Private Sub Check(ByVal value As Boolean, ByVal message As String)
+    If Not value Then Err.Raise vbObjectError + 5200, , message
+    count = count + 1
+End Sub
+Public Function TestUXSurface() As String
+    Dim id As Long, f As Access.Form, s As Access.Form, revision As Long, changes As Object, key As Variant, kind As Variant, section As Long, stage As String, snapshot As Long, groupID As Long
+    On Error GoTo Failed
+    ConfigureWorkspace "SYNTHETIC SURFACE TEST", "Surface tester"
+    id = CommitDraft(0, "EVAL", "Surface title", "Surface member", #1/1/2026#, #9/30/2026#, "Saved notes", "Test", "Saved comments")
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add "MemberDoDID", "1234567890": changes.Add "ReportingSeniorDoDID", "0987654321"
+    Call CommitSavedFields(id, CurrentRevision(id), changes, "Legacy identifiers retained")
+    stage = "editor load": DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
+    Check UXSurfaceAvailable(), "Native section surface unavailable"
+    Check s!txtOfficialName.Visible And Not f!txtOfficialName.Visible, "Editor did not use native section surface"
+    Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
+    revision = CurrentRevision(id)
+    stage = "section switching": f!txtMemberFirstName = "Separate first name"
+    For section = 0 To 7
+        Check UXSelectSection(section), "Section failed to open"
+        Check f!txtMemberFirstName = "Separate first name", "Section switch lost pending name parts"
+        Check CurrentRevision(id) = revision, "Section switch saved a revision"
+    Next
+    Call UXSelectSection(0)
+    Check s!txtMemberFirstName = "Separate first name", "Visible field did not reflect pending buffer"
+    Check IsNull(f!txtOfficialName), "Changing name parts overwrote official full name"
+    stage = "active text": f!uxFieldSurface.SetFocus: s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "SURFACE TESTER"
+    Check EditorHasPending(), "Active surface text not detected as pending"
+    Check CheckpointEditor(), "Active surface text checkpoint failed"
+    Check DLookup("OfficialName", "RecoveryDraft", "ReportID=" & id) = "SURFACE TESTER", "Checkpoint lost active surface text"
+    Check CurrentRevision(id) = revision, "Checkpoint saved report revision"
+    Call UXSelectSection(2)
+    Check f!txtOfficialName = "SURFACE TESTER", "Leaving section lost active text"
+    stage = "checkboxes": Call UXSelectSection(0): s!txtOccasionPeriodic = True
+    Check UXSurfaceEdited("OccasionPeriodic"), "Checkbox bridge failed"
+    Check f!txtOccasionPeriodic = "Yes", "Checkbox did not map to saved flag"
+    s!cboObservationStatus = False: Call UXSurfaceEdited("ObservationStatus")
+    Check f!cboObservationStatus = "Observed", "Unchecked NOB did not map to observed"
+    s!cboObservationStatus = Null: Call UXSurfaceEdited("ObservationStatus")
+    Check IsNull(f!cboObservationStatus), "Indeterminate NOB became an explicit value"
+    stage = "inline validation": f!txtMemberSSN = "123": UXSurfaceRefresh
+    Check Not UXSaveEditor(), "Invalid SSN saved"
+    Check CurrentRevision(id) = revision And f!txtMemberSSN = "123", "Failed save lost pending values or changed revision"
+    Check f!uxErrorList.Visible And InStr(s!errMemberSSN.Caption, "9 digits") > 0, "Inline and summary errors missing"
+    f!uxErrorList = "MemberSSN": Check UXSurfaceErrorSelected(), "Error summary did not open field"
+    Check s!txtMemberSSN.Visible, "Error target remains hidden"
+    f!cmdClose.SetFocus: f!txtMemberSSN = "000000099": UXSurfaceRefresh
+    stage = "save": Check UXSaveEditor(), "Valid surface draft save failed"
+    Check CurrentRevision(id) <> revision, "Save did not append revision"
+    Check Not EditorHasPending(), "Saved surface remains dirty"
+    Check DCount("*", "RevisionValue", "RevisionID=" & CurrentRevision(id)) = 78, "Surface save lost snapshot fields"
+    Check DLookup("MemberDoDID", "Report", "ReportID=" & id) = "1234567890", "Hidden member identifier lost"
+    Check DLookup("ReportingSeniorDoDID", "Report", "ReportID=" & id) = "0987654321", "Hidden reporting senior identifier lost"
+    Call UXSelectSection(5): Check s!txtOfficialComments.Visible And s!txtOfficialComments.Height >= 2000, "Narrative lacks spacious editor"
+    Call UXSelectSection(4): Check s!uxTraitGuidance.Visible And s!uxTraitGuidance.Locked, "Trait guidance unavailable or editable"
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+    stage = "captions": For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
+        Check InStr(UXFieldCaption("OfficialComments", CStr(kind)), IIf(kind = "EVAL", "43.", IIf(kind = "CHIEFEVAL", "40.", "41."))) = 1, "Comments block caption incorrect"
+        Check UXFieldCaption("Trait33", CStr(kind)) Like "33. *", "Trait block caption missing"
+    Next
+    stage = "dashboard": DoCmd.OpenForm "frmHome": Check UXDashboardRefresh(), "Dashboard failed to load"
+    Check Forms!frmHome!uxRecentReports.ListCount >= 2, "Recent reports list empty"
+    Check CLng(Forms!frmHome!uxReportCount.Caption) = 1, "Dashboard active report count incorrect"
+    stage = "filters": DoCmd.OpenForm "frmLibrary"
+    Forms!frmLibrary!uxTypeFilter = "FITREP": RefreshLibrary
+    Check Forms!frmLibrary!lstReports.ListCount <= 1, "Type filter included another report type"
+    Check UXClearReportFilters(), "Clear filters failed"
+    Forms!frmLibrary!lstReports = id: RefreshLibrary
+    Check Forms!frmLibrary!lstReports = id, "Refresh lost selected report"
+    stage = "group workspace": groupID = CreateSummaryGroup("Surface group", "EVAL", "E5")
+    AddGroupMember groupID, id, "E5"
+    DoCmd.OpenForm "frmUXGroups": Forms!frmUXGroups!lstGroups = groupID
+    Check UXOpenGroup(), "Group list did not open focused workspace"
+    Check Not Forms!frmMajorWorkbench!cboGroup.Visible, "Group workspace still asks users to select a second group"
+    Check InStr(Forms!frmMajorWorkbench!uxGroupTitle.Caption, "Surface group") > 0, "Group title missing"
+    Check UXWorkbenchMode("Review") And Forms!frmMajorWorkbench!uxOpenGroupReport.Visible, "Group review lacks report entry point"
+    Check UXWorkbenchMode("Comparison") And Forms!frmMajorWorkbench!uxComparison.Visible, "Group comparison unavailable"
+    stage = "my work": DoCmd.OpenForm "frmMyWork"
+    Check Forms!frmMyWork!lstTasks.Visible And Not Forms!frmMyWork!cboContributor.Visible, "My Work default mixes contributors and tasks"
+    Check UXMyWorkMode("Assign"), "Assignment workspace unavailable"
+    Forms!frmMyWork!uxAssignReport = id: Check UXChooseAssignmentReport(), "Named report selection failed"
+    Check Forms!frmMyWork!txtExpectedRevision = CurrentRevision(id), "Assignment did not capture saved revision"
+    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!cboContributor.Visible And Not Forms!frmMyWork!lstTasks.Visible, "Contributor workspace not focused"
+    TestUXSurface = "PASS: " & count & " native surface, buffer, validation, captions and dashboard assertions": Exit Function
+Failed:
+    TestUXSurface = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
+End Function

@@ -1,6 +1,6 @@
 # Swift NAVFIT redesign — prototype review
 
-The native Access application remains version 0.21.0, schema 20. This first clickable design prototype is a separate artifact containing synthetic data. It does not connect to Access, read source files, certify Navy policy, or implement a replacement web application.
+The distributed Access application remains version 0.21.0, schema 20. Native redesign development is version 0.22.0-ux-preview, schema 21. The clickable design prototype remains a separate artifact containing synthetic data. It does not connect to Access, read source files, certify Navy policy, or implement a replacement web application. Native user-review builds now include their own synthetic examples through `scripts/build-preview.ps1`; they do not share browser storage.
 
 ## Open the prototype
 

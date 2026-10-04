@@ -1,5 +1,51 @@
 # Native layout checkpoint - 2026-10-04
 
+## Latest checkpoint: native workspace rebuild with synthetic demo
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r4.accdb` for the latest user
+preview. It contains nine reports, three groups, two contributor profiles, one
+reporting senior with three RSCA baselines, and review/approval/archive/NOB/
+recovery examples. First-run setup is already complete. Demo SHA256:
+`06BF3D9EC4E6DF008159F6C301998D169BD28008E377A1E28B546E3BFE95F124`.
+
+The blank verified source is `build/ux-candidate21.accdb`. Core changes:
+- Complete official editor sections replace six-field pagination. An unbound
+  child surface scrolls independently while the parent header, navigation and
+  save area remain present. The original 78-field buffer/services are retained.
+- Visible fields bridge to the buffer; active text is included in checkpoints
+  and saves. Section navigation preserves pending values without revisions.
+- Field labels follow the form type, including comments blocks 43/40/41.
+  Checkbox selections map to the existing Yes/No/null and NOB storage values.
+- Inline input errors and a selectable summary retain pending values and open
+  the relevant section. Incomplete drafts remain supported.
+- Overview uses real metrics and recent reports. Reports gains type/status
+  filters, official-name search and restored selection after refresh.
+- Group lists open a focused workspace with member, average and PSG context.
+  Comparison separates trait editing and staged-proposal preview.
+- My Work separates assigned work, assigning a saved report, and contributors.
+- `build-preview.ps1` creates seeded previews and runs pre/post-seed checks;
+  `build.ps1` remains the separate blank-template builder.
+
+Verified on candidate21 and the finished demo's scratch copies: all 24 existing
+regression suites, 73 new native surface/workspace assertions, 38 reporting
+senior/RSCA/comparison assertions, 32 populated-demo assertions, six workbench
+UI assertions, 425 main-form bounds checks and 76 additional bounds checks.
+Source hashes remain unchanged by preview generation and scratch testing.
+
+The first section surface exposed Access's focused-control visibility rule;
+switching now moves to a permanent focus anchor before hiding child fields.
+The VBA variable `tab` was also renamed to avoid a reserved identifier. These
+failures reinforced the need for execution checks rather than compile-command
+success alone. Old detail-dialog layout tests now check overlap only when their
+legacy entry button is actually visible; their data/recovery tests remain.
+
+Visual parity, DPI/collapse, native keyboard/screen-reader acceptance, remaining
+review/import/bulk screen refinement and native close-window dirty guards are
+still pending. This is an intermediate preview, not a published replacement.
+See [demo guide](UX_DEMO_BUILD_GUIDE.md).
+
+## Previous checkpoint: candidate13
+
 The user correctly identified that candidate9 did not resemble the reviewed
 browser prototype. It was a partial functional adapter, not a faithful native UI.
 Do not describe it as the implemented redesign.

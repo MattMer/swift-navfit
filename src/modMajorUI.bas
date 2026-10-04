@@ -17,10 +17,11 @@ Public Function LoadMajorWorkbench() As Boolean
     For Each key In DraftFieldKeys()
         If key <> "FormKind" Then
             If Len(keys) > 0 Then keys = keys & ";"
-            keys = keys & key
+            keys = keys & key & ";" & Replace(UXFieldLabel(CStr(key)), ";", ",")
         End If
     Next
     f!cboField.RowSource = keys
+    f!cboField.ColumnCount = 2: f!cboField.ColumnWidths = "0;3000"
     LoadMajorWorkbench = True
 End Function
 Public Function ShowMajorDetails() As Boolean

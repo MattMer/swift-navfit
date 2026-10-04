@@ -60,8 +60,14 @@ Public Function PrepareTimerCheck() As Boolean
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.SetFocus
     If UXHasControl(Forms!frmEditor, "uxSection") Then Call UXSelectSection(7)
-    Forms!frmEditor!txtTitle.SetFocus
-    Forms!frmEditor!txtTitle.Text = "Timer captured active text"
+    If UXSurfaceAvailable() Then
+        Forms!frmEditor!uxFieldSurface.SetFocus
+        Forms!frmEditor!uxFieldSurface.Form!txtTitle.SetFocus
+        Forms!frmEditor!uxFieldSurface.Form!txtTitle.Text = "Timer captured active text"
+    Else
+        Forms!frmEditor!txtTitle.SetFocus
+        Forms!frmEditor!txtTitle.Text = "Timer captured active text"
+    End If
     Forms!frmEditor.TimerInterval = 100
     PrepareTimerCheck = True
 End Function

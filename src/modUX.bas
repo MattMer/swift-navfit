@@ -80,6 +80,21 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     If UXHasControl(f, "cmdClose") Then f!cmdClose.SetFocus
     currentSection = section: currentPage = page: id = Nz(f!txtReportID, 0)
     locked = Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & id), False) Or Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & id), "Draft") <> "Draft"
+    If UXSurfaceAvailable() Then
+        For Each c In f.Controls
+            If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = section)
+            If c.Name Like "uxSection#" Then
+                c.BackColor = IIf(c.Name = "uxSection" & section, 16445671, 16777215)
+                c.FontBold = (c.Name = "uxSection" & section)
+            End If
+        Next
+        f!uxSection.Caption = UXSectionName(section)
+        f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
+        If locked Then f!uxLocked.Caption = "Read only. Recover archived reports or reopen local approval to edit." Else f!uxLocked.Caption = ""
+        If Not UXSurfaceSection(section, locked) Then Exit Function
+        UXRefreshEditor
+        UXSelectSection = True: Exit Function
+    End If
     For Each c In f.Controls
         If Left$(c.Tag, 3) = "UX:" Then
             tags = Split(c.Tag, ":")
@@ -97,6 +112,10 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     UXRefreshEditor
     UXSelectSection = True
 End Function
+Public Function UXEditorKindChanged() As Boolean
+    Call EditorTypeChanged()
+    UXEditorKindChanged = UXSelectSection(currentSection)
+End Function
 Public Function UXEditorPage(ByVal delta As Long) As Boolean
     UXEditorPage = UXSelectSection(currentSection, currentPage + delta)
 End Function
@@ -112,11 +131,13 @@ Public Function UXFieldChanged(ByVal controlName As String, ByVal key As String)
     UXRefreshEditor: UXFieldChanged = True
 End Function
 Public Function UXRefreshEditor() As Boolean
-    Dim f As Access.Form, id As Long, r As DAO.Recordset, db As DAO.Database, groups As Long, groupID As Long, total As Double, count As Long, average As Variant, c As Access.Control, key As String, raw As Variant
+    Dim f As Access.Form, id As Long, r As DAO.Recordset, db As DAO.Database, groups As Long, groupID As Long, total As Double, count As Long, average As Variant, c As Access.Control, key As String, raw As Variant, memberLabel As String
     Set f = Forms!frmEditor
     If Not UXHasControl(f, "uxDirty") Then Exit Function
     f!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes")
-    f!uxReport.Caption = Nz(f!txtMember, "Unnamed member") & " | " & Nz(f!cboKind, "") & " | " & Nz(f!txtStart, "Start date") & " to " & Nz(f!txtEnd, "End date")
+    memberLabel = Nz(f!txtMember, "")
+    If Len(Trim$(memberLabel)) = 0 Then memberLabel = Nz(f!txtOfficialName, "Unnamed member")
+    f!uxReport.Caption = memberLabel & vbCrLf & Nz(f!cboKind, "") & " | " & Nz(f!txtRankRate, "Grade / rate") & " | " & Nz(f!txtStart, "Start date") & " to " & Nz(f!txtEnd, "End date")
     f!uxITA.Caption = "ITA - pending: " & TraitSummary(TraitsFromEditor())
     If Nz(f!cboObservationStatus, "") = "NOB" Then f!uxITA.Caption = "ITA - pending: NOB (whole report)"
     id = Nz(f!txtReportID, 0): Set db = CurrentDb
@@ -151,6 +172,7 @@ Public Function UXRefreshEditor() As Boolean
             If IsNull(raw) Or Len(Nz(raw, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (raw = "NOB") Else c.Value = (raw = "Yes")
         End If
     Next
+    If UXSurfaceAvailable() Then UXSurfaceRefresh
     UXRefreshEditor = True
 End Function
 Public Function UXShowSaveError(ByVal message As String) As Boolean
@@ -164,6 +186,9 @@ Public Function UXSaveEditor() As Boolean
     Dim f As Access.Form
     Set f = Forms!frmEditor
     f!uxError.Caption = ""
+    If UXSurfaceAvailable() Then
+        If Not UXSurfaceCheckAll() Then Exit Function
+    End If
     UXSaveEditor = SaveEditor()
     UXRefreshEditor
 End Function
@@ -192,6 +217,7 @@ Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
         f!lstReports.RowSource = "SELECT r.ReportID,r.Title,r.MemberName,r.FormKind FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!cboGroup & " ORDER BY r.MemberName"
         f!lstReports.Requery
     End If
+    UXFocusedGroupMode mode
     UXWorkbenchMode = True
 End Function
 Public Function UXChooseMembers() As Boolean
@@ -257,6 +283,7 @@ Public Function UXLoadComparison() As Boolean
     f!lstTraits.RowSource = sql: f!lstTraits.Requery
     f!lstProposals.RowSource = "SELECT p.ProposalID,r.MemberName,UXFieldLabel(p.FieldKey),p.ValueText,p.ProposalState FROM MeetingProposal AS p INNER JOIN Report AS r ON p.ReportID=r.ReportID WHERE p.SetID=" & f!txtMeeting & " ORDER BY p.ProposalID DESC"
     f!lstProposals.Requery
+    If UXHasControl(f, "uxMarksPage") Then UXComparisonPage "Marks"
     UXLoadComparison = True
 End Function
 Public Function UXSelectComparisonMember() As Boolean
@@ -294,6 +321,7 @@ Public Function UXStageComparison() As Boolean
     w.CommitTrans: started = False
     UXLoadComparison
     f!lblStatus.Caption = count & " proposals staged. Saved reports are unchanged. Select one proposal per field below, then Apply."
+    If UXHasControl(f, "uxPreviewPage") And count > 0 Then UXComparisonPage "Preview"
     UXStageComparison = True: Exit Function
 Failed:
     If started Then w.Rollback

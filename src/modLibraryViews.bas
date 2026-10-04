@@ -23,7 +23,7 @@ Public Function LibraryViewSelect() As String
                 LibraryViewSelect = "ReportID,FormKind,Title,MemberName,ModifiedAt,CurrentRevisionID"
             Case Else
                 .ColumnCount = 6: .ColumnWidths = "0;1300;2900;2700;1300;800"
-                LibraryViewSelect = "ReportID,FormKind,Title,MemberName,WorkflowState,IsArchived"
+                LibraryViewSelect = "ReportID,FormKind,Title,UXMemberLabel(ReportID) AS Member,UXReportState(ReportID) AS [Local status],IsArchived"
         End Select
     End With
     Forms!frmLibrary!cboView = preset

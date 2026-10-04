@@ -20,6 +20,7 @@ Private Function PendingValue(ByVal control As Control) As Variant
     On Error Resume Next
     If Screen.ActiveControl.Name = control.Name And Screen.ActiveForm.Name = "frmEditor" Then value = control.Text
     On Error GoTo 0
+    value = UXSurfacePending(control.Name, value)
     If VarType(value) = vbDate Then value = Format$(value, "yyyy-mm-dd")
     PendingValue = value
 End Function
@@ -127,7 +128,7 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
     For i = 0 To 77: Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
     Forms!frmEditor!lblSaved.Caption = "Recovered pending edits. Use Save draft to commit."
     Forms!frmEditor!lblRecovery.Caption = "Recovered checkpoint " & r!CheckpointAt
-    r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel()
+    r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel(): Call UXRefreshEditor()
     Forms!frmEditor.SetFocus: RestoreRecoveryDraft = True
 End Function
 Public Function RecoverSelectedUI(Optional ByVal asNewDraft As Boolean = False) As Boolean

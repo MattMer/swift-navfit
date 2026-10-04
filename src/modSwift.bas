@@ -312,6 +312,7 @@ Public Function LoadHome() As Boolean
     Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
     Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
     Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
+    UXDashboardRefresh
     LoadHome = True
 End Function
 
@@ -379,6 +380,7 @@ Public Function SaveEditor() As Boolean
     Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean
     On Error GoTo Failed
     Set f = Forms!frmEditor
+    UXFlushSurface
     Call GuardEditorBaseline()
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor())

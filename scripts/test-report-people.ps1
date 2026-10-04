@@ -15,7 +15,7 @@ try {
     $editor=$app.Forms.Item('frmEditor')
     $button=$editor.Controls.Item('cmdReportPeople')
     foreach($control in $editor.Controls){
-        if($control.Visible -and $control.Name -ne $button.Name){
+        if($button.Visible -and $control.Visible -and $control.ControlType -ne 101 -and $control.Name -ne $button.Name){
             if($button.Left -lt ($control.Left+$control.Width) -and ($button.Left+$button.Width) -gt $control.Left -and $button.Top -lt ($control.Top+$control.Height) -and ($button.Top+$button.Height) -gt $control.Top){throw ('New button overlaps '+$control.Name)}
         }
     }

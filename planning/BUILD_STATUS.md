@@ -1,5 +1,14 @@
 # Working source - UI redesign preview
 
+Preview builds for user review now use `scripts/build-preview.ps1` and contain
+synthetic data. Blank templates remain available through `scripts/build.ps1`.
+The native rebuild replaces editor field pagination with complete sections in
+an independently scrolling surface, retains the original unbound buffer, adds
+inline validation/error navigation, and focuses Overview and group workspaces.
+The demo includes nine reports, three groups, two contributors, a reporting
+senior and three RSCA baselines, plus NOB, approval, archive, stale-review and
+recovery examples. Visual equivalence and native accessibility remain pending.
+
 0.22.0-ux-preview, schema 21. Includes the clickable design prototype and a native section/editor rebuild under review, plus reusable reporting seniors, rank-specific RSCA baselines and summary-group PSG calculations. Comparison baselines are automatic; the manual freeze action is removed from the new UI. See [UX review and verification checkpoint](UX_REDESIGN_REVIEW.md). The redesign has not been published as a replacement for 0.21.0; native visual, keyboard, screen-reader and scaling acceptance remain pending.
 
 # Current delivery — major foundations checkpoint
