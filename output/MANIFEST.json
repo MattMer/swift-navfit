@@ -1,9 +1,9 @@
 {
-  "AppVersion": "0.15.0-prototype",
+  "AppVersion": "0.16.0-prototype",
   "RevisionComparisonAssertions": 22,
   "DirectReviewChecks": 12,
   "SmokeChecks": 46,
-  "Migrations": "Schema 13 to 14, 14 to 14 and 5 to 14; exact row/field comparison; source unchanged; reopen",
+  "Migrations": "Schema 14 to 15, 15 to 15 and 5 to 15; exact row/field comparison; source unchanged; reopen",
   "ProvenanceAssertions": 24,
   "Runtime": "Untested",
   "NAVFITCompatibility": "Narrative-only import/reconciliation; manual administration, traits, assessment and report context; export unavailable",
@@ -14,11 +14,11 @@
   "BlankUserDataVerified": true,
   "AdministrationAssertions": 53,
   "BlankUserDataTables": 20,
-  "SwiftSchemaVersion": 14,
-  "TotalAssertions": 881,
+  "SwiftSchemaVersion": 15,
+  "TotalAssertions": 1006,
   "RoutingAssertions": 38,
-  "SHA256": "F8715403D365EA38C71BECDD9D4B378791EED7170D6C18BB5E767C576135914B",
-  "Artifact": "Swift_NAVFIT_0.15.0-report-context.accdb",
+  "SHA256": "AA1B68D1A9FDC890EE294C4FC17F6486C1895ADFA53AD9207016FC2FDF0C03F5",
+  "Artifact": "Swift_NAVFIT_0.16.0-member-details.accdb",
   "ReviewCommentAssertions": 28,
   "TraitAssertions": 75,
   "CatalogueChecks": 169,
@@ -26,5 +26,6 @@
   "AssessmentAssertions": 70,
   "PromotionStatusAssertions": 66,
   "ReportingSeniorAssertions": 81,
-  "ReportContextAssertions": 195
+  "ReportContextAssertions": 195,
+  "MemberDetailsAssertions": 125
 }

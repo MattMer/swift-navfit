@@ -2,12 +2,13 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Current prototype: 0.15.0 · schema 14.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+**Current prototype: 0.16.0 · schema 15.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
 
 ## Current features
 
 - EVAL, CHIEFEVAL and FITREP drafts with administrative fields, reporting-senior details, traits/reference guidance, arithmetic summaries and official narratives; incomplete saves.
 - Explicit promotion/observation selections, report occasions and categories, primary duty and separate multiline duty descriptions.
+- Member identifiers, explicit service-component selections and date reported in a separate details panel.
 - Organizational folders, search, saved library views and bulk folder moves with guarded undo.
 - Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
 - Automatic/manual pending-editor checkpoints and recovery.
@@ -20,7 +21,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the blank `.accdb` from the [0.15.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.15.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the blank `.accdb` from the [0.16.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.16.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 
@@ -44,6 +45,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 ## Progress and guides
 
 - [Roadmap and current progress](planning/ROADMAP.md)
+- [Identifiers, components and date reported](planning/MEMBER_DETAILS_GUIDE.md)
 - [Occasions, categories and duty descriptions](planning/REPORT_CONTEXT_GUIDE.md)
 - [Reporting senior details](planning/REPORTING_SENIOR_GUIDE.md)
 - [Promotion status](planning/PROMOTION_STATUS_GUIDE.md)
@@ -60,6 +62,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 - [Architecture and implementation plan](planning/IMPLEMENTATION_PLAN.md)
 - [Current release manifest](output/MANIFEST.json)
 
-The 0.15.0 build passed 881 behavioral assertions and 169 catalogue checks, plus exact narrative-import/provenance checks. Schema-13-to-14, schema-14-to-14 and schema-5-to-14 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
+The 0.16.0 build passed 1006 behavioral assertions and 169 catalogue checks, plus exact narrative-import/provenance checks. Schema-14-to-15, schema-15-to-15 and schema-5-to-15 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.

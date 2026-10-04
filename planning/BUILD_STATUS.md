@@ -1,3 +1,9 @@
+# Current delivery - three member-detail features
+
+Swift NAVFIT 0.16.0-prototype, schema 15, output/Swift_NAVFIT_0.16.0-member-details.accdb. Adds SSN/DoD ID text entry, four Yes/No/blank component selections and canonical date reported in one details panel. Apply checkpoints pending values; Cancel preserves the editor. Save draft commits all 43 fields atomically. Incomplete identifiers/blanks remain saveable; official identity/component/date policy and external mapping remain pending. See MEMBER_DETAILS_GUIDE.md.
+
+Verification: 125 new assertions plus 881 prior assertions, 169 catalogue checks and 2472 retained import values passed. Schema 14-to-15, 15-to-15 and 5-to-15 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Full NAVFIT mapping/export, Navy validation, Runtime/x86 and comprehensive visual verification remain pending.
+
 # Current delivery - three report-context features
 
 Swift NAVFIT 0.15.0-prototype, schema 14, output/Swift_NAVFIT_0.15.0-report-context.accdb. Adds report occasions (four Yes/No/blank flags), report categories (three flags), and primary duty/multiline duty description in separate panels. Apply checkpoints only that panel; Cancel preserves the editor. Save draft commits all 36 fields atomically. No inference or combination/eligibility validation. See REPORT_CONTEXT_GUIDE.md.
