@@ -25,8 +25,8 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 13 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
-    If DLookup("SchemaVersion", "AppMetadata") <> 13 Then Err.Raise vbObjectError + 302, , "Target schema must be 13."
+    If ver < 1 Or ver > 14 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If DLookup("SchemaVersion", "AppMetadata") <> 14 Then Err.Raise vbObjectError + 302, , "Target schema must be 14."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
@@ -120,7 +120,7 @@ NextTable:
 NextCheck:
     Next
     w.CommitTrans: trans = False: s.Close: reader.Close
-    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to 13"
+    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to 14"
     Exit Function
 Failed:
     message = Err.Description

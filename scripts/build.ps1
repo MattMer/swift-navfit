@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.14.0-reporting-senior.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.15.0-report-context.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -14,7 +14,7 @@ try {
         'CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)',
         'CREATE TABLE Workspace (WorkspaceID LONG CONSTRAINT PK_Workspace PRIMARY KEY, WorkspaceGuid TEXT(38) NOT NULL, CommandName TEXT(120) NOT NULL, ActiveProfileID LONG NOT NULL)',
         'CREATE TABLE Folder (FolderID COUNTER CONSTRAINT PK_Folder PRIMARY KEY, FolderGuid TEXT(38) NOT NULL, FolderName TEXT(80) NOT NULL, ParentFolderID LONG)',
-        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3), ObservationStatus TEXT(8), PromotionRecommendation TEXT(20), PromotionStatus TEXT(8), ReportingSeniorName TEXT(18), ReportingSeniorGrade TEXT(5), ReportingSeniorDesignator TEXT(5), ReportingSeniorTitle TEXT(14), ReportingSeniorUIC TEXT(5))',
+        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3), ObservationStatus TEXT(8), PromotionRecommendation TEXT(20), PromotionStatus TEXT(8), ReportingSeniorName TEXT(18), ReportingSeniorGrade TEXT(5), ReportingSeniorDesignator TEXT(5), ReportingSeniorTitle TEXT(14), ReportingSeniorUIC TEXT(5), OccasionPeriodic TEXT(3), OccasionDetachment TEXT(3), OccasionFrocking TEXT(3), OccasionSpecial TEXT(3), ReportRegular TEXT(3), ReportConcurrent TEXT(3), ReportOperationalCommander TEXT(3), PrimaryDuty TEXT(14), DutyDescription LONGTEXT)',
         'CREATE TABLE FolderMove (FolderMoveID COUNTER CONSTRAINT PK_FolderMove PRIMARY KEY, ReportID LONG NOT NULL, OldFolderID LONG, NewFolderID LONG, AuthorProfileID LONG NOT NULL, MovedAt DATETIME)',
         'CREATE TABLE ReportRevision (RevisionID COUNTER CONSTRAINT PK_ReportRevision PRIMARY KEY, ReportID LONG NOT NULL, RevisionNumber LONG NOT NULL, ParentRevisionID LONG, AuthorProfileID LONG NOT NULL, CommittedAt DATETIME, Reason TEXT(255), SnapshotSchema LONG)',
         'CREATE TABLE RevisionValue (RevisionValueID COUNTER CONSTRAINT PK_RevisionValue PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText LONGTEXT, IsNullValue BIT)',
@@ -52,7 +52,7 @@ try {
         'CREATE TABLE ReviewTaskEvent (TaskEventID COUNTER CONSTRAINT PK_ReviewTaskEvent PRIMARY KEY, TaskID LONG NOT NULL, AuthorProfileID LONG NOT NULL, EventAt DATETIME, EventKind TEXT(20), Notes LONGTEXT)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventTask FOREIGN KEY (TaskID) REFERENCES ReviewTask (TaskID)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
-        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT, ObservationStatus LONGTEXT, PromotionRecommendation LONGTEXT, PromotionStatus LONGTEXT, ReportingSeniorName LONGTEXT, ReportingSeniorGrade LONGTEXT, ReportingSeniorDesignator LONGTEXT, ReportingSeniorTitle LONGTEXT, ReportingSeniorUIC LONGTEXT)',
+        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT, ObservationStatus LONGTEXT, PromotionRecommendation LONGTEXT, PromotionStatus LONGTEXT, ReportingSeniorName LONGTEXT, ReportingSeniorGrade LONGTEXT, ReportingSeniorDesignator LONGTEXT, ReportingSeniorTitle LONGTEXT, ReportingSeniorUIC LONGTEXT, OccasionPeriodic LONGTEXT, OccasionDetachment LONGTEXT, OccasionFrocking LONGTEXT, OccasionSpecial LONGTEXT, ReportRegular LONGTEXT, ReportConcurrent LONGTEXT, ReportOperationalCommander LONGTEXT, PrimaryDuty LONGTEXT, DutyDescription LONGTEXT)',
         'CREATE UNIQUE INDEX UX_RecoverySession ON RecoveryDraft (SessionGuid)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.14.0-prototype',13,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.15.0-prototype',14,'Unverified - NAVFIT exchange disabled')"
     )
     foreach ($sql in $definitions) { $db.Execute($sql,128) }
     for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
@@ -106,6 +106,7 @@ try {
     $navTraitModule=Join-Path $root ('build\trait-catalogue-'+[guid]::NewGuid()+'.bas')
     & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src\trait-catalogue.json') -OutputPath $navTraitModule
     $app.LoadFromText(5,'modTraitCatalogue',$navTraitModule)
+    $app.LoadFromText(5,'modReportContext',(Join-Path $root 'src\modReportContext.bas'))
     $app.LoadFromText(5,'modReportingSenior',(Join-Path $root 'src\modReportingSenior.bas'))
     $app.LoadFromText(5,'modPromotionStatus',(Join-Path $root 'src\modPromotionStatus.bas'))
     $app.LoadFromText(5,'modAssessment',(Join-Path $root 'src\modAssessment.bas'))
@@ -197,7 +198,9 @@ try {
     $f.OnLoad='=LoadLibrary()'; SaveScreen $f 'frmLibrary'
     NewScreen 'frmEditor' 'Draft editor' 31000; $f=$script:swiftForm
     $f.Width=13800
-    [void](Control $f 100 'lblScope' 400 900 12400 550 'Draft administration and form-specific narrative. Official validation, full NAVFIT mapping and printed fit remain pending.')
+    [void](Control $f 104 'cmdOccasions' 400 900 4000 500 'Report occasions' '=OpenReportContext("Occasions")')
+    [void](Control $f 104 'cmdCategories' 4700 900 4000 500 'Report categories' '=OpenReportContext("Categories")')
+    [void](Control $f 104 'cmdDuties' 9000 900 4000 500 'Duty descriptions' '=OpenReportContext("Duties")')
     Control $f 109 'txtReportID' 10 10 100 100; $hidden=$script:swiftControl; $hidden.Visible=$false
     [void](Control $f 100 'lblType' 400 1550 1600 350 'Report type')
     Control $f 111 'cboKind' 2100 1500 2900 400; $c=$script:swiftControl
@@ -272,6 +275,9 @@ try {
     foreach($seniorKey in @('ReportingSeniorName','ReportingSeniorGrade','ReportingSeniorDesignator','ReportingSeniorTitle','ReportingSeniorUIC')){
         Control $f 109 ('txt'+$seniorKey) 10 10 100 100; $script:swiftControl.Visible=$false
     }
+    foreach($contextKey in @('OccasionPeriodic','OccasionDetachment','OccasionFrocking','OccasionSpecial','ReportRegular','ReportConcurrent','ReportOperationalCommander','PrimaryDuty','DutyDescription')){
+        Control $f 109 ("txt"+$contextKey) 10 10 100 100; $script:swiftControl.Visible=$false
+    }
     $f.TimerInterval=30000; $f.OnTimer='=CheckpointEditor()'
     $f.OnLoad='=LoadEditor()'; $f.ScrollBars=2; SaveScreen $f 'frmEditor'
     NewScreen 'frmReportingSenior' 'Reporting senior' 6500; $f=$script:swiftForm
@@ -287,6 +293,30 @@ try {
     [void](Control $f 104 'cmdApply' 400 5350 5800 550 'Apply pending values and return' '=ApplyReportingSenior()')
     [void](Control $f 104 'cmdCancel' 7000 5350 6000 550 'Cancel panel changes' '=CancelReportingSenior()')
     SaveScreen $f 'frmReportingSenior'
+    $contextPanels=@(
+        @{Name='Occasions';Title='Report occasions';Keys=@('OccasionPeriodic','OccasionDetachment','OccasionFrocking','OccasionSpecial');Labels=@('Periodic','Detachment of individual','Frocking','Special')},
+        @{Name='Categories';Title='Report categories';Keys=@('ReportRegular','ReportConcurrent','ReportOperationalCommander');Labels=@('Regular report','Concurrent report','Operational commander report')},
+        @{Name='Duties';Title='Duty descriptions';Keys=@('PrimaryDuty','DutyDescription');Labels=@('Primary duty (14)','Duty description')}
+    )
+    foreach($contextPanel in $contextPanels){
+        $screen='frmContext'+$contextPanel.Name
+        NewScreen $screen $contextPanel.Title 8000; $f=$script:swiftForm; $f.PopUp=$true; $f.Modal=$true
+        [void](Control $f 100 'lblScope' 400 950 12600 650 'Apply checkpoints pending values; Save draft commits them. Cancel discards panel changes. Blank means unentered. Combinations, applicability and Navy policy are not assessed. Imports remain narrative-only.')
+        foreach($contextIndex in 0..($contextPanel.Keys.Count-1)){
+            $contextY=1850+$contextIndex*850
+            [void](Control $f 100 ('lbl'+$contextPanel.Keys[$contextIndex]) 400 ($contextY+50) 5000 400 $contextPanel.Labels[$contextIndex])
+            if($contextPanel.Name -eq 'Duties'){
+                if($contextIndex -eq 0){[void](Control $f 109 ('txt'+$contextPanel.Keys[$contextIndex]) 5500 $contextY 7500 450)}
+                else{Control $f 109 'txtDutyDescription' 400 3250 12600 3000; $c=$script:swiftControl; $c.EnterKeyBehavior=$true; $c.ScrollBars=2}
+            }else{
+                Control $f 111 ('txt'+$contextPanel.Keys[$contextIndex]) 5500 $contextY 7500 450; $c=$script:swiftControl
+                $c.RowSourceType='Value List'; $c.RowSource='Yes;No'; $c.LimitToList=$false
+            }
+        }
+        [void](Control $f 104 'cmdApply' 400 6800 5800 550 'Apply pending values and return' ('=ApplyReportContext("'+$contextPanel.Name+'")'))
+        [void](Control $f 104 'cmdCancel' 7000 6800 6000 550 'Cancel panel changes' ('=CancelReportContext("'+$contextPanel.Name+'")'))
+        SaveScreen $f $screen
+    }
     NewScreen 'frmSupport' 'Support and limitations' 7400; $f=$script:swiftForm
     Control $f 109 'txtDiagnostics' 400 1100 12600 4500; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     [void](Control $f 104 'cmdHome' 400 6150 2800 550 'Home' '=OpenScreen("frmHome")')

@@ -1,3 +1,9 @@
+# Current delivery - three report-context features
+
+Swift NAVFIT 0.15.0-prototype, schema 14, output/Swift_NAVFIT_0.15.0-report-context.accdb. Adds report occasions (four Yes/No/blank flags), report categories (three flags), and primary duty/multiline duty description in separate panels. Apply checkpoints only that panel; Cancel preserves the editor. Save draft commits all 36 fields atomically. No inference or combination/eligibility validation. See REPORT_CONTEXT_GUIDE.md.
+
+Verification: 195 new assertions plus 686 prior assertions, 169 catalogue checks and all 2472 retained import values passed. Schema 13-to-14, 14-to-14 and 5-to-14 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. An initial harness compile error (Long used in For Each) was corrected before successful testing. No failed test candidate is published. Full NAVFIT mapping/export, Navy validation, Runtime/x86 and comprehensive visual verification remain pending.
+
 # Current delivery - reporting senior details
 
 Swift NAVFIT 0.14.0-prototype, schema 13, output/Swift_NAVFIT_0.14.0-reporting-senior.accdb. Adds name/grade/designator/title/UIC in a separate panel. Apply transfers pending values and checkpoints them; Cancel preserves the editor. Save draft commits all 27 fields atomically. Older unrecorded values restore to null; new snapshot rows are required. See REPORTING_SENIOR_GUIDE.md.
