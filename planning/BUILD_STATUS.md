@@ -1,3 +1,9 @@
+# Current delivery - promotion status
+
+Swift NAVFIT 0.13.0-prototype, schema 12, output/Swift_NAVFIT_0.13.0-promotion-status.accdb. Adds REGULAR/FROCKED/SELECTED/SPOT selection, distinct from promotion recommendation. All 22 draft fields participate in snapshots, comparison, restore, duplication and recovery; status edits stale prior reviews. Legacy unrecorded status restores to null. Incomplete drafts remain saveable. See PROMOTION_STATUS_GUIDE.md.
+
+Verification: 66 new assertions plus 539 prior assertions, 169 catalogue checks and all 2472 retained import values passed. Schema 11-to-12, 12-to-12 and 5-to-12 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Eligibility/policy and external mapping/export remain pending, as do Runtime/x86 and comprehensive visual verification.
+
 # Current delivery - explicit report assessment selections
 
 Swift NAVFIT 0.12.0-prototype, schema 11, output/Swift_NAVFIT_0.12.0-assessment.accdb. Adds manually selected whole-report Observed/NOB and the six NAVFIT reference promotion recommendation labels. Blank remains saveable. All 21 draft fields participate in snapshots, comparison, restore, duplication and recovery; assessment edits stale earlier reviews. No inference from traits and no policy/eligibility validation. See ASSESSMENT_GUIDE.md.

@@ -5,7 +5,7 @@ Public Function AdministrationKeys() As Variant
     AdministrationKeys = Array("OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation")
 End Function
 Public Function DraftFieldKeys() As Variant
-    DraftFieldKeys = Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation")
+    DraftFieldKeys = Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation", "PromotionStatus")
 End Function
 Public Function AdministrationLabel(ByVal key As String) As String
     Select Case key

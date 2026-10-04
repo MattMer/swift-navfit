@@ -1,11 +1,11 @@
 # Progress and roadmap
 
-Current prototype: **0.12.0**, Swift schema **11**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
+Current prototype: **0.13.0**, Swift schema **12**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.
 
 | Area | Current progress |
 | --- | --- |
 | Workspace | Single-file blank distribution, contributor profiles, organizational folders, search and saved library presets |
-| Drafts | Three form kinds; local title/member/dates/notes, five administrative fields, seven form-specific traits, editor/saved arithmetic summaries official narrative and explicit observation/recommendation selections; incomplete saves |
+| Drafts | Three form kinds; local title/member/dates/notes, five administrative fields, seven form-specific traits, editor/saved arithmetic summaries, official narrative and explicit observation/recommendation selections and promotion status; incomplete saves |
 | History | Committed revisions, restore as new revision, duplication, archive/recover and field-level comparison |
 | Recovery | Timed/manual pending-editor checkpoints and deliberate recovery |
 | Imports | Read-only source review, confirmed narrative-only mapping, retained source provenance and explicit two-way narrative reconciliation |
@@ -29,4 +29,4 @@ These are priorities, not delivery-date promises. Open issues can refine scope a
 
 ## Verified milestone
 
-The 0.12.0 release passed 539 assertions plus 169 catalogue checks across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-10-to-11, schema-11-to-11 and schema-5-to-11 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See ASSESSMENT_GUIDE.md and BUILD_STATUS.md for exact scope and limits.
+The 0.13.0 release passed 605 assertions plus 169 catalogue checks across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-11-to-12, schema-12-to-12 and schema-5-to-12 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See PROMOTION_STATUS_GUIDE.md and BUILD_STATUS.md for exact scope and limits.

@@ -47,6 +47,7 @@ Public Function RefreshDraftChecklist() As Boolean
             Finding CStr(key), "Missing input", "Review " & AdministrationLabel(key) & ". Presence only, not a Navy policy requirement.": missing = missing + 1
         End If
     Next
+    If Not HasContent(r!PromotionStatus) Then Finding "PromotionStatus", "Missing input", "Review promotion status. Presence only; eligibility is not assessed.": missing = missing + 1
     For Each key In AssessmentKeys()
         If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & AssessmentLabel(key) & ". Explicit selection only; policy applicability is not assessed.": missing = missing + 1
     Next
@@ -80,6 +81,7 @@ Public Function ChecklistGuidance() As Boolean
     Dim key As String, guidance As String
     key = Nz(Forms!frmChecklist!lstFindings, "")
     Select Case key
+        Case "PromotionStatus": guidance = "Choose REGULAR, FROCKED, SELECTED or SPOT in the editor, or leave blank. This is separate from promotion recommendation. No inference, eligibility or Navy policy validation is performed."
         Case "TITLE": guidance = "In the editor, fill Draft title, then Save draft. This is a local organizational field."
         Case "MEMBER": guidance = "In the editor, fill Member name, then Save draft. This display name does not validate official name components, DoD ID or SSN."
         Case "START", "END", "DATE_ORDER": guidance = "Review Period start and Period end in the editor, then Save draft. This checklist checks presence and chronological order only; occasions, continuity and policy applicability are not evaluated."
