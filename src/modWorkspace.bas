@@ -79,6 +79,10 @@ Public Function RefreshFolders() As Boolean
     f!cboDestination.RowSource = "SELECT 0 AS ID, 'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID, FolderPath([FolderID]) FROM Folder ORDER BY Label"
     f!cboDestination.Requery
     If IsNull(f!lstFolders) Then f!lstFolders = 0
+    If UXHasControl(f, "uxFolderFilter") Then
+        f!uxFolderFilter.Requery
+        f!uxFolderFilter = f!lstFolders
+    End If
     If IsNull(f!cboDestination) Then f!cboDestination = 0
     RefreshFolders = True
 End Function

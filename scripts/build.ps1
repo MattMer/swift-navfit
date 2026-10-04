@@ -142,7 +142,7 @@ try {
         $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
         $c.Name=$name
         if ($type -eq 100 -or $type -eq 104) { $c.Caption=$caption }
-        if ($type -ne 106) { $c.FontName='Segoe UI'; $c.FontSize=10 }
+        if ($type -notin @(101,106)) { $c.FontName='Segoe UI'; $c.FontSize=10 }
         if ($event) { $c.OnClick=$event }
         $script:swiftControl = $c
     }
@@ -678,6 +678,7 @@ try {
     SaveScreen $f 'frmBackup'
     . (Join-Path $PSScriptRoot 'apply-ux-layout.ps1')
     . (Join-Path $PSScriptRoot 'apply-rs-directory-layout.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-shell.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)

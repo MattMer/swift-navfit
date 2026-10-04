@@ -7,6 +7,10 @@ Private bulkChanges As Object
 Private bulkCSV As String
 Private bulkBatch As Long
 Private groupContext As Long
+Public Function UXFolderFilterChanged() As Boolean
+    Forms!frmLibrary!lstFolders = Forms!frmLibrary!uxFolderFilter
+    UXFolderFilterChanged = RefreshLibrary()
+End Function
 Public Function UXHasControl(ByVal f As Access.Form, ByVal name As String) As Boolean
     On Error GoTo Missing
     Dim c As Access.Control: Set c = f.Controls(name): UXHasControl = True
@@ -60,6 +64,7 @@ Public Function UXNavigate(ByVal target As String) As Boolean
     If Not RSLeaveSeniorEditor() Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm target
+    UXLoadContext
     UXNavigate = True: Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Unable to open this workspace"
@@ -87,6 +92,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     f!uxPage.Caption = "Page " & (page + 1) & " of " & (maxPage + 1)
     f!uxPrevious.Enabled = (page > 0): f!uxNext.Enabled = (page < maxPage)
     f!cmdSave.Enabled = Not locked
+    f!cboKind.Locked = locked
     If locked Then f!uxLocked.Caption = "Read only. Reopen local approval or recover the archived report to edit." Else f!uxLocked.Caption = ""
     UXRefreshEditor
     UXSelectSection = True
