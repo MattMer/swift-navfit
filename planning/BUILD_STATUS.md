@@ -1,3 +1,9 @@
+# Current delivery - recommendations, retention and statement
+
+Swift NAVFIT 0.18.0-prototype, schema 17, output/Swift_NAVFIT_0.18.0-decision-details.accdb. Adds assignment recommendations A/B and four explicit Yes/No/blank source-box selections for retention and member statement. Apply checkpoints pending values; Save draft commits all 55 fields atomically. No signatures, approval or policy inference. See DECISION_DETAILS_GUIDE.md.
+
+Verification: 198 new behavioral assertions; 1356 total behavioral assertions, 218 reference checks and all 2472 retained import values. Schema 16-to-17, 17-to-17 and 5-to-17 migration checks preserve original rows/fields, source hashes and reopen. The editor button was moved to a separate row to prevent period-field overlap; focused layout bounds and overlap checks verify the final build. Runtime/x86, comprehensive visual inspection and full interchange remain pending.
+
 # Current delivery - counseling, readiness and billet
 
 Swift NAVFIT 0.17.0-prototype, schema 16, output/Swift_NAVFIT_0.17.0-service-details.accdb. Adds counseling date/name, readiness summary/detail/date and billet subcategory. Apply checkpoints pending values; Save draft commits all 49 fields atomically. Editable reference suggestions do not enforce Navy policy. See SERVICE_DETAILS_GUIDE.md.

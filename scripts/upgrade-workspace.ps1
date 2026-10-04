@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)][string]$SourcePath,
-    [string]$TemplatePath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.17.0-service-details.accdb'),
+    [string]$TemplatePath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.18.0-decision-details.accdb'),
     [Parameter(Mandatory=$true)][string]$DestinationPath
 )
 $ErrorActionPreference='Stop'

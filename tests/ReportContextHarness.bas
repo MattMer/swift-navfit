@@ -42,7 +42,7 @@ Public Function TestReportContext() As String
     Call ConfigureWorkspace("Context tests", "Synthetic reviewer"): keys = ReportContextKeys()
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveContext(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 49, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 55, "Incomplete snapshot"
         For i = 0 To 8
             Check Stored(id, CStr(keys(i))) = values(i), "Saved context changed"
         Next

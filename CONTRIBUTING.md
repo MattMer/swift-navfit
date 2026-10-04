@@ -56,3 +56,7 @@ The curated src/trait-catalogue.json is embedded by scripts/write-trait-catalogu
 ## Counseling, readiness and billet checks
 
 Run scripts/test-service-details.ps1 with -BuildPath pointing to the freshly built database. src/service-reference.json contains curated suggestions from the local NAVFIT reference database; changes require source attribution and reference fidelity checks. Suggestions are not policy rules.
+
+## Assignment recommendations, retention and member statement
+
+Run scripts/test-decision-details.ps1 with -BuildPath pointing to the fresh database. It checks behavioral integration, raw recovery in a new Access process, the new editor button for overlap and both forms for control bounds. Each source checkbox preserves Yes, No or blank independently. Applicable Navy rules and signatures require separate implementation.
