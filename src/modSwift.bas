@@ -282,13 +282,21 @@ Public Function DuplicateDraft(ByVal reportID As Long) As Long
 End Function
 
 Public Function Startup() As Boolean
+    Startup = SwiftAppStartup()
+End Function
+
+Public Function SwiftAppStartup() As Boolean
+    On Error GoTo Failed
     If Nz(DLookup("SchemaVersion", "AppMetadata"), 0) <> SCHEMA_VERSION Then
         MsgBox "Unsupported Swift schema. Open this file with its matching application version.", vbCritical
         Application.Quit acQuitSaveNone
         Exit Function
     End If
     If DCount("*", "Workspace") = 0 Then DoCmd.OpenForm "frmSetup" Else DoCmd.OpenForm "frmHome"
-    Startup = True
+    UXLoadContext
+    SwiftAppStartup = True: Exit Function
+Failed:
+    MsgBox "Swift NAVFIT could not start. Error " & Err.Number & ": " & Err.Description, vbExclamation, "Swift NAVFIT startup"
 End Function
 
 Public Function OpenScreen(ByVal formName As String) As Boolean

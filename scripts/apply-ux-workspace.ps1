@@ -1,3 +1,8 @@
+# This startup notice has no VBA events and can open while content is disabled.
+NewScreen 'frmEnableContent' 'Enable Swift NAVFIT content' 4500;$f=$script:swiftForm
+[void](Control $f 100 'lblInstructions' 500 1400 11500 1600 "Access has disabled this app's code. Click Enable Content in the yellow security bar, then close and reopen this file. To enable future preview builds, add only the output\ux preview folder under File > Options > Trust Center > Trust Center Settings > Trusted Locations.")
+[void](Control $f 100 'lblExplanation' 500 3300 11500 700 'Your reports are unchanged. Application features require enabled content.')
+SaveScreen $f 'frmEnableContent'
 # Native section surfaces and focused destinations. Called after shared chrome.
 $surfaceModule=[Collections.Generic.List[string]]::new()
 $surfaceModule.Add('Attribute VB_Name = "modUXSurfaceFields"');$surfaceModule.Add('Option Explicit')
@@ -78,13 +83,16 @@ $f.Controls('uxGroup').Left=[int](11350);$f.Controls('uxGroup').Top=[int](1950);
 $f.Controls('uxSection').Left=[int](5250);$f.Controls('uxSection').Top=[int](2450);$f.Controls('uxSection').Width=[int](8050);$f.Controls('uxSection').Height=[int](450)
 $f.Controls('uxError').Left=[int](5250);$f.Controls('uxError').Top=[int](2930);$f.Controls('uxError').Width=[int](8050);$f.Controls('uxError').Height=[int](300)
 $f.Controls('uxLocked').Left=[int](2850);$f.Controls('uxLocked').Top=[int](2350);$f.Controls('uxLocked').Width=[int](2350);$f.Controls('uxLocked').Height=[int](600)
-for($i=0;$i -lt $uxSections.Count;$i++){$c=$f.Controls('uxSection'+$i);$c.Left=[int](2800);$c.Top=[int](3050+$i*430);$c.Width=[int](2150);$c.Height=[int](400);$c.FontSize=9}
+for($i=0;$i -lt $uxSections.Count;$i++){$c=$f.Controls('uxSection'+$i);$c.Left=[int](2800);$c.Top=[int](3050+$i*430);$c.Width=[int](2150);$c.Height=[int](400);$c.FontSize=9;$c.Caption=$uxSections[$i].Replace('&','&&')}
 [void](Control $f 112 'uxFieldSurface' 5200 3650 8100 3700);$script:swiftControl.SourceObject='Form.frmUXEditorFields';$script:swiftControl.BorderStyle=0
-$script:swiftControl.HorizontalAnchor=1;$script:swiftControl.VerticalAnchor=1
+# Access: 0 = left/top, 1 = right/bottom, 2 = stretch. Keep this
+# fixed laptop layout stable until the responsive layout pass.
+$script:swiftControl.HorizontalAnchor=0;$script:swiftControl.VerticalAnchor=0
 [void](Control $f 110 'uxErrorList' 5250 3200 8050 430);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;7900';$c.OnClick='=UXSurfaceErrorSelected()';$c.Visible=$false
 foreach($name in @('uxPrevious','uxPage','uxNext')){$f.Controls($name).Visible=$false}
 foreach($name in @('cmdSave','cmdClose','uxDirty','lblSaved','lblRecovery')){$f.Controls($name).Top=[int](7750)}
-foreach($name in @('cmdSave','cmdClose','uxDirty','lblSaved','lblRecovery')){$f.Controls($name).VerticalAnchor=2}
+foreach($name in @('cmdSave','cmdClose','uxDirty','lblSaved','lblRecovery')){$f.Controls($name).VerticalAnchor=0}
+foreach($name in @('cmdSave','cmdClose')){$f.Controls($name).Height=[int](500)}
 $f.Controls('cmdClose').Left=[int](5250);$f.Controls('cmdClose').Width=[int](2350)
 $f.Controls('cmdSave').Left=[int](10800);$f.Controls('cmdSave').Width=[int](2500);$f.Controls('cmdSave').Caption='Save draft';$f.Controls('cmdSave').BackColor=11230215;$f.Controls('cmdSave').ForeColor=16777215
 $f.Controls('uxDirty').Left=[int](7800);$f.Controls('uxDirty').Width=[int](2800)

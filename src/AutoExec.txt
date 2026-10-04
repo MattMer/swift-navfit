@@ -1,6 +1,13 @@
 Version =196611
 ColumnsShown =0
 Begin
+    Condition ="[CurrentProject].[IsTrusted]"
     Action ="RunCode"
-    Argument ="Startup()"
+    Argument ="SwiftAppStartup()"
+End
+Begin
+    Condition ="Not [CurrentProject].[IsTrusted]"
+    Action ="OpenForm"
+    Argument ="frmEnableContent"
+    Argument ="0"
 End

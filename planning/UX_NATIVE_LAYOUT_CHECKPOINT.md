@@ -1,8 +1,36 @@
 # Native layout checkpoint - 2026-10-04
 
-## Latest checkpoint: native workspace rebuild with synthetic demo
+## Latest checkpoint: startup guard and stable editor placement
 
-Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r4.accdb` for the latest user
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r7.accdb`. This is a clean
+source build with the same nine-report synthetic dataset; previous previews
+and their user edits are preserved. SHA256:
+`04C79F733CF62F3F02A77762ED52032951D34361154E7CA475527B210BFA3A1F`.
+
+The reported launch failure was reproduced with normal Office security:
+active content was blocked. AutoExec now checks CurrentProject.IsTrusted;
+blocked content opens a code-free instruction form rather than invoking VBA.
+Enabled content calls a distinct SwiftAppStartup entry point, with useful
+startup error reporting. A scoped registry trust setting was attempted but
+was ineffective in the automation test and removed; Office settings remain
+unchanged. Enable Content and reopen, or add the preview folder in Trust Center.
+
+The field panel's right/bottom anchors and the footer's vertical stretch were
+incorrect. Left/top anchors retain the fixed laptop layout and 500-twip button
+heights across maximize/restore. The contributor header now updates loaded
+forms directly, and section/navigation captions escape Access ampersands.
+This fixes placement; responsive collapse and DPI acceptance remain pending.
+
+Verification on the clean build: 80 surface/workspace assertions, 32 populated
+journey assertions, normal-security AutoExec and repeat launch, enabled-content
+startup into Overview, and blank-template startup into Setup. Runtime checks
+cover maximized/restored field placement, footer size and non-overlap. This is
+not manual visual or screen-reader acceptance. The preview builder now requires
+startup verification as well as pre/post-seeding behavior checks.
+
+## Previous checkpoint: native workspace rebuild with synthetic demo
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r4.accdb` for the previous user
 preview. It contains nine reports, three groups, two contributor profiles, one
 reporting senior with three RSCA baselines, and review/approval/archive/NOB/
 recovery examples. First-run setup is already complete. Demo SHA256:

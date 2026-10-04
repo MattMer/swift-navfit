@@ -16,7 +16,14 @@ The builder executes the native surface/workspace checks before seeding and
 the populated-demo journey checks afterward. A verification failure stops the
 build from reporting success.
 
-Open the demo in desktop Access. Setup is already completed under
+Open the demo in desktop Access. If Access blocks active content, startup now
+opens an instruction screen instead of running blocked VBA. Click **Enable
+Content**, then close and reopen the file. Alternatively, add only the preview
+folder in Access Trust Center; the build scripts do not change Office security
+settings. `test-preview-launch.ps1` checks both the normal-security startup
+path and enabled-content startup on disposable copies.
+
+Setup is already completed under
 `SWIFT NAVFIT DEMO - SYNTHETIC DATA`, with `Alex Morgan (demo)` active.
 Browser prototype changes are separate and are not imported.
 

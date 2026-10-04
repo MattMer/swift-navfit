@@ -88,7 +88,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
                 c.FontBold = (c.Name = "uxSection" & section)
             End If
         Next
-        f!uxSection.Caption = UXSectionName(section)
+        f!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
         f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
         If locked Then f!uxLocked.Caption = "Read only. Recover archived reports or reopen local approval to edit." Else f!uxLocked.Caption = ""
         If Not UXSurfaceSection(section, locked) Then Exit Function
@@ -103,7 +103,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
             If c.ControlType = acTextBox Or c.ControlType = acComboBox Or c.ControlType = acCheckBox Then c.Locked = locked Or tags(3) = "Guidance"
         End If
     Next
-    f!uxSection.Caption = UXSectionName(section)
+    f!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
     f!uxPage.Caption = "Page " & (page + 1) & " of " & (maxPage + 1)
     f!uxPrevious.Enabled = (page > 0): f!uxNext.Enabled = (page < maxPage)
     f!cmdSave.Enabled = Not locked
@@ -422,7 +422,7 @@ Public Function UXBulkSection(ByVal section As Long, Optional ByVal page As Long
     For Each c In f.Controls
         If Left$(c.Tag, 4) = "BLX:" Then tags = Split(c.Tag, ":"): c.Visible = (CLng(tags(1)) = section And CLng(tags(2)) = page)
     Next
-    f!uxSection.Caption = UXSectionName(section)
+    f!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
     UXBulkSection = True
 End Function
 Public Function UXPreviewBulk() As Boolean
@@ -451,8 +451,11 @@ Public Function UXBulkDetail() As Boolean
     r.Close: UXBulkDetail = True
 End Function
 Public Function UXLoadContext() As Boolean
-    On Error Resume Next
-    Screen.ActiveForm!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace"), 0)), "")
+    Dim f As Access.Form, context As String
+    context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace"), 0)), ""), "&", "&&")
+    For Each f In Forms
+        If UXHasControl(f, "uxContext") Then f!uxContext.Caption = context
+    Next
     UXLoadContext = True
 End Function
 

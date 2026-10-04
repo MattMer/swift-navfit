@@ -16,6 +16,16 @@ Public Function TestUXSurface() As String
     stage = "editor load": DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
     Check UXSurfaceAvailable(), "Native section surface unavailable"
+    DoCmd.Maximize
+    Check f!uxFieldSurface.Left = 5200 And f!uxFieldSurface.Top = 3650, "Maximized field panel moved away from section content"
+    Check f!cmdSave.Height = 500 And f!cmdClose.Height = 500, "Maximized action buttons stretched"
+    Check f!uxFieldSurface.Top + f!uxFieldSurface.Height <= f!lblSaved.Top, "Field panel overlaps save area"
+    Check f!uxFieldSurface.HorizontalAnchor = acHorizontalAnchorLeft And f!uxFieldSurface.VerticalAnchor = acVerticalAnchorTop, "Field panel uses moving anchors"
+    Check f!cmdSave.VerticalAnchor = acVerticalAnchorTop And f!cmdClose.VerticalAnchor = acVerticalAnchorTop, "Action buttons use stretching anchors"
+    Check InStr(f!uxContext.Caption, "Surface tester") > 0, "Workspace context missing contributor"
+    DoCmd.Restore
+    Check f!cmdSave.Height = 500 And f!uxFieldSurface.Left = 5200, "Restoring window displaced controls"
+
     Check s!txtOfficialName.Visible And Not f!txtOfficialName.Visible, "Editor did not use native section surface"
     Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
     revision = CurrentRevision(id)

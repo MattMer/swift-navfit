@@ -22,7 +22,7 @@ foreach($screenName in $uxPages){
     for($i=0;$i -lt $uxDestinations.Count;$i++){
         $name='uxNav'+$i
         if(@($f.Controls|Where-Object Name -eq $name).Count -eq 0){[void](Control $f 104 $name 180 (1450+$i*650) 2100 550 $uxDestinations[$i][0] ('=UXNavigate("'+$uxDestinations[$i][1]+'")'))}
-        $c=$f.Controls($name);$c.Left=[int](180);$c.Top=[int](1450+$i*650);$c.Width=[int](2100);$c.Height=[int](550);$c.Visible=$true;$c.UseTheme=$false;$c.BackColor=16777215;$c.ForeColor=5916729;$c.BorderStyle=0
+        $c=$f.Controls($name);$c.Left=[int](180);$c.Top=[int](1450+$i*650);$c.Width=[int](2100);$c.Height=[int](550);$c.Caption=$uxDestinations[$i][0].Replace('&','&&');$c.Visible=$true;$c.UseTheme=$false;$c.BackColor=16777215;$c.ForeColor=5916729;$c.BorderStyle=0
         if($screenName -eq $uxDestinations[$i][1] -or ($i -eq 1 -and $screenName -eq 'frmEditor') -or ($i -eq 2 -and $screenName -in @('frmMajorWorkbench','frmUXBulk','frmUXComparison','frmUXGroupRSCA')) -or ($i -eq 4 -and $screenName -in @('frmUXSeniors','frmUXSeniorEditor'))){$c.BackColor=16445671;$c.ForeColor=9785094;$c.FontBold=$true}
     }
     if(@($f.Controls|Where-Object Name -eq 'uxContext').Count -eq 0){[void](Control $f 100 'uxContext' 2850 300 10300 400 'Swift NAVFIT | Local workspace')}

@@ -37,4 +37,6 @@ try{
 }
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-demo.ps1') -BuildPath $OutputPath
 if($LASTEXITCODE -ne 0){throw 'Populated preview verification failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-preview-launch.ps1') -BuildPath $OutputPath
+if($LASTEXITCODE -ne 0){throw 'Preview startup verification failed'}
 [pscustomobject]@{Output=$OutputPath;SHA256=(Get-FileHash -LiteralPath $OutputPath).Hash;Status=$result;SourceUnchanged=((Get-FileHash -LiteralPath $TemplatePath).Hash -eq $sourceHash)}|ConvertTo-Json
