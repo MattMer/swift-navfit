@@ -3,13 +3,14 @@ Option Compare Database
 Option Explicit
 Private sessionKey As String
 Private baseRevision As Long
-Private baseline(0 To 54) As Variant
+Private baseline(0 To 67) As Variant
 Private Function ControlsList() As Variant
     ControlsList = Array("cboKind", "txtTitle", "txtMember", "txtStart", "txtEnd", "txtNotes", "txtOfficialComments", "txtOfficialName", "txtRankRate", "txtDesignator", "txtUnitUIC", "txtShipStation", "cboTrait33", "cboTrait34", "cboTrait35", "cboTrait36", "cboTrait37", "cboTrait38", "cboTrait39", "cboObservationStatus", "cboPromotionRecommendation", "cboPromotionStatus", "txtReportingSeniorName", "txtReportingSeniorGrade", "txtReportingSeniorDesignator", "txtReportingSeniorTitle", "txtReportingSeniorUIC", _
         "txtOccasionPeriodic", "txtOccasionDetachment", "txtOccasionFrocking", "txtOccasionSpecial", "txtReportRegular", "txtReportConcurrent", "txtReportOperationalCommander", "txtPrimaryDuty", "txtDutyDescription", _
         "txtMemberSSN", "txtMemberDoDID", "txtComponentActive", "txtComponentTAR", "txtComponentInactive", "txtComponentATADSW", "txtDateReported", _
         "txtCounselingDate", "txtCounselorName", "txtReadinessSummary", "txtReadinessDetail", "txtReadinessDate", "txtBilletSubcategory", _
-        "txtAssignmentRecommendationA", "txtAssignmentRecommendationB", "txtRetentionYes", "txtRetentionNo", "txtStatementYes", "txtStatementNo")
+        "txtAssignmentRecommendationA", "txtAssignmentRecommendationB", "txtRetentionYes", "txtRetentionNo", "txtStatementYes", "txtStatementNo", _
+        "txtReportingSeniorSSN", "txtReportingSeniorDoDID", "txtReportingSeniorAddress1", "txtReportingSeniorAddress2", "txtReportingSeniorCity", "txtReportingSeniorState", "txtReportingSeniorZip", "txtReportingSeniorPhone", "txtReportingSeniorDSN", "txtRaterName", "txtRaterDate", "txtSeniorRaterName", "txtSeniorRaterDate")
 End Function
 Private Function PendingValue(ByVal control As Control) As Variant
     Dim value As Variant
@@ -29,7 +30,7 @@ End Function
 Public Function ResetEditorBaseline() As Boolean
     Dim names As Variant, i As Long
     names = ControlsList()
-    For i = 0 To 54: baseline(i) = PendingValue(Forms!frmEditor.Controls(names(i))): Next
+    For i = 0 To 67: baseline(i) = PendingValue(Forms!frmEditor.Controls(names(i))): Next
     baseRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)), 0)
     ResetEditorBaseline = True
 End Function
@@ -46,7 +47,7 @@ Public Function DiscardEditorCheckpoint() As Boolean
     DiscardEditorCheckpoint = True
 End Function
 Public Function CheckpointEditor() As Boolean
-    Dim names As Variant, fields As Variant, current(0 To 54) As Variant, i As Long, changed As Boolean
+    Dim names As Variant, fields As Variant, current(0 To 67) As Variant, i As Long, changed As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, trans As Boolean
     On Error GoTo Failed
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Or Len(sessionKey) = 0 Then Exit Function
@@ -54,8 +55,9 @@ Public Function CheckpointEditor() As Boolean
         "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "PrimaryDuty", "DutyDescription", _
         "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported", _
         "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
-        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo")
-    For i = 0 To 54
+        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
+        "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate")
+    For i = 0 To 67
         current(i) = PendingValue(Forms!frmEditor.Controls(names(i)))
         If IsNull(current(i)) <> IsNull(baseline(i)) Or StrComp(Nz(current(i), ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then changed = True
     Next
@@ -71,7 +73,7 @@ Public Function CheckpointEditor() As Boolean
     r!AuthorProfileID = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
     If Nz(Forms!frmEditor!txtReportID, 0) > 0 Then r!ReportID = Forms!frmEditor!txtReportID Else r!ReportID = Null
     If baseRevision > 0 Then r!BaseRevisionID = baseRevision Else r!BaseRevisionID = Null
-    For i = 0 To 54: r.Fields(fields(i)) = current(i): Next
+    For i = 0 To 67: r.Fields(fields(i)) = current(i): Next
     r!CheckpointAt = Now(): r.Update: r.Close
     w.CommitTrans: trans = False
     Forms!frmEditor!lblRecovery.Caption = "Recovery checkpoint: " & Now() & " (not a saved revision)"
@@ -108,8 +110,9 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
         "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "PrimaryDuty", "DutyDescription", _
         "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported", _
         "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
-        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo")
-    For i = 0 To 54: Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
+        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
+        "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate")
+    For i = 0 To 67: Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
     Forms!frmEditor!lblSaved.Caption = "Recovered pending edits. Use Save draft to commit."
     Forms!frmEditor!lblRecovery.Caption = "Recovered checkpoint " & r!CheckpointAt
     r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel()

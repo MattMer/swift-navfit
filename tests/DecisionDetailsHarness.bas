@@ -42,7 +42,7 @@ Public Function TestDecisionDetails() As String
     Call ConfigureWorkspace("Decision tests", "Synthetic reviewer"): keys = DecisionDetailsKeys(): limits = Array(20, 20, 3, 3, 3, 3)
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveDecision(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 55, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 68, "Incomplete snapshot"
         For i = 0 To 5: Check Stored(id, CStr(keys(i))) = values(i), "Saved feature changed": Next
         Call CommitDraft(id, CStr(kind), "Decision", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted details wrote history"

@@ -42,7 +42,7 @@ Public Function TestServiceDetails() As String
     Call ConfigureWorkspace("Service tests", "Synthetic reviewer"): keys = ServiceDetailsKeys(): limits = Array(10, 20, 4, 15, 10, 10)
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveService(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 55, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 68, "Incomplete snapshot"
         For i = 0 To 5: Check Stored(id, CStr(keys(i))) = values(i), "Saved feature changed": Next
         Call CommitDraft(id, CStr(kind), "Service", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted details wrote history"

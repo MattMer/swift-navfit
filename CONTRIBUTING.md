@@ -60,3 +60,7 @@ Run scripts/test-service-details.ps1 with -BuildPath pointing to the freshly bui
 ## Assignment recommendations, retention and member statement
 
 Run scripts/test-decision-details.ps1 with -BuildPath pointing to the fresh database. It checks behavioral integration, raw recovery in a new Access process, the new editor button for overlap and both forms for control bounds. Each source checkbox preserves Yes, No or blank independently. Applicable Navy rules and signatures require separate implementation.
+
+## Reporting senior identifiers, contact and raters
+
+Run scripts/test-report-people.ps1 with -BuildPath pointing to the fresh database. It checks all 13 fields through persistence, history, duplication/restore, rollback and raw recovery in a new Access process, plus button overlap and form bounds. Source capacities are documented in planning/REPORT_PEOPLE_GUIDE.md; signatures, authority, policy and external date conversion require separate work.

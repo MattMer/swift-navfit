@@ -48,6 +48,9 @@ Public Function RefreshDraftChecklist() As Boolean
         End If
     Next
     If Not HasContent(r!PromotionStatus) Then Finding "PromotionStatus", "Missing input", "Review promotion status. Presence only; eligibility is not assessed.": missing = missing + 1
+    For Each key In ReportPeopleKeys()
+        If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & ReportPeopleLabel(key) & ". Presence only; applicability is not assessed.": missing = missing + 1
+    Next
     For Each key In DecisionDetailsKeys()
         If Not HasContent(r.Fields(key).Value) Then Finding CStr(key), "Missing input", "Review " & DecisionDetailsLabel(key) & ". Presence only; applicability is not assessed.": missing = missing + 1
     Next
@@ -110,6 +113,8 @@ Public Function ChecklistGuidance() As Boolean
         Case Else
             If IsTraitKey(key) Then
                 guidance = "Use the form-specific trait section in the editor. Select a mark or leave it blank, then Save draft. Select a trait to read the NAVFIT reference descriptions. Recommendations, averages and observation rules are not yet validated."
+            ElseIf Len(ReportPeopleLabel(key)) > 0 Then
+                guidance = "Open Senior contact and raters in the editor, apply pending entries, then Save draft. Names, IDs and contact details are separate from local contributor profiles. Rater dates do not establish signatures or approval; applicability and identity are not policy-validated."
             ElseIf Len(DecisionDetailsLabel(key)) > 0 Then
                 guidance = "Open Recommendations and statement, apply pending entries, then Save draft. Assignment recommendations are separate from promotion recommendation. Each Yes/No source flag is explicit; blanks, combinations, signatures and policy applicability are not inferred."
             ElseIf Len(ServiceDetailsLabel(key)) > 0 Then

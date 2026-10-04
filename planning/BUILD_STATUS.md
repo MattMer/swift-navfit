@@ -1,3 +1,9 @@
+# Current delivery - senior identifiers, contact and raters
+
+Swift NAVFIT 0.19.0-prototype, schema 18, output/Swift_NAVFIT_0.19.0-report-people.accdb. Adds reporting-senior SSN/DoD ID, structured address/contact fields, and rater/senior-rater names/dates. Apply checkpoints pending values; Save draft commits all 68 fields atomically. Leading zeros and incomplete entries are preserved. Names/dates do not establish signatures or approval. See REPORT_PEOPLE_GUIDE.md.
+
+Verification: 364 new behavioral assertions; 1720 total assertions, 218 reference checks, six layout checks and all 2472 retained import values. Schema 17-to-18, 18-to-18 and 5-to-18 migration checks preserve original rows/fields, source hashes and reopen. The distribution's 20 user-data tables are empty and its binary matches the tested candidate. Runtime/x86, comprehensive visual inspection, policy rules and full interchange remain pending.
+
 # Current delivery - recommendations, retention and statement
 
 Swift NAVFIT 0.18.0-prototype, schema 17, output/Swift_NAVFIT_0.18.0-decision-details.accdb. Adds assignment recommendations A/B and four explicit Yes/No/blank source-box selections for retention and member statement. Apply checkpoints pending values; Save draft commits all 55 fields atomically. No signatures, approval or policy inference. See DECISION_DETAILS_GUIDE.md.

@@ -2,7 +2,7 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Current prototype: 0.18.0 · schema 17.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+**Current prototype: 0.19.0 · schema 18.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
 
 ## Current features
 
@@ -11,6 +11,7 @@ A local Microsoft Access app for drafting and reviewing Navy evaluations and fit
 - Member identifiers, explicit service-component selections and date reported in a separate details panel.
 - Counseling date/name, physical-readiness details/date and billet subcategory with editable reference suggestions.
 - Assignment recommendations A/B, retention selections and member-statement selections, distinct from promotion and review acceptance.
+- Reporting-senior identifiers/contact details and rater/senior-rater names and dates.
 - Organizational folders, search, saved library views and bulk folder moves with guarded undo.
 - Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
 - Automatic/manual pending-editor checkpoints and recovery.
@@ -23,7 +24,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the blank `.accdb` from the [0.18.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.18.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the blank `.accdb` from the [0.19.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.19.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 
@@ -47,6 +48,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 ## Progress and guides
 
 - [Roadmap and current progress](planning/ROADMAP.md)
+- [Reporting senior contact details and raters](planning/REPORT_PEOPLE_GUIDE.md)
 - [Assignment recommendations, retention and statement](planning/DECISION_DETAILS_GUIDE.md)
 - [Counseling, readiness and billet details](planning/SERVICE_DETAILS_GUIDE.md)
 - [Identifiers, components and date reported](planning/MEMBER_DETAILS_GUIDE.md)
@@ -66,6 +68,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 - [Architecture and implementation plan](planning/IMPLEMENTATION_PLAN.md)
 - [Current release manifest](output/MANIFEST.json)
 
-The 0.18.0 build passed 1356 behavioral assertions and 218 reference checks, plus exact narrative-import/provenance checks. Schema-16-to-17, schema-17-to-17 and schema-5-to-17 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
+The 0.19.0 build passed 1720 behavioral assertions and 218 reference checks, plus exact narrative-import/provenance checks. Schema-17-to-18, schema-18-to-18 and schema-5-to-18 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.
