@@ -43,6 +43,15 @@ Public Function GuardEditorBaseline() As Boolean
     End If
     GuardEditorBaseline = True
 End Function
+Public Function EditorHasPending() As Boolean
+    Dim names As Variant, i As Long, value As Variant
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
+    names = ControlsList()
+    For i = 0 To 77
+        value = PendingValue(Forms!frmEditor.Controls(names(i)))
+        If IsNull(value) <> IsNull(baseline(i)) Or StrComp(Nz(value, ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then EditorHasPending = True: Exit Function
+    Next
+End Function
 Public Function DiscardEditorCheckpoint() As Boolean
     If Len(sessionKey) > 0 Then CurrentDb.Execute "DELETE FROM RecoveryDraft WHERE SessionGuid='" & sessionKey & "'", dbFailOnError
     DiscardEditorCheckpoint = True

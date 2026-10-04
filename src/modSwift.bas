@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.21.0-prototype"
-Public Const SCHEMA_VERSION As Long = 20
+Public Const APP_VERSION As String = "0.22.0-ux-preview"
+Public Const SCHEMA_VERSION As Long = 21
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -364,6 +364,7 @@ Public Function LoadEditor() As Boolean
     Call RefreshNarrativeLabel()
     Call RefreshRevisions
     Call BeginEditorRecovery()
+    Call UXEditorStart()
     LoadEditor = True
 End Function
 
@@ -395,7 +396,7 @@ Failed:
     message = Err.Description
     On Error Resume Next
     If trans Then w.Rollback
-    MsgBox message, vbExclamation
+    If Not UXShowSaveError(message) Then MsgBox message, vbExclamation
 End Function
 
 Public Function CloseEditor() As Boolean

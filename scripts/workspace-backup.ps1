@@ -36,7 +36,7 @@ try {
     $metadata=$db.OpenRecordset('SELECT SchemaVersion,AppVersion FROM AppMetadata',4)
     if($metadata.EOF){throw 'Missing Swift metadata.'}
     $schema=[int]$metadata.Fields.Item('SchemaVersion').Value;$version=[string]$metadata.Fields.Item('AppVersion').Value
-    if($schema -lt 1 -or $schema -gt 20){throw 'Unsupported Swift schema.'}
+    if($schema -lt 1 -or $schema -gt 21){throw 'Unsupported Swift schema.'}
     $metadata.Close();$counts=[ordered]@{}
     foreach($table in $db.TableDefs){
         if($table.Name.StartsWith('MSys')){continue}

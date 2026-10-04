@@ -1,3 +1,7 @@
+# Working source - UI redesign preview
+
+0.22.0-ux-preview, schema 21. Includes the clickable design prototype and a native section/editor rebuild under review, plus reusable reporting seniors, rank-specific RSCA baselines and summary-group PSG calculations. Comparison baselines are automatic; the manual freeze action is removed from the new UI. See [UX review and verification checkpoint](UX_REDESIGN_REVIEW.md). The redesign has not been published as a replacement for 0.21.0; native visual, keyboard, screen-reader and scaling acceptance remain pending.
+
 # Current delivery — major foundations checkpoint
 
 Swift NAVFIT 0.21.0-prototype, schema 20, output/Swift_NAVFIT_0.21.0-major-foundations.accdb. Adds explicit summary groups/snapshots, defaults and atomic field batches with guarded undo, ordered local review/approval routes, frozen meeting comparisons/proposals, limited source-linked Navy checks, eight-field interactive PDF import and guided closed-file backup/restore. See MAJOR_FOUNDATIONS_GUIDE.md for scope, dependencies and remaining work.

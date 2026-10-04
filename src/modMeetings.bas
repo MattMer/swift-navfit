@@ -98,7 +98,7 @@ Public Sub ApplyMeetingProposals(ByVal proposalIDsCSV As String)
     Next
     snapshotID = Nz(MajorScalar("SELECT GroupSnapshotID FROM ComparisonSet WHERE SetID=" & setID), 0)
     groupID = Nz(MajorScalar("SELECT GroupID FROM GroupSnapshot WHERE SnapshotID=" & snapshotID), 0)
-    If StrComp(Nz(MajorScalar("SELECT Stamp FROM GroupSnapshot WHERE SnapshotID=" & snapshotID), ""), GroupStamp(groupID), vbBinaryCompare) <> 0 Then Err.Raise vbObjectError + 4411, , "Group changed since the meeting snapshot. Freeze and review a new snapshot."
+    If StrComp(Nz(MajorScalar("SELECT Stamp FROM GroupSnapshot WHERE SnapshotID=" & snapshotID), ""), GroupStamp(groupID), vbBinaryCompare) <> 0 Then Err.Raise vbObjectError + 4411, , "Group changed since the meeting snapshot. Refresh the comparison and review the saved values."
     For Each report In reports.Keys
         Call CommitSavedFields(CLng(report), CLng(expected(report)), reports(report), "Reviewed meeting " & setID & " proposal batch")
     Next

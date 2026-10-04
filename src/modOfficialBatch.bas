@@ -1,6 +1,37 @@
 Attribute VB_Name = "modOfficialBatch"
 Option Compare Binary
 Option Explicit
+Public Function PreviewReportChanges(ByVal reportsCSV As String, ByVal changes As Object, ByVal note As String) As Long
+    Dim ids As Object, reportKey As Variant, fieldKey As Variant, values As Object, w As DAO.Workspace
+    Dim db As DAO.Database, b As DAO.Recordset, item As DAO.Recordset, id As Long, failure As Long, message As String
+    If Len(Trim$(note)) = 0 Or changes.Count = 0 Then Err.Raise vbObjectError + 4220, , "Change a report block and enter a reason before previewing."
+    Set ids = MajorIDs(reportsCSV): Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans
+    On Error GoTo Failed
+    Set b = db.OpenRecordset("ChangeBatch", dbOpenDynaset)
+    b.AddNew: b!BatchGuid = NewIdentity(): b!BatchKind = "ReportBlocks": b!BatchState = "Preview": b!AuthorID = MajorAuthor(): b!CreatedAt = Now(): b!BatchNote = note
+    b.Update: b.Bookmark = b.LastModified: id = b!BatchID: b.Close: Set b = Nothing
+    Set item = db.OpenRecordset("ChangeItem", dbOpenDynaset)
+    For Each reportKey In ids.Keys
+        Set values = SavedFields(ids(reportKey))
+        For Each fieldKey In changes.Keys
+            If Not values.Exists(CStr(fieldKey)) Or fieldKey = "FormKind" Then Err.Raise vbObjectError + 4221, , "Unknown or immutable report block."
+            item.AddNew: item!BatchID = id: item!ReportID = ids(reportKey): item!ExpectedRevision = CurrentRevision(ids(reportKey)): item!FieldKey = fieldKey
+            If VarType(values(fieldKey)) = vbDate Then item!BeforeValue = Format$(values(fieldKey), "yyyy-mm-dd") Else item!BeforeValue = values(fieldKey)
+            item!BeforeIsNull = IsNull(values(fieldKey))
+            If VarType(changes(fieldKey)) = vbDate Then item!NewValue = Format$(changes(fieldKey), "yyyy-mm-dd") Else item!NewValue = changes(fieldKey)
+            item!NewIsNull = IsNull(changes(fieldKey)): item.Update
+        Next
+    Next
+    item.Close: w.CommitTrans: PreviewReportChanges = id: Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next
+    w.Rollback
+    If Not item Is Nothing Then item.Close
+    If Not b Is Nothing Then b.Close
+    On Error GoTo 0
+    Err.Raise failure, "PreviewReportChanges", message
+End Function
 Public Function PreviewFieldBatch(ByVal reportsCSV As String, ByVal fieldKey As String, ByVal newValue As Variant, ByVal note As String) As Long
     Dim ids As Object, key As Variant, fields As Object, b As DAO.Recordset, r As DAO.Recordset, id As Long, w As DAO.Workspace, failure As Long, message As String
     If Len(Trim$(note)) = 0 Then Err.Raise vbObjectError + 4200, , "Record the reason for this batch."

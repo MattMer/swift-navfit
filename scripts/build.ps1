@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.21.0-major-foundations.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.22.0-ux-preview.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.21.0-prototype',20,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.22.0-ux-preview',21,'Unverified - NAVFIT exchange disabled')"
     )
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
@@ -108,7 +108,7 @@ try {
     [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
     $app.LoadFromText(5,'modBackupWorker',$workerPath)
     $app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))
-    foreach($majorModule in @('modPDFImport','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
+    foreach($majorModule in @('modRSDirectory','modRSDirectoryUI','modPDFImport','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
     $app.LoadFromText(5,'modBulkFolders',(Join-Path $root 'src\modBulkFolders.bas'))
     $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
     $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
@@ -676,6 +676,8 @@ try {
     [void](Control $f 100 'lblStatus' 400 8800 12600 650 'Requires Windows PowerShell and Access DAO. Other Access sessions must also release the source. Pending checkpoint values still require deliberate recovery after reopening. Runtime and other workstations remain untested.')
     [void](Control $f 104 'cmdHome' 400 9700 12600 450 'Return home' '=OpenScreen("frmHome")')
     SaveScreen $f 'frmBackup'
+    . (Join-Path $PSScriptRoot 'apply-ux-layout.ps1')
+    . (Join-Path $PSScriptRoot 'apply-rs-directory-layout.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)

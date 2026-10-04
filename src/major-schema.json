@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 20,
+  "SchemaVersion": 21,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -18,7 +18,11 @@
     "RulePack",
     "RuleDefinition",
     "ValidationRun",
-    "ValidationFinding"
+    "ValidationFinding",
+    "ReportingSeniorRecord",
+    "ReportingSeniorValue",
+    "RSCABaseline",
+    "GroupRSCABaseline"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -79,6 +83,19 @@
     "CREATE UNIQUE INDEX UX_MajorChangeItem ON ChangeItem (BatchID,ReportID,FieldKey)",
     "CREATE UNIQUE INDEX UX_MajorRouteStep ON RouteTemplateStep (TemplateID,StepOrdinal)",
     "CREATE UNIQUE INDEX UX_MajorRunStep ON RouteRunStep (RunID,StepOrdinal)",
-    "CREATE UNIQUE INDEX UX_MajorComparison ON ComparisonMember (SetID,ReportID)"
+    "CREATE UNIQUE INDEX UX_MajorComparison ON ComparisonMember (SetID,ReportID)",
+    "CREATE TABLE ReportingSeniorRecord (SeniorID COUNTER PRIMARY KEY, SeniorGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, CreatedBy LONG NOT NULL, ModifiedAt DATETIME, VersionCounter LONG)",
+    "CREATE TABLE ReportingSeniorValue (ValueID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText TEXT(255), IsNullValue BIT)",
+    "CREATE TABLE RSCABaseline (BaselineID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, Paygrade TEXT(2) NOT NULL, AsOfDate DATETIME NOT NULL, CurrentRSCA DOUBLE, TraitCount LONG NOT NULL, TraitSum DOUBLE, SourceNote TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME)",
+    "CREATE TABLE GroupRSCABaseline (GroupID LONG PRIMARY KEY, SeniorID LONG NOT NULL, BaselineID LONG, ExcludesGroup BIT)",
+    "ALTER TABLE ReportingSeniorRecord ADD CONSTRAINT FK_RSAuthor FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
+    "ALTER TABLE ReportingSeniorValue ADD CONSTRAINT FK_RSValue FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",
+    "ALTER TABLE RSCABaseline ADD CONSTRAINT FK_RSBaseline FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",
+    "ALTER TABLE RSCABaseline ADD CONSTRAINT FK_RSBaselineAuthor FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
+    "ALTER TABLE GroupRSCABaseline ADD CONSTRAINT FK_RSGroup FOREIGN KEY (GroupID) REFERENCES SummaryGroup (GroupID)",
+    "ALTER TABLE GroupRSCABaseline ADD CONSTRAINT FK_RSGroupSenior FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",
+    "ALTER TABLE GroupRSCABaseline ADD CONSTRAINT FK_RSGroupBaseline FOREIGN KEY (BaselineID) REFERENCES RSCABaseline (BaselineID)",
+    "CREATE UNIQUE INDEX UX_RSValue ON ReportingSeniorValue (SeniorID,FieldKey)",
+    "CREATE UNIQUE INDEX UX_RSGuid ON ReportingSeniorRecord (SeniorGuid)"
   ]
 }

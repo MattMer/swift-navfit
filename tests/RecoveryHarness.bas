@@ -59,6 +59,7 @@ Public Function PrepareTimerCheck() As Boolean
     id = DLookup("ReportID", "Report")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.SetFocus
+    If UXHasControl(Forms!frmEditor, "uxSection") Then Call UXSelectSection(7)
     Forms!frmEditor!txtTitle.SetFocus
     Forms!frmEditor!txtTitle.Text = "Timer captured active text"
     Forms!frmEditor.TimerInterval = 100
