@@ -59,6 +59,10 @@ Public Function TestUXSurface() As String
         Check f!txtMemberFirstName = "Separate first name", "Section switch lost pending name parts"
         Check CurrentRevision(id) = revision, "Section switch saved a revision"
     Next
+    Call UXSelectSection(8)
+    Check f!cmdRoute.Top = 3350 And f!cmdComments.Top = 3350, "Review actions are not condensed"
+    Call UXSelectSection(9)
+    Check f!lstRevisions.Width = f!uxFieldSurface.Width And f!cmdCompare.Top = 3350, "History did not use its compact workspace"
     Call UXSelectSection(0)
     Check s!txtMemberFirstName = "Separate first name", "Visible field did not reflect pending buffer"
     Check IsNull(f!txtOfficialName), "Changing name parts overwrote official full name"
@@ -72,6 +76,12 @@ Public Function TestUXSurface() As String
     Check CurrentRevision(id) = revision, "Checkpoint saved report revision"
     Call UXSelectSection(2)
     Check f!txtOfficialName = "SURFACE TESTER", "Leaving section lost active text"
+    Check s!txtOfficialName.Top - s!labelOfficialName.Top <= 320, "Caption gap is not compact"
+    Check InStr(s!labelReadinessDate.Caption, ChrW(226)) = 0, "Readiness caption contains corrupted punctuation"
+    Call UXSelectSection(4)
+    Check s!cboTrait33.Width = 1000 And s!cboTrait34.Top - s!cboTrait33.Top <= 700, "Trait rows still waste space"
+    Check s.Section(acDetail).Height < 5500, "All seven compact traits require excess vertical space"
+    Call UXSelectSection(0)
     stage = "checkboxes": Call UXSelectSection(0): s!txtOccasionPeriodic = True
     Check UXSurfaceEdited("OccasionPeriodic"), "Checkbox bridge failed"
     Check f!txtOccasionPeriodic = "Yes", "Checkbox did not map to saved flag"
@@ -111,6 +121,7 @@ Public Function TestUXSurface() As String
     stage = "group workspace": groupID = CreateSummaryGroup("Surface group", "EVAL", "E5")
     AddGroupMember groupID, id, "E5"
     DoCmd.OpenForm "frmUXGroups": Forms!frmUXGroups!lstGroups = groupID
+    Check CLng(Forms!frmUXGroups!lstGroups.Column(4)) = 1, "Group report count is incorrect"
     Check UXOpenGroup(), "Group list did not open focused workspace"
     Check Not Forms!frmMajorWorkbench!cboGroup.Visible, "Group workspace still asks users to select a second group"
     Check InStr(Forms!frmMajorWorkbench!uxGroupTitle.Caption, "Surface group") > 0, "Group title missing"

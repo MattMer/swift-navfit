@@ -37,7 +37,7 @@ Browser prototype changes are separate and are not imported.
 3. Jamie Taylor: edit complete official sections; pending values survive
    section changes. Enter an incomplete SSN and select Save draft to inspect
    the inline error and clickable summary. Correct it to save a revision.
-4. Summary groups: open the E5 group; inspect group averages and reporting
+4. Summary groups: inspect the Reports count, then open the E5 group; inspect group averages and reporting
    senior/PSG information. Comparison captures its baseline automatically.
    Select a member, stage changed marks, review proposals and Apply.
 5. Jordan Reed: local approval locks editing. Review actions operate on saved

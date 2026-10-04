@@ -194,7 +194,7 @@ Public Function UXSaveEditor() As Boolean
     UXRefreshEditor
 End Function
 Public Function UXLoadGroups() As Boolean
-    Forms!frmUXGroups!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind,g.Paygrade,Count(m.ReportID) AS Members FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID WHERE g.IsArchived=False GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade ORDER BY g.Title"
+    Forms!frmUXGroups!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind,g.Paygrade,Count(m.ReportID) AS Reports FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID WHERE g.IsArchived=False GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade ORDER BY g.Title"
     Forms!frmUXGroups!lstGroups.Requery
     UXLoadGroups = True
 End Function

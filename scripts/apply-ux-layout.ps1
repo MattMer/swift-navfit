@@ -2,6 +2,7 @@
 # controls and native services; this file does not touch an existing workspace.
 $uxData=[IO.File]::ReadAllText((Join-Path $root 'prototype/fields.mjs'))
 $uxFields=ConvertFrom-Json -InputObject (($uxData -replace '^export const fields = ','').Trim().TrimEnd(';'))
+foreach($field in $uxFields){$field.label=$field.label -replace '[\u2013\u2014]','-'}
 $uxRecovery=[IO.File]::ReadAllText((Join-Path $root 'src/modRecovery.bas'))
 $uxNames=@([regex]::Matches(([regex]::Match($uxRecovery,'(?s)ControlsList = Array\((.*?)End Function').Groups[1].Value),'"([A-Za-z0-9]+)"')|ForEach-Object{$_.Groups[1].Value})
 if($uxNames.Count -ne 78 -or $uxFields.Count -ne 78){throw 'UX field/control coverage mismatch.'}
@@ -78,7 +79,7 @@ $f.OnLoad='=UXLoadDecision()';SaveScreen $f 'frmUXDecision'
 NewScreen 'frmUXGroups' 'Summary groups' 7700;$f=$script:swiftForm;UXChrome $f
 $f.Controls('lblHeading').Top=[int](1200)
 [void](Control $f 100 'lblInfo' 400 1850 12600 500 'Choose a group to manage members, shared report blocks, review and comparison. Folders remain separate.')
-[void](Control $f 110 'lstGroups' 400 2500 12600 3700);$c=$script:swiftControl;$c.ColumnCount=5;$c.ColumnHeads=$true;$c.ColumnWidths='0;6500;2200;1800;1200';$c.OnDblClick='=UXOpenGroup()'
+[void](Control $f 110 'lstGroups' 400 2500 12600 3700);$c=$script:swiftControl;$c.ColumnCount=5;$c.ColumnHeads=$true;$c.ColumnWidths='0;5600;1700;1300;1000';$c.OnDblClick='=UXOpenGroup()'
 [void](Control $f 104 'cmdOpen' 400 6500 3700 550 'Open selected group' '=UXOpenGroup()')
 [void](Control $f 104 'cmdNew' 4600 6500 3700 550 'Create a group' '=OpenScreen("frmMajorWorkbench")')
 $f.OnLoad='=UXLoadGroups()';$f.OnActivate='=UXLoadGroups()';SaveScreen $f 'frmUXGroups'

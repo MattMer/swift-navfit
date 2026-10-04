@@ -52,10 +52,15 @@ Finished:
 End Function
 Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     If surfaceBusy Then Exit Function
-    Dim f As Access.Form, name As String
+    Dim f As Access.Form, name As String, hadError As Boolean
     Set f = Surface(): name = UXFieldControl(key)
     Forms!frmEditor.Controls(name) = UXSurfaceCanonical(key, f.Controls(name).Value)
+    hadError = Len(f.Controls("err" & key).Caption) > 0
     Call UXSurfaceValidate(key)
+    If hadError <> (Len(f.Controls("err" & key).Caption) > 0) Then
+        UXResizeEditor
+        f.Controls(name).SetFocus
+    End If
     If IsTraitKey(key) Then UXSurfaceTrait CLng(Mid$(key, 6))
     UXRefreshEditor
     UXSurfaceEdited = True
@@ -65,8 +70,8 @@ Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
     Call ShowTraitGuidance(block)
     Surface()!uxTraitGuidance = Forms!frmEditor!txtTraitGuidance
     With Surface()!uxTraitGuidance
-        .Width = (Surface().Width - 800) \ 2
-        .Left = 500 + .Width: .Top = Surface().Controls("cboTrait" & block).Top - 470
+        .Left = Surface().Controls("cboTrait" & block).Left + 1450
+        .Width = Surface().Width - .Left - 300: .Top = 200
         .Height = 2000
     End With
     UXSurfaceTrait = True
@@ -89,7 +94,11 @@ Public Function UXSurfaceValidate(ByVal key As String) As Boolean
             If Not allowed Then message = "Choose a listed value or clear this entry."
         End If
     End If
-    If UXSurfaceAvailable() And UXHasControl(Surface(), "err" & key) Then Surface().Controls("err" & key).Caption = message
+    If UXSurfaceAvailable() And UXHasControl(Surface(), "err" & key) Then
+        With Surface().Controls("err" & key)
+            .Caption = message: .Visible = (Len(message) > 0 And Surface().Controls(UXFieldControl(key)).Visible)
+        End With
+    End If
     UXSurfaceValidate = (Len(message) = 0)
 End Function
 Public Function UXSurfaceCheckAll() As Boolean
@@ -108,6 +117,7 @@ Public Function UXSurfaceCheckAll() As Boolean
     Forms!frmEditor!uxErrorList.RowSource = errors
     Forms!frmEditor!uxErrorList.Visible = Not valid
     If Not valid Then Forms!frmEditor!uxError.Caption = "Correct these entries before saving. Select an entry to open its section. Pending values are retained."
+    UXResizeEditor
     UXSurfaceCheckAll = valid
 End Function
 Public Function UXSurfaceErrorSelected() As Boolean
@@ -166,7 +176,7 @@ End Function
 Private Function UXLayoutWidth(ByVal key As String, ByVal available As Long) As Long
     Dim result As Long
     If UXFieldFlag(key) Then
-        result = 600 + Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 80
+        result = 550 + Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100
     Else
         Select Case key
             Case "OfficialName", "ReportingSeniorName", "CounselorName", "ShipStation": result = available \ 2
@@ -181,6 +191,9 @@ Private Function UXLayoutWidth(ByVal key As String, ByVal available As Long) As 
                 End If
         End Select
     End If
+    If Not UXFieldMultiline(key) And Not IsTraitKey(key) Then
+        If result < Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100 Then result = Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100
+    End If
     If result > available Then result = available
     UXLayoutWidth = result
 End Function
@@ -193,11 +206,12 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     usableWidth = Forms!frmEditor!uxFieldSurface.Width - 800
     columns = IIf(usableWidth >= 14000, 3, 2)
     If section = 4 Then columns = 2
-    cellWidth = (usableWidth - (columns - 1) * 300) \ columns
+    cellWidth = (usableWidth - 300) \ 2
+    If cellWidth > 6500 Then cellWidth = 6500
     f!uxFocusAnchor.SetFocus
     For Each c In f.Controls
         If c.Name <> "uxFocusAnchor" Then
-            c.Visible = False: c.Left = 200: c.Width = 200
+            c.Visible = False: c.Left = 200: c.Top = 200: c.Width = 200
         End If
     Next
     top = 200: x = 200
@@ -211,27 +225,40 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
             If x > 200 And (band <> priorBand Or x + fieldWidth > usableWidth + 200) Then
                 top = top + rowHeight: x = 200: rowHeight = 0
             End If
-            Set c = f.Controls("label" & key): c.Caption = UXFieldCaption(key, kind): c.Left = x: c.Top = top: c.Width = fieldWidth: c.Height = 420: c.Visible = True
-            Set c = f.Controls(UXFieldControl(key)): c.Left = x: c.Top = top + 450: c.Width = fieldWidth: c.Height = 420: c.Visible = True: c.Locked = locked Or Not applicable
+            Set c = f.Controls("label" & key): c.Caption = UXFieldCaption(key, kind): c.Left = x: c.Top = top: c.Width = fieldWidth: c.Height = 300: c.Visible = True
+            Set c = f.Controls(UXFieldControl(key)): c.Left = x: c.Top = top + 320: c.Width = fieldWidth: c.Height = 360: c.Visible = True: c.Locked = locked Or Not applicable
             c.TabIndex = tabOrder: tabOrder = tabOrder + 1
             If flag Then
-                c.Top = top: c.Width = 320: c.Height = 320
+                c.Top = top: c.Width = 280: c.Height = 280
                 With f.Controls("label" & key)
-                    .Left = x + 420: .Width = fieldWidth - 420
+                    .Left = x + 360: .Width = fieldWidth - 360
                 End With
             End If
             If multi Then c.Height = 2600
-            Set c = f.Controls("err" & key): c.Left = x: c.Top = top + IIf(flag, 350, 890): c.Width = fieldWidth: c.Height = 250: c.Visible = True
+            Set c = f.Controls("err" & key): c.Left = x: c.Top = top + IIf(flag, 300, 700): c.Width = fieldWidth: c.Height = 250: c.Visible = True
             If Not applicable Then c.Caption = "Not used on this report type; stored value retained." Else UXSurfaceValidate key
-            If multi Then c.Top = top + 3100
+            If multi Then c.Top = top + 2960
             If multi Then
-                rowHeight = 3500
+                rowHeight = 3240
             ElseIf flag Then
-                If rowHeight < 650 Then rowHeight = 650
+                If rowHeight < 380 Then rowHeight = 380
             Else
-                If rowHeight < 1200 Then rowHeight = 1200
+                If rowHeight < 760 Then rowHeight = 760
             End If
-            x = x + fieldWidth + 250: priorBand = band
+            If section = 4 Then
+                With f.Controls("label" & key)
+                    .Width = cellWidth - 1450: .Height = 360
+                End With
+                With f.Controls(UXFieldControl(key))
+                    .Left = x + cellWidth - 1300: .Top = top: .Width = 1000: .Height = 360
+                End With
+                f.Controls("err" & key).Top = top + 390
+                rowHeight = 600
+            End If
+            If Len(f.Controls("err" & key).Caption) > 0 Then
+                If rowHeight < f.Controls("err" & key).Top - top + 300 Then rowHeight = f.Controls("err" & key).Top - top + 300
+            End If
+            x = x + fieldWidth + 160: priorBand = band
         End If
     Next
     top = top + rowHeight + 200
@@ -240,7 +267,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
         f!uxTraitGuidance.Visible = True: f!uxTraitGuidance.TabIndex = tabOrder
         f!uxTraitGuidance.Left = 200 + cellWidth + 300
         f!uxTraitGuidance.Width = cellWidth
-        top = top + 2000: UXSurfaceTrait 33
+        UXSurfaceTrait 33
     End If
     If section = 5 Then
         f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Visible = True
@@ -257,7 +284,7 @@ Failed:
 End Function
 
 Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
-    Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long
+    Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant
     If layoutBusy Or Not UXSurfaceAvailable() Then Exit Function
     On Error GoTo Failed
     layoutBusy = True: Set f = Forms!frmEditor
@@ -282,7 +309,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!uxError.Left = contentLeft: f!uxError.Top = 3250: f!uxError.Width = contentWidth
     f!uxErrorList.Left = contentLeft: f!uxErrorList.Top = 3550: f!uxErrorList.Width = contentWidth
     f!uxFieldSurface.Left = contentLeft
-    f!uxFieldSurface.Top = IIf(surfaceSection = 1, 4100, 4000)
+    f!uxFieldSurface.Top = IIf(surfaceSection = 1, 4100, IIf(f!uxErrorList.Visible, 4100, 3350))
     f!uxFieldSurface.Width = contentWidth
     f!uxFieldSurface.Height = footer - f!uxFieldSurface.Top - 550
     f!lblSaved.Left = contentLeft: f!lblSaved.Top = footer - 400: f!lblSaved.Width = contentWidth
@@ -290,6 +317,18 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!cmdSave.Left = width - 2850: f!cmdSave.Top = footer: f!cmdSave.Height = 500
     f!uxDirty.Left = contentLeft + 2600: f!uxDirty.Top = footer: f!uxDirty.Width = contentWidth - 5500
     f!lblRecovery.Left = contentLeft: f!lblRecovery.Top = footer + 650: f!lblRecovery.Width = contentWidth
+    If surfaceSection = 8 Then
+        actions = Array("cmdRoute", "cmdComments", "cmdChecklist")
+        For i = 0 To 2
+            With f.Controls(actions(i))
+                .Left = contentLeft + i * 2500: .Top = 3350: .Width = 2300: .Height = 420
+            End With
+        Next
+    ElseIf surfaceSection = 9 Then
+        f!cmdCompare.Left = contentLeft: f!cmdCompare.Top = 3350: f!cmdCompare.Width = 2300: f!cmdCompare.Height = 420
+        f!cmdRestore.Left = contentLeft + 2500: f!cmdRestore.Top = 3350: f!cmdRestore.Width = 2300: f!cmdRestore.Height = 420
+        f!lstRevisions.Left = contentLeft: f!lstRevisions.Top = 3950: f!lstRevisions.Width = contentWidth: f!lstRevisions.Height = footer - 4500
+    End If
     f!uxSeniorRecord.Left = contentLeft: f!uxSeniorRecord.Top = 3500
     f!uxUseSenior.Left = contentLeft + 5000: f!uxUseSenior.Top = 3500
     UXSurfaceSection surfaceSection, Not f!cmdSave.Enabled

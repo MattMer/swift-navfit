@@ -48,6 +48,7 @@ Public Function TestUXDemo() As String
     stage = "groups": DoCmd.OpenForm "frmUXGroups"
     groupID = DLookup("GroupID", "SummaryGroup", "Paygrade='E5'")
     Forms!frmUXGroups!lstGroups = groupID
+    Check CLng(Forms!frmUXGroups!lstGroups.Column(4)) = DCount("*", "GroupMember", "GroupID=" & groupID), "Demo group report count incorrect"
     Check UXOpenGroup(), "Demo group failed to open"
     Check InStr(Forms!frmMajorWorkbench!uxGroupMeta.Caption, "PSG RSCA") > 0, "Group context averages missing"
     Set average = RSGroupPSG(groupID)

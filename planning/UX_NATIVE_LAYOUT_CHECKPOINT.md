@@ -1,6 +1,36 @@
 # Native layout checkpoint - 2026-10-04
 
-## Latest checkpoint: compact report block rows
+## Latest checkpoint: denser sections and visible group counts
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r13.accdb`.
+SHA256: `937C79C3D4CA64FC119694F923D7CC3B29C338E7E5281D8B05777F1ADEB86FC3`.
+Older preview files and their edits remain unchanged.
+
+All official sections use closer label/input spacing and shorter row pitches.
+Checkbox captions get sufficient horizontal room, and empty inline errors are
+hidden. Actual errors expand their row so messages do not overlap later fields;
+showing a save-error summary also moves the field panel below the summary.
+Trait captions and compact mark selectors share rows, with fixed adjacent
+guidance. Unused vertical extents are reset to allow all seven traits to fit
+without blank scrolling space from hidden narrative controls. Review actions
+share one compact row; History actions sit above a viewport-sized revision list.
+
+The report-count query already existed, but total column widths exceeded the
+Summary groups list width and hid its last column. The visible final column is
+now named Reports and counts current GroupMember records (including NOB and
+archived reports that remain members). It is not a saved comparison roster count.
+Widths now fit the list. Existing group-load/activation refresh behavior remains.
+
+Generated label punctuation is normalized to ASCII before Access imports the
+VBA source, correcting the UTF-8/ANSI corrupted readiness captions seen in the
+user screenshots. Labels size to their captions to reduce clipping.
+
+Verification: 108 surface/workspace assertions, including tight field gaps,
+compact seven-trait layout, Review/History positioning, captions, group counts,
+validation and recovery; 33 populated demo assertions; both startup paths.
+Native visual/DPI and screen-reader acceptance remain pending.
+
+## Previous checkpoint: compact report block rows
 
 Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r11.accdb`.
 SHA256: `2BCBE20517D1B2ABD44383167697F0C2E55931113AB1EE48210934A033AE7961`.
