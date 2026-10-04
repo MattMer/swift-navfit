@@ -2,7 +2,9 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Current prototype: 0.20.0 · schema 19.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+**Current prototype: 0.21.0 · schema 20.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+
+See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups, reviewed defaults/batches, multi-step routes, meeting proposals, limited Navy checks, structured PDF import and guided backup/restore.
 
 ## Current features
 
@@ -25,7 +27,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the blank `.accdb` from the [0.20.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.20.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the blank `.accdb` from the [0.21.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.21.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 
@@ -70,6 +72,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requ
 - [Architecture and implementation plan](planning/IMPLEMENTATION_PLAN.md)
 - [Current release manifest](output/MANIFEST.json)
 
-The 0.20.0 build passed 2001 behavioral assertions and 218 reference checks, plus exact narrative-import/provenance checks. Schema-18-to-19, schema-19-to-19 and schema-5-to-19 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
+The 0.21.0 build passed 2001 behavioral assertions and 218 reference checks, plus exact narrative-import/provenance checks. Schema-18-to-19, schema-19-to-19 and schema-5-to-19 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.

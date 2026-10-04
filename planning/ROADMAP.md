@@ -1,3 +1,7 @@
+# 0.21.0 foundations checkpoint
+
+Summary-group snapshots, defaults and atomic official-field batches, multi-step local approval routes, meeting snapshots/proposals, limited source-linked validation, eight-field interactive PDF import and guided backup/restore are implemented. See [scope and limits](MAJOR_FOUNDATIONS_GUIDE.md). Earlier priorities below describe the broader intended scope; foundations do not complete full grouping, validation or interchange.
+
 # Progress and roadmap
 
 Current prototype: **0.20.0**, Swift schema **19**. This is a local Microsoft Access app under development. Printed-layout work is deferred. The app does not yet provide full NAVFIT interchange or Navy policy validation.

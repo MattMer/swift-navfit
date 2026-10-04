@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.20.0-structured-names.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.21.0-major-foundations.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -86,9 +86,11 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.20.0-prototype',19,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.21.0-prototype',20,'Unverified - NAVFIT exchange disabled')"
     )
-    foreach ($sql in $definitions) { $db.Execute($sql,128) }
+    $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
+    $definitions += $majorSchema.SQL
+    foreach ($sql in $definitions) { try { $db.Execute($sql,128) } catch { throw ($sql + "`n" + $_.Exception.Message) } }
     for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
         $table=$db.TableDefs.Item($ti)
         if($table.Name.StartsWith('MSys')) {continue}
@@ -97,6 +99,16 @@ try {
             if(($field.Type -eq 10 -or $field.Type -eq 12) -and -not $field.Required) {$field.AllowZeroLength=$true}
         }
     }
+    [void][IO.Directory]::CreateDirectory((Join-Path $root 'build'))
+    $workerLines=Get-Content -LiteralPath (Join-Path $root 'scripts/workspace-backup.ps1')
+    $workerSource=@('Attribute VB_Name = "modBackupWorker"','Option Explicit','Public Function BackupWorkerScript() As String','    Dim result As String')
+    foreach($line in $workerLines){$workerSource+='    result = result & "'+$line.Replace('"','""')+'" & vbCrLf'}
+    $workerSource+=@('    BackupWorkerScript = result','End Function')
+    $workerPath=Join-Path $root 'build/modBackupWorker.bas'
+    [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
+    $app.LoadFromText(5,'modBackupWorker',$workerPath)
+    $app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))
+    foreach($majorModule in @('modPDFImport','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
     $app.LoadFromText(5,'modBulkFolders',(Join-Path $root 'src\modBulkFolders.bas'))
     $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
     $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
@@ -157,10 +169,10 @@ try {
     [void](Control $f 109 'txtProfile' 3300 2700 7000 420)
     [void](Control $f 104 'cmdSetup' 3300 3550 4000 550 'Create workspace' '=SaveSetup()')
     SaveScreen $f 'frmSetup'
-    NewScreen 'frmHome' 'Swift NAVFIT' 7800; $f=$script:swiftForm
+    NewScreen 'frmHome' 'Swift NAVFIT' 10200; $f=$script:swiftForm
     [void](Control $f 100 'lblCommand' 400 1000 12400 450 '')
     [void](Control $f 100 'lblProfile' 400 1550 12400 450 '')
-    [void](Control $f 100 'lblPrototype' 400 2200 12400 800 'Draft prototype. Administrative block editing, policy validation, PDF import and NAVFIT exchange are not available in this build.')
+    [void](Control $f 100 'lblPrototype' 400 2200 12400 800 'Local draft prototype. Reviewed changes, saved-revision routes, frozen groups and structured PDF import are available. Full Navy policy validation and NAVFIT exchange remain under development.')
     [void](Control $f 104 'cmdLibrary' 400 3300 4000 650 'Open draft library' '=OpenScreen("frmLibrary")')
     [void](Control $f 104 'cmdSupport' 4900 3300 4000 650 'Support and limitations' '=OpenScreen("frmSupport")')
     [void](Control $f 100 'lblUse' 400 4400 12400 700 'Use one person at a time. Open this file exclusively. Close Access before making a backup copy. This prototype does not enforce exclusive use.')
@@ -169,6 +181,9 @@ try {
     [void](Control $f 104 'cmdSnippets' 400 6100 5500 550 'Narrative snippets' '=OpenScreen("frmSnippets")')
     [void](Control $f 104 'cmdOperations' 6500 6100 6300 550 'Operations and import undo' '=OpenScreen("frmOperations")')
     [void](Control $f 104 'cmdMyWork' 400 6800 12600 550 'My Work and local contributors' '=OpenMyWork()')
+    [void](Control $f 104 'cmdMajor' 400 7500 12600 550 'Summary groups, batches, routes and meetings' '=OpenScreen("frmMajorWorkbench")')
+    [void](Control $f 104 'cmdPDF' 400 8250 12600 550 'Import structured PDF (Acrobat required)' '=OpenScreen("frmPDFImport")')
+    [void](Control $f 104 'cmdBackup' 400 8950 12600 550 'Verified backup and restore' '=OpenScreen("frmBackup")')
     $f.OnLoad='=LoadHome()'; $f.OnActivate='=LoadHome()'; SaveScreen $f 'frmHome'
     NewScreen 'frmLibrary' 'Report workspace' 8900; $f=$script:swiftForm
     [void](Control $f 100 'lblFolders' 400 1050 2800 350 'Organizational folders')
@@ -606,6 +621,61 @@ try {
     [void](Control $f 104 'cmdApply' 4500 8800 3500 600 'Apply previewed batch' '=ApplyFolderBatchUI()')
     [void](Control $f 104 'cmdLibrary' 8500 8800 4300 600 'Return to library' '=OpenScreen("frmLibrary")')
     $f.OnLoad='=LoadBulkFolders()'; SaveScreen $f 'frmBulkFolders'
+    NewScreen 'frmMajorWorkbench' 'Groups, reviewed changes and meetings' 22500; $f=$script:swiftForm
+    $f.ScrollBars=2
+    [void](Control $f 100 'lblInfo' 400 950 12600 650 'Select reports, then create a group, preview a field change, route a saved revision or propose a meeting change. Profiles record attribution; they do not authenticate reviewers.')
+    [void](Control $f 110 'lstReports' 400 1700 12600 2300); $c=$script:swiftControl; $c.ColumnCount=4; $c.ColumnWidths='0;4200;4800;2000'; $c.MultiSelect=2
+    [void](Control $f 100 'lblTitle' 400 4100 1800 500 'Group / route / meeting title')
+    [void](Control $f 109 'txtTitle' 2200 4100 6200 450)
+    [void](Control $f 111 'cboKind' 8600 4100 1900 450); $c=$script:swiftControl; $c.RowSourceType='Value List'; $c.RowSource='EVAL;CHIEFEVAL;FITREP'; $c.LimitToList=$true
+    [void](Control $f 111 'cboPaygrade' 10700 4100 2300 450); $c=$script:swiftControl; $c.RowSourceType='Value List'; $c.RowSource='E1;E2;E3;E4;E5;E6;E7;E8;E9;W1;W2;W3;W4;W5;O1;O2;O3;O4;O5;O6'; $c.LimitToList=$true
+    $selectors=@(@('cboGroup','Group',4750),@('cboSnapshot','Frozen roster',5350),@('cboBatch','Change batch',5950),@('cboTemplate','Route template',6550),@('cboRun','Review route',7150),@('cboMeeting','Meeting',7750),@('cboProposal','Proposal',8350),@('cboFolder','Default folder',8950))
+    foreach($item in $selectors){[void](Control $f 100 ('lbl'+$item[0]) 400 ($item[2]+50) 1800 350 $item[1]);[void](Control $f 111 $item[0] 2200 $item[2] 10600 450);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;10000';$c.LimitToList=$true}
+    [void](Control $f 100 'lblField' 400 9600 1600 350 'Field / default scope')
+    [void](Control $f 111 'cboField' 2200 9550 6500 450);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.LimitToList=$true
+    [void](Control $f 111 'cboScope' 9000 9550 3800 450);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='Command;Folder;Group;Report';$c.LimitToList=$true
+    [void](Control $f 100 'lblValue' 400 10200 1600 350 'Proposed value')
+    [void](Control $f 109 'txtValue' 2200 10150 9000 700);$script:swiftControl.ScrollBars=2
+    [void](Control $f 106 'chkNull' 11500 10200 300 350);$script:swiftControl.DefaultValue='False'
+    [void](Control $f 100 'lblNull' 11900 10200 900 350 'Clear to null')
+    [void](Control $f 100 'lblNote' 400 11000 1600 650 'Reason / attestation / decision')
+    [void](Control $f 109 'txtNote' 2200 10950 10600 750);$script:swiftControl.ScrollBars=2
+    [void](Control $f 100 'lblReviewers' 400 11850 4000 450 'Choose route reviewers in order')
+    [void](Control $f 111 'cboReviewer' 4700 11800 3500 450);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;3300';$c.LimitToList=$true
+    [void](Control $f 104 'cmdAddReviewer' 8400 11800 2100 450 'Add reviewer step' '=MajorAction("AddReviewer")')
+    [void](Control $f 104 'cmdClearReviewers' 10700 11800 2100 450 'Clear reviewer steps' '=MajorAction("ClearReviewers")')
+    [void](Control $f 109 'txtReviewers' 10 10 100 100);$script:swiftControl.Visible=$false
+    [void](Control $f 109 'txtReviewerNames' 400 12450 7000 450);$script:swiftControl.Locked=$true
+    [void](Control $f 100 'lblOrder' 7700 12450 2000 450 'Meeting order (report IDs)')
+    [void](Control $f 109 'txtMeetingOrder' 10000 12450 2800 450)
+    $actions=@(@('CreateGroup','Create group'),@('AddMembers','Add selected reports'),@('RemoveMember','Remove selected report'),@('FreezeGroup','Attest and freeze roster'),@('PreviewBatch','Preview field change'),@('ShowBatch','Show batch values'),@('ApplyBatch','Apply reviewed batch'),@('PreviewUndo','Preview batch undo'),@('SaveDefault','Save scoped default'),@('SuggestDefault','Suggest inherited default'),@('CreateRoute','Create route template'),@('StartRoute','Start selected route'),@('ShowRoute','Show route steps'),@('AcceptStep','Accept current step'),@('ReturnStep','Return current step'),@('CancelRoute','Cancel route'),@('CreateMeeting','Create frozen meeting'),@('ShowMeeting','Show frozen meeting'),@('ProposeField','Propose field change'),@('ApplyProposal','Apply selected proposal'),@('RunChecks','Run limited Navy draft checks'),@('ApproveRoute','Approve saved revision locally'),@('ReopenApproval','Reopen local approval'),@('OrderMeeting','Set meeting display order'),@('ShowProposals','Show meeting proposals'),@('ApplySelectedProposals','Apply selected proposals'))
+    for($i=0;$i -lt $actions.Count;$i++){[void](Control $f 104 ('cmd'+$actions[$i][0]) (400+($i%4)*3200) (13100+[math]::Floor($i/4)*600) 3000 450 $actions[$i][1] ('=MajorAction("'+$actions[$i][0]+'")'))}
+    [void](Control $f 110 'lstDetails' 400 17500 12600 1100);$c=$script:swiftControl;$c.ColumnCount=6;$c.ColumnWidths='1000;1800;2200;3500;2300;1600';$c.MultiSelect=2;$c.OnClick='=ShowMajorDetails()'
+    [void](Control $f 109 'txtDetail' 400 18750 12600 1800);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+    [void](Control $f 100 'lblStatus' 400 20800 12600 600 'Ready. Select a detail row to review its complete values before applying changes.')
+    [void](Control $f 104 'cmdHome' 400 21700 12600 450 'Return home' '=OpenScreen("frmHome")')
+    $f.OnLoad='=LoadMajorWorkbench()'; SaveScreen $f 'frmMajorWorkbench'
+    NewScreen 'frmPDFImport' 'Import structured NAVPERS PDF' 9600; $f=$script:swiftForm
+    [void](Control $f 100 'lblInfo' 400 950 12600 850 'Requires Adobe Acrobat automation. Supports the supplied May 2025 EVAL, CHIEF EVAL and FITREP form revisions. Previewed fields: name, grade/rate, designation, identifier, ship/station, report dates and official comments. Other PDF values are retained as XML for review. Flattened PDFs require manual entry.')
+    [void](Control $f 104 'cmdChoose' 400 1950 12600 550 'Choose PDF and preview its values' '=ChoosePDFPreview()')
+    [void](Control $f 109 'txtPreview' 400 2700 12600 3800);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+    [void](Control $f 100 'lblCentury' 400 6800 5500 400 'Century for six-digit report dates (explicit choice)')
+    [void](Control $f 111 'cboCentury' 6200 6750 6600 450);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='19;20;21';$c.LimitToList=$true
+    [void](Control $f 100 'lblIdentifier' 400 7450 5500 400 'Combined identifier field means')
+    [void](Control $f 111 'cboIdentifier' 6200 7400 6600 450);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='SSN;DoDID;Retain only';$c.LimitToList=$true
+    [void](Control $f 104 'cmdImport' 400 8100 12600 550 'Create a draft from reviewed values' '=ImportPDFUI()')
+    [void](Control $f 100 'lblStatus' 400 8800 12600 400 'No PDF selected. Source PDFs are read only.')
+    [void](Control $f 104 'cmdHome' 400 9250 12600 350 'Return home' '=OpenScreen("frmHome")')
+    SaveScreen $f 'frmPDFImport'
+    NewScreen 'frmBackup' 'Verified workspace backup and restore' 10300; $f=$script:swiftForm
+    [void](Control $f 100 'lblInfo' 400 950 12600 1250 'Backup checkpoints pending editor values and closes this Access session before copying the whole workspace. Restore copies a closed backup to a new file. Existing files are never overwritten. The worker verifies the SHA256 byte hash and opens the copied database read only. A verification file is written beside the new database; reopen Swift NAVFIT to read the result.')
+    [void](Control $f 104 'cmdBackup' 400 2450 6000 550 'Checkpoint, close Access and back up' '=GuidedWorkspaceCopy("Backup")')
+    [void](Control $f 104 'cmdRestore' 6800 2450 6000 550 'Close Access and restore to a new file' '=GuidedWorkspaceCopy("Restore")')
+    [void](Control $f 104 'cmdStatus' 400 3250 12600 550 'Read a copy verification result' '=ShowCopyVerification()')
+    [void](Control $f 109 'txtResult' 400 4150 12600 4400);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+    [void](Control $f 100 'lblStatus' 400 8800 12600 650 'Requires Windows PowerShell and Access DAO. Other Access sessions must also release the source. Pending checkpoint values still require deliberate recovery after reopening. Runtime and other workstations remain untested.')
+    [void](Control $f 104 'cmdHome' 400 9700 12600 450 'Return home' '=OpenScreen("frmHome")')
+    SaveScreen $f 'frmBackup'
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)

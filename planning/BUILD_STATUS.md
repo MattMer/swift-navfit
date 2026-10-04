@@ -1,3 +1,11 @@
+# Current delivery — major foundations checkpoint
+
+Swift NAVFIT 0.21.0-prototype, schema 20, output/Swift_NAVFIT_0.21.0-major-foundations.accdb. Adds explicit summary groups/snapshots, defaults and atomic field batches with guarded undo, ordered local review/approval routes, frozen meeting comparisons/proposals, limited source-linked Navy checks, eight-field interactive PDF import and guided closed-file backup/restore. See MAJOR_FOUNDATIONS_GUIDE.md for scope, dependencies and remaining work.
+
+Verification: 24 regression suites passed on candidate9. The final source build passed smoke, 44 workflow, 97 rule, 28 native PDF and six workbench assertions, plus 103 control-bound checks and guided-copy verification. Combined covered assertions: 2176; existing 218 reference checks and nine editor layout checks retained. Schema 5-to-20, 19-to-20 and populated 20-to-20 migrations preserve rows/fields, source hashes and reopen. All 38 distribution user tables are empty; delivery is byte-identical to candidate11 (SHA256 C4A7AEA4A6139AF0A28B71A018880B7A487FD0F6D5E4479834EAAA16B8B9555A).
+
+Full native interchange/identity/three-way reconciliation, remaining field mappings, complete Navy group eligibility/validation, Runtime/x86 and workstation verification remain pending. PDF appearance is unverified; UX and printed layout are deferred. A target-app mapping probe awaits user observations.
+
 # Current delivery - three structured name features
 
 Swift NAVFIT 0.20.0-prototype, schema 19, output/Swift_NAVFIT_0.20.0-structured-names.accdb. Adds member first/middle/last/suffix, reporting-senior last/initials and counselor last/initials. All ten parts are explicit and separate from existing full names. Apply checkpoints pending values; Save draft commits all 78 fields atomically. See STRUCTURED_NAMES_GUIDE.md.

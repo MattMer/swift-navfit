@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.20.0-prototype"
-Public Const SCHEMA_VERSION As Long = 19
+Public Const APP_VERSION As String = "0.21.0-prototype"
+Public Const SCHEMA_VERSION As Long = 20
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -210,10 +210,11 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
-            r.Close: w.Rollback: CommitDraft = reportID: Exit Function
+            r.Close: w.CommitTrans: CommitDraft = reportID: Exit Function
         End If
         parentID = r!CurrentRevisionID
-        seq = Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & reportID), 0) + 1
+        Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
+        seq = Nz(rev.Fields(0).Value, 0) + 1: rev.Close: Set rev = Nothing
         r.Edit
     End If
     r!FormKind = formKind: r!Title = title: r!MemberName = memberName
@@ -237,7 +238,11 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
 Failed:
     Dim failure As Long, explanation As String
     failure = Err.Number: explanation = Err.Description
+    On Error Resume Next
     w.Rollback
+    If Not r Is Nothing Then r.Close
+    If Not rev Is Nothing Then rev.Close
+    On Error GoTo 0
     Err.Raise failure, "CommitDraft", explanation
 End Function
 

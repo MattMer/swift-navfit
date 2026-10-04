@@ -6,6 +6,7 @@ Private Function SqlType(ByVal f As DAO.Field) As String
     Select Case f.Type
         Case dbBoolean: SqlType = "Bit"
         Case dbLong: SqlType = "Long"
+        Case dbDouble: SqlType = "Double"
         Case dbDate: SqlType = "DateTime"
         Case dbText: SqlType = "Text(" & f.Size & ")"
         Case dbMemo: SqlType = "LongText"
@@ -25,9 +26,10 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 19 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
-    If DLookup("SchemaVersion", "AppMetadata") <> 19 Then Err.Raise vbObjectError + 302, , "Target schema must be 19."
-    tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent")
+    If ver < 1 Or ver > 20 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If DLookup("SchemaVersion", "AppMetadata") <> 20 Then Err.Raise vbObjectError + 302, , "Target schema must be 20."
+    tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
+        "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             known = (table.Name = "AppMetadata")
@@ -42,6 +44,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Next
     w.BeginTrans: trans = True
     For Each n In tables
+        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextTable
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextTable
         If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextTable
         If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextTable
@@ -92,6 +95,7 @@ NextTable:
         q.Close: r.Close
     End If
     For Each n In tables
+        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextCheck
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextCheck
         If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextCheck
         If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextCheck
@@ -120,7 +124,7 @@ NextTable:
 NextCheck:
     Next
     w.CommitTrans: trans = False: s.Close: reader.Close
-    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to 19"
+    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to 20"
     Exit Function
 Failed:
     message = Err.Description
@@ -129,4 +133,11 @@ Failed:
     If Not s Is Nothing Then s.Close
     If Not reader Is Nothing Then reader.Close
     MigrateWorkspace = "FAIL: " & stage & ": " & message
+End Function
+
+Private Function IsMajorTable(ByVal name As String) As Boolean
+    Dim key As Variant
+    For Each key In Array("SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding")
+        If key = name Then IsMajorTable = True: Exit Function
+    Next
 End Function
