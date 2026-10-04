@@ -54,8 +54,8 @@ Browser prototype changes are separate and are not imported.
 The rebuild preserves all 78 report fields, schema 21 and existing transaction,
 revision and recovery services. Native section fields are an unbound scrollable
 surface bridged to the original editor buffer. The report editor fills the
-window and reflows fields into two or three columns; save actions stay near
-the bottom. Active text is preserved when resizing. Official captions vary by report
+window and reflows content-sized report block rows; related checkboxes share
+compact rows with adjacent labels, and save actions stay near the bottom. Active text is preserved when resizing. Official captions vary by report
 type. Name parts remain independent from full-name fields; legacy DoDID values
 are retained in storage but hidden from normal editing.
 

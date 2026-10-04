@@ -141,9 +141,52 @@ Public Function UXSurfaceRefresh() As Boolean
 Finished:
     surfaceBusy = False
 End Function
+Private Function UXLayoutBand(ByVal key As String) As String
+    Select Case key
+        Case "MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix": UXLayoutBand = "name-parts"
+        Case "OfficialName", "RankRate", "Designator", "MemberSSN": UXLayoutBand = "member"
+        Case "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW": UXLayoutBand = "component"
+        Case "UnitUIC", "ShipStation", "PromotionStatus", "DateReported": UXLayoutBand = "command"
+        Case "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial": UXLayoutBand = "occasion"
+        Case "PeriodStart", "PeriodEnd": UXLayoutBand = "period"
+        Case "ObservationStatus", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander": UXLayoutBand = "report-kind"
+        Case "ReadinessDate", "ReadinessSummary", "ReadinessDetail", "BilletSubcategory": UXLayoutBand = "readiness"
+        Case "RetentionYes", "RetentionNo": UXLayoutBand = "retention"
+        Case "StatementYes", "StatementNo": UXLayoutBand = "statement"
+        Case Else: UXLayoutBand = "details"
+    End Select
+End Function
+Private Function UXLayoutKeys(ByVal section As Long, ByVal kind As String) As Variant
+    If section = 0 Then
+        UXLayoutKeys = Array("MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix", "OfficialName", "RankRate", "Designator", "MemberSSN", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "UnitUIC", "ShipStation", "PromotionStatus", "DateReported", "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "PeriodStart", "PeriodEnd", "ObservationStatus", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "ReadinessDate", "ReadinessSummary", "ReadinessDetail", "BilletSubcategory")
+    Else
+        UXLayoutKeys = UXSectionKeys(section, kind)
+    End If
+End Function
+Private Function UXLayoutWidth(ByVal key As String, ByVal available As Long) As Long
+    Dim result As Long
+    If UXFieldFlag(key) Then
+        result = 600 + Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 80
+    Else
+        Select Case key
+            Case "OfficialName", "ReportingSeniorName", "CounselorName", "ShipStation": result = available \ 2
+            Case "MemberMiddleInitial", "MemberSuffix", "RankRate", "UnitUIC", "ReportingSeniorGrade", "ReportingSeniorUIC", "ReportingSeniorState": result = 1600
+            Case Else
+                If UXFieldDate(key) Then
+                    result = 2300
+                ElseIf UXFieldLimit(key) > 0 And UXFieldLimit(key) <= 12 Then
+                    result = 2200
+                Else
+                    result = 3500
+                End If
+        End Select
+    End If
+    If result > available Then result = available
+    UXLayoutWidth = result
+End Function
 Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean) As Boolean
     On Error GoTo Failed
-    Dim f As Access.Form, c As Access.Control, key As Variant, kind As String, row As Long, slot As Long, top As Long, x As Long, multi As Boolean, applicable As Boolean, tabOrder As Long, columns As Long, cellWidth As Long, usableWidth As Long
+    Dim f As Access.Form, c As Access.Control, key As Variant, kind As String, row As Long, slot As Long, top As Long, x As Long, multi As Boolean, applicable As Boolean, tabOrder As Long, columns As Long, cellWidth As Long, usableWidth As Long, band As String, priorBand As String, rowHeight As Long, fieldWidth As Long, flag As Boolean
     Set f = Surface(): surfaceSection = section: kind = Nz(Forms!frmEditor!cboKind, "EVAL")
     'Access keeps a subform's last focused field even when focus leaves the
     'parent. Move to a permanent anchor before hiding any section controls.
@@ -157,28 +200,42 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
             c.Visible = False: c.Left = 200: c.Width = 200
         End If
     Next
-    For Each key In UXSectionKeys(section, kind)
+    top = 200: x = 200
+    For Each key In UXLayoutKeys(section, kind)
         If Not UXFieldLegacy(key) And key <> "FormKind" Then
-            multi = UXFieldMultiline(key): applicable = UXFieldApplies(key, kind)
-            If multi And slot Mod columns <> 0 Then slot = slot + columns - (slot Mod columns)
-            top = 200 + (slot \ columns) * 1250: x = 200 + (slot Mod columns) * (cellWidth + 300)
-            Set c = f.Controls("label" & key): c.Caption = UXFieldCaption(key, kind): c.Left = x: c.Top = top: c.Width = cellWidth: c.Height = 450: c.Visible = True
-            Set c = f.Controls(UXFieldControl(key)): c.Left = x: c.Top = top + 470: c.Width = cellWidth: c.Height = 450: c.Visible = True: c.Locked = locked Or Not applicable
-            c.TabIndex = tabOrder: tabOrder = tabOrder + 1
-            If UXFieldFlag(key) Then c.Width = 320: c.Height = 320
-            If multi Then c.Width = usableWidth: c.Height = 2600: f.Controls("label" & key).Width = usableWidth
-            Set c = f.Controls("err" & key): c.Left = x: c.Top = top + 950: c.Width = cellWidth: c.Height = 250: c.Visible = True
-            If Not applicable Then c.Caption = "Not used on this report type; stored value retained." Else UXSurfaceValidate key
-            If multi Then
-                c.Top = top + 3120: c.Width = usableWidth
-                slot = slot + columns * 3
-            Else
-                slot = slot + IIf(section = 4, columns, 1)
+            multi = UXFieldMultiline(key): applicable = UXFieldApplies(key, kind): flag = UXFieldFlag(key)
+            band = UXLayoutBand(CStr(key))
+            fieldWidth = UXLayoutWidth(CStr(key), usableWidth)
+            If section = 4 Then fieldWidth = cellWidth: band = CStr(key)
+            If multi Then fieldWidth = usableWidth: band = CStr(key)
+            If x > 200 And (band <> priorBand Or x + fieldWidth > usableWidth + 200) Then
+                top = top + rowHeight: x = 200: rowHeight = 0
             End If
+            Set c = f.Controls("label" & key): c.Caption = UXFieldCaption(key, kind): c.Left = x: c.Top = top: c.Width = fieldWidth: c.Height = 420: c.Visible = True
+            Set c = f.Controls(UXFieldControl(key)): c.Left = x: c.Top = top + 450: c.Width = fieldWidth: c.Height = 420: c.Visible = True: c.Locked = locked Or Not applicable
+            c.TabIndex = tabOrder: tabOrder = tabOrder + 1
+            If flag Then
+                c.Top = top: c.Width = 320: c.Height = 320
+                With f.Controls("label" & key)
+                    .Left = x + 420: .Width = fieldWidth - 420
+                End With
+            End If
+            If multi Then c.Height = 2600
+            Set c = f.Controls("err" & key): c.Left = x: c.Top = top + IIf(flag, 350, 890): c.Width = fieldWidth: c.Height = 250: c.Visible = True
+            If Not applicable Then c.Caption = "Not used on this report type; stored value retained." Else UXSurfaceValidate key
+            If multi Then c.Top = top + 3100
+            If multi Then
+                rowHeight = 3500
+            ElseIf flag Then
+                If rowHeight < 650 Then rowHeight = 650
+            Else
+                If rowHeight < 1200 Then rowHeight = 1200
+            End If
+            x = x + fieldWidth + 250: priorBand = band
         End If
     Next
+    top = top + rowHeight + 200
     f.Width = Forms!frmEditor!uxFieldSurface.Width - 300
-    top = 200 + ((slot + columns - 1) \ columns) * 1250
     If section = 4 Then
         f!uxTraitGuidance.Visible = True: f!uxTraitGuidance.TabIndex = tabOrder
         f!uxTraitGuidance.Left = 200 + cellWidth + 300

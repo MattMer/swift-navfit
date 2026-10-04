@@ -1,6 +1,32 @@
 # Native layout checkpoint - 2026-10-04
 
-## Latest checkpoint: report editor uses available window space
+## Latest checkpoint: compact report block rows
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r11.accdb`.
+SHA256: `2BCBE20517D1B2ABD44383167697F0C2E55931113AB1EE48210934A033AE7961`.
+Previous preview files remain unchanged.
+
+Equal-size field cells are replaced by content-sized rows. Component flags,
+occasion flags, NOB/report-type flags, retention choices and statement choices
+share compact rows with checkbox captions beside their controls. Member details
+follow report block groups: name/rate/designator/SSN, component, command details,
+occasion, period, report kind and readiness. Structured name parts remain a
+separate compact row within the Member section; stored full names remain independent.
+Short fields use narrower widths, long names use wider widths, narratives span
+the panel, and trait guidance retains its adjacent area. Rows wrap when needed.
+
+The supplied current CHIEFEVAL PDF is dynamic XFA, so the available page renderer
+shows its placeholder. Read-only XFA template inspection confirmed grouping and
+relative widths (including 120.65 mm name versus 19.05 mm rating, clustered
+component flags, occasion/period and NOB/report-type areas). This is interaction
+layout inspired by report blocks, not a claim of verified printed layout.
+
+Verification: 101 native surface/workspace assertions, including compact checkbox
+rows, adjacent labels, resizing, input bounds and preservation of pending text;
+32 populated demo assertions; normal-security and enabled-content startup checks.
+Manual native visual, DPI and screen-reader acceptance remain pending.
+
+## Previous checkpoint: report editor uses available window space
 
 Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r10.accdb`; earlier user files
 are preserved. SHA256:

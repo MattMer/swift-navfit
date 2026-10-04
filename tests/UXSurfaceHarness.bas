@@ -35,7 +35,7 @@ Public Function TestUXSurface() As String
     Check f!cmdSave.Top = f.InsideHeight - 1300, "Footer did not follow viewport height"
     Check s.Width = f!uxFieldSurface.Width - 300, "Child fields did not follow panel width"
     Check f!uxGroup.Width = 4000, "Summary group selector stayed narrow"
-    If s.Width >= 14500 Then Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide editor did not use three field columns"
+    If s.Width >= 14500 Then Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide editor separated structured name fields"
     DoCmd.Restore
     Check f!cmdSave.Height = 500 And f!uxFieldSurface.Left = 5900, "Restoring window displaced controls"
 
@@ -43,10 +43,12 @@ Public Function TestUXSurface() As String
     Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
     Check UXResizeEditor(25000, 13500), "Wide viewport layout failed"
     Check f!uxFieldSurface.Width = 18750 And f!cmdSave.Top = 12200, "Wide viewport not filled"
-    Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide layout did not switch to three columns"
+    Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide layout separated structured name fields"
     Check UXResizeEditor(13800, 8650), "Laptop viewport layout failed"
     Check f!uxFieldSurface.Width = 7550 And s.Width = 7250, "Laptop fields did not shrink to panel"
-    Check s!txtMemberMiddleInitial.Top > s!txtMemberFirstName.Top, "Laptop layout did not restore two columns"
+    Check s!txtMemberMiddleInitial.Width < s!txtOfficialName.Width, "Short name field is not compact"
+    Check s!txtComponentActive.Top = s!txtComponentTAR.Top And s!txtComponentTAR.Top = s!txtComponentInactive.Top, "Component checkboxes did not share a compact row"
+    Check s!labelComponentActive.Left > s!txtComponentActive.Left And s!labelComponentActive.Top = s!txtComponentActive.Top, "Checkbox caption is not beside the checkbox"
     Call UXResizeEditor()
 
     revision = CurrentRevision(id)
