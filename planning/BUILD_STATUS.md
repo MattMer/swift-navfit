@@ -1,3 +1,9 @@
+# Current delivery - reporting senior details
+
+Swift NAVFIT 0.14.0-prototype, schema 13, output/Swift_NAVFIT_0.14.0-reporting-senior.accdb. Adds name/grade/designator/title/UIC in a separate panel. Apply transfers pending values and checkpoints them; Cancel preserves the editor. Save draft commits all 27 fields atomically. Older unrecorded values restore to null; new snapshot rows are required. See REPORTING_SENIOR_GUIDE.md.
+
+Verification: 81 new assertions and all 605 prior assertions passed, plus 169 catalogue checks and 2472 retained import values. Schema 12-to-13, 13-to-13 and 5-to-13 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Reporting authority/eligibility and external mapping/export remain pending, as do Runtime/x86 and comprehensive visual verification.
+
 # Current delivery - promotion status
 
 Swift NAVFIT 0.13.0-prototype, schema 12, output/Swift_NAVFIT_0.13.0-promotion-status.accdb. Adds REGULAR/FROCKED/SELECTED/SPOT selection, distinct from promotion recommendation. All 22 draft fields participate in snapshots, comparison, restore, duplication and recovery; status edits stale prior reviews. Legacy unrecorded status restores to null. Incomplete drafts remain saveable. See PROMOTION_STATUS_GUIDE.md.
