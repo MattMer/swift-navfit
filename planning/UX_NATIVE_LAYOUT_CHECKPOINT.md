@@ -1,6 +1,30 @@
 # Native layout checkpoint - 2026-10-04
 
-## Latest checkpoint: startup guard and stable editor placement
+## Latest checkpoint: report editor uses available window space
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r10.accdb`; earlier user files
+are preserved. SHA256:
+`A1AD37356B3836446FB8B08E279AFFC3030E51D63C2814DBE3FA9ABBC4CC7DA2`.
+
+The editor handles its Resize event with explicit viewport geometry. The field
+panel fills the content area's width and remaining height, with fixed-height
+save actions near the bottom. Field controls reflow to two columns on narrower
+windows and three on wider windows. Narratives span the panel; trait guidance
+uses the adjacent column. Section buttons and the summary-group selector have
+more room, and the approval warning spans the header instead of a narrow rail.
+
+Hidden control extents (including a 12,800-twip heading) previously constrained
+the child form width. Reflow now resets unused horizontal extents before sizing
+visible controls and the child form. Resize flushes active text into the unbound
+buffer, preserves all pending values and creates no revision.
+
+Verification includes actual Access maximize/restore, narrow/wide viewport
+fixtures, pending text preservation during resize, horizontal section bounds,
+32 populated demo journeys, and both startup security paths. Full physical DPI,
+keyboard and screen-reader acceptance remain pending. Other destination forms
+still need their responsive layout pass.
+
+## Previous checkpoint: startup guard and stable editor placement
 
 Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r7.accdb`. This is a clean
 source build with the same nine-report synthetic dataset; previous previews

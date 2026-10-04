@@ -92,6 +92,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
         f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
         If locked Then f!uxLocked.Caption = "Read only. Recover archived reports or reopen local approval to edit." Else f!uxLocked.Caption = ""
         If Not UXSurfaceSection(section, locked) Then Exit Function
+        UXResizeEditor
         UXRefreshEditor
         UXSelectSection = True: Exit Function
     End If

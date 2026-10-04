@@ -6,6 +6,15 @@ Private Sub Check(ByVal value As Boolean, ByVal message As String)
     If Not value Then Err.Raise vbObjectError + 5200, , message
     count = count + 1
 End Sub
+Private Function SurfaceFits(ByVal f As Access.Form) As Boolean
+    Dim c As Access.Control
+    For Each c In f.Controls
+        If c.Visible Then
+            If c.Left < 0 Or c.Left + c.Width > f.Width Then Exit Function
+        End If
+    Next
+    SurfaceFits = True
+End Function
 Public Function TestUXSurface() As String
     Dim id As Long, f As Access.Form, s As Access.Form, revision As Long, changes As Object, key As Variant, kind As Variant, section As Long, stage As String, snapshot As Long, groupID As Long
     On Error GoTo Failed
@@ -17,21 +26,34 @@ Public Function TestUXSurface() As String
     Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
     Check UXSurfaceAvailable(), "Native section surface unavailable"
     DoCmd.Maximize
-    Check f!uxFieldSurface.Left = 5200 And f!uxFieldSurface.Top = 3650, "Maximized field panel moved away from section content"
+    Check f!uxFieldSurface.Left = 5900 And f!uxFieldSurface.Width = f.InsideWidth - 6250, "Maximized field panel moved away from section content"
     Check f!cmdSave.Height = 500 And f!cmdClose.Height = 500, "Maximized action buttons stretched"
     Check f!uxFieldSurface.Top + f!uxFieldSurface.Height <= f!lblSaved.Top, "Field panel overlaps save area"
     Check f!uxFieldSurface.HorizontalAnchor = acHorizontalAnchorLeft And f!uxFieldSurface.VerticalAnchor = acVerticalAnchorTop, "Field panel uses moving anchors"
     Check f!cmdSave.VerticalAnchor = acVerticalAnchorTop And f!cmdClose.VerticalAnchor = acVerticalAnchorTop, "Action buttons use stretching anchors"
     Check InStr(f!uxContext.Caption, "Surface tester") > 0, "Workspace context missing contributor"
+    Check f!cmdSave.Top = f.InsideHeight - 1300, "Footer did not follow viewport height"
+    Check s.Width = f!uxFieldSurface.Width - 300, "Child fields did not follow panel width"
+    Check f!uxGroup.Width = 4000, "Summary group selector stayed narrow"
+    If s.Width >= 14500 Then Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide editor did not use three field columns"
     DoCmd.Restore
-    Check f!cmdSave.Height = 500 And f!uxFieldSurface.Left = 5200, "Restoring window displaced controls"
+    Check f!cmdSave.Height = 500 And f!uxFieldSurface.Left = 5900, "Restoring window displaced controls"
 
     Check s!txtOfficialName.Visible And Not f!txtOfficialName.Visible, "Editor did not use native section surface"
     Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
+    Check UXResizeEditor(25000, 13500), "Wide viewport layout failed"
+    Check f!uxFieldSurface.Width = 18750 And f!cmdSave.Top = 12200, "Wide viewport not filled"
+    Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide layout did not switch to three columns"
+    Check UXResizeEditor(13800, 8650), "Laptop viewport layout failed"
+    Check f!uxFieldSurface.Width = 7550 And s.Width = 7250, "Laptop fields did not shrink to panel"
+    Check s!txtMemberMiddleInitial.Top > s!txtMemberFirstName.Top, "Laptop layout did not restore two columns"
+    Call UXResizeEditor()
+
     revision = CurrentRevision(id)
     stage = "section switching": f!txtMemberFirstName = "Separate first name"
     For section = 0 To 7
         Check UXSelectSection(section), "Section failed to open"
+        Check SurfaceFits(s), "Section controls exceeded field surface width"
         Check f!txtMemberFirstName = "Separate first name", "Section switch lost pending name parts"
         Check CurrentRevision(id) = revision, "Section switch saved a revision"
     Next
@@ -40,6 +62,9 @@ Public Function TestUXSurface() As String
     Check IsNull(f!txtOfficialName), "Changing name parts overwrote official full name"
     stage = "active text": f!uxFieldSurface.SetFocus: s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "SURFACE TESTER"
     Check EditorHasPending(), "Active surface text not detected as pending"
+    Call UXResizeEditor()
+    Check f!txtOfficialName = "SURFACE TESTER" And EditorHasPending(), "Resize lost pending active text"
+    Check CurrentRevision(id) = revision, "Resize committed a revision"
     Check CheckpointEditor(), "Active surface text checkpoint failed"
     Check DLookup("OfficialName", "RecoveryDraft", "ReportID=" & id) = "SURFACE TESTER", "Checkpoint lost active surface text"
     Check CurrentRevision(id) = revision, "Checkpoint saved report revision"

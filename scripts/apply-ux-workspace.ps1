@@ -103,6 +103,7 @@ $f.Controls('lstRevisions').Left=[int](5250);$f.Controls('lstRevisions').Top=[in
 foreach($entry in @(@('cmdRoute',3700),@('cmdComments',4300),@('cmdChecklist',4900),@('cmdCompare',3700),@('cmdRestore',4300))){$c=$f.Controls($entry[0]);$c.Left=[int](5250);$c.Top=[int]($entry[1]);$c.Width=[int](3900);$c.Height=[int](500)}
 $f.Controls('uxSeniorRecord').Left=[int](5250);$f.Controls('uxSeniorRecord').Top=[int](3150);$f.Controls('uxSeniorRecord').Width=[int](4800);$f.Controls('uxSeniorRecord').Tag='LOCAL:1'
 $f.Controls('uxUseSenior').Left=[int](10250);$f.Controls('uxUseSenior').Top=[int](3150);$f.Controls('uxUseSenior').Width=[int](3050);$f.Controls('uxUseSenior').Tag='LOCAL:1'
+$f.OnResize='=UXResizeEditor()'
 SaveScreen $f 'frmEditor'
 # Overview: real metrics and recent reports, not a launch-button grid.
 $app.DoCmd.OpenForm('frmHome',1);$f=$app.Forms.Item('frmHome')
