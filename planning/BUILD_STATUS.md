@@ -1,3 +1,98 @@
+# Working source - UI redesign preview
+
+Updated 2026-10-04: see [current-state notes](CURRENT_STATE.md), [complete plan status](PROJECT_PLAN_STATUS_2026-10-04.md) and [r24 priority-fix evidence](UX_MY_WORK_2026-10-04.md). Latest demo: `Swift_NAVFIT_UI_Demo_2026-10-04-r24.accdb`; separate blank: `build/ux-r24-blank.accdb`. Report reopening, unified My Work routes/comments and shared layout/state fixes are implemented. Final blank/demo compile and match all 50 standard source modules; all 42 blank user-data tables are empty. Preview gates, native exploratory journeys and the final 145-check reopening/filter regression passed. Physical scaling, screen-reader/keyboard, Runtime/x86 and full interoperability/policy acceptance remain pending.
+
+Preview builds for user review now use `scripts/build-preview.ps1` and contain
+synthetic data. Blank templates remain available through `scripts/build.ps1`.
+The native rebuild replaces editor field pagination with complete sections in
+an independently scrolling surface, retains the original unbound buffer, adds
+inline validation/error navigation, and focuses Overview and group workspaces.
+The demo includes nine reports, three groups, two contributors, a reporting
+senior and three RSCA baselines, plus NOB, approval, archive, stale-review and
+recovery examples. Visual equivalence and native accessibility remain pending.
+
+0.22.0-ux-preview, schema 21. Includes the clickable design prototype and a native section/editor rebuild under review, plus reusable reporting seniors, rank-specific RSCA baselines and summary-group PSG calculations. Comparison baselines are automatic; the manual freeze action is removed from the new UI. See [UX review and verification checkpoint](UX_REDESIGN_REVIEW.md). The redesign has not been published as a replacement for 0.21.0; native visual, keyboard, screen-reader and scaling acceptance remain pending.
+
+# Current delivery — major foundations checkpoint
+
+Swift NAVFIT 0.21.0-prototype, schema 20, output/Swift_NAVFIT_0.21.0-major-foundations.accdb. Adds explicit summary groups/snapshots, defaults and atomic field batches with guarded undo, ordered local review/approval routes, frozen meeting comparisons/proposals, limited source-linked Navy checks, eight-field interactive PDF import and guided closed-file backup/restore. See MAJOR_FOUNDATIONS_GUIDE.md for scope, dependencies and remaining work.
+
+Verification: 24 regression suites passed on candidate9. The final source build passed smoke, 44 workflow, 97 rule, 28 native PDF and six workbench assertions, plus 103 control-bound checks and guided-copy verification. Combined covered assertions: 2176; existing 218 reference checks and nine editor layout checks retained. Schema 5-to-20, 19-to-20 and populated 20-to-20 migrations preserve rows/fields, source hashes and reopen. All 38 distribution user tables are empty; delivery is byte-identical to candidate11 (SHA256 C4A7AEA4A6139AF0A28B71A018880B7A487FD0F6D5E4479834EAAA16B8B9555A).
+
+Full native interchange/identity/three-way reconciliation, remaining field mappings, complete Navy group eligibility/validation, Runtime/x86 and workstation verification remain pending. PDF appearance is unverified; UX and printed layout are deferred. A target-app mapping probe awaits user observations.
+
+# Current delivery - three structured name features
+
+Swift NAVFIT 0.20.0-prototype, schema 19, output/Swift_NAVFIT_0.20.0-structured-names.accdb. Adds member first/middle/last/suffix, reporting-senior last/initials and counselor last/initials. All ten parts are explicit and separate from existing full names. Apply checkpoints pending values; Save draft commits all 78 fields atomically. See STRUCTURED_NAMES_GUIDE.md.
+
+Verification: 281 new assertions; 2001 total assertions, 218 reference checks, nine layout checks and all 2472 retained import values. Schema 18-to-19, 19-to-19 and 5-to-19 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches the tested candidate. An initial build exceeded Access's form-height limit; the final editor uses one compact details-button row. The rollback fixture was corrected to attempt a changed save. Runtime/x86, comprehensive visual inspection, Navy rules and full interchange remain pending.
+
+# Current delivery - senior identifiers, contact and raters
+
+Swift NAVFIT 0.19.0-prototype, schema 18, output/Swift_NAVFIT_0.19.0-report-people.accdb. Adds reporting-senior SSN/DoD ID, structured address/contact fields, and rater/senior-rater names/dates. Apply checkpoints pending values; Save draft commits all 68 fields atomically. Leading zeros and incomplete entries are preserved. Names/dates do not establish signatures or approval. See REPORT_PEOPLE_GUIDE.md.
+
+Verification: 364 new behavioral assertions; 1720 total assertions, 218 reference checks, six layout checks and all 2472 retained import values. Schema 17-to-18, 18-to-18 and 5-to-18 migration checks preserve original rows/fields, source hashes and reopen. The distribution's 20 user-data tables are empty and its binary matches the tested candidate. Runtime/x86, comprehensive visual inspection, policy rules and full interchange remain pending.
+
+# Current delivery - recommendations, retention and statement
+
+Swift NAVFIT 0.18.0-prototype, schema 17, output/Swift_NAVFIT_0.18.0-decision-details.accdb. Adds assignment recommendations A/B and four explicit Yes/No/blank source-box selections for retention and member statement. Apply checkpoints pending values; Save draft commits all 55 fields atomically. No signatures, approval or policy inference. See DECISION_DETAILS_GUIDE.md.
+
+Verification: 198 new behavioral assertions; 1356 total behavioral assertions, 218 reference checks and all 2472 retained import values. Schema 16-to-17, 17-to-17 and 5-to-17 migration checks preserve original rows/fields, source hashes and reopen. The editor button was moved to a separate row to prevent period-field overlap; focused layout bounds and overlap checks verify the final build. Runtime/x86, comprehensive visual inspection and full interchange remain pending.
+
+# Current delivery - counseling, readiness and billet
+
+Swift NAVFIT 0.17.0-prototype, schema 16, output/Swift_NAVFIT_0.17.0-service-details.accdb. Adds counseling date/name, readiness summary/detail/date and billet subcategory. Apply checkpoints pending values; Save draft commits all 49 fields atomically. Editable reference suggestions do not enforce Navy policy. See SERVICE_DETAILS_GUIDE.md.
+
+Verification: 1158 behavioral assertions, 218 reference checks and all 2472 retained import values passed. Schema 15-to-16, 16-to-16 and 5-to-16 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty. Runtime/x86, comprehensive visual inspection and full interchange remain pending.
+
+# Current delivery - three member-detail features
+
+Swift NAVFIT 0.16.0-prototype, schema 15, output/Swift_NAVFIT_0.16.0-member-details.accdb. Adds SSN/DoD ID text entry, four Yes/No/blank component selections and canonical date reported in one details panel. Apply checkpoints pending values; Cancel preserves the editor. Save draft commits all 43 fields atomically. Incomplete identifiers/blanks remain saveable; official identity/component/date policy and external mapping remain pending. See MEMBER_DETAILS_GUIDE.md.
+
+Verification: 125 new assertions plus 881 prior assertions, 169 catalogue checks and 2472 retained import values passed. Schema 14-to-15, 15-to-15 and 5-to-15 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Full NAVFIT mapping/export, Navy validation, Runtime/x86 and comprehensive visual verification remain pending.
+
+# Current delivery - three report-context features
+
+Swift NAVFIT 0.15.0-prototype, schema 14, output/Swift_NAVFIT_0.15.0-report-context.accdb. Adds report occasions (four Yes/No/blank flags), report categories (three flags), and primary duty/multiline duty description in separate panels. Apply checkpoints only that panel; Cancel preserves the editor. Save draft commits all 36 fields atomically. No inference or combination/eligibility validation. See REPORT_CONTEXT_GUIDE.md.
+
+Verification: 195 new assertions plus 686 prior assertions, 169 catalogue checks and all 2472 retained import values passed. Schema 13-to-14, 14-to-14 and 5-to-14 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. An initial harness compile error (Long used in For Each) was corrected before successful testing. No failed test candidate is published. Full NAVFIT mapping/export, Navy validation, Runtime/x86 and comprehensive visual verification remain pending.
+
+# Current delivery - reporting senior details
+
+Swift NAVFIT 0.14.0-prototype, schema 13, output/Swift_NAVFIT_0.14.0-reporting-senior.accdb. Adds name/grade/designator/title/UIC in a separate panel. Apply transfers pending values and checkpoints them; Cancel preserves the editor. Save draft commits all 27 fields atomically. Older unrecorded values restore to null; new snapshot rows are required. See REPORTING_SENIOR_GUIDE.md.
+
+Verification: 81 new assertions and all 605 prior assertions passed, plus 169 catalogue checks and 2472 retained import values. Schema 12-to-13, 13-to-13 and 5-to-13 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Reporting authority/eligibility and external mapping/export remain pending, as do Runtime/x86 and comprehensive visual verification.
+
+# Current delivery - promotion status
+
+Swift NAVFIT 0.13.0-prototype, schema 12, output/Swift_NAVFIT_0.13.0-promotion-status.accdb. Adds REGULAR/FROCKED/SELECTED/SPOT selection, distinct from promotion recommendation. All 22 draft fields participate in snapshots, comparison, restore, duplication and recovery; status edits stale prior reviews. Legacy unrecorded status restores to null. Incomplete drafts remain saveable. See PROMOTION_STATUS_GUIDE.md.
+
+Verification: 66 new assertions plus 539 prior assertions, 169 catalogue checks and all 2472 retained import values passed. Schema 11-to-12, 12-to-12 and 5-to-12 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty; delivery matches tested candidate. Eligibility/policy and external mapping/export remain pending, as do Runtime/x86 and comprehensive visual verification.
+
+# Current delivery - explicit report assessment selections
+
+Swift NAVFIT 0.12.0-prototype, schema 11, output/Swift_NAVFIT_0.12.0-assessment.accdb. Adds manually selected whole-report Observed/NOB and the six NAVFIT reference promotion recommendation labels. Blank remains saveable. All 21 draft fields participate in snapshots, comparison, restore, duplication and recovery; assessment edits stale earlier reviews. No inference from traits and no policy/eligibility validation. See ASSESSMENT_GUIDE.md.
+
+Verification: 70 new assertions and all 469 prior assertions passed, plus 169 catalogue checks and all 2472 retained import values. Schema 10-to-11, 11-to-11 and 5-to-11 migrations preserve original rows/fields, source hashes and reopen. Legacy reports/checkpoints have null new fields. All 20 distribution user-data tables are empty; delivery matches tested candidate. Runtime/x86 and comprehensive visual verification remain pending.
+
+# Current delivery - trait summaries
+
+Swift NAVFIT 0.11.0-prototype, schema 10, output/Swift_NAVFIT_0.11.0-trait-summary.accdb. Read-only editor and latest-saved-revision arithmetic summaries show numeric average/count, NOB count and blank count. Blanks label an average partial; no numeric marks or invalid input yield unavailable. Save and checkpoint recovery refresh the summaries. No schema or derived-value storage change. See TRAIT_SUMMARY_GUIDE.md.
+
+Verification: 44 new assertions and all 425 existing assertions passed, plus 169 catalogue checks and all 2472 retained import values. Populated schema-10 migration preserved original rows/fields, source hash and reopen. All 20 user-data tables in the distribution are empty; delivery matches the tested candidate. Runtime/x86 and comprehensive visual checks remain pending. Observation/recommendation rules, group context and official validation remain pending.
+
+# Current delivery - form-specific trait editor
+
+Swift NAVFIT 0.10.0-prototype, schema 10, output/Swift_NAVFIT_0.10.0-traits.accdb. Seven traits per form have reference descriptions, distinct blank/NOB values and marks 1.0–5.0. All 19 draft fields participate in snapshots, comparison, restore, duplicate and recovery. Trait edits stale earlier review assignments. See TRAITS_GUIDE.md.
+
+Verification: 425 behavioral assertions, 169 catalogue checks, three narrative imports and all 2472 retained-value checks passed. Schema 9-to-10, 10-to-10 and 5-to-10 migrations preserve original data, source hashes and reopen. All 20 user-data tables are empty; distribution matches tested candidate. Runtime/x86 and comprehensive visual checks remain pending. Averages, recommendations, official validation and external trait mapping/export remain pending.
+
+# Current delivery - administrative draft fields
+
+Swift NAVFIT 0.9.0-prototype, schema 9, output/Swift_NAVFIT_0.9.0-administration.accdb. Adds manually entered official full name, grade/rate, designator/designation, unit UIC and ship/station with measured storage limits and no truncation. All 12 report fields participate in snapshots, comparison, restore/duplicate and recovery. Administrative edits stale older review assignments. Missing legacy fields display Not recorded; restore clears them to null. New snapshots have a schema marker and reject missing administrative rows. See ADMINISTRATION_GUIDE.md.
+
+Verification: 53 administrative assertions and all existing focused suites pass (350 assertions total), plus three narrative imports and exact 2472 retained-value checks. Schema-8-to-9, schema-9-to-9 and schema-5-to-9 migrations preserve every original field, including old checkpoints, and reopen; source hashes unchanged. All 20 user-data tables in the master are empty; delivery byte-identical to tested candidate. Full visual/Runtime/x86, administrative import mapping and complete NAVFIT export remain pending. The supplied NAVFIT bundle was inspected read-only; lookup/template findings are documented in NAVFIT_PACKAGE_FINDINGS.md.
+
 # Current delivery - review assignments and My Work
 
 Swift NAVFIT 0.8.0-prototype, schema 8, output/Swift_NAVFIT_0.8.0-review-routing.accdb. Adds one pending local review per report, revision references, requester/reviewer attribution, due dates, My Work, contributor creation/switching and accept/return/cancel event history. Later revisions block outcomes on stale assignments. Draft editing remains available; internal acceptance is not official approval. Sequential route templates and official locks remain pending. See REVIEW_ROUTING_GUIDE.md.

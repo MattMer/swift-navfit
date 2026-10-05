@@ -1,7 +1,20 @@
 Attribute VB_Name = "SmokeHarness"
 Option Compare Database
 Option Explicit
-
+Public Function SmokeFormFits(ByVal name As String) As Boolean
+    Dim f As Access.Form, c As Access.Control
+    Set f = Forms(name)
+    For Each c In f.Controls
+        If c.Visible And (c.Left < 0 Or c.Left + c.Width > f.Width) Then Exit Function
+    Next
+    SmokeFormFits = True
+End Function
+Public Function SmokeEditorEntries() As Boolean
+    Forms!frmEditor!cboKind = "CHIEFEVAL"
+    Forms!frmEditor!txtTitle = "Synthetic UI draft"
+    Forms!frmEditor!txtNotes = "Saved through editor action"
+    SmokeEditorEntries = True
+End Function
 Public Function RejectArchived(ByVal reportID As Long) As Boolean
     On Error GoTo Rejected
     CommitDraft reportID, "EVAL", "Forbidden", "Synthetic Member", Null, Null, "Forbidden", "Archive rejection"

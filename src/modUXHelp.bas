@@ -1,0 +1,39 @@
+Attribute VB_Name = "modUXHelp"
+Option Compare Database
+Option Explicit
+Public Function UXHelpText(ByVal topic As Long) As String
+    Select Case topic
+        Case 0: UXHelpText = "Use the synthetic demo to explore. Use the blank candidate for a separate workspace; complete the command and contributor setup. Keep existing workspaces intact. Reports, Summary groups and My Work are the main destinations. Local contributor profiles provide attribution, not authentication."
+        Case 1: UXHelpText = "Reports > New report: choose EVAL, CHIEFEVAL or FITREP. Edit sections in official block order. Checkbox blocks remain explicit selections; SSNs retain leading zeros. Structured name parts stay separate from stored full names. Save draft creates an atomic revision. Section changes preserve pending values without creating revisions. Leaving a changed report saves automatically. If saving fails, correct the inline errors; pending values remain. Draft notes are local, separate from official comments."
+        Case 2: UXHelpText = "Reports provides search, form-type, folder, review and archive filters, saved views and selection actions. Folders organize reports independently of summary groups. Open a report to inspect History, compare revisions or restore a previous revision as a new one. Duplicate creates a separate draft. Archived reports can be recovered; local approval must be reopened through Review before editing."
+        Case 3: UXHelpText = "Summary groups lists groups with report counts. Open a group for Members, Shared defaults, Review, Comparison and History. Rename, archive and recover act on the group; reports remain independent. Bulk changes and defaults use the same official sections as a report. Mixed, unchanged, staged and cleared values are distinct. Preview full changes, then Apply. Comparison uses editable trait cells and staged proposals; an internal baseline is captured automatically. Changed membership, revisions or locks require a fresh preview."
+        Case 4: UXHelpText = "Resources > Reporting seniors and RSCA history stores reusable senior details and manually entered rank-specific historical baselines. Apply details deliberately; directory edits do not silently update reports. Group > Members > Reporting senior and PSG RSCA shows saved sums, counts, exclusions, baseline date/source and exact versus estimated calculations. Confirm the historical baseline excludes the current group. Report > Review > Calculation details separates pending and saved values. Arithmetic and manual provenance do not certify Navy policy compliance."
+        Case 5: UXHelpText = "My Work combines assigned reviews, current ordered-route steps, ready local approvals and related unresolved comment threads. Each row names the member, report period, contributor, status and next action. Assignment due dates are shown when recorded; routes and comments have no invented due dates or assignees. Future route steps stay out of the current contributor's queue. Requesters can see stale routes that need restarting. Select a row and choose Open selected work to reach that route or thread directly, or Open report to edit the report. Accept/Return apply only to an eligible selected assignment; stale and locked decisions are disabled. Completed work and all contributors are available " & _
+            "through the history filter."
+        Case 6: UXHelpText = "Report > Review > Draft checklist uses saved values and jumps to the relevant official section. Inline entry errors, incomplete draft information and limited Navy checks are separate. Navy checks cover selected source-linked rules and their effective report-period range. Resources provides attributed narrative snippets. Reports > Import reports offers NAVFIT narrative or structured PDF import: Choose, Preview, Apply, Results. Full before/after mappings show what will be created. Changed sources or mapping choices require a fresh preview. Results can open the created report. Source field inspection and existing-draft reconciliation remain available. PDF imports use SSN by default; legacy DoDID mapping requires explicit compatibility selection. All imports retain provenance and are limited in scope. Printing and full NAVFIT export remain deferred/incomplete."
+        Case 7: UXHelpText = "Overview or Settings & Help > Recover pending edits opens checkpoints, separate from saved revisions. If the saved baseline changed, recover as a new draft. Settings & Help has backup/restore and operation history with guarded undo. Close the source before backup or migration. Transfer existing data into a separate blank candidate using upgrade-workspace.ps1 with an explicit TemplatePath. Never migrate into the seeded demo. The source stays unchanged; a new destination and migration evidence are created."
+        Case 8: UXHelpText = "This is version 0.22.0-ux-preview, schema 21, a native Access review candidate. Automated native checks do not establish screen-reader or physical display/DPI acceptance. Desktop Access is verified within the documented tests; Runtime and x86 remain unverified. No network integration, synchronization, authentication or official signatures are added. Settings & Help > Support and limitations provides technical diagnostics. Read CURRENT_STATE.md for exact artifact evidence and outstanding work."
+        Case Else: UXHelpText = "Choose a topic."
+    End Select
+End Function
+Public Function UXLoadHelp() As Boolean
+    Dim i As Long
+    Forms!frmUXHelp!lstTopics.RowSourceType = "Value List"
+    Forms!frmUXHelp!lstTopics.RowSource = ""
+    Forms!frmUXHelp!lstTopics.AddItem "0;Start here"
+    Forms!frmUXHelp!lstTopics.AddItem "1;Create, edit and save a report"
+    Forms!frmUXHelp!lstTopics.AddItem "2;Find reports and history"
+    Forms!frmUXHelp!lstTopics.AddItem "3;Summary groups and comparisons"
+    Forms!frmUXHelp!lstTopics.AddItem "4;Reporting seniors and averages"
+    Forms!frmUXHelp!lstTopics.AddItem "5;My Work and local review"
+    Forms!frmUXHelp!lstTopics.AddItem "6;Checks, snippets and imports"
+    Forms!frmUXHelp!lstTopics.AddItem "7;Recovery, backups and migration"
+    Forms!frmUXHelp!lstTopics.AddItem "8;Preview limits and diagnostics"
+    Forms!frmUXHelp!lstTopics = 0
+    Call UXHelpSelected
+    UXLoadHelp = True
+End Function
+Public Function UXHelpSelected() As Boolean
+    Forms!frmUXHelp!txtGuide = UXHelpText(Nz(Forms!frmUXHelp!lstTopics, -1))
+    UXHelpSelected = True
+End Function

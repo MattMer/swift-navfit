@@ -42,12 +42,14 @@ Public Function PrepareRecovery() As String
     CurrentDb.TableDefs("RecoveryDraft").Fields("DraftTitle").ValidationRule = ""
     f!txtTitle = "Pending title v2"
     'Closing without the explicit discard action represents an interrupted editor session.
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     DoCmd.OpenForm "frmEditor", , , , , , "0": Set f = Forms!frmEditor
     f!cboKind = "CHIEFEVAL": f!txtTitle = "Unsaved new draft": f!txtNotes = "Uncommitted notes"
     Check CheckpointEditor(), "New draft checkpoint failed"
     Check DCount("*", "Report") = 1 And DCount("*", "RecoveryDraft") = 2, "New checkpoint created report"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     PrepareRecovery = "PASS: " & checks & " preparation assertions; two checkpoints retained"
     Exit Function
 Failed:
@@ -59,8 +61,15 @@ Public Function PrepareTimerCheck() As Boolean
     id = DLookup("ReportID", "Report")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.SetFocus
-    Forms!frmEditor!txtTitle.SetFocus
-    Forms!frmEditor!txtTitle.Text = "Timer captured active text"
+    If UXHasControl(Forms!frmEditor, "uxSection") Then Call UXSelectSection(7)
+    If UXSurfaceAvailable() Then
+        Forms!frmEditor!uxFieldSurface.SetFocus
+        Forms!frmEditor!uxFieldSurface.Form!txtTitle.SetFocus
+        Forms!frmEditor!uxFieldSurface.Form!txtTitle.Text = "Timer captured active text"
+    Else
+        Forms!frmEditor!txtTitle.SetFocus
+        Forms!frmEditor!txtTitle.Text = "Timer captured active text"
+    End If
     Forms!frmEditor.TimerInterval = 100
     PrepareTimerCheck = True
 End Function
@@ -70,7 +79,8 @@ Public Function FinishTimerCheck() As Boolean
     If Nz(DLookup("DraftTitle", "RecoveryDraft", "ReportID=" & id), "") <> "Timer captured active text" Then Err.Raise vbObjectError + 951, , "Timer did not capture active textbox text."
     Forms!frmEditor.TimerInterval = 30000
     Call DiscardEditorCheckpoint()
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     FinishTimerCheck = True
 End Function
 Public Function VerifyRecovery() As String
@@ -97,19 +107,22 @@ Public Function VerifyRecovery() As String
     recoveryID = DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)
     Call CommitDraft(id, "EVAL", "Newer committed title", "Synthetic", Null, Null, "Saved notes", "External edit", "Newer narrative")
     Check RejectGuard(), "Editor could overwrite newer revision"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     Check RejectStale(recoveryID), "Stale recovery accepted"
     Check RestoreRecoveryDraft(recoveryID, True), "Stale recovery as new failed"
     Check Forms!frmEditor!txtReportID = 0, "Recovery as new reused identity"
     Check SaveEditor(), "Save as new failed"
     Check DLookup("Title", "Report", "ReportID=" & id) = "Newer committed title", "Newer revision overwritten"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     recoveryID = DLookup("RecoveryDraftID", "RecoveryDraft")
     Check RestoreRecoveryDraft(recoveryID), "New unsaved draft recovery failed"
     Check Forms!frmEditor!cboKind = "CHIEFEVAL" And Forms!frmEditor!txtTitle = "Unsaved new draft", "New draft values lost"
     Check DiscardEditorCheckpoint(), "Explicit discard failed"
     Check DCount("*", "RecoveryDraft") = 0, "Discard retained checkpoint"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     VerifyRecovery = "PASS: " & checks & " recovery assertions"
     Exit Function
 Failed:

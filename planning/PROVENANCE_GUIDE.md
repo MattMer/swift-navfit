@@ -1,5 +1,9 @@
 # Retained import provenance
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.6.1 adds a read-only viewer for retained import receipts and source values. From Home, open **Operations and import undo**, select an import receipt, then choose **Inspect selected import provenance**.
 
 The receipt shows the recorded source path, SHA256, import time, contributor, adapter and scalar encoding, before/applied revision IDs and undo status. It does not open or depend on the source file. Undone imports keep their evidence.

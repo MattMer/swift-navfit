@@ -41,6 +41,7 @@ Public Function SetReviewThreadState(ByVal threadID As Long, ByVal resolved As B
     r.AddNew: r!ThreadID = threadID: r!AuthorProfileID = pid: r!EventAt = Now()
     If resolved Then r!EventKind = "Resolved" Else r!EventKind = "Reopened"
     r.Update: r.Close: SetReviewThreadState = True
+    Call UXWorkChanged
 End Function
 Public Function OpenReviewComments(ByVal reportID As Long) As Boolean
     If DCount("*", "Report", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 1707, , "Save or select a report first."
@@ -59,10 +60,10 @@ End Function
 Public Function LoadReviewThreads() As Boolean
     Dim id As Long
     id = Nz(Forms!frmReviewComments!txtReportID, 0)
-    Forms!frmReviewComments!lstThreads.RowSource = "SELECT c.CommentID,r.RevisionNumber,p.DisplayName,c.CommentAt FROM (ReviewComment AS c INNER JOIN ReportRevision AS r ON c.RevisionID=r.RevisionID) INNER JOIN UserProfile AS p ON c.AuthorProfileID=p.UserProfileID WHERE c.ReportID=" & id & " AND c.ThreadID Is Null ORDER BY c.CommentID DESC"
+    Forms!frmReviewComments!lstThreads.RowSource = "SELECT c.CommentID,r.RevisionNumber AS [Saved revision],p.DisplayName AS Contributor,c.CommentAt AS [Posted at] FROM (ReviewComment AS c INNER JOIN ReportRevision AS r ON c.RevisionID=r.RevisionID) INNER JOIN UserProfile AS p ON c.AuthorProfileID=p.UserProfileID WHERE c.ReportID=" & id & " AND c.ThreadID Is Null ORDER BY c.CommentID DESC"
     Forms!frmReviewComments!lstThreads.Requery
     Forms!frmReviewComments!txtHistory = Null
-    Forms!frmReviewComments!lblContext.Caption = "Report " & id & " / latest saved revision " & Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) & ". New threads use the latest saved revision; unsaved edits are excluded."
+    Forms!frmReviewComments!lblContext.Caption = UXWorkReport(id) & " | Latest saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & CurrentRevision(id)), "?") & ". New threads use saved values; pending edits remain separate."
     LoadReviewThreads = True
 End Function
 Public Function ShowReviewThread() As Boolean
@@ -72,7 +73,7 @@ Public Function ShowReviewThread() As Boolean
     If r.EOF Then r.Close: Forms!frmReviewComments!txtHistory = Null: Exit Function
     If ThreadResolved(id) Then text = "Resolved" Else text = "Open"
     Do While Not r.EOF
-        text = text & vbCrLf & vbCrLf & r!DisplayName & " / " & r!CommentAt & " / saved revision ID " & r!RevisionID & vbCrLf & r!CommentBody
+        text = text & vbCrLf & vbCrLf & r!DisplayName & " / " & r!CommentAt & " / saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & vbCrLf & r!CommentBody
         r.MoveNext
     Loop
     r.Close
@@ -111,10 +112,12 @@ Failed:
     MsgBox Err.Description, vbInformation, "Review comments"
 End Function
 Public Function ReturnFromReviewComments() As Boolean
+    Dim id As Long
+    id = Nz(Forms!frmReviewComments!txtReportID, 0)
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        Forms!frmEditor.SetFocus
-    Else
-        DoCmd.OpenForm "frmEditor", , , , , , CStr(Nz(Forms!frmReviewComments!txtReportID, 0))
+        If Nz(Forms!frmEditor!txtReportID, 0) = id Then Forms!frmEditor.SetFocus: ReturnFromReviewComments = True: Exit Function
+        If Not UXLeaveEditor() Then Exit Function
     End If
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     ReturnFromReviewComments = True
 End Function

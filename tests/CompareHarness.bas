@@ -38,7 +38,7 @@ Public Function TestComparison() As String
     Check StrComp(f!txtNewValue, text, vbBinaryCompare) = 0, "Long narrative display changed"
     Check f!txtOldValue.Locked And f!txtNewValue.Locked, "Comparison values editable"
     f!chkChangedOnly = False: Call RefreshComparisonFields()
-    Check f!lstCompareFields.ListCount = 7, "All-fields filter wrong"
+    Check f!lstCompareFields.ListCount = 78, "All-fields filter wrong"
     Check CloseRevisionComparison(), "Close failed"
     Check Screen.ActiveForm.Name = "frmEditor", "Return to editor failed"
     Check Forms!frmEditor!txtTitle = "UNSAVED TITLE", "Unsaved entries lost"
@@ -47,7 +47,7 @@ Public Function TestComparison() As String
     Check OpenRevisionComparison(id, b, b), "Same revision comparison failed"
     Check Forms!frmRevisionCompare!lstCompareFields.ListCount = 0, "Same revision shows changes"
     Call CloseRevisionComparison()
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     other = CommitDraft(0, "FITREP", "Other", "Synthetic", Null, Null, "")
     Check WrongReport(other, a), "Cross-report comparison accepted"
     Call CommitDraft(id, "EVAL", "mixed case", "Synthetic", Null, Null, "Notes", "Empty", "")
@@ -67,3 +67,10 @@ Public Function TestComparison() As String
 Failed:
     TestComparison = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

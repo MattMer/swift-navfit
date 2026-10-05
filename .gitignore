@@ -13,6 +13,7 @@
 !/output/MANIFEST.json
 /planning/evidence/
 /NAVFIT98A_v33p2_Upgrade_Tool/
+/NAVFIT98A/
 
 # Supplied reference documents are maintained locally.
 /*.pdf

@@ -7,7 +7,18 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "OfficialComments" Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
+        If key = "PromotionStatus" And RevisionSnapshotSchema(revisionID) >= 12 Then Err.Raise vbObjectError + 800, , "Promotion status snapshot is incomplete."
+        If Len(ReportingSeniorLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 13 Then Err.Raise vbObjectError + 800, , "Reporting senior snapshot is incomplete."
+        If Len(ReportContextLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 14 Then Err.Raise vbObjectError + 800, , "Report context snapshot is incomplete."
+        If Len(MemberDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 15 Then Err.Raise vbObjectError + 800, , "Member details snapshot is incomplete."
+        If Len(ServiceDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 16 Then Err.Raise vbObjectError + 800, , "Service details snapshot is incomplete."
+        If Len(DecisionDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 17 Then Err.Raise vbObjectError + 800, , "Recommendation and statement snapshot is incomplete."
+        If Len(ReportPeopleLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 18 Then Err.Raise vbObjectError + 800, , "Reporting contact and rater snapshot is incomplete."
+        If Len(PartyNamesLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 19 Then Err.Raise vbObjectError + 800, , "Structured names snapshot is incomplete."
+        If IsTraitKey(key) And RevisionSnapshotSchema(revisionID) >= 10 Then Err.Raise vbObjectError + 800, , "Trait snapshot is incomplete."
+        If Len(AssessmentLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 11 Then Err.Raise vbObjectError + 800, , "Assessment snapshot is incomplete."
         SavedValue = Null
     ElseIf r!IsNullValue Then
         SavedValue = Null
@@ -52,7 +63,7 @@ Public Function OpenRevisionComparison(ByVal reportID As Long, ByVal older As Lo
     If older = 0 Or newer = 0 Then Err.Raise vbObjectError + 802, , "Select a saved revision first."
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & older), 0) <> reportID Or Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & newer), 0) <> reportID Then Err.Raise vbObjectError + 803, , "Both revisions must belong to this report."
     'Validate before displaying a new comparison; no writes or editor saves occur.
-    For Each key In Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
+    For Each key In DraftFieldKeys()
         ignored = SavedValue(older, CStr(key), recorded): ignored = SavedValue(newer, CStr(key), recorded)
     Next
     DoCmd.OpenForm "frmRevisionCompare"
@@ -78,7 +89,7 @@ Public Function RefreshComparisonFields() As Boolean
     Dim f As Form, key As Variant, status As String, changed As Long, shown As Long
     Set f = Forms!frmRevisionCompare
     f!lstCompareFields.RowSourceType = "Value List": f!lstCompareFields.RowSource = ""
-    For Each key In Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
+    For Each key In DraftFieldKeys()
         status = RevisionFieldStatus(CLng(f!txtOlder), CLng(f!txtNewer), CStr(key))
         If status = "Changed" Then changed = changed + 1
         If Not f!chkChangedOnly Or status = "Changed" Then
@@ -105,7 +116,29 @@ Private Function ComparisonFieldLabel(ByVal key As String) As String
         Case "PeriodStart": ComparisonFieldLabel = "Period start"
         Case "PeriodEnd": ComparisonFieldLabel = "Period end"
         Case "DraftNotes": ComparisonFieldLabel = "General draft notes"
+        Case "ObservationStatus", "PromotionRecommendation": ComparisonFieldLabel = AssessmentLabel(key)
+        Case "ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC": ComparisonFieldLabel = ReportingSeniorLabel(key)
+        Case "PromotionStatus": ComparisonFieldLabel = "Promotion status"
         Case "OfficialComments": ComparisonFieldLabel = "Official narrative"
+        Case Else
+            If Len(PartyNamesLabel(key)) > 0 Then
+                ComparisonFieldLabel = PartyNamesLabel(key)
+            ElseIf Len(ReportPeopleLabel(key)) > 0 Then
+                ComparisonFieldLabel = ReportPeopleLabel(key)
+            ElseIf Len(DecisionDetailsLabel(key)) > 0 Then
+                ComparisonFieldLabel = DecisionDetailsLabel(key)
+            ElseIf Len(ServiceDetailsLabel(key)) > 0 Then
+                ComparisonFieldLabel = ServiceDetailsLabel(key)
+            ElseIf Len(MemberDetailsLabel(key)) > 0 Then
+                ComparisonFieldLabel = MemberDetailsLabel(key)
+            ElseIf Len(ReportContextLabel(key)) > 0 Then
+                ComparisonFieldLabel = ReportContextLabel(key)
+            ElseIf IsTraitKey(key) Then
+                ComparisonFieldLabel = Mid$(key, 6) & ". " & CatalogueTraitTitle(Nz(DLookup("FormKind", "Report", "ReportID=" & DLookup("ReportID", "ReportRevision", "RevisionID=" & Forms!frmRevisionCompare!txtNewer)), ""), CLng(Mid$(key, 6)))
+                ComparisonFieldLabel = Replace(Replace(ComparisonFieldLabel, vbCr, ""), vbLf, " ")
+            Else
+                ComparisonFieldLabel = AdministrationLabel(key)
+            End If
     End Select
 End Function
 

@@ -1,5 +1,9 @@
 # Workflow tools — Swift NAVFIT 0.6.0
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Current blank application: `output/Swift_NAVFIT_0.6.0-workflow-tools.accdb`, schema 6. Copy the master for use and complete first-run setup. Existing workspaces need migration into a new file; `scripts/upgrade-workspace.ps1` defaults to this template. Never open an older populated workspace expecting new application objects to appear automatically.
 
 ## Saved draft checklist

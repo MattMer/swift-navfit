@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)][string]$SourcePath,
-    [string]$TemplatePath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.8.0-review-routing.accdb'),
+    [string]$TemplatePath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.22.0-ux-preview.accdb'),
     [Parameter(Mandatory=$true)][string]$DestinationPath
 )
 $ErrorActionPreference='Stop'
@@ -25,7 +25,9 @@ try {
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($work,$true)
     $db=$app.CurrentDb();$counts=[ordered]@{}
-    foreach($name in @('Workspace','UserProfile','Report','ReportRevision','RevisionValue','RevisionChange','ReportEvent','Folder','FolderMove','ImportReceipt','ImportRawValue','RecoveryDraft','OperationJournal','NarrativeSnippet','LibraryPreference','FolderBatchChange','ReviewComment','ReviewCommentEvent','ReviewTask','ReviewTaskEvent')){
+    $tables=@('Workspace','UserProfile','Report','ReportRevision','RevisionValue','RevisionChange','ReportEvent','Folder','FolderMove','ImportReceipt','ImportRawValue','RecoveryDraft','OperationJournal','NarrativeSnippet','LibraryPreference','FolderBatchChange','ReviewComment','ReviewCommentEvent','ReviewTask','ReviewTaskEvent')
+    $tables+=@( (Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\src\major-schema.json') -Raw | ConvertFrom-Json).Tables )
+    foreach($name in $tables){
         $r=$db.OpenRecordset('SELECT Count(*) FROM ['+$name+']');$counts[$name]=$r.Fields.Item(0).Value;$r.Close()
     }
     $db.Close();$app.CloseCurrentDatabase()

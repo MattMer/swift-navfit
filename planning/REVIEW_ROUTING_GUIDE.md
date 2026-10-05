@@ -1,5 +1,9 @@
 # Local review assignments and My Work
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.8.0 adds a first local routing step. Review assignments reference a saved report revision, requester, reviewer, optional due date and instructions. Report editing stays available. Review outcomes do not change report workflow state or constitute official approval, signature or export readiness.
 
 From Home, open **My Work and local contributors**. Add a named reviewer if needed. Contributor names must be nonblank, at most 120 characters, and distinct from existing names. Select an existing contributor and Switch contributor to use that person's pending-work list and record activity in their name. Close the draft editor and review comments before switching. Local profiles provide attribution, not authentication. Use one person at a time in the same authoritative workspace file.

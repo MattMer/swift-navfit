@@ -1,0 +1,15 @@
+# Reporting senior details
+
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
+Swift NAVFIT 0.14.0 adds Reporting senior details near the top of the editor for EVAL, CHIEFEVAL and FITREP. The panel contains name (18 characters), grade (5), designator (5), title (14) and UIC (5). These capacities match the inspected NAVFIT Reports fields ReportingSenior, RSGrade, RSDesig, RSTitle and RSUIC. Name parts, identifiers, address, phone and reporting-authority validation remain pending.
+
+Open a draft, choose Reporting senior details, edit the fields and Apply pending values and return. Apply transfers raw values to the pending editor and creates a recovery checkpoint; it does not commit a revision. Save draft commits them with the report. Cancel discards only panel changes. Panel edits are not checkpointed until Apply; the main editor timer captures applied values. An archived draft can be viewed but cannot apply changes.
+
+The fields are independent of the local contributor/reviewer profile and member administration. Text preserves case, punctuation and leading zeros; null/empty remain distinct in history. Unsupported nontext, multiline or oversized inputs reject the entire draft save without truncation. Applying oversized pending text preserves it in recovery for deliberate correction.
+
+All five fields participate in snapshots, comparison, duplication, restore, checkpoints and stale-review checks. Older revisions display Not recorded; restoring them clears unrecorded fields to null. New schema-13 snapshots require all five rows, including explicit nulls. The checklist adds presence prompts, not official requirements. Eligibility, reporting authority, code validity and external NAVFIT mapping/export remain unverified. Imports remain narrative-only; printed layout is deferred.
+
+Use scripts/upgrade-workspace.ps1 with the new blank template and a fresh destination for existing populated workspaces. Verification: 81 new assertions plus 605 prior behavioral assertions, 169 catalogue checks and all 2472 retained import values passed. Schema 12-to-13, 13-to-13 and 5-to-13 migrations preserve original rows/fields, source hashes and reopen. All 20 distribution user-data tables are empty. Runtime/x86 and comprehensive visual verification remain pending.

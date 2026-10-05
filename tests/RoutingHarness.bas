@@ -98,7 +98,7 @@ Public Function TestRouting() As String
     Check Denied("switch", reviewer), "Switched with open editor"
     Check Forms!frmEditor!txtTitle = "Pending text", "Routing changed pending editor"
     Check RoutingFromEditor(), "Editor routing action failed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(reportID, True): Call SwitchContributor(reviewer)
     Check Denied("finish", task), "Archived review accepted"
     Call SwitchContributor(requester): Check FinishReview(task, "Cancelled", "Archived"), "Archived cancellation blocked"
@@ -111,3 +111,10 @@ Failed:
     EventRule ""
     TestRouting = "FAIL: " & failure & " " & message
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

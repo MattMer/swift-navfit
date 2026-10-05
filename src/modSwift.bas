@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.8.0-prototype"
-Public Const SCHEMA_VERSION As Long = 8
+Public Const APP_VERSION As String = "0.22.0-ux-preview"
+Public Const SCHEMA_VERSION As Long = 21
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -93,9 +93,10 @@ Private Function FieldText(ByVal value As Variant) As Variant
     End If
 End Function
 
-Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant) As Long
+Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
+    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant) As Long
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
-    Dim keys As Variant, previous(0 To 6) As Variant, current(0 To 6) As Variant, i As Long
+    Dim keys As Variant, previous(0 To 77) As Variant, current(0 To 77) As Variant, i As Long
     Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
     If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, , "Choose EVAL, CHIEFEVAL, or FITREP."
     If Len(title) > 160 Or Len(memberName) > 120 Then Err.Raise vbObjectError + 106, , "Title or member name exceeds local draft capacity."
@@ -108,9 +109,10 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         endDate = DateValue(endDate)
     End If
     pid = ProfileID()
-    keys = Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments")
-    For i = 0 To 6
+    keys = DraftFieldKeys()
+    For i = 0 To 77
         previous(i) = Null
+        current(i) = Null
     Next
     current(0) = formKind: current(1) = title: current(2) = memberName
     current(3) = FieldText(startDate): current(4) = FieldText(endDate): current(5) = notes
@@ -120,6 +122,47 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         If Not IsNull(officialComments) And VarType(officialComments) <> vbString Then Err.Raise vbObjectError + 117, , "Official narrative must be text or null."
         current(6) = officialComments
     End If
+    If Not IsMissing(administration) Then
+        administration = ValidateAdministration(administration)
+        For i = 0 To 4: current(7 + i) = administration(i): Next
+    End If
+    If Not IsMissing(traits) Then
+        traits = ValidateTraits(traits)
+        For i = 0 To 6: current(12 + i) = traits(i): Next
+    End If
+    If Not IsMissing(assessment) Then
+        assessment = ValidateAssessment(assessment)
+        current(19) = assessment(0): current(20) = assessment(1)
+    End If
+    If Not IsMissing(serviceDetails) Then
+        serviceDetails = ValidateServiceDetails(serviceDetails)
+        For i = 0 To 5: current(43 + i) = serviceDetails(i): Next
+    End If
+    If Not IsMissing(decisionDetails) Then
+        decisionDetails = ValidateDecisionDetails(decisionDetails)
+        For i = 0 To 5: current(49 + i) = decisionDetails(i): Next
+    End If
+    If Not IsMissing(reportPeople) Then
+        reportPeople = ValidateReportPeople(reportPeople)
+        For i = 0 To 12: current(55 + i) = reportPeople(i): Next
+    End If
+    If Not IsMissing(partyNames) Then
+        partyNames = ValidatePartyNames(partyNames)
+        For i = 0 To 9: current(68 + i) = partyNames(i): Next
+    End If
+    If Not IsMissing(memberDetails) Then
+        memberDetails = ValidateMemberDetails(memberDetails)
+        For i = 0 To 6: current(36 + i) = memberDetails(i): Next
+    End If
+    If Not IsMissing(reportContext) Then
+        reportContext = ValidateReportContext(reportContext)
+        For i = 0 To 8: current(27 + i) = reportContext(i): Next
+    End If
+    If Not IsMissing(reportingSenior) Then
+        reportingSenior = ValidateReportingSenior(reportingSenior)
+        For i = 0 To 4: current(22 + i) = reportingSenior(i): Next
+    End If
+    If Not IsMissing(promotionStatus) Then current(21) = ValidatePromotionStatus(promotionStatus)
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed
     w.BeginTrans
@@ -133,25 +176,56 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         If r!IsArchived Then Err.Raise vbObjectError + 110, , "Recover archived reports before editing."
         If r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 111, , "Reopen locked reports before editing."
         If r!FormKind <> formKind Then Err.Raise vbObjectError + 112, , "Report type cannot change after creation."
-        For i = 0 To 6
+        If IsMissing(administration) Then
+            For i = 7 To 11: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(traits) Then
+            For i = 12 To 18: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(assessment) Then current(19) = r!ObservationStatus.Value: current(20) = r!PromotionRecommendation.Value
+        If IsMissing(promotionStatus) Then current(21) = r!PromotionStatus.Value
+        If IsMissing(reportingSenior) Then
+            For i = 22 To 26: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(reportContext) Then
+            For i = 27 To 35: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(memberDetails) Then
+            For i = 36 To 42: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(serviceDetails) Then
+            For i = 43 To 48: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(decisionDetails) Then
+            For i = 49 To 54: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(reportPeople) Then
+            For i = 55 To 67: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        If IsMissing(partyNames) Then
+            For i = 68 To 77: current(i) = r.Fields(keys(i)).Value: Next
+        End If
+        For i = 0 To 77
             previous(i) = FieldText(r.Fields(keys(i)).Value)
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
-            r.Close: w.Rollback: CommitDraft = reportID: Exit Function
+            r.Close: w.CommitTrans: CommitDraft = reportID: Exit Function
         End If
         parentID = r!CurrentRevisionID
-        seq = Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & reportID), 0) + 1
+        Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
+        seq = Nz(rev.Fields(0).Value, 0) + 1: rev.Close: Set rev = Nothing
         r.Edit
     End If
     r!FormKind = formKind: r!Title = title: r!MemberName = memberName
     r!PeriodStart = startDate: r!PeriodEnd = endDate: r!DraftNotes = notes: r!OfficialComments = current(6): r!ModifiedAt = Now()
+    For i = 7 To 77: r.Fields(keys(i)) = current(i): Next
     r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID: r.Close
     Set rev = db.OpenRecordset("ReportRevision", dbOpenDynaset)
     rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
-    rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255)
+    rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
     rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close
-    For i = 0 To 6
+    For i = 0 To 77
         Snapshot revisionID, CStr(keys(i)), current(i)
         If seq = 1 Or IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
             AppendChange revisionID, CStr(keys(i)), previous(i), current(i)
@@ -164,7 +238,11 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
 Failed:
     Dim failure As Long, explanation As String
     failure = Err.Number: explanation = Err.Description
+    On Error Resume Next
     w.Rollback
+    If Not r Is Nothing Then r.Close
+    If Not rev Is Nothing Then rev.Close
+    On Error GoTo 0
     Err.Raise failure, "CommitDraft", explanation
 End Function
 
@@ -192,25 +270,33 @@ End Function
 
 Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, , "Revision belongs to another report."
-    RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID))
+    RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID), AdministrationFromRevision(revisionID), TraitsFromRevision(revisionID), AssessmentFromRevision(revisionID), PromotionStatusFromRevision(revisionID), ReportingSeniorFromRevision(revisionID), ReportContextFromRevision(revisionID), MemberDetailsFromRevision(revisionID), ServiceDetailsFromRevision(revisionID), DecisionDetailsFromRevision(revisionID), ReportPeopleFromRevision(revisionID), PartyNamesFromRevision(revisionID))
 End Function
 
 Public Function DuplicateDraft(ByVal reportID As Long) As Long
     Dim r As DAO.Recordset
     Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 116, , "Report does not exist."
-    DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments)
+    DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments, Array(r!OfficialName.Value, r!RankRate.Value, r!Designator.Value, r!UnitUIC.Value, r!ShipStation.Value), Array(r!Trait33.Value, r!Trait34.Value, r!Trait35.Value, r!Trait36.Value, r!Trait37.Value, r!Trait38.Value, r!Trait39.Value), Array(r!ObservationStatus.Value, r!PromotionRecommendation.Value), r!PromotionStatus.Value, Array(r!ReportingSeniorName.Value, r!ReportingSeniorGrade.Value, r!ReportingSeniorDesignator.Value, r!ReportingSeniorTitle.Value, r!ReportingSeniorUIC.Value), ReportContextFromRecordset(r), MemberDetailsFromRecordset(r), ServiceDetailsFromRecordset(r), DecisionDetailsFromRecordset(r), ReportPeopleFromRecordset(r), PartyNamesFromRecordset(r))
     r.Close
 End Function
 
 Public Function Startup() As Boolean
+    Startup = SwiftAppStartup()
+End Function
+
+Public Function SwiftAppStartup() As Boolean
+    On Error GoTo Failed
     If Nz(DLookup("SchemaVersion", "AppMetadata"), 0) <> SCHEMA_VERSION Then
         MsgBox "Unsupported Swift schema. Open this file with its matching application version.", vbCritical
         Application.Quit acQuitSaveNone
         Exit Function
     End If
     If DCount("*", "Workspace") = 0 Then DoCmd.OpenForm "frmSetup" Else DoCmd.OpenForm "frmHome"
-    Startup = True
+    UXLoadContext
+    SwiftAppStartup = True: Exit Function
+Failed:
+    MsgBox "Swift NAVFIT could not start. Error " & Err.Number & ": " & Err.Description, vbExclamation, "Swift NAVFIT startup"
 End Function
 
 Public Function OpenScreen(ByVal formName As String) As Boolean
@@ -234,6 +320,7 @@ Public Function LoadHome() As Boolean
     Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
     Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
     Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
+    UXDashboardRefresh
     LoadHome = True
 End Function
 
@@ -253,27 +340,41 @@ Public Function EditSelected(Optional ByVal createNew As Boolean = False) As Boo
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         MsgBox "Close the current editor before opening another report.", vbInformation: Exit Function
     End If
+    Call UXCaptureReportList
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     EditSelected = True
 End Function
 
 Public Function LoadEditor() As Boolean
-    Dim f As Form, r As DAO.Recordset, id As Long
+    Dim f As Form, r As DAO.Recordset, id As Long, block As Long, seniorKey As Variant
     Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
     f!cboKind = "EVAL"
     If id > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
         f!cboKind = r!FormKind: f!txtTitle = r!Title: f!txtMember = r!MemberName
         f!txtStart = r!PeriodStart: f!txtEnd = r!PeriodEnd: f!txtNotes = r!DraftNotes: f!txtOfficialComments = r!OfficialComments
+        f!txtOfficialName = r!OfficialName: f!txtRankRate = r!RankRate: f!txtDesignator = r!Designator: f!txtUnitUIC = r!UnitUIC: f!txtShipStation = r!ShipStation
+        For block = 33 To 39: f.Controls("cboTrait" & block) = r.Fields("Trait" & block).Value: Next
+        For Each seniorKey In ReportingSeniorKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In ReportContextKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In MemberDetailsKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In ServiceDetailsKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In DecisionDetailsKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In ReportPeopleKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        For Each seniorKey In PartyNamesKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        f!cboPromotionStatus = r!PromotionStatus
+        f!cboObservationStatus = r!ObservationStatus: f!cboPromotionRecommendation = r!PromotionRecommendation
         f!lblSaved.Caption = "Last saved: " & r!ModifiedAt
         f!cmdSave.Enabled = Not r!IsArchived
         f!cmdRestore.Enabled = Not r!IsArchived
         r.Close: f!cboKind.Enabled = False
         If DCount("*", "ImportReceipt", "ReportID=" & id) > 0 Then f!lblImportOrigin.Caption = "Imported narrative only. Other official fields remain unmapped; source values retained locally."
     End If
+    Call InitializeTraitEditor()
     Call RefreshNarrativeLabel()
     Call RefreshRevisions
     Call BeginEditorRecovery()
+    Call UXEditorStart()
     LoadEditor = True
 End Function
 
@@ -288,15 +389,17 @@ Public Function SaveEditor() As Boolean
     Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean
     On Error GoTo Failed
     Set f = Forms!frmEditor
+    UXFlushSurface
     Call GuardEditorBaseline()
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
-    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments)
+    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor())
     Call DiscardEditorCheckpoint()
     w.CommitTrans: trans = False
     f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved " & Now() & " - local draft only"
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
     Call ResetEditorBaseline()
+    Call RefreshTraitSummary()
     f!lblRecovery.Caption = "Saved; no pending recovery checkpoint."
     SaveEditor = True: Exit Function
 Failed:
@@ -304,14 +407,11 @@ Failed:
     message = Err.Description
     On Error Resume Next
     If trans Then w.Rollback
-    MsgBox message, vbExclamation
+    If Not UXShowSaveError(message) Then MsgBox message, vbExclamation
 End Function
 
 Public Function CloseEditor() As Boolean
-    If MsgBox("Close the editor? Unsaved entries will be discarded. Use Save draft first to keep them.", vbOKCancel + vbQuestion) = vbOK Then
-        Call DiscardEditorCheckpoint()
-        DoCmd.Close acForm, "frmEditor", acSaveNo: CloseEditor = True
-    End If
+    CloseEditor = UXLeaveEditor()
 End Function
 
 Public Function RestoreSelected() As Boolean

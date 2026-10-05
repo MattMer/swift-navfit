@@ -6,6 +6,7 @@ Private Function SqlType(ByVal f As DAO.Field) As String
     Select Case f.Type
         Case dbBoolean: SqlType = "Bit"
         Case dbLong: SqlType = "Long"
+        Case dbDouble: SqlType = "Double"
         Case dbDate: SqlType = "DateTime"
         Case dbText: SqlType = "Text(" & f.Size & ")"
         Case dbMemo: SqlType = "LongText"
@@ -19,15 +20,17 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Dim tables As Variant, n As Variant, i As Long, ver As Long, sql As String
     Dim names As String, defs As String, vals As String, trans As Boolean, message As String, stage As String
     Dim av As Variant, bv As Variant, requiredFields As Collection, fieldIndex As Variant
-    Dim table As DAO.TableDef, known As Boolean
+    Dim table As DAO.TableDef, known As Boolean, targetVersion As Long
     On Error GoTo Failed
     Set reader = DBEngine.CreateWorkspace("SwiftRead", "admin", "", dbUseJet)
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 8 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
-    If DLookup("SchemaVersion", "AppMetadata") <> 8 Then Err.Raise vbObjectError + 302, , "Target schema must be 8."
-    tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent")
+    If ver < 1 Or ver > 21 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    targetVersion = DLookup("SchemaVersion", "AppMetadata")
+    If targetVersion <> 21 Then Err.Raise vbObjectError + 302, , "Target schema must be 21."
+    tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
+        "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             known = (table.Name = "AppMetadata")
@@ -42,6 +45,8 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Next
     w.BeginTrans: trans = True
     For Each n In tables
+        If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextTable
+        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextTable
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextTable
         If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextTable
         If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextTable
@@ -92,6 +97,8 @@ NextTable:
         q.Close: r.Close
     End If
     For Each n In tables
+        If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextCheck
+        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextCheck
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextCheck
         If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextCheck
         If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextCheck
@@ -120,7 +127,7 @@ NextTable:
 NextCheck:
     Next
     w.CommitTrans: trans = False: s.Close: reader.Close
-    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to 8"
+    MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to " & targetVersion
     Exit Function
 Failed:
     message = Err.Description
@@ -129,4 +136,15 @@ Failed:
     If Not s Is Nothing Then s.Close
     If Not reader Is Nothing Then reader.Close
     MigrateWorkspace = "FAIL: " & stage & ": " & message
+End Function
+
+Private Function IsMajorTable(ByVal name As String) As Boolean
+    Dim key As Variant
+    For Each key In Array("SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding")
+        If key = name Then IsMajorTable = True: Exit Function
+    Next
+End Function
+
+Private Function IsRSTable(ByVal name As String) As Boolean
+    IsRSTable = (name = "ReportingSeniorRecord" Or name = "ReportingSeniorValue" Or name = "RSCABaseline" Or name = "GroupRSCABaseline")
 End Function
