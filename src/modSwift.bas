@@ -10,7 +10,7 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.22.0-ux-preview"
+Public Const APP_VERSION As String = "0.23.0-preview"
 Public Const SCHEMA_VERSION As Long = 21
 
 Public Function NewIdentity() As String
@@ -447,7 +447,7 @@ Failed:
 End Function
 
 Public Function LoadSupport() As Boolean
-    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: unavailable; exchange disabled" & vbCrLf & "Policy validation: not implemented" & vbCrLf & "PDF import: not implemented" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
+    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: 74 mapped saved values; 128 native columns retained; single-report export and guarded return preview; group export pending" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
     LoadSupport = True
 End Function
 

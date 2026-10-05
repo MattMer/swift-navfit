@@ -1,0 +1,1118 @@
+{
+  "EVAL": [
+    {
+      "target": "OfficialName",
+      "source": "FullName",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "Rate",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "Desig",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "SSN",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberDoDID",
+      "source": "DoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "UIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "ShipStation",
+      "conversion": "text"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "PromotionStatus",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "FromDate",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "ToDate",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "DateReported",
+      "conversion": "date"
+    },
+    {
+      "target": "OccasionPeriodic",
+      "source": "Periodic",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionDetachment",
+      "source": "DetInd",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionFrocking",
+      "source": "Frocking",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionSpecial",
+      "source": "Special",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportRegular",
+      "source": "Regular",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportConcurrent",
+      "source": "Concurrent",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportOperationalCommander",
+      "source": "OpsCdr",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "Active",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "TAR",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "Inactive",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "ATADSW",
+      "conversion": "flag"
+    },
+    {
+      "target": "ObservationStatus",
+      "source": "NOB",
+      "conversion": "observation"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "PromotionRecom",
+      "conversion": "promotion"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "ReportingSenior",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "RSGrade",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "RSDesig",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "RSTitle",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "RSUIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "RSSSN",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDoDID",
+      "source": "RSDoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "PrimaryDuty",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "Duties",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "DateCounseled",
+      "conversion": "counseling"
+    },
+    {
+      "target": "CounselorName",
+      "source": "Counseler",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessSummary",
+      "source": "PhysicalReadiness",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDetail",
+      "source": "PhysicalReadiness2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDate",
+      "source": "PhysicalReadinessDt",
+      "conversion": "date"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "BilletSubcat",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "RecommendA",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "RecommendB",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "Comments",
+      "conversion": "text"
+    },
+    {
+      "target": "RetentionYes",
+      "source": "RetentionYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "RetentionNo",
+      "source": "RetentionNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementYes",
+      "source": "StatementYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementNo",
+      "source": "StatementNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportingSeniorAddress1",
+      "source": "RSAddress1",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorAddress2",
+      "source": "RSAddress2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorCity",
+      "source": "RSCity",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorState",
+      "source": "RSState",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorZip",
+      "source": "RSZipCd",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorPhone",
+      "source": "RSPhone",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDSN",
+      "source": "RSDSN",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterName",
+      "source": "Rater",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterDate",
+      "source": "RaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "SeniorRaterName",
+      "source": "SeniorRater",
+      "conversion": "text"
+    },
+    {
+      "target": "SeniorRaterDate",
+      "source": "SeniorRaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "MemberFirstName",
+      "source": "FirstName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberMiddleInitial",
+      "source": "MI",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberLastName",
+      "source": "LastName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSuffix",
+      "source": "Suffix",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorLastName",
+      "source": "RSLastName",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorFirstInitial",
+      "source": "RSFI",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorMiddleInitial",
+      "source": "RSMI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorLastName",
+      "source": "CounselerLN",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorFirstInitial",
+      "source": "CounselerFI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorMiddleInitial",
+      "source": "CounselerMI",
+      "conversion": "text"
+    },
+    {
+      "target": "Trait33",
+      "source": "PROF",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "QUAL",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "EO",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "MIL",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "PA",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "TEAM",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "LEAD",
+      "conversion": "trait"
+    }
+  ],
+  "CHIEFEVAL": [
+    {
+      "target": "OfficialName",
+      "source": "FullName",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "Rate",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "Desig",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "SSN",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberDoDID",
+      "source": "DoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "UIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "ShipStation",
+      "conversion": "text"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "PromotionStatus",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "FromDate",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "ToDate",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "DateReported",
+      "conversion": "date"
+    },
+    {
+      "target": "OccasionPeriodic",
+      "source": "Periodic",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionDetachment",
+      "source": "DetInd",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionFrocking",
+      "source": "Frocking",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionSpecial",
+      "source": "Special",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportRegular",
+      "source": "Regular",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportConcurrent",
+      "source": "Concurrent",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportOperationalCommander",
+      "source": "OpsCdr",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "Active",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "TAR",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "Inactive",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "ATADSW",
+      "conversion": "flag"
+    },
+    {
+      "target": "ObservationStatus",
+      "source": "NOB",
+      "conversion": "observation"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "PromotionRecom",
+      "conversion": "promotion"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "ReportingSenior",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "RSGrade",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "RSDesig",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "RSTitle",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "RSUIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "RSSSN",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDoDID",
+      "source": "RSDoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "PrimaryDuty",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "Duties",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "DateCounseled",
+      "conversion": "counseling"
+    },
+    {
+      "target": "CounselorName",
+      "source": "Counseler",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessSummary",
+      "source": "PhysicalReadiness",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDetail",
+      "source": "PhysicalReadiness2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDate",
+      "source": "PhysicalReadinessDt",
+      "conversion": "date"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "BilletSubcat",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "RecommendA",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "RecommendB",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "Comments",
+      "conversion": "text"
+    },
+    {
+      "target": "RetentionYes",
+      "source": "RetentionYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "RetentionNo",
+      "source": "RetentionNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementYes",
+      "source": "StatementYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementNo",
+      "source": "StatementNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportingSeniorAddress1",
+      "source": "RSAddress1",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorAddress2",
+      "source": "RSAddress2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorCity",
+      "source": "RSCity",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorState",
+      "source": "RSState",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorZip",
+      "source": "RSZipCd",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorPhone",
+      "source": "RSPhone",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDSN",
+      "source": "RSDSN",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterName",
+      "source": "Rater",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterDate",
+      "source": "RaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "SeniorRaterName",
+      "source": "SeniorRater",
+      "conversion": "text"
+    },
+    {
+      "target": "SeniorRaterDate",
+      "source": "SeniorRaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "MemberFirstName",
+      "source": "FirstName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberMiddleInitial",
+      "source": "MI",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberLastName",
+      "source": "LastName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSuffix",
+      "source": "Suffix",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorLastName",
+      "source": "RSLastName",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorFirstInitial",
+      "source": "RSFI",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorMiddleInitial",
+      "source": "RSMI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorLastName",
+      "source": "CounselerLN",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorFirstInitial",
+      "source": "CounselerFI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorMiddleInitial",
+      "source": "CounselerMI",
+      "conversion": "text"
+    },
+    {
+      "target": "Trait33",
+      "source": "LEAD",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "TAC",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "PROF",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "MIS",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "EO",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "TEAM",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "MIL",
+      "conversion": "trait"
+    }
+  ],
+  "FITREP": [
+    {
+      "target": "OfficialName",
+      "source": "FullName",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "Rate",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "Desig",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "SSN",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberDoDID",
+      "source": "DoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "UIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "ShipStation",
+      "conversion": "text"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "PromotionStatus",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "FromDate",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "ToDate",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "DateReported",
+      "conversion": "date"
+    },
+    {
+      "target": "OccasionPeriodic",
+      "source": "Periodic",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionDetachment",
+      "source": "DetInd",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionFrocking",
+      "source": "Frocking",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionSpecial",
+      "source": "Special",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportRegular",
+      "source": "Regular",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportConcurrent",
+      "source": "Concurrent",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportOperationalCommander",
+      "source": "OpsCdr",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "Active",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "TAR",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "Inactive",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "ATADSW",
+      "conversion": "flag"
+    },
+    {
+      "target": "ObservationStatus",
+      "source": "NOB",
+      "conversion": "observation"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "PromotionRecom",
+      "conversion": "promotion"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "ReportingSenior",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "RSGrade",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "RSDesig",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "RSTitle",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "RSUIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "RSSSN",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDoDID",
+      "source": "RSDoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "PrimaryDuty",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "Duties",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "DateCounseled",
+      "conversion": "counseling"
+    },
+    {
+      "target": "CounselorName",
+      "source": "Counseler",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessSummary",
+      "source": "PhysicalReadiness",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDetail",
+      "source": "PhysicalReadiness2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReadinessDate",
+      "source": "PhysicalReadinessDt",
+      "conversion": "date"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "BilletSubcat",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "RecommendA",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "RecommendB",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "Comments",
+      "conversion": "text"
+    },
+    {
+      "target": "RetentionYes",
+      "source": "RetentionYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "RetentionNo",
+      "source": "RetentionNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementYes",
+      "source": "StatementYes",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementNo",
+      "source": "StatementNo",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportingSeniorAddress1",
+      "source": "RSAddress1",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorAddress2",
+      "source": "RSAddress2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorCity",
+      "source": "RSCity",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorState",
+      "source": "RSState",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorZip",
+      "source": "RSZipCd",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorPhone",
+      "source": "RSPhone",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDSN",
+      "source": "RSDSN",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterName",
+      "source": "Rater",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterDate",
+      "source": "RaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "SeniorRaterName",
+      "source": "SeniorRater",
+      "conversion": "text"
+    },
+    {
+      "target": "SeniorRaterDate",
+      "source": "SeniorRaterDate",
+      "conversion": "date"
+    },
+    {
+      "target": "MemberFirstName",
+      "source": "FirstName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberMiddleInitial",
+      "source": "MI",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberLastName",
+      "source": "LastName",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSuffix",
+      "source": "Suffix",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorLastName",
+      "source": "RSLastName",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorFirstInitial",
+      "source": "RSFI",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorMiddleInitial",
+      "source": "RSMI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorLastName",
+      "source": "CounselerLN",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorFirstInitial",
+      "source": "CounselerFI",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorMiddleInitial",
+      "source": "CounselerMI",
+      "conversion": "text"
+    },
+    {
+      "target": "Trait33",
+      "source": "PROF",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "EO",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "MIL",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "TEAM",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "MIS",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "LEAD",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "TAC",
+      "conversion": "trait"
+    }
+  ]
+}

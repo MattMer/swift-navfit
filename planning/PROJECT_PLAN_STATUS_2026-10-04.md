@@ -1,5 +1,43 @@
 # Swift NAVFIT project-plan status — 4 October 2026, r23
 
+## r28 group export follow-up — 5 October 2026
+
+Group export now previews saved members and writes one NAVFIT folder with
+recalculated promotion totals, preserved native-only member values, a sealed
+78-value-per-member baseline and optional exact PSG RSCA. It does not synthesize
+summary-letter contact profiles. Group returns, actual group-native/print
+acceptance and complete policy eligibility remain pending. Inspection found
+readable managed print routines but no VBA COM print API; exported files can use
+NAVFIT's own print actions. See `NAVFIT_GROUP_EXPORT_R28.md` and
+`NAVFIT_PRINT_ENGINE_FINDINGS.md`. This supersedes r27's group-export limitation.
+
+## r27 NAVFIT exchange follow-up — 5 October 2026
+
+R27 supersedes the historical narrative-only import/export descriptions below.
+All 74 supported saved values plus form type are mapped for each report kind;
+all 128 native report columns and folder/summary source values are retained.
+Single-report export and sealed-baseline three-way return handling are implemented.
+EVAL, CHIEFEVAL and FITREP were opened, edited and saved in NAVFIT98A 2.2.0.332;
+each return matched 75 decoded values and re-export matched all 128 native columns.
+See [scope, native proof and remaining limits](NAVFIT_EXCHANGE_R27.md).
+Complete group/batch export, changed cross-file identities, unsupported legacy
+counseling strings, other NAVFIT versions and Runtime/x86 remain outstanding.
+
+## r26 PDF-import follow-up
+
+The user clarified the currently selected priority #4 as PDF mapping expansion,
+existing-draft merge and target-computer extraction verification. R26 implements
+40 EVAL / 51 CHIEFEVAL / 36 FITREP saved-field catalogues; guided fill-empty or
+replace-value merges with full previews, revision/lock/recovery guards and undo;
+native extraction diagnostics and a portable three-form workstation checker.
+All three paths pass locally on Access 64-bit/Acrobat. Other target computers must
+run the checker before their configuration is called verified. Full PDF mapping,
+unnamed checkbox proof, Runtime/x86 and print appearance remain outstanding.
+See `PDF_IMPORT_R26.md` and `CURRENT_STATE.md`. The original r23 tables and
+recommended-focus numbering below are historical context, not this task's
+priority definition. R25's live source-backed validation also supersedes the
+older validation-coverage description, within its documented limits.
+
 ## r24 follow-up
 
 The native-review top three priorities are implemented in r24: report-list reopening, the unified My Work inbox, and shared layout/state feedback. My Work now includes simple assignments, current ordered-route steps, ready local approvals and related unresolved comments, with named reports/contributors, next actions and stale/locked assignment guards. Future steps stay out of the current queue; resolved threads leave pending work. Existing tables support this without a schema change. Route/comment due dates and comment assignees are deliberately not invented.

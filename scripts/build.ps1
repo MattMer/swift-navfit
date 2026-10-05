@@ -1,4 +1,4 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.22.0-ux-preview.accdb'))
+param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.23.0-preview.accdb'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.22.0-ux-preview',21,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.23.0-preview',21,'Unverified - NAVFIT exchange disabled')"
     )
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
@@ -108,7 +108,7 @@ try {
     [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
     $app.LoadFromText(5,'modBackupWorker',$workerPath)
     $app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))
-    foreach($majorModule in @('modRSDirectory','modRSDirectoryUI','modPDFImport','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
+    foreach($majorModule in @('modRSDirectory','modRSDirectoryUI','modPDFImport','modPDFMapping','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
     $app.LoadFromText(5,'modBulkFolders',(Join-Path $root 'src\modBulkFolders.bas'))
     $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
     $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
@@ -137,6 +137,9 @@ try {
     $app.LoadFromText(5,'modFileHash',(Join-Path $root 'src\modFileHash.bas'))
     $app.LoadFromText(5,'modSwift',(Join-Path $root 'src\modSwift.bas'))
     $app.LoadFromText(5,'modWorkspace',(Join-Path $root 'src\modWorkspace.bas'))
+    $app.LoadFromText(5,'modNAVFITMapping',(Join-Path $root 'src\modNAVFITMapping.bas'))
+    $app.LoadFromText(5,'modNAVFITExchange',(Join-Path $root 'src\modNAVFITExchange.bas'))
+    $app.LoadFromText(5,'modNAVFITAdapter',(Join-Path $root 'src\modNAVFITAdapter.bas'))
     $app.LoadFromText(5,'modImportReview',(Join-Path $root 'src\modImportReview.bas'))
     function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
         $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
@@ -159,7 +162,8 @@ try {
         $script:swiftForm = $f
     }
     function SaveScreen($f,$name) {
-        try { $app.DoCmd.Save(2,$name); $app.DoCmd.Close(2,$name,2) } catch { throw "Unable to persist form ${name}: $($_.Exception.Message)" }
+        $phase='Save'
+        try { $app.DoCmd.Save(2,$name); $phase='Close'; $app.DoCmd.Close(2,$name,2) } catch { throw "Unable to persist form ${name} during ${phase}: $($_.Exception.Message). Build location: $($_.ScriptStackTrace)" }
     }
     NewScreen 'frmSetup' 'Set up your Swift NAVFIT workspace' 5300; $f=$script:swiftForm
     [void](Control $f 100 'lblInfo' 400 1000 12600 650 'One authoritative local file. Profiles identify contributors; they do not authenticate users. Separate copies do not synchronize.')
@@ -687,6 +691,9 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-import-flow.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-review-return.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-my-work.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-validation.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-navfit.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
@@ -701,14 +708,16 @@ try {
     $editorModule=$editorForm.Module
     $unloadLine=$editorModule.CreateEventProc('Unload','Form')
     $editorModule.InsertLines($unloadLine+1,'    If Not UXEditorUnload() Then Cancel = True')
-    SaveScreen $editorForm 'frmEditor'
+    # Saving the form before closing can miss its newly created class code.
+    # Close with acSaveYes so Access persists both the form and event procedure.
+    $app.DoCmd.Close(2,'frmEditor',1)
     $app.DoCmd.OpenForm('frmUXComparison',1)
     $comparisonForm=$app.Forms.Item('frmUXComparison')
     $comparisonForm.HasModule=$true;$comparisonForm.OnUnload='[Event Procedure]'
     $comparisonModule=$comparisonForm.Module
     $comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')
     $comparisonModule.InsertLines($comparisonLine+1,'    UXGridUnload Me')
-    SaveScreen $comparisonForm 'frmUXComparison'
+    $app.DoCmd.Close(2,'frmUXComparison',1)
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)

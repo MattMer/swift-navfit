@@ -1,6 +1,6 @@
 # Swift NAVFIT native workspace guide
 
-Current native preview: **0.22.0-ux-preview, schema 21**. The distributed 0.21.0
+Current native preview: **0.23.0-preview, schema 21**. The distributed 0.21.0
 checkpoint is older. Start at [CURRENT_STATE.md](CURRENT_STATE.md) for current
 artifacts, verification evidence and remaining work. Earlier feature guides
 are historical service documentation; use this guide for current navigation.
@@ -19,7 +19,7 @@ Reports provides search, form-type, folder, review and archive filters, saved vi
 
 ## Summary groups and comparisons
 
-Summary groups lists groups with report counts. Open a group for Members, Shared defaults, Review, Comparison and History. Rename, archive and recover act on the group; reports remain independent. Bulk changes and defaults use the same official sections as a report. Mixed, unchanged, staged and cleared values are distinct. Preview full changes, then Apply. Comparison uses editable trait cells and staged proposals; an internal baseline is captured automatically. Changed membership, revisions or locks require a fresh preview.
+Summary groups lists groups with report counts. Open a group for Members, Shared defaults, Review, Comparison and History. Rename, archive and recover act on the group; reports remain independent. Bulk changes and defaults use the same official sections as a report. Mixed, unchanged, staged and cleared values are distinct. Preview full changes, then Apply. Comparison uses editable trait cells and staged proposals; an internal baseline is captured automatically. Changed membership, revisions or locks require a fresh preview. Open All summary-group validation issues for member findings, grouping differences and provisional EP/MP limits with policy references.
 
 ## Reporting seniors and averages
 
@@ -33,7 +33,7 @@ Report > Review opens routes and comments in the report context. Review operates
 
 ## Checks, snippets and imports
 
-Report > Review > Draft checklist uses saved values and jumps to the relevant official section. Inline entry errors, incomplete draft information and limited Navy checks are separate. Navy checks cover selected source-linked rules and their effective report-period range. Resources provides attributed narrative snippets. Reports > Import reports offers NAVFIT narrative or structured PDF import: Choose, Preview, Apply, Results. Full before/after mappings show what will be created. Changed sources or mapping choices require a fresh preview. Results can open the created report. Source field inspection and existing-draft reconciliation remain available. PDF imports use SSN by default; legacy DoDID mapping requires explicit compatibility selection. All imports retain provenance and are limited in scope. Printing and full NAVFIT export remain deferred/incomplete.
+The report action-area validation button and Report > Review > Validation issues check pending values live. Summary group > All summary-group validation issues includes all members and pending edits from the open member. Select a finding for its instruction, enclosure, printed page, paragraph/table and excerpt, then open the affected report block. Invalid entries, incomplete drafts, policy issues and Needs review are distinct. Storage checks are application rules. Group capacities are provisional until eligible membership is verified; no manual roster freeze is required. Live checks create no saved revisions or validation runs. Coverage is limited, including manual review of LDO/CWO categories, UIC exceptions and earlier/future instruction applicability. Reports > Draft checklist retains the saved-value checklist. Resources provides attributed narrative snippets. Reports > Import reports offers NAVFIT report or structured PDF import: Choose, Preview, Apply, Results. PDF mapping covers 40 EVAL, 51 CHIEFEVAL and 36 FITREP saved fields. Leave the merge target blank to create a new draft, or choose an existing draft and Fill empty fields / Replace mapped values. Full before/after previews show replacements and retained values. Blank or missing PDF fields never clear existing values. Close the target editor and resolve pending recovery before merging. Changed or locked targets require a fresh preview. Settings & Help > Operation history can undo an import while no later edit exists. Use Check PDF extraction on this computer after choosing a PDF; desktop Adobe Acrobat is required, Reader/browser viewers are insufficient. Changed sources or mapping choices require a fresh preview. Results can open the imported or merged report. Source field inspection and existing-draft reconciliation remain available. PDF imports use SSN by default; legacy DoDID mapping requires explicit compatibility selection. All imports retain provenance and are limited in scope. NAVFIT import maps 74 saved report values and retains all 128 native report columns, folders and summary values. Choose a counseling-date century explicitly when needed. NAVFIT exchange exports one saved report with a separate hashed Swift baseline. Keep that baseline locally and select it when the edited NAVFIT file returns. Preview all baseline/current/returned values and resolve every editable-field conflict before Apply; Apply also retains the displayed native-only source changes. Source changes, later revisions, pending recovery, archive and local approval guards apply. Summary group > Export group to NAVFIT98A previews the saved roster and promotion totals, then exports one native folder with all selected members. Keep the frozen group baseline locally. Imported native-only report values are preserved; new drafts have no native RSCA unless Write exact PSG RSCA is selected. That option requires complete traits and an exact historical sum. Group-return reconciliation, arbitrary-source matching and non-date counseling encodings remain unsupported. Open the exported file in NAVFIT98A, validate reports, and use its report/folder/summary printing actions. Swift does not yet provide the native print engine directly.
 
 ## Recovery, backups and migration
 
@@ -41,7 +41,7 @@ Overview or Settings & Help > Recover pending edits opens checkpoints, separate 
 
 ## Preview limits and diagnostics
 
-This is version 0.22.0-ux-preview, schema 21, a native Access review candidate. Automated native checks do not establish screen-reader or physical display/DPI acceptance. Desktop Access is verified within the documented tests; Runtime and x86 remain unverified. No network integration, synchronization, authentication or official signatures are added. Settings & Help > Support and limitations provides technical diagnostics. Read CURRENT_STATE.md for exact artifact evidence and outstanding work.
+This is version 0.23.0-preview, schema 21, a native Access review candidate. Automated native checks do not establish screen-reader or physical display/DPI acceptance. Desktop Access is verified within the documented tests; Runtime and x86 remain unverified. No network integration, synchronization, authentication or official signatures are added. Settings & Help > Support and limitations provides technical diagnostics. Read CURRENT_STATE.md for exact artifact evidence and outstanding work.
 
 ## Feature destinations
 
@@ -56,6 +56,7 @@ This is version 0.22.0-ux-preview, schema 21, a native Access review candidate. 
 | Senior directory, rank RSCA baselines and PSG RSCA | Resources > Reporting seniors; group Members calculator |
 | Assignments, due dates, contributor switching | My Work and Settings & Help |
 | Comments/replies, routes, saved-revision review, local approval/reopen | Report or focused group Review |
+| Live report/group validation and policy excerpts | Report action-area issue button; focused group validation issues |
 | Limited versioned Navy checks | Review > Run checks; source/effective-period scope remains limited |
 | Snippets and reference vocabulary | Resources, report narrative insertion and trait guidance |
 | NAVFIT/PDF review, supported imports, reconciliation, provenance | Reports import tools and import review/provenance |

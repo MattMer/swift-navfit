@@ -1,15 +1,16 @@
-# Swift NAVFIT local review candidate
+# Swift NAVFIT deployment prerelease
 
-This package is **0.22.0-ux-preview, schema 21**. It is a local review candidate,
+This package is **0.23.0-preview, schema 21**. It is a deployment prerelease,
 not a replacement for the distributed 0.21.0 checkpoint. Manual physical-display,
-keyboard and screen-reader acceptance remains outstanding. No release is
-published by the packaging script.
+keyboard and screen-reader acceptance remains outstanding. This prerelease includes Siltstone colors, reduced tab-switch layout work, live
+validation with policy references, expanded PDF import and NAVFIT exchange.
+The packaging script creates local assets; publication is a separate step.
 
 ## Choose the right file
 
-- **Swift_NAVFIT_0.22.0-ux-preview-DEMO.accdb**: nine synthetic reports and three
+- **Swift_NAVFIT_0.23.0-preview-DEMO.accdb**: nine synthetic reports and three
   groups for experimentation. Do not transfer operational data into this file.
-- **Swift_NAVFIT_0.22.0-ux-preview-blank.accdb**: a blank, separate workspace.
+- **Swift_NAVFIT_0.23.0-preview-blank.accdb**: a blank, separate workspace.
   Complete command/contributor setup or migrate into a new destination.
 
 Use desktop Microsoft Access. When active content is blocked, follow the
@@ -31,7 +32,7 @@ folder run:
 ```powershell
 powershell.exe -NoProfile -File .\scripts\upgrade-workspace.ps1 `
   -SourcePath 'C:\path\existing.accdb' `
-  -TemplatePath '.\Swift_NAVFIT_0.22.0-ux-preview-blank.accdb' `
+  -TemplatePath '.\Swift_NAVFIT_0.23.0-preview-blank.accdb' `
   -DestinationPath 'C:\path\upgraded-review.accdb'
 ```
 

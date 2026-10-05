@@ -208,7 +208,9 @@ foreach($screenName in $uxPages){
         [void](Control $f 111 'uxCompactSection' 250 2650 5000 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List'
         $c.RowSource=(0..9|ForEach-Object{[string]$_+';'+$uxSections[$_]}) -join ';';$c.ColumnCount=2;$c.ColumnWidths='0;5000';$c.LimitToList=$true;$c.TabIndex=7;$c.ControlTipText='Report section';$c.AfterUpdate='=UXChooseSectionCompact()'
         [void](Control $f 100 'uxAlias' 5900 2350 6000 350 '')
-        $f.HasModule=$true;$f.OnUnload='[Event Procedure]'
+        # build.ps1 binds the unload class procedure after all form design edits
+        # have been saved and the database reopened. Do not persist a dangling
+        # event-procedure reference during intermediate construction.
     }else{$f.OnResize='=UXResizeWorkspace("'+$screenName+'")'}
     SaveScreen $f $screenName
 }

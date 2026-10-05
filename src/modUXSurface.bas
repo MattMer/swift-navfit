@@ -348,7 +348,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!lblSaved.Left = contentLeft: f!lblSaved.Top = footer - 400: f!lblSaved.Width = contentWidth
     f!cmdClose.Left = contentLeft: f!cmdClose.Top = footer: f!cmdClose.Height = 500
     f!cmdSave.Left = width - 2850: f!cmdSave.Top = footer: f!cmdSave.Height = 500
-    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 5916729
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 2501670
     f!uxDirty.Left = contentLeft + 2600: f!uxDirty.Top = footer: f!uxDirty.Width = contentWidth - 5500
     f!lblRecovery.Left = contentLeft: f!lblRecovery.Top = footer + 650: f!lblRecovery.Width = contentWidth
     If surfaceSection = 8 Then
@@ -372,7 +372,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f.Width = width - 100
     f.Section(acDetail).Height = height - 100
 Render:
-    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 5916729
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 2501670
     If Not UXSurfaceSection(surfaceSection, Not f!cmdSave.Enabled) Then GoTo Finished
     'Reflow hides controls temporarily. Restore the original field and caret,
     'including raw text still being typed, without committing a revision.
@@ -449,6 +449,10 @@ Private Sub UXCompactEditorGeometry(ByVal f As Access.Form, ByVal width As Long,
         UXEditorPosition f, "uxDirty", 250, footer + 520, available, 300
     End If
     UXEditorPosition f, "lblRecovery", 250, footer + 550, available, 500
+    If available < 5200 Then
+        UXEditorPosition f, "lblRecovery", 250, footer + 860, available, 500
+        effectiveHeight = effectiveHeight + 350
+    End If
     If surfaceSection = 8 Or surfaceSection = 9 Then
         If surfaceSection = 8 Then actions = Array("cmdRoute", "cmdComments", "cmdChecklist", "cmdCalculations") Else actions = Array("cmdCompare", "cmdRestore")
         For i = 0 To UBound(actions)

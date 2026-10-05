@@ -43,20 +43,21 @@ Public Function GroupStamp(ByVal groupID As Long) As String
     r.Close
 End Function
 Public Sub AddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal paygrade As String, Optional ByVal exceptionReason As String = "")
-    Dim g As DAO.Recordset, r As DAO.Recordset, f As Object, author As Long, w As DAO.Workspace, operation As Long, failure As Long, message As String
-    author = MajorAuthor(): Set w = DBEngine.Workspaces(0): w.BeginTrans
+    Dim g As DAO.Recordset, r As DAO.Recordset, f As Object, author As Long, w As DAO.Workspace, operation As Long, failure As Long, message As String, db As DAO.Database, stage As String
     On Error GoTo Failed
-    Set f = SavedFields(reportID)
-    Set g = CurrentDb.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
-    If g.EOF Then g.Close: Err.Raise vbObjectError + 4103, , "Group does not exist."
-    If g!IsArchived Then g.Close: Err.Raise vbObjectError + 4104, , "Recover the group first."
+    stage = "Begin membership transaction": author = MajorAuthor(): Set w = DBEngine.Workspaces(0): w.BeginTrans
+    Set db = CurrentDb
+    stage = "Read saved member": Set f = SavedFields(reportID)
+    Set g = db.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
+    stage = "Check group": If g.EOF Then Err.Raise vbObjectError + 4103, , "Group does not exist."
+    If g!IsArchived Then Err.Raise vbObjectError + 4104, , "Recover the group first."
     If g!FormKind <> f("FormKind") Or g!Paygrade <> paygrade Then
-        g.Close: Err.Raise vbObjectError + 4105, , "Report kind and explicit paygrade must match the group."
+        Err.Raise vbObjectError + 4105, , "Report kind and explicit paygrade must match the group."
     End If
-    g.Close
-    If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & reportID), True) Then Err.Raise vbObjectError + 4106, , "Archived report cannot join a group."
-    Set r = CurrentDb.OpenRecordset("GroupMember", dbOpenDynaset)
-    r.AddNew: r!GroupID = groupID: r!ReportID = reportID: r!Paygrade = paygrade: r!ExceptionReason = exceptionReason: r.Update: r.Close
+    g.Close: Set g = Nothing
+    stage = "Check member availability": If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & reportID), True) Then Err.Raise vbObjectError + 4106, , "Archived report cannot join a group."
+    Set r = db.OpenRecordset("GroupMember", dbOpenDynaset)
+    stage = "Insert membership": r.AddNew: r!GroupID = groupID: r!ReportID = reportID: r!Paygrade = paygrade: r!ExceptionReason = exceptionReason: r.Update: r.Close: Set r = Nothing
     CurrentDb.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     operation = BeginOperation("Add group member", "Group " & groupID & ", report " & reportID & ", explicit paygrade " & paygrade & ": " & exceptionReason)
     FinishOperation operation, "Completed", "Membership added; committed report values unchanged."
@@ -68,7 +69,7 @@ Failed:
     If Not g Is Nothing Then g.Close
     If Not r Is Nothing Then r.Close
     On Error GoTo 0
-    Err.Raise failure, "AddGroupMember", message
+    Err.Raise failure, "AddGroupMember", stage & ": " & message
 End Sub
 Public Sub RemoveGroupMember(ByVal groupID As Long, ByVal reportID As Long)
     Dim author As Long, operation As Long, w As DAO.Workspace, failure As Long, message As String

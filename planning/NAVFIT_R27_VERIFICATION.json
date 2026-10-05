@@ -1,0 +1,64 @@
+{
+  "Milestone": "r27",
+  "Date": "2026-10-05",
+  "Version": "0.22.0-ux-preview",
+  "Schema": 21,
+  "Artifacts": [
+    {
+      "Path": "build/ux-r27-blank.accdb",
+      "SHA256": "B47644A952E8A21D5929830989BA9FD22D7833991535F3979E6AB341E73E065D"
+    },
+    {
+      "Path": "output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r27-reviewed.accdb",
+      "SHA256": "13876931428F77B96D2FC07B5EF138C075A02427A4C822952B3E605A76000273"
+    }
+  ],
+  "InstalledModulesCompared": 57,
+  "SupportedSavedValuesPerForm": 74,
+  "NativeReportColumns": 128,
+  "AdapterAssertions": 497,
+  "ExchangeAssertions": 410,
+  "GuardAndNewDraftAssertions": 98,
+  "NativeUIAssertions": 28,
+  "NativeApplicationVersion": "2.2.0.332",
+  "NativeExecutableSHA256": "5366F1C1BB147F1706094C5E3E1D62981F34FC6CB301E4006A892ACFBFAB58CF",
+  "OriginalTestDatabaseSHA256": "E732EE41A384495AC37BC009C59516A73461C7DB99E251B5384CE917652386E7",
+  "OriginalTestDatabaseUnchanged": true,
+  "ActualNativeProofs": [
+    {
+      "ReexportSHA256": "515AD71221359E35101C9C4B031E6BA5BC9C9946E93B58AD478EE83CC08CB5DC",
+      "Workspace": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\test.accdb",
+      "ReturnedSHA256": "6F695812F9E4D2EC5F73A84B7AED6DCFBA03DC598459F99CC0893D3675B32000",
+      "Reexport": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-2.accdb.C82A61B4-469F-489D-901B-9ECF7ADF76D5.reexport.accdb",
+      "Status": "PASS: 203 actual native return/re-export comparisons for CHIEFEVAL; reexport=D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-2.accdb.C82A61B4-469F-489D-901B-9ECF7ADF76D5.reexport.accdb",
+      "ReturnedFile": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-2.accdb"
+    },
+    {
+      "ReexportSHA256": "B6393943F9786CE40CF22A19C3159473CAE4A85612C3BC3D5ED0DC92DEAECF90",
+      "Workspace": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\test.accdb",
+      "ReturnedSHA256": "6EA675DFB4039A6DC3374D5979C91265FC329EBB5F14AF928A6E6F8DA1BFDAD3",
+      "Reexport": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-3.accdb.C6B54C0A-9B8C-4870-BDDC-42AD8439DA6B.reexport.accdb",
+      "Status": "PASS: 203 actual native return/re-export comparisons for EVAL; reexport=D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-3.accdb.C6B54C0A-9B8C-4870-BDDC-42AD8439DA6B.reexport.accdb",
+      "ReturnedFile": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\export-3.accdb"
+    },
+    {
+      "ReexportSHA256": "66814ECA1A9BA55985E03BE345BF4053153FD77B10BAE39C0C552C5A59DC36E5",
+      "Workspace": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\test.accdb",
+      "ReturnedSHA256": "F3D9F111F504D0D9377CCE360CC470123DE262D046FB924FE94DF46217D7F625",
+      "Reexport": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\fitrep-native.accdb.51043C9D-5102-46E9-BF75-A9A6AD3FEFEC.reexport.accdb",
+      "Status": "PASS: 203 actual native return/re-export comparisons for FITREP; reexport=D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\fitrep-native.accdb.51043C9D-5102-46E9-BF75-A9A6AD3FEFEC.reexport.accdb",
+      "ReturnedFile": "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-adapter-e65564e9-13fc-4f8b-bcaf-e114d3de087c\\fitrep-native.accdb"
+    }
+  ],
+  "ProofLimit": "Synthetic single-report supported-value exchange; not complete group export, policy certification, other versions, Runtime/x86 or printed fit",
+  "DemoAssertions": 36,
+  "FinalDemoStartup": "PASS: normal Office security, repeated launch, enabled-content frmHome",
+  "BlankEmptyUserTables": 42,
+  "CleanSourceBuild": {
+    "Path": "build/ux-r27-from-source5.accdb",
+    "SHA256": "B4CCDEEDD49F9999EC8EC5E3B721E740DB00BBE1DE201E986672E87629609CCC",
+    "InstalledModules": 57,
+    "EventHandlers": "PASS: editor and comparison unload handlers persisted",
+    "ExchangeUIAssertions": 28
+  }
+}

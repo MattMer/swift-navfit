@@ -1,6 +1,6 @@
 $app.LoadFromText(5,'modUXImportFlow',(Join-Path $root 'src/modUXImportFlow.bas'))
 NewScreen 'frmUXImportChoose' 'Import reports' 5100;$f=$script:swiftForm;$f.ScrollBars=2
-[void](Control $f 100 'lblScope' 400 1200 12600 750 '1. Choose > 2. Preview > 3. Apply > 4. Results. Imports create partial drafts with retained provenance. Existing reports are not overwritten by these new-draft workflows.')
+[void](Control $f 100 'lblScope' 400 1200 12600 750 'Choose > Preview > Apply > Results. NAVFIT narrative import creates partial drafts. Structured PDF import can create a draft or merge reviewed values into an existing draft. Both retain source provenance.')
 [void](Control $f 104 'cmdNAVFIT' 400 2250 12600 600 'Choose NAVFIT database - narrative-only import' '=ChooseReviewFile()')
 [void](Control $f 104 'cmdPDF' 400 3100 12600 600 'Choose structured PDF - supported field mappings' '=OpenScreen("frmPDFImport")')
 [void](Control $f 104 'cmdBack' 400 4200 3500 500 'Back to Reports' '=UXNavigate("frmLibrary")')
@@ -8,8 +8,8 @@ SaveScreen $f 'frmUXImportChoose'
 $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
 $f.Controls('uxImport').Caption='Import reports';$f.Controls('uxImport').OnClick='=UXOpenImportChooser()'
 SaveScreen $f 'frmLibrary'
-NewScreen 'frmPDFImport' 'Import structured PDF' 9800;$f=$script:swiftForm;$f.ScrollBars=2
-[void](Control $f 100 'lblInfo' 400 1000 12600 650 'Supported supplied May 2025 NAVPERS templates only; Adobe Acrobat automation required. Flattened PDFs need manual entry. Review the partial mapping scope before applying.')
+NewScreen 'frmPDFImport' 'Import structured PDF' 11200;$f=$script:swiftForm;$f.ScrollBars=2
+[void](Control $f 100 'lblInfo' 400 1000 12600 650 'Supplied May 2025 NAVPERS templates; desktop Adobe Acrobat required (Reader/browser viewers are insufficient). Expanded mapping remains partial. Blank source fields never clear existing values. Flattened PDFs need manual entry.')
 [void](Control $f 104 'cmdChoose' 400 1850 12600 500 'Choose PDF' '=ChoosePDFPreview()')
 [void](Control $f 100 'lblCentury' 400 2500 5500 350 'Explicit century for six-digit report dates')
 [void](Control $f 111 'cboCentury' 6200 2450 6600 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='19;20;21';$c.LimitToList=$true;$c.AfterUpdate='=UXPDFMappingChanged()'
@@ -17,15 +17,20 @@ NewScreen 'frmPDFImport' 'Import structured PDF' 9800;$f=$script:swiftForm;$f.Sc
 [void](Control $f 111 'cboIdentifier' 6200 2950 6600 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='SSN;Retain only';$c.DefaultValue='"SSN"';$c.LimitToList=$true;$c.AfterUpdate='=UXPDFMappingChanged()'
 [void](Control $f 106 'chkLegacy' 400 3500 300 300);$script:swiftControl.DefaultValue='False';$script:swiftControl.AfterUpdate='=UXPDFLegacyChanged()'
 [void](Control $f 100 'lblLegacy' 850 3500 12100 400 'Legacy compatibility: allow DoDID mapping for older source files')
-[void](Control $f 104 'cmdPreview' 400 4050 4200 450 'Preview mapping' '=UXPreviewPDFImport()')
-[void](Control $f 109 'txtPreview' 400 4650 12600 2900);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
-[void](Control $f 100 'uxState' 400 7700 12600 600 '')
-[void](Control $f 104 'cmdImport' 400 8400 6000 500 'Apply reviewed import' '=ImportPDFUI()');$script:swiftControl.Enabled=$false
-[void](Control $f 104 'cmdOpenResult' 6900 8400 6100 500 'Open imported report' '=UXOpenImportedReport("PDF")');$script:swiftControl.Enabled=$false
-[void](Control $f 100 'lblStatus' 400 9050 9000 450 '')
-[void](Control $f 104 'cmdHome' 10400 9050 2600 450 'Back to Reports' '=UXNavigate("frmLibrary")')
+[void](Control $f 100 'lblTarget' 400 4050 4000 350 'Merge into draft (leave blank to create new)')
+[void](Control $f 111 'cboTarget' 4600 4000 8400 450);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;8000';$c.BoundColumn=1;$c.LimitToList=$true;$c.AfterUpdate='=UXPDFMappingChanged()'
+[void](Control $f 100 'lblMergeMode' 400 4550 4000 350 'Existing-draft merge mode')
+[void](Control $f 111 'cboMergeMode' 4600 4500 8400 450);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='Fill empty fields;Replace mapped values';$c.DefaultValue='"Fill empty fields"';$c.LimitToList=$true;$c.AfterUpdate='=UXPDFMappingChanged()'
+[void](Control $f 104 'cmdPreview' 400 5150 6000 450 'Preview mapping and merge' '=UXPreviewPDFImport()')
+[void](Control $f 104 'cmdDependency' 6900 5150 6100 450 'Check PDF extraction on this computer' '=UXPDFDependencyCheck()')
+[void](Control $f 109 'txtPreview' 400 5800 12600 2900);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+[void](Control $f 100 'uxState' 400 8850 12600 600 '')
+[void](Control $f 104 'cmdImport' 400 9500 6000 500 'Apply reviewed import' '=ImportPDFUI()');$script:swiftControl.Enabled=$false
+[void](Control $f 104 'cmdOpenResult' 6900 9500 6100 500 'Open imported report' '=UXOpenImportedReport("PDF")');$script:swiftControl.Enabled=$false
+[void](Control $f 100 'lblStatus' 400 10150 12600 650 '')
+[void](Control $f 104 'cmdHome' 10400 10850 2600 350 'Back to Reports' '=UXNavigate("frmLibrary")')
 $f.OnLoad='=UXPDFStart()';$f.OnUnload='=PDFClearPreview()'
-$i=0;foreach($name in @('cmdChoose','cboCentury','cboIdentifier','chkLegacy','cmdPreview','txtPreview','cmdImport','cmdOpenResult','cmdHome')){$f.Controls($name).TabIndex=$i;$i++}
+$i=0;foreach($name in @('cmdChoose','cboCentury','cboIdentifier','chkLegacy','cboTarget','cboMergeMode','cmdPreview','cmdDependency','txtPreview','cmdImport','cmdOpenResult','cmdHome')){$f.Controls($name).TabIndex=$i;$i++}
 SaveScreen $f 'frmPDFImport'
 $app.DoCmd.OpenForm('frmImportReview',1);$f=$app.Forms.Item('frmImportReview');$f.ScrollBars=2
 $f.Controls('lstImportReports').ColumnCount=4;$f.Controls('lstImportReports').ColumnWidths='0;1100;1500;2000'

@@ -16,11 +16,6 @@ SOURCES = {
     "CHIEFEVAL": "CHIEF EVAL BLANK 1616-27 05-2025_Final.pdf",
     "FITREP": "W2-O6 FITREP NAVPERS 1610-2 05-2025_Final.pdf",
 }
-COMMON_MAP = {"a": "OfficialName", "b": "RankRate", "c": "Designator", "d": "MemberSSN",
-              "g": "ShipStation", "k": "PeriodStart", "l": "PeriodEnd", "H": "OfficialComments"}
-CHIEF_MAP = {"NAMEmaster": "OfficialName", "RATINGmaster": "RankRate", "DESIGNATIONmaster": "Designator",
-             "SSNDODIDmaster": "MemberIdentifierNeedsReview", "SHIPSTATION": "ShipStation", "FromDate": "PeriodStart",
-             "ToDate": "PeriodEnd", "REPORTINGSENIORCOMMENTS": "OfficialComments"}
 
 def packets(pdf):
     acro = pdf.Root.get("/AcroForm")
@@ -62,14 +57,15 @@ def preview(path):
     if b"<!DOCTYPE" in raw.upper() or b"<!ENTITY" in raw.upper():
         raise ValueError("XML declarations are not permitted")
     root = ET.fromstring(raw)
-    mapping = CHIEF_MAP if kind == "CHIEFEVAL" else COMMON_MAP
+    mapping = json.loads((ROOT / "src/pdf-field-map.json").read_text(encoding="utf-8"))[kind]
     values = {}
-    for source_key, target_key in mapping.items():
-        fields = list(root.iter(source_key))
+    for row in mapping:
+        source_key, target_key = row["source"], row["target"]
+        fields = [node for node in root.iter() if node.tag.split("}")[-1] == source_key]
         if len(fields) > 1:
             raise ValueError(f"Ambiguous repeated field: {source_key}")
         # Missing data is explicitly distinguished from an existing empty field.
-        values[target_key] = {"source_field": source_key, "present": bool(fields),
+        values[target_key] = {"source_field": source_key, "conversion": row["conversion"], "present": bool(fields),
                               "value": (fields[0].text or "") if fields else None}
     retained = []
     def retain(node, prefix):
@@ -84,7 +80,8 @@ def preview(path):
     return {"status": "PreviewOnly", "kind": kind, "source_sha256": before,
             "template_sha256": template_hash, "fields": values, "retained_raw": retained,
             "requires_review": ["Dates retain source text and require explicit century interpretation",
-                                "Chief combined SSN/DoDID field requires explicit identifier selection",
+                                "Identifiers use SSN by default; legacy DoDID requires explicit selection",
+                                "Blank/missing source values do not erase existing draft values",
                                 "No draft values have been committed"]}
 
 if __name__ == "__main__":

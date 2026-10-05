@@ -1,20 +1,21 @@
 param([Parameter(Mandatory=$true)][string]$TemplatePath,
 [Parameter(Mandatory=$true)][string]$DemoPath,
 [Parameter(Mandatory=$true)][string]$OutputDirectory,
-[switch]$NoArchive)
+[switch]$NoArchive,
+[string]$ExpectedVersion='0.23.0-preview')
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $TemplatePath=[IO.Path]::GetFullPath($TemplatePath);$DemoPath=[IO.Path]::GetFullPath($DemoPath);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 if(Test-Path -LiteralPath $OutputDirectory){throw 'Candidate directory exists; refusing to overwrite.'}
 if(-not $NoArchive -and (Test-Path -LiteralPath ($OutputDirectory+'.zip'))){throw 'Candidate archive exists; refusing to overwrite.'}
 $stage=Join-Path (Split-Path $OutputDirectory -Parent) ('candidate-stage-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $stage)
-$blank=Join-Path $stage 'Swift_NAVFIT_0.22.0-ux-preview-blank.accdb';$demo=Join-Path $stage 'Swift_NAVFIT_0.22.0-ux-preview-DEMO.accdb'
+$blank=Join-Path $stage ('Swift_NAVFIT_'+$ExpectedVersion+'-blank.accdb');$demo=Join-Path $stage ('Swift_NAVFIT_'+$ExpectedVersion+'-DEMO.accdb')
 $before=@{Template=(Get-FileHash -LiteralPath $TemplatePath).Hash;Demo=(Get-FileHash -LiteralPath $DemoPath).Hash}
 Copy-Item -LiteralPath $TemplatePath -Destination $blank;Copy-Item -LiteralPath $DemoPath -Destination $demo
 $dao=New-Object -ComObject DAO.DBEngine.120;$db=$dao.OpenDatabase($blank,$false,$true);$counts=[ordered]@{}
 try{
 foreach($table in $db.TableDefs){if($table.Name -notlike 'MSys*' -and $table.Name -ne 'AppMetadata'){$r=$db.OpenRecordset('SELECT Count(*) FROM ['+$table.Name+']',4);$counts[$table.Name]=$r.Fields.Item(0).Value;$r.Close();if($counts[$table.Name] -ne 0){throw ('Blank candidate contains user data in '+$table.Name)}}}
 $r=$db.OpenRecordset('SELECT AppVersion,SchemaVersion FROM AppMetadata',4);$version=$r.Fields.Item('AppVersion').Value;$schema=$r.Fields.Item('SchemaVersion').Value;$r.Close()
-if($schema -ne 21 -or $version -ne '0.22.0-ux-preview'){throw 'Candidate metadata differs from expected preview'}
+if($schema -ne 21 -or $version -ne $ExpectedVersion){throw 'Candidate metadata differs from expected preview'}
 }finally{$db.Close()}
 [void](New-Item -ItemType Directory -Path (Join-Path $stage 'verification'))
 # Validate exact packaged bytes using disposable copies; never run fixtures in the deliverable.

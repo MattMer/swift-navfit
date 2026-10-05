@@ -65,5 +65,7 @@ foreach($c in $f.Controls){if($c.Name -match '^(cboTrait|lblTrait)' -or $c.Name 
 [void](Control $f 109 'uxProposalDetail' 2850 5500 10450 1700);$script:swiftControl.Locked=$true;$script:swiftControl.ScrollBars=2;$script:swiftControl.Visible=$false
 $f.Controls('lstProposals').ColumnCount=6;$f.Controls('lstProposals').ColumnWidths='0;2600;2800;1800;1800;1100';$f.Controls('lstProposals').Height=2400;$f.Controls('lstProposals').OnClick='=UXGridDetail()'
 $f.Controls('cmdBack').OnClick='=UXCloseComparison()'
-$f.OnClose='=UXGridClose()';$f.OnResize='=UXGridViewport()';$f.HasModule=$true;$f.OnUnload='[Event Procedure]'
+$f.OnClose='=UXGridClose()';$f.OnResize='=UXGridViewport()'
+# build.ps1 attaches the actual unload class procedure after the generated
+# forms are persisted and reopened; avoid an intermediate dangling event.
 SaveScreen $f 'frmUXComparison'

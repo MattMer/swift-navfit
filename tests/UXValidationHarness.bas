@@ -1,0 +1,115 @@
+Attribute VB_Name = "UXValidationHarness"
+Option Compare Binary
+Option Explicit
+Private count As Long
+Private Sub Check(ByVal condition As Boolean, ByVal message As String)
+    If Not condition Then Err.Raise vbObjectError + 6200, , message
+    count = count + 1
+End Sub
+Private Function HasCode(ByVal issues As Collection, ByVal code As String) As Boolean
+    Dim item As Object
+    For Each item In issues
+        If item("Code") = code Then HasCode = True: Exit Function
+    Next
+End Function
+Public Function TestUXValidation() As String
+    Dim id As Long, other As Long, groupID As Long, revision As Long, f As Object, result As Collection, item As Object, key As Variant, source As String, extra As Long, i As Long
+    Dim changes As Object, runs As Long, operations As Long, revisions As Long, selected As Long, stage As String
+    On Error GoTo Failed
+    ConfigureWorkspace "SYNTHETIC VALIDATION TEST", "Validation tester"
+    id = CommitDraft(0, "EVAL", "Validation test", "Synthetic member", #1/1/2026#, #9/30/2026#, "", "Test")
+    Set f = SavedFields(id): Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "SSN-PRESENT"), "Missing SSN not listed"
+    Check HasCode(result, "NAME-PRESENT"), "Missing official name not listed"
+    For Each key In Array("NAME-PRESENT", "RATE-PRESENT", "UIC-PRESENT", "SSN-PRESENT", "COMPONENT", "REPORT-TYPE", "WHOLE-NOB", "TRAIT-RECOMMENDATION", "TRAIT-TWO", "JUNIOR-OFFICER", "GROUP-OFFICER", "GROUP-ENLISTED", "GROUP-CATEGORY", "CAPACITY")
+        source = ValidationPolicyReference(CStr(key))
+        Check InStr(source, "BUPERSINST 1610.10H CH-2") > 0 And InStr(source, "printed page") > 0 And InStr(source, "paragraph 1-2") > 0 And InStr(source, "Excerpt:") > 0 And InStr(source, NAVY_RULE_SOURCE_HASH) > 0, "Source detail incomplete: " & key
+    Next
+    Check InStr(ValidationPolicyReference("APP-DIGITS"), "Application rule") > 0, "Storage rule mislabeled as policy"
+    Check InStr(ValidationPolicyReference("UNKNOWN-POLICY"), "not been verified") > 0, "Unverified policy received an invented citation"
+    For Each key In Array(Array("IT2", "E5"), Array("ET2", "E5"), Array("ITCS", "E8"), Array("ITCM", "E9"), Array("ITC", "E7"), Array("AN", "E3"), Array("SA", "E2"), Array("SR", "E1"), Array("LCDR", "O4"), Array("CWO3", "W3"))
+        Check ValidationWornPaygrade(CStr(key(0))) = CStr(key(1)), "Worn-grade mapping: " & key(0)
+    Next
+    Check ValidationWornPaygrade("Unknown") = "", "Unrecognized rate should need review"
+    f("ComponentActive") = "Yes": f("ComponentTAR") = "No": f("ComponentInactive") = "No": f("ComponentATADSW") = "No"
+    f("ReportRegular") = "Yes": f("ReportConcurrent") = "Yes": f("ReportOperationalCommander") = "No"
+    f("ObservationStatus") = "Observed": f("PromotionRecommendation") = "Early Promote": f("Trait33") = "2.0"
+    Set result = ValidateLiveFields(f, id)
+    Check Not HasCode(result, "REPORT-TYPE"), "Concurrent/Regular combination wrongly rejected"
+    Check HasCode(result, "TRAIT-TWO"), "2.0 / EP conflict missing"
+    f("OccasionPeriodic") = "Yes": f("OccasionSpecial") = "Yes": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "OCCASION"), "Special combined with Periodic not found"
+    f("OccasionSpecial") = "No"
+    f("Trait33") = "1.0": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "TRAIT-RECOMMENDATION"), "1.0 / EP conflict missing"
+    f("Trait33") = "3.0": f("PromotionRecommendation") = "NOB": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "PARTIAL-NOB") And Not HasCode(result, "WHOLE-NOB"), "Partial NOB treated as wholly NOB"
+    f("ObservationStatus") = "NOB": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "WHOLE-NOB"), "Whole NOB graded trait not found"
+    f("FormKind") = "FITREP": f("ObservationStatus") = "Observed": f("RankRate") = "ENS": f("Designator") = "1110": f("PromotionRecommendation") = "Early Promote"
+    Set result = ValidateLiveFields(f, id): Check HasCode(result, "JUNIOR-OFFICER"), "ENS restriction missing"
+    f("Designator") = "6110": Set result = ValidateLiveFields(f, id): Check Not HasCode(result, "JUNIOR-OFFICER"), "LDO exception missing"
+    f("FormKind") = "CHIEFEVAL": f("PromotionRecommendation") = "Promotable": f("Trait37") = "2.0": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "TRAIT-CRITICAL"), "Chief accountability restriction missing"
+    f("Trait33") = "2.0": f("Trait34") = "2.0": Set result = ValidateLiveFields(f, id)
+    Check HasCode(result, "TRAIT-TWO-COUNT"), "Three 2.0 traits / Promotable not found"
+    f("MemberSSN") = "123": Set result = ValidateLiveFields(f, id): Check HasCode(result, "APP-DIGITS"), "Invalid SSN missing"
+    stage = "native report"
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    revision = CurrentRevision(id): runs = DCount("*", "ValidationRun"): revisions = DCount("*", "ReportRevision"): operations = DCount("*", "OperationJournal")
+    Forms!frmEditor!txtMemberFirstName = "Pending first name"
+    Check EditorPendingFields()("MemberFirstName") = "Pending first name", "Pending snapshot lost field"
+    Check EditorPendingFields().count = 78, "Pending snapshot lost fields"
+    Forms!frmEditor!uxFieldSurface.SetFocus
+    Forms!frmEditor!uxFieldSurface.Form!txtMemberSSN.SetFocus
+    Forms!frmEditor!uxFieldSurface.Form!txtMemberSSN.Text = "321"
+    Check EditorPendingFields()("MemberSSN") = "321", "Active text before AfterUpdate omitted"
+    Check UXLiveTyped(), "Live typed paint failed"
+    Check InStr(Forms!frmEditor!uxDirty.Caption, "issues") > 0, "Live count missing"
+    UXOpenValidation
+    Check Forms!frmUXValidation!lstIssues.ListCount > 0, "Report issue list empty"
+    For i = 0 To Forms!frmUXValidation!lstIssues.ListCount - 1
+        Forms!frmUXValidation!lstIssues = Forms!frmUXValidation!lstIssues.ItemData(i): UXValidationSelection
+        If InStr(Forms!frmUXValidation!txtEvidence, "Excerpt:") > 0 Then Exit For
+    Next
+    Check InStr(Forms!frmUXValidation!txtEvidence, "Excerpt:") > 0, "Native policy issue source missing"
+    selected = Forms!frmUXValidation!lstIssues
+    UXLoadValidation
+    Check Forms!frmUXValidation!lstIssues = selected, "Refresh reset selection"
+    Check UXValidationOpenField(), "Open affected field failed"
+    Check Forms!frmEditor!txtMemberFirstName = "Pending first name", "Issue navigation lost pending values"
+    Check CurrentRevision(id) = revision And DCount("*", "ReportRevision") = revisions And DCount("*", "ValidationRun") = runs And DCount("*", "OperationJournal") = operations, "Live checks wrote database state"
+    UXValidationClose
+    stage = "group"
+    other = CommitDraft(0, "EVAL", "Other test", "Other member", #1/1/2026#, #8/31/2026#, "", "Test")
+    groupID = CreateSummaryGroup("Synthetic validation group", "EVAL", "E5")
+    AddGroupMember groupID, id, "E5", "": AddGroupMember groupID, other, "E5", ""
+    Set result = ValidateLiveGroup(groupID)
+    Check HasCode(result, "GROUP-ENLISTED"), "Group eligibility differences missing"
+    source = ""
+    For Each item In result
+        If item("ReportID") = id And item("Key") = "MemberFirstName" Then source = "Unexpected"
+    Next
+    Check source = "", "Optional name parts treated as required"
+    Forms!frmEditor!txtMemberSSN = "123"
+    Set result = ValidateLiveGroup(groupID): Check HasCode(result, "APP-DIGITS"), "Group omitted pending member value"
+    DoCmd.OpenForm "frmUXValidation", , , , , , "G:" & groupID
+    Check Forms!frmUXValidation!lstIssues.ListCount > 0 And InStr(Forms!frmUXValidation!lblBasis.Caption, "All group members") > 0, "Group issue view failed"
+    Check UXValidationLayout(), "Native validation layout failed"
+    UXValidationClose
+    For i = 1 To 3
+        extra = CommitDraft(0, "EVAL", "Pagination member " & i, "Synthetic page " & i, #1/1/2026#, #9/30/2026#, "", "Test")
+        AddGroupMember groupID, extra, "E5", ""
+    Next
+    DoCmd.OpenForm "frmUXValidation", , , , , , "G:" & groupID
+    Check Forms!frmUXValidation!cmdNext.Enabled, "More than 50 findings lost"
+    Check UXValidationPage(1) And Forms!frmUXValidation!lstIssues > 50, "Next findings page failed"
+    Check UXValidationPage(-1) And Forms!frmUXValidation!lstIssues <= 50, "Previous findings page failed"
+    stage = "close validation": UXValidationClose
+    stage = "close editor": UXLeaveEditor "Discard"
+    TestUXValidation = "PASS: " & count & " live validation and source assertions": Exit Function
+Failed:
+    TestUXValidation = "FAIL after " & count & " (" & stage & "): " & Err.Number & " / " & Err.Description
+End Function
+
+

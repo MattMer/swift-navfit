@@ -32,7 +32,7 @@ Public Function TestUXContext() As String
     revision = CurrentRevision(id): Check ChecklistOpenSection(), "Section jump failed"
     Check Forms!frmEditor!uxSection.Caption = "Recommendations && comments", "Narrative section wrong"
     Check CurrentRevision(id) = revision, "Jump created revision"
-    Check Forms!frmEditor!cmdChecklist.OnClick = "=ChecklistFromEditor()", "Editor checklist action misrouted"
+    Check Forms!frmEditor!cmdChecklist.OnClick = "=UXOpenValidation()", "Editor live validation action misrouted"
     Forms!frmEditor!txtNotes = "Pending notes survive checklist navigation"
     Forms!frmChecklist!lstFindings = "START": Call ChecklistGuidance
     Check ChecklistOpenSection(), "Second section jump failed"
