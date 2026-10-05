@@ -32,5 +32,3 @@ SaveScreen $f 'frmMajorWorkbench'
 
 
 $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary');$f.OnTimer='=UXFinishReportReturn()';$f.TimerInterval=0;SaveScreen $f 'frmLibrary'
-
-

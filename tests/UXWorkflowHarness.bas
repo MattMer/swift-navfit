@@ -138,5 +138,3 @@ Public Function PrepareForcedQuit(ByVal invalid As Boolean) As Boolean
     Forms!frmEditor!txtMemberSSN = IIf(invalid, "123", "000000777")
     PrepareForcedQuit = True
 End Function
-
-

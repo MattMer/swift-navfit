@@ -76,4 +76,3 @@ Compress-Archive -LiteralPath $OutputDirectory -DestinationPath ($OutputDirector
 (Get-FileHash -LiteralPath ($OutputDirectory+'.zip')).Hash|Set-Content -LiteralPath ($OutputDirectory+'.zip.sha256') -Encoding ascii
 }
 Write-Output ('PASS: local review candidate packaged at '+$OutputDirectory)
-

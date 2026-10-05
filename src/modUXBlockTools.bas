@@ -129,4 +129,3 @@ Public Function UXBlockMode(ByVal page As String) As Boolean
     f!uxBlocks.Visible = (page <> "Preview"): f!lstPreview.Visible = (page = "Preview"): f!txtFullValues.Visible = (page = "Preview")
     Call UXBlockViewport: UXBlockMode = True
 End Function
-

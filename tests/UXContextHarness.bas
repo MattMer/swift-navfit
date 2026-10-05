@@ -50,4 +50,3 @@ Public Function TestUXContext() As String
 Failed:
     TestUXContext = "FAIL: " & Err.Description
 End Function
-

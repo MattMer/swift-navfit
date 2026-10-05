@@ -151,18 +151,3 @@ Public Function UXGroupReview() As Boolean
     DoCmd.OpenForm "frmUXReview", , , , , , CStr(id) & ":" & Nz(f!cboGroup, 0)
     UXGroupReview = True
 End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

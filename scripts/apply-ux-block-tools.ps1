@@ -67,4 +67,3 @@ $f.Controls('lstProposals').ColumnCount=6;$f.Controls('lstProposals').ColumnWidt
 $f.Controls('cmdBack').OnClick='=UXCloseComparison()'
 $f.OnClose='=UXGridClose()';$f.OnResize='=UXGridViewport()';$f.HasModule=$true;$f.OnUnload='[Event Procedure]'
 SaveScreen $f 'frmUXComparison'
-

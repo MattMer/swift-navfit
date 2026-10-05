@@ -76,4 +76,3 @@ Public Function UXFinishReportReturn() As Boolean
 Failed:
     Debug.Print "Reports return: " & Err.Description
 End Function
-
