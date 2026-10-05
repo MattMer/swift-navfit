@@ -1,6 +1,7 @@
 param(
     [string]$OutputPath=(Join-Path $PSScriptRoot ('../output/ux/Swift_NAVFIT_UI_Demo_'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'.accdb')),
-    [string]$TemplatePath
+    [string]$TemplatePath,
+    [switch]$IncludePDFIntegrationChecks
 )
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
@@ -11,9 +12,31 @@ if(-not $TemplatePath){
     & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'build.ps1') -OutputPath $TemplatePath
     if($LASTEXITCODE -ne 0){throw 'Native template build failed'}
 }
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-review-return.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Focused review/Reports return checks failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-my-work.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Unified My Work verification failed'}
 $sourceHash=(Get-FileHash -LiteralPath $TemplatePath).Hash
+if($IncludePDFIntegrationChecks){
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-import-flow.ps1') -BuildPath $TemplatePath
+}else{
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-import-flow.ps1') -BuildPath $TemplatePath -SkipPDF
+}
+if($LASTEXITCODE -ne 0){throw 'Guided import verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-help.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Native guide verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-context.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Calculation context/checklist verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-group-lifecycle.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Group lifecycle verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-block-tools.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Shared blocks/comparison verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-responsive-identity.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Responsive layout/identity verification failed; demo not created'}
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-surface.ps1') -BuildPath $TemplatePath
 if($LASTEXITCODE -ne 0){throw 'Native editor/workspace verification failed; demo not created'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-workflows.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Native workflow verification failed; demo not created'}
 [void](New-Item -ItemType Directory -Force -Path (Split-Path $OutputPath -Parent))
 Copy-Item -LiteralPath $TemplatePath -Destination $OutputPath
 $app=$null

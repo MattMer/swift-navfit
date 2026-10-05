@@ -84,17 +84,17 @@ Public Function TestAdministration() As String
     Check SaveEditor(), "Editor save failed"
     Check Stored(id, "OfficialName") = "UI OFFICIAL NAME" And Stored(id, "UnitUIC") = "00234", "Editor save lost administration"
     Check OpenDraftChecklist(id), "Checklist failed"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "68 missing") > 0, "Complete administration still missing"
+    Check InStr(Forms!frmChecklist!lstFindings.RowSource, "OfficialName;Missing input") = 0 And InStr(Forms!frmChecklist!lstFindings.RowSource, "UnitUIC;Missing input") = 0, "Complete administration still missing"
     Call CloseDraftChecklist()
     Forms!frmEditor!txtOfficialName = String$(35, "P"): Forms!frmEditor!txtUnitUIC = "00789"
     Check CheckpointEditor(), "Administrative checkpoint failed"
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Check DLookup("UnitUIC", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "00789", "Checkpoint lost UIC"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(recovery), "Administrative recovery failed"
     Check Forms!frmEditor!txtOfficialName = String$(35, "P") And Forms!frmEditor!txtUnitUIC = "00789", "Recovery truncated pending administration"
     Check Stored(id, "UnitUIC") = "00234", "Recovery auto-saved administration"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     'An actual old snapshot lacks both the schema marker and administrative keys.
     first = DMin("RevisionID", "ReportRevision")
     copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
@@ -122,5 +122,12 @@ Public Function VerifyAdministrativeRecovery() As Boolean
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Call RestoreRecoveryDraft(recovery)
     VerifyAdministrativeRecovery = (Forms!frmEditor!txtOfficialName = String$(35, "P") And Forms!frmEditor!txtUnitUIC = "00789")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

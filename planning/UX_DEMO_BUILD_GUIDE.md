@@ -12,7 +12,8 @@ explicit `-TemplatePath` can reuse a verified blank template. `-OutputPath`
 can choose a different new destination. Existing destinations are never
 overwritten, and seeding refuses a populated database. The seed module is
 removed from the finished demo; users receive normal app services and data.
-The builder executes the native surface/workspace checks before seeding and
+The builder executes shared-block/default/comparison, responsive identity,
+native surface/workspace and workflow checks before seeding and
 the populated-demo journey checks afterward. A verification failure stops the
 build from reporting success.
 
@@ -67,3 +68,29 @@ Automated behavior and bounds checks do not prove visual equivalence.
 
 Use `scripts/build.ps1` for blank templates and release verification. Migrate
 existing workspaces only into a blank template, never into a seeded demo.
+
+The preview builder also runs `test-ux-responsive-identity.ps1` before seeding.
+This gate covers compact report navigation, active-field/caret preservation,
+shared viewport geometry and official-name identity. Native DPI, visual and
+screen-reader acceptance remain separate manual checks.
+
+## r20 calculation and checklist journeys
+
+Open a report, choose Review, then Calculation details or Draft checklist.
+In the checklist select a field and choose Open report section. For PSG RSCA,
+open a summary group, Members, Reporting senior and PSG RSCA. The scrolling
+context field shows counts, exclusions and manually entered baseline provenance.
+
+## Current help and import journeys
+
+Settings & Help > Workspace guide and quick start opens the native guide.
+Reports > Import reports opens the shared source chooser. Preview full mapping
+values before Apply; Results opens the created report. NAVFIT mapping remains
+narrative-only and PDF mapping remains limited to supported fields. Source
+inspection and existing-draft reconciliation remain separate contextual tools.
+
+Native preview gates do not require Acrobat by default. Add
+`-IncludePDFIntegrationChecks` for the complete PDF-import flow verification.
+Candidate packaging includes those checks on the verified build host.
+
+The current r23 demo is `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r23.accdb`. Builds now run the focused saved-report review and native Reports return suite before seeding. `scripts/verify-ux-review-build.ps1` checks installed standard modules against source and native review/return event hooks on a disposable copy. See `planning/UX_REVIEW_RETURN_2026-10-04.md` for behavior and evidence.

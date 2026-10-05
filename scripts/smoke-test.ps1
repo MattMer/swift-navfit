@@ -81,14 +81,10 @@ try {
     Assert ((InvokeVba 'FolderPath' @($childFolder)) -eq 'Division A') 'Folder can move to root'
     foreach($name in @('frmHome','frmLibrary','frmEditor','frmSupport')){
         if($name -eq 'frmEditor'){$app.DoCmd.OpenForm($name,0,'','',0,0,[string]$id)}else{$app.DoCmd.OpenForm($name)}
-        Assert ($app.Forms.Item($name).Controls.Count -gt 0) "Form opens: $name"
+        Assert ($app.Eval('Forms("'+$name+'").Controls.Count') -gt 0) "Form opens: $name"
         if($name -eq 'frmLibrary'){Assert (($app.Forms.Item($name).Controls.Item('lstReports').ListCount - 1) -eq 5) 'Library initially displays active reports'}
-        if($name -eq 'frmEditor'){Assert (($app.Forms.Item($name).Controls.Item('lstRevisions').ListCount) -eq 3) 'Editor initially displays revision history'}
-        $form=$app.Forms.Item($name)
-        for($ci=0;$ci -lt $form.Controls.Count;$ci++) {
-            $control=$form.Controls.Item($ci)
-            if($control.Visible -and ($control.Left -lt 0 -or ($control.Left+$control.Width) -gt $form.Width)) {throw "Control outside form width: $name / $($control.Name)"}
-        }
+        if($name -eq 'frmEditor'){Assert ($app.Eval('Forms!frmEditor!lstRevisions.ListCount') -eq 3) 'Editor initially displays revision history'}
+        if(-not $app.Eval('SmokeFormFits("'+$name+'")')){throw "Control outside form width: $name"}
         $app.DoCmd.Close(2,$name,2)
     }
     $app.SaveAsText(2,'frmEditor',(Join-Path $out 'editor-form.txt'))
@@ -115,17 +111,14 @@ try {
     Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 2) 'Search finds title matches'
     $app.DoCmd.Close(2,'frmLibrary',2)
     $app.DoCmd.OpenForm('frmEditor',0,'','',0,0,'0')
-    $editor=$app.Forms.Item('frmEditor')
-    $editor.Controls.Item('cboKind').Value='CHIEFEVAL'
-    $editor.Controls.Item('txtTitle').Value='Synthetic UI draft'
-    $editor.Controls.Item('txtNotes').Value='Saved through editor action'
+    [void]$app.Eval('SmokeEditorEntries()')
     Assert ($app.Eval('SaveEditor()')) 'Editor save action succeeds'
-    Assert ($editor.Controls.Item('lblSaved').Caption.StartsWith('Saved ')) 'Editor displays save confirmation'
+    Assert ($app.Eval('Left(Forms!frmEditor!lblSaved.Caption,6)="Saved "')) 'Editor displays save confirmation'
     [void]$app.Eval('ShowHelp("Saving")')
-    Assert ($app.Screen.ActiveForm.Name -eq 'frmHelp') 'Help becomes the active form'
+    Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmHelp') 'Help becomes the active form'
     Assert ($app.Forms.Item('frmHelp').Controls.Item('txtHelp').Value.Contains('Save incomplete drafts')) 'Help contains topic-specific guidance'
     [void]$app.Eval('CloseHelp()')
-    Assert ($app.Screen.ActiveForm.Name -eq 'frmEditor') 'Closing help returns to the editor'
+    Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmEditor') 'Closing help returns to the editor'
     $app.DoCmd.Close(2,'frmEditor',2)
     $db.Close();$db=$null
     $app.CloseCurrentDatabase()

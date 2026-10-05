@@ -17,13 +17,13 @@ Public Function LibraryViewSelect() As String
         Select Case preset
             Case "Dates"
                 .ColumnCount = 6: .ColumnWidths = "0;1300;2800;2600;1200;1200"
-                LibraryViewSelect = "ReportID,FormKind,Title,MemberName,PeriodStart,PeriodEnd"
+                LibraryViewSelect = "ReportID,FormKind AS [Report type],Title,UXMemberLabel(ReportID) AS Member,PeriodStart AS [Period from],PeriodEnd AS [Period to]"
             Case "History"
                 .ColumnCount = 6: .ColumnWidths = "0;1300;2700;2200;1400;1300"
-                LibraryViewSelect = "ReportID,FormKind,Title,MemberName,ModifiedAt,CurrentRevisionID"
+                LibraryViewSelect = "ReportID,FormKind AS [Report type],Title,UXMemberLabel(ReportID) AS Member,ModifiedAt AS [Last changed],DLookup('RevisionNumber','ReportRevision','RevisionID=' & CurrentRevisionID) AS [Saved revision]"
             Case Else
                 .ColumnCount = 6: .ColumnWidths = "0;1300;2900;2700;1300;800"
-                LibraryViewSelect = "ReportID,FormKind,Title,UXMemberLabel(ReportID) AS Member,UXReportState(ReportID) AS [Local status],IsArchived"
+                LibraryViewSelect = "ReportID,FormKind AS [Report type],Title,UXMemberLabel(ReportID) AS Member,UXReportState(ReportID) AS [Local status],IIf(IsArchived,'Archived','Active') AS [Archive state]"
         End Select
     End With
     Forms!frmLibrary!cboView = preset

@@ -104,7 +104,7 @@ Public Function TestUXSurface() As String
     Check DLookup("ReportingSeniorDoDID", "Report", "ReportID=" & id) = "0987654321", "Hidden reporting senior identifier lost"
     Call UXSelectSection(5): Check s!txtOfficialComments.Visible And s!txtOfficialComments.Height >= 2000, "Narrative lacks spacious editor"
     Call UXSelectSection(4): Check s!uxTraitGuidance.Visible And s!uxTraitGuidance.Locked, "Trait guidance unavailable or editable"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call UXLeaveEditor("Discard")
     stage = "captions": For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         Check InStr(UXFieldCaption("OfficialComments", CStr(kind)), IIf(kind = "EVAL", "43.", IIf(kind = "CHIEFEVAL", "40.", "41."))) = 1, "Comments block caption incorrect"
         Check UXFieldCaption("Trait33", CStr(kind)) Like "33. *", "Trait block caption missing"
@@ -128,11 +128,11 @@ Public Function TestUXSurface() As String
     Check UXWorkbenchMode("Review") And Forms!frmMajorWorkbench!uxOpenGroupReport.Visible, "Group review lacks report entry point"
     Check UXWorkbenchMode("Comparison") And Forms!frmMajorWorkbench!uxComparison.Visible, "Group comparison unavailable"
     stage = "my work": DoCmd.OpenForm "frmMyWork"
-    Check Forms!frmMyWork!lstTasks.Visible And Not Forms!frmMyWork!cboContributor.Visible, "My Work default mixes contributors and tasks"
+    Check Forms!frmMyWork!lstWork.Visible And Not Forms!frmMyWork!lstTasks.Visible And Not Forms!frmMyWork!cboContributor.Visible, "My Work default mixes contributors and work"
     Check UXMyWorkMode("Assign"), "Assignment workspace unavailable"
     Forms!frmMyWork!uxAssignReport = id: Check UXChooseAssignmentReport(), "Named report selection failed"
     Check Forms!frmMyWork!txtExpectedRevision = CurrentRevision(id), "Assignment did not capture saved revision"
-    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!cboContributor.Visible And Not Forms!frmMyWork!lstTasks.Visible, "Contributor workspace not focused"
+    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!cboContributor.Visible And Not Forms!frmMyWork!lstWork.Visible, "Contributor workspace not focused"
     TestUXSurface = "PASS: " & count & " native surface, buffer, validation, captions and dashboard assertions": Exit Function
 Failed:
     TestUXSurface = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description

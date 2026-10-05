@@ -86,7 +86,7 @@ Public Function TestReportContext() As String
         Check Forms!frmEditor!txtDutyDescription = initialValues(8), "Applying another panel lost memo"
         Check SaveEditor(), "Context editor save failed"
         Check Stored(id, "OccasionPeriodic") = "No" And Stored(id, "ReportRegular") = "No" And Stored(id, "PrimaryDuty") = "OTHER DUTY", "Save lost panels"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     values = Seed(): values(7) = String$(14, "X"): values(8) = String$(12000, "L") & vbCrLf & "TAIL"
     Call SaveContext(id, "FITREP", values)
@@ -117,19 +117,19 @@ Public Function TestReportContext() As String
     Call ApplyReportContext("Categories")
     Call OpenReportContext("Duties"): Forms!frmContextDuties!txtPrimaryDuty = "PENDING OVERLONG DUTY"
     Forms!frmContextDuties!txtDutyDescription = String$(4000, "R") & vbCrLf & "RECOVER"
-    Call ApplyReportContext("Duties"): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyReportContext("Duties"): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtOccasionPeriodic = "PENDING INVALID" And Forms!frmEditor!txtReportConcurrent = "Yes", "Recovered flags wrong"
     Check Forms!frmEditor!txtPrimaryDuty = "PENDING OVERLONG DUTY" And Len(Forms!frmEditor!txtDutyDescription) > 4000, "Raw duty recovery truncated"
     Check IsNull(Stored(id, "OccasionPeriodic")) And IsNull(Stored(id, "DutyDescription")), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     For Each panel In Array("Occasions", "Categories", "Duties")
         Call OpenReportContext(CStr(panel)): Check Not Forms("frmContext" & panel)!cmdApply.Enabled, "Archived panel can apply"
         Call CancelReportContext(CStr(panel))
     Next
-    DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys
         CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError
@@ -154,5 +154,12 @@ End Function
 Public Function VerifyReportContextRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyReportContextRecovery = (Forms!frmEditor!txtOccasionPeriodic = "PENDING INVALID" And Forms!frmEditor!txtReportConcurrent = "Yes" And Forms!frmEditor!txtPrimaryDuty = "PENDING OVERLONG DUTY" And Len(Forms!frmEditor!txtDutyDescription) > 4000)
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

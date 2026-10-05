@@ -19,7 +19,7 @@ Public Function OpenReviewFile(ByVal filePath As String) As Boolean
     On Error GoTo Failed
     If prefix = "RawReports" Then prefix = "Raw" Else prefix = ""
     Call ValidateReviewSchema(candidate, prefix)
-    Set r = candidate.OpenRecordset("SELECT ReportID,ReportType FROM [" & prefix & "Reports] ORDER BY ReportID", dbOpenSnapshot)
+    Set r = candidate.OpenRecordset("SELECT ReportID,ReportType,FullName FROM [" & prefix & "Reports] ORDER BY ReportID", dbOpenSnapshot)
     Call CloseReviewFile()
     Set reviewDb = candidate: Set reviewReader = reader: reviewPrefix = prefix
     Call OpenScreen("frmImportReview")
@@ -33,12 +33,13 @@ Public Function OpenReviewFile(ByVal filePath As String) As Boolean
             If StrComp(Nz(r!ReportType, ""), "Eval", vbBinaryCompare) = 0 Then kind = "EVAL"
             If StrComp(Nz(r!ReportType, ""), "Chief", vbBinaryCompare) = 0 Then kind = "CHIEFEVAL"
             If StrComp(Nz(r!ReportType, ""), "FitRep", vbBinaryCompare) = 0 Then kind = "FITREP"
-            !lstImportReports.AddItem CStr(r!ReportID) & ";" & kind & ";" & IIf(kind = "Unknown", "Quarantined", "Pending mapping review")
+            !lstImportReports.AddItem CStr(r!ReportID) & ";" & kind & ";" & IIf(kind = "Unknown", "Quarantined", "Pending mapping review") & ";" & Replace(Replace(Replace(Nz(r!FullName, "Unnamed source member"), ";", ","), vbCr, " "), vbLf, " ")
             r.MoveNext
         Loop
         !txtFieldValue = "Select a report, then inspect its Comments field before creating a narrative draft."
         !lblImportResult.Caption = "No import performed."
     End With
+    Call UXNarrativeInputChanged
     r.Close: OpenReviewFile = True: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
@@ -77,6 +78,7 @@ Public Function ReviewReportFields() As Boolean
             Next
         End If
     End With
+    Call UXNarrativeInputChanged
     Forms!frmImportReview!txtFieldValue = "Select a field to inspect its stored value."
     r.Close: ReviewReportFields = True
 End Function
@@ -115,7 +117,7 @@ Public Function LeaveImportReview() As Boolean
     LeaveImportReview = True
 End Function
 
-Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal memberDisplay As String = "", Optional ByVal destinationID As Long = 0, Optional ByVal expectedRevision As Long = 0) As Long
+Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal memberDisplay As String = "", Optional ByVal destinationID As Long = 0, Optional ByVal expectedRevision As Long = 0, Optional ByVal expectedSourceHash As String = "") As Long
     Dim r As DAO.Recordset, receipt As DAO.Recordset, raw As DAO.Recordset, values As DAO.Recordset
     Dim db As DAO.Database, w As DAO.Workspace, hash As String, kind As String, id As Long, receiptID As Long, operationID As Long, beforeRevision As Variant, target As DAO.Recordset
     Dim table As Variant, row As Long, i As Long, value As Variant, trans As Boolean, failure As Long, message As String
@@ -125,6 +127,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     On Error GoTo Failed
     operationID = BeginOperation("Narrative import", reviewDb.Name & " report " & externalID)
     hash = SourceFileHash(reviewDb.Name)
+    If Len(expectedSourceHash) > 0 And hash <> expectedSourceHash Then Err.Raise vbObjectError + 420, , "Source changed after preview. Choose the source and preview again."
     If DCount("*", "ImportReceipt", "SourceHash='" & hash & "' AND ExternalReportID=" & externalID) > 0 Then Err.Raise vbObjectError + 412, , "This exact source report has already been imported. Existing drafts are not overwritten."
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 413, , "Source report does not exist."
@@ -199,18 +202,26 @@ Failed:
 End Function
 
 Public Function ImportSelectedNarrativeUI() As Boolean
-    Dim id As Long, externalID As Long
-    On Error GoTo Failed
-    externalID = Nz(Forms!frmImportReview!lstImportReports, 0)
-    If externalID = 0 Then MsgBox "Select a report and inspect its Comments field first.", vbInformation: Exit Function
-    If MsgBox("Create a new draft with this report's form type and official narrative? Dates, traits, folder links and other official fields will remain unmapped. Changed source files can contain reports previously imported; this action never merges them.", vbOKCancel + vbQuestion, "Import narrative only") <> vbOK Then Exit Function
-    id = ImportReviewedNarrative(externalID, Nz(Forms!frmImportReview!txtImportMember, ""))
-    Forms!frmImportReview!lblImportResult.Caption = "Created draft " & id & ". Open the draft library to continue editing."
-    If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary()
-    ImportSelectedNarrativeUI = True
-    Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation, "Import narrative"
+    ImportSelectedNarrativeUI = UXApplyNarrativeImport()
+End Function
+Public Function NarrativeImportValues(ByVal externalID As Long) As Object
+    Dim r As DAO.Recordset, result As Object, kind As String, sourceHash As String
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
+    sourceHash = SourceFileHash(reviewDb.Name)
+    Set r = reviewDb.OpenRecordset("SELECT ReportType,FullName,Comments FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
+    Select Case Nz(r!ReportType, "")
+        Case "Eval": kind = "EVAL"
+        Case "Chief": kind = "CHIEFEVAL"
+        Case "FitRep": kind = "FITREP"
+        Case Else: r.Close: Err.Raise vbObjectError + 414, , "This source report is quarantined because its type is unsupported."
+    End Select
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "FormKind", kind: result.Add "OfficialComments", r!Comments.Value: result.Add "SourceName", r!FullName.Value
+    r.Close
+    If SourceFileHash(reviewDb.Name) <> sourceHash Then Err.Raise vbObjectError + 420, , "Source changed during preview. Choose it again."
+    result.Add "SourceHash", sourceHash
+    Set NarrativeImportValues = result
 End Function
 
 Private Sub ValidateReviewSchema(ByVal db As DAO.Database, ByVal prefix As String)

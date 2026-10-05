@@ -29,19 +29,20 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "CreateRouteTemplate", message
 End Function
-Public Function StartRoute(ByVal reportID As Long, ByVal templateID As Long, Optional ByVal groupID As Long = 0) As Long
+Public Function StartRoute(ByVal reportID As Long, ByVal templateID As Long, Optional ByVal groupID As Long = 0, Optional ByVal ownTransaction As Boolean = True) As Long
     Dim w As DAO.Workspace, r As DAO.Recordset, s As DAO.Recordset, t As DAO.Recordset, id As Long, failure As Long, message As String
-    Set w = DBEngine.Workspaces(0): w.BeginTrans
+    Set w = DBEngine.Workspaces(0): If ownTransaction Then w.BeginTrans
     On Error GoTo Failed
     If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & reportID), True) Then Err.Raise vbObjectError + 4301, , "Select an active report."
     If Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & reportID), "") <> "Draft" Then Err.Raise vbObjectError + 4301, , "Reopen the approved report before starting another route."
-    If DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState='Pending'") > 0 Then Err.Raise vbObjectError + 4302, , "Finish or cancel the active route first."
+    If Nz(MajorScalar("SELECT Count(*) FROM RouteRun WHERE ReportID=" & reportID & " AND RunState='Pending'"), 0) > 0 Then Err.Raise vbObjectError + 4302, , "Finish or cancel the active route first."
     If Nz(MajorScalar("SELECT IsArchived FROM RouteTemplate WHERE TemplateID=" & templateID), True) Then Err.Raise vbObjectError + 4303, , "Select an active template."
     Set t = CurrentDb.OpenRecordset("SELECT * FROM RouteTemplateStep WHERE TemplateID=" & templateID & " ORDER BY StepOrdinal", dbOpenSnapshot)
     If t.EOF Then Err.Raise vbObjectError + 4304, , "Route template is empty."
     Set r = CurrentDb.OpenRecordset("RouteRun", dbOpenDynaset)
     r.AddNew: r!ReportID = reportID: r!RevisionID = CurrentRevision(reportID): r!TemplateID = templateID: r!CurrentStep = 1: r!RunState = "Pending": r!RequestedBy = MajorAuthor(): r!RequestedAt = Now()
     If groupID > 0 Then
+        If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4305, , "Recover the archived group before starting review."
         If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & reportID) <> 1 Then Err.Raise vbObjectError + 4305, , "Report is not in the selected group."
         r!GroupID = groupID: r!GroupStamp = GroupStamp(groupID)
     End If
@@ -50,11 +51,13 @@ Public Function StartRoute(ByVal reportID As Long, ByVal templateID As Long, Opt
     Do While Not t.EOF
         s.AddNew: s!RunID = id: s!StepOrdinal = t!StepOrdinal: s!AssigneeID = t!AssigneeID: s!Instructions = t!Instructions: s!StepState = "Pending": s.Update: t.MoveNext
     Loop
-    s.Close: t.Close: w.CommitTrans: StartRoute = id: Exit Function
+    s.Close: t.Close
+    If ownTransaction Then w.CommitTrans
+    StartRoute = id: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
-    w.Rollback
+    If ownTransaction Then w.Rollback
     If Not r Is Nothing Then r.Close
     If Not s Is Nothing Then s.Close
     If Not t Is Nothing Then t.Close

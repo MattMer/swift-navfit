@@ -87,7 +87,7 @@ Public Function TestPartyNames() As String
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "ReportingSeniorLastName") = "NEW SENIOR" And Stored(id, "CounselorLastName") = "NEW COUNSELOR" And Stored(id, "MemberFirstName") = "NEW MEMBER", "Editor save lost features"
         Check Stored(id, "OfficialName") = "FULL MEMBER" And Stored(id, "ReportingSeniorName") = "FULL SENIOR" And Stored(id, "CounselorName") = "FULL COUNSELOR", "Name parts replaced full names"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each index In Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
         values = Seed(): values(index) = String$(limits(index), "X")
@@ -126,15 +126,15 @@ Public Function TestPartyNames() As String
     Forms!frmPartyNames!txtReportingSeniorLastName = "PENDING OVERLONG SENIOR LAST NAME"
     Forms!frmPartyNames!txtCounselorLastName = String$(45, "X")
     Forms!frmPartyNames!txtCounselorFirstInitial = "AB"
-    Call ApplyPartyNames(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyPartyNames(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtReportingSeniorLastName = "PENDING OVERLONG SENIOR LAST NAME" And Forms!frmEditor!txtCounselorLastName = String$(45, "X") And Forms!frmEditor!txtCounselorFirstInitial = "AB", "Raw recovery truncated"
     Check Stored(id, "ReportingSeniorLastName") = "SENIOR" And Stored(id, "CounselorFirstInitial") = "M", "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenPartyNames()
     Check Not Forms!frmPartyNames!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelPartyNames(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelPartyNames(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=18 WHERE RevisionID=" & first, dbFailOnError
@@ -156,5 +156,12 @@ End Function
 Public Function VerifyPartyNamesRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyPartyNamesRecovery = (Forms!frmEditor!txtReportingSeniorLastName = "PENDING OVERLONG SENIOR LAST NAME" And Forms!frmEditor!txtCounselorLastName = String$(45, "X") And Forms!frmEditor!txtCounselorFirstInitial = "AB")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

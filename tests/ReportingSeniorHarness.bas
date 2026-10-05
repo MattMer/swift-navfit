@@ -68,7 +68,7 @@ Public Function TestReportingSenior() As String
         Check DLookup("ReportingSeniorUIC", "RecoveryDraft", "ReportID=" & id) = "00002", "Apply did not checkpoint"
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "ReportingSeniorUIC") = "00002", "Save lost applied values"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For i = 0 To 4
         values = Array(Null, Null, Null, Null, Null): values(i) = String$(limits(i), "X")
@@ -90,15 +90,15 @@ Public Function TestReportingSenior() As String
     Check IsNull(Stored(id, "ReportingSeniorName")) And DCount("*", "ReportRevision") = before, "Late failure did not roll back"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Call OpenReportingSenior(): Forms!frmReportingSenior!txtReportingSeniorName = "PENDING NAME EXCEEDS LIMIT"
-    Call ApplyReportingSenior(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyReportingSenior(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtReportingSeniorName = "PENDING NAME EXCEEDS LIMIT", "Raw pending value truncated"
     Check IsNull(Stored(id, "ReportingSeniorName")), "Recovery committed invalid name"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, values), "Archived senior edit accepted"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenReportingSenior()
     Check Not Forms!frmReportingSenior!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelReportingSenior(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelReportingSenior(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey Like 'ReportingSenior*'", dbFailOnError
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=12 WHERE RevisionID=" & first, dbFailOnError
@@ -121,5 +121,12 @@ Public Function VerifyReportingSeniorRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     Call OpenReportingSenior()
     VerifyReportingSeniorRecovery = (Forms!frmReportingSenior!txtReportingSeniorName = "PENDING NAME EXCEEDS LIMIT")
-    Call CancelReportingSenior(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call CancelReportingSenior(): Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

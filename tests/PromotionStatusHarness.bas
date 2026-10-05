@@ -63,7 +63,7 @@ Public Function TestPromotionStatus() As String
         Forms!frmEditor!cboPromotionRecommendation = "Early Promote": Forms!frmEditor!cboTrait33 = "NOB"
         Call ShowTraitGuidance(33)
         Check Forms!frmEditor!cboPromotionStatus = "SELECTED", "Recommendation/traits inferred status"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each choice In Array("REGULAR", "FROCKED", "SELECTED", "SPOT")
         Call SaveStatus(id, "FITREP", choice): Check Stored(id) = choice, "Listed status rejected"
@@ -84,11 +84,11 @@ Public Function TestPromotionStatus() As String
     Check CheckpointEditor(), "Checkpoint failed"
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Check DLookup("PromotionStatus", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "UNSUPPORTED PENDING", "Raw checkpoint truncated"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(recovery), "Recovery failed"
     Check Forms!frmEditor!cboPromotionStatus = "UNSUPPORTED PENDING", "Recovery changed status"
     Check IsNull(Stored(id)), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, "REGULAR"), "Archived status edit accepted"
     Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
@@ -112,5 +112,12 @@ End Function
 Public Function VerifyPromotionStatusRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyPromotionStatusRecovery = (Forms!frmEditor!cboPromotionStatus = "UNSUPPORTED PENDING")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

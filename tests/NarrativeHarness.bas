@@ -32,7 +32,7 @@ Public Function TestNarratives() As String
         stage = "UI save " & kind
         Check SaveEditor(), "UI save failed"
         Check StoredNarrative(id) = "UI narrative " & kind, "UI save lost narrative"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Separate notes", "Clear", Null)
         Check IsNull(StoredNarrative(id)), "Null clear failed"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Separate notes", "Empty", "")
@@ -53,3 +53,10 @@ Private Function StoredNarrative(ByVal id As Long) As Variant
     StoredNarrative = r!OfficialComments
     r.Close
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

@@ -86,7 +86,7 @@ Failed:
     Err.Raise failure, "UndoFolderBatch", message
 End Function
 Public Function LoadBulkFolders() As Boolean
-    Forms!frmBulkFolders!lstReports.RowSource = "SELECT ReportID,Title,MemberName,IIf(FolderID Is Null,'Unassigned',FolderPath(Nz(FolderID,0))) AS CurrentFolder FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY Title"
+    Forms!frmBulkFolders!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,IIf(FolderID Is Null,'Unassigned',FolderPath(Nz(FolderID,0))) AS CurrentFolder FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY Title"
     Forms!frmBulkFolders!cboDestination.RowSource = "SELECT 0 AS ID,'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID,FolderPath(FolderID) FROM Folder"
     Forms!frmBulkFolders!txtStamp = "": LoadBulkFolders = True
 End Function

@@ -1,5 +1,9 @@
 # Assignment recommendations, retention and member statement
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.18.0, schema 17 adds three features for EVAL, CHIEFEVAL and FITREP. Open **Recommendations and statement** in the editor.
 
 | Feature | Swift fields | Observed NAVFIT source |

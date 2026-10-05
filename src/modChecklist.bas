@@ -9,7 +9,13 @@ Private Function HasContent(ByVal value As Variant) As Boolean
 End Function
 Private Sub Finding(ByVal key As String, ByVal severity As String, ByVal message As String)
     'Only fixed application text enters the value list, never source/user values.
-    Forms!frmChecklist!lstFindings.AddItem key & ";" & severity & ";" & message
+    Dim field As String, kind As String
+    field = ChecklistField(key): kind = Nz(DLookup("FormKind", "Report", "ReportID=" & Nz(Forms!frmChecklist!txtReportID, 0)), "EVAL")
+    If Len(field) > 0 Then
+        If UXFieldLegacy(field) Or Not UXFieldApplies(field, kind) Then Exit Sub
+        message = UXFieldCaption(field, kind) & ": " & message
+    End If
+    Forms!frmChecklist!lstFindings.AddItem key & ";" & severity & ";" & Replace(message, ";", ",")
 End Sub
 Public Function OpenDraftChecklist(ByVal reportID As Long) As Boolean
     If reportID = 0 Or DCount("*", "Report", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 1000, , "Save or select a draft first."
@@ -34,7 +40,7 @@ Failed:
     MsgBox Err.Description, vbInformation, "Saved draft checklist"
 End Function
 Public Function RefreshDraftChecklist() As Boolean
-    Dim r As DAO.Recordset, id As Long, missing As Long, errors As Long, context As String, key As Variant, hasNOB As Boolean
+    Dim r As DAO.Recordset, id As Long, missing As Long, errors As Long, context As String, key As Variant, hasNOB As Boolean, item As Long
     id = Nz(Forms!frmChecklist!txtReportID, 0)
     Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 1001, , "Draft no longer exists."
@@ -89,57 +95,67 @@ Public Function RefreshDraftChecklist() As Boolean
     If DCount("*", "ImportReceipt", "ReportID=" & id) > 0 Then Finding "PARTIAL_IMPORT", "Needs mapping", "This draft imported a narrative only. Other source fields remain in provenance and are unmapped."
     If DCount("*", "RecoveryDraft", "ReportID=" & id) > 0 Then Finding "RECOVERY", "Review", "A pending-edit checkpoint exists. It is excluded from this saved-draft checklist."
     If r!IsArchived Then Finding "ARCHIVED", "Review", "This draft is archived. Recover it before editing."
-    Finding "POLICY", "Not available", "Navy policy validation and official field completeness checks are not implemented."
-    Finding "EXPORT", "Not available", "NAVFIT export readiness is not assessed. Export is not implemented."
-    context = "Report " & id & " - saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & Nz(r!CurrentRevisionID, 0)), 0)
+    Finding "POLICY", "Limited Navy checks", "Source-linked draft checks are available in Review. They cover selected rules only and do not certify compliance."
+    Finding "EXPORT", "Separate workflow", "Import/export previews and compatibility checks are separate from this completeness checklist."
+    context = UXMemberLabel(id) & " - saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & Nz(r!CurrentRevisionID, 0)), 0)
     Forms!frmChecklist!lblContext.Caption = context
+    missing = 0
+    For item = 0 To Forms!frmChecklist!lstFindings.ListCount - 1
+        If Forms!frmChecklist!lstFindings.Column(1, item) = "Missing input" Then missing = missing + 1
+    Next
     Forms!frmChecklist!lblSummary.Caption = missing & " missing local inputs; " & errors & " draft date errors. Saved values only; unsaved editor entries are excluded."
+    Forms!frmChecklist!cmdOpenSection.Enabled = False
     Forms!frmChecklist!txtGuidance = "Select a checklist item for guidance. Draft saving remains available even when inputs are incomplete."
     r.Close
     RefreshDraftChecklist = True
 End Function
-Public Function ChecklistGuidance() As Boolean
-    Dim key As String, guidance As String
-    key = Nz(Forms!frmChecklist!lstFindings, "")
+Public Function ChecklistField(ByVal key As String) As String
     Select Case key
-        Case "PromotionStatus": guidance = "Choose REGULAR, FROCKED, SELECTED or SPOT in the editor, or leave blank. This is separate from promotion recommendation. No inference, eligibility or Navy policy validation is performed."
-        Case "TITLE": guidance = "In the editor, fill Draft title, then Save draft. This is a local organizational field."
-        Case "MEMBER": guidance = "In the editor, fill Member name, then Save draft. This display name does not validate official name components, DoD ID or SSN."
-        Case "START", "END", "DATE_ORDER": guidance = "Review Period start and Period end in the editor, then Save draft. This checklist checks presence and chronological order only; occasions, continuity and policy applicability are not evaluated."
-        Case "NARRATIVE": guidance = "Scroll below revision history to the official narrative section. EVAL uses block 43, CHIEFEVAL block 40 and FITREP block 41. Draft notes stay separate. A blank narrative can be saved; this is a completeness prompt, not a policy finding."
-        Case "PARTIAL_IMPORT": guidance = "Narrative import creates a partial draft. Filling local title, member and dates does not complete the unmapped official administration, traits, recommendations or folder relationships. Complete import mapping is pending."
-        Case "RECOVERY": guidance = "Use Home > Recover pending edits to inspect the checkpoint. Recovery is separate from committed revisions. If the saved report changed, recover as a new draft."
-        Case "ARCHIVED": guidance = "Use the library's Archived or All filter, select the report and choose Recover."
-        Case "POLICY": guidance = "This checklist is not Navy policy validation. The versioned, source-linked rule catalogue for official fields, grouping, recommendations, dates and report conditions remains pending."
-        Case "EXPORT": guidance = "A complete local checklist does not mark this report approved or ready for NAVFIT export. Export and full round-trip verification remain pending."
-        Case "TRAIT_NOB": guidance = "Trait NOB is a distinct listed selection, not a zero score or blank. Whole-report NOB, partial observation, averages and related narrative requirements are not assessed in this build."
-        Case Else
-            If IsTraitKey(key) Then
-                guidance = "Use the form-specific trait section in the editor. Select a mark or leave it blank, then Save draft. Select a trait to read the NAVFIT reference descriptions. Recommendations, averages and observation rules are not yet validated."
-            ElseIf Len(PartyNamesLabel(key)) > 0 Then
-                guidance = "Open Structured names in the editor, apply entries, then Save draft. Member, senior and counselor name parts are separate from existing full names. No splitting, composition or identity inference occurs; incomplete entries are saveable."
-            ElseIf Len(ReportPeopleLabel(key)) > 0 Then
-                guidance = "Open Senior contact and raters in the editor, apply pending entries, then Save draft. Names, IDs and contact details are separate from local contributor profiles. Rater dates do not establish signatures or approval; applicability and identity are not policy-validated."
-            ElseIf Len(DecisionDetailsLabel(key)) > 0 Then
-                guidance = "Open Recommendations and statement, apply pending entries, then Save draft. Assignment recommendations are separate from promotion recommendation. Each Yes/No source flag is explicit; blanks, combinations, signatures and policy applicability are not inferred."
-            ElseIf Len(ServiceDetailsLabel(key)) > 0 Then
-                guidance = "Open Counseling, readiness and billet in the editor, apply pending values, then Save draft. Suggestions are reference vocabulary; eligibility and Navy policy are not validated."
-            ElseIf Len(MemberDetailsLabel(key)) > 0 Then
-                guidance = "Open Member details, apply pending values, then Save draft. Identifiers retain leading zeros; component combinations and date applicability are not policy-validated."
-            ElseIf Len(ReportContextLabel(key)) > 0 Then
-                guidance = "Open the relevant report-context panel in the editor, apply pending values, then Save draft. Yes, No and blank are distinct. Occasion/category combinations and duty narrative rules are not policy-validated."
-            ElseIf Len(ReportingSeniorLabel(key)) > 0 Then
-                guidance = "Open Reporting senior details in the editor, apply pending values, then Save draft. These fields are separate from the local reviewer profile. Storage limits do not validate codes or reporting authority."
-            ElseIf Len(AssessmentLabel(key)) > 0 Then
-                guidance = "Choose observation status and recommendation explicitly near the top of the editor. Individual trait NOB and averages do not set them. Incomplete saves remain available; eligibility and policy are not validated."
-            ElseIf Len(AdministrationLabel(key)) > 0 Then
-                guidance = "Review the administrative fields near the top of the editor, then Save draft. Storage limits match the inspected NAVFIT schema. Values stay separate from local display fields. Codes, format, eligibility and automatic NAVFIT mapping are not validated. Incomplete drafts remain saveable."
-            Else
-                guidance = "Select an item."
-            End If
+        Case "TITLE": ChecklistField = "Title"
+        Case "MEMBER": ChecklistField = "MemberName"
+        Case "START", "DATE_ORDER": ChecklistField = "PeriodStart"
+        Case "END": ChecklistField = "PeriodEnd"
+        Case "NARRATIVE": ChecklistField = "OfficialComments"
+        Case "TRAIT_NOB": ChecklistField = "Trait33"
+        Case "POLICY", "EXPORT", "PARTIAL_IMPORT", "RECOVERY", "ARCHIVED": ChecklistField = ""
+        Case Else: ChecklistField = key
     End Select
+End Function
+Public Function ChecklistGuidance() As Boolean
+    Dim key As String, field As String, kind As String, guidance As String
+    key = Nz(Forms!frmChecklist!lstFindings, ""): field = ChecklistField(key)
+    kind = Nz(DLookup("FormKind", "Report", "ReportID=" & Forms!frmChecklist!txtReportID), "EVAL")
+    If Len(field) > 0 Then
+        guidance = UXFieldCaption(field, kind) & vbCrLf & "Choose Open report section to review this field. Incomplete draft information can be saved. This checklist reads saved values only; pending edits and recovery checkpoints are separate. Name parts never replace separately stored full names."
+    Else
+        Select Case key
+            Case "POLICY": guidance = "Review > Navy checks uses a versioned source-linked rule pack for selected checks. Check the pack's effective report-period range and saved revision. Needs review differs from an invalid entry; a passing limited check does not establish full Navy compliance."
+            Case "EXPORT", "PARTIAL_IMPORT": guidance = "Use Reports > Import or the report's export workflow. Inspect the mapping scope and preview; this checklist does not establish export readiness."
+            Case "RECOVERY": guidance = "Overview > Recover pending edits. Inspect the checkpoint before recovery; saved revisions remain separate."
+            Case "ARCHIVED": guidance = "Reports > Archived or All, select this report and choose Recover. Local approval also locks edits until reopened through Review."
+            Case Else: guidance = "Select a checklist item."
+        End Select
+    End If
     Forms!frmChecklist!txtGuidance = guidance
+    Forms!frmChecklist!cmdOpenSection.Enabled = Len(field) > 0
     ChecklistGuidance = True
+End Function
+Public Function ChecklistOpenSection() As Boolean
+    Dim id As Long, field As String
+    On Error GoTo Failed
+    id = Forms!frmChecklist!txtReportID: field = ChecklistField(Nz(Forms!frmChecklist!lstFindings, ""))
+    If Len(field) = 0 Then Exit Function
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        If Nz(Forms!frmEditor!txtReportID, 0) <> id Then
+            If Not UXLeaveEditor() Then Exit Function
+        End If
+    End If
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    Call UXSelectSection(UXFieldSection(field))
+    Forms!frmEditor.SetFocus
+    ChecklistOpenSection = True: Exit Function
+Failed:
+    Forms!frmChecklist!txtGuidance = Err.Description
 End Function
 Public Function CloseDraftChecklist() As Boolean
     DoCmd.Close acForm, "frmChecklist", acSaveNo

@@ -65,7 +65,7 @@ Public Function TestAssessment() As String
         Check Stored(id, "PromotionRecommendation") = "Early Promote", "Editor save lost recommendation"
         Forms!frmEditor!cboTrait33 = "NOB": Call ShowTraitGuidance(33)
         Check Forms!frmEditor!cboObservationStatus = "Observed" And Forms!frmEditor!cboPromotionRecommendation = "Early Promote", "Traits inferred assessment"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each choice In Array("NOB", "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote")
         Call SaveAssessment(id, "FITREP", Array("Observed", CStr(choice)))
@@ -89,11 +89,11 @@ Public Function TestAssessment() As String
     Check CheckpointEditor(), "Checkpoint failed"
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Check DLookup("ObservationStatus", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "UNSUPPORTED PENDING", "Raw checkpoint truncated"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(recovery), "Recovery failed"
     Check Forms!frmEditor!cboObservationStatus = "UNSUPPORTED PENDING" And Forms!frmEditor!cboPromotionRecommendation = "Must Promote", "Recovery changed values"
     Check IsNull(Stored(id, "ObservationStatus")), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True)
     Check Rejected(id, Array("Observed", "Promotable")), "Archive guard absent"
     Call ArchiveDraft(id, False)
@@ -120,5 +120,12 @@ End Function
 Public Function VerifyAssessmentRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyAssessmentRecovery = (Forms!frmEditor!cboObservationStatus = "UNSUPPORTED PENDING" And Forms!frmEditor!cboPromotionRecommendation = "Must Promote")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

@@ -1,5 +1,9 @@
 # Major foundations checkpoint — 0.21.0
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Schema 20 adds eighteen tables for explicit summary groups, reviewed bulk changes, routes, meetings and versioned validation. The draft editor still saves 78 fields. Use Home to open the feature workbench, PDF import or workspace backup tools.
 
 ## Workflow features

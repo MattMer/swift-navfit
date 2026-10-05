@@ -83,6 +83,7 @@ Public Function FinishReview(ByVal taskID As Long, ByVal outcome As String, ByVa
     Else
         If pid <> r!AssignedTo Then Err.Raise vbObjectError + 1814, , "Switch to the assigned reviewer to record an outcome."
         If Nz(RouteValue(db, "SELECT IsArchived FROM Report WHERE ReportID=" & r!ReportID), True) Then Err.Raise vbObjectError + 1815, , "Archived reports cannot receive review outcomes."
+        If Nz(RouteValue(db, "SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 1815, , "Reopen local approval before recording review outcomes."
         If Nz(RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID), 0) <> r!RevisionID Then Err.Raise vbObjectError + 1816, , "This review is stale. The requester must cancel it and assign the latest saved revision."
     End If
     r.Edit: r!TaskState = outcome: r!FinishedAt = Now(): r.Update: r.Close: Set r = Nothing
@@ -100,7 +101,11 @@ Public Function OpenMyWork(Optional ByVal reportID As Long = 0) As Boolean
     DoCmd.OpenForm "frmMyWork"
     Forms!frmMyWork!txtReportID = reportID
     Forms!frmMyWork!txtExpectedRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
-    Forms!frmMyWork!lblAssignment.Caption = "Assign saved report " & reportID & " / revision ID " & Forms!frmMyWork!txtExpectedRevision & ". Open from a saved draft to assign it."
+    If reportID > 0 Then
+        Forms!frmMyWork!lblAssignment.Caption = "Assign review: " & UXWorkReport(reportID) & ". Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & Forms!frmMyWork!txtExpectedRevision), 0) & "."
+    Else
+        Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
+    End If
     Call LoadMyWork(): OpenMyWork = True
 End Function
 Public Function RoutingFromEditor() As Boolean
@@ -111,14 +116,20 @@ Public Function LoadMyWork() As Boolean
     pid = RouteProfile()
     reportID = Nz(Forms!frmMyWork!txtReportID, 0)
     Forms!frmMyWork!txtExpectedRevision = Nz(RouteScalar("SELECT CurrentRevisionID FROM Report WHERE ReportID=" & reportID), 0)
-    Forms!frmMyWork!lblAssignment.Caption = "Assign saved report " & reportID & " / revision ID " & Forms!frmMyWork!txtExpectedRevision & ". Open from a saved draft to assign it."
+    If reportID > 0 Then
+        Forms!frmMyWork!lblAssignment.Caption = "Assign review: " & UXWorkReport(reportID) & ". Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & Forms!frmMyWork!txtExpectedRevision), 0) & "."
+    Else
+        Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
+    End If
     Forms!frmMyWork!lblProfile.Caption = "Active contributor: " & DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid) & ". Profiles are attribution, not authentication."
     Forms!frmMyWork!cboContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName": Forms!frmMyWork!cboContributor.Requery
     Forms!frmMyWork!cboReviewer.RowSource = Forms!frmMyWork!cboContributor.RowSource: Forms!frmMyWork!cboReviewer.Requery
-    sql = "SELECT t.TaskID,r.MemberName & ' | ' & r.FormKind & ' | ' & Nz(Format(r.PeriodEnd,'yyyy-mm-dd'),'No period') AS [Member and report],p.DisplayName AS Reviewer,t.TaskState AS [Review step],t.DueDate AS [Due date],IIf(t.RevisionID=r.CurrentRevisionID,'Current','Stale') AS [Saved version],r.IsArchived FROM (ReviewTask AS t INNER JOIN Report AS r ON t.ReportID=r.ReportID) INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID"
+    sql = "SELECT t.TaskID,UXIdentity(r.OfficialName,r.MemberName) & ' | ' & r.FormKind & ' | ' & Nz(Format(r.PeriodEnd,'yyyy-mm-dd'),'No period') AS [Member and report],p.DisplayName AS Reviewer,t.TaskState AS [Review step],t.DueDate AS [Due date],IIf(t.RevisionID=r.CurrentRevisionID,'Current','Stale') AS [Saved version],r.IsArchived FROM (ReviewTask AS t INNER JOIN Report AS r ON t.ReportID=r.ReportID) INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID"
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
     Forms!frmMyWork!lstTasks.RowSource = sql & " ORDER BY t.TaskID DESC": Forms!frmMyWork!lstTasks.Requery
-    Forms!frmMyWork!txtHistory = Null: LoadMyWork = True
+    Forms!frmMyWork!txtHistory = Null
+    If UXHasControl(Forms!frmMyWork, "lstWork") Then Call UXLoadWorkQueue
+    LoadMyWork = True
 End Function
 Public Function TaskDetails() As Boolean
     Dim r As DAO.Recordset, id As Long, text As String

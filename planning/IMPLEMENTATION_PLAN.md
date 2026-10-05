@@ -1,5 +1,7 @@
 # Swift NAVFIT implementation plan
 
+> Historical planning baseline: use [PROJECT_PLAN_STATUS_2026-10-04.md](PROJECT_PLAN_STATUS_2026-10-04.md) and [CURRENT_STATE.md](CURRENT_STATE.md) for current implementation and unresolved work. The original proposed designs and early environment findings below are retained for traceability.
+
 Planning baseline: 3 October 2026. User authorized starting development after review. A limited local foundation prototype now exists; see `BUILD_STATUS.md`. No NAVFIT version, Access target, or PDF import adapter is certified compatible.
 
 This document covers all nine requested planning deliverables. Proposed designs are decisions for review, not descriptions of an existing application. Unverified factual assumptions are prefixed **GUESS**. Evidence is in `planning/evidence/source-inventory.json`, extracted source packets and instruction text. Inspection tooling does not modify supplied PDFs.

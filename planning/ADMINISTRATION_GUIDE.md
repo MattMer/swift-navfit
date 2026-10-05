@@ -1,5 +1,9 @@
 # Administrative draft fields
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.9.0 adds a first administrative slice to all three draft types. Near the top of the editor, below the local display name, enter:
 
 | Swift field | Capacity | Inspected NAVFIT Reports field |

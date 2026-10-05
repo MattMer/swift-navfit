@@ -47,7 +47,7 @@ Public Function TestComparison() As String
     Check OpenRevisionComparison(id, b, b), "Same revision comparison failed"
     Check Forms!frmRevisionCompare!lstCompareFields.ListCount = 0, "Same revision shows changes"
     Call CloseRevisionComparison()
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     other = CommitDraft(0, "FITREP", "Other", "Synthetic", Null, Null, "")
     Check WrongReport(other, a), "Cross-report comparison accepted"
     Call CommitDraft(id, "EVAL", "mixed case", "Synthetic", Null, Null, "Notes", "Empty", "")
@@ -67,3 +67,10 @@ Public Function TestComparison() As String
 Failed:
     TestComparison = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

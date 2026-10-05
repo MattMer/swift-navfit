@@ -39,10 +39,10 @@ Public Function TestTools(ByVal path As String) As String
     checks = 0: Call ConfigureWorkspace("SYNTHETIC TOOLS", "Synthetic Tester")
     id = CommitDraft(0, "EVAL", "", "", Null, Null, "Draft notes only", "Empty", Null)
     Check OpenDraftChecklist(id), "Checklist failed"
-    Check Forms!frmChecklist!lstFindings.ListCount = 78, "Missing-input findings wrong"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "76 missing") > 0, "Missing count wrong"
+    Check HasFinding("OfficialName") And HasFinding("MemberSSN") And Not HasFinding("MemberDoDID"), "Missing-input findings wrong"
+    Check InStr(Forms!frmChecklist!lblSummary.Caption, "missing local inputs") > 0, "Missing count wrong"
     Forms!frmChecklist!lstFindings = "NARRATIVE": Check ChecklistGuidance(), "Guidance failed"
-    Check InStr(Forms!frmChecklist!txtGuidance, "block 43") > 0, "Narrative guidance wrong"
+    Check InStr(Forms!frmChecklist!txtGuidance, "43.") > 0, "Narrative guidance wrong"
     Call CloseDraftChecklist()
     Call CommitDraft(id, "EVAL", "Synthetic", "Synthetic Member", #10/2/2026#, #10/1/2026#, "Notes", "Dates", "Narrative")
     Check OpenDraftChecklist(id), "Checklist reload failed"
@@ -54,8 +54,8 @@ Public Function TestTools(ByVal path As String) As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!txtTitle = "Unsaved editor title": Call CheckpointEditor()
     Check ChecklistFromEditor(), "Editor checklist failed"
-    Check InStr(Forms!frmChecklist!lblSummary.Caption, "71 missing") > 0, "Saved checklist used unsaved entries"
-    Check Forms!frmChecklist!lstFindings.ListCount = 74, "Recovery finding missing"
+    Check Not HasFinding("TITLE") And Not HasFinding("NARRATIVE"), "Saved checklist used unsaved entries"
+    Check HasFinding("RECOVERY"), "Recovery finding missing"
     Call CloseDraftChecklist()
     Check Forms!frmEditor!txtTitle = "Unsaved editor title", "Checklist lost pending entry"
     Check DLookup("CurrentRevisionID", "Report", "ReportID=" & id) = revision, "Checklist changed history"
@@ -66,7 +66,7 @@ Public Function TestTools(ByVal path As String) As String
     Check InStr(Forms!frmEditor!txtOfficialComments, "Narrative" & vbCrLf & "Snippet") = 1, "Snippet did not append"
     Check DLookup("CurrentRevisionID", "Report", "ReportID=" & id) = revision, "Snippet committed automatically"
     Check SaveEditor(), "Snippet save failed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     DoCmd.OpenForm "frmSnippets": Forms!frmSnippets!txtSearch = "phrase": Call LoadSnippets()
     Check Forms!frmSnippets!lstSnippets.ListCount = 2, "Snippet search failed"
     Forms!frmSnippets!txtSearch = "'": Call LoadSnippets()
@@ -136,3 +136,10 @@ Public Function TestTools(ByVal path As String) As String
 Failed:
     TestTools = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

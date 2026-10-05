@@ -45,7 +45,7 @@ Public Function TestReviewComments() As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(reportID)
     Forms!frmEditor!txtTitle = "Unsaved title"
     Check CommentsFromEditor(), "Editor action failed"
-    Check Forms!frmReviewComments!lstThreads.ListCount = 1, "Thread list count wrong"
+    Check Forms!frmReviewComments!lstThreads.ListCount = 1 + IIf(Forms!frmReviewComments!lstThreads.ColumnHeads, 1, 0), "Thread list count wrong"
     Forms!frmReviewComments!lstThreads = root
     Check ShowReviewThread(), "Thread display failed"
     Check InStr(Forms!frmReviewComments!txtHistory, body) > 0 And InStr(Forms!frmReviewComments!txtHistory, "Resolved") > 0 And InStr(Forms!frmReviewComments!txtHistory, "Reopened") > 0, "History missing"
@@ -61,7 +61,7 @@ Public Function TestReviewComments() As String
     Forms!frmReviewComments!txtCompose = "New thread on latest saved"
     Check PostReviewUI(), "UI new thread failed"
     Check DCount("*", "ReviewComment", "ReportID=" & reportID & " AND RevisionID=" & newer & " AND ThreadID Is Null") = 1, "New thread did not use latest revision"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(reportID, True)
     Check Rejected(reportID, newer, "Archived comment"), "Archived comment accepted"
     Check OpenReviewComments(reportID), "Archived history inaccessible"
@@ -71,3 +71,10 @@ Public Function TestReviewComments() As String
 Failed:
     TestReviewComments = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

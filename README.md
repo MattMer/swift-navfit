@@ -8,7 +8,9 @@ See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups,
 
 ## UI redesign under review
 
-See [current state and remaining work](planning/CURRENT_STATE.md) for the latest native UX checkpoint and verification limits.
+The [r24 milestone notes](planning/GITHUB_R24_NOTES_2026-10-04.md) summarize the current native redesign, tested fixes and remaining acceptance work. The [native verification record](planning/UX_MY_WORK_2026-10-04.md) identifies the exact local demo and blank files, checks and limitations.
+
+Start with the [native workspace guide](planning/UX_WORKSPACE_GUIDE.md) for current workflows and the [current state](planning/CURRENT_STATE.md) for exact native artifacts and verification limits. The [candidate guide](planning/UX_CANDIDATE_GUIDE.md) explains blank versus demo files and source-preserving migration.
 
 The working source is 0.22.0-ux-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; it has not replaced the distributed 0.21.0 file. Visual, keyboard, screen-reader and scaling acceptance remain pending.
 
@@ -22,8 +24,8 @@ See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic
 
 - EVAL, CHIEFEVAL and FITREP drafts with administrative fields, reporting-senior details, traits/reference guidance, arithmetic summaries and official narratives; incomplete saves.
 - Explicit promotion/observation selections, report occasions and categories, primary duty and separate multiline duty descriptions.
-- Member identifiers, explicit service-component selections and date reported in a separate details panel.
-- Counseling date/name, physical-readiness details/date and billet subcategory with editable reference suggestions.
+- Member identifiers, checkbox service-component selections and date reported in Member & report details.
+- Counseling date/name, physical-readiness details/date and billet subcategory in their official report sections, with reference suggestions.
 - Assignment recommendations A/B, retention selections and member-statement selections, distinct from promotion and review acceptance.
 - Reporting-senior identifiers/contact details and rater/senior-rater names and dates.
 - Separate structured name parts for members, reporting seniors and counselors, with explicit initials and member suffix.
@@ -38,6 +40,14 @@ See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic
 Internal review acceptance is separate from official approval. Local contributor profiles provide attribution, not authentication. Use one contributor at a time in the same authoritative file; separate copies do not synchronize.
 
 ## Try the app
+
+For the redesigned native UI, use the latest demo linked in
+[CURRENT_STATE.md](planning/CURRENT_STATE.md), or the separate local candidate
+package described in [UX_CANDIDATE_GUIDE.md](planning/UX_CANDIDATE_GUIDE.md).
+The candidate is for review; it has not replaced the distributed checkpoint.
+Settings & Help includes an in-app workspace guide. For existing data, provide
+an explicit blank candidate `-TemplatePath` to the migration script.
+
 
 Download the blank `.accdb` from the [0.21.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.21.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 

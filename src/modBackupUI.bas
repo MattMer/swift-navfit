@@ -35,7 +35,7 @@ Public Function GuidedWorkspaceCopy(ByVal mode As String) As Boolean
     If folder.Show <> -1 Then Exit Function
     destination = folder.SelectedItems(1) & "\Swift_NAVFIT_" & LCase$(mode) & "_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".accdb"
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        If Not CheckpointEditor() Then Err.Raise vbObjectError + 4801, , "Pending editor values could not be checkpointed. Save or close the editor before retrying."
+        If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, , "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
     End If
     operation = BeginOperation("Guided " & LCase$(mode), destination)
     FinishOperation operation, "Dispatched", "Access will close. Read " & destination & ".verification.json for the copy verification result. Pending edits remain recovery checkpoints."

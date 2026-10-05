@@ -79,7 +79,7 @@ Public Function TestServiceDetails() As String
         Check DLookup("ReadinessDetail", "RecoveryDraft", "ReportID=" & id) = "Excellent", "Apply did not checkpoint"
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "CounselorName") = "NEW COUNSELOR" And Stored(id, "ReadinessDetail") = "Excellent" And Stored(id, "BilletSubcategory") = "OIC", "Editor save lost features"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each index In Array(1, 2, 3, 5)
         values = Seed(): values(index) = String$(limits(index), "X")
@@ -111,15 +111,15 @@ Public Function TestServiceDetails() As String
     Forms!frmServiceDetails!txtCounselingDate = "PENDING INVALID DATE"
     Forms!frmServiceDetails!txtReadinessDetail = "PENDING OVERLONG READINESS"
     Forms!frmServiceDetails!txtBilletSubcategory = "PENDING OVERLONG BILLET"
-    Call ApplyServiceDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyServiceDetails(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtCounselingDate = "PENDING INVALID DATE" And Forms!frmEditor!txtReadinessDetail = "PENDING OVERLONG READINESS" And Forms!frmEditor!txtBilletSubcategory = "PENDING OVERLONG BILLET", "Raw recovery truncated"
     Check Stored(id, "CounselingDate") = "2000-02-29" And IsNull(Stored(id, "BilletSubcategory")), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenServiceDetails()
     Check Not Forms!frmServiceDetails!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelServiceDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelServiceDetails(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=15 WHERE RevisionID=" & first, dbFailOnError
@@ -141,5 +141,12 @@ End Function
 Public Function VerifyServiceDetailsRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyServiceDetailsRecovery = (Forms!frmEditor!txtCounselingDate = "PENDING INVALID DATE" And Forms!frmEditor!txtReadinessDetail = "PENDING OVERLONG READINESS" And Forms!frmEditor!txtBilletSubcategory = "PENDING OVERLONG BILLET")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

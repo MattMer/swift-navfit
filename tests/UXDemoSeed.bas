@@ -88,10 +88,17 @@ Public Function SeedUXDemo() As String
     ArchiveDraft ids(8), True
     Call SaveSnippet(0, "DEMO - Mentoring", "SYNTHETIC EXAMPLE: Mentored a fictional team and completed practice training milestones.", "Synthetic UX demonstration", "ALL")
     Call AddReviewComment(ids(2), CurrentRevision(ids(2)), "Synthetic feedback: confirm the counseling date before finishing review.")
+    template = CreateRouteTemplate("DEMO ordered review", author & "," & reviewer, "Review the saved blocks, then hand off to the next contributor.")
+    route = StartRoute(ids(4), template)
+    route = StartRoute(ids(7), template)
+    Call AddReviewComment(ids(7), CurrentRevision(ids(7)), "Earlier-revision feedback: check trait marks before restarting review.")
+    changes.RemoveAll: changes.Add "DraftNotes", "Changed after route creation; requester can restart this ordered review."
+    Call CommitSavedFields(ids(7), CurrentRevision(ids(7)), changes, "Synthetic stale ordered-route example")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(ids(1))
     Forms!frmEditor!txtNotes = "RECOVERY DEMO: These pending notes have not been committed. Recover or discard this checkpoint to explore the workflow."
     If Not CheckpointEditor() Then Err.Raise vbObjectError + 5101, , "Demo recovery checkpoint could not be created."
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     db.Execute "UPDATE AppMetadata SET CompatibilityStatus='Synthetic UX demo - NAVFIT exchange remains unverified'", dbFailOnError
     SeedUXDemo = "PASS: 9 synthetic reports, 3 groups, 2 contributors, 1 reporting senior, 3 RSCA baselines, review/approval/archive/NOB/recovery examples."
 End Function

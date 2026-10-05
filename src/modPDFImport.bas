@@ -63,12 +63,11 @@ Private Function PDFDate(ByVal value As Variant, ByVal century As String) As Var
     If Not IsValidIsoDate(text) Then Err.Raise vbObjectError + 4711, , "PDF date needs manual review: " & text
     PDFDate = DateSerial(CLng(Left$(text, 4)), CLng(Mid$(text, 6, 2)), CLng(Right$(text, 2)))
 End Function
-Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String) As Long
-    Dim fields As Variant, id As Long, changes As Object, receipt As DAO.Recordset, raw As DAO.Recordset, receiptID As Long, w As DAO.Workspace, failure As Long, message As String, identifier As Variant, db As DAO.Database, stage As String, expected As Long
-    If pdfPreview Is Nothing Then Err.Raise vbObjectError + 4712, , "Preview a supported PDF first."
-    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview."
-    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfHash) & " AND AdapterVersion='pdf-xfa-v1'") > 0 Then Err.Raise vbObjectError + 4713, , "This exact PDF has already been imported."
-    If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, , "Choose how to interpret the combined identifier field."
+Public Function PDFMappedValues(ByVal century As String, ByVal identifierKind As String) As Object
+    Dim fields As Variant, changes As Object, identifier As Variant
+    If pdfPreview Is Nothing Then Err.Raise vbObjectError + 4712, , "Choose a supported PDF first."
+    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview. Choose it again."
+    If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, , "Choose how to interpret the identifier."
     If pdfPreview("FormKind") = "CHIEFEVAL" Then
         fields = Array("NAMEmaster", "RATINGmaster", "DESIGNATIONmaster", "SSNDODIDmaster", "SHIPSTATION", "FromDate", "ToDate", "REPORTINGSENIORCOMMENTS")
     Else
@@ -80,10 +79,32 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     changes.Add "OfficialComments", pdfPreview(fields(7)): identifier = pdfPreview(fields(3))
     If identifierKind = "SSN" Then changes.Add "MemberSSN", identifier
     If identifierKind = "DoDID" Then changes.Add "MemberDoDID", identifier
+    Set PDFMappedValues = changes
+End Function
+Public Function PDFClearPreview() As Boolean
+    Set pdfPreview = Nothing: pdfXML = "": pdfPath = "": pdfHash = ""
+    PDFClearPreview = True
+End Function
+Public Function PDFImportKind() As String
+    If Not pdfPreview Is Nothing Then PDFImportKind = pdfPreview("FormKind")
+End Function
+Public Function PDFImportPath() As String
+    PDFImportPath = pdfPath
+End Function
+Public Function PDFImportStamp() As String
+    PDFImportStamp = pdfHash & "|" & pdfPath
+End Function
+Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String) As Long
+    Dim id As Long, changes As Object, receipt As DAO.Recordset, raw As DAO.Recordset, receiptID As Long, w As DAO.Workspace, failure As Long, message As String, db As DAO.Database, stage As String, expected As Long
+    If pdfPreview Is Nothing Then Err.Raise vbObjectError + 4712, , "Preview a supported PDF first."
+    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview."
+    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfHash) & " AND AdapterVersion='pdf-xfa-v1'") > 0 Then Err.Raise vbObjectError + 4713, , "This exact PDF has already been imported."
+    If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, , "Choose how to interpret the combined identifier field."
+    Set changes = PDFMappedValues(century, identifierKind)
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     stage = "Create draft"
-    id = CommitDraft(0, pdfPreview("FormKind"), "Imported PDF draft", Left$(Nz(pdfPreview(fields(0)), ""), 120), Null, Null, "Other PDF fields are retained as source XML and require review.", "PDF import")
+    id = CommitDraft(0, pdfPreview("FormKind"), "Imported PDF draft", Left$(Nz(changes("OfficialName"), ""), 120), Null, Null, "Other PDF fields are retained as source XML and require review.", "PDF import")
     stage = "Read created revision": expected = CurrentRevision(id)
     stage = "Commit PDF fields"
     Call CommitSavedFields(id, expected, changes, "Reviewed structured PDF import")
@@ -113,18 +134,10 @@ Public Function ChoosePDFPreview() As Boolean
     Set dialog = Application.FileDialog(3): dialog.Title = "Preview a completed NAVPERS PDF": dialog.AllowMultiSelect = False
     dialog.Filters.Clear: dialog.Filters.Add "PDF forms", "*.pdf"
     If dialog.Show <> -1 Then Exit Function
-    Set result = PreviewStructuredPDF(dialog.SelectedItems(1))
-    For Each key In result.Keys: text = text & key & ": " & Nz(result(key), "[missing]") & vbCrLf: Next
-    Forms!frmPDFImport!txtPreview = text: ChoosePDFPreview = True: Exit Function
+    ChoosePDFPreview = UXChoosePDFFile(dialog.SelectedItems(1)): Exit Function
 Failed:
     Forms!frmPDFImport!lblStatus.Caption = Err.Description
 End Function
 Public Function ImportPDFUI() As Boolean
-    Dim id As Long
-    On Error GoTo Failed
-    id = ImportPDFPreview(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""))
-    Forms!frmPDFImport!lblStatus.Caption = "Created draft " & id & ". Remaining fields need review; source XML retained."
-    ImportPDFUI = True: Exit Function
-Failed:
-    Forms!frmPDFImport!lblStatus.Caption = Err.Description
+    ImportPDFUI = UXApplyPDFImport()
 End Function

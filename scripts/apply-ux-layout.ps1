@@ -126,14 +126,18 @@ foreach($field in $uxFields){
     $page=[math]::Floor($ordinal/8);$slot=$ordinal%8;$x=3100+($slot%2)*5100;$y=2950+[math]::Floor($slot/2)*750;$tag='BLX:'+$section+':'+$page
     [void](Control $f 100 ('uxLabel'+$field.key) $x $y 4900 280 $field.label);$script:swiftControl.Tag=$tag
     $valueType=if($field.checkbox){106}elseif($field.options){111}else{109};[void](Control $f $valueType ('uxValue'+$field.key) $x ($y+300) 4900 360);$c=$script:swiftControl;if($field.checkbox){$c.TripleState=$true}elseif($field.options){$c.RowSourceType='Value List';$c.RowSource=$field.options -join ';';$c.LimitToList=$false};$c.Tag=$tag;$c.AfterUpdate='=UXBulkChanged("'+$field.key+'")'
+    if($valueType -in @(109,111)){$c.OnChange='=UXInvalidateBulkPreview()'}
 }
 $y=2550
 foreach($section in @(0,1,2,6)){for($page=0;$page -lt [math]::Ceiling($bulkCounts[$section]/8);$page++){[void](Control $f 104 ('uxSection'+$section+'Page'+$page) 400 $y 2450 450 ($uxSections[$section]+' '+($page+1)) ('=UXBulkSection('+$section+','+$page+')'));$y+=500}}
 [void](Control $f 100 'uxStatus' 3100 6250 10000 600 'Only edited blocks are staged. Mixed values start blank; clearing stages an explicit clear.')
 [void](Control $f 100 'lblReason' 400 7000 2500 350 'Reason for changes')
 [void](Control $f 109 'txtReason' 3100 6950 10000 450)
+$script:swiftControl.AfterUpdate='=UXInvalidateBulkPreview()'
+$script:swiftControl.OnChange='=UXInvalidateBulkPreview()'
 [void](Control $f 104 'cmdPreview' 3100 7600 4600 550 'Preview block changes' '=UXPreviewBulk()')
 [void](Control $f 104 'cmdApply' 8400 7600 4900 550 'Apply reviewed changes' '=UXApplyBulk()')
+$script:swiftControl.Enabled=$false
 [void](Control $f 110 'lstPreview' 400 8450 12600 1700);$c=$script:swiftControl;$c.ColumnCount=5;$c.ColumnWidths='0;2600;3000;3500;3500';$c.OnClick='=UXBulkDetail()'
 [void](Control $f 109 'txtFullValues' 400 10350 12600 2400);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
 [void](Control $f 104 'cmdBack' 400 13100 12600 550 'Return to group' '=OpenScreen("frmMajorWorkbench")')

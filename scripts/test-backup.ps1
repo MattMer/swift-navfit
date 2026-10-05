@@ -17,6 +17,7 @@ try {
     $worker=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-NonInteractive','-EncodedCommand',$encoded) -WindowStyle Hidden -PassThru
     Start-Sleep -Milliseconds 800
     if(Test-Path -LiteralPath $copy){throw 'Worker copied an open workspace.'}
+    if(-not $app.Eval('UXCloseEditorForBackup()')){throw 'Approved backup close failed.'}
     $app.CloseCurrentDatabase();$app.Quit(2);$app=$null
     if(-not $worker.WaitForExit(15000)){throw 'Copy worker did not finish after closing source.'}
     if($worker.ExitCode -ne 0){throw 'Copy worker failed.'}

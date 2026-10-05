@@ -103,6 +103,7 @@ Public Sub SetFieldDefault(ByVal scopeKind As String, ByVal scopeID As Long, ByV
         Case "Folder"
             If DCount("*", "Folder", "FolderID=" & scopeID) <> 1 Then Err.Raise vbObjectError + 4211, , "Folder does not exist."
         Case "Group"
+            If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & scopeID), True) Then Err.Raise vbObjectError + 4211, , "Recover this group before changing defaults."
             If DCount("*", "SummaryGroup", "GroupID=" & scopeID) <> 1 Then Err.Raise vbObjectError + 4211, , "Group does not exist."
         Case "Report"
             If DCount("*", "Report", "ReportID=" & scopeID) <> 1 Then Err.Raise vbObjectError + 4211, , "Report does not exist."

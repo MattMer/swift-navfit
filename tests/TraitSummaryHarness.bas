@@ -32,7 +32,7 @@ Public Function TestTraitSummary() As String
     DoCmd.OpenForm "frmEditor"
     Check Forms!frmEditor!txtSavedTraitSummary = "Saved values: no committed revision.", "New editor falsely saved"
     Check Forms!frmEditor!txtPendingTraitSummary.Locked And Forms!frmEditor!txtSavedTraitSummary.Locked, "Derived controls editable"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Array("1.0", "2.0", "3.0", "4.0", "5.0", "NOB", Null)
         id = CommitDraft(0, CStr(kind), "Summary test", "Synthetic", Null, Null, "", "Test", "", , values)
@@ -52,13 +52,20 @@ Public Function TestTraitSummary() As String
         Check InStr(Forms!frmEditor!txtPendingTraitSummary, "unsupported") > 0, "Invalid editor value averaged"
         Check InStr(Forms!frmEditor!txtSavedTraitSummary, Format$(3.8, "0.00")) > 0, "Invalid input corrupted saved summary"
         Call CheckpointEditor()
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
         Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
         Check InStr(Forms!frmEditor!txtPendingTraitSummary, "unsupported") > 0, "Recovered summary stale"
         Check InStr(Forms!frmEditor!txtSavedTraitSummary, Format$(3.8, "0.00")) > 0, "Recovery changed saved summary"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     TestTraitSummary = "PASS: " & checks & " trait summary assertions": Exit Function
 Failed:
     TestTraitSummary = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

@@ -1,5 +1,9 @@
 # Reporting senior details
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.14.0 adds Reporting senior details near the top of the editor for EVAL, CHIEFEVAL and FITREP. The panel contains name (18 characters), grade (5), designator (5), title (14) and UIC (5). These capacities match the inspected NAVFIT Reports fields ReportingSenior, RSGrade, RSDesig, RSTitle and RSUIC. Name parts, identifiers, address, phone and reporting-authority validation remain pending.
 
 Open a draft, choose Reporting senior details, edit the fields and Apply pending values and return. Apply transfers raw values to the pending editor and creates a recovery checkpoint; it does not commit a revision. Save draft commits them with the report. Cancel discards only panel changes. Panel edits are not checkpointed until Apply; the main editor timer captures applied values. An archived draft can be viewed but cannot apply changes.

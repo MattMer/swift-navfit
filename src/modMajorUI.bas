@@ -4,11 +4,11 @@ Option Explicit
 Public Function LoadMajorWorkbench() As Boolean
     Dim f As Access.Form, key As Variant, keys As String
     Set f = Forms!frmMajorWorkbench
-    f!lstReports.RowSource = "SELECT ReportID,Title,MemberName,FormKind FROM Report WHERE IsArchived=False ORDER BY MemberName,ReportID"
+    f!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,FormKind FROM Report WHERE IsArchived=False ORDER BY UXIdentity(OfficialName,MemberName),ReportID"
     f!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
     f!cboSnapshot.RowSource = "SELECT SnapshotID,'Group ' & GroupID & ' / ' & Format(AttestedAt,'yyyy-mm-dd hh:nn') FROM GroupSnapshot ORDER BY SnapshotID DESC"
     f!cboTemplate.RowSource = "SELECT TemplateID,Title FROM RouteTemplate WHERE IsArchived=False ORDER BY Title"
-    f!cboRun.RowSource = "SELECT RunID,'Report ' & ReportID & ' / ' & RunState FROM RouteRun ORDER BY RunID DESC"
+    f!cboRun.RowSource = "SELECT RunID,UXRouteLabel(RunID) FROM RouteRun ORDER BY RunID DESC"
     f!cboMeeting.RowSource = "SELECT SetID,Title FROM ComparisonSet ORDER BY SetID DESC"
     f!cboBatch.RowSource = "SELECT BatchID,BatchKind & ' / ' & BatchState & ' / ' & Left(BatchNote,60) FROM ChangeBatch ORDER BY BatchID DESC"
     f!cboProposal.RowSource = "SELECT ProposalID,'Report ' & ReportID & ' / ' & FieldKey & ' / ' & ProposalState FROM MeetingProposal ORDER BY ProposalID DESC"
@@ -125,11 +125,11 @@ Public Function MajorAction(ByVal action As String) As Boolean
         Case "ApproveRoute": ApproveSavedRoute Nz(f!cboRun, 0), Nz(f!txtNote, "")
         Case "ReopenApproval": ReopenApprovedReport WorkbenchOneReport(), Nz(f!txtNote, "")
         Case "ShowRoute"
-            f!lstDetails.RowSource = "SELECT StepOrdinal,AssigneeID,StepState,Instructions,DecisionNote,DecisionAt FROM RouteRunStep WHERE RunID=" & Nz(f!cboRun, 0) & " ORDER BY StepOrdinal"
+            f!lstDetails.RowSource = "SELECT StepOrdinal,DLookup('DisplayName','UserProfile','UserProfileID=' & AssigneeID) AS Reviewer,StepState,Instructions,DecisionNote,DecisionAt FROM RouteRunStep WHERE RunID=" & Nz(f!cboRun, 0) & " ORDER BY StepOrdinal"
             f!lblStatus.Caption = "Route current: " & RouteIsCurrent(Nz(f!cboRun, 0)): MajorAction = True: Exit Function
         Case "CreateMeeting": id = CreateComparisonSet(Nz(f!cboSnapshot, 0), Nz(f!txtTitle, "")): f!cboMeeting = id
         Case "ShowMeeting"
-            f!lstDetails.RowSource = "SELECT ReportID,RevisionID,SortOrdinal,MajorRevisionValue(RevisionID,'MemberName') AS Member,MajorRevisionValue(RevisionID,'Title') AS Title,MajorRevisionValue(RevisionID,'FormKind') AS Kind FROM ComparisonMember WHERE SetID=" & Nz(f!cboMeeting, 0) & " ORDER BY SortOrdinal"
+            f!lstDetails.RowSource = "SELECT ReportID,RevisionID,SortOrdinal,UXRevisionMemberLabel(RevisionID) AS Member,MajorRevisionValue(RevisionID,'Title') AS Title,MajorRevisionValue(RevisionID,'FormKind') AS Kind FROM ComparisonMember WHERE SetID=" & Nz(f!cboMeeting, 0) & " ORDER BY SortOrdinal"
         Case "ProposeField": id = ProposeMeetingField(Nz(f!cboMeeting, 0), WorkbenchOneReport(), Nz(f!cboField, ""), value): f!cboProposal = id
         Case "ApplyProposal": ApplyMeetingProposal Nz(f!cboProposal, 0)
         Case "OrderMeeting": SetMeetingOrder Nz(f!cboMeeting, 0), Nz(f!txtMeetingOrder, "")

@@ -27,24 +27,25 @@ Public Function TestUXDemo() As String
     stage = "overview": DoCmd.OpenForm "frmHome"
     Check UXDashboardRefresh(), "Demo dashboard failed"
     Check CLng(Forms!frmHome!uxReportCount.Caption) = 8 And CLng(Forms!frmHome!uxGroupCount.Caption) = 3, "Demo metrics incorrect"
-    Check CLng(Forms!frmHome!uxWorkCount.Caption) = 2 And Forms!frmHome!cmdRecovery.Enabled, "Work/recovery dashboard actions unavailable"
+    Check CLng(Forms!frmHome!uxWorkCount.Caption) = UXWorkCount() And Forms!frmHome!cmdRecovery.Enabled, "Work/recovery dashboard actions unavailable"
     stage = "report types"
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         id = DLookup("ReportID", "Report", "FormKind=" & QuoteSQL(CStr(kind)) & " AND IsArchived=False AND WorkflowState='Draft' AND ObservationStatus='Observed'")
         revision = CurrentRevision(id)
         DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
         Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
+        Check f.OnUnload = "[Event Procedure]", "Demo seeding removed native close protection"
         Check UXSelectSection(5), "Demo report section failed"
         Check s!labelOfficialComments.Caption Like IIf(kind = "EVAL", "43.*", IIf(kind = "CHIEFEVAL", "40.*", "41.*")), "Demo comments label incorrect"
         Check UXSaveEditor(), "Valid demo report could not save"
         Check CurrentRevision(id) = revision, "No-op demo save appended a revision"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call UXLeaveEditor("Discard")
     Next
     stage = "locked report": id = DLookup("ReportID", "Report", "WorkflowState='Approved'")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Call UXSelectSection(5)
     Check Not Forms!frmEditor!cmdSave.Enabled And Forms!frmEditor!uxFieldSurface.Form!txtOfficialComments.Locked, "Approved demo report is editable"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call UXLeaveEditor("Discard")
     stage = "groups": DoCmd.OpenForm "frmUXGroups"
     groupID = DLookup("GroupID", "SummaryGroup", "Paygrade='E5'")
     Forms!frmUXGroups!lstGroups = groupID

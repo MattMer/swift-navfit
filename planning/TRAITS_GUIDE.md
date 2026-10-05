@@ -1,5 +1,9 @@
 # Trait editor
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.10.0 adds manual marks for blocks 33–39 in EVAL, CHIEFEVAL and FITREP. Captions and general/selected-mark descriptions come from the supplied NAVFIT98A 2.2.0.332 catalogue, embedded in the app.
 
 Open a draft and scroll to Performance traits. Choose NOB or 1.0–5.0, or clear a mark. Blank remains distinct from NOB. Incomplete drafts can be saved; unsupported marks are rejected without partial saves. Changing a new draft's type with pending marks asks whether to clear them because meanings differ.

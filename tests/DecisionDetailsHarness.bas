@@ -79,7 +79,7 @@ Public Function TestDecisionDetails() As String
         Check DLookup("RetentionNo", "RecoveryDraft", "ReportID=" & id) = "Yes", "Apply did not checkpoint"
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "AssignmentRecommendationB") = "NEW DUTY B" And Stored(id, "RetentionNo") = "Yes" And Stored(id, "StatementNo") = "Yes", "Editor save lost features"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each index In Array(0, 1)
         values = Seed(): values(index) = String$(limits(index), "X")
@@ -131,15 +131,15 @@ Public Function TestDecisionDetails() As String
     Forms!frmDecisionDetails!txtAssignmentRecommendationA = "PENDING OVERLONG RECOMMENDATION"
     Forms!frmDecisionDetails!txtRetentionNo = "UNKNOWN RETENTION"
     Forms!frmDecisionDetails!txtStatementNo = "UNKNOWN STATEMENT"
-    Call ApplyDecisionDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyDecisionDetails(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtAssignmentRecommendationA = "PENDING OVERLONG RECOMMENDATION" And Forms!frmEditor!txtRetentionNo = "UNKNOWN RETENTION" And Forms!frmEditor!txtStatementNo = "UNKNOWN STATEMENT", "Raw recovery truncated"
     Check Stored(id, "AssignmentRecommendationA") = "" And IsNull(Stored(id, "StatementNo")), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenDecisionDetails()
     Check Not Forms!frmDecisionDetails!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelDecisionDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelDecisionDetails(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=16 WHERE RevisionID=" & first, dbFailOnError
@@ -161,5 +161,12 @@ End Function
 Public Function VerifyDecisionDetailsRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyDecisionDetailsRecovery = (Forms!frmEditor!txtAssignmentRecommendationA = "PENDING OVERLONG RECOMMENDATION" And Forms!frmEditor!txtRetentionNo = "UNKNOWN RETENTION" And Forms!frmEditor!txtStatementNo = "UNKNOWN STATEMENT")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

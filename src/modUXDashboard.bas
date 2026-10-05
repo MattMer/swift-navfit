@@ -1,18 +1,30 @@
 Attribute VB_Name = "modUXDashboard"
 Option Compare Binary
 Option Explicit
+Public Function UXIdentity(ByVal official As Variant, ByVal localName As Variant) As String
+    UXIdentity = Trim$(Nz(official, ""))
+    If Len(UXIdentity) = 0 Then UXIdentity = Trim$(Nz(localName, ""))
+    If Len(UXIdentity) = 0 Then UXIdentity = "Unnamed member"
+End Function
 Public Function UXMemberLabel(ByVal reportID As Long) As String
-    UXMemberLabel = Nz(DLookup("MemberName", "Report", "ReportID=" & reportID), "")
-    If Len(Trim$(UXMemberLabel)) = 0 Then UXMemberLabel = Nz(DLookup("OfficialName", "Report", "ReportID=" & reportID), "")
-    If Len(Trim$(UXMemberLabel)) = 0 Then UXMemberLabel = "Unnamed member"
+    UXMemberLabel = UXIdentity(DLookup("OfficialName", "Report", "ReportID=" & reportID), DLookup("MemberName", "Report", "ReportID=" & reportID))
+End Function
+Public Function UXRevisionMemberLabel(ByVal revisionID As Long) As String
+    UXRevisionMemberLabel = UXIdentity(MajorRevisionValue(revisionID, "OfficialName"), MajorRevisionValue(revisionID, "MemberName"))
 End Function
 Public Function UXReportState(ByVal reportID As Long) As String
-    Dim revision As Long
+    Dim revision As Long, routes As DAO.Recordset
     If Nz(DLookup("IsArchived", "Report", "ReportID=" & reportID), False) Then UXReportState = "Archived": Exit Function
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Approved" Then UXReportState = "Local approval": Exit Function
     revision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending' AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function
     If DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted') AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function
+    Set routes = CurrentDb.OpenRecordset("SELECT RunID FROM RouteRun WHERE ReportID=" & reportID & " AND RunState In ('Pending','Accepted')", dbOpenSnapshot)
+    Do While Not routes.EOF
+        If Not RouteIsCurrent(routes!RunID) Then routes.Close: UXReportState = "Review needs restart": Exit Function
+        routes.MoveNext
+    Loop
+    routes.Close
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0 Or DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState='Pending'") > 0 Then UXReportState = "In review": Exit Function
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Returned' AND RevisionID=" & revision) > 0 Then UXReportState = "Returned": Exit Function
     UXReportState = "Draft"
@@ -72,6 +84,7 @@ End Sub
 Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     Dim f As Access.Form, c As Access.Control, id As Long, grade As String, average As Variant, psg As Object, name As Variant, i As Long, modes As Variant
     Set f = Forms!frmMajorWorkbench
+    UXRestoreViewport f
     If Not UXHasControl(f, "uxGroupTitle") Then Exit Function
     id = Nz(f!cboGroup, 0)
     If id = 0 Then f.ScrollBars = 2: f.Section(acDetail).Height = 12500: Exit Function
@@ -85,21 +98,17 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     f!lblStatus.Visible = True: f!uxBack.Visible = True
     If mode = "Members" Or mode = "Review" Then
         GroupPosition "lstReports", 2850, 3000, 10450, 2900
-        f!lstReports.RowSource = "SELECT r.ReportID,r.MemberName AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY r.MemberName"
+        f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
         f!lstReports.ColumnCount = 5: f!lstReports.ColumnWidths = "0;3800;1500;2200;2800": f!lstReports.Requery
         f!uxOpenGroupReport.Visible = True
+        If mode = "Review" And UXHasControl(f, "uxFocusedReview") Then f!uxFocusedReview.Visible = True
         If mode = "Members" Then f!uxMembers.Visible = True: f!uxBulk.Visible = True: f!uxRSCA.Visible = True
     ElseIf mode = "Comparison" Then
         f!uxComparison.Visible = True
         f!lblStatus.Caption = "Compare saved trait marks and stage proposed edits. A comparison baseline is captured automatically."
     ElseIf mode = "Defaults" Then
         f!cboScope = "Group"
-        GroupPosition "cboField", 2850, 3000, 4800, 450
-        GroupPosition "txtValue", 8100, 3000, 5200, 450
-        GroupPosition "chkNull", 2850, 3650, 320, 320
-        GroupPosition "cmdSaveDefault", 2850, 4200, 4800, 500
-        GroupPosition "cmdSuggestDefault", 8100, 4200, 5200, 500
-        GroupPosition "txtDetail", 2850, 4900, 10450, 1700
+        GroupPosition "uxDefaultsEditor", 2850, 3000, 10450, 550
         f!uxBulk.Visible = True
         f!lblStatus.Caption = "Defaults are suggestions. Edit shared report blocks to preview and apply changes to members."
     ElseIf mode = "History" Then
@@ -112,23 +121,32 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     End If
     modes = Array("Members", "Defaults", "Review", "Comparison", "History")
     For i = 0 To 4
+        f.Controls("uxMode" & i).Visible = True
         f.Controls("uxMode" & i).FontBold = (modes(i) = mode)
     Next
+    UXResizeWorkspace f.Name
+    UXGroupLocks f, id
     UXFocusedGroupMode = True
 End Function
 Public Function UXComparisonPage(ByVal page As String) As Boolean
     Dim f As Access.Form, c As Access.Control, preview As Boolean
-    Set f = Forms!frmUXComparison: preview = (page = "Preview")
+    Set f = Forms!frmUXComparison: UXRestoreViewport f: preview = (page = "Preview")
     For Each c In f.Controls
         If c.Name Like "cboTrait##" Or c.Name Like "lblTrait##" Or c.Name = "lstTraits" Or c.Name = "uxMember" Or c.Name = "uxITA" Or c.Name = "cboPromotion" Or c.Name = "cmdStage" Then c.Visible = Not preview
     Next
+    f!uxTraitGrid.Visible = Not preview: f!uxGridAverage.Visible = Not preview: f!uxProposalDetail.Visible = preview
+    For Each c In f.Controls
+        If c.Name Like "cboTrait##" Or c.Name Like "lblTrait##" Or c.Name = "lstTraits" Or c.Name = "uxMember" Or c.Name = "uxITA" Or c.Name = "cboPromotion" Or c.Name = "cmdStage" Then c.Visible = False
+    Next
     f!lstProposals.Visible = preview: f!cmdApply.Visible = preview
     f!uxMarksPage.FontBold = Not preview: f!uxPreviewPage.FontBold = preview
+    UXGridViewport
     UXComparisonPage = True
 End Function
 Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     Dim f As Access.Form, c As Access.Control, names As Variant, name As Variant
     Set f = Forms!frmMyWork
+    UXRestoreViewport f
     If Not UXHasControl(f, "uxWorkTab0") Then Exit Function
     f!uxWorkTab0.SetFocus
     For Each c In f.Controls
@@ -137,23 +155,26 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     Select Case mode
         Case "Contributors": names = Array("cboContributor", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
         Case "Assign": names = Array("uxAssignReport", "uxAssignCaption", "lblAssignment", "lblReviewer", "cboReviewer", "lblDue", "txtDue", "lblNotes", "txtNotes", "cmdAssign")
-        Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstTasks", "txtHistory", "lblNotes", "txtNotes", "cmdAccept", "cmdReturn", "cmdCancel", "cmdDraft")
+        Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstWork", "uxWorkStatus", "cmdOpenWork", "txtHistory", "lblNotes", "txtNotes", "cmdAccept", "cmdReturn", "cmdCancel", "cmdDraft")
     End Select
     For Each name In names: f.Controls(CStr(name)).Visible = True: Next
     f!lblNotes.Caption = IIf(mode = "Assign", "Assignment instructions", "Decision note (required when returning a report)")
     If mode = "Assign" Then
-        f!uxAssignReport.RowSource = "SELECT ReportID,MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No period') AS Description FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY MemberName"
+        f!uxAssignReport.RowSource = "SELECT ReportID,UXIdentity(OfficialName,MemberName) & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No period') AS Description FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY UXIdentity(OfficialName,MemberName)"
         f!uxAssignReport.Requery
     End If
     f!uxWorkTab0.FontBold = (mode = "Assignments"): f!uxWorkTab1.FontBold = (mode = "Assign"): f!uxWorkTab2.FontBold = (mode = "Contributors")
+    UXResizeWorkspace f.Name
     UXMyWorkMode = True
+    If mode = "Assignments" Then Call UXLoadWorkQueue
+    Call UXWorkLayout
 End Function
 Public Function UXChooseAssignmentReport() As Boolean
     Dim id As Long
     With Forms!frmMyWork
         id = Nz(!uxAssignReport, 0): !txtReportID = id
         If id > 0 Then !txtExpectedRevision = CurrentRevision(id) Else !txtExpectedRevision = 0
-        !lblAssignment.Caption = "This assignment will use the currently saved revision of " & Nz(DLookup("MemberName", "Report", "ReportID=" & id), "the selected report") & "."
+        !lblAssignment.Caption = "This assignment will use the currently saved revision of " & UXMemberLabel(id) & "."
     End With
     UXChooseAssignmentReport = True
 End Function
@@ -170,11 +191,11 @@ Public Function UXDashboardRefresh() As Boolean
     pid = Nz(DLookup("ActiveProfileID", "Workspace"), 0)
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
     f!uxGroupCount.Caption = CStr(DCount("*", "SummaryGroup", "IsArchived=False"))
-    f!uxWorkCount.Caption = CStr(DCount("*", "ReviewTask", "AssignedTo=" & pid & " AND TaskState='Pending'"))
+    f!uxWorkCount.Caption = CStr(UXWorkCount())
     recoveryCount = DCount("*", "RecoveryDraft", "AuthorProfileID=" & pid)
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
     f!cmdRecovery.Enabled = (recoveryCount > 0)
-    f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,MemberName AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
+    f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
     f!uxRecentReports.Requery
     f!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
     UXDashboardRefresh = True

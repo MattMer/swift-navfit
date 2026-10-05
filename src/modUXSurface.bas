@@ -70,8 +70,13 @@ Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
     Call ShowTraitGuidance(block)
     Surface()!uxTraitGuidance = Forms!frmEditor!txtTraitGuidance
     With Surface()!uxTraitGuidance
-        .Left = Surface().Controls("cboTrait" & block).Left + 1450
-        .Width = Surface().Width - .Left - 300: .Top = 200
+        If Surface().Width < 7000 Then
+            .Left = 200: .Width = Surface().Width - 500
+            .Top = Surface().Controls("cboTrait39").Top + 700
+        Else
+            .Left = Surface().Controls("cboTrait" & block).Left + 1450
+            .Width = Surface().Width - .Left - 300: .Top = 200
+        End If
         .Height = 2000
     End With
     UXSurfaceTrait = True
@@ -151,7 +156,7 @@ Public Function UXSurfaceRefresh() As Boolean
 Finished:
     surfaceBusy = False
 End Function
-Private Function UXLayoutBand(ByVal key As String) As String
+Public Function UXLayoutBand(ByVal key As String) As String
     Select Case key
         Case "MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix": UXLayoutBand = "name-parts"
         Case "OfficialName", "RankRate", "Designator", "MemberSSN": UXLayoutBand = "member"
@@ -166,17 +171,18 @@ Private Function UXLayoutBand(ByVal key As String) As String
         Case Else: UXLayoutBand = "details"
     End Select
 End Function
-Private Function UXLayoutKeys(ByVal section As Long, ByVal kind As String) As Variant
+Public Function UXLayoutKeys(ByVal section As Long, ByVal kind As String) As Variant
     If section = 0 Then
         UXLayoutKeys = Array("MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix", "OfficialName", "RankRate", "Designator", "MemberSSN", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "UnitUIC", "ShipStation", "PromotionStatus", "DateReported", "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "PeriodStart", "PeriodEnd", "ObservationStatus", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "ReadinessDate", "ReadinessSummary", "ReadinessDetail", "BilletSubcategory")
     Else
         UXLayoutKeys = UXSectionKeys(section, kind)
     End If
 End Function
-Private Function UXLayoutWidth(ByVal key As String, ByVal available As Long) As Long
+Public Function UXLayoutWidth(ByVal key As String, ByVal available As Long, Optional ByVal kind As String = "") As Long
     Dim result As Long
+    If Len(kind) = 0 Then kind = Nz(Forms!frmEditor!cboKind, "EVAL")
     If UXFieldFlag(key) Then
-        result = 550 + Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100
+        result = 550 + Len(UXFieldCaption(key, kind)) * 100
     Else
         Select Case key
             Case "OfficialName", "ReportingSeniorName", "CounselorName", "ShipStation": result = available \ 2
@@ -192,7 +198,7 @@ Private Function UXLayoutWidth(ByVal key As String, ByVal available As Long) As 
         End Select
     End If
     If Not UXFieldMultiline(key) And Not IsTraitKey(key) Then
-        If result < Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100 Then result = Len(UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "EVAL"))) * 100
+        If result < Len(UXFieldCaption(key, kind)) * 100 Then result = Len(UXFieldCaption(key, kind)) * 100
     End If
     If result > available Then result = available
     UXLayoutWidth = result
@@ -207,6 +213,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     columns = IIf(usableWidth >= 14000, 3, 2)
     If section = 4 Then columns = 2
     cellWidth = (usableWidth - 300) \ 2
+    If section = 4 And usableWidth < 6500 Then cellWidth = usableWidth
     If cellWidth > 6500 Then cellWidth = 6500
     f!uxFocusAnchor.SetFocus
     For Each c In f.Controls
@@ -268,6 +275,10 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
         f!uxTraitGuidance.Left = 200 + cellWidth + 300
         f!uxTraitGuidance.Width = cellWidth
         UXSurfaceTrait 33
+        If usableWidth < 6500 Then
+            f!uxTraitGuidance.Left = 200: f!uxTraitGuidance.Top = top
+            f!uxTraitGuidance.Width = usableWidth: top = top + 2200
+        End If
     End If
     If section = 5 Then
         f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Visible = True
@@ -284,19 +295,39 @@ Failed:
 End Function
 
 Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
-    Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant
+    Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant, active As Access.Control, caret As Long, selection As Long, compact As Boolean, surfaceTop As Long
     If layoutBusy Or Not UXSurfaceAvailable() Then Exit Function
     On Error GoTo Failed
     layoutBusy = True: Set f = Forms!frmEditor
+    On Error Resume Next
+    Set active = Screen.ActiveControl
+    caret = active.SelStart: selection = active.SelLength
+    On Error GoTo Failed
     UXFlushSurface
     width = f.InsideWidth: height = f.InsideHeight
     If viewportWidth > 0 Then width = viewportWidth
     If viewportHeight > 0 Then height = viewportHeight
-    If width < 12000 Or height < 7500 Then GoTo Finished
+    If width < 4000 Or height < 2000 Then GoTo Finished
+    compact = (width < 12000 Or height < 7500)
+    UXNavigationLayout f, compact, width
+    f!uxCompactSection.Visible = compact: f!uxCompactSection = surfaceSection
+    If compact Then
+        UXCompactEditorGeometry f, width, height
+        GoTo Render
+    End If
+    f.ScrollBars = 0
+    f!uxContext.Left = 2850: f!uxContext.Top = 300
+    f!uxReport.Left = 2850: f!uxReport.Top = 850: f!uxReport.Width = width - 5900: f!uxReport.Height = 650
+    f!cboKind.Left = width - 2850: f!cboKind.Top = 1000: f!cboKind.Width = 2500
+    f!uxTypeCaption.Left = width - 4650: f!uxTypeCaption.Top = 650: f!uxTypeCaption.Width = 4300
+    f!uxITA.Left = 2850: f!uxITA.Top = 1800: f!uxITA.Height = 400
+    f!uxSGA.Left = 2850: f!uxSGA.Top = 2200: f!uxSGA.Height = 400
+    f!uxGroup.Top = 2200
+    f!uxAlias.Visible = True: f!uxAlias.Left = 2850: f!uxAlias.Top = 1500: f!uxAlias.Width = width - 3200: f!uxAlias.Height = 280
     contentLeft = 5900: contentWidth = width - contentLeft - 350: footer = height - 1300
     For i = 0 To 9
         With f.Controls("uxSection" & i)
-            .Left = 2800: .Top = 3250 + i * 430: .Width = 2800: .Height = 400
+            .Visible = True: .Left = 2800: .Top = 3250 + i * 430: .Width = 2800: .Height = 400
         End With
     Next
     f!uxRail.Height = height - 100
@@ -304,34 +335,57 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!uxITA.Width = width - 3200
     f!uxSGA.Width = width - 8000
     f!uxGroup.Left = width - 4350: f!uxGroup.Width = 4000: f!uxGroup.Height = 450
-    f!uxLocked.Left = 2850: f!uxLocked.Top = 2350: f!uxLocked.Width = width - 3200: f!uxLocked.Height = 400
+    f!uxLocked.Left = contentLeft: f!uxLocked.Top = 2650: f!uxLocked.Width = contentWidth: f!uxLocked.Height = 400
     f!uxSection.Left = contentLeft: f!uxSection.Top = 2800: f!uxSection.Width = contentWidth
+    If Len(f!uxLocked.Caption) > 0 Then f!uxSection.Top = 3100
     f!uxError.Left = contentLeft: f!uxError.Top = 3250: f!uxError.Width = contentWidth
     f!uxErrorList.Left = contentLeft: f!uxErrorList.Top = 3550: f!uxErrorList.Width = contentWidth
     f!uxFieldSurface.Left = contentLeft
     f!uxFieldSurface.Top = IIf(surfaceSection = 1, 4100, IIf(f!uxErrorList.Visible, 4100, 3350))
+    If Len(f!uxLocked.Caption) > 0 Then f!uxFieldSurface.Top = f!uxFieldSurface.Top + 400
     f!uxFieldSurface.Width = contentWidth
     f!uxFieldSurface.Height = footer - f!uxFieldSurface.Top - 550
     f!lblSaved.Left = contentLeft: f!lblSaved.Top = footer - 400: f!lblSaved.Width = contentWidth
     f!cmdClose.Left = contentLeft: f!cmdClose.Top = footer: f!cmdClose.Height = 500
     f!cmdSave.Left = width - 2850: f!cmdSave.Top = footer: f!cmdSave.Height = 500
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 5916729
     f!uxDirty.Left = contentLeft + 2600: f!uxDirty.Top = footer: f!uxDirty.Width = contentWidth - 5500
     f!lblRecovery.Left = contentLeft: f!lblRecovery.Top = footer + 650: f!lblRecovery.Width = contentWidth
     If surfaceSection = 8 Then
-        actions = Array("cmdRoute", "cmdComments", "cmdChecklist")
-        For i = 0 To 2
+        actions = Array("cmdRoute", "cmdComments", "cmdChecklist", "cmdCalculations")
+        For i = 0 To UBound(actions)
             With f.Controls(actions(i))
-                .Left = contentLeft + i * 2500: .Top = 3350: .Width = 2300: .Height = 420
+                .Left = contentLeft + i * (contentWidth \ 4): .Top = 3350 + IIf(Len(f!uxLocked.Caption) > 0, 400, 0): .Width = contentWidth \ 4 - 200: .Height = 420
             End With
         Next
     ElseIf surfaceSection = 9 Then
         f!cmdCompare.Left = contentLeft: f!cmdCompare.Top = 3350: f!cmdCompare.Width = 2300: f!cmdCompare.Height = 420
         f!cmdRestore.Left = contentLeft + 2500: f!cmdRestore.Top = 3350: f!cmdRestore.Width = 2300: f!cmdRestore.Height = 420
         f!lstRevisions.Left = contentLeft: f!lstRevisions.Top = 3950: f!lstRevisions.Width = contentWidth: f!lstRevisions.Height = footer - 4500
+        If Len(f!uxLocked.Caption) > 0 Then
+            f!cmdCompare.Top = f!cmdCompare.Top + 400: f!cmdRestore.Top = f!cmdRestore.Top + 400
+            f!lstRevisions.Top = f!lstRevisions.Top + 400: f!lstRevisions.Height = f!lstRevisions.Height - 400
+        End If
     End If
-    f!uxSeniorRecord.Left = contentLeft: f!uxSeniorRecord.Top = 3500
-    f!uxUseSenior.Left = contentLeft + 5000: f!uxUseSenior.Top = 3500
-    UXSurfaceSection surfaceSection, Not f!cmdSave.Enabled
+    f!uxSeniorRecord.Left = contentLeft: f!uxSeniorRecord.Top = 3500: f!uxSeniorRecord.Width = contentWidth - 3300
+    f!uxUseSenior.Left = width - 3400: f!uxUseSenior.Top = 3500: f!uxUseSenior.Width = 3050
+    f.Width = width - 100
+    f.Section(acDetail).Height = height - 100
+Render:
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 5916729
+    If Not UXSurfaceSection(surfaceSection, Not f!cmdSave.Enabled) Then GoTo Finished
+    'Reflow hides controls temporarily. Restore the original field and caret,
+    'including raw text still being typed, without committing a revision.
+    On Error Resume Next
+    If Not active Is Nothing Then
+        If active.Visible And active.Enabled Then
+            If active.Parent.Name = "frmUXEditorFields" Then f!uxFieldSurface.SetFocus
+            active.SetFocus
+            active.SelStart = caret: active.SelLength = selection
+            If active.Parent.Name = "frmUXEditorFields" And surfaceSection = 4 Then UXSurfaceTrait CLng(Mid$(active.Name, 9))
+        End If
+    End If
+    On Error GoTo Failed
     UXResizeEditor = True
 Finished:
     layoutBusy = False
@@ -340,3 +394,67 @@ Failed:
     f!uxError.Caption = "Layout could not resize: " & Err.Description
     Resume Finished
 End Function
+
+Private Sub UXEditorPosition(ByVal f As Access.Form, ByVal name As String, ByVal x As Long, ByVal y As Long, ByVal width As Long, ByVal height As Long)
+    With f.Controls(name)
+        .Left = x: .Top = y: .Width = width: .Height = height
+    End With
+End Sub
+Private Sub UXCompactEditorGeometry(ByVal f As Access.Form, ByVal width As Long, ByVal height As Long)
+    Dim i As Long, available As Long, footer As Long, top As Long, effectiveHeight As Long, actions As Variant
+    available = width - 600: effectiveHeight = height
+    If effectiveHeight < 6000 Then effectiveHeight = 6000
+    f.ScrollBars = IIf(height < 6000, 2, 0)
+    f!uxCompactNav.SetFocus
+    For i = 0 To 9: f.Controls("uxSection" & i).Visible = False: Next
+    UXEditorPosition f, "uxContext", 2950, 150, width - 3300, 500
+    UXEditorPosition f, "uxReport", 250, 700, available - 2500, 650
+    UXEditorPosition f, "uxTypeCaption", width - 2600, 650, 2250, 300
+    UXEditorPosition f, "cboKind", width - 2600, 1000, 2250, 400
+    UXEditorPosition f, "uxITA", 250, 1400, available, 400
+    UXEditorPosition f, "uxSGA", 250, 1820, available - 2900, 650
+    UXEditorPosition f, "uxGroup", width - 3100, 1820, 2750, 450
+    UXEditorPosition f, "uxLocked", 250, 2470, available, 400
+    UXEditorPosition f, "uxAlias", 250, 2880, available, 350
+    UXEditorPosition f, "uxCompactSection", 250, 3250, available, 420
+    UXEditorPosition f, "uxSection", 250, 3710, available, 420
+    'Avoid a blank alias/lock row while retaining real status text.
+    top = 2470
+    If Len(f!uxLocked.Caption) > 0 Then f!uxLocked.Top = top: top = top + 420
+    f!uxAlias.Top = top
+    If Len(f!uxAlias.Caption) > 0 Then top = top + 350
+    f!uxCompactSection.Top = top: top = top + 450
+    f!uxSection.Top = top: top = top + 450
+    UXEditorPosition f, "uxError", 250, top, available, 300
+    If Len(f!uxError.Caption) > 0 Then top = top + 330
+    UXEditorPosition f, "uxErrorList", 250, top, available, 430
+    If f!uxErrorList.Visible Then top = top + 460
+    If surfaceSection = 1 Then
+        UXEditorPosition f, "uxSeniorRecord", 250, top, available - 2300, 420
+        UXEditorPosition f, "uxUseSenior", width - 2450, top, 2100, 420
+        top = top + 480
+    End If
+    'Grow the scrollable document when status/error rows leave too little space.
+    If effectiveHeight < top + 2400 Then effectiveHeight = top + 2400: f.ScrollBars = 2
+    footer = effectiveHeight - 1150
+    UXEditorPosition f, "uxFieldSurface", 250, top, available, footer - top - 450
+    UXEditorPosition f, "lblSaved", 250, footer - 400, available, 300
+    UXEditorPosition f, "cmdClose", 250, footer, 2300, 500
+    UXEditorPosition f, "cmdSave", width - 2650, footer, 2300, 500
+    If available >= 5200 Then
+        UXEditorPosition f, "uxDirty", 2700, footer, available - 5000, 500
+    Else
+        UXEditorPosition f, "cmdClose", 250, footer, available \ 2 - 100, 500
+        UXEditorPosition f, "cmdSave", 350 + available \ 2, footer, available \ 2 - 100, 500
+        UXEditorPosition f, "uxDirty", 250, footer + 520, available, 300
+    End If
+    UXEditorPosition f, "lblRecovery", 250, footer + 550, available, 500
+    If surfaceSection = 8 Or surfaceSection = 9 Then
+        If surfaceSection = 8 Then actions = Array("cmdRoute", "cmdComments", "cmdChecklist", "cmdCalculations") Else actions = Array("cmdCompare", "cmdRestore")
+        For i = 0 To UBound(actions)
+            UXEditorPosition f, CStr(actions(i)), 250 + i * (available \ (UBound(actions) + 1)), top, available \ (UBound(actions) + 1) - 150, 500
+        Next
+        If surfaceSection = 9 Then UXEditorPosition f, "lstRevisions", 250, top + 600, available, footer - top - 1050
+    End If
+    f.Width = width - 100: f.Section(acDetail).Height = effectiveHeight - 100
+End Sub

@@ -340,6 +340,7 @@ Public Function EditSelected(Optional ByVal createNew As Boolean = False) As Boo
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         MsgBox "Close the current editor before opening another report.", vbInformation: Exit Function
     End If
+    Call UXCaptureReportList
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     EditSelected = True
 End Function
@@ -410,10 +411,7 @@ Failed:
 End Function
 
 Public Function CloseEditor() As Boolean
-    If MsgBox("Close the editor? Unsaved entries will be discarded. Use Save draft first to keep them.", vbOKCancel + vbQuestion) = vbOK Then
-        Call DiscardEditorCheckpoint()
-        DoCmd.Close acForm, "frmEditor", acSaveNo: CloseEditor = True
-    End If
+    CloseEditor = UXLeaveEditor()
 End Function
 
 Public Function RestoreSelected() As Boolean

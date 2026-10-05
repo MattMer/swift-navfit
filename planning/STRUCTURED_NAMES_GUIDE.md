@@ -1,5 +1,9 @@
 # Structured member, reporting-senior and counselor names
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.20.0, schema 19 adds three features for EVAL, CHIEFEVAL and FITREP. Open **Structured names** in the editor. The panel groups member, reporting-senior and counselor parts separately.
 
 | Feature | Entry fields and capacities | Observed NAVFIT fields |

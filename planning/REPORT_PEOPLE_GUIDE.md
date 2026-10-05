@@ -1,5 +1,9 @@
 # Reporting-senior identifiers, contact details and raters
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.19.0, schema 18 adds three features for EVAL, CHIEFEVAL and FITREP. Open **Senior contact and raters** in the editor. The panel has three labeled sections and scrolls to the Apply and Cancel controls.
 
 | Feature | Entry fields and limits | Observed NAVFIT source |

@@ -1,5 +1,9 @@
 # Report occasions, report categories and duty descriptions
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.15.0 adds three panels at the top of the draft editor for EVAL, CHIEFEVAL and FITREP.
 
 ## Report occasions

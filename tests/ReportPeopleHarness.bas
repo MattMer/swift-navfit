@@ -81,7 +81,7 @@ Public Function TestReportPeople() As String
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "ReportingSeniorSSN") = "000123458" And Stored(id, "ReportingSeniorAddress1") = "NEW ADDRESS" And Stored(id, "RaterName") = "NEW RATER", "Editor save lost features"
         Check IsNull(Stored(id, "MemberSSN")) And IsNull(Stored(id, "ReportingSeniorName")), "People details inferred other identities"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     For Each index In Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11)
         values = Seed(): If index < 2 Then values(index) = String$(limits(index), "0") Else values(index) = String$(limits(index), "X")
@@ -125,15 +125,15 @@ Public Function TestReportPeople() As String
     Forms!frmReportPeople!txtReportingSeniorSSN = "PENDING INVALID ID"
     Forms!frmReportPeople!txtReportingSeniorAddress1 = String$(45, "X")
     Forms!frmReportPeople!txtSeniorRaterDate = "PENDING INVALID DATE"
-    Call ApplyReportPeople(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyReportPeople(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtReportingSeniorSSN = "PENDING INVALID ID" And Forms!frmEditor!txtReportingSeniorAddress1 = String$(45, "X") And Forms!frmEditor!txtSeniorRaterDate = "PENDING INVALID DATE", "Raw recovery truncated"
     Check Stored(id, "ReportingSeniorSSN") = "0" And Stored(id, "SeniorRaterDate") = "2026-10-03", "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenReportPeople()
     Check Not Forms!frmReportPeople!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelReportPeople(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelReportPeople(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=17 WHERE RevisionID=" & first, dbFailOnError
@@ -155,5 +155,12 @@ End Function
 Public Function VerifyReportPeopleRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyReportPeopleRecovery = (Forms!frmEditor!txtReportingSeniorSSN = "PENDING INVALID ID" And Forms!frmEditor!txtReportingSeniorAddress1 = String$(45, "X") And Forms!frmEditor!txtSeniorRaterDate = "PENDING INVALID DATE")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

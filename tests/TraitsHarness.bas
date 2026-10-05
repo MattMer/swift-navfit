@@ -75,7 +75,7 @@ Public Function TestTraits() As String
         Check Stored(id, "Trait39") = "4.0", "Editor trait save lost value"
         Check OpenDraftChecklist(id), "Trait checklist failed"
         Check HasFinding("TRAIT_NOB") And Not HasFinding("Trait39"), "NOB review or populated mark incorrect"
-        Call CloseDraftChecklist(): DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call CloseDraftChecklist(): Call FixtureCloseEditor()
     Next
     before = DCount("*", "ReportRevision")
     For Each bad In Array("4.5", "0.0", "nob", "5", "6.0", vbTab, 4)
@@ -94,11 +94,11 @@ Public Function TestTraits() As String
     Check CheckpointEditor(), "Trait checkpoint failed"
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Check DLookup("Trait33", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "PENDING INVALID", "Pending mark truncated"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(recovery), "Trait recovery failed"
     Check Forms!frmEditor!cboTrait33 = "PENDING INVALID" And Forms!frmEditor!cboTrait39 = "NOB", "Recovered marks changed"
     Check Stored(id, "Trait33") = "NOB", "Recovery auto-saved invalid mark"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, "FITREP", values), "Archived trait edit accepted"
     Call ArchiveDraft(id, False)
     'Simulate an actual schema-9 revision, preserving its other 12 snapshot fields.
@@ -125,5 +125,12 @@ Public Function VerifyTraitRecovery() As Boolean
     recovery = DMax("RecoveryDraftID", "RecoveryDraft")
     Call RestoreRecoveryDraft(recovery)
     VerifyTraitRecovery = (Forms!frmEditor!cboTrait33 = "PENDING INVALID" And Forms!frmEditor!cboTrait39 = "NOB")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

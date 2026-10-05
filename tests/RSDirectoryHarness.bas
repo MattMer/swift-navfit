@@ -81,7 +81,11 @@ Public Function TestRSDirectory() As String
     stage = "group calculator UI"
     Check RSOpenGroupCalculator(), "Group calculator failed to open"
     Check Forms!frmUXGroupRSCA!cboSenior = senior And Forms!frmUXGroupRSCA!cboBaseline = baseline, "Saved baseline selection not restored"
+    Check InStr(Forms!frmUXGroupRSCA!lblStatus.Caption, "selected reporting senior SSN") > 0, "Initial unavailable reason missing"
+    Check InStr(Forms!frmUXGroupRSCA!txtCalculationContext, "Manual historical baseline") > 0, "Historical baseline source missing"
     Check RSStageGroupSenior(), "Group senior details failed to stage"
+    Check Forms!frmUXBulk!uxBlocks.Form!valueReportingSeniorName = "O'NEIL A", "Visible shared senior name not refreshed"
+    Check Forms!frmUXBulk!uxBlocks.Form!stateReportingSeniorName.Caption = "Change staged", "Visible shared senior stage state missing"
     Check UXPreviewBulk(), "Group senior detail preview failed"
     Check UXApplyBulk(), "Group senior detail atomic apply failed"
     Set saved = SavedFields(reportID)

@@ -1,5 +1,9 @@
 # Report review comments
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.7.0 adds report review threads, replies and resolution history. Open a saved draft, scroll below its narrative section and choose **Review comments on saved draft**.
 
 Write a comment and choose **Post new thread**. The thread references the latest saved revision at posting time, excluding pending editor values. Select a thread to read its full text and replies, then use **Post reply**, **Resolve thread** or **Reopen thread**. Replies retain the original thread's report and revision reference even after newer report revisions exist. Resolve/reopen actions append attributed events; repeating the same action does not create another event. Resolved threads must be reopened before adding replies.

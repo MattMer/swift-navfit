@@ -140,7 +140,7 @@ Public Function RSLoadGroupCalculator() As Boolean
     RSGroupSeniorChanged
     f!cboBaseline = MajorScalar("SELECT BaselineID FROM GroupRSCABaseline WHERE GroupID=" & id)
     f!chkExcludes = Nz(MajorScalar("SELECT ExcludesGroup FROM GroupRSCABaseline WHERE GroupID=" & id), False)
-    RSShowGroupCalculation: RSLoadGroupCalculator = True
+    Call RSShowGroupCalculation: RSLoadGroupCalculator = True
 End Function
 Public Function RSGroupSeniorChanged() As Boolean
     Dim f As Access.Form, grade As String
@@ -155,7 +155,7 @@ Public Function RSSaveGroupCalculation() As Boolean
     With Forms!frmUXGroupRSCA
         RSSetGroupBaseline CLng(!txtGroupID), Nz(!cboSenior, 0), Nz(!cboBaseline, 0), Nz(!chkExcludes, False)
     End With
-    RSShowGroupCalculation: RSSaveGroupCalculation = True: Exit Function
+    Call RSShowGroupCalculation: RSSaveGroupCalculation = True: Exit Function
 Failed:
     Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description
 End Function
@@ -168,6 +168,7 @@ Public Function RSShowGroupCalculation() As Boolean
         Else
             !lblCalculation.Caption = "PSG RSCA (saved group): " & Format$(result("Value"), "0.00") & IIf(result("Estimated"), " - estimate", "")
         End If
+        !txtCalculationContext = UXGroupCalculationText(CLng(!txtGroupID))
         !lblStatus.Caption = result("Reason") & IIf(result("Partial"), ". Some traits are blank/NOB; only graded numeric traits are included.", "") & IIf(result("Estimated"), ". Enter the exact historical trait sum to calculate from exact totals.", "")
     End With
     RSShowGroupCalculation = True

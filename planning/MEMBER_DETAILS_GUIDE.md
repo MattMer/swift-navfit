@@ -1,5 +1,9 @@
 # Member identifiers, component selections and date reported
 
+> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
+> [current state](CURRENT_STATE.md). This guide retains service details and
+> earlier verification history; legacy screen instructions may differ.
+
 Swift NAVFIT 0.16.0 adds three features in a Member details panel for all three report types.
 
 ## Member identifiers

@@ -79,7 +79,7 @@ Public Function TestMemberDetails() As String
         Check DLookup("DateReported", "RecoveryDraft", "ReportID=" & id) = "2026-10-03", "Apply failed to checkpoint"
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "DateReported") = "2026-10-03", "Editor save lost date"
-        DoCmd.Close acForm, "frmEditor", acSaveNo
+        Call FixtureCloseEditor()
     Next
     before = DCount("*", "ReportRevision")
     For Each bad In Array("123-45-6789", "ABCDEFGHI", "1234567890", " 123", 123)
@@ -106,15 +106,15 @@ Public Function TestMemberDetails() As String
     Forms!frmMemberDetails!txtMemberSSN = "PENDING INVALID IDENTIFIER"
     Forms!frmMemberDetails!txtComponentActive = "PENDING INVALID COMPONENT"
     Forms!frmMemberDetails!txtDateReported = "PENDING INVALID DATE"
-    Call ApplyMemberDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call ApplyMemberDetails(): Call FixtureCloseEditor()
     Check RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft")), "Recovery failed"
     Check Forms!frmEditor!txtMemberSSN = "PENDING INVALID IDENTIFIER" And Forms!frmEditor!txtComponentActive = "PENDING INVALID COMPONENT" And Forms!frmEditor!txtDateReported = "PENDING INVALID DATE", "Raw recovery truncated"
     Check Stored(id, "MemberSSN") = "001" And IsNull(Stored(id, "DateReported")), "Recovery auto committed"
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, Seed()), "Archive guard absent"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenMemberDetails()
     Check Not Forms!frmMemberDetails!cmdApply.Enabled, "Archived panel can apply"
-    Call CancelMemberDetails(): DoCmd.Close acForm, "frmEditor", acSaveNo: Call ArchiveDraft(id, False)
+    Call CancelMemberDetails(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=14 WHERE RevisionID=" & first, dbFailOnError
@@ -136,5 +136,12 @@ End Function
 Public Function VerifyMemberDetailsRecovery() As Boolean
     Call RestoreRecoveryDraft(DMax("RecoveryDraftID", "RecoveryDraft"))
     VerifyMemberDetailsRecovery = (Forms!frmEditor!txtMemberSSN = "PENDING INVALID IDENTIFIER" And Forms!frmEditor!txtComponentActive = "PENDING INVALID COMPONENT" And Forms!frmEditor!txtDateReported = "PENDING INVALID DATE")
-    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Call FixtureCloseEditor()
 End Function
+
+Private Sub FixtureCloseEditor()
+    ' Preserve the old abrupt-close semantics for persistence/recovery fixtures.
+    ' Real save/discard/cancel exits are exercised by UXWorkflowHarness.
+    Forms!frmEditor.OnUnload = ""
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+End Sub

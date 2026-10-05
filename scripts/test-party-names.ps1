@@ -12,20 +12,11 @@ try {
     $result=$app.Eval('TestPartyNames()')
     if(-not $result.StartsWith('PASS:')){throw $result}
     [void]$app.Eval('OpenScreen("frmEditor")')
-    $editor=$app.Forms.Item('frmEditor')
-    $button=$editor.Controls.Item('cmdPartyNames')
-    foreach($control in $editor.Controls){
-        if($button.Visible -and $control.Visible -and $control.ControlType -ne 101 -and $control.Name -ne $button.Name){
-            if($button.Left -lt ($control.Left+$control.Width) -and ($button.Left+$button.Width) -gt $control.Left -and $button.Top -lt ($control.Top+$control.Height) -and ($button.Top+$button.Height) -gt $control.Top){throw ('New button overlaps '+$control.Name)}
-        }
-    }
+    $app.LoadFromText(5,'FormBoundsHarness',(Join-Path $root 'tests/FormBoundsHarness.bas'))
+    [void]$app.Eval('TestButtonOverlap("frmEditor","cmdPartyNames")')
     [void]$app.Eval('OpenPartyNames()')
-    foreach($formName in @('frmEditor','frmPartyNames')){
-        $form=$app.Forms.Item($formName)
-        foreach($control in $form.Controls){
-            if($control.Visible -and ($control.Left -lt 0 -or ($control.Left+$control.Width) -gt $form.Width -or $control.Top -lt 0 -or ($control.Top+$control.Height) -gt $form.Section(0).Height)){throw ('Control outside form: '+$control.Name)}
-        }
-    }
+    [void]$app.Eval('TestFormBounds("frmEditor")')
+    [void]$app.Eval('TestFormBounds("frmPartyNames")')
     [void]$app.Eval('CancelPartyNames()')
     $app.DoCmd.Close(2,'frmEditor',2)
     $app.CloseCurrentDatabase(); $app.Quit(2); $app=$null

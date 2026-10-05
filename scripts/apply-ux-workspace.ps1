@@ -104,6 +104,7 @@ foreach($entry in @(@('cmdRoute',3700),@('cmdComments',4300),@('cmdChecklist',49
 $f.Controls('uxSeniorRecord').Left=[int](5250);$f.Controls('uxSeniorRecord').Top=[int](3150);$f.Controls('uxSeniorRecord').Width=[int](4800);$f.Controls('uxSeniorRecord').Tag='LOCAL:1'
 $f.Controls('uxUseSenior').Left=[int](10250);$f.Controls('uxUseSenior').Top=[int](3150);$f.Controls('uxUseSenior').Width=[int](3050);$f.Controls('uxUseSenior').Tag='LOCAL:1'
 $f.OnResize='=UXResizeEditor()'
+# Class unload handler is bound in build.ps1 after all controls are persisted.
 SaveScreen $f 'frmEditor'
 # Overview: real metrics and recent reports, not a launch-button grid.
 $app.DoCmd.OpenForm('frmHome',1);$f=$app.Forms.Item('frmHome')
@@ -195,3 +196,19 @@ $script:swiftControl.Tag='MWX:body'
 [void](Control $f 111 'uxAssignReport' 2850 2900 10450 450);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;10200';$c.AfterUpdate='=UXChooseAssignmentReport()';$c.Tag='MWX:body';$c.LimitToList=$true
 $f.OnLoad='=UXLoadMyWork()'
 SaveScreen $f 'frmMyWork'
+
+# Shared compact navigation and viewport events, after final authored geometry.
+$app.LoadFromText(5,'modUXViewport',(Join-Path $root 'src/modUXViewport.bas'))
+foreach($screenName in $uxPages){
+    $app.DoCmd.OpenForm($screenName,1);$f=$app.Forms.Item($screenName)
+    [void](Control $f 111 'uxCompactNav' 250 150 2500 400);$c=$script:swiftControl
+    $c.Visible=$false;$c.RowSourceType='Value List';$c.RowSource='frmHome;Overview;frmLibrary;Reports;frmUXGroups;Summary groups;frmMyWork;My Work;frmUXResources;Resources;frmUXSettings;Settings & Help'
+    $c.ColumnCount=2;$c.ColumnWidths='0;2500';$c.LimitToList=$true;$c.TabIndex=0;$c.ControlTipText='Workspace navigation';$c.AfterUpdate='=UXCompactNavigate("'+$screenName+'")'
+    if($screenName -eq 'frmEditor'){
+        [void](Control $f 111 'uxCompactSection' 250 2650 5000 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List'
+        $c.RowSource=(0..9|ForEach-Object{[string]$_+';'+$uxSections[$_]}) -join ';';$c.ColumnCount=2;$c.ColumnWidths='0;5000';$c.LimitToList=$true;$c.TabIndex=7;$c.ControlTipText='Report section';$c.AfterUpdate='=UXChooseSectionCompact()'
+        [void](Control $f 100 'uxAlias' 5900 2350 6000 350 '')
+        $f.HasModule=$true;$f.OnUnload='[Event Procedure]'
+    }else{$f.OnResize='=UXResizeWorkspace("'+$screenName+'")'}
+    SaveScreen $f $screenName
+}

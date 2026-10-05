@@ -39,6 +39,14 @@ For schema changes, update the build DDL, SCHEMA_VERSION, tests/modMigration.bas
 
 ## Collaboration workflow
 
+For native report lifecycle, bulk-preview or review-navigation changes, run
+`scripts/test-ux-workflows.ps1 -BuildPath <fresh blank build>`. The harness uses a
+scratch copy and scripted dialog choices to exercise the actual Unload event,
+failed saves, preview invalidation and report-specific review context. Normal
+non-lifecycle persistence fixtures deliberately disable Unload only in their
+disposable editor session to retain their original abrupt-close semantics and
+checkpoint assertions. The workflow harness exercises real user exits.
+
 Create an issue for a feature or defect, then a short feature branch. Submit a pull request describing the behavior, scope and validation. Keep one feature per pull request where practical. Review text source changes; share a fresh blank build separately if visual review is needed.
 
 Report defects with app/schema version, Access build/bitness, steps, expected/actual behavior and sanitized screenshots. Do not attach personnel data, SSNs, populated databases, credentials or sensitive report text to issues.
@@ -68,3 +76,12 @@ Run scripts/test-report-people.ps1 with -BuildPath pointing to the fresh databas
 ## Structured member, senior and counselor names
 
 Run scripts/test-party-names.ps1 with -BuildPath pointing to the fresh database. It verifies ten name parts, preservation of full names, punctuation/accents/case, rollback, raw recovery in a new Access process, button overlap and form bounds. Capacities and source fields are documented in planning/STRUCTURED_NAMES_GUIDE.md. Do not silently split, normalize or compose names.
+
+Responsive layout and report identity regressions run against a scratch copy:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-ux-responsive-identity.ps1 -BuildPath build/your-template.accdb
+```
+
+This verifies native control geometry and active-field/caret retention, not
+physical DPI or screen-reader acceptance. The preview builder includes this gate.

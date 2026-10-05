@@ -159,7 +159,7 @@ try {
         $script:swiftForm = $f
     }
     function SaveScreen($f,$name) {
-        $app.DoCmd.Save(2,$name); $app.DoCmd.Close(2,$name,2)
+        try { $app.DoCmd.Save(2,$name); $app.DoCmd.Close(2,$name,2) } catch { throw "Unable to persist form ${name}: $($_.Exception.Message)" }
     }
     NewScreen 'frmSetup' 'Set up your Swift NAVFIT workspace' 5300; $f=$script:swiftForm
     [void](Control $f 100 'lblInfo' 400 1000 12600 650 'One authoritative local file. Profiles identify contributors; they do not authenticate users. Separate copies do not synchronize.')
@@ -680,10 +680,46 @@ try {
     . (Join-Path $PSScriptRoot 'apply-rs-directory-layout.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-shell.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-workspace.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-block-tools.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-group-lifecycle.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-context.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-help.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-import-flow.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-review-return.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-my-work.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
     $db.Close(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($db)
+    $app.CloseCurrentDatabase()
+    # Bind class events after the generated forms have been persisted and reopened.
+    # Access can drop new class-module edits made during the initial form-generation session.
+    $app.OpenCurrentDatabase($OutputPath,$true)
+    $app.DoCmd.OpenForm('frmEditor',1)
+    $editorForm=$app.Forms.Item('frmEditor')
+    $editorForm.HasModule=$true;$editorForm.OnUnload='[Event Procedure]'
+    $editorModule=$editorForm.Module
+    $unloadLine=$editorModule.CreateEventProc('Unload','Form')
+    $editorModule.InsertLines($unloadLine+1,'    If Not UXEditorUnload() Then Cancel = True')
+    SaveScreen $editorForm 'frmEditor'
+    $app.DoCmd.OpenForm('frmUXComparison',1)
+    $comparisonForm=$app.Forms.Item('frmUXComparison')
+    $comparisonForm.HasModule=$true;$comparisonForm.OnUnload='[Event Procedure]'
+    $comparisonModule=$comparisonForm.Module
+    $comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')
+    $comparisonModule.InsertLines($comparisonLine+1,'    UXGridUnload Me')
+    SaveScreen $comparisonForm 'frmUXComparison'
+    $app.DoCmd.RunCommand(126)
+    $app.CloseCurrentDatabase()
+    $app.OpenCurrentDatabase($OutputPath,$true)
+    $app.DoCmd.OpenForm('frmEditor',1)
+    $verifiedModule=$app.Forms.Item('frmEditor').Module
+    if($verifiedModule.Lines(1,$verifiedModule.CountOfLines) -notmatch 'If Not UXEditorUnload\(\) Then Cancel = True'){throw 'Native editor unload handler did not persist.'}
+    $app.DoCmd.Close(2,'frmEditor',2)
+    $app.DoCmd.OpenForm('frmUXComparison',1)
+    $verifiedComparison=$app.Forms.Item('frmUXComparison')
+    if($verifiedComparison.OnUnload -ne '[Event Procedure]' -or $verifiedComparison.Module.Lines(1,$verifiedComparison.Module.CountOfLines) -notmatch 'UXGridUnload Me'){throw 'Native comparison unload handler did not persist.'}
+    $app.DoCmd.Close(2,'frmUXComparison',2)
     $app.CloseCurrentDatabase()
     [pscustomobject]@{Output=$OutputPath;SHA256=(Get-FileHash -LiteralPath $OutputPath -Algorithm SHA256).Hash;Status='Built; smoke test required'} | ConvertTo-Json
 } finally {
