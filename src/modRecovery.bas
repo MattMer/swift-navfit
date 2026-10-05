@@ -13,6 +13,15 @@ Private Function ControlsList() As Variant
         "txtReportingSeniorSSN", "txtReportingSeniorDoDID", "txtReportingSeniorAddress1", "txtReportingSeniorAddress2", "txtReportingSeniorCity", "txtReportingSeniorState", "txtReportingSeniorZip", "txtReportingSeniorPhone", "txtReportingSeniorDSN", "txtRaterName", "txtRaterDate", "txtSeniorRaterName", "txtSeniorRaterDate", _
         "txtMemberFirstName", "txtMemberMiddleInitial", "txtMemberLastName", "txtMemberSuffix", "txtReportingSeniorLastName", "txtReportingSeniorFirstInitial", "txtReportingSeniorMiddleInitial", "txtCounselorLastName", "txtCounselorFirstInitial", "txtCounselorMiddleInitial")
 End Function
+Public Function EditorPendingFields() As Object
+    Dim fields As Object, names As Variant, keys As Variant, i As Long
+    Set fields = CreateObject("Scripting.Dictionary")
+    names = ControlsList(): keys = DraftFieldKeys()
+    For i = 0 To 77
+        fields.Add CStr(keys(i)), PendingValue(Forms!frmEditor.Controls(names(i)))
+    Next
+    Set EditorPendingFields = fields
+End Function
 Private Function PendingValue(ByVal control As Control) As Variant
     Dim value As Variant
     value = control.Value

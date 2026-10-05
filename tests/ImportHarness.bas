@@ -23,7 +23,7 @@ Public Function TestImports(ByVal path As String) As String
     On Error GoTo Failed
     Call ConfigureWorkspace("SYNTHETIC IMPORT", "Synthetic Import Tester")
     Call OpenReviewFile(path)
-    Check Forms!frmImportReview!cmdImport.OnClick = "=ImportSelectedNarrativeUI()", "Import button is not wired"
+    Check Forms!frmImportReview!cmdImport.OnClick = "=UXApplyFullNAVFIT()", "Import button is not wired"
     Set source = DBEngine.OpenDatabase(path, False, True)
     Check InStr(Rejected(1), "quarantined") > 0, "Null type accepted"
     Check DCount("*", "Report") = 0, "Quarantine created draft"

@@ -1,11 +1,92 @@
-# Current state - 2026-10-04
+# Deployment version - 0.23.0-preview, schema 21
+
+The deployment package is `output/Swift_NAVFIT_0.23.0-preview.zip`, containing
+separate `Swift_NAVFIT_0.23.0-preview-blank.accdb` and
+`Swift_NAVFIT_0.23.0-preview-DEMO.accdb`, migration tooling and guides. Open the
+DEMO for synthetic examples. Existing workspaces need source-preserving transfer
+into the blank build. See RELEASE_0.23.0_PREVIEW.md and the package MANIFEST.json
+for verification and remaining acceptance work. Prior milestone filenames and
+versions below are retained as historical evidence.
+
+# Latest workspace update - r30, 2026-10-05
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r30.accdb` for the populated demo.
+Blank: `build/ux-r30-blank.accdb`. Adaptive workspace layout now skips unchanged
+sizes, and context refresh sizes only the active workspace. Redundant list
+requeries were removed. Both builds compile; all 57 demo modules match source,
+native event guards pass, and 1801 responsive assertions pass. See
+WORKSPACE_PERFORMANCE_R30.md. Siltstone colors and existing feature scope remain.
+
+# Latest presentation update - r29, 2026-10-05
+
+The Siltstone palette is applied across all 51 native forms (1,717 controls).
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r29.accdb` for the populated demo.
+The separate blank is `build/ux-r29-final-blank.accdb`. Both compile; the demo's
+57 installed modules match source and native event guards remain intact.
+Version and schema remain 0.22.0-ux-preview / 21. See SILTSTONE_THEME_R29.md for
+roles and verification limits. All r28 data and feature scope remain applicable.
+
+# Current state - 2026-10-05
 
 Swift NAVFIT is a native Microsoft Access application for local EVAL, CHIEFEVAL
-and FITREP drafting. The current source milestone is r24, version
+and FITREP drafting. The current source milestone is r28, version
 `0.22.0-ux-preview`, schema 21. The redesign is a development preview under
 user review. The prior distribution checkpoint remains 0.21.0, schema 20.
 
-## Latest runnable build: r24
+## Latest runnable build: r28
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r28.accdb` for the populated
+group-export preview. The separate blank template is `build/ux-r28-blank.accdb`.
+Both compile and all 57 installed modules match current source. Summary-group
+export previews saved members, computes promotion counts and produces one native
+folder; exact PSG RSCA export is optional. Single-report export/returns remain.
+Group returns and direct Swift printing are pending. Print exported reports using
+NAVFIT98A's own engine after native validation. See
+[group-export scope and checks](NAVFIT_GROUP_EXPORT_R28.md) and
+[print-engine inspection](NAVFIT_PRINT_ENGINE_FINDINGS.md). Group native UI/print
+acceptance remains unverified; prior r27 actual per-report round trips remain
+the native evidence.
+
+## Previous runnable build: r27
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r27-reviewed.accdb` for nine synthetic
+reports, three groups, review work, reporting seniors/RSCA and recovery examples.
+The separate blank template is `build/ux-r27-blank.accdb`.
+Both artifacts compile and all 57 installed modules match current source. The
+final demo passes synthetic-data and normal/enabled-content startup checks.
+Exact hashes and native proof receipts are in
+[r27 verification manifest](NAVFIT_R27_VERIFICATION.json).
+
+All 74 supported saved report values plus type are mapped for EVAL, CHIEFEVAL
+and FITREP. All 128 native report columns and native folder/summary content are
+retained. Full supported-value import, single-report export and sealed-baseline
+three-way returned-file reconciliation are implemented. Actual NAVFIT98A
+2.2.0.332 edits were returned to Swift for each type; all 75 decoded values and
+128 re-exported native report columns matched. Empty/null and long Unicode
+preservation fixes are included. See [scope and proof](NAVFIT_EXCHANGE_R27.md).
+
+Complete summary-group/batch export, legacy non-date counseling strings, changed
+cross-file identities and other NAVFIT versions remain pending. Printed fit and
+complete Navy readiness certification remain unverified. No GitHub release was
+published; previous builds and populated workspaces remain preserved.
+
+## Previous milestone: r26
+
+The user's clarified priority #4 is implemented: expanded structured PDF import
+catalogues (40 EVAL, 51 CHIEFEVAL, 36 FITREP saved fields), reviewed existing-draft
+merges, stale/lock/recovery guards, source receipts and compensating undo. The
+native extraction check and portable target-computer kit verify real XFA reads.
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r26.accdb` for synthetic exploration;
+`build/ux-r26-final.accdb` is the separate blank template. See
+[PDF scope, evidence and workstation check](PDF_IMPORT_R26.md). Full field coverage,
+other target-machine results, Runtime/x86 and physical/accessibility acceptance
+remain outstanding. Earlier workspaces/builds remain preserved.
+
+## Previous milestone: r25
+
+The r25 rebuild adds live report diagnostics and an all-member summary-group issue list, with instruction, enclosure, page, paragraph/table and excerpts for verified Navy findings. See [scope and verification](UX_LIVE_VALIDATION_2026-10-04.md). Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r25.accdb` for synthetic exploration; `build/ux-r25-candidate.accdb` is the separate blank template. Full physical-display/accessibility acceptance and broader policy exceptions remain pending.
+
+## Previous milestone: r24
 
 Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r24.accdb` for synthetic exploration. The separate empty workspace is `build/ux-r24-blank.accdb`. Version remains 0.22.0-ux-preview, schema 21; earlier builds and existing workspaces are preserved.
 

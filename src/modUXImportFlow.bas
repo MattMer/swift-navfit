@@ -33,6 +33,8 @@ Public Function UXPDFStart() As Boolean
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdImport.Enabled = False: Forms!frmPDFImport!cmdOpenResult.Enabled = False
     Forms!frmPDFImport!uxState.Caption = "1. Choose - select a supported structured PDF."
+    Forms!frmPDFImport!cboTarget.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') AS Description FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY MemberName"
+    Forms!frmPDFImport!lblStatus.Caption = PDFExtractionStatus()
     UXPDFStart = True
 End Function
 Public Function UXChoosePDFFile(ByVal path As String) As Boolean
@@ -65,37 +67,62 @@ Public Function UXPDFLegacyChanged() As Boolean
     UXPDFLegacyChanged = UXPDFMappingChanged()
 End Function
 Public Function UXPreviewPDFImport() As Boolean
-    Dim changes As Object, key As Variant, text As String, kind As String
+    Dim changes As Object, incoming As Object, before As Object, key As Variant, text As String, kind As String, target As Long, mode As String, outcome As String
     On Error GoTo Failed
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdPreview.SetFocus
     Forms!frmPDFImport!cmdOpenResult.Enabled = False
     If Nz(Forms!frmPDFImport!cboIdentifier, "") = "DoDID" And Not Nz(Forms!frmPDFImport!chkLegacy, False) Then Err.Raise vbObjectError + 4903, , "Enable legacy compatibility explicitly before mapping DoDID."
-    Set changes = PDFMappedValues(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""))
+    Set incoming = PDFMappedValues(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""))
     kind = PDFImportKind()
-    text = "NEW " & kind & " DRAFT - no existing report is overwritten." & vbCrLf & "Supported mapping: name, grade/rate, designation, identifier, ship/station, report dates and official comments. Remaining fields are retained in source XML; traits, occasion, duties, senior blocks and other content require review." & vbCrLf
-    For Each key In changes.Keys
-        text = text & vbCrLf & UXFieldCaption(CStr(key), kind) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(changes(key)) & vbCrLf
+    target = Nz(Forms!frmPDFImport!cboTarget, 0): mode = Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields")
+    If target > 0 Then
+        Set changes = PDFPrepareMerge(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""), target, mode)
+        Set before = SavedFields(target)
+        text = "MERGE INTO " & UXMemberLabel(target) & " - " & mode & vbCrLf
+    Else
+        Set changes = incoming
+        text = "NEW " & kind & " DRAFT" & vbCrLf
+    End If
+    text = text & "Supported catalogue: " & PDFMapRows(kind).Count & " saved fields. Only present nonblank values apply. Missing/blank PDF fields preserve existing values. Unmapped content stays in retained source XML. Signatures, calculated averages, command achievements, combined addresses and unnamed checkboxes are not imported." & vbCrLf
+    For Each key In incoming.Keys
+        If target = 0 Then
+            text = text & vbCrLf & UXFieldCaption(CStr(key), kind) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(incoming(key)) & vbCrLf
+        Else
+            outcome = "Keep existing: " & ImportValue(before(key))
+            If changes.Exists(key) Then outcome = "After: " & ImportValue(changes(key))
+            text = text & vbCrLf & UXFieldCaption(CStr(key), kind) & vbCrLf & "Before: " & ImportValue(before(key)) & vbCrLf & "PDF: " & ImportValue(incoming(key)) & vbCrLf & outcome & vbCrLf
+        End If
     Next
+    If changes.Count = 0 Then Err.Raise vbObjectError + 4904, , "No changed values to apply. Choose another merge mode or target."
     Forms!frmPDFImport!txtPreview = text
-    pdfSignature = PDFImportStamp() & "|" & Nz(Forms!frmPDFImport!cboCentury, "") & "|" & Nz(Forms!frmPDFImport!cboIdentifier, "")
-    Call ImportState("frmPDFImport", "3. Apply", "Full mapping preview ready. Apply creates one partial draft with provenance.", True)
+    pdfSignature = UXPDFSignature()
+    Call ImportState("frmPDFImport", "3. Apply", CStr(changes.Count) & " values ready. Review full before/after values; Apply retains source provenance.", True)
     UXPreviewPDFImport = True: Exit Function
 Failed:
     Call ImportState("frmPDFImport", "2. Preview", Err.Description, False)
 End Function
 Public Function UXApplyPDFImport() As Boolean
     On Error GoTo Failed
-    If Len(pdfSignature) = 0 Or pdfSignature <> PDFImportStamp() & "|" & Nz(Forms!frmPDFImport!cboCentury, "") & "|" & Nz(Forms!frmPDFImport!cboIdentifier, "") Then Err.Raise vbObjectError + 4901, , "Preview the current mapping before Apply."
-    pdfCreated = ImportPDFPreview(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""))
+    If Len(pdfSignature) = 0 Or pdfSignature <> UXPDFSignature() Then Err.Raise vbObjectError + 4901, , "Preview the current mapping before Apply."
+    pdfCreated = ImportPDFPreview(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"))
     pdfSignature = ""
-    Call ImportState("frmPDFImport", "4. Results", "Created " & UXMemberLabel(pdfCreated) & ". Partial mapping; source XML retained. Open the report to review remaining blocks.", False)
+    Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
     Forms!frmPDFImport!cmdOpenResult.Enabled = True
     Forms!frmPDFImport!lblStatus.Caption = "Import complete. Apply is disabled; choose another source for a new import."
     UXApplyPDFImport = True: Exit Function
 Failed:
     pdfSignature = ""
     Call ImportState("frmPDFImport", "2. Preview", Err.Description & " Preview again before retrying.", False)
+End Function
+Private Function UXPDFSignature() As String
+    With Forms!frmPDFImport
+        UXPDFSignature = PDFImportStamp() & "|" & Nz(!cboCentury, "") & "|" & Nz(!cboIdentifier, "") & "|" & Nz(!cboTarget, 0) & "|" & Nz(!cboMergeMode, "Fill empty fields")
+    End With
+End Function
+Public Function UXPDFDependencyCheck() As Boolean
+    Forms!frmPDFImport!lblStatus.Caption = PDFExtractionStatus(PDFImportPath())
+    UXPDFDependencyCheck = True
 End Function
 Public Function UXNarrativeInputChanged() As Boolean
     narrativeSource = 0: narrativeHash = "": narrativeCreated = 0

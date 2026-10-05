@@ -1,0 +1,161 @@
+Attribute VB_Name = "modUXValidation"
+Option Compare Binary
+Option Explicit
+Private issues As Collection
+Private priorSignature As String
+Private nextCheckpoint As Date
+Private busy As Boolean
+Private pageIndex As Long
+Private Function Cell(ByVal value As Variant) As String
+    Cell = Chr$(34) & Replace(Replace(Replace(Nz(value, ""), Chr$(34), Chr$(34) & Chr$(34)), vbCr, " "), vbLf, " ") & Chr$(34)
+End Function
+Public Function UXLivePaint() As Boolean
+    Dim result As Collection, item As Object, invalid As Long, policy As Long, incomplete As Long, review As Long
+    If busy Or Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
+    On Error GoTo Failed
+    busy = True: Set result = ValidateLiveFields(EditorPendingFields(), Nz(Forms!frmEditor!txtReportID, 0))
+    For Each item In result
+        Select Case item("Severity")
+            Case "Invalid entry": invalid = invalid + 1
+            Case "Policy issue": policy = policy + 1
+            Case "Incomplete draft": incomplete = incomplete + 1
+            Case "Needs review": review = review + 1
+        End Select
+    Next
+    Forms!frmEditor!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes") & " | " & result.count & " issues"
+    Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review. Pending values; no saved revision created."
+    UXLivePaint = True
+Finished:
+    busy = False: Exit Function
+Failed:
+    Forms!frmEditor!uxDirty.Caption = "Validation unavailable - open issues"
+    Resume Finished
+End Function
+Public Function UXLiveTyped() As Boolean
+    UXLiveTyped = UXLivePaint()
+End Function
+Public Function UXLiveTimer() As Boolean
+    UXLivePaint
+    If nextCheckpoint = 0 Then nextCheckpoint = DateAdd("s", 30, Now())
+    If Now() >= nextCheckpoint Then
+        CheckpointEditor: nextCheckpoint = DateAdd("s", 30, Now())
+    End If
+    UXLiveTimer = True
+End Function
+Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False) As Boolean
+    Dim context As String
+    If groupMode Then context = "G:" & Nz(Forms!frmMajorWorkbench!cboGroup, 0) Else context = "R:" & Nz(Forms!frmEditor!txtReportID, 0)
+    If CurrentProject.AllForms("frmUXValidation").IsLoaded Then DoCmd.Close acForm, "frmUXValidation", acSaveNo
+    priorSignature = "": pageIndex = 0: Set issues = Nothing
+    DoCmd.OpenForm "frmUXValidation", , , , , , context
+    UXOpenValidation = True
+End Function
+Public Function UXLoadValidation() As Boolean
+    Dim f As Access.Form, item As Object, result As Collection, id As Long, signature As String, rows As String, i As Long, selection As String, identity As String, selected As Long
+    On Error GoTo Failed
+    Set f = Forms!frmUXValidation
+    id = CLng(Mid$(Nz(f.OpenArgs, "R:0"), 3))
+    If Left$(Nz(f.OpenArgs, "R:0"), 2) = "G:" Then
+        Set result = ValidateLiveGroup(id)
+        f!lblBasis.Caption = "All group members: saved values, plus the open member's pending values. Read-only checks; no approval or saved validation run. Verify completeness and exceptions."
+    Else
+        If CurrentProject.AllForms("frmEditor").IsLoaded Then
+            If Nz(Forms!frmEditor!txtReportID, 0) = id Then Set result = ValidateLiveFields(EditorPendingFields(), id)
+        End If
+        If result Is Nothing And id > 0 Then Set result = ValidateLiveFields(SavedFields(id), id)
+        If result Is Nothing Then Set result = New Collection
+        f!lblBasis.Caption = "Current report values, including pending edits when open. Incomplete drafts and policy findings can be saved. Application entry checks remain separate."
+    End If
+    selection = ""
+    If Not issues Is Nothing And Nz(f!lstIssues, 0) > 0 Then
+        If CLng(f!lstIssues) <= issues.count Then
+            Set item = issues(CLng(f!lstIssues)): selection = item("ReportID") & "|" & item("Key") & "|" & item("Code")
+        End If
+    End If
+    For Each item In result
+        i = i + 1: identity = item("ReportID") & "|" & item("Key") & "|" & item("Code")
+        signature = signature & identity & item("Severity") & item("Message") & vbLf
+        If identity = selection Then selected = i
+        If i > pageIndex * 50 And i <= (pageIndex + 1) * 50 Then rows = rows & i & ";" & Cell(item("Member")) & ";" & Cell(item("Label")) & ";" & Cell(item("Severity")) & ";" & Cell(Left$(item("Message"), 180)) & ";"
+    Next
+    If pageIndex > 0 And i <= pageIndex * 50 Then pageIndex = 0: priorSignature = "": UXLoadValidation: Exit Function
+    signature = Nz(f.OpenArgs, "") & "|" & pageIndex & "|" & signature
+    If signature <> priorSignature Then
+        Set issues = result: priorSignature = signature
+        f!lstIssues.RowSourceType = "Value List": f!lstIssues.RowSource = "0;Member;Report block;Finding;Issue;" & rows
+        If (selected <= pageIndex * 50 Or selected > (pageIndex + 1) * 50) And i > 0 Then selected = pageIndex * 50 + 1
+        If selected > 0 Then f!lstIssues = selected Else f!lstIssues = Null
+        UXValidationSelection
+    End If
+    f!lblCount.Caption = i & " findings from implemented checks. Coverage is limited; zero findings does not establish Navy readiness."
+    f!cmdPrevious.Enabled = pageIndex > 0: f!cmdNext.Enabled = i > (pageIndex + 1) * 50
+    f!cmdNext.ControlTipText = "Page " & (pageIndex + 1) & "; 50 findings per page. Full finding and citation appear below."
+    UXLoadValidation = True: Exit Function
+Failed:
+    f!lblCount.Caption = "Validation failed: " & Err.Description
+    f!cmdOpen.Enabled = False
+End Function
+Public Function UXValidationSelection() As Boolean
+    
+    Dim item As Object
+    With Forms!frmUXValidation
+        .cmdOpen.Enabled = False: .txtEvidence = "No findings from implemented checks."
+        If issues Is Nothing Or Nz(.lstIssues, 0) = 0 Then Exit Function
+        Set item = issues(CLng(.lstIssues))
+        .txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
+        .cmdOpen.Enabled = True
+    End With
+    UXValidationSelection = True
+End Function
+Public Function UXValidationPage(ByVal offset As Long) As Boolean
+    pageIndex = pageIndex + offset: If pageIndex < 0 Then pageIndex = 0
+    UXValidationPage = UXLoadValidation()
+End Function
+Public Function UXValidationOpenField() As Boolean
+    Dim item As Object, id As Long
+    On Error GoTo Failed
+    Set item = issues(CLng(Forms!frmUXValidation!lstIssues)): id = item("ReportID")
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        If Nz(Forms!frmEditor!txtReportID, 0) <> id Then
+            If Not UXLeaveEditor() Then Exit Function
+        End If
+    End If
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    UXSelectSection UXFieldSection(item("Key"))
+    Forms!frmEditor.SetFocus
+    If UXSurfaceAvailable() Then
+        If UXHasControl(Forms!frmEditor!uxFieldSurface.Form, UXFieldControl(item("Key"))) Then
+            Forms!frmEditor!uxFieldSurface.SetFocus
+            Forms!frmEditor!uxFieldSurface.Form.Controls(UXFieldControl(item("Key"))).SetFocus
+        Else
+            Forms!frmEditor.Controls(UXFieldControl(item("Key"))).SetFocus
+        End If
+    End If
+    UXValidationOpenField = True: Exit Function
+Failed:
+    Forms!frmUXValidation!txtEvidence = Err.Description
+End Function
+Public Function UXValidationClose() As Boolean
+    priorSignature = "": Set issues = Nothing
+    DoCmd.Close acForm, "frmUXValidation", acSaveNo
+    UXValidationClose = True
+End Function
+Public Function UXValidationLayout() As Boolean
+    Dim f As Access.Form, width As Long, height As Long
+    On Error GoTo Finished
+    Set f = Forms!frmUXValidation: width = f.InsideWidth - 800: height = f.InsideHeight
+    If width < 4500 Then Exit Function
+    f.Width = width + 650
+    f!lblHeading.Width = width: f!lblBasis.Width = width: f!lblCount.Width = width - 2700
+    f!cmdPrevious.Left = width - 2200: f!cmdNext.Left = width - 850
+    f!lstIssues.Width = width: f!txtEvidence.Width = width
+    f!lstIssues.ColumnWidths = "0;" & CLng(width * 0.2) & ";" & CLng(width * 0.25) & ";" & CLng(width * 0.15) & ";" & CLng(width * 0.38)
+    If height < 8500 Then height = 8500
+    f!txtEvidence.Height = height - 5700
+    f!cmdOpen.Top = height - 650: f!cmdBack.Top = height - 650
+    f!cmdOpen.Width = width \ 2 - 100: f!cmdBack.Left = 500 + width \ 2: f!cmdBack.Width = width \ 2 - 100
+    f.Section(acDetail).Height = height: f.ScrollBars = 2
+    UXValidationLayout = True
+Finished:
+End Function
+'Live diagnostics never commit fields, revisions, validation runs or rule packs.

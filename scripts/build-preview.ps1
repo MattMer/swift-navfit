@@ -14,10 +14,20 @@ if(-not $TemplatePath){
 }
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-review-return.ps1') -BuildPath $TemplatePath
 if($LASTEXITCODE -ne 0){throw 'Focused review/Reports return checks failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-validation.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Live validation/source verification failed; demo not created'}
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-my-work.ps1') -BuildPath $TemplatePath
 if($LASTEXITCODE -ne 0){throw 'Unified My Work verification failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-navfit-adapter.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Full NAVFIT mapping/export/return verification failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-navfit-group-export.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'NAVFIT group export verification failed'}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-navfit.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Full NAVFIT import/exchange UI verification failed'}
 $sourceHash=(Get-FileHash -LiteralPath $TemplatePath).Hash
 if($IncludePDFIntegrationChecks){
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-pdf-expanded.ps1') -BuildPath $TemplatePath
+if($LASTEXITCODE -ne 0){throw 'Expanded PDF mapping/merge verification failed'}
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-import-flow.ps1') -BuildPath $TemplatePath
 }else{
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-import-flow.ps1') -BuildPath $TemplatePath -SkipPDF

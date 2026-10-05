@@ -137,7 +137,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
         For Each c In f.Controls
             If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = section)
             If c.Name Like "uxSection#" Then
-                c.BackColor = IIf(c.Name = "uxSection" & section, 16445671, 16777215)
+                c.BackColor = IIf(c.Name = "uxSection" & section, 5948108, 12121599)
                 c.FontBold = (c.Name = "uxSection" & section)
             End If
         Next
@@ -230,6 +230,7 @@ Public Function UXRefreshEditor() As Boolean
     Next
     If UXSurfaceAvailable() Then UXSurfaceRefresh
     If priorAlias <> f!uxAlias.Caption Then UXResizeEditor
+    UXLivePaint
     UXRefreshEditor = True
 End Function
 Public Function UXShowSaveError(ByVal message As String) As Boolean
@@ -599,14 +600,20 @@ Public Function UXBulkDetail() As Boolean
     r.Close: UXBulkDetail = True
 End Function
 Public Function UXLoadContext() As Boolean
-    Dim f As Access.Form, context As String
+    Dim f As Access.Form, active As Access.Form, context As String
     context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace"), 0)), ""), "&", "&&")
     For Each f In Forms
         If UXHasControl(f, "uxContext") Then
-            f!uxContext.Caption = context
-            If f.Name <> "frmEditor" Then UXResizeWorkspace f.Name
+            If f!uxContext.Caption <> context Then f!uxContext.Caption = context
         End If
     Next
+    'Only the visible workspace needs geometry; unchanged dimensions are cached.
+    On Error Resume Next
+    Set active = Screen.ActiveForm
+    On Error GoTo 0
+    If Not active Is Nothing Then
+        If active.Name <> "frmEditor" And UXHasControl(active, "uxContext") Then UXResizeWorkspace active.Name
+    End If
     UXLoadContext = True
 End Function
 

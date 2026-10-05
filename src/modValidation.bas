@@ -106,7 +106,7 @@ Public Function RunRulePack(ByVal reportID As Long, ByVal packID As Long) As Lon
                     End Select
                 End If
             End If
-            f.AddNew: f!ValidationRunID = id: f!RuleID = d!RuleID: f!FindingState = state: f!Message = Nz(d!Description, "") & " [" & Nz(d!SourceLocator, "") & "]": f.Update
+            f.AddNew: f!ValidationRunID = id: f!RuleID = d!RuleID: f!FindingState = state: f!Message = Nz(d!Description, "") & " [" & Nz(d!SourceLocator, "") & "]" & vbCrLf & ValidationPolicyReference(Nz(d!RuleCode, "")): f.Update
         End If
         d.MoveNext
     Loop

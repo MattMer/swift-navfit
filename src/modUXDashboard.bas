@@ -96,6 +96,7 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
         If Left$(c.Tag, 4) = "WBX:" Then c.Visible = False
     Next
     f!lblStatus.Visible = True: f!uxBack.Visible = True
+    If UXHasControl(f, "uxValidation") Then f!uxValidation.Visible = True
     If mode = "Members" Or mode = "Review" Then
         GroupPosition "lstReports", 2850, 3000, 10450, 2900
         f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
@@ -196,7 +197,6 @@ Public Function UXDashboardRefresh() As Boolean
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
     f!cmdRecovery.Enabled = (recoveryCount > 0)
     f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
-    f!uxRecentReports.Requery
     f!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
     UXDashboardRefresh = True
 End Function

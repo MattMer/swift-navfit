@@ -129,7 +129,7 @@ Public Function UXLoadWorkQueue() As Boolean
     Set f = Forms!frmMyWork
     If Not UXHasControl(f, "lstWork") Then Exit Function
     selected = Nz(f!lstWork, "")
-    f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False)): f!lstWork.Requery
+    f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False))
     f!lstWork = Null
     For i = 1 To f!lstWork.ListCount - 1
         If Nz(f!lstWork.Column(0, i), "") = selected Then f!lstWork = selected

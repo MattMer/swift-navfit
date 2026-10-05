@@ -2,17 +2,19 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Latest distributed prototype: 0.21.0 · schema 20.** Development is ongoing. Full NAVFIT import/export and Navy policy validation are not implemented. Printed-layout work is deferred.
+**Latest distributed prototype: 0.21.0 · schema 20.** The local r28 preview implements supported report-value NAVFIT import, report/group export and single-report three-way returned-file reconciliation. Group returns and complete Navy policy validation remain pending. Exports can be printed in NAVFIT98A; direct Swift printing is not implemented. See [group export](planning/NAVFIT_GROUP_EXPORT_R28.md) and [native print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md).
 
 See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups, reviewed defaults/batches, multi-step routes, meeting proposals, limited Navy checks, structured PDF import and guided backup/restore.
 
+See [0.23.0 deployment notes](planning/RELEASE_0.23.0_PREVIEW.md) for Siltstone styling, navigation performance, verification and limitations.
+
 ## UI redesign under review
 
-The [r24 milestone notes](planning/GITHUB_R24_NOTES_2026-10-04.md) summarize the current native redesign, tested fixes and remaining acceptance work. The [native verification record](planning/UX_MY_WORK_2026-10-04.md) identifies the exact local demo and blank files, checks and limitations.
+The [r26 PDF-import notes](planning/PDF_IMPORT_R26.md) describe expanded mappings, existing-draft merges and the target-computer extraction check. The [r25 live-validation notes](planning/UX_LIVE_VALIDATION_2026-10-04.md) describe live report/group diagnostics and policy citations. The [r24 milestone notes](planning/GITHUB_R24_NOTES_2026-10-04.md) retain the earlier native redesign checkpoint and acceptance limitations.
 
 Start with the [native workspace guide](planning/UX_WORKSPACE_GUIDE.md) for current workflows and the [current state](planning/CURRENT_STATE.md) for exact native artifacts and verification limits. The [candidate guide](planning/UX_CANDIDATE_GUIDE.md) explains blank versus demo files and source-preserving migration.
 
-The working source is 0.22.0-ux-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; it has not replaced the distributed 0.21.0 file. Visual, keyboard, screen-reader and scaling acceptance remain pending.
+The working source is 0.23.0-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; the prior 0.21.0 checkpoint is retained. Visual, keyboard, screen-reader and scaling acceptance remain pending.
 
 Build reviewable native previews with `scripts/build-preview.ps1`. They include synthetic reports, groups, review work, reporting seniors/RSCA and recovery examples. Each preview has a unique `UI_Demo` filename and a visibly synthetic command name. Demo seeding refuses any populated workspace. Use `scripts/build.ps1` for separate blank templates and release verification; never migrate operational data into a seeded demo.
 
@@ -32,7 +34,7 @@ See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic
 - Organizational folders, search, saved library views and bulk folder moves with guarded undo.
 - Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
 - Automatic/manual pending-editor checkpoints and recovery.
-- Read-only NAVFIT review, narrative-only import/reconciliation and retained source provenance.
+- Full supported-value NAVFIT import, single-report export, frozen baselines, three-way returned-file conflicts and retained native provenance. See [r27 scope and proof](planning/NAVFIT_EXCHANGE_R27.md).
 - Attributed narrative snippets and a local draft completeness checklist.
 - Revision-linked review comments, replies and resolve/reopen history.
 - Local reviewer assignments, due dates, My Work, contributor switching and accept/return/cancel history.
@@ -44,12 +46,12 @@ Internal review acceptance is separate from official approval. Local contributor
 For the redesigned native UI, use the latest demo linked in
 [CURRENT_STATE.md](planning/CURRENT_STATE.md), or the separate local candidate
 package described in [UX_CANDIDATE_GUIDE.md](planning/UX_CANDIDATE_GUIDE.md).
-The candidate is for review; it has not replaced the distributed checkpoint.
+The prerelease is for review; existing workspaces are preserved.
 Settings & Help includes an in-app workspace guide. For existing data, provide
 an explicit blank candidate `-TemplatePath` to the migration script.
 
 
-Download the blank `.accdb` from the [0.21.0 prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.21.0) and make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+Download the deployment package from the [0.23.0-preview prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.23.0-preview) and choose the blank workspace or synthetic demo. Make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 

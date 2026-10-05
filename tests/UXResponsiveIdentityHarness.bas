@@ -92,6 +92,21 @@ Public Function TestUXResponsiveIdentity() As String
             Check f.ScrollBars = 2, "Safe vertical access missing: " & name
         Next
     Next
+    stage = "unchanged viewport cache"
+    UXResizeWorkspace "frmLibrary", 13800, 6800
+    key = UXViewportPasses()
+    Check UXResizeWorkspace("frmLibrary", 13800, 6800), "Cached viewport must succeed"
+    Check UXViewportPasses() = CLng(key), "Same dimensions repeated geometry writes"
+    UXResizeWorkspace "frmLibrary", 13800, 7000
+    Check UXViewportPasses() = CLng(key) + 1, "Changed height did not lay out"
+    UXRestoreViewport Forms!frmLibrary
+    UXResizeWorkspace "frmLibrary", 13800, 7000
+    Check UXViewportPasses() = CLng(key) + 2, "Restored mode geometry was not invalidated"
+    DoCmd.SelectObject acForm, "frmHome", False
+    UXResizeWorkspace "frmLibrary", 7500, 6800
+    key = Forms!frmLibrary!uxContext.Width
+    UXLoadContext
+    Check Forms!frmLibrary!uxContext.Width = CLng(key), "Context refresh resized hidden workspace"
     TestUXResponsiveIdentity = "PASS: " & checks & " responsive layout, focus and independent identity assertions": Exit Function
 Failed:
     TestUXResponsiveIdentity = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description

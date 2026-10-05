@@ -36,7 +36,6 @@ Public Function UXGroupList() As Boolean
     If filter = "Active" Then where = "WHERE g.IsArchived=False "
     If filter = "Archived" Then where = "WHERE g.IsArchived=True "
     f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS Status FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
-    f!lstGroups.Requery
     If id > 0 Then
         If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then
             id = 0

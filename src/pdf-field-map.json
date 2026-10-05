@@ -1,0 +1,643 @@
+{
+  "EVAL": [
+    {
+      "target": "OfficialName",
+      "source": "a",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "b",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "c",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "d",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "f",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "g",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "q",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "r",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "s",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "t",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "v",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "w",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "y",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "z",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorName",
+      "source": "_2",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "F",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "G",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "H",
+      "conversion": "text"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "_21_Billet",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "k",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "l",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "i",
+      "conversion": "date-text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "_1",
+      "conversion": "date-text"
+    },
+    {
+      "target": "Trait33",
+      "source": "_5",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "_6",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "_7",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "_8",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "_9",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "D",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "E",
+      "conversion": "trait"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "I",
+      "conversion": "recommendation"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "_8_Promotion_Status",
+      "conversion": "promotion-status"
+    },
+    {
+      "target": "RaterName",
+      "source": "T",
+      "conversion": "text"
+    },
+    {
+      "target": "SeniorRaterName",
+      "source": "O",
+      "conversion": "text"
+    },
+    {
+      "target": "RaterDate",
+      "source": "U",
+      "conversion": "date-text"
+    },
+    {
+      "target": "SeniorRaterDate",
+      "source": "P",
+      "conversion": "date-text"
+    }
+  ],
+  "FITREP": [
+    {
+      "target": "OfficialName",
+      "source": "a",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "b",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "c",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "d",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "f",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "g",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "q",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "r",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "s",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "t",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "v",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "w",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "y",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "z",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorName",
+      "source": "_2",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "F",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "G",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "H",
+      "conversion": "text"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "_21_Billet",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "k",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "l",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "i",
+      "conversion": "date-text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "_1",
+      "conversion": "date-text"
+    },
+    {
+      "target": "Trait33",
+      "source": "_5",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "_6",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "_7",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "_8",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "_9",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "D",
+      "conversion": "trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "E",
+      "conversion": "trait"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "I",
+      "conversion": "recommendation"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "e",
+      "conversion": "component"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "h",
+      "conversion": "text"
+    }
+  ],
+  "CHIEFEVAL": [
+    {
+      "target": "OfficialName",
+      "source": "NAMEmaster",
+      "conversion": "text"
+    },
+    {
+      "target": "RankRate",
+      "source": "RATINGmaster",
+      "conversion": "text"
+    },
+    {
+      "target": "Designator",
+      "source": "DESIGNATIONmaster",
+      "conversion": "text"
+    },
+    {
+      "target": "MemberSSN",
+      "source": "SSNDODIDmaster",
+      "conversion": "text"
+    },
+    {
+      "target": "UnitUIC",
+      "source": "UIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ShipStation",
+      "source": "SHIPSTATION",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorName",
+      "source": "REPORTINGSENIOR",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorGrade",
+      "source": "GRADE",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDesignator",
+      "source": "DESIGNATION",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorTitle",
+      "source": "TITLE",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorUIC",
+      "source": "REPORTINGUIC",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorSSN",
+      "source": "SSN",
+      "conversion": "text"
+    },
+    {
+      "target": "CounselorName",
+      "source": "COUSELOR",
+      "conversion": "text"
+    },
+    {
+      "target": "PrimaryDuty",
+      "source": "WATCHSTANDING",
+      "conversion": "text"
+    },
+    {
+      "target": "DutyDescription",
+      "source": "PRIMARYSTATEMENT",
+      "conversion": "text"
+    },
+    {
+      "target": "OfficialComments",
+      "source": "REPORTINGSENIORCOMMENTS",
+      "conversion": "text"
+    },
+    {
+      "target": "PromotionStatus",
+      "source": "PROMOTIONSTATUS",
+      "conversion": "text"
+    },
+    {
+      "target": "PromotionRecommendation",
+      "source": "PROMOTIONDROPDOWN",
+      "conversion": "text"
+    },
+    {
+      "target": "BilletSubcategory",
+      "source": "BILLETSUB",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationA",
+      "source": "RECOMMENDATIONS1",
+      "conversion": "text"
+    },
+    {
+      "target": "AssignmentRecommendationB",
+      "source": "RECOMMENDATIONS2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorAddress1",
+      "source": "Addressline1",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorAddress2",
+      "source": "Addressline2",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorPhone",
+      "source": "CommandPhoneCommercial",
+      "conversion": "text"
+    },
+    {
+      "target": "ReportingSeniorDSN",
+      "source": "CommandPhoneDSN",
+      "conversion": "text"
+    },
+    {
+      "target": "PeriodStart",
+      "source": "FromDate",
+      "conversion": "date"
+    },
+    {
+      "target": "PeriodEnd",
+      "source": "ToDate",
+      "conversion": "date"
+    },
+    {
+      "target": "DateReported",
+      "source": "DATEREPORTED",
+      "conversion": "date-text"
+    },
+    {
+      "target": "CounselingDate",
+      "source": "COUNSELDATE",
+      "conversion": "date-text"
+    },
+    {
+      "target": "ReadinessDate",
+      "source": "PRTDate",
+      "conversion": "date-text"
+    },
+    {
+      "target": "ComponentActive",
+      "source": "ACTCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentTAR",
+      "source": "TARCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentInactive",
+      "source": "INACTCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ComponentATADSW",
+      "source": "ATADSW265CHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionPeriodic",
+      "source": "PERIODICCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionDetachment",
+      "source": "DETACHINDCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionFrocking",
+      "source": "DETACHRSCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "OccasionSpecial",
+      "source": "SPECIALCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportRegular",
+      "source": "REGULARCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportConcurrent",
+      "source": "CONCURRENTCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "ReportOperationalCommander",
+      "source": "OPSCDRCHECK",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementYes",
+      "source": "INTEND",
+      "conversion": "flag"
+    },
+    {
+      "target": "StatementNo",
+      "source": "NOTINTEND",
+      "conversion": "flag"
+    },
+    {
+      "target": "ObservationStatus",
+      "source": "NOBCHECK",
+      "conversion": "observation"
+    },
+    {
+      "target": "Trait33",
+      "source": "TECHDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait34",
+      "source": "INSTITUTEDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait35",
+      "source": "PROFFDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait36",
+      "source": "INTEGDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait37",
+      "source": "ACCOUNTDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait38",
+      "source": "DECKPLATEDROPDOWN",
+      "conversion": "chief-trait"
+    },
+    {
+      "target": "Trait39",
+      "source": "TEAMDROPDOWN",
+      "conversion": "chief-trait"
+    }
+  ]
+}

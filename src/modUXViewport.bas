@@ -3,6 +3,10 @@ Option Explicit
 Private layouts As Object
 Private viewportBusy As Boolean
 Private viewportError As String
+Private layoutPasses As Long
+Public Function UXViewportPasses() As Long
+    UXViewportPasses = layoutPasses
+End Function
 Public Function UXViewportFailure() As String
     UXViewportFailure = viewportError
 End Function
@@ -98,6 +102,12 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
         layouts.Add formName, state
     End If
     Set state = layouts(formName): Set geometry = state("Geometry")
+    If state.Exists("AppliedWidth") Then
+        If state("AppliedWidth") = width And state("AppliedHeight") = height Then
+            UXResizeWorkspace = True
+            GoTo Finished
+        End If
+    End If
     compact = (width < 12000): left = IIf(compact, 250, 2850): available = width - left - 350
     ratio = available / state("Width")
     UXNavigationLayout f, compact, width
@@ -120,6 +130,8 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     f.ScrollBars = 2: f.Width = width - 100
     f!uxRail.Height = bottom + 300
     f.Section(acDetail).Height = bottom + 300
+    state("AppliedWidth") = width: state("AppliedHeight") = height
+    layoutPasses = layoutPasses + 1
     UXResizeWorkspace = True
 Finished:
     viewportBusy = False

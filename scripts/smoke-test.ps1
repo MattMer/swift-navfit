@@ -83,7 +83,7 @@ try {
         if($name -eq 'frmEditor'){$app.DoCmd.OpenForm($name,0,'','',0,0,[string]$id)}else{$app.DoCmd.OpenForm($name)}
         Assert ($app.Eval('Forms("'+$name+'").Controls.Count') -gt 0) "Form opens: $name"
         if($name -eq 'frmLibrary'){Assert (($app.Forms.Item($name).Controls.Item('lstReports').ListCount - 1) -eq 5) 'Library initially displays active reports'}
-        if($name -eq 'frmEditor'){Assert ($app.Eval('Forms!frmEditor!lstRevisions.ListCount') -eq 3) 'Editor initially displays revision history'}
+        if($name -eq 'frmEditor'){[void]$app.Eval('UXSelectSection(9)');Assert ($app.Eval('(Forms!frmEditor!lstRevisions.ListCount - Abs(Forms!frmEditor!lstRevisions.ColumnHeads)) = 3')) 'History section displays all revisions'}
         if(-not $app.Eval('SmokeFormFits("'+$name+'")')){throw "Control outside form width: $name"}
         $app.DoCmd.Close(2,$name,2)
     }

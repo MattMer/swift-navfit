@@ -6,7 +6,7 @@ Private reviewDb As DAO.Database
 Private reviewReader As DAO.Workspace
 Private reviewPrefix As String
 
-Public Function OpenReviewFile(ByVal filePath As String) As Boolean
+Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showReview As Boolean = True) As Boolean
     Dim candidate As DAO.Database, reader As DAO.Workspace, r As DAO.Recordset
     Dim i As Long, prefix As String, kind As String, failure As Long, message As String
     On Error GoTo Failed
@@ -22,6 +22,7 @@ Public Function OpenReviewFile(ByVal filePath As String) As Boolean
     Set r = candidate.OpenRecordset("SELECT ReportID,ReportType,FullName FROM [" & prefix & "Reports] ORDER BY ReportID", dbOpenSnapshot)
     Call CloseReviewFile()
     Set reviewDb = candidate: Set reviewReader = reader: reviewPrefix = prefix
+    If Not showReview Then r.Close: OpenReviewFile = True: Exit Function
     Call OpenScreen("frmImportReview")
     With Forms!frmImportReview
         !txtSource = filePath
@@ -117,9 +118,10 @@ Public Function LeaveImportReview() As Boolean
     LeaveImportReview = True
 End Function
 
-Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal memberDisplay As String = "", Optional ByVal destinationID As Long = 0, Optional ByVal expectedRevision As Long = 0, Optional ByVal expectedSourceHash As String = "") As Long
+Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal memberDisplay As String = "", Optional ByVal destinationID As Long = 0, Optional ByVal expectedRevision As Long = 0, Optional ByVal expectedSourceHash As String = "", Optional ByVal fullReport As Boolean = False, Optional ByVal counselingCentury As Long = 0, Optional ByVal acceptedChanges As Variant) As Long
     Dim r As DAO.Recordset, receipt As DAO.Recordset, raw As DAO.Recordset, values As DAO.Recordset
     Dim db As DAO.Database, w As DAO.Workspace, hash As String, kind As String, id As Long, receiptID As Long, operationID As Long, beforeRevision As Variant, target As DAO.Recordset
+    Dim mapped As Object
     Dim table As Variant, row As Long, i As Long, value As Variant, trans As Boolean, failure As Long, message As String
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Open and review a source database first."
     If Len(memberDisplay) > 120 Then Err.Raise vbObjectError + 411, , "Member display name exceeds 120 characters."
@@ -136,6 +138,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     If StrComp(Nz(r!ReportType, ""), "Chief", vbBinaryCompare) = 0 Then kind = "CHIEFEVAL"
     If StrComp(Nz(r!ReportType, ""), "FitRep", vbBinaryCompare) = 0 Then kind = "FITREP"
     If kind = "" Then Err.Raise vbObjectError + 414, , "Unknown or null report type is quarantined."
+    If fullReport Then Set mapped = NAVFITReadFields(r, counselingCentury)
     w.BeginTrans: trans = True
     beforeRevision = Null
     If destinationID > 0 Then
@@ -145,10 +148,21 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
         If target!FormKind <> kind Then Err.Raise vbObjectError + 418, , "Source and destination report types differ."
         If target!CurrentRevisionID <> expectedRevision Then Err.Raise vbObjectError + 419, , "Destination changed after preview. Compare again."
         beforeRevision = target!CurrentRevisionID
+        If fullReport Then
+            If Not IsObject(acceptedChanges) Then Err.Raise vbObjectError + 5111, , "Preview and resolve the returned file against its export baseline first."
+            NAVFITCheckTarget destinationID
+            id = CommitSavedFields(destinationID, expectedRevision, acceptedChanges, "Accept returned NAVFIT report")
+        Else
         id = CommitDraft(destinationID, kind, Nz(target!Title, ""), Nz(target!MemberName, ""), target!PeriodStart, target!PeriodEnd, Nz(target!DraftNotes, ""), "Accept incoming narrative", r!Comments)
+        End If
         target.Close
     Else
-        id = CommitDraft(0, kind, "Imported narrative " & externalID, memberDisplay, Null, Null, "Other official fields require mapping and review. Source values retained in import provenance.", "Import confirmed narrative", r!Comments)
+        If fullReport Then
+            If memberDisplay = "" Then memberDisplay = Nz(r!FullName, "Unnamed imported member")
+            id = NAVFITCommitFields(0, mapped, memberDisplay, "Full NAVFIT report import")
+        Else
+            id = CommitDraft(0, kind, "Imported narrative " & externalID, memberDisplay, Null, Null, "Other official fields require mapping and review. Source values retained in import provenance.", "Import confirmed narrative", r!Comments)
+        End If
     End If
     r.Close
     Set target = db.OpenRecordset("SELECT CurrentRevisionID FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
@@ -157,6 +171,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     receipt!SourcePath = reviewDb.Name: receipt!ExternalReportID = externalID: receipt!ReportID = id
     receipt!AuthorProfileID = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
     receipt!ImportedAt = Now(): receipt!AdapterVersion = "comments-v1/local-CStr"
+    If fullReport Then receipt!AdapterVersion = "navfit-full-v1/local-CStr"
     receipt!BeforeRevisionID = beforeRevision: receipt!AppliedRevisionID = target!CurrentRevisionID
     target.Close
     receipt!OperationID = operationID: receipt!IsUndone = False
@@ -708,3 +723,33 @@ Public Function CloseReconcileUI() As Boolean
     If CurrentProject.AllForms("frmImportReview").IsLoaded Then Forms!frmImportReview.SetFocus
     CloseReconcileUI = True
 End Function
+
+Public Function FullNAVFITImportValues(ByVal externalID As Long, Optional ByVal counselingCentury As Long = 0) As Object
+    Dim r As DAO.Recordset, result As Object, hash As String
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
+    hash = SourceFileHash(reviewDb.Name)
+    Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
+    Set result = NAVFITReadFields(r, counselingCentury): r.Close
+    If SourceFileHash(reviewDb.Name) <> hash Then Err.Raise vbObjectError + 420, , "Source changed during preview."
+    result.Add "SourceHash", hash
+    Set FullNAVFITImportValues = result
+End Function
+Public Function ImportReviewedReport(ByVal externalID As Long, ByVal expectedSourceHash As String, Optional ByVal counselingCentury As Long = 0, Optional ByVal memberDisplay As String = "") As Long
+    ImportReviewedReport = ImportReviewedNarrative(externalID, memberDisplay, 0, 0, expectedSourceHash, True, counselingCentury)
+End Function
+
+Public Sub ValidateNAVFITDatabase(ByVal db As DAO.Database)
+    Dim t As DAO.TableDef, name As Variant, count As Long
+    ValidateReviewSchema db, ""
+    For Each t In db.TableDefs
+        If Left$(t.Name, 4) <> "MSys" Then
+            If t.Name <> "Folders" And t.Name <> "Reports" And t.Name <> "Summary" Then Err.Raise vbObjectError + 5322, , "Native exchange database contains unexpected tables."
+            count = count + 1
+        End If
+    Next
+    If count <> 3 Or db.QueryDefs.Count <> 0 Then Err.Raise vbObjectError + 5322, , "Native exchange expects the three verified data tables and no saved queries."
+    For Each name In Array("Forms", "Reports", "Modules", "Scripts", "DataAccessPages")
+        If db.Containers(name).Documents.Count <> 0 Then Err.Raise vbObjectError + 5322, , "Choose a NAVFIT data database without executable or interface objects."
+    Next
+End Sub

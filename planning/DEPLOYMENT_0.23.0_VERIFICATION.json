@@ -1,0 +1,588 @@
+{
+  "Version": "0.23.0-preview",
+  "Schema": 21,
+  "Status": "PASS",
+  "SourceCommit": "32c09c72473f62f6fb0737ca8a07f4ce7eb68481",
+  "Checks": {
+    "test-ux-review-return.ps1": "PASS",
+    "test-ux-workflows.ps1": "PASS",
+    "test-ux-import-flow.ps1": "PASS",
+    "test-pdf-import.ps1": "PASS",
+    "test-import-review.ps1": "PASS",
+    "test-import-commit.ps1": "PASS",
+    "test-ux-help.ps1": "PASS",
+    "test-ux-context.ps1": "PASS",
+    "test-ux-shell.ps1": "PASS",
+    "smoke-test.ps1": "PASS",
+    "test-backup.ps1": "PASS",
+    "test-major.ps1": "PASS",
+    "test-preview-launch.ps1": "PASS",
+    "schema20/schema21 transfer": "PASS",
+    "seeded demo": "PASS"
+  },
+  "SourceModulesMatched": 57,
+  "BlankUserDataTables": {
+    "ChangeBatch": 0,
+    "ChangeItem": 0,
+    "ComparisonMember": 0,
+    "ComparisonSet": 0,
+    "FieldDefault": 0,
+    "Folder": 0,
+    "FolderBatchChange": 0,
+    "FolderMove": 0,
+    "GroupMember": 0,
+    "GroupRSCABaseline": 0,
+    "GroupSnapshot": 0,
+    "GroupSnapshotMember": 0,
+    "ImportRawValue": 0,
+    "ImportReceipt": 0,
+    "LibraryPreference": 0,
+    "MeetingProposal": 0,
+    "NarrativeSnippet": 0,
+    "OperationJournal": 0,
+    "RecoveryDraft": 0,
+    "Report": 0,
+    "ReportEvent": 0,
+    "ReportingSeniorRecord": 0,
+    "ReportingSeniorValue": 0,
+    "ReportRevision": 0,
+    "ReviewComment": 0,
+    "ReviewCommentEvent": 0,
+    "ReviewTask": 0,
+    "ReviewTaskEvent": 0,
+    "RevisionChange": 0,
+    "RevisionValue": 0,
+    "RouteRun": 0,
+    "RouteRunStep": 0,
+    "RouteTemplate": 0,
+    "RouteTemplateStep": 0,
+    "RSCABaseline": 0,
+    "RuleDefinition": 0,
+    "RulePack": 0,
+    "SummaryGroup": 0,
+    "UserProfile": 0,
+    "ValidationFinding": 0,
+    "ValidationRun": 0,
+    "Workspace": 0
+  },
+  "ArchiveSHA256": "2B91E068345C31CE46CC14768D9F70D00F7B1C447A41F3CF546678562B5BB3A5",
+  "Files": [
+    {
+      "Path": "README.md",
+      "SHA256": "30458650F6D86112D8392D09060EDFDF3B9B1A28402E8AB3442D09B859158186"
+    },
+    {
+      "Path": "START_HERE.md",
+      "SHA256": "01BFB04281DF81352272E08461D8CA435112F63B153477353784EFED6F32013D"
+    },
+    {
+      "Path": "Swift_NAVFIT_0.23.0-preview-blank.accdb",
+      "SHA256": "90ABCA86EB1C1AF999238153A9D105AAF4CC41404FA24BABA8C4388CE822AE27"
+    },
+    {
+      "Path": "Swift_NAVFIT_0.23.0-preview-DEMO.accdb",
+      "SHA256": "CD1E348968BCF90634E5FA3CF92BA29CF39836C1E0C5538ECC2FB1D247A4A3C1"
+    },
+    {
+      "Path": "guides/ADMINISTRATION_GUIDE.md",
+      "SHA256": "DD27DB605E8D989717072C9CC0EF3E76771B523FB6198A9C1EAE89A7B759649B"
+    },
+    {
+      "Path": "guides/APP_REVIEW_2026-10-04.md",
+      "SHA256": "E41FD77D304B39433CA62245DA32660EEAD4EA42366DEE90995C55DE53CBA74E"
+    },
+    {
+      "Path": "guides/ASSESSMENT_GUIDE.md",
+      "SHA256": "EC778904EB7E2A4AECF8F7308FB3DB280AD9FA9509DE7D7320D9F1C8E08E6E6F"
+    },
+    {
+      "Path": "guides/BUILD_STATUS.md",
+      "SHA256": "64E3028353E37E05253186B7D1B978F32561088F13856B4EECBAD433AAB6A2E1"
+    },
+    {
+      "Path": "guides/CURRENT_STATE.md",
+      "SHA256": "A9F3040CD8BC20F670D8AB0BCF4E302328E4ECC64E3A1E81EC02657D8DB0769D"
+    },
+    {
+      "Path": "guides/DECISION_DETAILS_GUIDE.md",
+      "SHA256": "70987914A04911E413E08C9A890F5A99A69509D8C815749CC1A7707CB8F40615"
+    },
+    {
+      "Path": "guides/GITHUB_R24_NOTES_2026-10-04.md",
+      "SHA256": "B96D6A3AC9D6F9C8F68E35018110AA91E31CFE19AE138BA93DF60721A70E7319"
+    },
+    {
+      "Path": "guides/IMPLEMENTATION_PLAN.md",
+      "SHA256": "D82391B1EA61138C1789907F2735E499E97B31D90506207F3A8562A2BF4F1B99"
+    },
+    {
+      "Path": "guides/MAJOR_FOUNDATIONS_GUIDE.md",
+      "SHA256": "3C5967BCC98A85F51F3B808A970A2E8ABBD032B4C3EA579ED6E60B2FF72F4536"
+    },
+    {
+      "Path": "guides/MEMBER_DETAILS_GUIDE.md",
+      "SHA256": "A42D5699E21546B9323CFCD94374549B4708894AD8BE33C5BEBDEA3A6623DEA8"
+    },
+    {
+      "Path": "guides/NAVFIT_EXCHANGE_R27.md",
+      "SHA256": "AFE2FC5BEAD07D539BC71809C74CC274E73C79C1A76D0E27AB0AD67248B5E338"
+    },
+    {
+      "Path": "guides/NAVFIT_GROUP_EXPORT_R28.md",
+      "SHA256": "0F0AC8FB2005FF5A3BB1D51A08BCACA799DA15C03003BC92E606FEDBC1BC6D3C"
+    },
+    {
+      "Path": "guides/NAVFIT_PACKAGE_FINDINGS.md",
+      "SHA256": "31193ED3BBFCD986E954C7897C1E20E07A3849609EA54BCAD313798379A7E739"
+    },
+    {
+      "Path": "guides/NAVFIT_PRINT_ENGINE_FINDINGS.md",
+      "SHA256": "D486E7F723FA4985E8E3A48AF39090E71AFADBF430359E0B46F13419E9BDB150"
+    },
+    {
+      "Path": "guides/NAVFIT_SCHEMA_FINDINGS.md",
+      "SHA256": "CAE69677AF54EC1D975007817A95F1F5FD6DDBC592C0A733D2671607301472ED"
+    },
+    {
+      "Path": "guides/NAVFIT_STAGING_PROOF.md",
+      "SHA256": "952FA0721402BA4F15A6FA40F7391167D05EC724CA87871B9E3060DFC65E7CBB"
+    },
+    {
+      "Path": "guides/PDF_IMPORT_R26.md",
+      "SHA256": "3F1663BD5C159068293DFE489FCE65CE573D0241794F2BEB62E6F1191B361901"
+    },
+    {
+      "Path": "guides/PROJECT_PLAN_STATUS_2026-10-04.md",
+      "SHA256": "D76D64D05C4440C855A80E9A3359307DDE4D8F39D75C91DD580887BCA758D242"
+    },
+    {
+      "Path": "guides/PROMOTION_STATUS_GUIDE.md",
+      "SHA256": "A96188799705D4E4A2913C9539C83163F16E4C8A4503B5642546756FD47E040B"
+    },
+    {
+      "Path": "guides/PROVENANCE_GUIDE.md",
+      "SHA256": "BC06EE2280FE042D4F0EA1AF0BD0138B92614C05A968A0E3A4029CF0160BDEED"
+    },
+    {
+      "Path": "guides/RELEASE_0.23.0_PREVIEW.md",
+      "SHA256": "61A0211A776591D8B4E57C471196DA09FCC9DB15D5F5E121424DEE54BD0AEB27"
+    },
+    {
+      "Path": "guides/REPORT_CONTEXT_GUIDE.md",
+      "SHA256": "ED4B6F618BF26B256530D7C8B0A89FE92DA90136814DCB2DB766E80C029E4302"
+    },
+    {
+      "Path": "guides/REPORT_PEOPLE_GUIDE.md",
+      "SHA256": "16D24C27A30488B93162468259107005F28970E4D54B2DA8ABA47EA73EEC29FB"
+    },
+    {
+      "Path": "guides/REPORTING_SENIOR_GUIDE.md",
+      "SHA256": "D78CF5E0947BD62B5B6C719ACB80EA0B4859F4B2E236B82E3C17C8E67CFB1A90"
+    },
+    {
+      "Path": "guides/REVIEW_COMMENTS_GUIDE.md",
+      "SHA256": "13E5266672C5E0793ACCEF86C9370C50038C4ECE3730242C8751BA448ABCDE82"
+    },
+    {
+      "Path": "guides/REVIEW_ROUTING_GUIDE.md",
+      "SHA256": "D8B4FEEE630681A9133F8EDD5374F8AC95ACC820005D3FFEAF999E5B4B8F3869"
+    },
+    {
+      "Path": "guides/ROADMAP.md",
+      "SHA256": "25E1FEF22AB37C0CF879523DFA05D4AB7B07A44C05E9B46668811A4364198453"
+    },
+    {
+      "Path": "guides/SERVICE_DETAILS_GUIDE.md",
+      "SHA256": "B8AC65E2CE9E872D758F9E0928FFA3A84543706A6CD44909EB23658A445E7F8C"
+    },
+    {
+      "Path": "guides/SILTSTONE_THEME_R29.md",
+      "SHA256": "3765DA89A4DA584132C8EA30A81911B7CE190529721450514B9B5349BFFC7EAF"
+    },
+    {
+      "Path": "guides/STRUCTURED_NAMES_GUIDE.md",
+      "SHA256": "B43639A3305688A6FC23CD699F32171392DBCF530539A4428FB7BCB1D335C816"
+    },
+    {
+      "Path": "guides/TRAIT_SUMMARY_GUIDE.md",
+      "SHA256": "ED907206A1682F998CD05D7CA93FD07E0F25592F98560379474A6D1F85126E42"
+    },
+    {
+      "Path": "guides/TRAITS_GUIDE.md",
+      "SHA256": "A2DA589875FACF6DCAFA168D5FB74B0FADF633DB657C1B0CFC01B9230E68DAEC"
+    },
+    {
+      "Path": "guides/UX_BLOCK_TOOLS_2026-10-04.md",
+      "SHA256": "96EDE59424E361B9028010D3B7D3E69B5AA74C94268E2B516EA17F187E2AC7BD"
+    },
+    {
+      "Path": "guides/UX_CALCULATIONS_CHECKLIST_2026-10-04.md",
+      "SHA256": "3261D5FEF2B1F7113D5ECDD7DDA6EBF0C418530C0CDEAD4DDAF88C6EEAFF48E4"
+    },
+    {
+      "Path": "guides/UX_CANDIDATE_GUIDE.md",
+      "SHA256": "01BFB04281DF81352272E08461D8CA435112F63B153477353784EFED6F32013D"
+    },
+    {
+      "Path": "guides/UX_DEMO_BUILD_GUIDE.md",
+      "SHA256": "F2B2A75FCEF7B2B5F2598E6CDAC492B85FE1B65B2E45BDE835C60CD458B48954"
+    },
+    {
+      "Path": "guides/UX_GROUP_LIFECYCLE_2026-10-04.md",
+      "SHA256": "2F7141E0D3E85875A938529456E1D9EDD5A0A93215EA4F6706BCF306D21092F5"
+    },
+    {
+      "Path": "guides/UX_IMPORT_FLOW_2026-10-04.md",
+      "SHA256": "257F9F32312BA143F84DDA7E5DBC2C53DD2715FB6D117F71764436BAA097C55F"
+    },
+    {
+      "Path": "guides/UX_LIVE_VALIDATION_2026-10-04.md",
+      "SHA256": "5EC0B62528F5AA2859D4046A71EB230AD5AE8F0F9A60488D980B27A79FD6A4F3"
+    },
+    {
+      "Path": "guides/UX_MY_WORK_2026-10-04.md",
+      "SHA256": "22F7A19067698FB60388693346B97E4C0B22FC14E81A2E8CDA531C7AB6BFFFC1"
+    },
+    {
+      "Path": "guides/UX_NATIVE_LAYOUT_CHECKPOINT.md",
+      "SHA256": "9B20D2D9AC8E550E2CF1375B26CAB9914C631C139D2CA21567834EB9F161D176"
+    },
+    {
+      "Path": "guides/UX_NATIVE_REVIEW_2026-10-04.md",
+      "SHA256": "17CCB61A4696825CD6166533CDF1CEC78153296C51DC38C9637A80212E9EB23C"
+    },
+    {
+      "Path": "guides/UX_PRIORITY_FIXES_2026-10-04.md",
+      "SHA256": "668A28D4C08D867BCCFF245166FBB6319B47FF47EC053D71E64A78A81C35E9C5"
+    },
+    {
+      "Path": "guides/UX_REDESIGN_REVIEW.md",
+      "SHA256": "62425E09D39DCEE357646FE82E46DA33EDB6B1AE9FC6AA98A716BE38E155FB5C"
+    },
+    {
+      "Path": "guides/UX_RESPONSIVE_IDENTITY_2026-10-04.md",
+      "SHA256": "96418F1D2A486E4E606D387BFC70647E0D2441128ABC3D72CE0A10D59B4A8864"
+    },
+    {
+      "Path": "guides/UX_REVIEW_RETURN_2026-10-04.md",
+      "SHA256": "C014BD06A997D9B57B9364921DC8092456FA9B9A82B81243F2526CF238CBB17A"
+    },
+    {
+      "Path": "guides/UX_WORKSPACE_GUIDE.md",
+      "SHA256": "3A96C185CD3965DD27C75B93A5FEAD3F66AFCD2B18B68704463D61BDDD470C80"
+    },
+    {
+      "Path": "guides/WORKFLOW_TOOLS_GUIDE.md",
+      "SHA256": "8892CCB91F846BF8F2F4D9D67FFAB71643D426D02153CED4036D114F76A0078F"
+    },
+    {
+      "Path": "guides/WORKSPACE_PERFORMANCE_R30.md",
+      "SHA256": "1B5CD8008DAE205712CC682874E00DCC27AC71D5A2E5F09E0E86641B8DA14415"
+    },
+    {
+      "Path": "scripts/upgrade-workspace.ps1",
+      "SHA256": "40BC1EADFB9E6A1394BB2D85AFB5A507FBADDAA583F1DDD6DC554AAFDC23291A"
+    },
+    {
+      "Path": "src/major-schema.json",
+      "SHA256": "04FA67D24252E6CFC9624A9FBA429C49EFF99539A6D52AD9A22EB282FA6AC858"
+    },
+    {
+      "Path": "tests/modMigration.bas",
+      "SHA256": "87632A76102D3F8CA0DFAC336A9965A273B36A7CBB5F0E56EECB2F395EB74968"
+    },
+    {
+      "Path": "verification/demo.log",
+      "SHA256": "4C19502934F84023A09F1E151CDF2599BB0878D061070176785955AF5C443D9C"
+    },
+    {
+      "Path": "verification/modAdministration.bas",
+      "SHA256": "3E80008565DD1978D40832877A8F8AD8523257B798CF637D150D3ACB9BA1C237"
+    },
+    {
+      "Path": "verification/modAssessment.bas",
+      "SHA256": "3B76532723285D5B7B60095517DEC5204AB76DC8D13BB3AA48086F1BE35AE76F"
+    },
+    {
+      "Path": "verification/modBackupUI.bas",
+      "SHA256": "78F9A4D14FD49034DBE6E855C0E8C07779FF92C826E485F09CA84683A4B05061"
+    },
+    {
+      "Path": "verification/modBulkFolders.bas",
+      "SHA256": "AA934344C1131AA6107E1BBACB0CFBF14B755411EE8135DD51FDF0EAD484939F"
+    },
+    {
+      "Path": "verification/modChecklist.bas",
+      "SHA256": "8FA4148CDBBDB7214B466560C1633BC92174CFFD96B95CEDC4B24E8F2839134F"
+    },
+    {
+      "Path": "verification/modDecisionDetails.bas",
+      "SHA256": "642E697C325E0D9DB76CDE7F7650E6BBC0310709BD418DD875D608ED601C4C64"
+    },
+    {
+      "Path": "verification/modFileHash.bas",
+      "SHA256": "C334EB0C6943E791E9D74B1F1CFD8F5B1488FAA7DA4849FF4EB68FC61CEF603E"
+    },
+    {
+      "Path": "verification/modImportReview.bas",
+      "SHA256": "0D0F625F7B30DD6B51AF72916B3C35096E05486C62240AFB90B6CF5BF8F0E7EE"
+    },
+    {
+      "Path": "verification/modLibraryViews.bas",
+      "SHA256": "1D29F0FABDB567A72BDBCEA9DFAF35689BA23E27BCC10A9141C3E4A355F7D7EA"
+    },
+    {
+      "Path": "verification/modLiveValidation.bas",
+      "SHA256": "E32A6407FB02E28116191ECEE403ECFF7785F5F70F7D652E6288F727F8DB326F"
+    },
+    {
+      "Path": "verification/modMajorCore.bas",
+      "SHA256": "C266919885FBA33D3B089CED1BDE4E50A5EB6ECBF1D8903144A41DD1EB0C3733"
+    },
+    {
+      "Path": "verification/modMajorUI.bas",
+      "SHA256": "B5E450C3F2C01E4F778D2D694AB26C033E79D76017792D9BC3D2126C00705890"
+    },
+    {
+      "Path": "verification/modMeetings.bas",
+      "SHA256": "D1488FE4CF64BF82DA2A4EA36CCFD6C00679DBA0924367DA2B1320E12C1002A2"
+    },
+    {
+      "Path": "verification/modMemberDetails.bas",
+      "SHA256": "C0CD4A94592A321AFECB060639CB46833FFABDE26C52FC3B51533EB182E5163A"
+    },
+    {
+      "Path": "verification/modNAVFITAdapter.bas",
+      "SHA256": "AAA2DD55A8B40CC9A7FE3810DBEB22D7E603DFF17B6B8F3A2B334C5FA5D593DB"
+    },
+    {
+      "Path": "verification/modNAVFITExchange.bas",
+      "SHA256": "32E06B81B6B830A25503C8E4CD51D3B00605ADEB75A4D36E148CC7B061B1E2F6"
+    },
+    {
+      "Path": "verification/modNAVFITMapping.bas",
+      "SHA256": "DD197A993224C520DB154D5C04D825895BD0077A4A7B68EA754F58810B35C623"
+    },
+    {
+      "Path": "verification/modOfficialBatch.bas",
+      "SHA256": "D6C3E317FFC396A42FAA41A9DC112AA6065785C334176745EE73ED1074AA88A4"
+    },
+    {
+      "Path": "verification/modOperations.bas",
+      "SHA256": "4F9555B1D0CA0745AF5A58AF2862100B67A7107A01E8B246DA7188EFDBAC70C4"
+    },
+    {
+      "Path": "verification/modPartyNames.bas",
+      "SHA256": "0958D4126FBB103820B8B9C3740FAF2E9A395030A5086EDF54F4F63529BFBEE8"
+    },
+    {
+      "Path": "verification/modPDFImport.bas",
+      "SHA256": "DD947DBD2515E9E9C7C5F3DB6B83CD8232A130E9924E5ED674FDE6AE5EBBEAAB"
+    },
+    {
+      "Path": "verification/modPDFMapping.bas",
+      "SHA256": "F1C93C09B581C890817D0CA200B5E06FCACC25D1E7EF04F0AC032A9A365FA59E"
+    },
+    {
+      "Path": "verification/modPromotionStatus.bas",
+      "SHA256": "EC2FA5C6667FCDC5B9D488CD832103F0647208E71689AF5A1FA30F364F51CA37"
+    },
+    {
+      "Path": "verification/modProvenance.bas",
+      "SHA256": "FE0E4D01A2130987BACFB15F99F1C5DF28A8786AB13D3B4A0C7A0640C9BF3125"
+    },
+    {
+      "Path": "verification/modRecovery.bas",
+      "SHA256": "E35240099CC4D94ABF5F781485A229A8E8DDD0396BE99BEFAE8186B333C2E762"
+    },
+    {
+      "Path": "verification/modReportContext.bas",
+      "SHA256": "45D4830A1E9A24D65EB56750196F16C9798CCD1AF194741D2A9D5643A8E77ECE"
+    },
+    {
+      "Path": "verification/modReportingSenior.bas",
+      "SHA256": "D11197B9C19A9DEDA8A4150505FC95A618789ECF9C3C76E078185089A3A086A6"
+    },
+    {
+      "Path": "verification/modReportPeople.bas",
+      "SHA256": "DBFE8DD620A9A6E0F75EFC94D2731DA8423E3DE0D591E8E54C91E5519A3960CD"
+    },
+    {
+      "Path": "verification/modReviewComments.bas",
+      "SHA256": "539A7D378B01BA5CA191224BABEA02F6702EE93F83A9FE5E5288878519331902"
+    },
+    {
+      "Path": "verification/modRevisionCompare.bas",
+      "SHA256": "D7BDABAFB7B044FE57981CD65C01040FD145FF161F6C23B5276D676354A59B07"
+    },
+    {
+      "Path": "verification/modRouteTemplates.bas",
+      "SHA256": "2B98A501908E3B348DC9277B06EB8942AEDA5D00612F101552C2A3B0B67308D5"
+    },
+    {
+      "Path": "verification/modRouting.bas",
+      "SHA256": "3E8B1FB73A381A70D6626B40FE55B759EE0116811171B875B085F49F8C0AFCBA"
+    },
+    {
+      "Path": "verification/modRSDirectory.bas",
+      "SHA256": "A6E9629C75E5747EDFB53EDF3CCE354123A40F66B213B892192307CA03BC581E"
+    },
+    {
+      "Path": "verification/modRSDirectoryUI.bas",
+      "SHA256": "A8AFA79E204F75231A5D8E797E457AB7F2F9DA33F559FA1E59D8C12AC2F1AD58"
+    },
+    {
+      "Path": "verification/modServiceDetails.bas",
+      "SHA256": "4E6F0BE3081119EF6A717D6C141934041759F837868EF5B4C217EF921B981F38"
+    },
+    {
+      "Path": "verification/modSnippets.bas",
+      "SHA256": "0649836F3BB923FB1901CE3C0DC29EC508F4C97BE7678C901764A6F0571E3F18"
+    },
+    {
+      "Path": "verification/modSummaryGroups.bas",
+      "SHA256": "8CD43C43A52D11A5B75732C3F5825BA4593DEE81925370966441D3D08B4E3105"
+    },
+    {
+      "Path": "verification/modSwift.bas",
+      "SHA256": "486957BAC74D0256CACA1455C1FD182844A7F4CBBB3179FA24503F1C7B4B8CF0"
+    },
+    {
+      "Path": "verification/modTraits.bas",
+      "SHA256": "03BD362F8331701132A5F9F1E41459A351144DD360D8F7120A0F951829B08A20"
+    },
+    {
+      "Path": "verification/modUX.bas",
+      "SHA256": "85F472D750C15B3297BA0C7D50825F68C12E49610FC941564AE0F31E108BAF43"
+    },
+    {
+      "Path": "verification/modUXBlockTools.bas",
+      "SHA256": "3942C4C0F81B2C4D7BBA1805FCE8F77F776FE3000515A941539AFB3697EB0996"
+    },
+    {
+      "Path": "verification/modUXCalculationContext.bas",
+      "SHA256": "0005B51BDA80B34BB30AA7FAC8917FA5F879E4FC07137714FC5F9EAA3AF6CF7C"
+    },
+    {
+      "Path": "verification/modUXDashboard.bas",
+      "SHA256": "8B575B002ED135890F7C8A30FE8D4725692ADD3D347D28BD19D8501F99102BBC"
+    },
+    {
+      "Path": "verification/modUXGroupLifecycle.bas",
+      "SHA256": "216F85C2B0004CAAB97DDF1A7CB8DC2CF76DB7B38B7EC0861FC506CD78D5655A"
+    },
+    {
+      "Path": "verification/modUXHelp.bas",
+      "SHA256": "AD697D8462926478921EF0839A0F65D5E1F9B550DCA76426CE853EA01EEEAD8E"
+    },
+    {
+      "Path": "verification/modUXImportFlow.bas",
+      "SHA256": "70BD897D7A406AE0C24F5BC04BD4502643113C793D9284EC19BE593DFB506C25"
+    },
+    {
+      "Path": "verification/modUXMyWork.bas",
+      "SHA256": "4A6669E1E4D11097D61D33289712AB75B42CF7AAE3C74FC148059D7FED3198AD"
+    },
+    {
+      "Path": "verification/modUXNAVFIT.bas",
+      "SHA256": "796A96BAB288E66BF614F94C6439395C228AB4A14C86B7F25B5829FAC5070867"
+    },
+    {
+      "Path": "verification/modUXReportReturn.bas",
+      "SHA256": "73061FA49CEB9F4C80FE2E8330D3F83CB452438228D20C84E5DCB060FFA4F68F"
+    },
+    {
+      "Path": "verification/modUXReview.bas",
+      "SHA256": "22F6C9049439298B1AD544D071EE9F717D831AD2BC1410C11B6674B35454FEC4"
+    },
+    {
+      "Path": "verification/modUXReviewLayout.bas",
+      "SHA256": "340120BCAFD49B486CDC9EEF88E4164235D0108A5293B926877F0511A45EE330"
+    },
+    {
+      "Path": "verification/modUXSurface.bas",
+      "SHA256": "B82FFD7EB63F39A17269A71AB711C5BF80CD7409164FE2DC2A0707B4C6E8579C"
+    },
+    {
+      "Path": "verification/modUXTraitGrid.bas",
+      "SHA256": "4669237DF8E205EE0312198A1B414A9657D7B9D2A57B4E25BF3665742A773216"
+    },
+    {
+      "Path": "verification/modUXValidation.bas",
+      "SHA256": "EC005367DEAB9BCA2BADA461AAB9D50154797E69B408B4C4DE9DB78C6B1F42C7"
+    },
+    {
+      "Path": "verification/modUXViewport.bas",
+      "SHA256": "596D9D0EC402927629C2B74885EA2999E9F6D6806DDE5B4EF42F0B61D3A41679"
+    },
+    {
+      "Path": "verification/modValidation.bas",
+      "SHA256": "55F835E4EA07316CB4ED15705B2B79D01AAEC9A53CF9285DC401EE51C5DE666D"
+    },
+    {
+      "Path": "verification/modWorkspace.bas",
+      "SHA256": "BD00CF0DAC0D135C521BD4101B7E03ED04167E38239EB17D45AC5804ECF93773"
+    },
+    {
+      "Path": "verification/smoke-test.ps1.log",
+      "SHA256": "5EF929BF9C8B7705337DAD40E338608E11D58E334B0EE1819BD123C4BDFF8744"
+    },
+    {
+      "Path": "verification/test-backup.ps1.log",
+      "SHA256": "0A4DF83A1A995939B628D083342BF5A7C8AA6C3B23F03E63454F30CC51F7D685"
+    },
+    {
+      "Path": "verification/test-import-commit.ps1.log",
+      "SHA256": "454B39251043801DCE8BBC6D7154CDEE7547C23FC99D7117D4CA86595F97F0D8"
+    },
+    {
+      "Path": "verification/test-import-review.ps1.log",
+      "SHA256": "3840EC9C38BDFF4A0C041A9DD70722C159FC8246D18EDF453429CCC37E502900"
+    },
+    {
+      "Path": "verification/test-major.ps1.log",
+      "SHA256": "19663D90A56C2BECB5A3376CB60E8F844F736961055DB335C42243F6A2B14736"
+    },
+    {
+      "Path": "verification/test-pdf-import.ps1.log",
+      "SHA256": "D4D2BD603C82807159F3DC68CDE502FA2125F837F3EF7B926734CB6C1EFF3CDA"
+    },
+    {
+      "Path": "verification/test-preview-launch.ps1.log",
+      "SHA256": "11262DE700D15D79CD74EEBE9B6D950D02BDD74443A3D2E73BC50E5B843C06A7"
+    },
+    {
+      "Path": "verification/test-ux-context.ps1.log",
+      "SHA256": "DFE506D866FE0971C992DE9728480EE6E48CB8C644ADD4B620447A2BA417D5C9"
+    },
+    {
+      "Path": "verification/test-ux-help.ps1.log",
+      "SHA256": "2BF6EA2B59D0099680E30093D365F4D1B037EA926B4F8F17A9A7EBEAFC4C786D"
+    },
+    {
+      "Path": "verification/test-ux-import-flow.ps1.log",
+      "SHA256": "2229FB84D9298BDC53AA873C3F8A2DA6FC84910CD780935F601D3D26CD655D21"
+    },
+    {
+      "Path": "verification/test-ux-review-return.ps1.log",
+      "SHA256": "8166F245A57EEF43185AD24788CC14B03B29249810F7386219EB947DBD8D93E7"
+    },
+    {
+      "Path": "verification/test-ux-shell.ps1.log",
+      "SHA256": "E39861948D279D68171176C27483F37280B6C78657DD255933B4C3EEEFE20F62"
+    },
+    {
+      "Path": "verification/test-ux-workflows.ps1.log",
+      "SHA256": "33FC9BF5F43542514B36BEAD68C728E53EA10A49675072D50A6139F23A0C2231"
+    },
+    {
+      "Path": "verification/workspace-upgrade.log",
+      "SHA256": "C69BF96BC843DCD977A446E9182809A2B12149623B78D4C0CF8E95D6582A02EF"
+    }
+  ],
+  "PendingAcceptance": [
+    "Physical 1366x768/1920x1080 displays at 100/125/150 percent scaling",
+    "Manual keyboard and screen-reader acceptance",
+    "Full NAVFIT interoperability/printed layout outside candidate verification"
+  ]
+}
