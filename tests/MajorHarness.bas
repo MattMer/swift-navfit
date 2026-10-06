@@ -7,7 +7,7 @@ Private Sub Check(ByVal value As Boolean, ByVal message As String)
     count = count + 1
 End Sub
 Public Function TestMajor() As String
-    Dim a As Long, b As Long, g As Long, snap As Long, meeting As Long, proposal As Long, batch As Long, route As Long, template As Long, rev As Long, failed As Boolean, undo As Long, suggestion As Object, secondProfile As Long, firstProfile As Long
+    Dim a As Long, b As Long, g As Long, snap As Long, meeting As Long, proposal As Long, batch As Long, route As Long, template As Long, rev As Long, failed As Boolean, undo As Long, suggestion As Object, secondProfile As Long, firstProfile As Long, siblingRoute As Long
     On Error GoTo Failed
     count = 0
     Call ConfigureWorkspace("SYNTHETIC COMMAND", "Synthetic contributor")
@@ -102,8 +102,14 @@ Public Function TestMajor() As String
     route = StartRoute(b, template, g)
     DecideRouteStep route, "Accepted", "First repeated step"
     DecideRouteStep route, "Accepted", "Final repeated step"
+    siblingRoute = StartRoute(a, template, g)
+    DecideRouteStep siblingRoute, "Accepted", "Sibling first step"
+    DecideRouteStep siblingRoute, "Accepted", "Sibling final step"
     ApproveSavedRoute route, "Synthetic local approval"
     Check ApprovalIsCurrent(route), "Local approval is current after locking"
+    Check RouteIsCurrent(siblingRoute), "Sibling lock incorrectly stales reviewed content"
+    ApproveSavedRoute siblingRoute, "Synthetic sibling approval"
+    Check ApprovalIsCurrent(route) And ApprovalIsCurrent(siblingRoute), "Approving another member stales prior approval"
     Check MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & b) = "Approved", "Local approval locks report editing"
     rev = CurrentRevision(b)
     On Error Resume Next

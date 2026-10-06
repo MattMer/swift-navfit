@@ -59,3 +59,5 @@ handled through your normal collaboration process. Local copies do not sync.
 Printing, full NAVFIT export/round-trip interoperability and complete Navy policy
 validation are not established by this package. Local approval is not an
 official signature. No network service, authentication or synchronization is added.
+
+After transfer, inspect stale routes and restart review where the recorded baseline differs. Historical approvals and route records are preserved; migration does not silently certify them as current.

@@ -6,6 +6,7 @@ Deployment prerelease, schema 23. Includes a blank workspace and a synthetic dem
 
 - Summary-group correctness and policy context: editable member comparison with both career recommendations, per-row report opening, current and prior ITA/promotion, explicit group status and membership moves, global/group/report starting defaults and inheritance resets.
 - Command directory and prior evaluation history: stable identities, confirmed/provisional matching, explicit corrections, manual prior periods/traits/recommendations and previewed atomic report creation for selected members. RUAD file mapping awaits a synthetic sample.
+- Local approval no longer becomes stale solely from its own or a sibling report’s edit lock; membership/revision changes retain stale guards.
 - Verified backup/restore now accepts schema-23 workspaces; packaged embedded worker is checked against the standalone tool.
 - Attributed, append-only report notes with full-text viewing, separate unposted-note checkpoints, recovery and shutdown safeguards.
 - Overview contributor switching, hidden Access Objects pane, contextual report review buttons, snippet return to the originating draft and failed-save undo/reload.
@@ -25,6 +26,6 @@ Exact packaged databases are tested on disposable copies, audited against all 72
 
 Automated policy/catalog checks passed 102/29 assertions; service checks passed 170 plus 49 reference checks. Native adapter/exchange guards and structured PDF status import were verified in development. Automated display geometry is not physical display or accessibility acceptance.
 
-Outstanding: actual 1366Ã—768/1920Ã—1080 displays at 100/125/150% scaling, keyboard/screen-reader acceptance, Access Runtime/x86, RUAD sample mapping, full instruction coverage, exact narrative print fit and native NAVFIT UI/printing round-trip acceptance. Returned-group reconciliation remains incomplete. Local approval is not an official signature or Navy acceptance. Contributor profiles provide attribution, not authentication; separate copies do not synchronize.
+Outstanding: actual 1366Ãƒâ€”768/1920Ãƒâ€”1080 displays at 100/125/150% scaling, keyboard/screen-reader acceptance, Access Runtime/x86, RUAD sample mapping, full instruction coverage, exact narrative print fit and native NAVFIT UI/printing round-trip acceptance. Returned-group reconciliation remains incomplete. Local approval is not an official signature or Navy acceptance. Contributor profiles provide attribution, not authentication; separate copies do not synchronize.
 
 See NARRATIVE_POLICY_REVIEW_2026-10-06.md and MANUAL_FEEDBACK_PROGRESS_2026-10-06.md for coverage and research-backed next priorities.

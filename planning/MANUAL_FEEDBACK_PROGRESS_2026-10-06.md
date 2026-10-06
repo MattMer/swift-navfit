@@ -102,3 +102,7 @@ r68 final artifact check: all 72 installed source modules match, native event bi
 Rate catalog/filter completed; 29 native assertions and 78 distinct source URLs checked successfully. Expanded live BUPERS checks, official counseling status save/PDF/native exchange, and source-page verification implemented. 37 verified citations; 102 live checks, 170 service checks, 12 new counseling-PDF checks and existing exchange/PDF suites pass. Policy scope, remaining gaps and eight researched leadership-tool recommendations: NARRATIVE_POLICY_REVIEW_2026-10-06.md. Final artifact audit and demo acceptance recorded in CURRENT_STATE.md. Schema remains 23; publication and physical/native NAVFIT UI acceptance remain separate.
 
 Final r75 acceptance: 72 installed modules match current source; 102 live-validation, 36 populated-demo, 30 guide and 29 populated catalog assertions pass. The schema-23 transfer preserves every original row/field and source fingerprint. No Git push or release publication.
+
+## Deployment 0.24.0-preview
+
+Release regression checks exposed and fixed the backup worker’s schema-21 ceiling and approval stamps that became stale solely from approval edit locks. Review currency now excludes member lock changes while bulk/edit stamps retain them. Major workflow tests include sibling approvals; 46 major and 39 group-correctness assertions pass before final exact-package verification. Migration tools and release guides target schema 23; exact release evidence is in DEPLOYMENT_0.24.0_VERIFICATION.json.
