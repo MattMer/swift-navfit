@@ -4,7 +4,7 @@ Package: `output/Swift_NAVFIT_0.24.0-preview.zip`, schema 23.
 Open `Swift_NAVFIT_0.24.0-preview-DEMO.accdb` for synthetic testing or use
 `Swift_NAVFIT_0.24.0-preview-blank.accdb` for a new workspace/migration template.
 The release is based on r75 with updated metadata and release-check fixes: schema-23 backup/restore, and review stamps that remain current after local approval locks. Bulk edit-lock guards remain intact; prior workspaces/builds remain.
-Exact packaged-byte verification and hashes are in the package MANIFEST.json.
+Exact packaged-byte verification: 27 suites, 72 matching source modules, empty blank user tables, and schema-20/21/22/23 transfer acceptance. Hashes and logs are in the package MANIFEST.json; repository evidence is DEPLOYMENT_0.24.0_VERIFICATION.json.
 See RELEASE_0.24.0_PREVIEW.md for changes since 0.23.0 and migration instructions.
 The older milestones below remain historical evidence.
 
