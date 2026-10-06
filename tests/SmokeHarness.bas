@@ -52,3 +52,8 @@ Rejected:
     RejectSnapshotFailure = True
     db.TableDefs("RevisionValue").Fields("FieldKey").ValidationRule = rule
 End Function
+
+Public Function SmokeAddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal paygrade As String, ByVal reason As String) As Boolean
+    Call AddGroupMember(groupID, reportID, paygrade, reason)
+    SmokeAddGroupMember = True
+End Function
