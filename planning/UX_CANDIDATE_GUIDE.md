@@ -1,6 +1,6 @@
 # Swift NAVFIT deployment prerelease
 
-This package is **0.23.0-preview, schema 21**. It is a deployment prerelease,
+This package is **0.24.0-preview, schema 23**. It is a deployment prerelease,
 not a replacement for the distributed 0.21.0 checkpoint. Manual physical-display,
 keyboard and screen-reader acceptance remains outstanding. This prerelease includes Siltstone colors, reduced tab-switch layout work, live
 validation with policy references, expanded PDF import and NAVFIT exchange.
@@ -8,9 +8,9 @@ The packaging script creates local assets; publication is a separate step.
 
 ## Choose the right file
 
-- **Swift_NAVFIT_0.23.0-preview-DEMO.accdb**: nine synthetic reports and three
+- **Swift_NAVFIT_0.24.0-preview-DEMO.accdb**: nine synthetic reports and three
   groups for experimentation. Do not transfer operational data into this file.
-- **Swift_NAVFIT_0.23.0-preview-blank.accdb**: a blank, separate workspace.
+- **Swift_NAVFIT_0.24.0-preview-blank.accdb**: a blank, separate workspace.
   Complete command/contributor setup or migrate into a new destination.
 
 Use desktop Microsoft Access. When active content is blocked, follow the
@@ -32,7 +32,7 @@ folder run:
 ```powershell
 powershell.exe -NoProfile -File .\scripts\upgrade-workspace.ps1 `
   -SourcePath 'C:\path\existing.accdb' `
-  -TemplatePath '.\Swift_NAVFIT_0.23.0-preview-blank.accdb' `
+  -TemplatePath '.\Swift_NAVFIT_0.24.0-preview-blank.accdb' `
   -DestinationPath 'C:\path\upgraded-review.accdb'
 ```
 
@@ -40,8 +40,8 @@ The source is opened read-only through DAO, not launched as an Access app.
 The transfer requires a blank template, rejects unknown source tables and
 existing destinations, copies within a transaction, and compares every original
 row and field. The source hash is checked; the destination is reopened before
-success is reported. A `.migration.json` companion records the result. New
-schema-21 senior/baseline tables remain empty for schema-20 sources.
+success is reported. A `.migration.json` companion records the result.
+Newer directory, history and note tables are added through source-preserving migration; original records and fields are verified.
 
 After migration, open the new destination and inspect report names, periods,
 traits, narratives, history, groups and review work before adopting it. Migration
@@ -59,3 +59,5 @@ handled through your normal collaboration process. Local copies do not sync.
 Printing, full NAVFIT export/round-trip interoperability and complete Navy policy
 validation are not established by this package. Local approval is not an
 official signature. No network service, authentication or synchronization is added.
+
+After transfer, inspect stale routes and restart review where the recorded baseline differs. Historical approvals and route records are preserved; migration does not silently certify them as current.

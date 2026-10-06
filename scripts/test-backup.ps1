@@ -10,6 +10,8 @@ $app=$null;$worker=$null
 try {
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($source,$true)
+    $expectedWorker=((Get-Content -LiteralPath (Join-Path $root 'scripts/workspace-backup.ps1')) -join "`r`n")+"`r`n"
+    if($app.Eval('BackupWorkerScript()') -cne $expectedWorker){throw 'Embedded backup worker differs from source'}
     $app.LoadFromText(5,'BackupHarness',(Join-Path $root 'tests/BackupHarness.bas'))
     $result=$app.Eval('PrepareBackupCheckpoint()');if(-not $result.StartsWith('PASS:')){throw $result}
     $command=$app.Eval('BackupWorkerCommand("Backup","'+$source+'","'+$copy+'")')

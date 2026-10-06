@@ -92,9 +92,9 @@ Next
 DoCmd.OpenForm "frmLibrary": Set f = Forms!frmLibrary
 Dim previousFolder As Variant
 previousFolder = f!lstFolders
-f!uxFolderFilter = "Not a listed folder"
-Check Not UXFolderFilterChanged(), "Unknown folder text accepted"
-Check Nz(f!lstFolders, 0) = Nz(previousFolder, 0) And InStr(f!lblCount.Caption, "Choose a folder") > 0, "Unknown folder changed filter or lacked guidance"
+f!uxFolderFilter = "Not a listed summary group"
+Check Not UXFolderFilterChanged(), "Unknown summary group text accepted"
+Check Nz(f!lstFolders, 0) = Nz(previousFolder, 0) And InStr(f!lblCount.Caption, "Choose a summary group") > 0, "Unknown summary group changed filter or lacked guidance"
 DoCmd.OpenForm "frmEditor", , , , , , "0"
 Forms!frmEditor!cboKind = "FITREP": Call UXEditorKindChanged
 Forms!frmEditor!txtTitle = "Single result reopen fixture": Forms!frmEditor!txtOfficialName = "TESTER, UX"

@@ -26,6 +26,9 @@ Public Function LibraryViewSelect() As String
                 LibraryViewSelect = "ReportID,FormKind AS [Report type],Title,UXMemberLabel(ReportID) AS Member,UXReportState(ReportID) AS [Local status],IIf(IsArchived,'Archived','Active') AS [Archive state]"
         End Select
     End With
+    LibraryViewSelect = LibraryViewSelect & ",UXTableITA(ReportID) AS ITA,PromotionRecommendation AS [Promotion recommendation],UXTableGroups(ReportID) AS [Summary groups]"
+    Forms!frmLibrary!lstReports.ColumnCount = 9
+    Forms!frmLibrary!lstReports.ColumnWidths = "0;900;1700;1800;1250;1050;700;1500;1700"
     Forms!frmLibrary!cboView = preset
 End Function
 Public Function ChangeLibraryViewUI() As Boolean

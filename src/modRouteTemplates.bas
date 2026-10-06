@@ -44,7 +44,7 @@ Public Function StartRoute(ByVal reportID As Long, ByVal templateID As Long, Opt
     If groupID > 0 Then
         If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4305, , "Recover the archived group before starting review."
         If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & reportID) <> 1 Then Err.Raise vbObjectError + 4305, , "Report is not in the selected group."
-        r!GroupID = groupID: r!GroupStamp = GroupStamp(groupID)
+        r!GroupID = groupID: r!GroupStamp = GroupStamp(groupID, False)
     End If
     r.Update: r.Bookmark = r.LastModified: id = r!RunID: r.Close
     Set s = CurrentDb.OpenRecordset("RouteRunStep", dbOpenDynaset)
@@ -71,7 +71,7 @@ Public Function RouteIsCurrent(ByVal runID As Long) As Boolean
     RouteIsCurrent = (r!RevisionID = CurrentRevision(r!ReportID))
     If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & r!ReportID), True) Then RouteIsCurrent = False
     If Not IsNull(r!GroupID) Then
-        If StrComp(Nz(r!GroupStamp, ""), GroupStamp(r!GroupID), vbBinaryCompare) <> 0 Then RouteIsCurrent = False
+        If StrComp(Nz(r!GroupStamp, ""), GroupStamp(r!GroupID, False), vbBinaryCompare) <> 0 Then RouteIsCurrent = False
     End If
     r.Close
 End Function

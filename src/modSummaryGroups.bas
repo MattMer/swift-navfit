@@ -30,7 +30,7 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "CreateSummaryGroup", message
 End Function
-Public Function GroupStamp(ByVal groupID As Long) As String
+Public Function GroupStamp(ByVal groupID As Long, Optional ByVal includeWorkflowLocks As Boolean = True) As String
     Dim r As DAO.Recordset, g As DAO.Recordset
     Set g = CurrentDb.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
     If g.EOF Then g.Close: Err.Raise vbObjectError + 4103, , "Group does not exist."
@@ -38,6 +38,7 @@ Public Function GroupStamp(ByVal groupID As Long) As String
     Set r = CurrentDb.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived,r.WorkflowState FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         GroupStamp = GroupStamp & "|" & r!ReportID & ":" & Nz(r!CurrentRevisionID, 0) & ":" & CStr(r!IsArchived)
+        If includeWorkflowLocks Then GroupStamp = GroupStamp & ":" & r!WorkflowState
         r.MoveNext
     Loop
     r.Close

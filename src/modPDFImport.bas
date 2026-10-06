@@ -93,7 +93,8 @@ Private Function PDFConvertValue(ByVal value As String, ByVal conversion As Stri
     Select Case conversion
         Case "text": PDFConvertValue = value
         Case "date": PDFConvertValue = PDFDate(value, century)
-        Case "date-text": PDFConvertValue = Format$(PDFDate(value, century), "yyyy-mm-dd")
+        Case "date-text"
+            If key = "CounselingDate" And IsCounselingStatus(value) Then PDFConvertValue = value Else PDFConvertValue = Format$(PDFDate(value, century), "yyyy-mm-dd")
         Case "flag", "observation"
             If mark <> "0" And mark <> "1" And mark <> "2" Then Err.Raise vbObjectError + 4721, , "Unrecognized PDF checkbox value for " & key & ": " & value
             If mark = "2" Then PDFConvertValue = Null: Exit Function

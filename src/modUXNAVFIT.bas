@@ -30,6 +30,7 @@ End Function
 Public Function UXExportNAVFITGroup() As Boolean
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
+        !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), Nz(!cboGroup, 0), 0)
         Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False))
         !txtStatus = "Group export complete: " & !txtExportPath & vbCrLf & "Open this file in NAVFIT98A, select the group folder, validate its reports and use NAVFIT's Print Folder/Print Summary actions. Keep the group baseline locally. Group-return reconciliation is pending."
         !cmdExportGroup.Enabled = False
@@ -88,7 +89,7 @@ Public Function UXOpenNAVFITExchange() As Boolean
     UXOpenNAVFITExchange = True
 End Function
 Public Function UXChooseNAVFITPath(ByVal controlName As String, ByVal savePath As Boolean) As Boolean
-    With Application.FileDialog(IIf(savePath, 2, 3))
+    With Application.FileDialog(IIf(savePath, 4, 3))
         .Title = "Choose " & controlName
         If .Show <> -1 Then Exit Function
         Forms!frmNAVFITExchange.Controls(controlName) = .SelectedItems(1)
@@ -100,6 +101,7 @@ Public Function UXExportNAVFIT() As Boolean
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
         !txtStatus = "Preparing single-report export."
+        !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), 0, Nz(!cboReport, 0))
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
         !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group."
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"

@@ -35,7 +35,7 @@ Public Function UXGroupList() As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0): filter = Nz(f!uxArchiveFilter, "Active")
     If filter = "Active" Then where = "WHERE g.IsArchived=False "
     If filter = "Archived" Then where = "WHERE g.IsArchived=True "
-    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS Status FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
+    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(GroupWorkflow(g.GroupID)) AS [Group status] FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
     If id > 0 Then
         If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then
             id = 0
@@ -49,11 +49,15 @@ Public Function UXGroupList() As Boolean
     f!lstGroups = id
     On Error GoTo 0
     Call UXGroupSelection
+    f!lstGroups.ColumnCount = 7: f!lstGroups.ColumnWidths = "0;3000;1200;850;800;1400;2500"
     UXResizeWorkspace f.Name: UXGroupList = True
 End Function
 Public Function UXGroupSelection() As Boolean
     Dim f As Access.Form, id As Long, archived As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0)
+    If UXHasControl(f, "uxGroupState") Then
+        If id > 0 Then f!uxGroupState = GroupWorkflow(id): f!uxStateStamp = GroupStamp(id) Else f!uxGroupState = Null: f!uxStateStamp = ""
+    End If
     archived = Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & id), False)
     On Error Resume Next
     If Screen.ActiveControl.Parent.Name = f.Name Then

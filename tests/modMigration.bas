@@ -6,6 +6,7 @@ Private Function SqlType(ByVal f As DAO.Field) As String
     Select Case f.Type
         Case dbBoolean: SqlType = "Bit"
         Case dbLong: SqlType = "Long"
+        Case dbInteger: SqlType = "Short"
         Case dbDouble: SqlType = "Double"
         Case dbDate: SqlType = "DateTime"
         Case dbText: SqlType = "Text(" & f.Size & ")"
@@ -18,7 +19,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Dim s As DAO.Database, t As DAO.Database, w As DAO.Workspace, reader As DAO.Workspace
     Dim r As DAO.Recordset, a As DAO.Recordset, b As DAO.Recordset, q As DAO.QueryDef
     Dim tables As Variant, n As Variant, i As Long, ver As Long, sql As String
-    Dim names As String, defs As String, vals As String, trans As Boolean, message As String, stage As String
+    Dim names As String, defs As String, vals As String, trans As Boolean, message As String, stage As String, rowWhere As String, orderFields As String
     Dim av As Variant, bv As Variant, requiredFields As Collection, fieldIndex As Variant
     Dim table As DAO.TableDef, known As Boolean, targetVersion As Long
     On Error GoTo Failed
@@ -26,11 +27,14 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 21 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If ver < 1 Or ver > 23 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion <> 21 Then Err.Raise vbObjectError + 302, , "Target schema must be 21."
+    If targetVersion <> 21 And targetVersion <> 22 And targetVersion <> 23 Then Err.Raise vbObjectError + 302, , "Target schema must be 21, 22 or 23."
+    If ver > targetVersion Then Err.Raise vbObjectError + 302, , "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
+    If targetVersion >= 22 Then tables = Split(Join(tables, "|") & "|ReportNote|ReportNoteDraft", "|")
+    If targetVersion >= 23 Then tables = Split(Join(tables, "|") & "|CommandMember|MemberReport|PriorEvaluation|PriorEvaluationTrait", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             known = (table.Name = "AppMetadata")
@@ -45,6 +49,8 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Next
     w.BeginTrans: trans = True
     For Each n In tables
+        If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextTable
+        If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextTable
         If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextTable
         If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextTable
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextTable
@@ -71,7 +77,9 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
             Next
             stage = "Insert " & n & " record " & r.Fields(0).Value
             q.Execute dbFailOnError: q.Close
-            Set b = t.OpenRecordset("SELECT * FROM [" & n & "] WHERE [" & r.Fields(0).Name & "]=" & r.Fields(0).Value, dbOpenDynaset)
+            rowWhere = "[" & r.Fields(0).Name & "]=" & r.Fields(0).Value
+            If n = "PriorEvaluationTrait" Then rowWhere = rowWhere & " AND BlockNumber=" & r!BlockNumber
+            Set b = t.OpenRecordset("SELECT * FROM [" & n & "] WHERE " & rowWhere, dbOpenDynaset)
             b.Edit
             For i = 1 To r.Fields.Count - 1
                 stage = "Copy " & n & "." & r.Fields(i).Name
@@ -97,6 +105,8 @@ NextTable:
         q.Close: r.Close
     End If
     For Each n In tables
+        If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextCheck
+        If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextCheck
         If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextCheck
         If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextCheck
         If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextCheck
@@ -106,6 +116,7 @@ NextTable:
         If ver < 4 And (n = "ImportReceipt" Or n = "ImportRawValue") Then GoTo NextCheck
         If ver = 1 And (n = "Folder" Or n = "FolderMove") Then GoTo NextCheck
         sql = "SELECT * FROM [" & n & "] ORDER BY [" & s.TableDefs(n).Fields(0).Name & "]"
+        If n = "PriorEvaluationTrait" Then sql = sql & ",BlockNumber"
         Set a = s.OpenRecordset(sql, dbOpenSnapshot): Set b = t.OpenRecordset(sql, dbOpenSnapshot)
         Do While Not a.EOF
             If b.EOF Then Err.Raise vbObjectError + 304, , "Missing row in " & n
@@ -126,6 +137,8 @@ NextTable:
         a.Close: b.Close
 NextCheck:
     Next
+    If targetVersion >= 22 Then Application.Eval "MigrateLegacyReportNotes()"
+    If targetVersion >= 23 And ver < 23 Then Call SyncDirectoryFromReports()
     w.CommitTrans: trans = False: s.Close: reader.Close
     MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to " & targetVersion
     Exit Function

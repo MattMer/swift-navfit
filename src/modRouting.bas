@@ -27,6 +27,7 @@ Public Function AddContributor(ByVal name As String) As Long
     AddContributor = r!UserProfileID: r.Close: Set r = Nothing
 End Function
 Public Function SwitchContributor(ByVal profileID As Long) As Boolean
+    If CurrentProject.AllForms("frmUXNoteComposer").IsLoaded Then Err.Raise vbObjectError + 6954, , "Close or post the open note before switching contributors."
     If CurrentProject.AllForms("frmEditor").IsLoaded Or CurrentProject.AllForms("frmReviewComments").IsLoaded Then Err.Raise vbObjectError + 1803, , "Close the draft editor and review comments before switching contributors."
     If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, , "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError

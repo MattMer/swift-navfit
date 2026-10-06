@@ -17,9 +17,10 @@ Private bulkDefaultPreview As Object
 Private bulkMixed As Object
 Private bulkDefaults As Boolean
 Private bulkDefaultStamp As String
+Private bulkDefaultResets As Object
 Public Function UXFolderFilterChanged() As Boolean
     If Not IsNumeric(Nz(Forms!frmLibrary!uxFolderFilter, "")) Then
-        Forms!frmLibrary!lblCount.Caption = "Choose a folder from the list."
+        Forms!frmLibrary!lblCount.Caption = "Choose a summary group from the list."
         Forms!frmLibrary!uxFolderFilter = Forms!frmLibrary!lstFolders
         Exit Function
     End If
@@ -237,10 +238,11 @@ Public Function UXShowSaveError(ByVal message As String) As Boolean
     Dim f As Access.Form
     Set f = Forms!frmEditor
     If Not UXHasControl(f, "uxError") Then Exit Function
-    f!uxError.Caption = "Unable to save: " & message & " Pending values are preserved."
+    f!uxError.Caption = "Unable to save: " & message & " Pending values are preserved. Use Undo pending changes to reload the saved report and leave."
     UXShowSaveError = True
 End Function
 Public Function UXSaveEditor() As Boolean
+    On Error GoTo Failed
     Dim f As Access.Form
     Set f = Forms!frmEditor
     f!uxError.Caption = ""
@@ -249,6 +251,9 @@ Public Function UXSaveEditor() As Boolean
     End If
     UXSaveEditor = SaveEditor()
     UXRefreshEditor
+    Exit Function
+Failed:
+    UXShowSaveError Err.Description
 End Function
 Public Function UXLoadGroups() As Boolean
     UXLoadGroups = UXGroupList()
@@ -272,7 +277,8 @@ Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
     Next
     If mode = "Members" Or mode = "Comparison" Or mode = "Defaults" Then f.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & Nz(f!cboGroup, 0)), "Summary group")
     If mode = "Members" And Nz(f!cboGroup, 0) > 0 Then
-        f!lstReports.RowSource = "SELECT r.ReportID,r.Title,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!cboGroup & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
+        f!lstReports.RowSource = "SELECT r.ReportID,r.Title,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind,UXTableITA(r.ReportID) AS ITA,r.PromotionRecommendation AS [Promotion recommendation] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!cboGroup & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
+        f!lstReports.ColumnCount = 6: f!lstReports.ColumnWidths = "0;1700;2700;1000;900;2100"
         f!lstReports.Requery
     End If
     UXFocusedGroupMode mode
@@ -290,6 +296,7 @@ Public Function UXChooseMembers() As Boolean
         id = Nz(f!lstReports.Column(0, i), 0)
         f!lstReports.Selected(i) = (DCount("*", "GroupMember", "GroupID=" & groupContext & " AND ReportID=" & id) > 0)
     Next
+    GroupMembersStart groupContext
     UXChooseMembers = True
 End Function
 Public Function UXSaveMembers() As Boolean
@@ -421,15 +428,18 @@ Public Function UXEditorReview(ByVal mode As String) As Boolean
     DoCmd.OpenForm "frmUXReview", , , , , , CStr(id)
     UXEditorReview = True
 End Function
-Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False) As Boolean
+Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False, Optional ByVal globalMode As Boolean = False) As Boolean
     Dim r As DAO.Recordset, key As Variant, values As Object, f As Access.Form, seen As Boolean, base As Object, db As DAO.Database
-    groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
-    If groupContext = 0 Then MsgBox "Select a group first.": Exit Function
+    If globalMode Then groupContext = 0 Else groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+    If groupContext = 0 And Not globalMode Then MsgBox "Select a group first.": Exit Function
     Set bulkMixed = CreateObject("Scripting.Dictionary")
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupContext), True) Then Forms!frmMajorWorkbench!lblStatus.Caption = "Recover this group before changing shared blocks or defaults.": Exit Function
+    If groupContext > 0 Then
+        If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupContext), True) Then Forms!frmMajorWorkbench!lblStatus.Caption = "Recover this group before changing shared blocks or defaults.": Exit Function
+    End If
     bulkDefaults = defaultsMode: bulkDefaultStamp = UXDefaultsStamp(groupContext)
-    bulkTargetStamp = GroupStamp(groupContext)
+    bulkTargetStamp = UXBulkContextStamp(groupContext)
     bulkCSV = "": Set bulkChanges = CreateObject("Scripting.Dictionary"): Set db = CurrentDb
+    Set bulkDefaultResets = CreateObject("Scripting.Dictionary")
     Set r = db.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupContext & " ORDER BY ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         If Len(bulkCSV) > 0 Then bulkCSV = bulkCSV & ","
@@ -448,13 +458,13 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False)
     If Not seen And Not defaultsMode Then MsgBox "Add group members first.": Exit Function
     If base Is Nothing Then Set base = CreateObject("Scripting.Dictionary")
     If defaultsMode Then
-        For Each key In UXSharedKeys(): base(key) = UXGroupDefaultValue(groupContext, CStr(key)): Next
+        For Each key In UXSharedKeys(): base(key) = UXEffectiveDefault(groupContext, CStr(key)): Next
     End If
     DoCmd.OpenForm "frmUXBulk"
     Set f = Forms!frmUXBulk
     UXInvalidateBulkPreview
     f!uxKind = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & groupContext), "EVAL")
-    f!lblHeading.Caption = IIf(defaultsMode, "Group defaults", "Shared report blocks")
+    f!lblHeading.Caption = IIf(globalMode, "Global defaults", IIf(defaultsMode, "Group defaults", "Shared report blocks"))
     f!lstPreview.RowSourceType = "Table/Query"
     For Each key In UXSharedKeys()
         If UXHasControl(f, "uxValue" & key) Then
@@ -471,11 +481,11 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False)
             End If
         End If
     Next
-    f!uxGroupTitle.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupContext), "Summary group")
+    f!uxGroupTitle.Caption = IIf(globalMode, "All summary groups - starting values; group and report overrides remain editable", Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupContext), "Summary group"))
     UXBlockRefresh
     For Each key In UXSharedKeys()
         If defaultsMode Then
-            UXBlockState CStr(key), IIf(DCount("*", "FieldDefault", "ScopeKind='Group' AND ScopeID=" & groupContext & " AND FieldKey=" & QuoteSQL(key)) = 0, "No group default", IIf(IsNull(base(key)), "Default: clear value", "Saved group default"))
+            UXBlockState CStr(key), IIf(DCount("*", "FieldDefault", UXDefaultScopeWhere(groupContext) & " AND FieldKey=" & QuoteSQL(key)) = 0, IIf(groupContext = 0, "No global default", "Inherited global starting value"), IIf(IsNull(base(key)), "Default: clear value", "Saved default override"))
         Else
             UXBlockState CStr(key), IIf(bulkMixed.Exists(key), "Mixed values - unchanged", IIf(IsNull(base(key)) Or Len(Nz(base(key), "")) = 0, "Blank - unchanged", "Shared saved value - unchanged"))
         End If
@@ -486,6 +496,9 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False)
     UXStartGroupBulk = True
 End Function
 Public Function UXBulkChanged(ByVal key As String) As Boolean
+    If Not bulkDefaultResets Is Nothing Then
+        If bulkDefaultResets.Exists(key) Then bulkDefaultResets.Remove key
+    End If
     If bulkChanges Is Nothing Then Set bulkChanges = CreateObject("Scripting.Dictionary")
     Dim c As Access.Control, value As Variant
     Set c = Forms!frmUXBulk.Controls("uxValue" & key): value = c.Value
@@ -530,7 +543,7 @@ End Function
 Public Function UXPreviewBulk() As Boolean
     On Error GoTo Failed
     UXInvalidateBulkPreview
-    If GroupStamp(groupContext) <> bulkTargetStamp Then Err.Raise vbObjectError + 4701, , "Group members or saved reports changed. Reopen shared report blocks before previewing."
+    If UXBulkContextStamp(groupContext) <> bulkTargetStamp Then Err.Raise vbObjectError + 4701, , "Group members or saved reports changed. Reopen shared report blocks before previewing."
     Set bulkChanges = UXBlockValidated(bulkChanges, Nz(Forms!frmUXBulk!uxKind, "EVAL"))
     If bulkDefaults Then
         If bulkChanges.Count = 0 Or Len(Trim$(Nz(Forms!frmUXBulk!txtReason, ""))) = 0 Then Err.Raise vbObjectError + 4803, , "Change a block and enter a reason before previewing."
@@ -538,21 +551,24 @@ Public Function UXPreviewBulk() As Boolean
         Dim key As Variant, sql As String
         Set bulkDefaultBefore = CreateObject("Scripting.Dictionary"): Set bulkDefaultPreview = CreateObject("Scripting.Dictionary")
         For Each key In bulkChanges.Keys
-            bulkDefaultBefore(key) = UXGroupDefaultValue(groupContext, CStr(key)): bulkDefaultPreview(key) = bulkChanges(key)
+            bulkDefaultBefore(key) = UXEffectiveDefault(groupContext, CStr(key)): bulkDefaultPreview(key) = bulkChanges(key)
             If Len(sql) > 0 Then sql = sql & " UNION ALL "
-            sql = sql & "SELECT " & QuoteSQL(key) & " AS ItemID, 'Group default' AS Member," & QuoteSQL(UXFieldCaption(key, Nz(Forms!frmUXBulk!uxKind, "EVAL"))) & " AS Block, UXBulkBefore(" & QuoteSQL(key) & ") AS [Before], UXBlockPendingValue(" & QuoteSQL(key) & ") AS [After] FROM Workspace WHERE WorkspaceID=1"
+            sql = sql & "SELECT " & QuoteSQL(key) & " AS ItemID, " & QuoteSQL(IIf(groupContext = 0, "Global default", "Group default")) & " AS Member," & QuoteSQL(UXFieldCaption(key, Nz(Forms!frmUXBulk!uxKind, "EVAL"))) & " AS Block, UXBulkBefore(" & QuoteSQL(key) & ") AS [Before], UXBlockPendingValue(" & QuoteSQL(key) & ") AS [After] FROM Workspace WHERE WorkspaceID=1"
         Next
         bulkBatch = -1: Forms!frmUXBulk!lstPreview.RowSource = sql
     Else
     bulkBatch = PreviewReportChanges(bulkCSV, bulkChanges, Nz(Forms!frmUXBulk!txtReason, ""))
     bulkPreviewReason = Nz(Forms!frmUXBulk!txtReason, "")
-    bulkPreviewStamp = GroupStamp(groupContext)
+    bulkPreviewStamp = UXBulkContextStamp(groupContext)
     Forms!frmUXBulk!lstPreview.RowSource = "SELECT i.ItemID,UXIdentity(r.OfficialName,r.MemberName) AS Member,UXFieldLabel(i.FieldKey),i.BeforeValue,i.NewValue FROM ChangeItem AS i INNER JOIN Report AS r ON i.ReportID=r.ReportID WHERE i.BatchID=" & bulkBatch & " ORDER BY UXIdentity(r.OfficialName,r.MemberName),i.ItemID"
     End If
-    bulkPreviewReason = Nz(Forms!frmUXBulk!txtReason, ""): bulkPreviewStamp = GroupStamp(groupContext)
+    bulkPreviewReason = Nz(Forms!frmUXBulk!txtReason, ""): bulkPreviewStamp = UXBulkContextStamp(groupContext)
     Forms!frmUXBulk!lstPreview.Requery
     UXBlockMode "Preview"
     Forms!frmUXBulk!uxStatus.Caption = "Preview only. Review each complete before/after value before applying."
+    If UXHasControl(Forms!frmUXBulk, "txtGroupImpact") Then
+        If bulkDefaults Then Forms!frmUXBulk!txtGroupImpact = "Defaults are suggestions; saved reports and current group calculations are unchanged." Else Forms!frmUXBulk!txtGroupImpact = GroupBulkImpact(groupContext, bulkBatch)
+    End If
     Forms!frmUXBulk!cmdApply.Enabled = True
     UXPreviewBulk = True: Exit Function
 Failed:
@@ -561,7 +577,7 @@ End Function
 Public Function UXApplyBulk() As Boolean
     On Error GoTo Failed
     If bulkBatch = 0 Then Err.Raise vbObjectError + 4702, , "Preview the current changes before applying."
-    If bulkPreviewReason <> Nz(Forms!frmUXBulk!txtReason, "") Or bulkPreviewStamp <> GroupStamp(groupContext) Then
+    If bulkPreviewReason <> Nz(Forms!frmUXBulk!txtReason, "") Or bulkPreviewStamp <> UXBulkContextStamp(groupContext) Then
         UXInvalidateBulkPreview
         Err.Raise vbObjectError + 4703, , "The reason, group members or saved reports changed. Create a fresh preview."
     End If
@@ -569,7 +585,13 @@ Public Function UXApplyBulk() As Boolean
         If UXDefaultsStamp(groupContext) <> bulkDefaultStamp Then UXInvalidateBulkPreview: Err.Raise vbObjectError + 4804, , "Group defaults changed. Reopen and preview again."
         Dim w As DAO.Workspace, key As Variant, started As Boolean
         Set w = DBEngine.Workspaces(0): w.BeginTrans: started = True
-        For Each key In bulkChanges.Keys: SetFieldDefault "Group", groupContext, CStr(key), bulkChanges(key): Next
+        For Each key In bulkChanges.Keys
+            If bulkDefaultResets.Exists(key) Then
+                UXRemoveDefault groupContext, CStr(key)
+            Else
+                SetFieldDefault IIf(groupContext = 0, "Command", "Group"), IIf(groupContext = 0, 1, groupContext), CStr(key), bulkChanges(key)
+            End If
+        Next
         Dim operation As Long
         operation = BeginOperation("Group defaults preview", "Group " & groupContext & "; reason: " & bulkPreviewReason)
         FinishOperation operation, "Completed", bulkChanges.Count & " defaults applied; reports unchanged."
@@ -578,13 +600,31 @@ Public Function UXApplyBulk() As Boolean
         ApplyFieldBatch bulkBatch
     End If
     UXInvalidateBulkPreview False
-    bulkTargetStamp = GroupStamp(groupContext)
+    bulkTargetStamp = UXBulkContextStamp(groupContext)
     Set bulkChanges = CreateObject("Scripting.Dictionary")
-    Forms!frmUXBulk!uxStatus.Caption = IIf(bulkDefaults, "Applied group defaults. Saved reports unchanged.", "Applied reviewed block changes. One revision per report; previous values retained for guarded undo.")
+    Forms!frmUXBulk!uxStatus.Caption = IIf(bulkDefaults, "Applied defaults. Saved reports unchanged.", "Applied reviewed block changes. One revision per report; previous values retained for guarded undo.")
     UXApplyBulk = True: Exit Function
 Failed:
     If started Then w.Rollback
     Forms!frmUXBulk!uxStatus.Caption = Err.Description & " No partial batch was applied."
+End Function
+Public Function UXEditingDefaults() As Boolean
+    UXEditingDefaults = bulkDefaults
+End Function
+Public Function UXResetDefault(ByVal key As String) As Boolean
+    Dim value As Variant, c As Access.Control
+    If Not bulkDefaults Then Exit Function
+    If groupContext = 0 Then value = Null Else value = UXGroupDefaultValue(0, key)
+    Set c = Forms!frmUXBulk.Controls("uxValue" & key)
+    If c.ControlType = acCheckBox Then
+        If IsNull(value) Or Len(Nz(value, "")) = 0 Then c = Null Else If key = "ObservationStatus" Then c = (value = "NOB") Else c = (value = "Yes")
+    Else
+        c = value
+    End If
+    bulkChanges(key) = value: bulkDefaultResets(key) = True
+    UXBlockRefresh: UXBlockState key, "Reset to inherited value staged"
+    UXInvalidateBulkPreview
+    UXResetDefault = True
 End Function
 Public Function UXBulkDetail() As Boolean
     Dim id As Long, r As DAO.Recordset, db As DAO.Database
@@ -622,6 +662,7 @@ Public Function UXCloseScreen(ByVal formName As String) As Boolean
     UXCloseScreen = True
 End Function
 Public Function UXCloseResource(ByVal formName As String) As Boolean
+    If formName = "frmSnippets" Then UXCloseResource = UXReturnSnippets(): Exit Function
     DoCmd.Close acForm, formName, acSaveNo
     DoCmd.OpenForm "frmUXResources"
     UXCloseResource = True

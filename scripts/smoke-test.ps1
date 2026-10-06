@@ -91,17 +91,23 @@ try {
     Assert $true 'Visible controls stay within form width'
     $app.DoCmd.OpenForm('frmLibrary')
     $library=$app.Forms.Item('frmLibrary')
-    $library.Controls.Item('lstFolders').Value=$childFolder
+    $smokeGroup=InvokeVba 'CreateSummaryGroup' @('Smoke group','EVAL','E5')
+    [void](InvokeVba 'SmokeAddGroupMember' @($smokeGroup,$id,'E5',''))
+    [void]$app.Eval('UXRefreshGroupFilter()')
+    $library.Controls.Item('lstFolders').Value=$smokeGroup
     [void]$app.Eval('RefreshLibrary()')
-    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 1) 'Folder selection filters reports'
+    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 1) 'Summary-group selection filters reports'
     $library.Controls.Item('lstReports').Value=$id
-    $library.Controls.Item('cboDestination').Value=0
-    Assert ($app.Eval('MoveReportUI()')) 'Move report button action succeeds'
-    Assert ([Math]::Max(0,($library.Controls.Item('lstReports').ListCount-1)) -eq 0) 'Move report action refreshes current folder view'
-    [void](InvokeVba 'AssignFolder' @($id,$childFolder))
+    Assert ($app.Eval('UXChooseReportGroup()')) 'Move report opens summary-group selector'
+    $app.Forms.Item('frmUXMoveGroup').Controls.Item('cboGroup').Value=0
+    Assert ($app.Eval('UXPreviewMoveGroup()')) 'Summary-group move preview succeeds'
+    Assert ($app.Eval('UXApplyMoveGroup()')) 'Summary-group move apply succeeds'
+    $app.DoCmd.Close(2,'frmUXMoveGroup',2)
+    Assert ([Math]::Max(0,($library.Controls.Item('lstReports').ListCount-1)) -eq 0) 'Move refreshes current summary-group view'
+    [void](InvokeVba 'SmokeAddGroupMember' @($smokeGroup,$id,'E5',''))
     $library.Controls.Item('lstFolders').Value=-1
     [void]$app.Eval('RefreshLibrary()')
-    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 4) 'Unassigned view locates drafts outside folders'
+    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 4) 'Ungrouped view locates drafts outside summary groups'
     $library.Controls.Item('lstFolders').Value=0
     $library.Controls.Item('txtSearch').Value="O'Brien"
     [void]$app.Eval('RefreshLibrary()')

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 21,
+  "SchemaVersion": 23,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -22,7 +22,13 @@
     "ReportingSeniorRecord",
     "ReportingSeniorValue",
     "RSCABaseline",
-    "GroupRSCABaseline"
+    "GroupRSCABaseline",
+    "ReportNote",
+    "ReportNoteDraft",
+    "CommandMember",
+    "MemberReport",
+    "PriorEvaluation",
+    "PriorEvaluationTrait"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -96,6 +102,31 @@
     "ALTER TABLE GroupRSCABaseline ADD CONSTRAINT FK_RSGroupSenior FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",
     "ALTER TABLE GroupRSCABaseline ADD CONSTRAINT FK_RSGroupBaseline FOREIGN KEY (BaselineID) REFERENCES RSCABaseline (BaselineID)",
     "CREATE UNIQUE INDEX UX_RSValue ON ReportingSeniorValue (SeniorID,FieldKey)",
-    "CREATE UNIQUE INDEX UX_RSGuid ON ReportingSeniorRecord (SeniorGuid)"
+    "CREATE UNIQUE INDEX UX_RSGuid ON ReportingSeniorRecord (SeniorGuid)",
+    "CREATE TABLE ReportNote (NoteID COUNTER PRIMARY KEY, NoteGuid TEXT(38) NOT NULL, ReportID LONG NOT NULL, AuthorProfileID LONG, ContributorName TEXT(160) NOT NULL, NoteText LONGTEXT, CreatedAt DATETIME, SourceKind TEXT(20), LegacyReportID LONG)",
+    "CREATE UNIQUE INDEX UX_ReportNoteGuid ON ReportNote (NoteGuid)",
+    "CREATE UNIQUE INDEX UX_LegacyNote ON ReportNote (LegacyReportID) WITH IGNORE NULL",
+    "ALTER TABLE ReportNote ADD CONSTRAINT FK_NoteReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)",
+    "ALTER TABLE ReportNote ADD CONSTRAINT FK_NoteAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)",
+    "CREATE TABLE ReportNoteDraft (DraftID COUNTER PRIMARY KEY, DraftGuid TEXT(38) NOT NULL, ReportID LONG NOT NULL, AuthorProfileID LONG NOT NULL, NoteText LONGTEXT, VersionCounter LONG NOT NULL, CheckpointAt DATETIME)",
+    "CREATE UNIQUE INDEX UX_NoteDraftGuid ON ReportNoteDraft (DraftGuid)",
+    "ALTER TABLE ReportNoteDraft ADD CONSTRAINT FK_NoteDraftReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)",
+    "ALTER TABLE ReportNoteDraft ADD CONSTRAINT FK_NoteDraftAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)",
+    "CREATE TABLE CommandMember (MemberID COUNTER PRIMARY KEY, MemberGuid TEXT(38) NOT NULL, FullName TEXT(120) NOT NULL, ReportName TEXT(27), RankRate TEXT(5), MemberSSN TEXT(9), SourceKind TEXT(20), IsArchived BIT, VersionCounter LONG NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME)",
+    "CREATE UNIQUE INDEX UX_CommandMemberGuid ON CommandMember (MemberGuid)",
+    "CREATE UNIQUE INDEX UX_CommandMemberSSN ON CommandMember (MemberSSN) WITH IGNORE NULL",
+    "ALTER TABLE CommandMember ADD CONSTRAINT FK_CommandMemberCreator FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
+    "ALTER TABLE CommandMember ADD CONSTRAINT FK_CommandMemberEditor FOREIGN KEY (ModifiedBy) REFERENCES UserProfile (UserProfileID)",
+    "CREATE TABLE MemberReport (ReportID LONG PRIMARY KEY, MemberID LONG NOT NULL, MatchState TEXT(20), MatchSource TEXT(30), UpdatedBy LONG NOT NULL, UpdatedAt DATETIME)",
+    "ALTER TABLE MemberReport ADD CONSTRAINT FK_MemberReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)",
+    "ALTER TABLE MemberReport ADD CONSTRAINT FK_ReportDirectoryMember FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE MemberReport ADD CONSTRAINT FK_MemberReportAuthor FOREIGN KEY (UpdatedBy) REFERENCES UserProfile (UserProfileID)",
+    "CREATE TABLE PriorEvaluation (PriorID COUNTER PRIMARY KEY, PriorGuid TEXT(38) NOT NULL, MemberID LONG NOT NULL, FormKind TEXT(12) NOT NULL, RankRate TEXT(5), PeriodStart DATETIME NOT NULL, PeriodEnd DATETIME NOT NULL, PromotionRecommendation TEXT(30), ObservationStatus TEXT(16), SourceNote TEXT(255), IsArchived BIT, VersionCounter LONG NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME)",
+    "CREATE UNIQUE INDEX UX_PriorGuid ON PriorEvaluation (PriorGuid)",
+    "ALTER TABLE PriorEvaluation ADD CONSTRAINT FK_PriorMember FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE PriorEvaluation ADD CONSTRAINT FK_PriorCreator FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
+    "ALTER TABLE PriorEvaluation ADD CONSTRAINT FK_PriorEditor FOREIGN KEY (ModifiedBy) REFERENCES UserProfile (UserProfileID)",
+    "CREATE TABLE PriorEvaluationTrait (PriorID LONG NOT NULL, BlockNumber SHORT NOT NULL, MarkValue TEXT(3), CONSTRAINT PK_PriorTrait PRIMARY KEY (PriorID,BlockNumber))",
+    "ALTER TABLE PriorEvaluationTrait ADD CONSTRAINT FK_PriorTrait FOREIGN KEY (PriorID) REFERENCES PriorEvaluation (PriorID)"
   ]
 }

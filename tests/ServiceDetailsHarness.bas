@@ -80,6 +80,15 @@ Public Function TestServiceDetails() As String
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "CounselorName") = "NEW COUNSELOR" And Stored(id, "ReadinessDetail") = "Excellent" And Stored(id, "BilletSubcategory") = "OIC", "Editor save lost features"
         Call FixtureCloseEditor()
+        For Each key In Array("NOT REQ", "NOT PERF")
+            values = Seed(): values(0) = CStr(key)
+            Call SaveService(id, CStr(kind), values)
+            Check Stored(id, "CounselingDate") = CStr(key), "Official counseling status not saved"
+            DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+            Check Forms!frmEditor!txtCounselingDate = CStr(key), "Counseling status not reopened"
+            Check UXSurfaceValidate("CounselingDate"), "Official counseling status blocked by editor"
+            Call FixtureCloseEditor()
+        Next
     Next
     For Each index In Array(1, 2, 3, 5)
         values = Seed(): values(index) = String$(limits(index), "X")

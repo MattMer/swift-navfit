@@ -52,6 +52,14 @@ Public Function UXBlockLayout(ByVal section As Long) As Boolean
             With f.Controls("state" & key)
                 .Left = x: .Top = y + IIf(flag, 320, IIf(multi, 2150, 700)): .Width = size: .Height = 260: .Visible = True
             End With
+            If UXHasControl(f, "reset" & key) And UXEditingDefaults() Then
+                With f.Controls("reset" & key)
+                    .Left = x + size - 1350: .Top = y + IIf(flag, 0, 320): .Width = 800: .Height = 330: .Visible = True: .TabIndex = tabOrder
+                End With
+                tabOrder = tabOrder + 1
+                If Not flag Then f.Controls("value" & key).Width = size - 1450
+                f.Controls("label" & key).Width = size - 1450
+            End If
             If multi Then
                 rowHeight = 2450
             ElseIf rowHeight < IIf(flag, 650, 1000) Then
@@ -68,12 +76,14 @@ Public Function UXBlockResize() As Boolean
 End Function
 Public Function UXDefaultsStamp(ByVal groupID As Long) As String
     Dim r As DAO.Recordset, db As DAO.Database, result As String
-    Set db = CurrentDb: Set r = db.OpenRecordset("SELECT * FROM FieldDefault WHERE ScopeKind='Group' AND ScopeID=" & groupID & " ORDER BY FieldKey", dbOpenSnapshot)
+    Set db = CurrentDb: Set r = db.OpenRecordset("SELECT * FROM FieldDefault WHERE " & UXDefaultScopeWhere(groupID) & " ORDER BY FieldKey", dbOpenSnapshot)
     Do While Not r.EOF
         result = result & r!FieldKey & ":" & r!VersionCounter & ":" & Nz(r!ValueText, "") & ":" & r!IsNullValue & "|"
         r.MoveNext
     Loop
-    r.Close: UXDefaultsStamp = result
+    r.Close
+    If groupID > 0 Then result = result & "|Inherited:" & UXDefaultsStamp(0)
+    UXDefaultsStamp = result
 End Function
 Public Function UXBlockValidated(ByVal changes As Object, ByVal kind As String) As Object
     Dim result As Object, key As Variant, v As Variant, choice As Variant, allowed As Boolean
@@ -102,7 +112,7 @@ Public Function UXBlockValidated(ByVal changes As Object, ByVal kind As String) 
     Set UXBlockValidated = result
 End Function
 Public Function UXGroupDefaultValue(ByVal groupID As Long, ByVal key As String) As Variant
-    UXGroupDefaultValue = DLookup("ValueText", "FieldDefault", "ScopeKind='Group' AND ScopeID=" & groupID & " AND FieldKey=" & QuoteSQL(key))
+    UXGroupDefaultValue = DLookup("ValueText", "FieldDefault", UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key))
 End Function
 Public Function UXBlockPendingValue(ByVal key As String) As Variant
     UXBlockPendingValue = UXBulkPending(key)
@@ -126,6 +136,8 @@ End Function
 Public Function UXBlockMode(ByVal page As String) As Boolean
     Dim f As Access.Form
     Set f = Forms!frmUXBulk: f!cmdPreview.SetFocus
+    UXRestoreViewport f
     f!uxBlocks.Visible = (page <> "Preview"): f!lstPreview.Visible = (page = "Preview"): f!txtFullValues.Visible = (page = "Preview")
+    If UXHasControl(f, "txtGroupImpact") Then f!txtGroupImpact.Visible = (page = "Preview")
     Call UXBlockViewport: UXBlockMode = True
 End Function

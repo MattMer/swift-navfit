@@ -1,3 +1,122 @@
+# Deployment prerelease — 0.24.0-preview (6 October 2026)
+
+Package: `output/Swift_NAVFIT_0.24.0-preview.zip`, schema 23.
+Open `Swift_NAVFIT_0.24.0-preview-DEMO.accdb` for synthetic testing or use
+`Swift_NAVFIT_0.24.0-preview-blank.accdb` for a new workspace/migration template.
+The release is based on r75 with updated metadata and release-check fixes: schema-23 backup/restore, and review stamps that remain current after local approval locks. Bulk edit-lock guards remain intact; prior workspaces/builds remain.
+Exact packaged-byte verification: 27 suites, 72 matching source modules, empty blank user tables, and schema-20/21/22/23 transfer acceptance. Hashes and logs are in the package MANIFEST.json; repository evidence is DEPLOYMENT_0.24.0_VERIFICATION.json.
+See RELEASE_0.24.0_PREVIEW.md for changes since 0.23.0 and migration instructions.
+The older milestones below remain historical evidence.
+
+---
+# Latest development increment â€” r75 (6 October 2026)
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r75.accdb` for synthetic testing.
+Blank candidate: `build/ux-r75-policy-blank.accdb`; schema 23, published release unchanged.
+
+Narrative sources now include 72 rate/source collections and 20 excerpts, with
+rate/search filters in the catalog and saved snippets, plus manual rate assignment.
+Live report and summary-group checks now cover counseling, required administrative
+fields, career recommendations, partial NOB, adverse justification/referral and
+extended Regular periods. Counseling NOT REQ/NOT PERF survives save, PDF import
+and NAVFIT conversion. Every finding retains its policy locator and excerpt.
+
+Evidence: 37 citation/page checks, 29 narrative UI assertions, 102 live-validation
+assertions, 170 service-detail and 49 readiness checks, 501 adapter / 410 exchange /
+98 guard assertions, 250 existing PDF checks and 12 new counseling PDF checks.
+See NARRATIVE_POLICY_REVIEW_2026-10-06.md for rule coverage, known gaps and
+prioritized research recommendations. Final r75: 72 installed modules match source;
+36 populated-demo, 30 guide and 29 populated catalog assertions pass. Transfer
+preserves all original rows/fields and the r68 source hash. Automated responsive
+checks on r74 passed 1,972 assertions; this does not establish physical DPI acceptance.
+Final demo SHA-256: `8B1BED68A250AD6ECDB3CCF32B2E3D48C6C23E73474254141B89D48ADA44A758`.
+No Navy-wide compliance certification,
+printed-fit claim, release publication or Git push is implied.
+
+---
+# Latest development increment - r68 (6 October 2026)
+
+Populated demo: `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r68.accdb`.
+Blank: `build/ux-r68-identity-blank.accdb`. Development only, schema 23;
+published schema-21 release remains unchanged.
+
+Adds the command directory, automatic report identity links, manual prior
+evaluation history, prior ITA/promotion in group member grids, explicit identity
+confirmation, and previewed atomic report creation for selected directory members.
+The demo contains nine synthetic reports, three groups, nine directory profiles and eight synthetic prior evaluations.
+
+Recent verification across r66-r68: 20 batch, 21 directory/history UI, 21 identity/history service,
+14 member-grid and 49 workflow assertions. The workflow suite requires the blank
+fixture; the populated demo intentionally includes a recovery checkpoint.
+Schema 22-to-23 and 23-to-23 transfers preserve every original row/field, source
+hashes and existing identities. All 72 installed source modules match; 244 native group import checks and 36 populated-demo checks pass. Notes and earlier feature checks are recorded below.
+
+Outstanding: verified RUAD mapping/import (sample path pending), exact narrative
+print-fit behavior, physical display/scaling and screen-reader checks, and native
+NAVFIT98A UI round-trip acceptance. No new deployment has been published.
+
+---
+# Latest development increment - r56 (6 October 2026)
+
+Populated demo: `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb`.
+Blank: `build/ux-r56-notes-blank.accdb`. Development only, schema 22; published
+schema-21 release remains unchanged. This adds attributed note entries,
+full-text viewing, unposted-note checkpoints and recovery from Overview.
+Notes remain separate from NAVPERS content and report revisions. Legacy notes
+retain their original saved field and become entries with unknown attribution.
+
+Verified: 68 installed source modules; 1972 layout/focus checks; 49 workflow
+checks; report and raw-note shutdown recovery; 19 note services and 18 note UI
+checks; schema-21 -> 22 and schema-22 -> 22 data transfers. See
+SCHEMA22_REPORT_NOTES.md and MANUAL_FEEDBACK_PROGRESS_2026-10-06.md.
+Manual directory and prior-evaluation history work is starting; the RUAD sample
+path is still pending. Physical display/accessibility and native print-fit
+acceptance remain outstanding.
+
+---
+# Latest development increment - r49 (6 October 2026)
+
+Populated demo: `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r49.accdb`.
+Blank candidate: `build/ux-r49-blank.accdb`. Development builds only; published
+0.23.0-preview remains unchanged. Schema remains 21.
+
+Manual-feedback plan implementation now includes contributor selection,
+startup pane hiding, snippet return, failed-save undo, summary-group organization,
+editable member comparison/career recommendations, ITA/promotion/group columns,
+group workflow, global/inherited defaults, report-header review actions,
+automatic export filenames, a source-linked NavyWriter starter catalog and
+selected native-group/report import. Working assumptions and per-item checks
+are in MANUAL_FEEDBACK_PROGRESS_2026-10-06.md.
+
+Selected native groups split by report kind/worn paygrade, preview all supported
+report values and shared folder defaults, and import atomically with native
+provenance. Duplicate imports require returned-file reconciliation. Empty folders
+and unresolved/mismatched rank/type require separate source correction. Native
+GUI validation/printing is not certified by the data round-trip tests.
+
+Still outstanding: RUAD/directory/history and prior-eval columns (sample path
+requested), attributed note entries/additive schema, narrative print-fit proof,
+and physical display/keyboard/screen-reader acceptance. No release published.
+
+---
+# Latest development increment - r32
+
+PR #15 is merged into main. Summary-group work continues on
+`codex/summary-group-correctness`. The populated r32 demo is
+`output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r32.accdb`; blank is
+`build/ux-r32-check-blank.accdb`. Live group capacity is withheld for mixed/unresolved
+observed keys; NOB is excluded from numerator and denominator. See
+SUMMARY_GROUP_CORRECTNESS_R31.md and SUMMARY_GROUP_POLICY_R32.md for scope and
+remaining work. r32 adds recorded UIC/category context and deliberate local
+roster completeness, stale review detection and membership/bulk consequence
+previews. Verified: 39 group correctness, 90 shared blocks/comparison, 41 group
+lifecycle and 59 live-validation assertions; 58 installed modules match source,
+native review/return bindings and compile pass on the populated demo.
+Also passed: 1,804 responsive layout/focus/identity assertions, 36 populated-demo
+assertions and 20 fingerprinted policy-excerpt checks. Manual display and
+screen-reader acceptance remains outstanding.
+The published 0.23.0-preview deployment below is preserved.
+
 # Deployment version - 0.23.0-preview, schema 21
 
 The deployment package is `output/Swift_NAVFIT_0.23.0-preview.zip`, containing

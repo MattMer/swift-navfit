@@ -99,8 +99,8 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     If UXHasControl(f, "uxValidation") Then f!uxValidation.Visible = True
     If mode = "Members" Or mode = "Review" Then
         GroupPosition "lstReports", 2850, 3000, 10450, 2900
-        f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
-        f!lstReports.ColumnCount = 5: f!lstReports.ColumnWidths = "0;3800;1500;2200;2800": f!lstReports.Requery
+        f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status],UXTableITA(r.ReportID) AS ITA,r.PromotionRecommendation AS [Promotion recommendation] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
+        f!lstReports.ColumnCount = 7: f!lstReports.ColumnWidths = "0;2400;1000;1700;2000;800;2400": f!lstReports.Requery
         f!uxOpenGroupReport.Visible = True
         If mode = "Review" And UXHasControl(f, "uxFocusedReview") Then f!uxFocusedReview.Visible = True
         If mode = "Members" Then f!uxMembers.Visible = True: f!uxBulk.Visible = True: f!uxRSCA.Visible = True
@@ -190,10 +190,15 @@ Public Function UXDashboardRefresh() As Boolean
     Set f = Forms!frmHome
     If Not UXHasControl(f, "uxRecentReports") Then Exit Function
     pid = Nz(DLookup("ActiveProfileID", "Workspace"), 0)
+    If UXHasControl(f, "uxContributor") Then f!uxContributor = pid
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
     f!uxGroupCount.Caption = CStr(DCount("*", "SummaryGroup", "IsArchived=False"))
     f!uxWorkCount.Caption = CStr(UXWorkCount())
     recoveryCount = DCount("*", "RecoveryDraft", "AuthorProfileID=" & pid)
+    If UXHasControl(f, "uxNoteRecovery") Then
+        f!uxNoteRecovery.Caption = "Unposted notes (" & DCount("*", "ReportNoteDraft", "AuthorProfileID=" & pid) & ")"
+        f!uxNoteRecovery.Enabled = DCount("*", "ReportNoteDraft", "AuthorProfileID=" & pid) > 0
+    End If
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
     f!cmdRecovery.Enabled = (recoveryCount > 0)
     f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
