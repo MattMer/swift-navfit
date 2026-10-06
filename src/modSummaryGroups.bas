@@ -37,7 +37,7 @@ Public Function GroupStamp(ByVal groupID As Long) As String
     GroupStamp = g!GroupGuid & ":" & g!VersionCounter & ":" & CStr(g!IsArchived): g.Close
     Set r = CurrentDb.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived,r.WorkflowState FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
-        GroupStamp = GroupStamp & "|" & r!ReportID & ":" & Nz(r!CurrentRevisionID, 0) & ":" & CStr(r!IsArchived)
+        GroupStamp = GroupStamp & "|" & r!ReportID & ":" & Nz(r!CurrentRevisionID, 0) & ":" & CStr(r!IsArchived) & ":" & r!WorkflowState
         r.MoveNext
     Loop
     r.Close

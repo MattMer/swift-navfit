@@ -18,7 +18,7 @@ Public Function UXGridClose() As Boolean
     UXGridClose = True
 End Function
 Public Function UXGridLoad() As Boolean
-    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String
+    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
     loading = True
     Set f.Recordset = Nothing
@@ -27,7 +27,7 @@ Public Function UXGridLoad() As Boolean
     Set cacheDB = DBEngine.CreateDatabase(cachePath, dbLangGeneral, dbVersion120)
     sql = "CREATE TABLE PendingTraits (ReportID LONG PRIMARY KEY, SortOrdinal LONG, RevisionID LONG, Member TEXT(120), RowStatus TEXT(120), ObservationStatus TEXT(8), ITA TEXT(12)"
     For block = 33 To 39: sql = sql & ", Trait" & block & " TEXT(3)": Next
-    sql = sql & ", PromotionRecommendation TEXT(20))": cacheDB.Execute sql, dbFailOnError
+    sql = sql & ", PromotionRecommendation TEXT(20), AssignmentRecommendationA TEXT(255), AssignmentRecommendationB TEXT(255), PriorITA TEXT(12), PriorPromotion TEXT(30), PriorPeriod TEXT(32), PriorSource TEXT(255))": cacheDB.Execute sql, dbFailOnError
     Set cacheRows = cacheDB.OpenRecordset("PendingTraits", dbOpenDynaset)
     Set db = CurrentDb: Set r = db.OpenRecordset("SELECT * FROM ComparisonMember WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " ORDER BY SortOrdinal", dbOpenSnapshot)
     Do While Not r.EOF
@@ -36,6 +36,10 @@ Public Function UXGridLoad() As Boolean
         cacheRows!Member = UXRevisionMemberLabel(r!RevisionID): cacheRows!ObservationStatus = MajorRevisionValue(r!RevisionID, "ObservationStatus")
         For block = 33 To 39: cacheRows.Fields("Trait" & block) = MajorRevisionValue(r!RevisionID, "Trait" & block): Next
         cacheRows!PromotionRecommendation = MajorRevisionValue(r!RevisionID, "PromotionRecommendation")
+        cacheRows!AssignmentRecommendationA = MajorRevisionValue(r!RevisionID, "AssignmentRecommendationA")
+        cacheRows!AssignmentRecommendationB = MajorRevisionValue(r!RevisionID, "AssignmentRecommendationB")
+        Set previous = PreviousMemberEvaluation(id)
+        cacheRows!PriorITA = previous("ITA"): cacheRows!PriorPromotion = previous("Promotion"): cacheRows!PriorPeriod = previous("Period"): cacheRows!PriorSource = previous("Source")
         Set p = db.OpenRecordset("SELECT * FROM MeetingProposal WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " AND ReportID=" & id & " AND ProposalState='Proposed' ORDER BY ProposalID", dbOpenSnapshot)
         Do While Not p.EOF
             If p!IsNullValue Then cacheRows.Fields(p!FieldKey) = Null Else cacheRows.Fields(p!FieldKey) = p!ValueText
@@ -56,6 +60,8 @@ Public Function UXGridLoad() As Boolean
         f.Controls("heading" & block).Caption = UXFieldCaption("Trait" & block, kind)
         f.Controls("Trait" & block).ControlTipText = UXFieldCaption("Trait" & block, kind)
     Next
+    f!headingAssignmentRecommendationA.Caption = UXFieldCaption("AssignmentRecommendationA", kind)
+    f!headingAssignmentRecommendationB.Caption = UXFieldCaption("AssignmentRecommendationB", kind)
     Call UXGridRefreshAverages: loading = False
     Call UXGridCurrent: Call UXGridViewport: UXGridLoad = True
 End Function
@@ -74,9 +80,13 @@ Public Function UXGridCurrent() As Boolean
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
     If f.Recordset.EOF Then Exit Function
+    f!PriorITA.ControlTipText = Nz(f!PriorPeriod, "") & " - " & Nz(f!PriorSource, "")
+    f!PriorPromotion.ControlTipText = f!PriorITA.ControlTipText
     reason = UXGridLockReason(f!ReportID, f!RevisionID)
     For block = 33 To 39: f.Controls("Trait" & block).Locked = (Len(reason) > 0): Next
     f!PromotionRecommendation.Locked = (Len(reason) > 0)
+    f!AssignmentRecommendationA.Locked = (Len(reason) > 0)
+    f!AssignmentRecommendationB.Locked = (Len(reason) > 0)
     Forms!frmUXComparison!lblStatus.Caption = IIf(Len(reason) > 0, reason, "Edit cells directly. Changes are staged; Preview and Apply save reviewed revisions.")
     UXGridCurrent = True
 End Function
@@ -84,7 +94,10 @@ Public Function UXGridEdit(ByVal key As String) As Boolean
     Dim f As Access.Form, value As Variant, reason As String, w As DAO.Workspace, started As Boolean, db As DAO.Database, before As Variant, proposal As Long, failure As String
     On Error GoTo Failed
     Set f = Forms!frmUXComparison!uxTraitGrid.Form: value = f.Controls(key).Value
-    If Not IsTraitKey(key) And key <> "PromotionRecommendation" Then Err.Raise vbObjectError + 4812, , "Only trait marks and promotion recommendation can be edited here."
+    If Not IsTraitKey(key) And key <> "PromotionRecommendation" And key <> "AssignmentRecommendationA" And key <> "AssignmentRecommendationB" Then Err.Raise vbObjectError + 4812, , "Only traits, promotion and career recommendations can be edited here."
+    If key = "AssignmentRecommendationA" Or key = "AssignmentRecommendationB" Then
+        If Len(Nz(value, "")) > 20 Then Err.Raise vbObjectError + 4811, , "Career recommendations allow up to 20 characters."
+    End If
     reason = UXGridLockReason(f!ReportID, f!RevisionID)
     If key = "PromotionRecommendation" Then
         Dim validated As Variant
@@ -155,7 +168,7 @@ Public Function UXGridViewport() As Boolean
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     UXResizeWorkspace "frmUXComparison"
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
-    usable = Forms!frmUXComparison!uxTraitGrid.Width - 350: ratio = usable / 10450
+    usable = Forms!frmUXComparison!uxTraitGrid.Width - 350: ratio = usable / 17050
     For Each c In f.Controls
         If InStr(c.Tag, ":") > 0 Then
             v = Split(c.Tag, ":"): c.Left = CLng(v(0) * ratio): c.Width = CLng(v(1) * ratio)

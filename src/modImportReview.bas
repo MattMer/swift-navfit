@@ -753,3 +753,90 @@ Public Sub ValidateNAVFITDatabase(ByVal db As DAO.Database)
         If db.Containers(name).Documents.Count <> 0 Then Err.Raise vbObjectError + 5322, , "Choose a NAVFIT data database without executable or interface objects."
     Next
 End Sub
+Public Function NAVFITImportScope(ByVal reportID As Long) As String
+    Dim receipt As Variant, adapter As String
+    receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False")
+    If IsNull(receipt) Then Exit Function
+    adapter = Nz(DLookup("AdapterVersion", "ImportReceipt", "ImportReceiptID=" & CLng(receipt)), "")
+    If adapter = "navfit-full-v1/local-CStr" Then NAVFITImportScope = "Full report" Else NAVFITImportScope = "Narrative only"
+End Function
+
+Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0) As Object
+    Dim groups As Object, item As Object, r As DAO.Recordset, folder As DAO.Recordset, values As Object, defaults As Object, key As Variant, row As Variant, parts As Variant
+    Dim parent As String, fid As Long, kind As String, grade As String, token As String, hash As String, field As DAO.Field, exists As Boolean
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 6940, , "Choose a NAVFIT source first."
+    hash = SourceFileHash(reviewDb.Name): Set groups = CreateObject("Scripting.Dictionary")
+    Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportType Is Not Null ORDER BY ReportID", dbOpenSnapshot)
+    Do While Not r.EOF
+        kind = NAVFITKind(r!ReportType): grade = ValidationWornPaygrade(Nz(r!Rate, ""))
+        If grade = "" Then Err.Raise vbObjectError + 6940, , "Source member " & Nz(r!FullName, "Unnamed") & " has unresolved worn rank/rate; correct the source before group import."
+        If (kind = "EVAL" And (Left$(grade, 1) <> "E" Or Val(Mid$(grade, 2)) > 6)) Or (kind = "CHIEFEVAL" And (Left$(grade, 1) <> "E" Or Val(Mid$(grade, 2)) < 7)) Or (kind = "FITREP" And Left$(grade, 1) <> "O" And Left$(grade, 1) <> "W") Then Err.Raise vbObjectError + 6940, , "Source report type and worn paygrade disagree. Correct the source before group import."
+        parent = Nz(r!Parent, "")
+        If Left$(parent, 2) <> "a " Then Err.Raise vbObjectError + 6940, , "Source report has an unsupported parent reference."
+        fid = Val(Mid$(parent, 3))
+        If parent <> "a " & CStr(fid) Then Err.Raise vbObjectError + 6940, , "Source report has a malformed folder reference."
+        token = fid & "|" & kind & "|" & grade
+        If Not groups.Exists(token) Then
+            Set folder = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Folders] WHERE FolderID=" & fid, dbOpenSnapshot)
+            If folder.EOF Then Err.Raise vbObjectError + 6940, , "Source report references a missing folder."
+            Set item = CreateObject("Scripting.Dictionary"): Set defaults = CreateObject("Scripting.Dictionary")
+            item.Add "Title", Nz(folder!FolderName, "Imported group"): item.Add "Kind", kind: item.Add "Paygrade", grade: item.Add "Reports", "": item.Add "Count", 0
+            For Each row In NAVFITMapRows(kind)
+                parts = Split(row, "|"): exists = False
+                For Each key In UXSharedKeys()
+                    If parts(0) = CStr(key) Then exists = True: Exit For
+                Next
+                If exists Then
+                    exists = False
+                    For Each field In folder.Fields
+                        If field.Name = parts(1) Then exists = True: Exit For
+                    Next
+                    If exists Then defaults.Add parts(0), NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century)
+                End If
+            Next
+            item.Add "Defaults", defaults: item.Add "SourceHash", hash: groups.Add token, item: folder.Close
+        End If
+        Set item = groups(token)
+        If item("Reports") <> "" Then item("Reports") = item("Reports") & ","
+        item("Reports") = item("Reports") & r!ReportID: item("Count") = item("Count") + 1
+        r.MoveNext
+    Loop
+    r.Close
+    If SourceFileHash(reviewDb.Name) <> hash Then Err.Raise vbObjectError + 6940, , "Source changed during group preview. Choose it again."
+    Set NAVFITReviewGroupChoices = groups
+End Function
+Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expectedHash As String, ByVal century As Long) As Collection
+    Dim groups As Object, item As Object, result As New Collection, selected As Variant, ids As Variant, nativeID As Variant, key As Variant, values As Object, defaults As Object
+    Dim w As DAO.Workspace, id As Long, g As Long, failure As Long, message As String, trans As Boolean, title As String
+    On Error GoTo Failed
+    Set groups = NAVFITReviewGroupChoices(century)
+    If selections.Count = 0 Then Err.Raise vbObjectError + 6941, , "Select at least one source group."
+    For Each selected In selections
+        If Not groups.Exists(CStr(selected)) Then Err.Raise vbObjectError + 6941, , "Source groups changed. Preview again."
+        Set item = groups(CStr(selected))
+        If item("SourceHash") <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed after preview."
+        For Each nativeID In Split(item("Reports"), ",")
+            Set values = FullNAVFITImportValues(CLng(nativeID), century)
+            If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(expectedHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise vbObjectError + 6941, , "A selected report was already imported. Use returned-file reconciliation for existing drafts."
+        Next
+    Next
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    For Each selected In selections
+        Set item = groups(CStr(selected)): title = item("Title") & " - " & item("Kind") & " " & item("Paygrade")
+        g = CreateSummaryGroup(title, item("Kind"), item("Paygrade")): Set defaults = item("Defaults")
+        For Each key In defaults.Keys: SetFieldDefault "Group", g, CStr(key), defaults(key): Next
+        For Each nativeID In Split(item("Reports"), ",")
+            id = ImportReviewedReport(CLng(nativeID), expectedHash, century)
+            AddGroupMember g, id, item("Paygrade")
+        Next
+        result.Add g
+    Next
+    If SourceFileHash(reviewDb.Name) <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed during group import. No selected group was committed."
+    w.CommitTrans: trans = False: Set ImportNAVFITGroups = result: Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next
+    If trans Then w.Rollback
+    On Error GoTo 0
+    Err.Raise failure, "ImportNAVFITGroups", message
+End Function

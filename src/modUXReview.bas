@@ -24,7 +24,7 @@ Public Function UXLoadReview() As Boolean
         If DCount("*", "RouteRun", "RunID=" & Val(args(2)) & " AND ReportID=" & id) > 0 Then f!cboRun = Val(args(2))
     End If
     If IsNull(f!cboRun) And f!cboRun.ListCount > 0 Then f!cboRun = f!cboRun.ItemData(0)
-    Call UXReviewLayout
+    If f.Visible Then Call UXReviewLayout
     UXLoadReview = UXReviewStatus()
 End Function
 Public Function UXReviewStatus() As Boolean
@@ -129,7 +129,7 @@ Public Function UXReviewAction(ByVal action As String) As Boolean
         Case Else: Err.Raise vbObjectError + 5903, , "Unknown review action."
     End Select
     Call UXRefreshEditorWorkflow(CLng(f!txtReportID))
-    f!cmdBack.SetFocus
+    If f.Visible Then f!cmdBack.SetFocus
     f!txtNote = Null
     Call UXLoadReview
     Call UXWorkChanged

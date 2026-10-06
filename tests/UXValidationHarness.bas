@@ -16,6 +16,40 @@ Public Function TestUXValidation() As String
     Dim id As Long, other As Long, groupID As Long, revision As Long, f As Object, result As Collection, item As Object, key As Variant, source As String, extra As Long, i As Long
     Dim changes As Object, runs As Long, operations As Long, revisions As Long, selected As Long, stage As String
     On Error GoTo Failed
+    For Each key In Array("EVAL", "CHIEFEVAL", "FITREP")
+        Set f = CreateObject("Scripting.Dictionary")
+        f("FormKind") = CStr(key): f("PeriodStart") = "2026-01-01": f("PeriodEnd") = "2026-09-30"
+        f("ObservationStatus") = "Observed": f("PromotionRecommendation") = "Promotable"
+        f("UnitUIC") = "1234A": f("ReportingSeniorUIC") = "12345": f("CounselingDate") = "NOT REQ"
+        Set result = ValidateLiveFields(f)
+        Check Not HasCode(result, "UIC-FORMAT") And Not HasCode(result, "APP-DATE"), "Official UIC/counseling status rejected"
+        Check HasCode(result, "CAREER-PRESENT"), "Missing first career recommendation"
+        f("AssignmentRecommendationA") = "NONE": f("CounselingDate") = "NOT PERF"
+        Set result = ValidateLiveFields(f): Check HasCode(result, "COUNSELOR"), "NOT PERF explanation missing"
+        f("CounselorName") = "ILLNESS": Set result = ValidateLiveFields(f)
+        Check Not HasCode(result, "COUNSELOR") And Not HasCode(result, "CAREER-PRESENT"), "Valid status explanation or NONE rejected"
+        f("CounselingDate") = "2025-12-31": Set result = ValidateLiveFields(f)
+        Check HasCode(result, "COUNSELING"), "Counseling outside period missed"
+        f("CounselingDate") = "2026-05-01": Set result = ValidateLiveFields(f)
+        Check Not HasCode(result, "COUNSELING"), "Counseling within period rejected"
+        f("UnitUIC") = "AB345": Set result = ValidateLiveFields(f): Check HasCode(result, "UIC-FORMAT"), "Invalid first four UIC characters missed"
+        f("UnitUIC") = "1234A": f("PromotionRecommendation") = "NOB"
+        For i = 33 To 39: f("Trait" & i) = "NOB": Next
+        For i = 33 To 36: f("Trait" & i) = "3.0": Next
+        Set result = ValidateLiveFields(f): Check HasCode(result, "PARTIAL-NOB-LIMIT"), "Four partial NOB grades missed"
+        f("Trait36") = "NOB": Set result = ValidateLiveFields(f)
+        Check Not HasCode(result, "PARTIAL-NOB-LIMIT") And Not HasCode(result, "PARTIAL-NOB-MARKS"), "Three partial NOB grades rejected"
+        f("Trait33") = "1.0": Set result = ValidateLiveFields(f)
+        Check HasCode(result, "PARTIAL-NOB-ADVERSE") And HasCode(result, "JUSTIFY-TRAITS") And HasCode(result, "ADVERSE-REFERRAL"), "Adverse partial NOB missed"
+        f("Trait33") = "3.0": f("Trait39") = "": Set result = ValidateLiveFields(f)
+        Check HasCode(result, "PARTIAL-NOB-MARKS"), "Blank partial NOB trait missed"
+        f("PromotionRecommendation") = "Significant Problems": Set result = ValidateLiveFields(f)
+        Check HasCode(result, "JUSTIFY-ADVERSE"), "Adverse recommendation justification missed"
+        f("ReportRegular") = "Yes": f("PeriodStart") = "2024-01-01": Set result = ValidateLiveFields(f)
+        Check HasCode(result, "REGULAR-LENGTH"), "Extended Regular approval check missed"
+        f("ReportRegular") = "No": Set result = ValidateLiveFields(f)
+        Check Not HasCode(result, "REGULAR-LENGTH"), "Regular duration check applied to other type"
+    Next
     ConfigureWorkspace "SYNTHETIC VALIDATION TEST", "Validation tester"
     id = CommitDraft(0, "EVAL", "Validation test", "Synthetic member", #1/1/2026#, #9/30/2026#, "", "Test")
     Set f = SavedFields(id): Set result = ValidateLiveFields(f, id)
@@ -85,6 +119,7 @@ Public Function TestUXValidation() As String
     groupID = CreateSummaryGroup("Synthetic validation group", "EVAL", "E5")
     AddGroupMember groupID, id, "E5", "": AddGroupMember groupID, other, "E5", ""
     Set result = ValidateLiveGroup(groupID)
+    Check HasCode(result, "CAREER-PRESENT") And HasCode(result, "COUNSELING"), "Expanded report checks omitted from summary group"
     Check HasCode(result, "GROUP-ENLISTED"), "Group eligibility differences missing"
     source = ""
     For Each item In result
@@ -111,5 +146,3 @@ Public Function TestUXValidation() As String
 Failed:
     TestUXValidation = "FAIL after " & count & " (" & stage & "): " & Err.Number & " / " & Err.Description
 End Function
-
-

@@ -2,11 +2,11 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Latest distributed prototype: 0.21.0 · schema 20.** The local r28 preview implements supported report-value NAVFIT import, report/group export and single-report three-way returned-file reconciliation. Group returns and complete Navy policy validation remain pending. Exports can be printed in NAVFIT98A; direct Swift printing is not implemented. See [group export](planning/NAVFIT_GROUP_EXPORT_R28.md) and [native print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md).
+**Latest prerelease: 0.24.0-preview · schema 23.** Download the blank workspace or synthetic demo from the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.24.0-preview). Includes the native workspace redesign, summary-group tools, command directory and prior evaluations, contributor notes, expanded rate-filtered narratives and cited live validation. Supported NAVFIT report/group exports and selected-group imports retain provenance; single-report returned files use three-way reconciliation. Full policy coverage, returned-group reconciliation and exact printed fit remain pending.
 
 See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups, reviewed defaults/batches, multi-step routes, meeting proposals, limited Navy checks, structured PDF import and guided backup/restore.
 
-See [0.23.0 deployment notes](planning/RELEASE_0.23.0_PREVIEW.md) for Siltstone styling, navigation performance, verification and limitations.
+See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](planning/CURRENT_STATE.md) and [policy review/recommendations](planning/NARRATIVE_POLICY_REVIEW_2026-10-06.md) for verified behavior and remaining work.
 
 ## UI redesign under review
 

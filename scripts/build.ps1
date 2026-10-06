@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.23.0-preview',21,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.23.0-preview',23,'Unverified - NAVFIT exchange disabled')"
     )
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
@@ -537,6 +537,7 @@ try {
     [void](Control $f 104 'cmdInsert' 5600 11200 3300 550 'Append to open draft' '=InsertSnippetUI()')
     [void](Control $f 104 'cmdClose' 9500 11200 3300 550 'Close snippets' '=CloseSnippetsUI()')
     $f.OnLoad='=LoadSnippets()'; SaveScreen $f 'frmSnippets'
+    . (Join-Path $PSScriptRoot 'apply-ux-snippet-rates.ps1')
     NewScreen 'frmOperations' 'Operations and import undo' 12300; $f=$script:swiftForm
     [void](Control $f 100 'lblScope' 400 950 12600 750 'Started entries may represent interrupted work. Inspect receipts before retrying. Undo preserves history and refuses later edits.')
     Control $f 110 'lstOperations' 400 2000 12600 2100; $c=$script:swiftControl
@@ -693,7 +694,29 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-my-work.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-validation.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-navfit.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-group-policy.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-feedback.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-career-columns.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-feedback-tables.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-member-grid.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-group-organization.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-global-defaults.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-default-resets.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-export-names.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-navywriter.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-header-review.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-import-scope.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-native-groups.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-notes-schema.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-note-entries.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-directory-schema.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-directory.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-member-history.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-prior-columns.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-directory-batch.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-directory-identity.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-directory-identity-picker.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
@@ -730,7 +753,8 @@ try {
     if($verifiedComparison.OnUnload -ne '[Event Procedure]' -or $verifiedComparison.Module.Lines(1,$verifiedComparison.Module.CountOfLines) -notmatch 'UXGridUnload Me'){throw 'Native comparison unload handler did not persist.'}
     $app.DoCmd.Close(2,'frmUXComparison',2)
     $app.CloseCurrentDatabase()
-    [pscustomobject]@{Output=$OutputPath;SHA256=(Get-FileHash -LiteralPath $OutputPath -Algorithm SHA256).Hash;Status='Built; smoke test required'} | ConvertTo-Json
+
 } finally {
     if ($null -ne $app) { $app.Quit(2); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app) }
 }
+[pscustomobject]@{Output=$OutputPath;SHA256=(Get-FileHash -LiteralPath $OutputPath -Algorithm SHA256).Hash;Status='Built; smoke test required'} | ConvertTo-Json

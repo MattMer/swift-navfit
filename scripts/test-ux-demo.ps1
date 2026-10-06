@@ -11,7 +11,7 @@ try{
     $app.LoadFromText(5,'UXDemoSeed',(Join-Path $root 'tests/UXDemoSeed.bas'))
     $app.LoadFromText(5,'UXDemoHarness',(Join-Path $root 'tests/UXDemoHarness.bas'))
     $result=$app.Eval('TestUXDemo()')
-    if(-not $result.StartsWith('PASS:')){throw $result}
     Write-Output $result
-}finally{if($null -ne $app){$app.Quit(2)}}
+    if(-not $result.StartsWith('PASS:')){throw $result}
+}finally{if($null -ne $app){try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{};$app.Quit(2)}}
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $sourceHash){throw 'Demo source was modified'}

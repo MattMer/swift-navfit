@@ -1,0 +1,26 @@
+param([Parameter(Mandatory=$true)][string]$TemplatePath,[Parameter(Mandatory=$true)][string]$OutputPath)
+$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$OutputPath=[IO.Path]::GetFullPath($OutputPath)
+if(Test-Path -LiteralPath $OutputPath){throw 'Refusing overwrite'}
+Copy-Item -LiteralPath $TemplatePath -Destination $OutputPath
+$app=New-Object -ComObject Access.Application
+try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($OutputPath,$true)
+$source=Get-Content (Join-Path $root 'scripts/build.ps1') -Raw
+Invoke-Expression ([regex]::Match($source,'(?s)    function Control\(.*?(?=    NewScreen ''frmSetup'')').Value)
+. (Join-Path $PSScriptRoot 'apply-ux-feedback.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-career-columns.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-feedback-tables.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-member-grid.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-group-organization.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-global-defaults.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-default-resets.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-export-names.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-navywriter.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-header-review.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-import-scope.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-native-groups.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-notes-schema.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-note-entries.ps1')
+. (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
+$app.DoCmd.RunCommand(126);$app.CloseCurrentDatabase();Write-Output ('Compiled feedback build: '+$OutputPath)
+}finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

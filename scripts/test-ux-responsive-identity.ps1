@@ -10,6 +10,6 @@ try{
     $app.LoadFromText(5,'UXResponsiveIdentityHarness',(Join-Path $root 'tests/UXResponsiveIdentityHarness.bas'))
     $app.DoCmd.RunCommand(126)
     $result=$app.Eval('TestUXResponsiveIdentity()')
-    if(-not $result.StartsWith('PASS:')){throw $result}
     Write-Output $result
-}finally{if($null -ne $app){$app.Quit(2)}}
+    if(-not $result.StartsWith('PASS:')){throw $result}
+}finally{if($null -ne $app){try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{};$app.Quit(2)}}

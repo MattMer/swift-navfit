@@ -1,6 +1,9 @@
 Attribute VB_Name = "modServiceDetails"
 Option Compare Binary
 Option Explicit
+Public Function IsCounselingStatus(ByVal value As String) As Boolean
+    IsCounselingStatus = (value = "NOT REQ" Or value = "NOT PERF")
+End Function
 Public Function ServiceDetailsKeys() As Variant
     ServiceDetailsKeys = Array("CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory")
 End Function
@@ -25,7 +28,7 @@ Public Function ValidateServiceDetails(ByVal values As Variant) As Variant
             If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 2702, , ServiceDetailsLabel(keys(i)) & " exceeds " & limits(i) & " characters; no truncation is performed."
             If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2703, , ServiceDetailsLabel(keys(i)) & " must be single-line without tabs."
             If (i = 0 Or i = 4) And Len(values(i)) > 0 Then
-                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2704, , ServiceDetailsLabel(keys(i)) & " must be a real date in yyyy-mm-dd format, or blank."
+                If Not IsValidIsoDate(CStr(values(i))) And Not (i = 0 And IsCounselingStatus(CStr(values(i)))) Then Err.Raise vbObjectError + 2704, , ServiceDetailsLabel(keys(i)) & " must be a real ISO date, or blank (counseling also accepts NOT REQ / NOT PERF)."
             End If
         End If
     Next

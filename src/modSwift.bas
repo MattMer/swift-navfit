@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.23.0-preview"
-Public Const SCHEMA_VERSION As Long = 21
+Public Const APP_VERSION As String = "0.24.0-preview"
+Public Const SCHEMA_VERSION As Long = 23
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -210,7 +210,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
-            r.Close: w.CommitTrans: CommitDraft = reportID: Exit Function
+            r.Close: SyncReportDirectory reportID: w.CommitTrans: CommitDraft = reportID: Exit Function
         End If
         parentID = r!CurrentRevisionID
         Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
@@ -232,6 +232,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         End If
     Next
     ExecuteParams "PARAMETERS rev Long, id Long; UPDATE Report SET CurrentRevisionID=rev WHERE ReportID=id", revisionID, reportID
+    SyncReportDirectory reportID
     w.CommitTrans
     CommitDraft = reportID
     Exit Function
@@ -294,6 +295,7 @@ Public Function SwiftAppStartup() As Boolean
     End If
     If DCount("*", "Workspace") = 0 Then DoCmd.OpenForm "frmSetup" Else DoCmd.OpenForm "frmHome"
     UXLoadContext
+    UXHideAccessObjects
     SwiftAppStartup = True: Exit Function
 Failed:
     MsgBox "Swift NAVFIT could not start. Error " & Err.Number & ": " & Err.Description, vbExclamation, "Swift NAVFIT startup"
@@ -301,6 +303,7 @@ End Function
 
 Public Function OpenScreen(ByVal formName As String) As Boolean
     On Error GoTo Failed
+    If formName = "frmSnippets" Then UXResetSnippetOrigin
     DoCmd.OpenForm formName
     Forms(formName).SetFocus
     OpenScreen = True: Exit Function
@@ -317,6 +320,11 @@ Failed:
 End Function
 
 Public Function LoadHome() As Boolean
+    If UXHasControl(Forms!frmHome, "uxContributor") Then
+        Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+        Forms!frmHome!uxContributor = ProfileID()
+        Forms!frmHome!uxContributorStatus.Caption = ""
+    End If
     Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
     Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
     Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
@@ -368,8 +376,12 @@ Public Function LoadEditor() As Boolean
         f!cmdSave.Enabled = Not r!IsArchived
         f!cmdRestore.Enabled = Not r!IsArchived
         r.Close: f!cboKind.Enabled = False
-        If DCount("*", "ImportReceipt", "ReportID=" & id) > 0 Then f!lblImportOrigin.Caption = "Imported narrative only. Other official fields remain unmapped; source values retained locally."
+        Select Case NAVFITImportScope(id)
+            Case "Full report": f!lblImportOrigin.Caption = "Full NAVFIT report import: supported official fields mapped; native-only values retained in provenance."
+            Case "Narrative only": f!lblImportOrigin.Caption = "Imported narrative only. Other official fields remain unmapped; source values retained locally."
+        End Select
     End If
+    If id = 0 Then UXSeedGlobalDefaults
     Call InitializeTraitEditor()
     Call RefreshNarrativeLabel()
     Call RefreshRevisions

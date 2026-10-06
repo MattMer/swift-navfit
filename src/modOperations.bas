@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 Public Function BeginOperation(ByVal kind As String, ByVal source As String) As Long
     Dim r As DAO.Recordset, pid As Long
-    pid = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+    pid = Nz(MajorScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
     If pid = 0 Then Err.Raise vbObjectError + 1100, , "Configure a contributor first."
     Set r = CurrentDb.OpenRecordset("OperationJournal", dbOpenDynaset)
     r.AddNew: r!OperationGuid = NewIdentity(): r!OperationKind = kind: r!AuthorProfileID = pid

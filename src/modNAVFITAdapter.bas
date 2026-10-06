@@ -45,6 +45,7 @@ Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String,
         Case "counseling"
             s = CStr(value)
             If s = "" Then NAVFITDecode = "": Exit Function
+            If IsCounselingStatus(s) Then NAVFITDecode = s: Exit Function
             If IsValidIsoDate(s) Then NAVFITDecode = s: Exit Function
             If century <> 1900 And century <> 2000 Then Err.Raise vbObjectError + 5104, , "Choose 1900 or 2000 explicitly for the NAVFIT counseling date."
             If Len(s) <> 7 Then Err.Raise vbObjectError + 5104, , "Counseling text cannot be represented as a Swift date. Source value must be reviewed."
@@ -70,6 +71,7 @@ Public Function NAVFITEncode(ByVal value As Variant, ByVal conversion As String)
     Select Case conversion
         Case "text": NAVFITEncode = s
         Case "date", "counseling"
+            If conversion = "counseling" And IsCounselingStatus(s) Then NAVFITEncode = s: Exit Function
             If s = "" Then
                 If conversion = "counseling" Then NAVFITEncode = "" Else NAVFITEncode = Null
                 Exit Function

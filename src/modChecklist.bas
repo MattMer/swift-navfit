@@ -92,7 +92,7 @@ Public Function RefreshDraftChecklist() As Boolean
         If r!PeriodEnd < r!PeriodStart Then Finding "DATE_ORDER", "Draft error", "Period end precedes period start. Review the dates.": errors = errors + 1
     End If
     If Not HasContent(r!OfficialComments) Then Finding "NARRATIVE", "Missing input", "The official narrative is blank. General draft notes do not fill it.": missing = missing + 1
-    If DCount("*", "ImportReceipt", "ReportID=" & id) > 0 Then Finding "PARTIAL_IMPORT", "Needs mapping", "This draft imported a narrative only. Other source fields remain in provenance and are unmapped."
+    If NAVFITImportScope(id) = "Narrative only" Then Finding "PARTIAL_IMPORT", "Needs mapping", "This draft imported a narrative only. Other source fields remain in provenance and are unmapped."
     If DCount("*", "RecoveryDraft", "ReportID=" & id) > 0 Then Finding "RECOVERY", "Review", "A pending-edit checkpoint exists. It is excluded from this saved-draft checklist."
     If r!IsArchived Then Finding "ARCHIVED", "Review", "This draft is archived. Recover it before editing."
     Finding "POLICY", "Limited Navy checks", "Source-linked draft checks are available in Review. They cover selected rules only and do not certify compliance."

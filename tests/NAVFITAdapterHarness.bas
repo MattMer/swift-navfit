@@ -19,6 +19,10 @@ Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath A
     Next
     Check NAVFITDecode("26SEP30", "counseling", 2000) = "2026-09-30", "Counseling decode"
     Check NAVFITEncode("2026-09-30", "counseling") = "26SEP30", "Counseling encode"
+    For Each k In Array("NOT REQ", "NOT PERF")
+        Check NAVFITDecode(CStr(k), "counseling") = CStr(k), "Counseling status decode without century"
+        Check NAVFITEncode(CStr(k), "counseling") = CStr(k), "Counseling status encode"
+    Next
     Check NAVFITMergeDecision("base", "base", "incoming") = "Accept returned", "Incoming edit not recognized"
     Check NAVFITMergeDecision("base", "local", "base") = "Keep current", "Local edit lost"
     Check NAVFITMergeDecision("base", "local", "local") = "Keep current", "Same edit conflict"

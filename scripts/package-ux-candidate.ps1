@@ -2,7 +2,8 @@ param([Parameter(Mandatory=$true)][string]$TemplatePath,
 [Parameter(Mandatory=$true)][string]$DemoPath,
 [Parameter(Mandatory=$true)][string]$OutputDirectory,
 [switch]$NoArchive,
-[string]$ExpectedVersion='0.23.0-preview')
+[string]$ExpectedVersion='0.24.0-preview',
+[int]$ExpectedSchema=23)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $TemplatePath=[IO.Path]::GetFullPath($TemplatePath);$DemoPath=[IO.Path]::GetFullPath($DemoPath);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 if(Test-Path -LiteralPath $OutputDirectory){throw 'Candidate directory exists; refusing to overwrite.'}
@@ -15,12 +16,12 @@ $dao=New-Object -ComObject DAO.DBEngine.120;$db=$dao.OpenDatabase($blank,$false,
 try{
 foreach($table in $db.TableDefs){if($table.Name -notlike 'MSys*' -and $table.Name -ne 'AppMetadata'){$r=$db.OpenRecordset('SELECT Count(*) FROM ['+$table.Name+']',4);$counts[$table.Name]=$r.Fields.Item(0).Value;$r.Close();if($counts[$table.Name] -ne 0){throw ('Blank candidate contains user data in '+$table.Name)}}}
 $r=$db.OpenRecordset('SELECT AppVersion,SchemaVersion FROM AppMetadata',4);$version=$r.Fields.Item('AppVersion').Value;$schema=$r.Fields.Item('SchemaVersion').Value;$r.Close()
-if($schema -ne 21 -or $version -ne $ExpectedVersion){throw 'Candidate metadata differs from expected preview'}
+if($schema -ne $ExpectedSchema -or $version -ne $ExpectedVersion){throw 'Candidate metadata differs from expected preview'}
 }finally{$db.Close()}
 [void](New-Item -ItemType Directory -Path (Join-Path $stage 'verification'))
 # Validate exact packaged bytes using disposable copies; never run fixtures in the deliverable.
 $checks=[ordered]@{}
-foreach($test in @('test-ux-review-return.ps1','test-ux-workflows.ps1','test-ux-import-flow.ps1','test-pdf-import.ps1','test-import-review.ps1','test-import-commit.ps1','test-ux-help.ps1','test-ux-context.ps1','test-ux-shell.ps1','smoke-test.ps1','test-backup.ps1','test-major.ps1','test-preview-launch.ps1')){
+foreach($test in @('test-ux-review-return.ps1','test-ux-workflows.ps1','test-ux-import-flow.ps1','test-pdf-import.ps1','test-import-review.ps1','test-import-commit.ps1','test-ux-help.ps1','test-ux-context.ps1','test-ux-shell.ps1','smoke-test.ps1','test-backup.ps1','test-major.ps1','test-preview-launch.ps1','test-ux-validation.ps1','test-ux-navywriter.ps1','test-ux-native-groups.ps1','test-directory-batch.ps1','test-directory-history.ps1','test-report-notes.ps1','test-ux-note-entries.ps1','test-ux-header-review.ps1','test-ux-global-defaults.ps1','test-ux-organization.ps1','test-ux-prior-grid.ps1','test-service-details.ps1','test-ux-responsive-identity.ps1')){
 $log=Join-Path $stage ('verification/'+$test+'.log')
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot $test) -BuildPath $blank *> $log
 if($LASTEXITCODE -ne 0){Get-Content $log -Tail 12;throw ('Candidate verification failed: '+$test+'; retained at '+$stage)}
@@ -28,7 +29,7 @@ $checks[$test]='PASS';Write-Output ('PASS: candidate '+$test)
 }
 $log=Join-Path $stage 'verification/workspace-upgrade.log'
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-workspace-upgrade.ps1') -TemplatePath $blank -Schema21Path $demo *> $log
-if($LASTEXITCODE -ne 0){Get-Content $log -Tail 12;throw ('Candidate migration failed; retained at '+$stage)};$checks['schema20/schema21 transfer']='PASS'
+if($LASTEXITCODE -ne 0){Get-Content $log -Tail 12;throw ('Candidate migration failed; retained at '+$stage)};$checks['schema20 to current / current data transfer']='PASS'
 $log=Join-Path $stage 'verification/demo.log'
 & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-ux-demo.ps1') -BuildPath $demo *> $log
 if($LASTEXITCODE -ne 0){throw ('Demo verification failed; retained at '+$stage)};$checks['seeded demo']='PASS'
@@ -68,7 +69,7 @@ $packageReadme=(Get-Content (Join-Path $root 'planning/UX_CANDIDATE_GUIDE.md') -
 $packageReadme|Set-Content (Join-Path $stage 'README.md') -Encoding utf8
 if((Get-FileHash -LiteralPath $blank).Hash -ne $before.Template -or (Get-FileHash -LiteralPath $demo).Hash -ne $before.Demo -or (Get-FileHash -LiteralPath $TemplatePath).Hash -ne $before.Template -or (Get-FileHash -LiteralPath $DemoPath).Hash -ne $before.Demo){throw 'Verification changed a deliverable/source'}
 $files=@(Get-ChildItem -LiteralPath $stage -File -Recurse|ForEach-Object{[ordered]@{Path=$_.FullName.Substring($stage.Length+1).Replace('\','/');SHA256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
-$manifest=[ordered]@{Status='Local review candidate; not a replacement release';AppVersion=$version;SchemaVersion=$schema;BuiltAtUTC=[DateTime]::UtcNow.ToString('o');BlankUserDataTables=$counts;Checks=$checks;SourceModulesMatched=$moduleCount;SourceAndDeliverablesUnchanged=$true;Files=$files;PendingAcceptance=@('Physical 1366x768/1920x1080 displays at 100/125/150 percent scaling','Manual keyboard and screen-reader acceptance','Full NAVFIT interoperability/printed layout outside candidate verification')}
+$manifest=[ordered]@{Status='Verified deployment prerelease';AppVersion=$version;SchemaVersion=$schema;BuiltAtUTC=[DateTime]::UtcNow.ToString('o');BlankUserDataTables=$counts;Checks=$checks;SourceModulesMatched=$moduleCount;SourceAndDeliverablesUnchanged=$true;Files=$files;PendingAcceptance=@('Physical 1366x768/1920x1080 displays at 100/125/150 percent scaling','Manual keyboard and screen-reader acceptance','Full NAVFIT interoperability/printed layout outside candidate verification')}
 $manifest|ConvertTo-Json -Depth 8|Set-Content (Join-Path $stage 'MANIFEST.json') -Encoding utf8
 if([IO.Path]::GetFullPath((Split-Path $stage -Parent)) -ne [IO.Path]::GetFullPath((Split-Path $OutputDirectory -Parent))){throw 'Staging directory escaped candidate parent'}
 Move-Item -LiteralPath $stage -Destination $OutputDirectory

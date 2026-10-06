@@ -27,6 +27,23 @@ Public Function ValidationPolicyReference(ByVal code As String) As String
         Case "GROUP-ENLISTED": page = "1-22": pdfPage = 51: locator = "paragraph 1-2, SUMMARY, Table 1-4": excerpt = "Group enlisted reports that share all the following characteristics."
         Case "GROUP-CATEGORY": page = "1-20 to 1-21": pdfPage = 49: locator = "paragraph 1-2, Officer Competitive Categories": excerpt = "Each category consists of all designators within the parentheses."
         Case "CAPACITY": page = "1-17 to 1-18": pdfPage = 46: locator = "paragraph 1-2, Upper Limits; Table 1-2": excerpt = "Twenty percent of each summary group (rounded up to nearest whole number)."
+        Case "SHIP-PRESENT": page = "1-3": pdfPage = 32: locator = "paragraph 1-2, SHIP/STATION, block 7": excerpt = "Enter the abbreviated name of the activity to which the member is assigned"
+        Case "STATUS-PRESENT": page = "1-3": pdfPage = 32: locator = "paragraph 1-2, PROMOTION STATUS, block 8": excerpt = "Enter the member's promotion status on the ending date of the report period"
+        Case "REPORTED-PRESENT": page = "1-4": pdfPage = 33: locator = "paragraph 1-2, DATE REPORTED, block 9": excerpt = "Use the date the Service member reported to the command in block 7."
+        Case "RS-NAME": page = "1-9": pdfPage = 38: locator = "paragraph 1-2, REPORTING SENIOR, block 22": excerpt = "Enter the last name, initials, and suffix (if any) of the reporting senior."
+        Case "RS-GRADE": page = "1-10": pdfPage = 39: locator = "paragraph 1-2, GRADE, block 23": excerpt = "Enter the reporting senior's grade."
+        Case "RS-TITLE": page = "1-10": pdfPage = 39: locator = "paragraph 1-2, TITLE, block 25": excerpt = "title (abbreviated if necessary)."
+        Case "RS-UIC": page = "1-11": pdfPage = 40: locator = "paragraph 1-2, UIC, block 26": excerpt = "Enter the UIC of the reporting senior's command."
+        Case "UIC-FORMAT": page = "1-2": pdfPage = 31: locator = "paragraph 1-2, Unit ID Code, block 6": excerpt = "The first four characters of a UIC must be numbers."
+        Case "COUNSELING": page = "1-13": pdfPage = 42: locator = "paragraph 1-2, DATE COUNSELED, block 30": excerpt = "If counseling was not performed for any other reason, enter ""NOT PERF."""
+        Case "COUNSELOR": page = "1-13": pdfPage = 42: locator = "paragraph 1-2, COUNSELOR, block 31": excerpt = "If the entry in block 30 is NOT PERF, enter a brief explanation in block 31"
+        Case "CAREER-PRESENT": page = "1-15": pdfPage = 44: locator = "paragraph 1-2, CAREER RECOMMENDATIONS": excerpt = "If no recommendation is appropriate, enter ""NA"" or ""NONE"" in the first block."
+        Case "PARTIAL-NOB-LIMIT", "PARTIAL-NOB-MARKS": page = "6-1": pdfPage = 91: locator = "paragraph 6-3": excerpt = "Grade up to three traits and mark all other traits and the promotion recommendation as ""NOB."""
+        Case "PARTIAL-NOB-ADVERSE": page = "6-1": pdfPage = 91: locator = "paragraph 6-3": excerpt = "An Observed report with an ""NOB"" promotion recommendation cannot be submitted if the member receives a 1.0 in any trait"
+        Case "ADVERSE-REFERRAL": page = "I-2": pdfPage = 28: locator = "Introduction, paragraph 4a-c": excerpt = "containing adverse matter to be referred to the Service member for a statement before it is placed in the OMPF."
+        Case "JUSTIFY-TRAITS": page = "13-3": pdfPage = 125: locator = "paragraph 13-4a-b": excerpt = "Specifically substantiate all 1.0 grades and when three or more traits are evaluated 2.0."
+        Case "JUSTIFY-ADVERSE": page = "13-3": pdfPage = 125: locator = "paragraph 13-4c(1)": excerpt = "Substantiate any promotion recommendation of Significant Problems and any recommendation against retention."
+        Case "REGULAR-LENGTH": page = "3-1": pdfPage = 70: locator = "paragraph 3-2": excerpt = "may not cover more than 15 months without PERS-32 approval."
         Case Else
             If Left$(code, 4) = "APP-" Then ValidationPolicyReference = "Application rule - no Navy policy citation applies." Else ValidationPolicyReference = "A source excerpt has not been verified for this rule. Refer to the original rule pack's locator."
             Exit Function
@@ -48,6 +65,60 @@ Private Sub VAdd(ByVal findings As Collection, ByVal f As Object, ByVal id As Lo
     item.Add "Label", UXFieldCaption(key, VText(f, "FormKind"))
     item.Add "Message", message: item.Add "Reference", ValidationPolicyReference(code): findings.Add item
 End Sub
+Public Function IsValidPolicyUIC(ByVal value As String) As Boolean
+    If Len(value) <> 5 Then Exit Function
+    IsValidPolicyUIC = (Left$(value, 4) Like "####" And UCase$(Right$(value, 1)) Like "[A-Z0-9]")
+End Function
+Private Sub VPolicyDetails(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal observed As Boolean, ByVal graded As Long, ByVal twos As Long)
+    Dim key As Variant, value As String, title As String, justify As Boolean, partial As Boolean, adverse As Boolean, referral As Boolean
+    For Each key In Array(Array("ShipStation", "SHIP-PRESENT"), Array("PromotionStatus", "STATUS-PRESENT"), Array("DateReported", "REPORTED-PRESENT"), Array("ReportingSeniorName", "RS-NAME"), Array("ReportingSeniorGrade", "RS-GRADE"), Array("ReportingSeniorTitle", "RS-TITLE"), Array("ReportingSeniorUIC", "RS-UIC"))
+        If VText(f, CStr(key(0))) = "" Then VAdd findings, f, id, CStr(key(0)), "Incomplete draft", CStr(key(1)), "Required report information is missing. Drafts may still be saved."
+    Next
+    For Each key In Array(Array("StatementYes", "StatementNo"), Array("RetentionYes", "RetentionNo"))
+        If UXFieldApplies(CStr(key(0)), VText(f, "FormKind")) Then
+            If VText(f, CStr(key(0))) = "Yes" And VText(f, CStr(key(1))) = "Yes" Then VAdd findings, f, id, CStr(key(0)), "Invalid entry", "APP-EXCLUSIVE", "Yes and No cannot both be selected for this response."
+        End If
+    Next
+    For Each key In Array("UnitUIC", "ReportingSeniorUIC")
+        value = VText(f, CStr(key))
+        If value <> "" And Not IsValidPolicyUIC(value) Then VAdd findings, f, id, CStr(key), "Invalid entry", "UIC-FORMAT", "Use four digits followed by one letter or digit."
+    Next
+    value = VText(f, "CounselingDate")
+    If value = "" Then VAdd findings, f, id, "CounselingDate", "Incomplete draft", "COUNSELING", "Enter the counseling date, NOT REQ when outside this period, or NOT PERF with an explanation."
+    If IsValidIsoDate(value) Then
+        If VText(f, "CounselorName") = "" Then VAdd findings, f, id, "CounselorName", "Incomplete draft", "COUNSELOR", "Enter the counselor from the counseling worksheet."
+        If IsDate(VText(f, "PeriodStart")) And IsDate(VText(f, "PeriodEnd")) Then
+            If CDate(value) < CDate(f("PeriodStart")) Or CDate(value) > CDate(f("PeriodEnd")) Then VAdd findings, f, id, "CounselingDate", "Policy issue", "COUNSELING", "This counseling date is outside the report period. Verify whether NOT REQ applies; retain the actual date in the appropriate period."
+        End If
+    End If
+    If value = "NOT PERF" And VText(f, "CounselorName") = "" Then VAdd findings, f, id, "CounselorName", "Incomplete draft", "COUNSELOR", "Explain why counseling was not performed, or enter SEE COMMENT and explain in comments."
+    If UCase$(VText(f, "CounselorName")) = "SEE COMMENT" And VText(f, "OfficialComments") = "" Then VAdd findings, f, id, "OfficialComments", "Incomplete draft", "COUNSELOR", "SEE COMMENT requires an explanation in the comments block."
+    If observed And VText(f, "PromotionRecommendation") <> "NOB" And VText(f, "AssignmentRecommendationA") = "" Then VAdd findings, f, id, "AssignmentRecommendationA", "Incomplete draft", "CAREER-PRESENT", "Enter the first career recommendation, or NA / NONE if appropriate. The second recommendation is optional."
+    partial = observed And VText(f, "PromotionRecommendation") = "NOB"
+    If partial And graded > 3 Then VAdd findings, f, id, "PromotionRecommendation", "Policy issue", "PARTIAL-NOB-LIMIT", "An observed report with NOB promotion recommendation permits at most three graded traits."
+    For Each key In TraitKeys()
+        value = VText(f, CStr(key)): title = UCase$(CatalogueTraitTitle(VText(f, "FormKind"), CLng(Mid$(CStr(key), 6))))
+        If partial And value = "" Then VAdd findings, f, id, CStr(key), "Incomplete draft", "PARTIAL-NOB-MARKS", "Mark ungraded traits NOB on a partially graded observed report."
+        If value = "1.0" Then justify = True: adverse = True: referral = True
+        If (value = "1.0" Or value = "2.0") And (InStr(title, "CLIMATE") > 0 Or InStr(title, "CHARACTER") > 0) Then justify = True: adverse = True
+        If value = "1.0" Or value = "2.0" Then
+            If VText(f, "FormKind") = "CHIEFEVAL" Then
+                If InStr(title, "CHARACTER") > 0 Then referral = True
+            Else
+                If InStr(title, "CLIMATE") > 0 Then referral = True
+            End If
+        End If
+    Next
+    If twos >= 3 Then referral = True
+    If referral Or VText(f, "PromotionRecommendation") = "Significant Problems" Then VAdd findings, f, id, "StatementYes", "Needs review", "ADVERSE-REFERRAL", "Verify referral to the member for a statement and any written decision not to submit one. Checkbox values and local approvals do not establish that referral occurred."
+    If twos >= 3 Then justify = True: adverse = True
+    If partial And adverse Then VAdd findings, f, id, "PromotionRecommendation", "Policy issue", "PARTIAL-NOB-ADVERSE", "NOB promotion recommendation conflicts with a 1.0 trait, three 2.0 traits, or climate/character below 3.0. Adverse narrative information also requires human review."
+    If justify Then VAdd findings, f, id, "OfficialComments", "Needs review", "JUSTIFY-TRAITS", "Substantiate the adverse trait marks and correlate comments by block number. The app cannot establish whether the narrative adequately justifies the marks."
+    If VText(f, "PromotionRecommendation") = "Significant Problems" Or VText(f, "RetentionNo") = "Yes" Then VAdd findings, f, id, "OfficialComments", "Needs review", "JUSTIFY-ADVERSE", "Substantiate Significant Problems / recommendation against retention and verify required adverse-report referral procedures."
+    If VText(f, "ReportRegular") = "Yes" And IsDate(VText(f, "PeriodStart")) And IsDate(VText(f, "PeriodEnd")) Then
+        If CDate(f("PeriodEnd")) > DateAdd("m", 15, CDate(f("PeriodStart"))) Then VAdd findings, f, id, "PeriodEnd", "Needs review", "REGULAR-LENGTH", "Regular report exceeds 15 months. Verify PERS-32 approval, including any letter extensions; approval is not recorded by this app."
+    End If
+End Sub
 Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As Long = 0) As Collection
     Dim findings As New Collection, key As Variant, text As String, options As String, allowed As Boolean, opt As Variant
     Dim count As Long, recommendation As String, observed As Boolean, graded As Long, kind As String, code As String, twos As Long, title As String
@@ -57,10 +128,10 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
             text = VText(f, CStr(key))
             If Len(text) > 0 Then
                 If UXFieldLimit(CStr(key)) > 0 And Len(text) > UXFieldLimit(CStr(key)) Then VAdd findings, f, reportID, CStr(key), "Invalid entry", "APP-LENGTH", "Use " & UXFieldLimit(CStr(key)) & " characters or fewer."
-                If UXFieldDigits(CStr(key)) > 0 Then
+                If UXFieldDigits(CStr(key)) > 0 And key <> "UnitUIC" And key <> "ReportingSeniorUIC" Then
                     If Len(text) <> UXFieldDigits(CStr(key)) Or text Like "*[!0-9]*" Then VAdd findings, f, reportID, CStr(key), "Invalid entry", "APP-DIGITS", "Enter exactly " & UXFieldDigits(CStr(key)) & " digits (stored without punctuation)."
                 End If
-                If UXFieldDate(CStr(key)) And Not IsDate(text) Then VAdd findings, f, reportID, CStr(key), "Invalid entry", "APP-DATE", "Enter a valid date."
+                If UXFieldDate(CStr(key)) And Not IsDate(text) And Not (key = "CounselingDate" And IsCounselingStatus(text)) Then VAdd findings, f, reportID, CStr(key), "Invalid entry", "APP-DATE", "Enter a valid date."
                 options = UXFieldOptions(CStr(key)): allowed = False
                 If Len(options) > 0 Then
                     For Each opt In Split(options, ";"): If text = CStr(opt) Then allowed = True
@@ -136,6 +207,7 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
             VAdd findings, f, reportID, "Designator", "Needs review", "JUNIOR-OFFICER", "A valid officer designator is needed to evaluate the LDO exception."
         End If
     End If
+    VPolicyDetails findings, f, reportID, observed, graded, twos
     Set ValidateLiveFields = findings
 End Function
 Private Function VComponent(ByVal f As Object) As String
@@ -173,7 +245,7 @@ Public Function ValidationWornPaygrade(ByVal rate As String) As String
             End Select
     End Select
 End Function
-Private Function VCategory(ByVal f As Object) As String
+Public Function VCategory(ByVal f As Object, Optional ByVal officerBasis As String = "Unconfirmed") As String
     Dim designator As String, prefix As String
     designator = VText(f, "Designator")
     If Len(designator) <> 4 Or designator Like "*[!0-9]*" Then Exit Function
@@ -188,17 +260,66 @@ Private Function VCategory(ByVal f As Object) As String
                 Case "150", "151", "152", "154", "165", "166", "168", "180", "181", "182", "183", "184", "186", "187", "188", "210", "220", "230", "250", "270", "290", "310", "410", "510": VCategory = Left$(designator, 3)
             End Select
     End Select
-    'LDO/CWO active-versus-reserve categories need explicit service context; do not guess.
+    'Duty status is not commission/category basis. Require a deliberate group review.
+    If officerBasis = "Reserve" Then
+        Select Case prefix
+            Case "61", "62", "63", "64": VCategory = "Reserve LDO line"
+            Case "65": VCategory = "Reserve LDO staff"
+        End Select
+        If Left$(designator, 1) = "7" Then VCategory = "Reserve CWO"
+    ElseIf officerBasis = "Active" Then
+        Select Case prefix
+            Case "61", "62", "63", "64", "68": VCategory = "Active LDO " & prefix
+            Case "71", "72", "73", "74", "75", "78": VCategory = "Active CWO " & prefix
+        End Select
+        If Left$(designator, 3) = "651" Or Left$(designator, 3) = "653" Then VCategory = "Active LDO " & Left$(designator, 3)
+        If Left$(designator, 3) = "740" Then VCategory = "Active CWO 72"
+        If designator = "7371" Then VCategory = "Active CWO UAV"
+    End If
 End Function
-Public Function ValidateLiveGroup(ByVal groupID As Long) As Collection
-    Dim findings As New Collection, rows As New Collection, r As DAO.Recordset, f As Object, item As Object, row As Object, seen As Object
-    Dim key As Variant, value As String, id As Long, code As String, ep As Long, mp As Long, observed As Long, capacity As Object, grade As String, ldo As Boolean, unknownLDO As Boolean, nonLDO As Boolean, worn As String, expectedKind As String, severity As String
+Public Function GroupObservedRecommendation(ByVal f As Object) As Boolean
+    If VText(f, "ObservationStatus") = "NOB" Then Exit Function
+    Select Case VText(f, "PromotionRecommendation")
+        Case "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote": GroupObservedRecommendation = True
+    End Select
+End Function
+Public Function GroupKeysResolved(ByVal f As Object, ByVal grade As String, ByVal kind As String, Optional ByVal officerBasis As String = "Unconfirmed") As Boolean
+    Dim key As Variant, count As Long, ssn As String
+    If VText(f, "FormKind") <> kind Or ValidationWornPaygrade(VText(f, "RankRate")) <> grade Then Exit Function
+    If Not IsDate(VText(f, "PeriodEnd")) Or VText(f, "PromotionStatus") = "" Then Exit Function
+    For Each key In Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW")
+        If VText(f, CStr(key)) = "Yes" Then count = count + 1
+    Next
+    If count <> 1 Then Exit Function
+    If VText(f, "ReportRegular") <> "Yes" And VText(f, "ReportConcurrent") <> "Yes" And VText(f, "ReportOperationalCommander") <> "Yes" Then Exit Function
+    ssn = Replace(VText(f, "ReportingSeniorSSN"), "-", "")
+    If Len(ssn) <> 9 Or ssn Like "*[!0-9]*" Or VText(f, "ReportingSeniorName") = "" Then Exit Function
+    If kind = "FITREP" And VCategory(f, officerBasis) = "" Then Exit Function
+    If kind <> "FITREP" And VText(f, "UnitUIC") = "" Then Exit Function
+    GroupKeysResolved = True
+End Function
+Public Function ValidateLiveGroup(ByVal groupID As Long, Optional ByVal overrides As Object, Optional ByVal membersCSV As String = "@Current") As Collection
+    Dim findings As New Collection, rows As New Collection, r As DAO.Recordset, db As DAO.Database, f As Object, item As Object, row As Object, seen As Object, ids As Object, csv As String, officerBasis As String, uicMode As String
+    Dim key As Variant, value As String, id As Long, code As String, ep As Long, mp As Long, observed As Long, capacity As Object, grade As String, ldo As Boolean, unknownLDO As Boolean, nonLDO As Boolean, keysUnresolved As Boolean, keysMixed As Boolean, worn As String, expectedKind As String, severity As String
     grade = Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID), "")
     expectedKind = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & groupID), "")
-    Set r = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & " ORDER BY ReportID", dbOpenSnapshot)
+    officerBasis = GroupPolicyValue(groupID, "OfficerBasis"): uicMode = GroupPolicyValue(groupID, "UICMode")
+    Set db = CurrentDb
+    If membersCSV = "@Current" Then
+        Set r = db.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & " ORDER BY ReportID", dbOpenSnapshot)
+    Else
+        csv = "0"
+        If Len(membersCSV) > 0 Then
+            Set ids = MajorIDs(membersCSV)
+            For Each key In ids.Keys: csv = csv & "," & CLng(ids(key)): Next
+        End If
+        Set r = db.OpenRecordset("SELECT ReportID FROM Report WHERE ReportID In (" & csv & ") ORDER BY ReportID", dbOpenSnapshot)
+    End If
     Do While Not r.EOF
         id = r!ReportID: Set f = SavedFields(id)
-        If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        If Not overrides Is Nothing Then
+            If overrides.Exists(CStr(id)) Then Set f = overrides(CStr(id))
+        ElseIf membersCSV = "@Current" And CurrentProject.AllForms("frmEditor").IsLoaded Then
             If Nz(Forms!frmEditor!txtReportID, 0) = id Then Set f = EditorPendingFields()
         End If
         Set row = CreateObject("Scripting.Dictionary"): row.Add "ID", id: row.Add "Fields", f: rows.Add row
@@ -211,15 +332,26 @@ Public Function ValidateLiveGroup(ByVal groupID As Long) As Collection
         ElseIf worn <> grade Then
             VAdd findings, f, id, "RankRate", "Policy issue", code, "Worn paygrade " & worn & " differs from group paygrade " & grade & ". Ratings may differ, but current paygrade must match."
         End If
-        If VText(f, "FormKind") = "FITREP" And VCategory(f) = "" Then VAdd findings, f, id, "Designator", "Needs review", "GROUP-CATEGORY", "Verify officer competitive category, including active/reserve LDO and CWO distinctions. This category is outside the automatic mapping."
+        If VText(f, "FormKind") = "FITREP" And VCategory(f, officerBasis) = "" Then VAdd findings, f, id, "Designator", "Needs review", "GROUP-CATEGORY", "Verify officer competitive category, including active/reserve LDO and CWO distinctions. This category is outside the automatic mapping."
         If VText(f, "PromotionRecommendation") = "NOB" Or VText(f, "ObservationStatus") = "NOB" Then VAdd findings, f, id, "PromotionRecommendation", "Policy issue", code, "NOB promotion recommendations are excluded from observed summary groups."
-        Select Case VText(f, "PromotionRecommendation")
-            Case "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote"
-                If VText(f, "ObservationStatus") <> "NOB" Then observed = observed + 1
-        End Select
-        If VText(f, "PromotionRecommendation") = "Early Promote" Then ep = ep + 1
-        If VText(f, "PromotionRecommendation") = "Must Promote" Then mp = mp + 1
-        If VText(f, "FormKind") = "FITREP" Then
+        If GroupObservedRecommendation(f) Then
+            observed = observed + 1
+            If uicMode = "Separate enlisted UICs" Or uicMode = "Officer dual-hatted" Then
+                If VText(f, "UnitUIC") = "" Or VText(f, "ReportingSeniorUIC") = "" Or VText(f, "UnitUIC") <> VText(f, "ReportingSeniorUIC") Then
+                    keysUnresolved = True
+                    VAdd findings, f, id, "UnitUIC", "Policy issue", code, "This confirmed UIC breakout requires member UIC (block 6) to match reporting senior UIC (block 26). Verify the recorded grouping authority."
+                End If
+            End If
+            If VText(f, "PromotionRecommendation") = "Early Promote" Then ep = ep + 1
+            If VText(f, "PromotionRecommendation") = "Must Promote" Then mp = mp + 1
+            If Not GroupKeysResolved(f, grade, expectedKind, officerBasis) Then
+                keysUnresolved = True
+                VAdd findings, f, id, "RankRate", "Needs review", code, "Observed roster keys are unresolved. Confirm worn paygrade, promotion status, ending date, one duty status, report type, reporting senior identity and applicable UIC/competitive category before calculating capacity."
+            End If
+        ElseIf VText(f, "ObservationStatus") <> "NOB" And VText(f, "PromotionRecommendation") <> "NOB" Then
+            keysUnresolved = True
+        End If
+        If GroupObservedRecommendation(f) And VText(f, "FormKind") = "FITREP" Then
             If Len(VText(f, "Designator")) <> 4 Or VText(f, "Designator") Like "*[!0-9]*" Then
                 unknownLDO = True
             ElseIf Left$(VText(f, "Designator"), 1) = "6" Then
@@ -231,18 +363,22 @@ Public Function ValidateLiveGroup(ByVal groupID As Long) As Collection
         r.MoveNext
     Loop
     r.Close
-    For Each key In Array("FormKind", "PromotionStatus", "PeriodEnd", "ComponentActive", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "BilletSubcategory", "ReportingSeniorName", "ReportingSeniorSSN", "UnitUIC", "Designator")
+    For Each key In Array("FormKind", "PromotionStatus", "PeriodEnd", "ComponentActive", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "BilletSubcategory", "ReportingSeniorName", "ReportingSeniorSSN", "UnitUIC", "ReportingSeniorUIC", "Designator")
         Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
         For Each row In rows
             Set f = row("Fields"): value = VText(f, CStr(key))
             If key = "ComponentActive" Then value = VComponent(f)
             If key = "PeriodEnd" And IsDate(value) Then value = Format$(CDate(value), "yyyy-mm-dd")
             If key = "Designator" Then
-                If VText(f, "FormKind") <> "FITREP" Then value = "Enlisted" Else value = VCategory(f)
+                If VText(f, "FormKind") <> "FITREP" Then value = "Enlisted" Else value = VCategory(f, officerBasis)
             End If
-            seen(value) = True
+            If key = "UnitUIC" And VText(f, "FormKind") = "FITREP" Then value = "Officer UIC: contextual review"
+            If key = "ReportingSeniorUIC" And uicMode <> "Officer dual-hatted" And uicMode <> "Separate enlisted UICs" Then value = "Not an explicit UIC breakout"
+            If key = "UnitUIC" And uicMode = "Combined enlisted UICs" And VText(f, "FormKind") <> "FITREP" Then value = "Combined enlisted UICs"
+            If GroupObservedRecommendation(f) Then seen(value) = True
         Next
         If seen.count > 1 Then
+            If key <> "ReportingSeniorName" Then keysMixed = True
             severity = "Policy issue"
             If seen.Exists("") Or key = "UnitUIC" Or key = "Designator" Or key = "ReportingSeniorName" Then severity = "Needs review"
             For Each row In rows
@@ -256,18 +392,22 @@ Public Function ValidateLiveGroup(ByVal groupID As Long) As Collection
     If rows.count > 0 Then
         Set row = rows(1): Set f = row("Fields"): grade = Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID), "")
         If VText(f, "FormKind") = "FITREP" Then code = "GROUP-OFFICER" Else code = "GROUP-ENLISTED"
-        VAdd findings, f, CLng(row("ID")), "RankRate", "Needs review", code, "Verify every member's worn grade matches group paygrade " & grade & ". Local membership alone does not prove a complete eligible roster."
-        If observed > 0 And Not ((grade = "O1" Or grade = "O2") And (unknownLDO Or (ldo And nonLDO))) Then
+        VAdd findings, f, CLng(row("ID")), "RankRate", "Needs review", code, GroupReviewLabel(groupID)
+        If observed > 0 And Not keysUnresolved And Not keysMixed And Not ((grade = "O1" Or grade = "O2") And (unknownLDO Or (ldo And nonLDO))) Then
             On Error Resume Next
             Set capacity = PromotionCapacity(grade, observed, ldo, 0)
             On Error GoTo 0
             If Not capacity Is Nothing Then
                 value = "Provisional local roster: " & observed & " observed; EP " & ep & "/" & capacity("EarlyPromoteMaximum") & "; EP + MP " & (ep + mp) & "/" & capacity("CombinedMaximum") & ". Verify complete eligible membership and group keys before relying on these limits."
-                If ep > capacity("EarlyPromoteMaximum") Or ep + mp > capacity("CombinedMaximum") Then value = "Local roster exceeds the provisional limit. " & value
-                VAdd findings, f, CLng(row("ID")), "PromotionRecommendation", "Needs review", "CAPACITY", value
+                severity = "Needs review"
+                If ep > capacity("EarlyPromoteMaximum") Or ep + mp > capacity("CombinedMaximum") Then
+                    value = "Local observed roster exceeds the provisional limit. " & value: severity = "Policy issue"
+                End If
+                VAdd findings, f, CLng(row("ID")), "PromotionRecommendation", severity, "CAPACITY", value
             End If
         End If
-        If capacity Is Nothing Then VAdd findings, f, CLng(row("ID")), "PromotionRecommendation", "Needs review", "CAPACITY", "Capacity not calculated: verify observed recommendations, supported paygrade and LDO grouping before evaluating EP/MP limits."
+        If Not overrides Is Nothing Or membersCSV <> "@Current" Then VAdd findings, f, CLng(row("ID")), "RankRate", "Needs review", code, "Proposed changes are outside the recorded saved-roster review. Reconfirm completeness after Apply."
+        If capacity Is Nothing Then VAdd findings, f, CLng(row("ID")), "PromotionRecommendation", "Needs review", "CAPACITY", "Capacity not calculated: the observed roster is empty, incomplete, mixed or outside supported competitive categories. Resolve group findings before evaluating EP/MP limits. NOB reports are excluded from both counts and limits; complete command membership still requires verification."
     End If
     Set ValidateLiveGroup = findings
 End Function

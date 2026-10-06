@@ -74,6 +74,7 @@ End Function
 Public Function RefreshFolders() As Boolean
     Dim f As Form
     Set f = Forms!frmLibrary
+    If UXHasControl(f, "uxGroupOrganization") Then RefreshFolders = UXRefreshGroupFilter(): Exit Function
     f!lstFolders.RowSource = "SELECT 0 AS ID, 'All reports' AS Label FROM AppMetadata UNION ALL SELECT -1, 'Unassigned' FROM AppMetadata UNION ALL SELECT FolderID, FolderPath([FolderID]) FROM Folder ORDER BY Label"
     f!lstFolders.Requery
     f!cboDestination.RowSource = "SELECT 0 AS ID, 'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID, FolderPath([FolderID]) FROM Folder ORDER BY Label"
@@ -93,8 +94,13 @@ Public Function RefreshLibrary() As Boolean
     selection = Nz(f!lstReports, 0)
     sql = "SELECT " & LibraryViewSelect() & " FROM Report WHERE 1=1"
     folderID = Nz(f!lstFolders, 0): state = Nz(f!cboArchive, "Active")
-    If folderID = -1 Then sql = sql & " AND FolderID IS NULL"
-    If folderID > 0 Then sql = sql & " AND FolderID=" & folderID
+    If UXHasControl(f, "uxGroupOrganization") Then
+        If folderID = -1 Then sql = sql & " AND ReportID NOT IN (SELECT ReportID FROM GroupMember)"
+        If folderID > 0 Then sql = sql & " AND ReportID IN (SELECT ReportID FROM GroupMember WHERE GroupID=" & folderID & ")"
+    Else
+        If folderID = -1 Then sql = sql & " AND FolderID IS NULL"
+        If folderID > 0 Then sql = sql & " AND FolderID=" & folderID
+    End If
     If state = "Active" Then sql = sql & " AND IsArchived=False"
     If state = "Archived" Then sql = sql & " AND IsArchived=True"
     If UXHasControl(f, "uxTypeFilter") Then
