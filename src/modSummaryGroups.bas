@@ -31,11 +31,13 @@ Failed:
     Err.Raise failure, "CreateSummaryGroup", message
 End Function
 Public Function GroupStamp(ByVal groupID As Long, Optional ByVal includeWorkflowLocks As Boolean = True) As String
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, g As DAO.Recordset
-    Set g = CurrentDb.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
+    Set g = ownedDB.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
     If g.EOF Then g.Close: Err.Raise vbObjectError + 4103, , "Group does not exist."
     GroupStamp = g!GroupGuid & ":" & g!VersionCounter & ":" & CStr(g!IsArchived): g.Close
-    Set r = CurrentDb.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived,r.WorkflowState FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
+    Set r = ownedDB.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived,r.WorkflowState FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         GroupStamp = GroupStamp & "|" & r!ReportID & ":" & Nz(r!CurrentRevisionID, 0) & ":" & CStr(r!IsArchived)
         If includeWorkflowLocks Then GroupStamp = GroupStamp & ":" & r!WorkflowState
@@ -91,17 +93,19 @@ Failed:
     Err.Raise failure, "RemoveGroupMember", message
 End Sub
 Public Function FreezeSummaryGroup(ByVal groupID As Long, ByVal completenessNote As String) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim w As DAO.Workspace, r As DAO.Recordset, s As DAO.Recordset, m As DAO.Recordset, id As Long, failure As Long, message As String
     If Len(Trim$(completenessNote)) = 0 Then Err.Raise vbObjectError + 4107, , "Record a completeness attestation."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4104, , "Select an active group."
-    Set r = CurrentDb.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
+    Set r = ownedDB.OpenRecordset("SELECT m.ReportID,r.CurrentRevisionID,r.IsArchived FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 4108, , "Group is empty."
-    Set s = CurrentDb.OpenRecordset("GroupSnapshot", dbOpenDynaset)
+    Set s = ownedDB.OpenRecordset("GroupSnapshot", dbOpenDynaset)
     s.AddNew: s!GroupID = groupID: s!Stamp = GroupStamp(groupID): s!AttestedBy = MajorAuthor(): s!AttestedAt = Now(): s!CompletenessNote = completenessNote
     s.Update: s.Bookmark = s.LastModified: id = s!SnapshotID: s.Close
-    Set m = CurrentDb.OpenRecordset("GroupSnapshotMember", dbOpenDynaset)
+    Set m = ownedDB.OpenRecordset("GroupSnapshotMember", dbOpenDynaset)
     Do While Not r.EOF
         If r!IsArchived Or Nz(r!CurrentRevisionID, 0) = 0 Then Err.Raise vbObjectError + 4106, , "Group contains an unavailable report."
         m.AddNew: m!SnapshotID = id: m!ReportID = r!ReportID: m!RevisionID = r!CurrentRevisionID

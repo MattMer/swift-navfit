@@ -1,6 +1,7 @@
 Attribute VB_Name = "modSnippets"
 Option Compare Database
 Option Explicit
+Private startersReady As Boolean
 Public Function SaveSnippet(ByVal snippetID As Long, ByVal title As String, ByVal body As String, ByVal attribution As String, ByVal kind As String) As Long
     Dim r As DAO.Recordset
     If Len(Trim$(title)) = 0 Or Len(title) > 120 Or Len(Trim$(body)) = 0 Or Len(Trim$(attribution)) = 0 Or Len(attribution) > 255 Then Err.Raise vbObjectError + 1200, , "Provide a title (120 max), text and attribution (255 max)."
@@ -49,6 +50,10 @@ Public Function SnippetRateAttribution(ByVal attribution As String, ByVal rate A
 End Function
 Public Function LoadSnippets() As Boolean
     Dim term As String, rate As Variant, where As String, f As Access.Form
+    If Not startersReady Then
+        EnsureStarterSnippets
+        startersReady = True
+    End If
     Set f = Forms!frmSnippets
     If Len(f!cboRateFilter.RowSource) = 0 Then
         f!cboRateFilter.RowSourceType = "Value List": f!cboRateFilter.RowSource = "ALL;All rates;UNSPECIFIED;Unassigned / legacy;GENERAL;General / any rate"
@@ -96,4 +101,24 @@ Failed:
 End Function
 Public Function CloseSnippetsUI() As Boolean
     CloseSnippetsUI = UXReturnSnippets()
+End Function
+
+Public Function EnsureStarterSnippets() As Boolean
+    Dim rate As Variant, title As String, id As Long, row As Long, attribution As String
+    For row = 0 To NavyWriterCount() - 1
+        If NavyWriterValue(row, 4) = "Excerpt" Then
+            title = "NavyWriter - " & NavyWriterValue(row, 0)
+            attribution = "NavyWriter excerpt [Rate: " & NavyWriterValue(row, 3) & "]: " & NavyWriterValue(row, 2)
+            If DCount("*", "NarrativeSnippet", "SnippetTitle=" & QuoteSQL(title) & " AND Attribution=" & QuoteSQL(attribution)) = 0 Then
+                id = SaveSnippet(0, title, NavyWriterValue(row, 1), attribution, "ALL")
+            End If
+        End If
+    Next
+    For Each rate In NavyWriterRates()
+        title = CStr(rate) & " - accomplishment starter"
+        If DCount("*", "NarrativeSnippet", "SnippetTitle=" & QuoteSQL(title) & " AND Attribution=" & QuoteSQL("Swift NAVFIT original template [Rate: " & CStr(rate) & "]")) = 0 Then
+            id = SaveSnippet(0, title, "Led [RATE-SPECIFIC TASK] for [TEAM/SCOPE], achieving [MEASURABLE RESULT] and improving [MISSION IMPACT]. Replace every placeholder with verified accomplishments.", "Swift NAVFIT original template [Rate: " & CStr(rate) & "]", "ALL")
+        End If
+    Next
+    EnsureStarterSnippets = True
 End Function

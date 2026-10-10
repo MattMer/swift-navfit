@@ -72,7 +72,7 @@ Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template 
         Set r = baseline.OpenRecordset("SELECT Count(*) AS N FROM SwiftGroupReport", dbOpenSnapshot)
         Check r!N = 2, "Baseline member identities missing": r.Close
         Set r = baseline.OpenRecordset("SELECT Count(*) AS N FROM SwiftGroupValue", dbOpenSnapshot)
-        Check r!N = 156, "Baseline does not freeze all 78 fields": r.Close: baseline.Close
+        Check r!N = 2 * (UBound(DraftFieldKeys()) + 1), "Baseline does not freeze all current saved fields": r.Close: baseline.Close
         Check InStr(Rejected(groupID, file, template, token), "not overwritten") > 0, "Existing export overwritten"
         Set values = SavedFields(copy): old = values("ReportingSeniorSSN"): values("ReportingSeniorSSN") = "999999999"
         Call NAVFITCommitFields(copy, values, "Synthetic group member", "Mismatch test")

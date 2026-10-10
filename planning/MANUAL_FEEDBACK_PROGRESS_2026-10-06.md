@@ -1,3 +1,94 @@
+## Current — r97 RUAD import / refresh (9 October 2026)
+
+The user confirmed r96 resolves the interactive comparison save failure. r97 adds Resources → Command member directory → Import / refresh RUAD CSV: explicit identity selection, complete 35-column preview, six vacant-row skips, provisional new members, three-way roster refresh with manual conflict preservation, stale/duplicate guards and atomic apply/results. Source baseline/path/time use existing RUADData XML; schema remains 25. No absent members are automatically removed. Archive filter now says Archive status.
+
+Open output/ux/Swift_NAVFIT_UI_TestWorkspace_2026-10-09-r97.accdb. All 49 existing tables match r96; 71 RUAD assertions, 26 save/approval assertions and 354 authored-baseline/startup/navigation assertions pass. No computer use or publication. Details: RUAD_IMPORT_R97_2026-10-09.md. Current outstanding work: REMAINING_WORK_2026-10-09.md. Prior candidate entries below are historical and their unconfirmed-fix statements have been superseded by the user's r96 confirmation.
+
+## 9 October — r96 revision cursor fix
+
+User trace isolated DAO 3218 at revision-pointer linking. CommitDraft now links through the existing report write cursor instead of a second SQL UPDATE; closed revision cursor is cleared before cleanup. r96 workspace preserves all 49 user tables and local diagnostics. Native compile, 26 approval/rollback/retry checks, three report-type event saves, queued-cell checks and existing-report timer save passed. User's exact interactive journey still needs verification. See REVISION_CURSOR_R96_2026-10-09.md.
+
+## 9 October — r95 diagnostic navigation candidate
+
+Populated groups now open their editable member table without rendering the legacy Members page first. Removed duplicate initialization; group tab changes skip the redundant list rebuild. Native compile, scratch navigation assertions and 26 save/approval assertions passed; all 49 user tables preserved. Interactive 3420 failure remains unresolved: r95 includes a local save-stage trace. See INTERACTIVE_SAVE_DIAGNOSTIC_R94_2026-10-09.md. This is a diagnostic candidate, not a published release.
+
+# Current patch candidate — r93 (9 October 2026)
+
+Open `output/ux/Swift_NAVFIT_UI_TestWorkspace_2026-10-09-r93.accdb` to retain the current test group/report, or the matching blank/demo. Comparison controls queue their changes; the form timer commits after Access completes its bound-cache update. Closing flushes pending cells. Native timer saves, E6 1.0 marks, row identity, coalescing, failed-edit reset and retry pass. All 49 user tables remain identical to r92. The exact user failure was not reproduced; retest is still required to confirm resolution. See COMPARISON_EVENT_SAVE_R93_2026-10-09.md. No GitHub publication.
+# Current patch candidate — r92 (9 October 2026)
+
+Retest with `output/ux/Swift_NAVFIT_UI_Demo_2026-10-09-r92.accdb` or matching blank. The debugger identified error 3218 at the revision-pointer update. The patch removes its second database write handle and uses the report transaction's existing handle for history writes too. Native shared-mode control events from newly created reports pass for all three report types. Exact user-failure resolution remains unconfirmed. See REVISION_LOCK_R92_2026-10-09.md. No GitHub publication.
+# Current patch candidate — r91 (7 October 2026)
+
+Use `output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r91.accdb` to retest the reported O3 comparison trait-save error. Matching blank is available. DAO lifetime hardening is compiled and regression-tested; the exact user failure was not reproduced in r90. All 49 user tables are identical to the current r90 source. See TRAIT_SAVE_R91_2026-10-07.md. No GitHub publication.
+# Summary-group and directory feedback — r90 (7 October 2026)
+
+Current demo: `output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r90.accdb`; matching blank: `output/ux/Swift_NAVFIT_UI_Blank_2026-10-07-r90.accdb`. Version 0.25.0-dev/schema 25. The author's edited database and r89 remain preserved; GitHub release is unchanged.
+
+- Completed: Add report from a summary group, choose an existing directory member or enter a new member, inherit saved group defaults, create/link atomically and return to group members after editing. Cancel creates nothing. Stale group/default/member changes and duplicate member/type/period are rejected.
+- Completed: common Members, Defaults for new reports, Review, Comparison and History navigation on every group workspace. Switching Members/Comparison keeps the existing comparison context. Pending default edits cannot disappear through navigation.
+- Completed: Overview contributor selector/status and Unposted notes occupy separate areas from cards, recovery actions and recent reports.
+- Completed: member profiles expose all 35 RUAD columns in five compact pages. Text identifiers retain leading zeroes; profile saves retain hidden-page values and use version checks. Two synthetic complete profiles are included in the demo.
+
+Schema 25 adds only nullable CommandMember.RUADData memo storage. Full RUAD CSV import/refresh remains pending. See GROUP_DIRECTORY_FEEDBACK_2026-10-07.md for verification and remaining UX work.
+
+## Previous r89 baseline (historical)
+# Author-edited baseline — r89 (7 October 2026)
+
+Use `output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb` for continued UI work. Matching blank: `output/ux/Swift_NAVFIT_UI_Blank_2026-10-07-r89.accdb`. Version 0.25.0-dev/schema 24; published GitHub release remains unchanged. The supplied `Swift_NAVFIT_UI_Demo_2026-10-06-EDITED.accdb` and r88 are preserved.
+
+## Reviewed changes
+
+Seven forms changed: frmLibrary, frmMajorWorkbench, frmMyWork, frmUXGroups, frmUXImportChoose, frmUXMemberHistory and frmUXResources. There were 316 property/object differences, with no standard VBA module or form-class code changes. Adopted tighter report filters/actions, revised Validation/Move report/Summary Group wording, the new Column list and Archive status labels, grouped summary-group actions/defaults, the My Work contributor placement, the shorter history explanation and stronger member heading, and import/resources alignment changes.
+
+The baseline is reproducible through `src/ui-author-baseline.json` (303 property changes and two added labels), applied by `scripts/apply-ui-author-baseline.ps1` at the end of the current full and incremental build path. Runtime My Work layout preserves the author's contributor placement at normal widths, while retaining the compact-width layout. Raw report-list ColumnWidths are not adopted because the nine-column adapter computes them from the selected view and must keep internal IDs hidden. Some conditional workbench controls intentionally retain their runtime positions when their tool opens rather than displaying the author's off-screen design positions.
+
+## Hidden-control cleanup
+
+The r88 inventory contained 524 hidden controls. Traced source references, event bindings, tags, data sources and dynamic families before selecting removals. Removed 50 additional obsolete controls from the author's copy; including eight authored deletions, the candidate has 58 fewer obsolete controls than r88. These include old Home cards/actions, duplicate editor labels/detail buttons and old bulk page buttons. The exact allowlist and reasons are in the baseline JSON.
+
+Retained unbound report/bulk buffers, IDs/stamps, conditional section/error controls, responsive navigation, trait labels addressed by constructed names, reset/inheritance buttons and reporting-senior adapter controls. Restored only `frmLibrary.cboDestination` as a hidden compatibility buffer: older folder functions still reference it. No tables, forms, modules or backend services were removed.
+
+## Verification
+
+Compiled both candidates. All 49 user tables retain identical field schemas, row counts and row-value hashes compared with the author's returned database, including its additional report, group, revisions and note. Both originals' hashes stayed unchanged during inspection.
+
+Passed 2,684 assertions: 142 admin/comparison, 2,107 responsive/focus/identity, 22 group organization, 32 My Work, 355 author-property/cleanup/startup/populated-navigation and 26 approved-trait retry checks. Blank normal startup displays Setup; the demo startup check displays Overview. Native visual spot-checks covered Reports, Summary groups and My Work. This does not establish screen-reader or physical DPI acceptance.
+
+The supplied file carries Zone.Identifier. It was preserved on the original; removed only from the newly generated, reviewed local build. Access startup protection remains intact. No global trust or security setting changed.
+
+Two visual follow-ups remain: report columns truncate some headings/names at the observed window width; the Summary groups archive-state filter says Group status even though the workflow status selector is separate below. Recorded for the next UX pass rather than changing the author's design beyond the requested cleanup.
+
+## RUAD
+
+Received and inspected the synthetic sample. It has 35 columns, 66 rows, 60 named members and six vacancies, with no malformed rows. Mapping details and identity/refresh behavior are documented in `RUAD_MAPPING_2026-10-07.md`; counts in `RUAD_SAMPLE_ANALYSIS_2026-10-07.json`. Earlier sample-blocked notes are historical. RUAD import and refresh implementation is the next remaining feature; it is not included in r89.
+
+Evidence: UI_AUTHOR_REVIEW_VERIFICATION_2026-10-07.json and UI_AUTHOR_DATA_PRESERVATION_2026-10-07.json. Use the current full builder or build-ux-admin-feedback.ps1; historical incremental recipes do not represent the new baseline.
+
+---
+
+# r88 comparison retry and native dates — 6 October 2026
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r88.accdb`; matching blank is `Swift_NAVFIT_UI_Blank_2026-10-06-r88.accdb`. Demo copied from the current r87 workspace without reseeding; existing practice records preserved. Version 0.25.0-dev/schema 24; GitHub release unchanged.
+
+Comparison edits now isolate the temporary row database in its own DAO workspace, capture the expected revision before the approval prompt, guard against reentrant edit callbacks, retain owned database references in dependent operations, and restore the row after failed saves. Errors include the failing save stage and error number. The misplaced `stage` diagnostic in UXGridCurrent was removed before this build.
+
+Native calendar selectors are enabled for report dates and applicable shared/default, prior-evaluation, review-due and reporting-senior date fields. Calendar dates normalize to yyyy-mm-dd; invalid typed entries remain recoverable and counseling status text remains supported.
+
+Verification: compiled blank and demo; 128 calendar assertions (all three report types, raw invalid recovery and counseling statuses); 26 approved-trait rollback/retry/repeated-save/reopen assertions; 142 admin/comparison assertions; 46 major workflow, 39 summary-group correctness and 26 global-default assertions. Both packaged copies open their normal startup forms. Visual check on a disposable r88 demo confirmed the Date Reported calendar icon and calendar popup in native Access.
+
+Limit: the original object-invalid error was not reproduced in clean r87 native approved-report tests. Even the older build passed the corrected synthetic failure/retry test. These changes harden transaction and object lifetimes; they do not establish a reproduced root cause. If it recurs, the new stage/error diagnostic is needed. No new physical scaling, screen-reader, NAVFIT printing or GitHub publication claim.
+
+---
+
+# Startup correction — r87
+
+r86 lacked AutoExec because incremental packaging started from a form-generation candidate that had stopped before startup macro installation. The corrected r87 copies restore AutoExec and the incremental/demo builders now require it. Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r87.accdb`; matching blank: `output/ux/Swift_NAVFIT_UI_Blank_2026-10-06-r87.accdb`. r86 files are preserved, and the demo repair copies the current r86 data rather than reseeding it.
+
+The repaired demo was reopened normally on a disposable copy and automatically loaded frmHome without explicitly invoking Startup or AutoExec. A reusable `scripts/test-ux-startup.ps1` guards both demo Overview and blank first-run startup. Existing r86 feature verification below remains valid; this correction restores startup wiring.
+
+---
+
 # Manual feedback implementation progress - 6 October 2026
 
 Plan: MANUAL_FEEDBACK_CHANGE_PLAN_2026-10-06.md. Completed means implemented and functionally checked in a development candidate; physical display acceptance and publication remain separate.
@@ -106,3 +197,9 @@ Final r75 acceptance: 72 installed modules match current source; 102 live-valida
 ## Deployment 0.24.0-preview
 
 Release regression checks exposed and fixed the backup worker’s schema-21 ceiling and approval stamps that became stale solely from approval edit locks. Review currency now excludes member lock changes while bulk/edit stamps retain them. Major workflow tests include sibling approvals; 46 major and 39 group-correctness assertions pass before final exact-package verification. Migration tools and release guides target schema 23; exact release evidence is in DEPLOYMENT_0.24.0_VERIFICATION.json.
+
+## Additional feedback completion — r86
+
+The subsequent admin/comparison feedback is implemented in 0.25.0-dev / schema 24. Combined Admin data includes Block 28; redundant canonical-name/readiness subfields are hidden without losing background values. Direct Defaults/Comparison, member double-click opening, immediate comparison saves with approval reopening, full-height trait guidance, My Work contributor and populated rate filters are implemented. Reviewed-proposal application uses owned DAO database references and passes the native regression.
+
+Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r86.accdb`. This supersedes r75 for development testing; published 0.24.0 remains unchanged. Focused checks: 142; responsive: 2,113; exact-demo journeys: 36. Detailed evidence and remaining acceptance items: `ADMIN_COMPARISON_FEEDBACK_2026-10-06.md`.

@@ -104,7 +104,7 @@ Public Function RSAddBaselineUI() As Boolean
     If count <> Fix(count) Or count < 0 Or count > 2147483647# Then Err.Raise vbObjectError + 4821, , "Enter a whole trait count from 0 to 2147483647."
     average = f!txtRSCA.Value: If Len(Nz(average, "")) = 0 Then average = Null
     total = f!txtTraitSum.Value: If Len(Nz(total, "")) = 0 Then total = Null
-    dateEntry = Nz(f!txtAsOf, "")
+    dateEntry = Nz(UXDateEntry(f!txtAsOf.Value), "")
     If Not dateEntry Like "####-##-##" Then Err.Raise vbObjectError + 4822, , "Enter an as-of date as YYYY-MM-DD."
     asOf = DateSerial(CInt(Left$(dateEntry, 4)), CInt(Mid$(dateEntry, 6, 2)), CInt(Right$(dateEntry, 2)))
     If Format$(asOf, "yyyy-mm-dd") <> dateEntry Then Err.Raise vbObjectError + 4822, , "Enter a valid as-of date."

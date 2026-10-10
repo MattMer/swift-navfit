@@ -115,7 +115,7 @@ End Sub
 Public Sub UXGroupLocks(ByVal f As Access.Form, ByVal id As Long)
     Dim name As Variant, archived As Boolean
     archived = Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & id), True)
-    For Each name In Array("uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
+    For Each name In Array("uxMode1", "uxMode3", "uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
         If UXHasControl(f, CStr(name)) Then f.Controls(name).Enabled = Not archived
     Next
     If archived Then f!lblStatus.Caption = "Archived group: inspection only. Recover it from Summary groups to manage it. Reports retain their own status."

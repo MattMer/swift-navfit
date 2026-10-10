@@ -17,18 +17,14 @@ Public Function TestUXCareers() As String
     rows!AssignmentRecommendationA = "INSTRUCTOR"
     Check UXGridEdit("AssignmentRecommendationA"), "First career field not staged"
     rows!AssignmentRecommendationB = "RECRUITER"
-    Check UXGridEdit("AssignmentRecommendationB"), "Second career field not staged"
-    Check CurrentRevision(id) = rev, "Career cells saved without preview/apply"
-    Check DCount("*", "MeetingProposal", "SetID=" & f!txtMeeting & " AND ProposalState='Proposed'") = 2, "Career proposals absent"
+    Check UXGridEdit("AssignmentRecommendationB"), "Second career save failed: " & f!lblStatus.Caption
+    Check CurrentRevision(id) <> rev, "Career cells did not save automatically"
+    Check DCount("*", "MeetingProposal", "SetID=" & f!txtMeeting & " AND ProposalState='Proposed'") = 0, "Automatic save left pending proposals"
     rows!AssignmentRecommendationA = String$(21, "X")
     Check Not UXGridEdit("AssignmentRecommendationA"), "Oversize recommendation accepted"
     Check UXGridLoad(), "Career cache reload failed"
     Set rows = f!uxTraitGrid.Form
     Check rows!AssignmentRecommendationA = "INSTRUCTOR" And rows!AssignmentRecommendationB = "RECRUITER", "Pending career recommendations lost on reload"
-    Check UXComparisonPage("Preview"), "Career preview failed"
-    Check InStr(f!lstProposals.RowSource, "Assignment") > 0 Or f!lstProposals.ListCount >= 2, "Career preview rows absent"
-    f!lstProposals.Selected(1) = True: f!lstProposals.Selected(2) = True
-    Check UXApplyComparison(), "Career apply failed"
     Check DLookup("AssignmentRecommendationA", "Report", "ReportID=" & id) = "INSTRUCTOR" And DLookup("AssignmentRecommendationB", "Report", "ReportID=" & id) = "RECRUITER", "Applied career values wrong"
     UXCloseComparison
     Check UXTableITA(id) = "Unavailable", "Missing traits implied ITA"

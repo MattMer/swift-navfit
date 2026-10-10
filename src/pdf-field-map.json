@@ -61,6 +61,11 @@
       "conversion": "text"
     },
     {
+      "target": "CommandEmployment",
+      "source": "x",
+      "conversion": "text"
+    },
+    {
       "target": "PrimaryDuty",
       "source": "y",
       "conversion": "text"
@@ -263,6 +268,11 @@
       "conversion": "text"
     },
     {
+      "target": "CommandEmployment",
+      "source": "x",
+      "conversion": "text"
+    },
+    {
       "target": "PrimaryDuty",
       "source": "y",
       "conversion": "text"
@@ -452,6 +462,11 @@
     {
       "target": "PrimaryDuty",
       "source": "WATCHSTANDING",
+      "conversion": "text"
+    },
+    {
+      "target": "CommandEmployment",
+      "source": "COMMANDEMPLOY",
       "conversion": "text"
     },
     {

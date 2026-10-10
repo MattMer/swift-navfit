@@ -27,9 +27,9 @@ Public Function MigrateWorkspace(ByVal sourcePath As String) As String
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 23 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If ver < 1 Or ver > 25 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion <> 21 And targetVersion <> 22 And targetVersion <> 23 Then Err.Raise vbObjectError + 302, , "Target schema must be 21, 22 or 23."
+    If targetVersion <> 21 And targetVersion <> 22 And targetVersion <> 23 And targetVersion <> 24 And targetVersion <> 25 Then Err.Raise vbObjectError + 302, , "Target schema must be 21, 22, 23, 24 or 25."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, , "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")

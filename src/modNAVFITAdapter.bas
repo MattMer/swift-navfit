@@ -156,5 +156,5 @@ End Function
 Public Function NAVFITCommitFields(ByVal reportID As Long, ByVal values As Object, ByVal member As String, ByVal reason As String) As Long
     NAVFITCommitFields = CommitDraft(reportID, values("FormKind"), "Imported " & values("FormKind"), member, values("PeriodStart"), values("PeriodEnd"), "", reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()))
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"))
 End Function

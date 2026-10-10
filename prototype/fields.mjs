@@ -333,7 +333,7 @@ export const fields = [
   {
     "key": "ReportingSeniorName",
     "label": "Reporting Senior (Last, FI MI)",
-    "section": 1,
+    "section": 0,
     "block": "22",
     "limit": 18,
     "date": false,
@@ -344,7 +344,7 @@ export const fields = [
   {
     "key": "ReportingSeniorGrade",
     "label": "Grade",
-    "section": 1,
+    "section": 0,
     "block": "23",
     "limit": 5,
     "date": false,
@@ -355,7 +355,7 @@ export const fields = [
   {
     "key": "ReportingSeniorDesignator",
     "label": "Desig",
-    "section": 1,
+    "section": 0,
     "block": "24",
     "limit": 5,
     "date": false,
@@ -366,7 +366,7 @@ export const fields = [
   {
     "key": "ReportingSeniorTitle",
     "label": "Title",
-    "section": 1,
+    "section": 0,
     "block": "25",
     "limit": 14,
     "date": false,
@@ -377,7 +377,7 @@ export const fields = [
   {
     "key": "ReportingSeniorUIC",
     "label": "UIC",
-    "section": 1,
+    "section": 0,
     "block": "26",
     "limit": 5,
     "date": false,
@@ -659,7 +659,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "ReadinessDate",
@@ -798,7 +799,7 @@ export const fields = [
   {
     "key": "ReportingSeniorSSN",
     "label": "SSN",
-    "section": 1,
+    "section": 0,
     "block": "27",
     "limit": 9,
     "date": false,
@@ -809,7 +810,7 @@ export const fields = [
   {
     "key": "ReportingSeniorDoDID",
     "label": "Reporting senior DoD ID",
-    "section": 1,
+    "section": 0,
     "block": "",
     "limit": 10,
     "date": false,
@@ -995,7 +996,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "MemberMiddleInitial",
@@ -1006,7 +1008,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "MemberLastName",
@@ -1017,7 +1020,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "MemberSuffix",
@@ -1028,40 +1032,44 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "ReportingSeniorLastName",
     "label": "Reporting senior last name",
-    "section": 1,
+    "section": 0,
     "block": "22",
     "limit": 18,
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "ReportingSeniorFirstInitial",
     "label": "Reporting senior first initial",
-    "section": 1,
+    "section": 0,
     "block": "22",
     "limit": 1,
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "ReportingSeniorMiddleInitial",
     "label": "Reporting senior middle initial(s)",
-    "section": 1,
+    "section": 0,
     "block": "22",
     "limit": 3,
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "CounselorLastName",
@@ -1072,7 +1080,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "CounselorFirstInitial",
@@ -1083,7 +1092,8 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
   },
   {
     "key": "CounselorMiddleInitial",
@@ -1094,6 +1104,18 @@ export const fields = [
     "date": false,
     "digits": null,
     "options": null,
-    "multiline": false
+    "multiline": false,
+    "legacyHidden": true
+  },
+  {
+    "key": "CommandEmployment",
+    "label": "Command employment and command achievements",
+    "section": 0,
+    "block": "28",
+    "limit": 0,
+    "date": false,
+    "digits": null,
+    "options": null,
+    "multiline": true
   }
 ];

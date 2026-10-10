@@ -14,6 +14,10 @@ Public Function UXSurfaceAvailable() As Boolean
     UXSurfaceAvailable = True
 Missing:
 End Function
+Public Function UXDateEntry(ByVal value As Variant) As Variant
+    'Calendar choices become invariant strings; incomplete typed entries remain intact.
+    If VarType(value) = vbDate Then UXDateEntry = Format$(value, "yyyy-mm-dd") Else UXDateEntry = value
+End Function
 Public Function UXSurfaceCanonical(ByVal key As String, ByVal value As Variant) As Variant
     If UXFieldFlag(key) Then
         If IsNull(value) Then
@@ -23,6 +27,8 @@ Public Function UXSurfaceCanonical(ByVal key As String, ByVal value As Variant) 
         Else
             UXSurfaceCanonical = IIf(value, "Yes", "No")
         End If
+    ElseIf UXFieldDate(key) Then
+        UXSurfaceCanonical = UXDateEntry(value)
     Else
         UXSurfaceCanonical = value
     End If
@@ -77,7 +83,7 @@ Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
             .Left = Surface().Controls("cboTrait" & block).Left + 1450
             .Width = Surface().Width - .Left - 300: .Top = 200
         End If
-        .Height = 2000
+        .Height = Surface().Controls("cboTrait39").Top + Surface().Controls("cboTrait39").Height - Surface().Controls("cboTrait33").Top
     End With
     UXSurfaceTrait = True
 End Function
@@ -174,11 +180,7 @@ Public Function UXLayoutBand(ByVal key As String) As String
     End Select
 End Function
 Public Function UXLayoutKeys(ByVal section As Long, ByVal kind As String) As Variant
-    If section = 0 Then
-        UXLayoutKeys = Array("MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix", "OfficialName", "RankRate", "Designator", "MemberSSN", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "UnitUIC", "ShipStation", "PromotionStatus", "DateReported", "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "PeriodStart", "PeriodEnd", "ObservationStatus", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "ReadinessDate", "ReadinessSummary", "ReadinessDetail", "BilletSubcategory")
-    Else
-        UXLayoutKeys = UXSectionKeys(section, kind)
-    End If
+    UXLayoutKeys = UXSectionKeys(IIf(section = 1, 0, section), kind)
 End Function
 Public Function UXLayoutWidth(ByVal key As String, ByVal available As Long, Optional ByVal kind As String = "") As Long
     Dim result As Long
@@ -283,7 +285,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
         UXSurfaceTrait 33
         If usableWidth < 6500 Then
             f!uxTraitGuidance.Left = 200: f!uxTraitGuidance.Top = top
-            f!uxTraitGuidance.Width = usableWidth: top = top + 2200
+            f!uxTraitGuidance.Width = usableWidth: top = top + f!uxTraitGuidance.Height + 200
         End If
     End If
     If section = 5 Then
@@ -333,7 +335,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     contentLeft = 5900: contentWidth = width - contentLeft - 350: footer = height - 1300
     For i = 0 To 9
         With f.Controls("uxSection" & i)
-            .Visible = True: .Left = 2800: .Top = 3750 + i * 430: .Width = 2800: .Height = 400
+            .Visible = (i <> 1): .Left = 2800: .Top = 3750 + IIf(i > 1, i - 1, i) * 430: .Width = 2800: .Height = 400
         End With
     Next
     f!uxRail.Height = height - 100
@@ -347,7 +349,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!uxError.Left = contentLeft: f!uxError.Top = 3750: f!uxError.Width = contentWidth
     f!uxErrorList.Left = contentLeft: f!uxErrorList.Top = 4050: f!uxErrorList.Width = contentWidth
     f!uxFieldSurface.Left = contentLeft
-    f!uxFieldSurface.Top = IIf(surfaceSection = 1, 4600, IIf(f!uxErrorList.Visible, 4600, 3850))
+    f!uxFieldSurface.Top = IIf(surfaceSection = 0, 4600, IIf(f!uxErrorList.Visible, 4600, 3850))
     If Len(f!uxLocked.Caption) > 0 Then f!uxFieldSurface.Top = f!uxFieldSurface.Top + 400
     f!uxFieldSurface.Width = contentWidth
     f!uxFieldSurface.Height = footer - f!uxFieldSurface.Top - 550
@@ -436,7 +438,7 @@ Private Sub UXCompactEditorGeometry(ByVal f As Access.Form, ByVal width As Long,
     If Len(f!uxError.Caption) > 0 Then top = top + 330
     UXEditorPosition f, "uxErrorList", 250, top, available, 430
     If f!uxErrorList.Visible Then top = top + 460
-    If surfaceSection = 1 Then
+    If surfaceSection = 0 Then
         UXEditorPosition f, "uxSeniorRecord", 250, top, available - 2300, 420
         UXEditorPosition f, "uxUseSenior", width - 2450, top, 2100, 420
         top = top + 480

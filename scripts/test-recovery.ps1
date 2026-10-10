@@ -16,10 +16,10 @@ try {
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
     $verified=$app.Eval('VerifyRecovery()');if(-not $verified.StartsWith('PASS:')){throw $verified}
-    [void]$app.Eval('PrepareTimerCheck()')
+    if(-not $app.Eval('PrepareTimerCheck()')){throw $app.Eval('RecoveryTimerError()')}
     Start-Sleep -Milliseconds 700
-    if(-not $app.Eval('FinishTimerCheck()')){throw 'Timer check failed.'}
+    if(-not $app.Eval('FinishTimerCheck()')){throw $app.Eval('RecoveryTimerError()')}
+    Write-Output $prepared;Write-Output $verified
     $app.CloseCurrentDatabase()
     @{Preparation=$prepared;Recovery=$verified;AutomaticTimerAndActiveTextVerified=$true;ReopenedInNewAccessSession=$true;PreparedCheckpointDatabase=$preparedCopy;TestDatabase=$scratch;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash}|ConvertTo-Json|Set-Content (Join-Path $root 'build\tests\recovery-results.json')
-    Write-Output $prepared;Write-Output $verified
 }finally{if($null -ne $app){$app.Quit(2)}}

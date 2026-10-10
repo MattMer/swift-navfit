@@ -23,6 +23,7 @@ Public Function TestExpandedPDF(ByVal directory As String) As String
         Check Left$(PDFExtractionStatus(path), 5) = "PASS:", "Dependency cannot extract " & kind
         before = DCount("*", "ReportRevision")
         Set p = PreviewStructuredPDF(path): Set values = PDFMappedValues("20", "SSN")
+        Check values("CommandEmployment") = "SYNTHETIC BLOCK 28: Training and command achievements.", "Block 28 text lost: " & kind
         Check values.Count = PDFMappingCount(CStr(kind)), "Expanded field count wrong: " & kind & " / " & values.Count
         Check DCount("*", "ReportRevision") = before, "Extraction/preview wrote a revision"
         Check values("UnitUIC") = "12345" And values("ReportingSeniorUIC") = "54321", "UIC fields swapped"

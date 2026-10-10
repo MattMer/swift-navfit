@@ -7,7 +7,8 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key <> "CommandEmployment" And key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
+        If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 800, , "Block 28 snapshot is incomplete."
         If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
         If key = "PromotionStatus" And RevisionSnapshotSchema(revisionID) >= 12 Then Err.Raise vbObjectError + 800, , "Promotion status snapshot is incomplete."
         If Len(ReportingSeniorLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 13 Then Err.Raise vbObjectError + 800, , "Reporting senior snapshot is incomplete."

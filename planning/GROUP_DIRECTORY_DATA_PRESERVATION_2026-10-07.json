@@ -1,0 +1,312 @@
+{
+  "candidateHash": "F330CDAD63D5C3FAB2B729FAAA5B8AFD94FD2E0F27D9BC330E279C28D595170A",
+  "source": "Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb",
+  "candidate": "Swift_NAVFIT_UI_Demo_2026-10-07-r90.accdb",
+  "tables": [
+    {
+      "newFields": [],
+      "sha256": "1B71B6C9D3CB9B0F02AB8E75B5A8D034D038B732B8D2B3817504EAA26F63BE9E",
+      "rows": 1,
+      "name": "AppMetadata"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ChangeBatch"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ChangeItem"
+    },
+    {
+      "newFields": [
+        "RUADData"
+      ],
+      "sha256": "5E0E3192A74AF736ADE066F71F8A1767B3213A30661CE542BF51ACB4F54250CD",
+      "rows": 9,
+      "name": "CommandMember"
+    },
+    {
+      "newFields": [],
+      "sha256": "771F7DF7DB90B1E729401C9E0E4079FD1FDEC1E52ED85C102FF9DEA36AA3CA18",
+      "rows": 48,
+      "name": "ComparisonMember"
+    },
+    {
+      "newFields": [],
+      "sha256": "2210D296DD1ACAECC057295B3382D748BA57A9B656ACD8F96C7A9926277F5B6D",
+      "rows": 22,
+      "name": "ComparisonSet"
+    },
+    {
+      "newFields": [],
+      "sha256": "EAF7BFA8903AFB1966EDE0FBF5CAF9875BFFEA5A49C148FA48DDD5CE6D316C99",
+      "rows": 3,
+      "name": "FieldDefault"
+    },
+    {
+      "newFields": [],
+      "sha256": "A827179B46E87E8762A7B51EE294360B216A4560F7E41F300EAA63B38BC44F07",
+      "rows": 3,
+      "name": "Folder"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "FolderBatchChange"
+    },
+    {
+      "newFields": [],
+      "sha256": "5C4860C8026D099A2DE2BA2F7329C4E7D89790F0F0F9ED2D4BDCDDA8397CFFE3",
+      "rows": 8,
+      "name": "FolderMove"
+    },
+    {
+      "newFields": [],
+      "sha256": "ECD741ECADB1A30DAC3D9F62319CEA2A44AAD6B00C50662A5078CA84DBE0CE70",
+      "rows": 7,
+      "name": "GroupMember"
+    },
+    {
+      "newFields": [],
+      "sha256": "214BB3B062A026B545B0E9EE7C2ABD85BBC54E108DD6CF17179AB7EF81E4857A",
+      "rows": 3,
+      "name": "GroupRSCABaseline"
+    },
+    {
+      "newFields": [],
+      "sha256": "7DF96DEB9AB8BB31E6990F035B87BDACCA753F258E8CC9143B5FC4F6DA85AE69",
+      "rows": 22,
+      "name": "GroupSnapshot"
+    },
+    {
+      "newFields": [],
+      "sha256": "DA714B737DCA40A409E2F444900B99FC7455B158159F9A612661505AB9FA3002",
+      "rows": 48,
+      "name": "GroupSnapshotMember"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ImportRawValue"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ImportReceipt"
+    },
+    {
+      "newFields": [],
+      "sha256": "E2D9FAA341B11158605CE4011F2CB9C188DFB4E1A09AA0A3CF3CE3D62EEC63F3",
+      "rows": 1,
+      "name": "LibraryPreference"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "MeetingProposal"
+    },
+    {
+      "newFields": [],
+      "sha256": "B4D00925959166A0C400D23208F392EE72E07BF7DEB4AE9C3B942752831CACB8",
+      "rows": 9,
+      "name": "MemberReport"
+    },
+    {
+      "newFields": [],
+      "sha256": "3D585F2A74806F1E4A61C8C28B44ED64542302C70755298292C8B71FB32D9749",
+      "rows": 93,
+      "name": "NarrativeSnippet"
+    },
+    {
+      "newFields": [],
+      "sha256": "85247D080B0FE3CC1C7A122820DDFF2722B6C99C1EC51561B903DA16B78FA07E",
+      "rows": 54,
+      "name": "OperationJournal"
+    },
+    {
+      "newFields": [],
+      "sha256": "68736C37334BDCD40D170A63F7EC5A222C6F1F5ABE23607F21D6C399FD377A93",
+      "rows": 8,
+      "name": "PriorEvaluation"
+    },
+    {
+      "newFields": [],
+      "sha256": "6FF7170F7A12D2D4184AC6CD802315DFC0DB5361F103A0C7E62FFB4F680E99CD",
+      "rows": 56,
+      "name": "PriorEvaluationTrait"
+    },
+    {
+      "newFields": [],
+      "sha256": "00D625714D07B69C4215C1B76D191DEEED52E7500117002C6A8C3CD78EA890A0",
+      "rows": 1,
+      "name": "RecoveryDraft"
+    },
+    {
+      "newFields": [],
+      "sha256": "57A7C992490C840F9DA772B85C720CB31C9EB95209D745FE412F38CF93817D22",
+      "rows": 10,
+      "name": "Report"
+    },
+    {
+      "newFields": [],
+      "sha256": "153DC699BE85BCD7B51DEB6EAB2054DB5F56300AEF7C56925F4CB44292223E6D",
+      "rows": 10,
+      "name": "ReportEvent"
+    },
+    {
+      "newFields": [],
+      "sha256": "7CBD65303706797082C029030FC7084A37FD1B63A969888239CA9B8B552BCD88",
+      "rows": 1,
+      "name": "ReportingSeniorRecord"
+    },
+    {
+      "newFields": [],
+      "sha256": "20B573724EFBEC704EB41406722EFC6D4E611FBBD2020F5BF2404C07111638C5",
+      "rows": 16,
+      "name": "ReportingSeniorValue"
+    },
+    {
+      "newFields": [],
+      "sha256": "174E8F7AC13E496F4888A41D5D62F9479B1F028479905166140F845C1857B41A",
+      "rows": 1,
+      "name": "ReportNote"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ReportNoteDraft"
+    },
+    {
+      "newFields": [],
+      "sha256": "A01040CDC8491FB96F5427FF11670623E6C17B02BBDA12B177CCD68427F6412E",
+      "rows": 22,
+      "name": "ReportRevision"
+    },
+    {
+      "newFields": [],
+      "sha256": "8D46AA780A5702584DC4536C039D6A170B8BFA326D6B2DADB2AB1D72D49E096D",
+      "rows": 2,
+      "name": "ReviewComment"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ReviewCommentEvent"
+    },
+    {
+      "newFields": [],
+      "sha256": "BDA67FD7AC8EC015AA3CBB7DFB0D86EEE9D064250036729C0BCF44E54722CF6A",
+      "rows": 3,
+      "name": "ReviewTask"
+    },
+    {
+      "newFields": [],
+      "sha256": "1BB0A111935DE2DA8092A770CA7D43AF54053BBC57D326BB314EF8083A7B699E",
+      "rows": 3,
+      "name": "ReviewTaskEvent"
+    },
+    {
+      "newFields": [],
+      "sha256": "295ED9A3D3EDBA7343712F141FA7294453C004EFED10741B1335497F50604F50",
+      "rows": 1169,
+      "name": "RevisionChange"
+    },
+    {
+      "newFields": [],
+      "sha256": "3977F3C65D7748BD91111994D414319322E74D68436F97CB78051A4B78F22721",
+      "rows": 1738,
+      "name": "RevisionValue"
+    },
+    {
+      "newFields": [],
+      "sha256": "1F972F27BEBCA38A8298D3B11477C8225B44B83897E093B86BD3CCF3524A3C17",
+      "rows": 3,
+      "name": "RouteRun"
+    },
+    {
+      "newFields": [],
+      "sha256": "F5AEF546A1F4E398F401C2455217E7EF0E90467A464AC9F40887A2B8371F24B1",
+      "rows": 5,
+      "name": "RouteRunStep"
+    },
+    {
+      "newFields": [],
+      "sha256": "C86182EFEEDA8FC687B2C1115CDA8B87F7CC8086CAAA772CDA0EE71E2C402EB8",
+      "rows": 2,
+      "name": "RouteTemplate"
+    },
+    {
+      "newFields": [],
+      "sha256": "7C5EE581BF75B9EAEE917BB04BC8944B78E1ED3028512B6B5CFA31D5DABBA682",
+      "rows": 3,
+      "name": "RouteTemplateStep"
+    },
+    {
+      "newFields": [],
+      "sha256": "ABED99CF6ABC08767329FE25F4D9BD6398E1BA5635957B360F0C930184369882",
+      "rows": 3,
+      "name": "RSCABaseline"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "RuleDefinition"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "RulePack"
+    },
+    {
+      "newFields": [],
+      "sha256": "43BA81AF5B35643F43FDBD1022D10DC58E866F2DD744050C97098F1A4087F52A",
+      "rows": 4,
+      "name": "SummaryGroup"
+    },
+    {
+      "newFields": [],
+      "sha256": "DC2706CE2E1056D1737E10A28B945EB509ACC8C718E65C7902FEDAC04D18802A",
+      "rows": 2,
+      "name": "UserProfile"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ValidationFinding"
+    },
+    {
+      "newFields": [],
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "rows": 0,
+      "name": "ValidationRun"
+    },
+    {
+      "newFields": [],
+      "sha256": "BE2897500A636DD2E5968F0E3F1ECBF68E383F424E97842FC0ECA01E96A72088",
+      "rows": 1,
+      "name": "Workspace"
+    }
+  ],
+  "sourceAndCandidateUnchanged": true,
+  "twoSyntheticRUADProfilesAdded": true,
+  "rows": 3394,
+  "allowedChanges": [
+    "AppMetadata.SchemaVersion 24 to 25",
+    "CommandMember.RUADData nullable LONGTEXT"
+  ],
+  "status": "PASS",
+  "sourceHash": "4B9CA42AC89B7A15C12BFC3499F587CACA0FEE3E2570B127B9E6489662784B84"
+}

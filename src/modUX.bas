@@ -130,6 +130,7 @@ Public Function UXEditorStart() As Boolean
 End Function
 Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, tags As Variant, id As Long, locked As Boolean, maxPage As Long
+    If section = 1 Then section = 0
     Set f = Forms!frmEditor
     If UXHasControl(f, "cmdClose") Then f!cmdClose.SetFocus
     currentSection = section: currentPage = page: id = Nz(f!txtReportID, 0)
@@ -258,15 +259,30 @@ End Function
 Public Function UXLoadGroups() As Boolean
     UXLoadGroups = UXGroupList()
 End Function
-Public Function UXOpenGroup() As Boolean
+Public Function UXOpenGroup(Optional ByVal prepareOnly As Boolean = False) As Boolean
+    On Error GoTo Failed
     groupContext = Nz(Forms!frmUXGroups!lstGroups, 0)
     If groupContext = 0 Then MsgBox "Choose a summary group.", vbInformation: Exit Function
-    DoCmd.OpenForm "frmMajorWorkbench"
-    LoadMajorWorkbench
+    DoCmd.Echo False
+    If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , , "ContextOnly"
     Forms!frmMajorWorkbench!cboRun = Null
     Forms!frmMajorWorkbench!cboGroup = groupContext
-    Call UXWorkbenchMode("Members")
-    UXOpenGroup = True
+    If Not prepareOnly Then
+        If DCount("*", "GroupMember", "GroupID=" & groupContext) > 0 Then
+            Forms!frmMajorWorkbench!uxMode = "Members"
+            UXOpenGroup = UXOpenComparison()
+            Forms!frmMajorWorkbench.Visible = False
+            DoCmd.Echo True: Exit Function
+        End If
+        UXWorkbenchMode "Members"
+        Forms!frmMajorWorkbench.Visible = True
+        Forms!frmMajorWorkbench.SetFocus
+    End If
+    DoCmd.Echo True
+    UXOpenGroup = True: Exit Function
+Failed:
+    DoCmd.Echo True
+    Err.Raise Err.Number, "UXOpenGroup", Err.Description
 End Function
 Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
     Dim f As Access.Form, c As Access.Control, tags As Variant
@@ -334,6 +350,7 @@ Public Function UXOpenComparison() As Boolean
         id = CreateComparisonSet(snapshot, title & " comparison"): f!cboMeeting = id
     End If
     DoCmd.OpenForm "frmUXComparison", , , , , , CStr(id)
+    UXGroupTabState "frmUXComparison", IIf(Nz(f!uxMode, "Members") = "Members", 0, 3)
     UXOpenComparison = True: Exit Function
 Failed:
     Forms!frmMajorWorkbench!lblStatus.Caption = Err.Description
@@ -460,8 +477,10 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False,
     If defaultsMode Then
         For Each key In UXSharedKeys(): base(key) = UXEffectiveDefault(groupContext, CStr(key)): Next
     End If
-    DoCmd.OpenForm "frmUXBulk"
+    DoCmd.OpenForm "frmUXBulk", , , , , , CStr(groupContext)
     Set f = Forms!frmUXBulk
+    f!uxGroupContext = groupContext
+    UXGroupTabState f.Name, IIf(defaultsMode, 1, 0)
     UXInvalidateBulkPreview
     f!uxKind = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & groupContext), "EVAL")
     f!lblHeading.Caption = IIf(globalMode, "Global defaults", IIf(defaultsMode, "Group defaults", "Shared report blocks"))
@@ -537,6 +556,7 @@ Public Function UXBulkBefore(ByVal key As String) As Variant
     UXBulkBefore = bulkDefaultBefore(key)
 End Function
 Public Function UXBulkSection(ByVal section As Long, Optional ByVal page As Long = 0) As Boolean
+    If section = 1 Then section = 0
     Forms!frmUXBulk!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
     UXBlockMode "Edit": UXBulkSection = UXBlockLayout(section)
 End Function
@@ -670,7 +690,7 @@ End Function
 
 Public Function UXLoadWorkbench() As Boolean
     If Not LoadMajorWorkbench() Then Exit Function
-    Call UXWorkbenchMode("Members")
+    If Nz(Forms!frmMajorWorkbench.OpenArgs, "") <> "ContextOnly" Then Call UXWorkbenchMode("Members")
     UXLoadWorkbench = True
 End Function
 
@@ -680,4 +700,8 @@ Public Function UXRefreshEditorWorkflow(ByVal reportID As Long) As Boolean
     If Nz(Forms!frmEditor!txtReportID, 0) <> reportID Then UXRefreshEditorWorkflow = True: Exit Function
     Call UXFlushSurface
     UXRefreshEditorWorkflow = UXSelectSection(currentSection, currentPage)
+End Function
+
+Public Function UXGroupBulkPending() As Boolean
+    If Not bulkChanges Is Nothing Then UXGroupBulkPending = (bulkChanges.Count > 0)
 End Function

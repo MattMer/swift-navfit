@@ -35,7 +35,7 @@ Public Function TestUXSurface() As String
     Check f!cmdSave.Top = f.InsideHeight - 1300, "Footer did not follow viewport height"
     Check s.Width = f!uxFieldSurface.Width - 300, "Child fields did not follow panel width"
     Check f!uxGroup.Width = 4000, "Summary group selector stayed narrow"
-    If s.Width >= 14500 Then Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide editor separated structured name fields"
+    Check Not s!txtMemberMiddleInitial.Visible And Not s!txtMemberFirstName.Visible, "Redundant structured names visible"
     DoCmd.Restore
     Check f!cmdSave.Height = 500 And f!uxFieldSurface.Left = 5900, "Restoring window displaced controls"
 
@@ -43,10 +43,10 @@ Public Function TestUXSurface() As String
     Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
     Check UXResizeEditor(25000, 13500), "Wide viewport layout failed"
     Check f!uxFieldSurface.Width = 18750 And f!cmdSave.Top = 12200, "Wide viewport not filled"
-    Check s!txtMemberMiddleInitial.Top = s!txtMemberFirstName.Top, "Wide layout separated structured name fields"
+    Check Not s!txtMemberFirstName.Visible, "Wide layout exposed redundant names"
     Check UXResizeEditor(13800, 8650), "Laptop viewport layout failed"
     Check f!uxFieldSurface.Width = 7550 And s.Width = 7250, "Laptop fields did not shrink to panel"
-    Check s!txtMemberMiddleInitial.Width < s!txtOfficialName.Width, "Short name field is not compact"
+    Check Not s!txtMemberMiddleInitial.Visible, "Laptop exposed redundant middle initial"
     Check s!txtComponentActive.Top = s!txtComponentTAR.Top And s!txtComponentTAR.Top = s!txtComponentInactive.Top, "Component checkboxes did not share a compact row"
     Check s!labelComponentActive.Left > s!txtComponentActive.Left And s!labelComponentActive.Top = s!txtComponentActive.Top, "Checkbox caption is not beside the checkbox"
     Call UXResizeEditor()
@@ -60,9 +60,9 @@ Public Function TestUXSurface() As String
         Check CurrentRevision(id) = revision, "Section switch saved a revision"
     Next
     Call UXSelectSection(8)
-    Check f!cmdRoute.Top = 3350 And f!cmdComments.Top = 3350, "Review actions are not condensed"
+    Check f!cmdRoute.Top = f!cmdComments.Top And f!cmdRoute.Top < f!cmdSave.Top, "Review actions are not condensed"
     Call UXSelectSection(9)
-    Check f!lstRevisions.Width = f!uxFieldSurface.Width And f!cmdCompare.Top = 3350, "History did not use its compact workspace"
+    Check f!lstRevisions.Width = f!uxFieldSurface.Width And f!cmdCompare.Top < f!lstRevisions.Top, "History did not use its compact workspace"
     Call UXSelectSection(0)
     Check s!txtMemberFirstName = "Separate first name", "Visible field did not reflect pending buffer"
     Check IsNull(f!txtOfficialName), "Changing name parts overwrote official full name"
@@ -99,7 +99,7 @@ Public Function TestUXSurface() As String
     stage = "save": Check UXSaveEditor(), "Valid surface draft save failed"
     Check CurrentRevision(id) <> revision, "Save did not append revision"
     Check Not EditorHasPending(), "Saved surface remains dirty"
-    Check DCount("*", "RevisionValue", "RevisionID=" & CurrentRevision(id)) = 78, "Surface save lost snapshot fields"
+    Check DCount("*", "RevisionValue", "RevisionID=" & CurrentRevision(id)) = 79, "Surface save lost snapshot fields"
     Check DLookup("MemberDoDID", "Report", "ReportID=" & id) = "1234567890", "Hidden member identifier lost"
     Check DLookup("ReportingSeniorDoDID", "Report", "ReportID=" & id) = "0987654321", "Hidden reporting senior identifier lost"
     Call UXSelectSection(5): Check s!txtOfficialComments.Visible And s!txtOfficialComments.Height >= 2000, "Narrative lacks spacious editor"

@@ -97,6 +97,11 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     Next
     f!lblStatus.Visible = True: f!uxBack.Visible = True
     If UXHasControl(f, "uxValidation") Then f!uxValidation.Visible = True
+    Select Case mode
+        Case "Members": f!lblStatus.Caption = "Open a member report or edit its saved values in the member comparison."
+        Case "Review": f!lblStatus.Caption = "Select a member to review its saved revision. Open the report to see its full content."
+        Case "History": f!lblStatus.Caption = "Inspect saved batch values and preview undo before applying it."
+    End Select
     If mode = "Members" Or mode = "Review" Then
         GroupPosition "lstReports", 2850, 3000, 10450, 2900
         f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status],UXTableITA(r.ReportID) AS ITA,r.PromotionRecommendation AS [Promotion recommendation] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
@@ -122,10 +127,12 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     End If
     modes = Array("Members", "Defaults", "Review", "Comparison", "History")
     For i = 0 To 4
-        f.Controls("uxMode" & i).Visible = True
+        f.Controls("uxMode" & i).Visible = False
         f.Controls("uxMode" & i).FontBold = (modes(i) = mode)
     Next
     UXResizeWorkspace f.Name
+    f!uxGroupContext = id
+    UXGroupTabState f.Name, Switch(mode = "Members", 0, mode = "Defaults", 1, mode = "Review", 2, mode = "Comparison", 3, mode = "History", 4)
     UXGroupLocks f, id
     UXFocusedGroupMode = True
 End Function

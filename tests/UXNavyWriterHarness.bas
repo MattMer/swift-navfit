@@ -47,7 +47,7 @@ Public Function TestUXNavyWriter() As String
     Check Forms!frmUXNavyWriter!lstCatalog.ListCount = 5, "General examples mixed with rated examples"
     DoCmd.OpenForm "frmSnippets"
     Forms!frmSnippets!cboRateFilter = "IT": LoadSnippets
-    Check Forms!frmSnippets!lstSnippets.ListCount = priorIT + 1, "Saved snippet rate filter failed"
+    Check Forms!frmSnippets!lstSnippets.ListCount = priorIT + 2, "Saved snippet rate filter failed"
     Forms!frmSnippets!txtSearch = "does-not-exist": LoadSnippets
     Check Forms!frmSnippets!lstSnippets.ListCount = 0, "Saved snippet search/filter intersection failed"
     Forms!frmSnippets!txtSearch = "": Forms!frmSnippets!cboRateFilter = "UNSPECIFIED": LoadSnippets
@@ -58,7 +58,7 @@ Public Function TestUXNavyWriter() As String
     Check SaveSnippetUI(), "Manual snippet rate save failed"
     Check SnippetRate(DLookup("Attribution", "NarrativeSnippet", "SnippetTitle='Manual rate example'")) = "IT", "Manual rate not retained"
     Forms!frmSnippets!cboRateFilter = "IT": LoadSnippets
-    Check Forms!frmSnippets!lstSnippets.ListCount = priorIT + 2, "Manual rate snippet absent"
+    Check Forms!frmSnippets!lstSnippets.ListCount = priorIT + 3, "Manual rate snippet absent"
     DoCmd.Close acForm, "frmSnippets", acSaveNo
     Check UXCloseResource("frmUXNavyWriter"), "Catalog return failed"
     Check CurrentProject.AllForms("frmUXResources").IsLoaded, "Catalog did not return to Resources"

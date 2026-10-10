@@ -156,6 +156,11 @@
       "conversion": "text"
     },
     {
+      "target": "CommandEmployment",
+      "source": "Achievements",
+      "conversion": "text"
+    },
+    {
       "target": "PrimaryDuty",
       "source": "PrimaryDuty",
       "conversion": "text"
@@ -528,6 +533,11 @@
       "conversion": "text"
     },
     {
+      "target": "CommandEmployment",
+      "source": "Achievements",
+      "conversion": "text"
+    },
+    {
       "target": "PrimaryDuty",
       "source": "PrimaryDuty",
       "conversion": "text"
@@ -897,6 +907,11 @@
     {
       "target": "ReportingSeniorDoDID",
       "source": "RSDoDID",
+      "conversion": "text"
+    },
+    {
+      "target": "CommandEmployment",
+      "source": "Achievements",
       "conversion": "text"
     },
     {

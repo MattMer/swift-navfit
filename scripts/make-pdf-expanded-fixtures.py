@@ -1,4 +1,5 @@
 """Internal synthetic XFA import fixtures, not printed-layout examples."""
+import argparse
 import json
 import hashlib
 import xml.etree.ElementTree as ET
@@ -7,9 +8,11 @@ import pikepdf
 from make_pdf_sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "output/pdf/r26"
+OUT = ROOT / "output/pdf/r85"
 
-def create():
+def create(output=None):
+    global OUT
+    if output is not None: OUT = Path(output).resolve()
     OUT.mkdir(parents=True, exist_ok=True)
     mapping = json.loads((ROOT / "src/pdf-field-map.json").read_text())
     manifest = []
@@ -22,6 +25,7 @@ def create():
             dataset = ET.fromstring(packets['datasets'][1])
             container = dataset.find('.//form1' if kind == 'CHIEFEVAL' else './/topmostSubform')
             values = {
+                'CommandEmployment': 'SYNTHETIC BLOCK 28: Training and command achievements.',
                 'OfficialName': 'EXAMPLE, TEST', 'RankRate': {'EVAL':'YN2','CHIEFEVAL':'YNC','FITREP':'LCDR'}[kind],
                 'Designator': '1110' if kind == 'FITREP' else 'SW', 'MemberSSN': '000000007',
                 'UnitUIC':'12345', 'ShipStation':'SYNTHETIC UNIT', 'ReportingSeniorName':'EXAMPLE, A B',
@@ -66,4 +70,7 @@ def create():
     (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print('PASS: six synthetic interactive XFA fixtures; blank sources unchanged')
 
-if __name__=='__main__': create()
+if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output')
+    create(parser.parse_args().output)

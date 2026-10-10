@@ -11,7 +11,7 @@ Public Function DraftFieldKeys() As Variant
         "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
         "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
         "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate", _
-        "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial")
+        "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
 End Function
 Public Function AdministrationLabel(ByVal key As String) As String
     Select Case key

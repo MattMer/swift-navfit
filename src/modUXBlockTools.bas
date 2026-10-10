@@ -10,7 +10,7 @@ Public Function UXBlockRefresh() As Boolean
     UXBlockRefresh = True
 End Function
 Public Function UXBlockEdit(ByVal key As String) As Boolean
-    Forms!frmUXBulk.Controls("uxValue" & key) = Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key).Value
+    Forms!frmUXBulk.Controls("uxValue" & key) = UXDateEntry(Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key).Value)
     UXBlockEdit = UXBulkChanged(key)
     UXBlockState key, IIf(IsNull(Forms!frmUXBulk.Controls("uxValue" & key)), "Clear value staged", "Change staged")
 End Function
@@ -28,7 +28,7 @@ Public Function UXBlockLayout(ByVal section As Long) As Boolean
     Next
     x = 150: y = 150
     For Each key In UXLayoutKeys(section, kind)
-        If UXHasControl(f, "value" & key) And UXFieldApplies(key, kind) Then
+        If UXHasControl(f, "value" & key) And UXFieldApplies(key, kind) And Not UXFieldLegacy(CStr(key)) Then
             flag = UXFieldFlag(key): multi = UXFieldMultiline(key): band = UXLayoutBand(CStr(key))
             size = UXLayoutWidth(CStr(key), usable, kind)
             If size < 2000 Then size = 2000
@@ -123,6 +123,10 @@ Public Function UXCloseBlocks() As Boolean
 End Function
 Public Function UXBlockViewport() As Boolean
     If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
+    If IsNull(Forms!frmUXBulk!uxGroupContext) And Len(Nz(Forms!frmUXBulk.OpenArgs, "")) > 0 Then Forms!frmUXBulk!uxGroupContext = CLng(Forms!frmUXBulk.OpenArgs)
+    Dim i As Long
+    For i = 0 To 4: Forms!frmUXBulk.Controls("uxGroupTab" & i).Visible = (Nz(Forms!frmUXBulk!uxGroupContext, 0) > 0): Next
+    Forms!frmUXBulk!uxAddGroupReport.Visible = (Nz(Forms!frmUXBulk!uxGroupContext, 0) > 0)
     UXResizeWorkspace "frmUXBulk"
     UXBlockResize
     UXBlockViewport = True

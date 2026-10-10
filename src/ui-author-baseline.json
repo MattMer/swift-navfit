@@ -1,0 +1,2479 @@
+{
+  "source_file": "Swift_NAVFIT_UI_Demo_2026-10-06-EDITED.accdb",
+  "source_sha256": "E1739279F81468C6D4E8263F86735329EB949ABE298765BCBB11421AEFEC8D43",
+  "properties": [
+    {
+      "form": "frmLibrary",
+      "control": "cboArchive",
+      "property": "Left",
+      "before": 9850,
+      "after": 8925
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboArchive",
+      "property": "Top",
+      "before": 1750,
+      "after": 2529
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboArchive",
+      "property": "Width",
+      "before": 1450,
+      "after": 2590
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboView",
+      "property": "Left",
+      "before": 10213,
+      "after": 8925
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboView",
+      "property": "RowSource",
+      "before": "Drafting;Dates;History",
+      "after": "\"Dates\";\"Drafting\";\"History\""
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboView",
+      "property": "TabIndex",
+      "before": 13,
+      "after": 12
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboView",
+      "property": "Top",
+      "before": 5800,
+      "after": 1749
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cboView",
+      "property": "Width",
+      "before": 2488,
+      "after": 2629
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdArchive",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdArchive",
+      "property": "Left",
+      "before": 9897,
+      "after": 7635
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdArchive",
+      "property": "TabIndex",
+      "before": 18,
+      "after": 16
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdArchive",
+      "property": "Top",
+      "before": 6400,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdArchive",
+      "property": "Width",
+      "before": 1304,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdBulkFolders",
+      "property": "Height",
+      "before": 500,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdBulkFolders",
+      "property": "Left",
+      "before": 11240,
+      "after": 4470
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdBulkFolders",
+      "property": "TabIndex",
+      "before": 26,
+      "after": 20
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdBulkFolders",
+      "property": "Top",
+      "before": 8050,
+      "after": 6840
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdBulkFolders",
+      "property": "Width",
+      "before": 1501,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "Caption",
+      "before": "Draft checklist",
+      "after": "Validation"
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "Height",
+      "before": 500,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "Left",
+      "before": 11358,
+      "after": 10800
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "TabIndex",
+      "before": 24,
+      "after": 19
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "Top",
+      "before": 7200,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdChecklist",
+      "property": "Width",
+      "before": 1422,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdDuplicate",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdDuplicate",
+      "property": "Left",
+      "before": 8436,
+      "after": 6045
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdDuplicate",
+      "property": "TabIndex",
+      "before": 17,
+      "after": 15
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdDuplicate",
+      "property": "Top",
+      "before": 6400,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdDuplicate",
+      "property": "Width",
+      "before": 1304,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "Caption",
+      "before": "Move to summary group",
+      "after": "Move report"
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "Height",
+      "before": 500,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "Left",
+      "before": 5512,
+      "after": 2880
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "TabIndex",
+      "before": 21,
+      "after": 18
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "Top",
+      "before": 7200,
+      "after": 6840
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveReport",
+      "property": "Width",
+      "before": 1738,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdNew",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdNew",
+      "property": "Left",
+      "before": 5512,
+      "after": 2880
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdNew",
+      "property": "TabIndex",
+      "before": 15,
+      "after": 13
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdNew",
+      "property": "Top",
+      "before": 6400,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdNew",
+      "property": "Width",
+      "before": 1304,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdOpen",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdOpen",
+      "property": "Left",
+      "before": 6974,
+      "after": 4470
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdOpen",
+      "property": "TabIndex",
+      "before": 16,
+      "after": 14
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdOpen",
+      "property": "Top",
+      "before": 6400,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdOpen",
+      "property": "Width",
+      "before": 1304,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdRecover",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdRecover",
+      "property": "Left",
+      "before": 11358,
+      "after": 9210
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdRecover",
+      "property": "TabIndex",
+      "before": 19,
+      "after": 17
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdRecover",
+      "property": "Top",
+      "before": 6400,
+      "after": 6120
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdRecover",
+      "property": "Width",
+      "before": 1304,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblCount",
+      "property": "Left",
+      "before": 5512,
+      "after": 2880
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblCount",
+      "property": "Top",
+      "before": 5800,
+      "after": 5640
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblHeading",
+      "property": "Height",
+      "before": 450,
+      "after": 570
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblHeading",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblHeading",
+      "property": "TextAlign",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblHeading",
+      "property": "Top",
+      "before": 800,
+      "after": 720
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblHeading",
+      "property": "Width",
+      "before": 7000,
+      "after": 2590
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblSearch",
+      "property": "Left",
+      "before": 6100,
+      "after": 5910
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblSearch",
+      "property": "Top",
+      "before": 1400,
+      "after": 1440
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblSearch",
+      "property": "Width",
+      "before": 3400,
+      "after": 2545
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lbluxStatusFilter",
+      "property": "Left",
+      "before": 6100,
+      "after": 5910
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lbluxStatusFilter",
+      "property": "Top",
+      "before": 2200,
+      "after": 2280
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lbluxStatusFilter",
+      "property": "Width",
+      "before": 2900,
+      "after": 2540
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lbluxTypeFilter",
+      "property": "Width",
+      "before": 2900,
+      "after": 2630
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lstReports",
+      "property": "TabIndex",
+      "before": 12,
+      "after": 11
+    },
+    {
+      "form": "frmLibrary",
+      "control": "txtSearch",
+      "property": "Left",
+      "before": 6100,
+      "after": 5910
+    },
+    {
+      "form": "frmLibrary",
+      "control": "txtSearch",
+      "property": "Top",
+      "before": 1750,
+      "after": 1800
+    },
+    {
+      "form": "frmLibrary",
+      "control": "txtSearch",
+      "property": "Width",
+      "before": 3400,
+      "after": 2629
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxClearFilters",
+      "property": "Left",
+      "before": 9850,
+      "after": 11664
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxClearFilters",
+      "property": "TabIndex",
+      "before": 31,
+      "after": 24
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxClearFilters",
+      "property": "Top",
+      "before": 2530,
+      "after": 2520
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxClearFilters",
+      "property": "Width",
+      "before": 3450,
+      "after": 1575
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxFolderCaption",
+      "property": "Caption",
+      "before": "Folder",
+      "after": "Summary Group"
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxFolderCaption",
+      "property": "Width",
+      "before": 2900,
+      "after": 2630
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxFolderFilter",
+      "property": "Width",
+      "before": 2900,
+      "after": 2625
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "FontBold",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "FontWeight",
+      "before": 400,
+      "after": 700
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "Left",
+      "before": 10500,
+      "after": 5904
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "TabIndex",
+      "before": 27,
+      "after": 21
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "Top",
+      "before": 900,
+      "after": 840
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxImport",
+      "property": "Width",
+      "before": 2800,
+      "after": 2590
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxStatusFilter",
+      "property": "Left",
+      "before": 6100,
+      "after": 5910
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxStatusFilter",
+      "property": "TabIndex",
+      "before": 30,
+      "after": 23
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxStatusFilter",
+      "property": "Top",
+      "before": 2530,
+      "after": 2520
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxStatusFilter",
+      "property": "Width",
+      "before": 2900,
+      "after": 2629
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxTypeFilter",
+      "property": "TabIndex",
+      "before": 29,
+      "after": 22
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxTypeFilter",
+      "property": "Width",
+      "before": 2900,
+      "after": 2630
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboBatch",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboBatch",
+      "property": "Top",
+      "before": 7400,
+      "after": 19680
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboField",
+      "property": "Left",
+      "before": 2866,
+      "after": 4320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboField",
+      "property": "Top",
+      "before": 7400,
+      "after": 15360
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboFolder",
+      "property": "Left",
+      "before": 6263,
+      "after": 6330
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboFolder",
+      "property": "Top",
+      "before": 7850,
+      "after": 12600
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboMeeting",
+      "property": "Left",
+      "before": 9660,
+      "after": 9242
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboMeeting",
+      "property": "Top",
+      "before": 7400,
+      "after": 19320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboProposal",
+      "property": "Left",
+      "before": 4288,
+      "after": 4320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboProposal",
+      "property": "Top",
+      "before": 8350,
+      "after": 13320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboReviewer",
+      "property": "Left",
+      "before": 9660,
+      "after": 10080
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboReviewer",
+      "property": "Top",
+      "before": 7400,
+      "after": 18360
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboRun",
+      "property": "Left",
+      "before": 6263,
+      "after": 6768
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboRun",
+      "property": "Top",
+      "before": 7400,
+      "after": 18360
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboScope",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboScope",
+      "property": "Top",
+      "before": 7850,
+      "after": 12600
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboSnapshot",
+      "property": "Left",
+      "before": 6263,
+      "after": 6768
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboSnapshot",
+      "property": "Top",
+      "before": 7400,
+      "after": 18840
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboTemplate",
+      "property": "Left",
+      "before": 2866,
+      "after": 7920
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cboTemplate",
+      "property": "Top",
+      "before": 7400,
+      "after": 12120
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "chkNull",
+      "property": "Left",
+      "before": 9660,
+      "after": 9242
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "chkNull",
+      "property": "Top",
+      "before": 7400,
+      "after": 19320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAcceptStep",
+      "property": "Left",
+      "before": 10450,
+      "after": 10512
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAcceptStep",
+      "property": "Top",
+      "before": 6200,
+      "after": 11040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAddMembers",
+      "property": "Left",
+      "before": 5394,
+      "after": 7920
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAddMembers",
+      "property": "Top",
+      "before": 6200,
+      "after": 10560
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAddReviewer",
+      "property": "Left",
+      "before": 6263,
+      "after": 6330
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdAddReviewer",
+      "property": "Top",
+      "before": 7850,
+      "after": 12960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplyBatch",
+      "property": "Left",
+      "before": 7922,
+      "after": 8064
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplyBatch",
+      "property": "Top",
+      "before": 6200,
+      "after": 11640
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplyProposal",
+      "property": "Left",
+      "before": 10450,
+      "after": 10515
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplyProposal",
+      "property": "Top",
+      "before": 15500,
+      "after": 20520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplySelectedProposals",
+      "property": "Left",
+      "before": 5394,
+      "after": 5475
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApplySelectedProposals",
+      "property": "Top",
+      "before": 16700,
+      "after": 21000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApproveRoute",
+      "property": "Left",
+      "before": 10450,
+      "after": 10515
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdApproveRoute",
+      "property": "Top",
+      "before": 6750,
+      "after": 12480
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCancelRoute",
+      "property": "Left",
+      "before": 5394,
+      "after": 5475
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCancelRoute",
+      "property": "Top",
+      "before": 6750,
+      "after": 12120
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdClearReviewers",
+      "property": "Left",
+      "before": 9660,
+      "after": 9645
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdClearReviewers",
+      "property": "Top",
+      "before": 7850,
+      "after": 12960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateGroup",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateGroup",
+      "property": "Top",
+      "before": 6200,
+      "after": 9480
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateMeeting",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateMeeting",
+      "property": "Top",
+      "before": 15500,
+      "after": 20520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateRoute",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdCreateRoute",
+      "property": "Top",
+      "before": 6200,
+      "after": 11520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdFreezeGroup",
+      "property": "Left",
+      "before": 10450,
+      "after": 10515
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdFreezeGroup",
+      "property": "Top",
+      "before": 13100,
+      "after": 20040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdOrderMeeting",
+      "property": "Left",
+      "before": 10450,
+      "after": 10515
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdOrderMeeting",
+      "property": "Top",
+      "before": 16100,
+      "after": 21000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdPreviewBatch",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdPreviewBatch",
+      "property": "Top",
+      "before": 13700,
+      "after": 20040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdPreviewUndo",
+      "property": "Left",
+      "before": 5394,
+      "after": 5472
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdPreviewUndo",
+      "property": "Top",
+      "before": 6200,
+      "after": 10560
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdProposeField",
+      "property": "Left",
+      "before": 7922,
+      "after": 7920
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdProposeField",
+      "property": "Top",
+      "before": 15500,
+      "after": 20520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdRemoveMember",
+      "property": "Left",
+      "before": 7922,
+      "after": 8064
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdRemoveMember",
+      "property": "Top",
+      "before": 6200,
+      "after": 11160
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdReopenApproval",
+      "property": "Left",
+      "before": 2866,
+      "after": 4320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdReopenApproval",
+      "property": "Top",
+      "before": 7300,
+      "after": 18240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdReturnStep",
+      "property": "Left",
+      "before": 2866,
+      "after": 5328
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdReturnStep",
+      "property": "Top",
+      "before": 6750,
+      "after": 9480
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdRunChecks",
+      "property": "Left",
+      "before": 7922,
+      "after": 7920
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdRunChecks",
+      "property": "Top",
+      "before": 6750,
+      "after": 21000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdSaveDefault",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdSaveDefault",
+      "property": "Top",
+      "before": 6200,
+      "after": 11040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowBatch",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowBatch",
+      "property": "Top",
+      "before": 6200,
+      "after": 10560
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowMeeting",
+      "property": "Left",
+      "before": 5394,
+      "after": 5475
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowMeeting",
+      "property": "Top",
+      "before": 15500,
+      "after": 20520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowProposals",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowProposals",
+      "property": "Top",
+      "before": 16700,
+      "after": 21000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowRoute",
+      "property": "Left",
+      "before": 7922,
+      "after": 10512
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdShowRoute",
+      "property": "Top",
+      "before": 6200,
+      "after": 11640
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdStartRoute",
+      "property": "Left",
+      "before": 5394,
+      "after": 5475
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdStartRoute",
+      "property": "Top",
+      "before": 6200,
+      "after": 11520
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdSuggestDefault",
+      "property": "Left",
+      "before": 5394,
+      "after": 5475
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "cmdSuggestDefault",
+      "property": "Top",
+      "before": 6200,
+      "after": 11040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblField",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblField",
+      "property": "Top",
+      "before": 9600,
+      "after": 15340
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblNote",
+      "property": "Top",
+      "before": 11000,
+      "after": 18080
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblNull",
+      "property": "Left",
+      "before": 11951,
+      "after": 11965
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblNull",
+      "property": "Top",
+      "before": 10200,
+      "after": 15940
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblOrder",
+      "property": "Top",
+      "before": 12450,
+      "after": 19530
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblReviewers",
+      "property": "Top",
+      "before": 11850,
+      "after": 18930
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblStatus",
+      "property": "Height",
+      "before": 500,
+      "after": 365
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblStatus",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblStatus",
+      "property": "Top",
+      "before": 6900,
+      "after": 5880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblValue",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblValue",
+      "property": "Top",
+      "before": 10200,
+      "after": 15940
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboBatch",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboBatch",
+      "property": "Top",
+      "before": 6000,
+      "after": 12000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboFolder",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboFolder",
+      "property": "Top",
+      "before": 9000,
+      "after": 14740
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboMeeting",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboMeeting",
+      "property": "Top",
+      "before": 7800,
+      "after": 12240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboProposal",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboProposal",
+      "property": "Top",
+      "before": 8400,
+      "after": 13440
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboRun",
+      "property": "Left",
+      "before": 2866,
+      "after": 11088
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboRun",
+      "property": "Top",
+      "before": 7200,
+      "after": 12120
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboTemplate",
+      "property": "Left",
+      "before": 2866,
+      "after": 10512
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lblcboTemplate",
+      "property": "Top",
+      "before": 6600,
+      "after": 10680
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lstDetails",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "lstDetails",
+      "property": "Top",
+      "before": 8300,
+      "after": 14040
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtDetail",
+      "property": "Top",
+      "before": 9500,
+      "after": 16580
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtMeetingOrder",
+      "property": "Top",
+      "before": 12450,
+      "after": 19530
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtReviewerNames",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtReviewerNames",
+      "property": "Top",
+      "before": 7850,
+      "after": 12960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtValue",
+      "property": "Left",
+      "before": 6263,
+      "after": 4320
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "txtValue",
+      "property": "Top",
+      "before": 7400,
+      "after": 15840
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxBack",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxBack",
+      "property": "Top",
+      "before": 7600,
+      "after": 6960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxBack",
+      "property": "Width",
+      "before": 3450,
+      "after": 3300
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxBulk",
+      "property": "Left",
+      "before": 6350,
+      "after": 6330
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxBulk",
+      "property": "Top",
+      "before": 6300,
+      "after": 6240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxFocusedReview",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxFocusedReview",
+      "property": "Top",
+      "before": 6300,
+      "after": 6240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxFocusedReview",
+      "property": "Width",
+      "before": 10450,
+      "after": 10360
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxMembers",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxMembers",
+      "property": "Top",
+      "before": 6300,
+      "after": 6240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxMode3",
+      "property": "Caption",
+      "before": "Members & comparison",
+      "after": "Comparison"
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxNAVFITExport",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxNAVFITExport",
+      "property": "Top",
+      "before": 8050,
+      "after": 7680
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxOpenGroupReport",
+      "property": "Left",
+      "before": 6350,
+      "after": 6330
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxOpenGroupReport",
+      "property": "Top",
+      "before": 7600,
+      "after": 6960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxPolicyReview",
+      "property": "Left",
+      "before": 8050,
+      "after": 8205
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxPolicyReview",
+      "property": "Top",
+      "before": 8050,
+      "after": 7680
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxPolicyReview",
+      "property": "Width",
+      "before": 5250,
+      "after": 5000
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxRSCA",
+      "property": "Left",
+      "before": 9850,
+      "after": 9930
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxRSCA",
+      "property": "Top",
+      "before": 6300,
+      "after": 6240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxRSCA",
+      "property": "Width",
+      "before": 3450,
+      "after": 3300
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxRail",
+      "property": "Top",
+      "before": 0,
+      "after": 240
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxValidation",
+      "property": "Height",
+      "before": 450,
+      "after": 500
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxValidation",
+      "property": "Left",
+      "before": 2850,
+      "after": 9930
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxValidation",
+      "property": "Top",
+      "before": 7250,
+      "after": 6960
+    },
+    {
+      "form": "frmMajorWorkbench",
+      "control": "uxValidation",
+      "property": "Width",
+      "before": 10450,
+      "after": 3300
+    },
+    {
+      "form": "frmMyWork",
+      "control": "lblHeading",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmMyWork",
+      "control": "lblHeading",
+      "property": "Top",
+      "before": 950,
+      "after": 1080
+    },
+    {
+      "form": "frmMyWork",
+      "control": "lblHeading",
+      "property": "Width",
+      "before": 10112,
+      "after": 2612
+    },
+    {
+      "form": "frmMyWork",
+      "control": "lblProfile",
+      "property": "Width",
+      "before": 9954,
+      "after": 2169
+    },
+    {
+      "form": "frmMyWork",
+      "control": "uxContext",
+      "property": "Width",
+      "before": 10300,
+      "after": 2905
+    },
+    {
+      "form": "frmMyWork",
+      "control": "uxContributor",
+      "property": "Left",
+      "before": 9000,
+      "after": 9072
+    },
+    {
+      "form": "frmMyWork",
+      "control": "uxContributor",
+      "property": "Top",
+      "before": 2150,
+      "after": 1320
+    },
+    {
+      "form": "frmMyWork",
+      "control": "uxContributorLabel",
+      "property": "Left",
+      "before": 9000,
+      "after": 9072
+    },
+    {
+      "form": "frmMyWork",
+      "control": "uxContributorLabel",
+      "property": "Top",
+      "before": 1800,
+      "after": 960
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdNew",
+      "property": "Caption",
+      "before": "Create a group",
+      "after": "Create Summary Group"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdNew",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdNew",
+      "property": "Left",
+      "before": 8250,
+      "after": 6195
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdNew",
+      "property": "Top",
+      "before": 6100,
+      "after": 6360
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdNew",
+      "property": "Width",
+      "before": 5050,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdOpen",
+      "property": "Caption",
+      "before": "Open selected group",
+      "after": "Open Summary Group"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdOpen",
+      "property": "Height",
+      "before": 550,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdOpen",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdOpen",
+      "property": "Top",
+      "before": 6100,
+      "after": 6360
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "cmdOpen",
+      "property": "Width",
+      "before": 5000,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblHeading",
+      "property": "Height",
+      "before": 500,
+      "after": 620
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblHeading",
+      "property": "Top",
+      "before": 1200,
+      "after": 1080
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblHeading",
+      "property": "Width",
+      "before": 10112,
+      "after": 3467
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblInfo",
+      "property": "Caption",
+      "before": "Choose a group to manage members, shared report blocks, review and comparison. Folders remain separate.",
+      "after": "Choose a group to manage members, shared report blocks, review and comparison."
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblInfo",
+      "property": "Height",
+      "before": 500,
+      "after": 305
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblInfo",
+      "property": "Left",
+      "before": 2866,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblInfo",
+      "property": "Top",
+      "before": 1850,
+      "after": 1920
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lblInfo",
+      "property": "Width",
+      "before": 9954,
+      "after": 7644
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "lstGroups",
+      "property": "Width",
+      "before": 9954,
+      "after": 10239
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchive",
+      "property": "Caption",
+      "before": "Archive selected group",
+      "after": "Archive Summary Group"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchive",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchive",
+      "property": "Left",
+      "before": 6350,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchive",
+      "property": "Top",
+      "before": 6800,
+      "after": 7800
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchive",
+      "property": "Width",
+      "before": 3200,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxArchiveFilter",
+      "property": "RowSource",
+      "before": "Active;Archived;All",
+      "after": "\"All\";\"Active\";\"Archived\""
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxEditDefaults",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxEditDefaults",
+      "property": "Left",
+      "before": 2850,
+      "after": 9510
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxEditDefaults",
+      "property": "Top",
+      "before": 7450,
+      "after": 6360
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxEditDefaults",
+      "property": "Width",
+      "before": 10450,
+      "after": 3600
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGlobalDefaults",
+      "property": "Caption",
+      "before": "Edit global defaults for all summary groups",
+      "after": "Edit global defaults"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGlobalDefaults",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGlobalDefaults",
+      "property": "Left",
+      "before": 2850,
+      "after": 9510
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGlobalDefaults",
+      "property": "Top",
+      "before": 9850,
+      "after": 7200
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGlobalDefaults",
+      "property": "Width",
+      "before": 10450,
+      "after": 3600
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGroupState",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxGroupState",
+      "property": "Width",
+      "before": 6600,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxLifecycleStatus",
+      "property": "Height",
+      "before": 550,
+      "after": 355
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxLifecycleStatus",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxLifecycleStatus",
+      "property": "Top",
+      "before": 8050,
+      "after": 5880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxLifecycleStatus",
+      "property": "Width",
+      "before": 10450,
+      "after": 10255
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRecover",
+      "property": "Caption",
+      "before": "Recover selected group",
+      "after": "Recover Summary Group"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRecover",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRecover",
+      "property": "Left",
+      "before": 9850,
+      "after": 6195
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRecover",
+      "property": "Top",
+      "before": 6800,
+      "after": 7800
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRecover",
+      "property": "Width",
+      "before": 3200,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRename",
+      "property": "Caption",
+      "before": "Rename selected group",
+      "after": "Rename Summary Group"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRename",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRename",
+      "property": "Left",
+      "before": 2850,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRename",
+      "property": "Top",
+      "before": 6800,
+      "after": 7080
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxRename",
+      "property": "Width",
+      "before": 3200,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxSaveState",
+      "property": "Height",
+      "before": 450,
+      "after": 576
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxSaveState",
+      "property": "Left",
+      "before": 9750,
+      "after": 6195
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxSaveState",
+      "property": "Top",
+      "before": 9100,
+      "after": 9120
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxSaveState",
+      "property": "Width",
+      "before": 3550,
+      "after": 2880
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxStateLabel",
+      "property": "Caption",
+      "before": "Local group status (does not change report review)",
+      "after": "Local group status"
+    },
+    {
+      "form": "frmUXGroups",
+      "control": "uxStateLabel",
+      "property": "Width",
+      "before": 4500,
+      "after": 1755
+    },
+    {
+      "form": "frmUXImportChoose",
+      "control": "cmdNAVFITExchange",
+      "property": "Left",
+      "before": 400,
+      "after": 2880
+    },
+    {
+      "form": "frmUXImportChoose",
+      "control": "cmdNAVFITExchange",
+      "property": "Top",
+      "before": 4200,
+      "after": 4560
+    },
+    {
+      "form": "frmUXImportChoose",
+      "control": "cmdNAVFITExchange",
+      "property": "Width",
+      "before": 12600,
+      "after": 10560
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "FontBold",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "FontSize",
+      "before": 10,
+      "after": 12
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "FontWeight",
+      "before": 400,
+      "after": 700
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "Height",
+      "before": 400,
+      "after": 505
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "TextAlign",
+      "before": 0,
+      "after": 2
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblMember",
+      "property": "Top",
+      "before": 950,
+      "after": 845
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblScope",
+      "property": "Caption",
+      "before": "Recorded prior evaluations and saved Swift reports. Group prior columns use the latest ending before the current report starts; equal ending dates require review.",
+      "after": "Recorded prior evaluations and saved Swift reports."
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblScope",
+      "property": "Height",
+      "before": 500,
+      "after": 380
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblScope",
+      "property": "Left",
+      "before": 400,
+      "after": 435
+    },
+    {
+      "form": "frmUXMemberHistory",
+      "control": "lblScope",
+      "property": "Top",
+      "before": 1450,
+      "after": 1680
+    },
+    {
+      "form": "frmUXResources",
+      "control": "uxDirectory",
+      "property": "Width",
+      "before": 10450,
+      "after": 9954
+    },
+    {
+      "form": "frmUXResources",
+      "control": "uxNavyWriter",
+      "property": "Width",
+      "before": 10450,
+      "after": 9954
+    }
+  ],
+  "add_controls": [
+    {
+      "form": "frmLibrary",
+      "control": "Label46",
+      "type": 100,
+      "properties": {
+        "Caption": "Column list",
+        "Visible": true,
+        "Width": 2545,
+        "Height": 350,
+        "Top": 1440,
+        "Left": 8928,
+        "BackStyle": 0,
+        "BorderStyle": 0,
+        "FontName": "Segoe UI",
+        "FontSize": 10,
+        "TextAlign": 0,
+        "FontWeight": 400,
+        "FontBold": 0,
+        "ForeColor": 2501670,
+        "ForeThemeColorIndex": -1,
+        "Tag": ""
+      }
+    },
+    {
+      "form": "frmLibrary",
+      "control": "Label47",
+      "type": 100,
+      "properties": {
+        "Caption": "Archive status",
+        "Visible": true,
+        "Width": 2545,
+        "Height": 350,
+        "Top": 2280,
+        "Left": 8928,
+        "BackStyle": 0,
+        "BorderStyle": 0,
+        "FontName": "Segoe UI",
+        "FontSize": 10,
+        "TextAlign": 0,
+        "FontWeight": 400,
+        "FontBold": 0,
+        "ForeColor": 2501670,
+        "ForeThemeColorIndex": -1,
+        "Tag": ""
+      }
+    }
+  ],
+  "remove_controls": [
+    {
+      "form": "frmLibrary",
+      "control": "cmdAddFolder",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdFind",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdFolderHelp",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdHome",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "cmdMoveFolder",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblGroupScope",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblMove",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "uxPDF",
+      "reason": "Author removed obsolete report-list action/label; current summary-group and search controls replace it."
+    },
+    {
+      "form": "frmHome",
+      "control": "lblPrototype",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "cmdSupport",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "lblUse",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "cmdImportReview",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "cmdOperations",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "cmdPDF",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "cmdBackup",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCard0",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCardHint0",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCard1",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCardHint1",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCard2",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCardHint2",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCard3",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmHome",
+      "control": "uxCardHint3",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmLibrary",
+      "control": "lblFolders",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdOccasions",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdCategories",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdDuties",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblType",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblTitle",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblStart",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblEnd",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdSaveHelp",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblRevisions",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdSaveNarrative",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdCheckpoint",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblAdministration",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblOfficialName",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblRankRate",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblDesignator",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblUnitUIC",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblShipStation",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblPromotionStatus",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdReportingSenior",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblObservationStatus",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblPromotionRecommendation",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblTraits",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "lblTraitSummaryScope",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdMemberDetails",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdServiceDetails",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdDecisionDetails",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdReportPeople",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmEditor",
+      "control": "cmdPartyNames",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection0Page0",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection0Page1",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection0Page2",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection0Page3",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection2Page0",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    },
+    {
+      "form": "frmUXBulk",
+      "control": "uxSection6Page0",
+      "reason": "Hidden presentation/action remnant with no runtime name reference, tag-based visibility role, data source or dynamic-name family dependency."
+    }
+  ],
+  "restore_hidden": [
+    "frmLibrary.cboDestination"
+  ],
+  "retained_families": [
+    "report and bulk unbound buffers",
+    "dynamic trait labels",
+    "section fields and error labels",
+    "responsive navigation",
+    "IDs and stamps",
+    "reporting-senior adapters",
+    "reset/inherit actions"
+  ]
+}

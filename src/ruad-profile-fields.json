@@ -1,0 +1,142 @@
+[
+  {
+    "key": "CUI",
+    "page": 0
+  },
+  {
+    "key": "RUIC",
+    "page": 0
+  },
+  {
+    "key": "RESERVE UNIT",
+    "page": 0
+  },
+  {
+    "key": "RESERVE ACTIVITY AND LOC",
+    "page": 0
+  },
+  {
+    "key": "ST",
+    "page": 0
+  },
+  {
+    "key": "UIC",
+    "page": 0
+  },
+  {
+    "key": "NRC",
+    "page": 0
+  },
+  {
+    "key": "NRA",
+    "page": 0
+  },
+  {
+    "key": "RPC",
+    "page": 0
+  },
+  {
+    "key": "RATE/RANK",
+    "page": 1
+  },
+  {
+    "key": "NAME",
+    "page": 1
+  },
+  {
+    "key": "RFAS Asgmt",
+    "page": 2
+  },
+  {
+    "key": "E/O",
+    "page": 1
+  },
+  {
+    "key": "SELRES TYPE",
+    "page": 1
+  },
+  {
+    "key": "BIN",
+    "page": 2
+  },
+  {
+    "key": "RFAS",
+    "page": 2
+  },
+  {
+    "key": "REQ DESG/REQ RTING",
+    "page": 2
+  },
+  {
+    "key": "PNOBC/PNEC",
+    "page": 2
+  },
+  {
+    "key": "DESG",
+    "page": 1
+  },
+  {
+    "key": "NOBC/NEC",
+    "page": 1
+  },
+  {
+    "key": "AUIC",
+    "page": 2
+  },
+  {
+    "key": "TRUIC",
+    "page": 2
+  },
+  {
+    "key": "UMUIC",
+    "page": 2
+  },
+  {
+    "key": "MOB ACTIVITY",
+    "page": 3
+  },
+  {
+    "key": "MOB BILLET",
+    "page": 3
+  },
+  {
+    "key": "PRD",
+    "page": 2
+  },
+  {
+    "key": "IMS",
+    "page": 3
+  },
+  {
+    "key": "MAS (A)",
+    "page": 3
+  },
+  {
+    "key": "MAS (M)",
+    "page": 3
+  },
+  {
+    "key": "MAS (T)",
+    "page": 3
+  },
+  {
+    "key": "ABSC",
+    "page": 3
+  },
+  {
+    "key": "RBSC",
+    "page": 3
+  },
+  {
+    "key": "ADDRESS",
+    "page": 4
+  },
+  {
+    "key": "PHONE",
+    "page": 4
+  },
+  {
+    "key": "NROWS Email",
+    "page": 4
+  }
+]

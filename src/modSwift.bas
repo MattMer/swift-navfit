@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.24.0-preview"
-Public Const SCHEMA_VERSION As Long = 23
+Public Const APP_VERSION As String = "0.25.0-dev"
+Public Const SCHEMA_VERSION As Long = 25
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -23,8 +23,10 @@ Public Function NewIdentity() As String
 End Function
 
 Private Function ExecuteParams(ByVal statement As String, ParamArray values() As Variant) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim q As DAO.QueryDef, i As Long
-    Set q = CurrentDb.CreateQueryDef("", statement)
+    Set q = ownedDB.CreateQueryDef("", statement)
     For i = 0 To UBound(values)
         q.Parameters(i).Value = values(i)
     Next
@@ -67,16 +69,16 @@ Failed:
     Err.Raise Err.Number, "ConfigureWorkspace", Err.Description
 End Function
 
-Private Sub Snapshot(ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
+Private Sub Snapshot(ByVal ownedDB As DAO.Database, ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("RevisionValue", dbOpenDynaset)
     r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
     r!ValueText = value: r!IsNullValue = IsNull(value): r.Update: r.Close
 End Sub
 
-Private Sub AppendChange(ByVal revisionID As Long, ByVal fieldName As String, ByVal oldValue As Variant, ByVal newValue As Variant)
+Private Sub AppendChange(ByVal ownedDB As DAO.Database, ByVal revisionID As Long, ByVal fieldName As String, ByVal oldValue As Variant, ByVal newValue As Variant)
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("RevisionChange", dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("RevisionChange", dbOpenDynaset)
     r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
     r!OldValue = oldValue: r!NewValue = newValue
     r!OldIsNull = IsNull(oldValue): r!NewIsNull = IsNull(newValue)
@@ -94,9 +96,9 @@ Private Function FieldText(ByVal value As Variant) As Variant
 End Function
 
 Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
-    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant) As Long
+    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant) As Long
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
-    Dim keys As Variant, previous(0 To 77) As Variant, current(0 To 77) As Variant, i As Long
+    Dim keys As Variant, previous(0 To 78) As Variant, current(0 To 78) As Variant, i As Long
     Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
     If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, , "Choose EVAL, CHIEFEVAL, or FITREP."
     If Len(title) > 160 Or Len(memberName) > 120 Then Err.Raise vbObjectError + 106, , "Title or member name exceeds local draft capacity."
@@ -110,7 +112,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     End If
     pid = ProfileID()
     keys = DraftFieldKeys()
-    For i = 0 To 77
+    For i = 0 To 78
         previous(i) = Null
         current(i) = Null
     Next
@@ -121,6 +123,10 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Else
         If Not IsNull(officialComments) And VarType(officialComments) <> vbString Then Err.Raise vbObjectError + 117, , "Official narrative must be text or null."
         current(6) = officialComments
+    End If
+    If Not IsMissing(commandEmployment) Then
+        If Not IsNull(commandEmployment) And VarType(commandEmployment) <> vbString Then Err.Raise vbObjectError + 118, , "Block 28 must be text or null."
+        current(78) = commandEmployment
     End If
     If Not IsMissing(administration) Then
         administration = ValidateAdministration(administration)
@@ -205,8 +211,9 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         If IsMissing(partyNames) Then
             For i = 68 To 77: current(i) = r.Fields(keys(i)).Value: Next
         End If
-        For i = 0 To 77
-            previous(i) = FieldText(r.Fields(keys(i)).Value)
+        If IsMissing(commandEmployment) Then current(78) = StoredBlock28(reportID)
+        For i = 0 To 78
+            If i = 78 Then previous(i) = FieldText(StoredBlock28(reportID)) Else previous(i) = FieldText(r.Fields(keys(i)).Value)
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
@@ -219,19 +226,22 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     End If
     r!FormKind = formKind: r!Title = title: r!MemberName = memberName
     r!PeriodStart = startDate: r!PeriodEnd = endDate: r!DraftNotes = notes: r!OfficialComments = current(6): r!ModifiedAt = Now()
-    For i = 7 To 77: r.Fields(keys(i)) = current(i): Next
-    r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID: r.Close
+    For i = 7 To 78: r.Fields(keys(i)) = current(i): Next
+    r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID
     Set rev = db.OpenRecordset("ReportRevision", dbOpenDynaset)
     rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
     rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
-    rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close
-    For i = 0 To 77
-        Snapshot revisionID, CStr(keys(i)), current(i)
+    rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close: Set rev = Nothing
+    For i = 0 To 78
+        Snapshot db, revisionID, CStr(keys(i)), current(i)
         If seq = 1 Or IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
-            AppendChange revisionID, CStr(keys(i)), previous(i), current(i)
+            AppendChange db, revisionID, CStr(keys(i)), previous(i), current(i)
         End If
     Next
-    ExecuteParams "PARAMETERS rev Long, id Long; UPDATE Report SET CurrentRevisionID=rev WHERE ReportID=id", revisionID, reportID
+    'Keep the report write cursor alive through revision linking.
+    'A second SQL update can contend with its uncommitted record lock.
+    r.Edit: r!CurrentRevisionID = revisionID: r.Update
+    r.Close: Set r = Nothing
     SyncReportDirectory reportID
     w.CommitTrans
     CommitDraft = reportID
@@ -262,8 +272,10 @@ Failed:
 End Function
 
 Private Function RevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT ValueText, IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
+    Set r = ownedDB.OpenRecordset("SELECT ValueText, IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 114, , "Revision snapshot is incomplete."
     If r!IsNullValue Then RevisionValue = Null Else RevisionValue = r!ValueText
     r.Close
@@ -271,14 +283,16 @@ End Function
 
 Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, , "Revision belongs to another report."
-    RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID), AdministrationFromRevision(revisionID), TraitsFromRevision(revisionID), AssessmentFromRevision(revisionID), PromotionStatusFromRevision(revisionID), ReportingSeniorFromRevision(revisionID), ReportContextFromRevision(revisionID), MemberDetailsFromRevision(revisionID), ServiceDetailsFromRevision(revisionID), DecisionDetailsFromRevision(revisionID), ReportPeopleFromRevision(revisionID), PartyNamesFromRevision(revisionID))
+    RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID), AdministrationFromRevision(revisionID), TraitsFromRevision(revisionID), AssessmentFromRevision(revisionID), PromotionStatusFromRevision(revisionID), ReportingSeniorFromRevision(revisionID), ReportContextFromRevision(revisionID), MemberDetailsFromRevision(revisionID), ServiceDetailsFromRevision(revisionID), DecisionDetailsFromRevision(revisionID), ReportPeopleFromRevision(revisionID), PartyNamesFromRevision(revisionID), Block28FromRevision(revisionID))
 End Function
 
 Public Function DuplicateDraft(ByVal reportID As Long) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    Set r = ownedDB.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 116, , "Report does not exist."
-    DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments, Array(r!OfficialName.Value, r!RankRate.Value, r!Designator.Value, r!UnitUIC.Value, r!ShipStation.Value), Array(r!Trait33.Value, r!Trait34.Value, r!Trait35.Value, r!Trait36.Value, r!Trait37.Value, r!Trait38.Value, r!Trait39.Value), Array(r!ObservationStatus.Value, r!PromotionRecommendation.Value), r!PromotionStatus.Value, Array(r!ReportingSeniorName.Value, r!ReportingSeniorGrade.Value, r!ReportingSeniorDesignator.Value, r!ReportingSeniorTitle.Value, r!ReportingSeniorUIC.Value), ReportContextFromRecordset(r), MemberDetailsFromRecordset(r), ServiceDetailsFromRecordset(r), DecisionDetailsFromRecordset(r), ReportPeopleFromRecordset(r), PartyNamesFromRecordset(r))
+    DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments, Array(r!OfficialName.Value, r!RankRate.Value, r!Designator.Value, r!UnitUIC.Value, r!ShipStation.Value), Array(r!Trait33.Value, r!Trait34.Value, r!Trait35.Value, r!Trait36.Value, r!Trait37.Value, r!Trait38.Value, r!Trait39.Value), Array(r!ObservationStatus.Value, r!PromotionRecommendation.Value), r!PromotionStatus.Value, Array(r!ReportingSeniorName.Value, r!ReportingSeniorGrade.Value, r!ReportingSeniorDesignator.Value, r!ReportingSeniorTitle.Value, r!ReportingSeniorUIC.Value), ReportContextFromRecordset(r), MemberDetailsFromRecordset(r), ServiceDetailsFromRecordset(r), DecisionDetailsFromRecordset(r), ReportPeopleFromRecordset(r), PartyNamesFromRecordset(r), StoredBlock28(reportID))
     r.Close
 End Function
 
@@ -354,11 +368,13 @@ Public Function EditSelected(Optional ByVal createNew As Boolean = False) As Boo
 End Function
 
 Public Function LoadEditor() As Boolean
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim f As Form, r As DAO.Recordset, id As Long, block As Long, seniorKey As Variant
     Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
     f!cboKind = "EVAL"
     If id > 0 Then
-        Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
+        Set r = ownedDB.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
         f!cboKind = r!FormKind: f!txtTitle = r!Title: f!txtMember = r!MemberName
         f!txtStart = r!PeriodStart: f!txtEnd = r!PeriodEnd: f!txtNotes = r!DraftNotes: f!txtOfficialComments = r!OfficialComments
         f!txtOfficialName = r!OfficialName: f!txtRankRate = r!RankRate: f!txtDesignator = r!Designator: f!txtUnitUIC = r!UnitUIC: f!txtShipStation = r!ShipStation
@@ -370,6 +386,7 @@ Public Function LoadEditor() As Boolean
         For Each seniorKey In DecisionDetailsKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
         For Each seniorKey In ReportPeopleKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
         For Each seniorKey In PartyNamesKeys(): f.Controls("txt" & seniorKey) = r.Fields(seniorKey).Value: Next
+        f!txtCommandEmployment = StoredBlock28(id)
         f!cboPromotionStatus = r!PromotionStatus
         f!cboObservationStatus = r!ObservationStatus: f!cboPromotionRecommendation = r!PromotionRecommendation
         f!lblSaved.Caption = "Last saved: " & r!ModifiedAt
@@ -404,7 +421,7 @@ Public Function SaveEditor() As Boolean
     UXFlushSurface
     Call GuardEditorBaseline()
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
-    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor())
+    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value)
     Call DiscardEditorCheckpoint()
     w.CommitTrans: trans = False
     f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved " & Now() & " - local draft only"
@@ -459,7 +476,7 @@ Failed:
 End Function
 
 Public Function LoadSupport() As Boolean
-    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: 74 mapped saved values; 128 native columns retained; single-report export and guarded return preview; group export pending" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
+    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: 75 mapped saved values; 128 native columns retained; report/group export and guarded return preview; verify files in NAVFIT98A" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
     LoadSupport = True
 End Function
 
@@ -475,8 +492,10 @@ Private Function NarrativeRevisionValue(ByVal revisionID As Long) As Variant
 End Function
 
 Private Function StoredOfficialNarrative(ByVal reportID As Long) As Variant
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT OfficialComments FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    Set r = ownedDB.OpenRecordset("SELECT OfficialComments FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 109, , "Report does not exist."
     StoredOfficialNarrative = r!OfficialComments
     r.Close
@@ -493,4 +512,32 @@ Public Function RefreshNarrativeLabel() As Boolean
     Forms!frmEditor!lblOfficialComments.Caption = "Official narrative - block " & block & " (separate from draft notes)"
     Forms!frmEditor!lblNarrativeCount.Caption = CStr(Len(Nz(Forms!frmEditor!txtOfficialComments, ""))) & " characters"
     RefreshNarrativeLabel = True
+End Function
+
+Public Function Block28FromRevision(ByVal revisionID As Long) As Variant
+    If Not MajorRevisionHasField(revisionID, "CommandEmployment") Then
+        If RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 119, , "Block 28 is missing from this revision."
+        Block28FromRevision = Null
+    Else
+        Block28FromRevision = MajorRevisionValue(revisionID, "CommandEmployment")
+    End If
+End Function
+
+Public Function StoredBlock28(ByVal reportID As Long) As Variant
+    Dim db As DAO.Database, r As DAO.Recordset, receipt As Variant, nativeID As Long
+    StoredBlock28 = Null: If reportID = 0 Then Exit Function
+    Set db = CurrentDb
+    StoredBlock28 = DLookup("CommandEmployment", "Report", "ReportID=" & reportID)
+    If Not IsNull(StoredBlock28) Then Exit Function
+    Set r = db.OpenRecordset("SELECT c.RevisionChangeID FROM RevisionChange AS c INNER JOIN ReportRevision AS v ON c.RevisionID=v.RevisionID WHERE v.ReportID=" & reportID & " AND c.FieldKey='CommandEmployment'", dbOpenSnapshot)
+    If Not r.EOF Then r.Close: Exit Function
+    r.Close
+    receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
+    If IsNull(receipt) Then Exit Function
+    nativeID = Nz(DLookup("ExternalReportID", "ImportReceipt", "ImportReceiptID=" & CLng(receipt)), 0)
+    Set r = db.OpenRecordset("SELECT RawValue,IsNullValue FROM ImportRawValue WHERE ImportReceiptID=" & CLng(receipt) & " AND SourceRow=" & nativeID & " AND SourceTable IN ('Reports','RawReports') AND FieldKey='Achievements' AND DAOType=12", dbOpenSnapshot)
+    If Not r.EOF Then
+        If Not r!IsNullValue Then StoredBlock28 = Nz(r!RawValue.Value, "")
+    End If
+    r.Close
 End Function

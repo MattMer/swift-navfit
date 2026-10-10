@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 23,
+  "SchemaVersion": 25,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -112,7 +112,7 @@
     "CREATE UNIQUE INDEX UX_NoteDraftGuid ON ReportNoteDraft (DraftGuid)",
     "ALTER TABLE ReportNoteDraft ADD CONSTRAINT FK_NoteDraftReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)",
     "ALTER TABLE ReportNoteDraft ADD CONSTRAINT FK_NoteDraftAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)",
-    "CREATE TABLE CommandMember (MemberID COUNTER PRIMARY KEY, MemberGuid TEXT(38) NOT NULL, FullName TEXT(120) NOT NULL, ReportName TEXT(27), RankRate TEXT(5), MemberSSN TEXT(9), SourceKind TEXT(20), IsArchived BIT, VersionCounter LONG NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME)",
+    "CREATE TABLE CommandMember (MemberID COUNTER PRIMARY KEY, MemberGuid TEXT(38) NOT NULL, FullName TEXT(120) NOT NULL, ReportName TEXT(27), RankRate TEXT(5), MemberSSN TEXT(9), SourceKind TEXT(20), IsArchived BIT, VersionCounter LONG NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME, RUADData LONGTEXT)",
     "CREATE UNIQUE INDEX UX_CommandMemberGuid ON CommandMember (MemberGuid)",
     "CREATE UNIQUE INDEX UX_CommandMemberSSN ON CommandMember (MemberSSN) WITH IGNORE NULL",
     "ALTER TABLE CommandMember ADD CONSTRAINT FK_CommandMemberCreator FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",

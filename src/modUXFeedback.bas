@@ -2,6 +2,7 @@ Attribute VB_Name = "modUXFeedback"
 Option Explicit
 Private snippetReport As Long
 Private gridReport As Long
+Private catalogFromSnippets As Boolean
 Public Function UXOpenReportSnippets() As Boolean
     On Error GoTo Failed
     UXFlushSurface
@@ -71,18 +72,11 @@ Public Function UXTableGroups(ByVal id As Long) As String
     If Len(UXTableGroups) = 0 Then UXTableGroups = "Ungrouped"
 End Function
 Public Function UXListGroupDefaults() As Boolean
-    If Not UXOpenGroup() Then Exit Function
+    If Not UXOpenGroup(True) Then Exit Function
     UXListGroupDefaults = UXOpenGroupDefaults()
 End Function
 Public Function UXOpenGroupMembers() As Boolean
-    If Not UXOpenGroup() Then Exit Function
-    If Nz(Forms!frmMajorWorkbench!cboGroup, 0) = 0 Then Exit Function
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & Forms!frmMajorWorkbench!cboGroup), False) Then UXOpenGroupMembers = True: Exit Function
-    If DCount("*", "GroupMember", "GroupID=" & Forms!frmMajorWorkbench!cboGroup) = 0 Then
-        Forms!frmMajorWorkbench!lblStatus.Caption = "This group has no reports. Choose members to start its report list."
-        UXOpenGroupMembers = True: Exit Function
-    End If
-    UXOpenGroupMembers = UXOpenComparison()
+    UXOpenGroupMembers = UXOpenGroup()
 End Function
 Public Function UXGridOpenReport() As Boolean
     Dim id As Long
@@ -103,4 +97,39 @@ Public Function UXFeedbackCloseEditor() As Boolean
         UXGridCurrent
     End If
     gridReport = 0: UXFeedbackCloseEditor = True
+End Function
+
+Public Function UXWorkContributor() As Boolean
+    On Error GoTo Failed
+    SwitchContributor CLng(Nz(Forms!frmMyWork!uxContributor, 0))
+    UXLoadContext
+    UXLoadWorkQueue
+    UXWorkContributor = True: Exit Function
+Failed:
+    Forms!frmMyWork!uxContributor = MajorAuthor()
+    Forms!frmMyWork!uxWorkStatus.Caption = Err.Description
+End Function
+Public Function UXGroupRowOpen() As Boolean
+    Dim id As Long
+    id = Nz(Forms!frmMajorWorkbench!lstReports, 0)
+    If id = 0 Then Exit Function
+    If Not UXLeaveEditor() Then Exit Function
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    UXGroupRowOpen = True
+End Function
+
+Public Function UXOpenSnippetSources() As Boolean
+    catalogFromSnippets = True
+    DoCmd.OpenForm "frmUXNavyWriter"
+    Forms!frmUXNavyWriter!cmdBack.Caption = "Back to narrative snippets"
+    UXOpenSnippetSources = True
+End Function
+Public Function UXReturnNarrativeSources() As Boolean
+    DoCmd.Close acForm, "frmUXNavyWriter", acSaveNo
+    If catalogFromSnippets And CurrentProject.AllForms("frmSnippets").IsLoaded Then
+        Forms!frmSnippets.SetFocus: LoadSnippets
+    Else
+        DoCmd.OpenForm "frmUXResources"
+    End If
+    catalogFromSnippets = False: UXReturnNarrativeSources = True
 End Function

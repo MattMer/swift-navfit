@@ -1,0 +1,10 @@
+# Revision-pointer lock repair — r92 (9 October 2026)
+
+The user reports continued 3420 errors in blank r91 after creating a group/report. Their debugger screenshot shows the underlying failure at ExecuteParams.q.Execute: 3218, Could not update; currently locked. This is evidence of a lock failure rather than proof of an expired DAO owner.
+
+CommitDraft previously wrote Report on its local DAO.Database and updated CurrentRevisionID through ExecuteParams, which created another CurrentDb handle inside the transaction. r92 executes the numeric revision-pointer update on the same db handle as the report write. RevisionValue and RevisionChange helpers also receive that handle. This removes the cross-handle write at the highlighted line without changing transaction or approval rules. No schema change (25). r91 and user files are preserved.
+
+Verified native compile for demo and blank; normal shared-mode actual control Text/SetFocus update events after creating new EVAL, CHIEFEVAL and FITREP groups/reports; repeated saves; 26 approval rollback/retry assertions; Avery Patel/Riley Brooks repeated saves and reopened values. Additional admin/startup checks are recorded in the verification JSON.
+
+The exact original failure did not reproduce under automation in r91 or r92. An optional artificial external-workspace lock test ended with COM error 0x800A9C68 and is not counted as passing; normal native events are tested without that injection. No computer use was used. User retest is still required to establish resolution on their failing journey.
+The user's r91 blank was populated by their own testing (one report), so its patched copy is named Swift_NAVFIT_UI_TestWorkspace_2026-10-09-r92.accdb. Every one of its 49 user tables is unchanged. The separate r92 blank was rebuilt from the untouched r90 blank and opens Setup. The existing user-created report's native trait event passed on scratch copies of both r91 and r92. Final admin suite: 142 passed. Final hashes and limits are recorded in REVISION_LOCK_R92_VERIFICATION_2026-10-09.json.

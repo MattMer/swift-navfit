@@ -55,7 +55,7 @@ Public Function ApplyDirectoryReports() As Long
         DirectoryCreationContext CLng(key)
         id = CommitDraft(0, kind, kind & " - " & r!FullName, r!FullName, fromDate, toDate, "", "Create from command directory", values("OfficialComments"), _
             FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-            FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()))
+            FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"))
         DirectoryCreationContext 0: r.Close
         AddGroupMember pendingGroup, id, grade: ApplyDirectoryReports = ApplyDirectoryReports + 1
     Next

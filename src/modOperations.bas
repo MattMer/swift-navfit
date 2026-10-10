@@ -2,17 +2,21 @@ Attribute VB_Name = "modOperations"
 Option Compare Database
 Option Explicit
 Public Function BeginOperation(ByVal kind As String, ByVal source As String) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, pid As Long
     pid = Nz(MajorScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
     If pid = 0 Then Err.Raise vbObjectError + 1100, , "Configure a contributor first."
-    Set r = CurrentDb.OpenRecordset("OperationJournal", dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("OperationJournal", dbOpenDynaset)
     r.AddNew: r!OperationGuid = NewIdentity(): r!OperationKind = kind: r!AuthorProfileID = pid
     r!SourceDescription = source: r!StartedAt = Now(): r!OperationState = "Started"
     r.Update: r.Bookmark = r.LastModified: BeginOperation = r!OperationID: r.Close
 End Function
 Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByVal message As String)
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT * FROM OperationJournal WHERE OperationID=" & operationID, dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("SELECT * FROM OperationJournal WHERE OperationID=" & operationID, dbOpenDynaset)
     If r.EOF Then Err.Raise vbObjectError + 1101, , "Operation entry missing."
     r.Edit: r!OperationState = state: r!Outcome = message: r!FinishedAt = Now(): r.Update: r.Close
 End Sub

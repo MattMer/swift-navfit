@@ -1,0 +1,64 @@
+{
+  "version": "0.25.0-dev",
+  "schema": 24,
+  "published_release_changed": false,
+  "artifacts": [
+    {
+      "path": "output/ux/Swift_NAVFIT_UI_Blank_2026-10-06-r86.accdb",
+      "sha256": "5cdc319e83cf4f1afbabac58d1ac12477c9d3fd4aa5f0a4346644fe83d0dba31"
+    },
+    {
+      "path": "output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r86.accdb",
+      "sha256": "141e13158e649534facea21b684cef72289fe8209888a73089d3d2d4fcf17578"
+    }
+  ],
+  "r86_assertions": {
+    "admin_feedback": 142,
+    "responsive_identity": 2113,
+    "exact_demo": 36
+  },
+  "r85_assertions": {
+    "recovery_preparation": 12,
+    "recovery_reopen": 23,
+    "navfit_adapter": 507,
+    "navfit_exchange": 410,
+    "navfit_guards": 99,
+    "my_work": 32,
+    "global_defaults": 26,
+    "group_correctness": 39,
+    "navywriter_catalog": 29,
+    "expanded_pdf": 256
+  },
+  "surface_r84_assertions": 109,
+  "migration_evidence": "build/tests/upgrade-20d07891-0025-4f0e-9484-4ca5e27644c0/verification.json",
+  "recovery_evidence": "build/tests/recovery-results.json",
+  "final_counts": {
+    "blank_user_tables_empty": true,
+    "demo_reports": 9,
+    "demo_groups": 3,
+    "demo_prior_evaluations": 8,
+    "demo_snippets": 93
+  },
+  "limitations": [
+    "Physical display and DPI matrix pending",
+    "Screen reader and full keyboard manual acceptance pending",
+    "Current NAVFIT98A GUI and printed-output proof pending",
+    "72 original rate/category starter templates are placeholders, not full NavyWriter collections"
+  ],
+  "startup_correction": {
+    "build": "r87",
+    "cause": "Missing AutoExec in incremental packaging",
+    "demo_normal_open": "frmHome automatically loaded",
+    "source_r86_preserved": true,
+    "artifacts": [
+      {
+        "path": "output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r87.accdb",
+        "sha256": "37f76719b3cb6f8c0746c11dd9239772f9e9631c165d7194f20a8d63fcd3e182"
+      },
+      {
+        "path": "output/ux/Swift_NAVFIT_UI_Blank_2026-10-06-r87.accdb",
+        "sha256": "0f1eae253fc9821afbd604504528f8d44e0a597e0d62c8bee39d48aa3ca732d7"
+      }
+    ]
+  }
+}

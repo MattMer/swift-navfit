@@ -58,7 +58,7 @@ NewScreen 'frmUXEditorFields' 'Report section' 12500;$f=$script:swiftForm
 $f.Controls('lblHeading').Visible=$false;$f.Width=[int](8000);$f.ScrollBars=2;$f.BorderStyle=0;$f.Section(0).BackColor=16777215
 [void](Control $f 109 'uxFocusAnchor' 0 0 20 20);$c=$script:swiftControl;$c.Locked=$true;$c.TabStop=$false;$c.BorderStyle=0
 for($i=0;$i -lt $uxFields.Count;$i++){
-    $field=$uxFields[$i];if($field.key -eq 'FormKind' -or $field.legacyHidden){continue}
+    $field=$uxFields[$i];if($field.key -eq 'FormKind'){continue}
     $type=if($field.checkbox){106}elseif($field.options){111}else{109}
     [void](Control $f $type $uxNames[$i] 200 200 3600 450);$c=$script:swiftControl;$c.Tag='SURF:'+$field.key;$c.AfterUpdate='=UXSurfaceEdited("'+$field.key+'")'
     if($field.checkbox){$c.TripleState=$true}elseif($field.options){$c.RowSourceType='Value List';$c.RowSource=$field.options -join ';';$c.LimitToList=$false}
@@ -101,8 +101,8 @@ $f.Controls('lblRecovery').Top=[int](8350);$f.Controls('lblRecovery').Left=[int]
 foreach($name in @('cmdRoute','cmdComments','cmdChecklist','cmdCompare','cmdRestore','lstRevisions')){$f.Controls($name).Tag='LOCAL:'+$(if($name -in @('cmdCompare','cmdRestore','lstRevisions')){'9'}else{'8'})}
 $f.Controls('lstRevisions').Left=[int](5250);$f.Controls('lstRevisions').Top=[int](4800);$f.Controls('lstRevisions').Width=[int](8050);$f.Controls('lstRevisions').Height=[int](2400)
 foreach($entry in @(@('cmdRoute',3700),@('cmdComments',4300),@('cmdChecklist',4900),@('cmdCompare',3700),@('cmdRestore',4300))){$c=$f.Controls($entry[0]);$c.Left=[int](5250);$c.Top=[int]($entry[1]);$c.Width=[int](3900);$c.Height=[int](500)}
-$f.Controls('uxSeniorRecord').Left=[int](5250);$f.Controls('uxSeniorRecord').Top=[int](3150);$f.Controls('uxSeniorRecord').Width=[int](4800);$f.Controls('uxSeniorRecord').Tag='LOCAL:1'
-$f.Controls('uxUseSenior').Left=[int](10250);$f.Controls('uxUseSenior').Top=[int](3150);$f.Controls('uxUseSenior').Width=[int](3050);$f.Controls('uxUseSenior').Tag='LOCAL:1'
+$f.Controls('uxSeniorRecord').Left=[int](5250);$f.Controls('uxSeniorRecord').Top=[int](3150);$f.Controls('uxSeniorRecord').Width=[int](4800);$f.Controls('uxSeniorRecord').Tag='LOCAL:0'
+$f.Controls('uxUseSenior').Left=[int](10250);$f.Controls('uxUseSenior').Top=[int](3150);$f.Controls('uxUseSenior').Width=[int](3050);$f.Controls('uxUseSenior').Tag='LOCAL:0'
 $f.OnResize='=UXResizeEditor()'
 # Class unload handler is bound in build.ps1 after all controls are persisted.
 SaveScreen $f 'frmEditor'
@@ -206,7 +206,7 @@ foreach($screenName in $uxPages){
     $c.ColumnCount=2;$c.ColumnWidths='0;2500';$c.LimitToList=$true;$c.TabIndex=0;$c.ControlTipText='Workspace navigation';$c.AfterUpdate='=UXCompactNavigate("'+$screenName+'")'
     if($screenName -eq 'frmEditor'){
         [void](Control $f 111 'uxCompactSection' 250 2650 5000 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List'
-        $c.RowSource=(0..9|ForEach-Object{[string]$_+';'+$uxSections[$_]}) -join ';';$c.ColumnCount=2;$c.ColumnWidths='0;5000';$c.LimitToList=$true;$c.TabIndex=7;$c.ControlTipText='Report section';$c.AfterUpdate='=UXChooseSectionCompact()'
+        $c.RowSource=(0..9|Where-Object {$_ -ne 1}|ForEach-Object{[string]$_+';'+$uxSections[$_]}) -join ';';$c.ColumnCount=2;$c.ColumnWidths='0;5000';$c.LimitToList=$true;$c.TabIndex=7;$c.ControlTipText='Report section';$c.AfterUpdate='=UXChooseSectionCompact()'
         [void](Control $f 100 'uxAlias' 5900 2350 6000 350 '')
         # build.ps1 binds the unload class procedure after all form design edits
         # have been saved and the database reopened. Do not persist a dangling

@@ -11,7 +11,7 @@ common={
 'ObservationStatus':'NOB','PromotionRecommendation':'PromotionRecom',
 'ReportingSeniorName':'ReportingSenior','ReportingSeniorGrade':'RSGrade','ReportingSeniorDesignator':'RSDesig','ReportingSeniorTitle':'RSTitle','ReportingSeniorUIC':'RSUIC',
 'ReportingSeniorSSN':'RSSSN','ReportingSeniorDoDID':'RSDoDID',
-'PrimaryDuty':'PrimaryDuty','DutyDescription':'Duties','CounselingDate':'DateCounseled','CounselorName':'Counseler',
+'CommandEmployment':'Achievements','PrimaryDuty':'PrimaryDuty','DutyDescription':'Duties','CounselingDate':'DateCounseled','CounselorName':'Counseler',
 'ReadinessSummary':'PhysicalReadiness','ReadinessDetail':'PhysicalReadiness2','ReadinessDate':'PhysicalReadinessDt','BilletSubcategory':'BilletSubcat',
 'AssignmentRecommendationA':'RecommendA','AssignmentRecommendationB':'RecommendB','OfficialComments':'Comments',
 'RetentionYes':'RetentionYes','RetentionNo':'RetentionNo','StatementYes':'StatementYes','StatementNo':'StatementNo',
@@ -36,4 +36,4 @@ for kind,names in traits.items():
 lines += ['        Case Else: Err.Raise vbObjectError + 5100, , "Unsupported NAVFIT report type."','    End Select','    Set NAVFITMapRows = result','End Function']
 (root/'src/navfit-field-map.json').write_text(json.dumps(catalogue,indent=2)+'\n')
 (root/'src/modNAVFITMapping.bas').write_bytes(('\r\n'.join(lines)+'\r\n').encode('ascii'))
-assert all(len(rows)==74 for rows in catalogue.values()), [len(x) for x in catalogue.values()]
+assert all(len(rows)==75 for rows in catalogue.values()), [len(x) for x in catalogue.values()]

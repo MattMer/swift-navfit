@@ -10,14 +10,17 @@ Public Function UXDirectoryLoad() As Boolean
     f!lstMembers.Requery: UXDirectoryLoad = True
 End Function
 Public Function UXDirectoryEdit(Optional ByVal createNew As Boolean = False) As Boolean
-    Dim r As DAO.Recordset, f As Access.Form
+    Dim r As DAO.Recordset, f As Access.Form, db As DAO.Database
     If Not createNew And IsNull(Forms!frmUXDirectory!lstMembers) Then Exit Function
     memberID = 0: memberVersion = 0
     If Not createNew Then memberID = CLng(Forms!frmUXDirectory!lstMembers)
     DoCmd.OpenForm "frmUXMemberEditor": Set f = Forms!frmUXMemberEditor
     If memberID > 0 Then
-        Set r = CurrentDb.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
-        memberVersion = r!VersionCounter: f!txtName = r!FullName: f!txtReportName = r!ReportName: f!txtRank = r!RankRate: f!txtSSN = r!MemberSSN: r.Close
+        Set db = CurrentDb
+        Set r = db.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+        memberVersion = r!VersionCounter: f!txtName = r!FullName: f!txtReportName = r!ReportName: f!txtRank = r!RankRate: f!txtSSN = r!MemberSSN: UXRUADLoad r!RUADData: r.Close
+    Else
+        UXRUADLoad Null
     End If
     UXDirectoryEdit = True
 End Function
@@ -25,7 +28,7 @@ Public Function UXDirectorySave() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXMemberEditor
-    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""))
+    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), "Manual", UXRUADValues())
     DoCmd.Close acForm, f.Name: UXDirectoryLoad: UXDirectorySave = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description

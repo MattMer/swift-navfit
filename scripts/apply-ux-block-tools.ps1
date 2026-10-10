@@ -49,12 +49,12 @@ GridHeading 'headingMember' 50 2000 'Member / state'
 foreach($name in @('ReportID','RevisionID','ObservationStatus')){[void](Control $f 109 $name 0 0 100 100);$script:swiftControl.ControlSource=$name;$script:swiftControl.Visible=$false}
 for($block=33;$block -le 39;$block++){
     $x=2200+($block-33)*820;GridHeading ('heading'+$block) $x 760 ('Trait '+$block)
-    [void](Control $f 111 ('Trait'+$block) $x 40 760 360);$c=$script:swiftControl;$c.ControlSource='Trait'+$block;$c.RowSourceType='Value List';$c.RowSource='NOB;1.0;2.0;3.0;4.0;5.0';$c.LimitToList=$false;$c.AfterUpdate='=UXGridEdit("Trait'+$block+'")'
+    [void](Control $f 111 ('Trait'+$block) $x 40 760 360);$c=$script:swiftControl;$c.ControlSource='Trait'+$block;$c.RowSourceType='Value List';$c.RowSource='NOB;1.0;2.0;3.0;4.0;5.0';$c.LimitToList=$false;$c.AfterUpdate='=UXGridQueue("Trait'+$block+'")'
 }
 GridHeading 'headingITA' 8100 700 'ITA'
 [void](Control $f 109 'ITA' 8100 40 700 360);$script:swiftControl.ControlSource='ITA';$script:swiftControl.Locked=$true;$script:swiftControl.TabStop=$false
 GridHeading 'headingPromotion' 9000 1350 'Promotion recommendation'
-[void](Control $f 111 'PromotionRecommendation' 9000 40 1350 360);$c=$script:swiftControl;$c.ControlSource='PromotionRecommendation';$c.RowSourceType='Value List';$c.RowSource=';NOB;Significant Problems;Progressing;Promotable;Must Promote;Early Promote';$c.LimitToList=$true;$c.AfterUpdate='=UXGridEdit("PromotionRecommendation")'
+[void](Control $f 111 'PromotionRecommendation' 9000 40 1350 360);$c=$script:swiftControl;$c.ControlSource='PromotionRecommendation';$c.RowSourceType='Value List';$c.RowSource=';NOB;Significant Problems;Progressing;Promotable;Must Promote;Early Promote';$c.LimitToList=$true;$c.AfterUpdate='=UXGridQueue("PromotionRecommendation")'
 foreach($c in $f.Controls){$c.Tag=[string]$c.Left+':'+[string]$c.Width}
 $f.OnCurrent='=UXGridCurrent()'
 SaveScreen $f 'frmUXTraitRows'
@@ -65,6 +65,7 @@ foreach($c in $f.Controls){if($c.Name -match '^(cboTrait|lblTrait)' -or $c.Name 
 [void](Control $f 109 'uxProposalDetail' 2850 5500 10450 1700);$script:swiftControl.Locked=$true;$script:swiftControl.ScrollBars=2;$script:swiftControl.Visible=$false
 $f.Controls('lstProposals').ColumnCount=6;$f.Controls('lstProposals').ColumnWidths='0;2600;2800;1800;1800;1100';$f.Controls('lstProposals').Height=2400;$f.Controls('lstProposals').OnClick='=UXGridDetail()'
 $f.Controls('cmdBack').OnClick='=UXCloseComparison()'
+$f.OnTimer='=UXGridDrain()';$f.TimerInterval=0
 $f.OnClose='=UXGridClose()';$f.OnResize='=UXGridViewport()'
 # build.ps1 attaches the actual unload class procedure after the generated
 # forms are persisted and reopened; avoid an intermediate dangling event.

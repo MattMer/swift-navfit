@@ -38,7 +38,9 @@ Public Function SavedFields(ByVal reportID As Long) As Object
     If r.EOF Then r.Close: Err.Raise vbObjectError + 4002, , "Report does not exist."
     Set values = CreateObject("Scripting.Dictionary")
     For Each key In DraftFieldKeys(): values.Add CStr(key), r.Fields(key).Value: Next
-    r.Close: Set SavedFields = values
+    r.Close
+    values("CommandEmployment") = StoredBlock28(reportID)
+    Set SavedFields = values
 End Function
 Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As Variant
     Dim result() As Variant, i As Long
@@ -74,7 +76,7 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
     stage = "Normal draft commit"
     CommitSavedFields = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()))
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"))
     w.CommitTrans: Exit Function
 Failed:
     failure = Err.Number: message = stage & ": " & Err.Description
@@ -106,9 +108,15 @@ Public Function MajorRevisionHasField(ByVal revisionID As Long, ByVal key As Str
     MajorRevisionHasField = Not IsNull(MajorScalar("SELECT RevisionValueID FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key)))
 End Function
 Public Function MajorRevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key), dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 4007, , "Snapshot field missing."
+    Set r = ownedDB.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key), dbOpenSnapshot)
+    If r.EOF Then
+        r.Close
+        If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) < 24 Then MajorRevisionValue = Null: Exit Function
+        Err.Raise vbObjectError + 4007, , "Snapshot field missing."
+    End If
     If r!IsNullValue Then MajorRevisionValue = Null Else MajorRevisionValue = r!ValueText
     r.Close
 End Function

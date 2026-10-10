@@ -1,0 +1,187 @@
+﻿{
+    "Checks":  [
+                   {
+                       "Output":  "PASS: normal database open displays frmSetup automatically; AutoExec present",
+                       "Script":  "test-ux-startup.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: normal database open displays frmHome automatically; AutoExec present",
+                       "Script":  "test-ux-startup.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-DEMO.accdb"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: 26 approved-trait rollback, retry, repeated-save and reopen assertions",
+                       "Script":  "test-ux-trait-retry.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: repeated native control events for all three report types",
+                       "Script":  "test-trait-events.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: E6 1.0 marks, row identity, coalescing, failure reset and retry",
+                       "Script":  "test-trait-queue.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: 71 RUAD mapping, identity, refresh, conflict, stale and atomic rollback assertions",
+                       "Script":  "test-ruad-import.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb",
+                                         "-SamplePath",
+                                         "C:/Users/Matt/Downloads/87114_SMART_RUAD - 1OCT2026 - SPLIT.csv"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "PASS: 354 author properties, obsolete-control absence, startup and populated navigation checks",
+                       "Script":  "test-ui-author-baseline.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-DEMO.accdb",
+                                         "-AllowGroupDirectoryLayout"
+                                     ],
+                       "ExitCode":  0
+                   },
+                   {
+                       "Output":  "D:\\Development\\Swift NAVFIT\\build\\tests\\navfit-group-3e331367-a12e-4238-91c2-103aa8e5f2b2\\synthetic.accdb\nPASS: 507 NAVFIT adapter assertions\nPASS: 873 group export assertions",
+                       "Script":  "test-navfit-group-export.ps1",
+                       "Arguments":  [
+                                         "-BuildPath",
+                                         "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Baseline_2026-10-10-r98\\Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb"
+                                     ],
+                       "ExitCode":  0
+                   }
+               ],
+    "AppVersion":  "0.25.0-dev",
+    "Pending":  [
+                    "Narrative geometry/overflow and physical printed fit",
+                    "Full Swift/native round trips and returned-group reconciliation",
+                    "Keyboard/screen-reader/physical scaling acceptance",
+                    "Schema 20-to-25 deployment transfer and target PDF dependencies"
+                ],
+    "Artifacts":  [
+                      {
+                          "SHA256":  "876EE80B4E2BBD90D76E408F7C2F09558E3F90610857DDC8415C71642C0CA70E",
+                          "Name":  "Swift_NAVFIT_Deployment_2026-10-10-r98-blank.accdb",
+                          "Bytes":  11272192
+                      },
+                      {
+                          "SHA256":  "0F346FDC7C704EC57CDABE9BC8977736D73C257085C20CC8B3B7AD5241B22F3D",
+                          "Name":  "Swift_NAVFIT_Deployment_2026-10-10-r98-DEMO.accdb",
+                          "Bytes":  11272192
+                      }
+                  ],
+    "Date":  "2026-10-10",
+    "Baseline":  "r98",
+    "SourceAudit":  {
+                        "Comparison":  "Attribute lines, line endings, VBE case, code whitespace outside strings and empty Call parentheses normalized",
+                        "BlankWorkspaceRows":  0,
+                        "AppVersion":  "0.25.0-dev",
+                        "SchemaVersion":  25,
+                        "Modules":  [
+                                        "modAdministration",
+                                        "modAssessment",
+                                        "modBackupUI",
+                                        "modBulkFolders",
+                                        "modChecklist",
+                                        "modCommandDirectory",
+                                        "modDecisionDetails",
+                                        "modDirectoryBatch",
+                                        "modFileHash",
+                                        "modGroupPolicy",
+                                        "modImportReview",
+                                        "modLibraryViews",
+                                        "modLiveValidation",
+                                        "modMajorCore",
+                                        "modMajorUI",
+                                        "modMeetings",
+                                        "modMemberDetails",
+                                        "modMemberHistory",
+                                        "modNAVFITAdapter",
+                                        "modNAVFITExchange",
+                                        "modNAVFITMapping",
+                                        "modNavyWriterCatalog",
+                                        "modOfficialBatch",
+                                        "modOperations",
+                                        "modPartyNames",
+                                        "modPDFImport",
+                                        "modPDFMapping",
+                                        "modPromotionStatus",
+                                        "modProvenance",
+                                        "modRecovery",
+                                        "modReportContext",
+                                        "modReportingSenior",
+                                        "modReportNotes",
+                                        "modReportPeople",
+                                        "modReviewComments",
+                                        "modRevisionCompare",
+                                        "modRouteTemplates",
+                                        "modRouting",
+                                        "modRSDirectory",
+                                        "modRSDirectoryUI",
+                                        "modRUADImport",
+                                        "modRUADProfiles",
+                                        "modServiceDetails",
+                                        "modSnippets",
+                                        "modSummaryGroups",
+                                        "modSwift",
+                                        "modTraits",
+                                        "modUX",
+                                        "modUXBlockTools",
+                                        "modUXCalculationContext",
+                                        "modUXDashboard",
+                                        "modUXDirectory",
+                                        "modUXExportNames",
+                                        "modUXFeedback",
+                                        "modUXGlobalDefaults",
+                                        "modUXGroupLifecycle",
+                                        "modUXGroupOrganization",
+                                        "modUXGroupPages",
+                                        "modUXHeaderReview",
+                                        "modUXHelp",
+                                        "modUXImportFlow",
+                                        "modUXMyWork",
+                                        "modUXNativeGroups",
+                                        "modUXNAVFIT",
+                                        "modUXNavyWriter",
+                                        "modUXNotes",
+                                        "modUXReportReturn",
+                                        "modUXReview",
+                                        "modUXReviewLayout",
+                                        "modUXRUADImport",
+                                        "modUXSurface",
+                                        "modUXTraitGrid",
+                                        "modUXValidation",
+                                        "modUXViewport",
+                                        "modValidation",
+                                        "modWorkspace"
+                                    ],
+                        "ModulesMatched":  76
+                    },
+    "Status":  "Targeted artifact verification passed; development prerelease",
+    "SchemaVersion":  25
+}

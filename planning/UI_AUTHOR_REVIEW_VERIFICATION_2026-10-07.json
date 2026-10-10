@@ -1,0 +1,54 @@
+{
+  "edited_sha256": "E1739279F81468C6D4E8263F86735329EB949ABE298765BCBB11421AEFEC8D43",
+  "changed_forms": [
+    "frmLibrary",
+    "frmMajorWorkbench",
+    "frmMyWork",
+    "frmUXGroups",
+    "frmUXImportChoose",
+    "frmUXMemberHistory",
+    "frmUXResources"
+  ],
+  "standard_vba_modules_changed": [],
+  "form_classes_changed": [],
+  "reviewed_property_differences": 316,
+  "reproducible_property_changes": 303,
+  "labels_added": 2,
+  "controls_removed_against_r88": 58,
+  "additional_controls_removed_from_edited": 50,
+  "retained_hidden_compatibility_control": "frmLibrary.cboDestination",
+  "tests": {
+    "admin_comparison": 142,
+    "responsive_identity": 2107,
+    "group_organization": 22,
+    "my_work": 32,
+    "author_properties_and_journeys": 355,
+    "approved_trait_retry": 26,
+    "unchanged_user_tables": 49
+  },
+  "visual_spot_checks": [
+    "Reports",
+    "Summary groups",
+    "My Work"
+  ],
+  "schema": 24,
+  "app_version": "0.25.0-dev",
+  "github_published": false,
+  "ruad": {
+    "rows": 66,
+    "named_members": 60,
+    "vacancies": 6,
+    "columns": 35,
+    "implementation": "Mapping verified; import and refresh pending"
+  },
+  "artifacts": [
+    {
+      "sha256": "60988E4A79DD46F7D3031959413CB0963DA46CDF56809534D9BF2F829F2EF726",
+      "path": "output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb"
+    },
+    {
+      "sha256": "104409741D598969A448BE931B5477504F46081B32CA1D0EC20368C044120902",
+      "path": "output/ux/Swift_NAVFIT_UI_Blank_2026-10-07-r89.accdb"
+    }
+  ]
+}

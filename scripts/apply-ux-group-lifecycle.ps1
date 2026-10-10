@@ -1,6 +1,6 @@
 $app.LoadFromText(5,'modUXGroupLifecycle',(Join-Path $root 'src/modUXGroupLifecycle.bas'))
 $app.DoCmd.OpenForm('frmUXGroups',1);$f=$app.Forms.Item('frmUXGroups')
-[void](Control $f 100 'uxFilterLabel' 2850 1950 2200 300 'Group status')
+[void](Control $f 100 'uxFilterLabel' 2850 1950 2200 300 'Archive status')
 [void](Control $f 111 'uxArchiveFilter' 5250 1900 3300 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='Active;Archived;All';$c.DefaultValue='"Active"';$c.LimitToList=$true;$c.AfterUpdate='=UXGroupList()';$c.ControlTipText='Filter active, archived or all summary groups'
 $f.Controls('lstGroups').Top=2550;$f.Controls('lstGroups').Height=3300;$f.Controls('lstGroups').ColumnCount=6;$f.Controls('lstGroups').ColumnWidths='0;4400;1500;1000;1100;1700';$f.Controls('lstGroups').OnClick='=UXGroupSelection()';$f.Controls('lstGroups').AfterUpdate='=UXGroupSelection()'
 $f.Controls('cmdOpen').Left=2850;$f.Controls('cmdOpen').Top=6100;$f.Controls('cmdOpen').Width=5000

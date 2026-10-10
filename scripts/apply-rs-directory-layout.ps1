@@ -20,6 +20,10 @@ for($i=0;$i -lt $rsKeys.Count;$i++){
     [void](Control $f 100 ('lblRS'+$field.key) $x $y 6000 450 $field.label);$script:swiftControl.Tag='SR:'+$page
     [void](Control $f 109 ('rs'+$field.key) $x ($y+500) 6000 400);$c=$script:swiftControl;$c.Tag='SR:'+$page;$c.AfterUpdate='=RSPendingLabel()'
 }
+# Hidden legacy values remain available to directory save/export adapters.
+foreach($field in @($uxFields|Where-Object {$_.key.StartsWith('ReportingSenior') -and $_.legacyHidden})){
+    [void](Control $f 109 ('rs'+$field.key) 10 10 100 100);$script:swiftControl.Visible=$false
+}
 $inputs=@(@('cboPaygrade','Evaluated paygrade',111),@('txtAsOf','As-of date (YYYY-MM-DD)',109),@('txtRSCA','Historical RSCA',109),@('txtTraitCount','Previous graded trait count (not reports)',109),@('txtTraitSum','Exact trait sum (optional)',109),@('txtSource','Source / note',109))
 for($i=0;$i -lt $inputs.Count;$i++){
     $item=$inputs[$i];$x=400+($i%2)*6500;$y=3250+[math]::Floor($i/2)*800

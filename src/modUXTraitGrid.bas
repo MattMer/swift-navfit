@@ -1,9 +1,12 @@
 Attribute VB_Name = "modUXTraitGrid"
 Option Explicit
+Private cacheWorkspace As DAO.Workspace
 Private cacheDB As DAO.Database
 Private cacheRows As DAO.Recordset
 Private cachePath As String
 Private loading As Boolean
+Private saving As Boolean
+Private queuedCells As Object
 Public Function UXGridClose() As Boolean
     loading = True
     On Error Resume Next
@@ -11,6 +14,9 @@ Public Function UXGridClose() As Boolean
     Set cacheRows = Nothing
     If Not cacheDB Is Nothing Then cacheDB.Close
     Set cacheDB = Nothing
+    If Not cacheWorkspace Is Nothing Then cacheWorkspace.Close
+    Set cacheWorkspace = Nothing
+    saving = False: Set queuedCells = Nothing
     If Len(cachePath) > 0 Then Kill cachePath
     If Len(cachePath) > 0 Then
         If Len(Dir$(cachePath)) = 0 Then cachePath = ""
@@ -24,7 +30,8 @@ Public Function UXGridLoad() As Boolean
     Set f.Recordset = Nothing
     UXGridClose
     cachePath = Environ$("TEMP") & "\Swift-NAVFIT-traits-" & Replace(NewIdentity(), "-", "") & ".accdb"
-    Set cacheDB = DBEngine.CreateDatabase(cachePath, dbLangGeneral, dbVersion120)
+    Set cacheWorkspace = DBEngine.CreateWorkspace("SwiftComparisonCache", "admin", "", dbUseJet)
+    Set cacheDB = cacheWorkspace.CreateDatabase(cachePath, dbLangGeneral, dbVersion120)
     sql = "CREATE TABLE PendingTraits (ReportID LONG PRIMARY KEY, SortOrdinal LONG, RevisionID LONG, Member TEXT(120), RowStatus TEXT(120), ObservationStatus TEXT(8), ITA TEXT(12)"
     For block = 33 To 39: sql = sql & ", Trait" & block & " TEXT(3)": Next
     sql = sql & ", PromotionRecommendation TEXT(20), AssignmentRecommendationA TEXT(255), AssignmentRecommendationB TEXT(255), PriorITA TEXT(12), PriorPromotion TEXT(30), PriorPeriod TEXT(32), PriorSource TEXT(255))": cacheDB.Execute sql, dbFailOnError
@@ -47,7 +54,7 @@ Public Function UXGridLoad() As Boolean
         Loop
         p.Close
         cacheRows!RowStatus = UXGridLockReason(id, r!RevisionID)
-        If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable - proposals only"
+        If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable - saves automatically"
         cacheRows.Update: r.MoveNext
     Loop
     r.Close
@@ -69,14 +76,14 @@ Public Function UXGridLockReason(ByVal id As Long, ByVal revision As Long) As St
     Dim snapshot As Long, groupID As Long
     If CurrentRevision(id) <> revision Then UXGridLockReason = "Saved report changed - reopen comparison": Exit Function
     If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then UXGridLockReason = "Archived - recover report to edit": Exit Function
-    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then UXGridLockReason = "Local approval / review lock - reopen report": Exit Function
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Approved" Then UXGridLockReason = "Review lock - reopen report": Exit Function
     snapshot = Nz(DLookup("GroupSnapshotID", "ComparisonSet", "SetID=" & Forms!frmUXComparison!txtMeeting), 0)
     groupID = Nz(DLookup("GroupID", "GroupSnapshot", "SnapshotID=" & snapshot), 0)
     If Nz(DLookup("Stamp", "GroupSnapshot", "SnapshotID=" & snapshot), "") <> GroupStamp(groupID) Then UXGridLockReason = "Group changed - reopen comparison"
 End Function
 Public Function UXGridCurrent() As Boolean
     Dim f As Access.Form, reason As String, block As Long
-    If loading Or cacheRows Is Nothing Then Exit Function
+    If loading Or saving Or cacheRows Is Nothing Then Exit Function
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
     If f.Recordset.EOF Then Exit Function
@@ -87,17 +94,61 @@ Public Function UXGridCurrent() As Boolean
     f!PromotionRecommendation.Locked = (Len(reason) > 0)
     f!AssignmentRecommendationA.Locked = (Len(reason) > 0)
     f!AssignmentRecommendationB.Locked = (Len(reason) > 0)
-    Forms!frmUXComparison!lblStatus.Caption = IIf(Len(reason) > 0, reason, "Edit cells directly. Changes are staged; Preview and Apply save reviewed revisions.")
+    Forms!frmUXComparison!lblStatus.Caption = IIf(Len(reason) > 0, reason, "Edit cells directly. Valid changes save automatically as report revisions.")
     UXGridCurrent = True
 End Function
-Public Function UXGridEdit(ByVal key As String) As Boolean
-    Dim f As Access.Form, value As Variant, reason As String, w As DAO.Workspace, started As Boolean, db As DAO.Database, before As Variant, proposal As Long, failure As String
+Public Function UXGridQueue(ByVal key As String) As Boolean
+    Dim f As Access.Form, identity As String
     On Error GoTo Failed
+    If loading Or saving Then Exit Function
+    Set f = Forms!frmUXComparison!uxTraitGrid.Form
+    If queuedCells Is Nothing Then Set queuedCells = CreateObject("Scripting.Dictionary")
+    identity = CStr(f!ReportID) & ":" & key
+    queuedCells(identity) = Array(CLng(f!ReportID), key, f.Controls(key).Value)
+    Forms!frmUXComparison.TimerInterval = 150
+    Forms!frmUXComparison!lblStatus.Caption = "Saving pending cell changes..."
+    UXGridQueue = True: Exit Function
+Failed:
+    Forms!frmUXComparison!lblStatus.Caption = "Queue cell save: " & Err.Number & " " & Err.Description
+End Function
+Public Function UXGridDrain() As Boolean
+    Dim pending As Object, item As Variant, cell As Variant, f As Access.Form, r As DAO.Recordset, ok As Boolean, failure As String
+    On Error GoTo Failed
+    If queuedCells Is Nothing Or saving Then UXGridDrain = True: Exit Function
+    Forms!frmUXComparison.TimerInterval = 0
+    Set pending = queuedCells: Set queuedCells = Nothing
+    Set f = Forms!frmUXComparison!uxTraitGrid.Form
+    'Finish Access's bound-cache update before entering any report transaction.
+    If f.Dirty Then f.Dirty = False
+    ok = True
+    For Each item In pending.Keys
+        cell = pending(item)
+        Set r = f.RecordsetClone: r.FindFirst "ReportID=" & cell(0)
+        If r.NoMatch Then Err.Raise vbObjectError + 4813, , "Pending report is no longer in the comparison."
+        f.Bookmark = r.Bookmark: r.Close
+        f.Controls(CStr(cell(1))) = cell(2)
+        If Not UXGridEdit(CStr(cell(1))) Then ok = False: Exit For
+    Next
+    If Not ok Then
+        failure = Forms!frmUXComparison!lblStatus.Caption
+        UXGridLoad
+        Forms!frmUXComparison!lblStatus.Caption = failure
+    End If
+    UXGridDrain = ok: Exit Function
+Failed:
+    Forms!frmUXComparison!lblStatus.Caption = "Pending cell save: " & Err.Number & " " & Err.Description
+End Function
+Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As Long = 0) As Boolean
+    Dim f As Access.Form, value As Variant, reason As String, w As DAO.Workspace, started As Boolean, db As DAO.Database, before As Variant, proposal As Long, failure As String, committed As Boolean, stage As String, expectedRevision As Long, baselineRead As Boolean
+    If loading Or saving Then Exit Function
+    On Error GoTo Failed
+    stage = "Read edited cell"
     Set f = Forms!frmUXComparison!uxTraitGrid.Form: value = f.Controls(key).Value
     If Not IsTraitKey(key) And key <> "PromotionRecommendation" And key <> "AssignmentRecommendationA" And key <> "AssignmentRecommendationB" Then Err.Raise vbObjectError + 4812, , "Only traits, promotion and career recommendations can be edited here."
     If key = "AssignmentRecommendationA" Or key = "AssignmentRecommendationB" Then
         If Len(Nz(value, "")) > 20 Then Err.Raise vbObjectError + 4811, , "Career recommendations allow up to 20 characters."
     End If
+    stage = "Check edit guards"
     reason = UXGridLockReason(f!ReportID, f!RevisionID)
     If key = "PromotionRecommendation" Then
         Dim validated As Variant
@@ -107,24 +158,65 @@ Public Function UXGridEdit(ByVal key As String) As Boolean
     If Left$(key, 5) = "Trait" And Not IsNull(value) Then
         If Len(value) > 0 And InStr(1, ";NOB;1.0;2.0;3.0;4.0;5.0;", ";" & value & ";", vbBinaryCompare) = 0 Then Err.Raise vbObjectError + 4811, , "Choose NOB or a whole mark from 1.0 to 5.0."
     End If
+    stage = "Read saved baseline"
+    expectedRevision = CLng(f!RevisionID)
+    before = MajorRevisionValue(expectedRevision, key): baselineRead = True
+    If SameFieldValue(before, value) Then UXGridEdit = True: Exit Function
+    Dim reportID As Long, groupID As Long, snapshot As Long, newSet As Long, revision As Long, changes As Object
+    reportID = f!ReportID
+    snapshot = Nz(DLookup("GroupSnapshotID", "ComparisonSet", "SetID=" & Forms!frmUXComparison!txtMeeting), 0)
+    groupID = Nz(DLookup("GroupID", "GroupSnapshot", "SnapshotID=" & snapshot), 0)
+    saving = True
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then
+        If reopenDecision = 0 Then reopenDecision = MsgBox("This report has a local approval. Set it back to In-Work and save this change? The approval will remain in history.", vbYesNo + vbQuestion, "Reopen approved report")
+        If reopenDecision <> vbYes Then
+            f.Undo: saving = False: UXGridEdit = False: Exit Function
+        End If
+    End If
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add key, value
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
-    w.BeginTrans: started = True
-    'Supersede only this UI session's current field proposal. Prior values remain auditable.
-    db.Execute "UPDATE MeetingProposal SET ProposalState='Superseded' WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " AND ReportID=" & f!ReportID & " AND FieldKey=" & QuoteSQL(key) & " AND ProposalState='Proposed'", dbFailOnError
-    before = MajorRevisionValue(f!RevisionID, key)
-    If Not SameFieldValue(before, value) Then proposal = ProposeMeetingField(Forms!frmUXComparison!txtMeeting, f!ReportID, key, value)
+    stage = "Finish comparison cache edit"
     If f.Dirty Then f.Dirty = False
-    w.CommitTrans: started = False
+    stage = "Begin save transaction"
+    w.BeginTrans: started = True
+    stage = "Reopen local approval"
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then ReopenApprovedReport reportID, "Contributor changed " & key & " in group members"
+    stage = "Save report revision"
+    Call CommitSavedFields(reportID, expectedRevision, changes, "Automatic group member cell save: " & key)
+    revision = CurrentRevision(reportID)
+    stage = "Refresh group baseline"
+    snapshot = FreezeSummaryGroup(groupID, "Comparison refreshed after automatic cell save")
+    stage = "Refresh comparison baseline"
+    newSet = CreateComparisonSet(snapshot, "Group members - automatic save")
+    stage = "Flush edited comparison row"
+    If f.Dirty Then f.Dirty = False
+    w.CommitTrans: started = False: committed = True
+    stage = "Refresh saved row"
+    Forms!frmUXComparison!txtMeeting = newSet
+    f!RevisionID = revision: f!RowStatus = "Saved automatically": If f.Dirty Then f.Dirty = False
+    stage = "Refresh averages"
     UXGridRefreshAverages
+    stage = "Refresh comparison preview"
     UXRefreshComparisonPreview
-    Forms!frmUXComparison!lblStatus.Caption = "Cell change staged. Saved reports are unchanged; preview before applying."
-    UXGridEdit = True: Exit Function
+    Forms!frmUXComparison!lblStatus.Caption = "Saved automatically at " & Format$(Now(), "h:nn:ss AM/PM")
+    saving = False: UXGridEdit = True: Exit Function
 Failed:
-    failure = Err.Description
+    failure = stage & ": " & Err.Number & " " & Err.Description
+    On Error Resume Next
     If started Then w.Rollback
+    saving = False
+    If committed Then
+        Forms!frmUXComparison!lblStatus.Caption = "Report saved, but the comparison refresh failed: " & failure & ". Close and reopen the comparison."
+        UXGridEdit = True: Exit Function
+    End If
     On Error Resume Next
     f.Undo
-    Forms!frmUXComparison!lblStatus.Caption = failure & " Cell change was not staged."
+    If baselineRead Then
+        f.Controls(key) = before: f!RevisionID = expectedRevision
+        If f.Dirty Then f.Dirty = False
+        UXGridRefreshAverages
+    End If
+    Forms!frmUXComparison!lblStatus.Caption = failure & " Cell change was not saved."
 End Function
 Public Function UXGridRefreshAverages() As Boolean
     Dim r As DAO.Recordset, block As Long, count As Long, sum As Double, rowCount As Long, rowSum As Double, value As String, nob As Long
@@ -144,7 +236,7 @@ Public Function UXGridRefreshAverages() As Boolean
         r.Update: sum = sum + rowSum: count = count + rowCount: r.MoveNext
     Loop
     r.Close
-    Forms!frmUXComparison!uxGridAverage.Caption = "Pending group trait average: " & IIf(count > 0, Format$(sum / IIf(count = 0, 1, count), "0.00"), "Unavailable") & " | " & count & " numeric traits | " & nob & " whole-report NOB excluded"
+    Forms!frmUXComparison!uxGridAverage.Caption = "Group trait average: " & IIf(count > 0, Format$(sum / IIf(count = 0, 1, count), "0.00"), "Unavailable") & " | " & count & " numeric traits | " & nob & " whole-report NOB excluded"
     Forms!frmUXComparison!uxTraitGrid.Form.Refresh
     UXGridRefreshAverages = True
 End Function
@@ -175,10 +267,12 @@ Public Function UXGridViewport() As Boolean
         End If
     Next
     f.Width = usable: f.Section(acHeader).Height = IIf(usable < 9000, 1500, 950)
+    Forms!frmUXComparison!uxGroupContext = Nz(MajorScalar("SELECT g.GroupID FROM GroupSnapshot AS g INNER JOIN ComparisonSet AS c ON g.SnapshotID=c.GroupSnapshotID WHERE c.SetID=" & Nz(Forms!frmUXComparison!txtMeeting, 0)), 0)
     UXGridViewport = True
 End Function
 
 Public Function UXGridUnload(ByVal f As Access.Form) As Boolean
+    UXGridDrain
     loading = True
     Set f!uxTraitGrid.Form.Recordset = Nothing
     UXGridClose
@@ -191,6 +285,7 @@ End Function
 Public Function UXCloseComparison() As Boolean
     DoCmd.Close acForm, "frmUXComparison", acSaveNo
     If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then
+        Forms!frmMajorWorkbench.Visible = True
         Forms!frmMajorWorkbench.SetFocus
     Else
         OpenScreen "frmMajorWorkbench"

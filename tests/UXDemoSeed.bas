@@ -5,6 +5,7 @@ Private Function DemoReport(ByVal kind As String, ByVal member As String, ByVal 
     Dim id As Long, changes As Object, key As Variant, marks As Variant, i As Long
     id = CommitDraft(0, kind, "DEMO - " & member, member, #1/1/2026#, #9/30/2026#, "Synthetic practice report. Change any values to explore the app.", "Create synthetic demo", "SYNTHETIC EXAMPLE ONLY. Led a practice team, completed training milestones and supported a fictional command. Replace this text while exploring the editor.")
     Set changes = CreateObject("Scripting.Dictionary")
+    changes.Add "CommandEmployment", "SYNTHETIC COMMAND: Completed training exercises and fictional deployment milestones."
     changes.Add "OfficialName", UCase$(member): changes.Add "RankRate", rank
     changes.Add "MemberSSN", "0000000" & Format$(number, "00")
     changes.Add "UnitUIC", "12345": changes.Add "ShipStation", "DEMO COMMAND"

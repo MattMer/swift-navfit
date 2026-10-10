@@ -1,6 +1,10 @@
 Attribute VB_Name = "RecoveryHarness"
 Option Explicit
 Private checks As Long
+Private timerError As String
+Public Function RecoveryTimerError() As String
+    RecoveryTimerError = timerError
+End Function
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 950, , message
     checks = checks + 1
@@ -25,11 +29,11 @@ Public Function PrepareRecovery() As String
     checks = 0: Call ConfigureWorkspace("SYNTHETIC RECOVERY", "Synthetic Tester")
     id = CommitDraft(0, "EVAL", "Saved title", "Synthetic", Null, Null, "Saved notes", "Initial", "Saved narrative")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Set f = Forms!frmEditor
-    Check f.TimerInterval = 30000 And f.OnTimer = "=CheckpointEditor()", "Automatic checkpoint not wired"
+    Check (f.TimerInterval = 30000 And f.OnTimer = "=CheckpointEditor()") Or (f.TimerInterval = 1000 And f.OnTimer = "=UXLiveTimer()"), "Automatic checkpoint not wired"
     Check CheckpointEditor(), "Initial checkpoint check failed"
     Check DCount("*", "RecoveryDraft") = 0, "Untouched editor created recovery"
     text = "Pending narrative" & vbCrLf & String$(7000, "x")
-    f!txtTitle = "Pending title": f!txtOfficialComments = text: f!txtStart = "not-a-date"
+    f!txtCommandEmployment = "Raw Block 28 recovery text": f!txtTitle = "Pending title": f!txtOfficialComments = text: f!txtStart = "not-a-date"
     Check CheckpointEditor(), "Checkpoint failed"
     Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Checkpoint committed revision"
     Check DLookup("Title", "Report", "ReportID=" & id) = "Saved title", "Checkpoint changed report"
@@ -58,30 +62,40 @@ End Function
 
 Public Function PrepareTimerCheck() As Boolean
     Dim id As Long
+    On Error GoTo Failed
     id = DLookup("ReportID", "Report")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.SetFocus
-    If UXHasControl(Forms!frmEditor, "uxSection") Then Call UXSelectSection(7)
+    If UXHasControl(Forms!frmEditor, "uxSection") Then Call UXSelectSection(0)
     If UXSurfaceAvailable() Then
         Forms!frmEditor!uxFieldSurface.SetFocus
-        Forms!frmEditor!uxFieldSurface.Form!txtTitle.SetFocus
-        Forms!frmEditor!uxFieldSurface.Form!txtTitle.Text = "Timer captured active text"
+        Forms!frmEditor!uxFieldSurface.Form!txtOfficialName.SetFocus
+        Forms!frmEditor!uxFieldSurface.Form!txtOfficialName.Text = "Timer captured active text"
     Else
-        Forms!frmEditor!txtTitle.SetFocus
-        Forms!frmEditor!txtTitle.Text = "Timer captured active text"
+        Forms!frmEditor!txtOfficialName.SetFocus
+        Forms!frmEditor!txtOfficialName.Text = "Timer captured active text"
     End If
+    Forms!frmEditor.OnTimer = "=CheckpointEditor()"
     Forms!frmEditor.TimerInterval = 100
     PrepareTimerCheck = True
+    Exit Function
+Failed:
+    timerError = "Timer preparation: " & Err.Number & " " & Err.Description
 End Function
 Public Function FinishTimerCheck() As Boolean
     Dim id As Long
+    On Error GoTo Failed
     id = Nz(Forms!frmEditor!txtReportID, 0)
-    If Nz(DLookup("DraftTitle", "RecoveryDraft", "ReportID=" & id), "") <> "Timer captured active text" Then Err.Raise vbObjectError + 951, , "Timer did not capture active textbox text."
-    Forms!frmEditor.TimerInterval = 30000
+    If Nz(DLookup("OfficialName", "RecoveryDraft", "ReportID=" & id), "") <> "Timer captured active text" Then Err.Raise vbObjectError + 951, , "Timer did not capture active textbox text."
+    Forms!frmEditor.OnTimer = "=UXLiveTimer()"
+    Forms!frmEditor.TimerInterval = 1000
     Call DiscardEditorCheckpoint()
     ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
     Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     FinishTimerCheck = True
+    Exit Function
+Failed:
+    timerError = "Timer verification: " & Err.Number & " " & Err.Description
 End Function
 Public Function VerifyRecovery() As String
     Dim recoveryID As Long, id As Long, f As Form, text As String, other As Long
@@ -94,6 +108,7 @@ Public Function VerifyRecovery() As String
     Set f = Forms!frmEditor
     Check Screen.ActiveForm.Name = "frmEditor", "Recovered editor not active"
     Check f!txtTitle = "Pending title v2", "Latest title lost"
+    Check f!txtCommandEmployment = "Raw Block 28 recovery text", "Block 28 recovery lost"
     Check f!txtStart = "not-a-date", "Incomplete date lost"
     text = "Pending narrative" & vbCrLf & String$(7000, "x")
     Check StrComp(f!txtOfficialComments, text, vbBinaryCompare) = 0, "Long narrative lost"

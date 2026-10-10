@@ -2,15 +2,17 @@ Attribute VB_Name = "modMeetings"
 Option Compare Binary
 Option Explicit
 Public Function CreateComparisonSet(ByVal snapshotID As Long, ByVal title As String) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, s As DAO.Recordset, m As DAO.Recordset, id As Long, ordinal As Long, w As DAO.Workspace, failure As Long, message As String
     If Len(Trim$(title)) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 4400, , "Enter a meeting title."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
-    Set m = CurrentDb.OpenRecordset("SELECT * FROM GroupSnapshotMember WHERE SnapshotID=" & snapshotID & " ORDER BY ReportID", dbOpenSnapshot)
+    Set m = ownedDB.OpenRecordset("SELECT * FROM GroupSnapshotMember WHERE SnapshotID=" & snapshotID & " ORDER BY ReportID", dbOpenSnapshot)
     If m.EOF Then Err.Raise vbObjectError + 4401, , "Select a populated group snapshot."
-    Set r = CurrentDb.OpenRecordset("ComparisonSet", dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("ComparisonSet", dbOpenDynaset)
     r.AddNew: r!GroupSnapshotID = snapshotID: r!Title = title: r!CreatedBy = MajorAuthor(): r!CreatedAt = Now(): r.Update: r.Bookmark = r.LastModified: id = r!SetID: r.Close
-    Set s = CurrentDb.OpenRecordset("ComparisonMember", dbOpenDynaset)
+    Set s = ownedDB.OpenRecordset("ComparisonMember", dbOpenDynaset)
     Do While Not m.EOF
         ordinal = ordinal + 1: s.AddNew: s!SetID = id: s!ReportID = m!ReportID: s!RevisionID = m!RevisionID: s!SortOrdinal = ordinal: s.Update: m.MoveNext
     Loop
@@ -26,6 +28,8 @@ Failed:
     Err.Raise failure, "CreateComparisonSet", message
 End Function
 Public Function ProposeMeetingField(ByVal setID As Long, ByVal reportID As Long, ByVal fieldKey As String, ByVal value As Variant) As Long
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, revision As Long, fields As Object, author As Long, w As DAO.Workspace, operation As Long, failure As Long, message As String
     author = MajorAuthor()
     revision = Nz(MajorScalar("SELECT RevisionID FROM ComparisonMember WHERE SetID=" & setID & " AND ReportID=" & reportID), 0)
@@ -34,7 +38,7 @@ Public Function ProposeMeetingField(ByVal setID As Long, ByVal reportID As Long,
     If Not fields.Exists(fieldKey) Or fieldKey = "FormKind" Then Err.Raise vbObjectError + 4403, , "Unknown or immutable field."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
-    Set r = CurrentDb.OpenRecordset("MeetingProposal", dbOpenDynaset)
+    Set r = ownedDB.OpenRecordset("MeetingProposal", dbOpenDynaset)
     r.AddNew: r!SetID = setID: r!ReportID = reportID: r!BaseRevision = revision: r!FieldKey = fieldKey: r!ValueText = value: r!IsNullValue = IsNull(value): r!ProposalState = "Proposed"
     r.Update: r.Bookmark = r.LastModified: ProposeMeetingField = r!ProposalID: r.Close
     operation = BeginOperation("Meeting field proposal", "Proposal " & ProposeMeetingField & "; meeting " & setID & "; report " & reportID & "; saved revision " & revision & "; field " & fieldKey)
@@ -49,9 +53,13 @@ Failed:
     Err.Raise failure, "ProposeMeetingField", message
 End Function
 Public Sub ApplyMeetingProposal(ByVal proposalID As Long)
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     ApplyMeetingProposals CStr(proposalID)
 End Sub
 Public Sub SetMeetingOrder(ByVal setID As Long, ByVal reportsCSV As String)
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim ids As Object, key As Variant, ordinal As Long, w As DAO.Workspace, failure As Long, message As String, operation As Long
     Set ids = MajorIDs(reportsCSV)
     If ids.Count <> DCount("*", "ComparisonMember", "SetID=" & setID) Then Err.Raise vbObjectError + 4406, , "Specify every frozen meeting member exactly once."
@@ -60,7 +68,7 @@ Public Sub SetMeetingOrder(ByVal setID As Long, ByVal reportsCSV As String)
     For Each key In ids.Keys
         If DCount("*", "ComparisonMember", "SetID=" & setID & " AND ReportID=" & ids(key)) <> 1 Then Err.Raise vbObjectError + 4407, , "Order contains a report outside this meeting."
         ordinal = ordinal + 1
-        CurrentDb.Execute "UPDATE ComparisonMember SET SortOrdinal=" & ordinal & " WHERE SetID=" & setID & " AND ReportID=" & ids(key), dbFailOnError
+        ownedDB.Execute "UPDATE ComparisonMember SET SortOrdinal=" & ordinal & " WHERE SetID=" & setID & " AND ReportID=" & ids(key), dbFailOnError
     Next
     operation = BeginOperation("Meeting display order", "Meeting " & setID & ": " & reportsCSV)
     FinishOperation operation, "Completed", "Display order recorded; recommendations unchanged."
@@ -73,6 +81,8 @@ Failed:
     Err.Raise failure, "SetMeetingOrder", message
 End Sub
 Public Sub ApplyMeetingProposals(ByVal proposalIDsCSV As String)
+    Dim ownedDB As DAO.Database
+    Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, changes As Object, w As DAO.Workspace, failure As Long, message As String
     Dim ids As Object, key As Variant, reports As Object, report As Variant, setID As Long, snapshotID As Long, groupID As Long, expected As Object, db As DAO.Database
     Set ids = MajorIDs(proposalIDsCSV): Set reports = CreateObject("Scripting.Dictionary"): Set expected = CreateObject("Scripting.Dictionary")

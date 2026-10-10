@@ -2,11 +2,15 @@
 
 A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
 
-**Latest prerelease: 0.24.0-preview · schema 23.** Download the blank workspace or synthetic demo from the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.24.0-preview). Includes the native workspace redesign, summary-group tools, command directory and prior evaluations, contributor notes, expanded rate-filtered narratives and cited live validation. Supported NAVFIT report/group exports and selected-group imports retain provenance; single-report returned files use three-way reconciliation. Full policy coverage, returned-group reconciliation and exact printed fit remain pending.
+**Previous versioned prerelease: 0.24.0-preview · schema 23.** Download the blank workspace or synthetic demo from the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.24.0-preview). Includes the native workspace redesign, summary-group tools, command directory and prior evaluations, contributor notes, expanded rate-filtered narratives and cited live validation. Supported NAVFIT report/group exports and selected-group imports retain provenance; single-report returned files use three-way reconciliation. Full policy coverage, returned-group reconciliation and exact printed fit remain pending.
 
 See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups, reviewed defaults/batches, multi-step routes, meeting proposals, limited Navy checks, structured PDF import and guided backup/restore.
 
 See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](planning/CURRENT_STATE.md) and [policy review/recommendations](planning/NARRATIVE_POLICY_REVIEW_2026-10-06.md) for verified behavior and remaining work.
+
+## Current development baseline
+
+**r98 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the blank deployment and fresh synthetic demo from the [baseline prerelease](https://github.com/MattMer/swift-navfit/releases/tag/baseline-2026-10-10-r98). It includes the user-confirmed comparison-save repair, author UI refinements, Block 28, date selectors, all 35 directory columns and reviewed RUAD import/refresh. See [baseline scope and outstanding work](planning/BASELINE_R98_2026-10-10.md) and [artifact verification](planning/BASELINE_R98_VERIFICATION.json). This development baseline supersedes older local test candidates; 0.24.0-preview remains the previous versioned prerelease.
 
 ## UI redesign under review
 
@@ -14,7 +18,7 @@ The [r26 PDF-import notes](planning/PDF_IMPORT_R26.md) describe expanded mapping
 
 Start with the [native workspace guide](planning/UX_WORKSPACE_GUIDE.md) for current workflows and the [current state](planning/CURRENT_STATE.md) for exact native artifacts and verification limits. The [candidate guide](planning/UX_CANDIDATE_GUIDE.md) explains blank versus demo files and source-preserving migration.
 
-The working source is 0.23.0-preview, schema 21. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; the prior 0.21.0 checkpoint is retained. Visual, keyboard, screen-reader and scaling acceptance remain pending.
+The working source is 0.25.0-dev, schema 25. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; the prior 0.21.0 checkpoint is retained. Visual, keyboard, screen-reader and scaling acceptance remain pending.
 
 Build reviewable native previews with `scripts/build-preview.ps1`. They include synthetic reports, groups, review work, reporting seniors/RSCA and recovery examples. Each preview has a unique `UI_Demo` filename and a visibly synthetic command name. Demo seeding refuses any populated workspace. Use `scripts/build.ps1` for separate blank templates and release verification; never migrate operational data into a seeded demo.
 
@@ -30,8 +34,8 @@ See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic
 - Counseling date/name, physical-readiness details/date and billet subcategory in their official report sections, with reference suggestions.
 - Assignment recommendations A/B, retention selections and member-statement selections, distinct from promotion and review acceptance.
 - Reporting-senior identifiers/contact details and rater/senior-rater names and dates.
-- Separate structured name parts for members, reporting seniors and counselors, with explicit initials and member suffix.
-- Organizational folders, search, saved library views and bulk folder moves with guarded undo.
+- Familiar full-name fields for members, reporting seniors and counselors; structured export fields remain in the background.
+- Summary-group filtering and report organization, search and saved library views; legacy folder storage remains for compatibility.
 - Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
 - Automatic/manual pending-editor checkpoints and recovery.
 - Full supported-value NAVFIT import, single-report export, frozen baselines, three-way returned-file conflicts and retained native provenance. See [r27 scope and proof](planning/NAVFIT_EXCHANGE_R27.md).

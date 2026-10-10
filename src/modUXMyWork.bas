@@ -128,6 +128,10 @@ Public Function UXLoadWorkQueue() As Boolean
     If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
     Set f = Forms!frmMyWork
     If Not UXHasControl(f, "lstWork") Then Exit Function
+    If UXHasControl(f, "uxContributor") Then
+        f!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+        f!uxContributor = MajorAuthor()
+    End If
     selected = Nz(f!lstWork, "")
     f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False))
     f!lstWork = Null
@@ -215,6 +219,14 @@ Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal he
     Set f = Forms!frmMyWork
     If Not UXHasControl(f, "lstWork") Then Exit Function
     Call UXResizeWorkspace("frmMyWork", width, height)
+    If UXHasControl(f, "uxContributor") And IIf(width > 0, width, f.InsideWidth) < 12000 Then
+        f!uxContributorLabel.Left = f!lstWork.Left: f!uxContributorLabel.Top = f!lstWork.Top - 1550
+        f!uxContributorLabel.Width = f!lstWork.Width
+        f!uxContributor.Left = f!lstWork.Left: f!uxContributor.Top = f!lstWork.Top - 1200
+        f!uxContributor.Width = f!lstWork.Width
+        f!chkAll.Top = f!lstWork.Top - 700: f!lblAll.Top = f!chkAll.Top
+        f!uxWorkStatus.Top = f!lstWork.Top - 350: f!uxWorkStatus.Height = 300
+    End If
     size = f!lstWork.Width - 350: columns = "0;0;0;0;0"
     For Each part In Array(0.28, 0.15, 0.16, 0.1, 0.14, 0.17)
         columns = columns & ";" & CLng(size * CDbl(part))
