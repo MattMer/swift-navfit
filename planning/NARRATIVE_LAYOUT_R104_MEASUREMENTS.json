@@ -1,0 +1,31 @@
+{
+  "Source": "C:/Users/Matt/Downloads/NAVFIT98A Evaluation Page 2.pdf",
+  "PageSizePoints": [
+    612,
+    792
+  ],
+  "NarrativeFont": "Courier New",
+  "NarrativePointSize": 9,
+  "FilledLines": 18,
+  "MedianBaselineSpacingPoints": 10.2,
+  "MaximumObservedLineCharacters": 92,
+  "PrintRectanglesSource": "NAVFIT98A 2.2.0.332 inspected default drawing constants; EVAL sample corroborates default font/spacing",
+  "EditorProfiles": {
+    "EVAL": {
+      "FontPoints": 9,
+      "WidthTwips": 10476,
+      "HeightTwips": 3924
+    },
+    "FITREP": {
+      "FontPoints": 9,
+      "WidthTwips": 10476,
+      "HeightTwips": 3924
+    },
+    "CHIEFEVAL": {
+      "FontPoints": 10,
+      "WidthTwips": 11124,
+      "HeightTwips": 1836
+    }
+  },
+  "Limitations": "Access wrapping differs from GDI+; no equivalent CHIEFEVAL/FITREP printed samples or print-fit certification."
+}

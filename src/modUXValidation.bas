@@ -25,6 +25,7 @@ Public Function UXLivePaint() As Boolean
     On Error GoTo Failed
     paintCount = paintCount + 1
     busy = True: Set pending = EditorPendingFields()
+    Call UXNarrativeStatus()
     signature = Nz(Forms!frmEditor!txtReportID, 0) & "|" & Date & "|"
     For Each key In pending.Keys
         signature = signature & IIf(IsNull(pending(key)), "N", "V") & Len(Nz(pending(key), "")) & ":" & Nz(pending(key), "")

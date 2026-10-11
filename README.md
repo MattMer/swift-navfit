@@ -10,9 +10,9 @@ See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](
 
 ## Current development baseline
 
-**r103 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the [blank deployment prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103). This build includes direct editable group Members, safer failed-cell retry/discard, reduced snapshot creation, cached display calculations and change-driven validation/recovery. It also documents 117 VBA functions/subroutines. All 48 user-data tables are empty. See [deployment notes and verification limits](planning/DEPLOYMENT_R103_2026-10-10.md) and [artifact checksum](planning/DEPLOYMENT_R103_VERIFICATION.json).
+**r104 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the [blank workspace and synthetic demo](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104). This build adds fixed, form-shaped comments fields with locked plain-text Courier New, consistent margins, live character counts and narrow-view wrapping disclosure. Overflow remains scrollable and fully saved. The demo includes Jamie Taylor's EVAL with the supplied synthetic Lorem Ipsum example. See [narrative layout and limitations](planning/NARRATIVE_LAYOUT_R104_2026-10-10.md) and [artifact verification](planning/NARRATIVE_LAYOUT_R104_VERIFICATION.json).
 
-The [r98 baseline](https://github.com/MattMer/swift-navfit/releases/tag/baseline-2026-10-10-r98) retains a synthetic demo. Larger synthetic groups were measured locally at 25/50/100 members per report type; see [scale results](planning/SCALE_R102_2026-10-10.md). Report editor startup is the next performance target. Full printing, native round-trip and physical accessibility acceptance remain outstanding.
+It retains [r103's single-user performance and save-recovery improvements](planning/DEPLOYMENT_R103_2026-10-10.md). Larger synthetic groups were measured locally at 25/50/100 members per report type; see [scale results](planning/SCALE_R102_2026-10-10.md). Report editor startup is the next performance target. Exact printed wrapping, native round-trip and physical accessibility acceptance remain outstanding.
 
 ## UI redesign under review
 
@@ -49,9 +49,9 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the **blank r103 deployment** from the [current prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
+Download the **blank r104 deployment** from the [current prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
 
-This is an empty development build. Use the older r98 release for a synthetic demo. Preserve existing workspaces and migrate their data into a separate blank file with an explicit `-TemplatePath`. Access Runtime and x86 environments have not been verified.
+The release includes a separate blank workspace and synthetic demo. Use the demo for practice and the blank for a new workspace. Preserve existing workspaces and migrate their data into a separate blank file with an explicit `-TemplatePath`. Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 

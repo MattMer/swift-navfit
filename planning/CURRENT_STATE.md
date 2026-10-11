@@ -1,3 +1,7 @@
+## Published r104 narrative editor prerelease (10 October 2026)
+
+Fixed Courier New/plain-text comments geometry by report type; supplied EVAL PDF measured. Open output/ux/Swift_NAVFIT_UI_Demo_2026-10-10-r104.accdb for the synthetic Lorem Ipsum example; matching truly blank is Swift_NAVFIT_UI_Blank_2026-10-10-r104-clean.accdb. Existing locally populated r103 preserved. See [layout details and limits](NARRATIVE_LAYOUT_R104_2026-10-10.md). App/schema unchanged; r104 prerelease includes verified blank and synthetic demo. Older releases remain available.
+
 ## Current blank deployment — r103 (10 October 2026)
 
 Latest blank artifact: output/ux/Swift_NAVFIT_Deployment_2026-10-10-r103-blank.accdb. App 0.25.0-dev/schema 25; includes r99–r102 efficiency/recovery work and function comments. All 48 user-data tables empty; setup startup and exact-file scratch tests verified. See [deployment notes](DEPLOYMENT_R103_2026-10-10.md). Earlier entries below are historical checkpoints.

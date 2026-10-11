@@ -1,3 +1,7 @@
+## 2026-10-10 - standardized comments input r104
+
+Measured the supplied printed EVAL example and implemented fixed report-shaped comments input, locked plain-text Courier New and margins, narrow-view disclosure, and active-text counts. Overflow preserved. 129 native geometry/save assertions passed. Synthetic demo contains Lorem Ipsum; separate clean blank prepared without changing populated local r103. Exact printed fit remains pending. See NARRATIVE_LAYOUT_R104_2026-10-10.md.
+
 ## 2026-10-10 - r103 blank deployment prepared
 
 Built latest source into a separate blank r103 file, compiled, verified empty user tables and setup startup, then passed exact-file scratch checks for Members, pending saves, approval retry and change-driven timers. README, deployment notes, verification and manifest updated for GitHub publication. Existing deployments/workspaces preserved.

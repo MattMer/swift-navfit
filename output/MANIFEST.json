@@ -1,17 +1,22 @@
 {
-  "Baseline": "r103",
+  "Baseline": "r104",
   "Date": "2026-10-10",
   "AppVersion": "0.25.0-dev",
   "SwiftSchemaVersion": 25,
-  "Status": "Blank development prerelease; exact-artifact targeted verification passed",
-  "ReleaseURL": "https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103",
+  "Status": "Narrative editor development prerelease; targeted artifact verification passed",
+  "ReleaseURL": "https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104",
   "Artifacts": [
     {
-      "Name": "Swift_NAVFIT_Deployment_2026-10-10-r103-blank.accdb",
+      "Name": "Swift_NAVFIT_UI_Blank_2026-10-10-r104-clean.accdb",
       "Bytes": 14843904,
-      "SHA256": "BA0ECB43DE1D91D003AC7E119BF765DB63C66FC36D0A1E78D2DACB29634648F0"
+      "SHA256": "72844626334749D47857886648676218CB67F4D3CC260206B808E69738FE443A"
+    },
+    {
+      "Name": "Swift_NAVFIT_UI_Demo_2026-10-10-r104.accdb",
+      "Bytes": 14811136,
+      "SHA256": "885FD7F954022189308A0C1FF45FBC1491E101A378238C1550218EF18FBDD703"
     }
   ],
-  "Verification": "planning/DEPLOYMENT_R103_VERIFICATION.json",
-  "PreviousReleaseURL": "https://github.com/MattMer/swift-navfit/releases/tag/baseline-2026-10-10-r98"
+  "Verification": "planning/NARRATIVE_LAYOUT_R104_VERIFICATION.json",
+  "PreviousReleaseURL": "https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103"
 }

@@ -1,0 +1,28 @@
+{
+  "Candidate": "r104",
+  "AppVersion": "0.25.0-dev",
+  "Schema": 25,
+  "Artifacts": [
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Blank_2026-10-10-r104-clean.accdb",
+      "SHA256": "72844626334749D47857886648676218CB67F4D3CC260206B808E69738FE443A",
+      "Bytes": 14843904
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-10-r104.accdb",
+      "SHA256": "885FD7F954022189308A0C1FF45FBC1491E101A378238C1550218EF18FBDD703",
+      "Bytes": 14811136
+    }
+  ],
+  "Checks": [
+    "Native compile: blank and demo",
+    "129 narrative geometry/font/viewport/overflow/save/reopen assertions on scratch copies",
+    "39 existing narrative revision/restore assertions on clean blank",
+    "Clean blank startup: frmSetup and AutoExec",
+    "48 user-data tables empty",
+    "28 targeted refresh/idle/navigation assertions",
+    "Active OnChange validation and 30-second recovery checkpoint"
+  ],
+  "Example": "Jamie Taylor EVAL; 1606-character synthetic Lorem Ipsum narrative",
+  "Limitations": "No physical UI/scaling or exact NAVFIT printed-fit proof; CHIEFEVAL/FITREP rely on inspected defaults"
+}

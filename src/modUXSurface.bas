@@ -4,6 +4,47 @@ Option Explicit
 Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
+
+' Reference dimensions are NAVFIT default print rectangles, converted from
+' hundredths of an inch to twips. Margins sit outside that text rectangle.
+' EVAL's 9-point default is confirmed by the supplied printed PDF; other types
+' use inspected NAVFIT defaults pending equivalent sample-output verification.
+Public Function UXNarrativeWidth(ByVal kind As String) As Long
+    UXNarrativeWidth = IIf(kind = "CHIEFEVAL", 10944, 10296) + 180
+End Function
+Public Function UXNarrativeHeight(ByVal kind As String) As Long
+    UXNarrativeHeight = IIf(kind = "CHIEFEVAL", 1656, 3744) + 180
+End Function
+Public Function UXNarrativeFontSize(ByVal kind As String) As Long
+    UXNarrativeFontSize = IIf(kind = "CHIEFEVAL", 10, 9)
+End Function
+' Keep narrative typography and geometry independent of the general field grid.
+' Smaller viewports retain every value and explicitly disclose changed wrapping.
+Private Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, ByVal available As Long)
+    With c
+        .FontName = "Courier New": .FontSize = UXNarrativeFontSize(kind)
+        .FontBold = False: .FontItalic = False: .FontUnderline = False
+        .TextFormat = 0: .TextAlign = 1: .LineSpacing = 0
+        .LeftMargin = 90: .RightMargin = 90: .TopMargin = 90: .BottomMargin = 90
+        .Width = UXNarrativeWidth(kind)
+        If .Width > available Then .Width = available
+        .Height = UXNarrativeHeight(kind)
+        .ScrollBars = 2: .EnterKeyBehavior = True
+        .ControlTipText = "Plain text; locked Courier New. Overflow is retained. Verify final wrapping in NAVFIT98A."
+    End With
+End Sub
+' Refresh only the narrative caption, including active text not yet posted to Value.
+Public Function UXNarrativeStatus() As Boolean
+    If Not UXSurfaceAvailable() Then Exit Function
+    Dim f As Access.Form, kind As String, caption As String
+    Set f = Surface(): kind = Nz(Forms!frmEditor!cboKind, "EVAL")
+    caption = Len(Nz(UXSurfacePending("txtOfficialComments", Forms!frmEditor!txtOfficialComments), "")) & " characters | Courier New " & UXNarrativeFontSize(kind) & " pt"
+    If f!txtOfficialComments.Width < UXNarrativeWidth(kind) Then caption = caption & " | Narrow view: wrapping differs"
+    caption = caption & ". Overflow retained; verify final NAVFIT print."
+    If f!uxNarrativeCount.Caption <> caption Then f!uxNarrativeCount.Caption = caption
+    UXNarrativeStatus = True
+End Function
+
 Private Function Surface() As Access.Form
     Set Surface = Forms!frmEditor!uxFieldSurface.Form
 End Function
@@ -163,7 +204,7 @@ Public Function UXSurfaceRefresh() As Boolean
             End If
         End If
     Next
-    If UXHasControl(f, "uxNarrativeCount") Then f!uxNarrativeCount.Caption = Len(Nz(Forms!frmEditor!txtOfficialComments, "")) & " characters. Printed fit has not been verified."
+    If UXHasControl(f, "uxNarrativeCount") Then Call UXNarrativeStatus()
     UXSurfaceRefresh = True
 Finished:
     surfaceBusy = False
@@ -256,11 +297,14 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
                 End With
             End If
             If multi Then c.Height = 2600
+            If key = "OfficialComments" Then UXNarrativeLayout c, kind, usableWidth
             Set c = f.Controls("err" & key): c.Left = x: c.Top = top + IIf(flag, 300, 700): c.Width = fieldWidth: c.Height = 250: c.Visible = True
             If Not applicable Then c.Caption = "Not used on this report type; stored value retained." Else UXSurfaceValidate key
             If multi Then c.Top = top + 2960
+            If key = "OfficialComments" Then c.Top = f!txtOfficialComments.Top + f!txtOfficialComments.Height + 40
             If multi Then
                 rowHeight = 3240
+                If key = "OfficialComments" Then rowHeight = f!txtOfficialComments.Height + 640
             ElseIf flag Then
                 If rowHeight < 380 Then rowHeight = 380
             Else
@@ -295,9 +339,9 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
         End If
     End If
     If section = 5 Then
-        f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Visible = True
-        f!cmdSnippets.Width = 3000: f!cmdSnippets.Top = top + 450: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
-        top = top + 1100
+        f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Height = 650: f!uxNarrativeCount.Visible = True
+        f!cmdSnippets.Width = 3000: f!cmdSnippets.Top = top + 700: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
+        top = top + 1300
     End If
     f.Section(acDetail).Height = top + 200
     Forms!frmEditor!uxFieldSurface.Visible = (section <= 7)
@@ -325,6 +369,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     If viewportHeight > 0 Then height = viewportHeight
     If width < 4000 Or height < 2000 Then GoTo Finished
     compact = (width < 12000 Or height < 7500)
+    If surfaceSection = 5 And width - 7050 < UXNarrativeWidth(Nz(f!cboKind, "EVAL")) Then compact = True
     UXNavigationLayout f, compact, width
     f!uxCompactSection.Visible = compact: f!uxCompactSection = surfaceSection
     If compact Then
