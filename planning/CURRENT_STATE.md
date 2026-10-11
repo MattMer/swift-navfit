@@ -1,3 +1,29 @@
+## Current blank deployment — r103 (10 October 2026)
+
+Latest blank artifact: output/ux/Swift_NAVFIT_Deployment_2026-10-10-r103-blank.accdb. App 0.25.0-dev/schema 25; includes r99–r102 efficiency/recovery work and function comments. All 48 user-data tables empty; setup startup and exact-file scratch tests verified. See [deployment notes](DEPLOYMENT_R103_2026-10-10.md). Earlier entries below are historical checkpoints.
+
+## 2026-10-10 - larger synthetic groups measured
+
+Created a separate 525-report scale database: 25/50/100-report groups for each report type. Measured native group opens, row navigation, queued saves and editor opens on scratch copies. Row moves 5-7 ms; saves 93-110 ms; group opening 0.64-1.09 s; report editor opening 2.44-4.01 s. Exactly 90 tested edits produced 90 revisions and zero group-history rows. Next priority: profile editor startup before optimizing. See [scale results](SCALE_R102_2026-10-10.md). No production source or schema changes.
+
+## 2026-10-10 - r102 efficiency priorities 3-6 complete
+
+Completed targeted editor/group refresh caching; removed duplicate hidden comparison list and adapted proposal selection to the grid; routed Members directly and simplified group tab transitions; made validation/recovery timer work event-driven. Idle calls produce zero validation scans. Saved averages refresh after commit; typing and field-exit checks/recovery remain. All 49 user tables preserved; schema 25. See [implementation and verification](EFFICIENCY_R102_2026-10-10.md). Physical display/accessibility and scale performance verification remain outstanding.
+
+## 2026-10-10 - r101 live Members and cached display guards
+
+Completed single-user efficiency priorities 1 and 2. Members reads current reports directly and no longer creates historical snapshots on opening or direct cell saves. Row focus uses loaded state; authoritative checks run at save. Historical proposal baselines/conflict checks and pending-save recovery remain. Three group opens add zero history rows. All 49 user tables preserved; schema 25. See [implementation and verification](LIVE_MEMBERS_R101_2026-10-10.md). Next: target editor refreshes, prove/remove legacy comparison controls, then simplify group page navigation.
+
+## 2026-10-10 - r100 performance candidate
+
+Completed unchanged comparison baseline reuse, input-driven live validation caching, unchanged checkpoint write suppression, joined saved-average reads, and conditional comparison ITA writes. Three unchanged group opens add 8 rather than 24 history rows; timing speedup is not established. Pending-save safeguards retained; schema 25; all 49 user tables preserved. See [performance notes](PERFORMANCE_R100_2026-10-10.md). Successful cell-save snapshot creation remains a follow-up.
+
+## Current local candidate — r99 (10 October 2026)
+
+Highest-priority review fix implemented: comparison save failures retain failed/later queued cells, with Retry/Discard actions and native close cancellation. Contributor changes, proposal application, group-page transitions and report creation respect pending cells. Already saved revisions remain intact; normal valid saves stay automatic. In-app version/schema help now uses constants through the canonical help generator.
+
+Open output/ux/Swift_NAVFIT_UI_Demo_2026-10-10-r99.accdb for synthetic practice, matching blank for a new workspace, or Swift_NAVFIT_UI_TestWorkspace_2026-10-10-r99.accdb for retained r97 data. All 49 user tables are unchanged. See PENDING_CELL_RECOVERY_R99_2026-10-10.md and its verification JSON. r98 remains the published baseline; r99 has not been pushed/released. Snapshot lifecycle and change-driven editor performance are next. Pending comparison recovery is session-scoped, not crash/startup recovery.
+
 ## Current deployment baseline — r98 (10 October 2026)
 
 The current baseline is application 0.25.0-dev/schema 25, packaged as a development prerelease with fresh blank and synthetic demo files. Use output/Swift_NAVFIT_Baseline_2026-10-10-r98/Swift_NAVFIT_Deployment_2026-10-10-r98-DEMO.accdb for testing, or the matching blank for a new workspace. Existing author-edited and r97 user workspaces are preserved. See BASELINE_R98_2026-10-10.md and BASELINE_R98_VERIFICATION.json for exact scope, checks and hashes. No new narrative-fit or returned-group feature is included; native controller proof remains partial, with full round-trip, printing, physical accessibility and migration acceptance outstanding.

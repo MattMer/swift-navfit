@@ -1,0 +1,35 @@
+{
+  "Date": "2026-10-10",
+  "AppVersion": "0.25.0-dev",
+  "Candidate": "r99",
+  "SchemaVersion": 25,
+  "Checks": [
+    "42 queued-cell failure/retry/close/discard/navigation/attribution assertions",
+    "26 approval rollback/retry assertions",
+    "Native control events across EVAL/CHIEFEVAL/FITREP",
+    "Queued-cell identity/coalescing/preservation/retry",
+    "Blank/demo normal startup",
+    "354 authored UI/startup/navigation assertions",
+    "129 group/RUAD/Overview assertions",
+    "All 49 user tables identical to r97",
+    "Canonical native help/documentation verification"
+  ],
+  "Artifacts": [
+    {
+      "Bytes": 11632640,
+      "SHA256": "3174B897464DD46B21E85913922745D8A024CC5873EE8D92E9F2EE3F0533FAC3",
+      "Name": "Swift_NAVFIT_UI_Blank_2026-10-10-r99.accdb"
+    },
+    {
+      "Bytes": 12365824,
+      "SHA256": "1A6315605F3B9970F87702F55883E79D39CE37D5897DC9F05C0576B56EFC49D4",
+      "Name": "Swift_NAVFIT_UI_Demo_2026-10-10-r99.accdb"
+    },
+    {
+      "Bytes": 13238272,
+      "SHA256": "C032A4A76D2B1866751EAA84CBFE20639B0B2B74529B02F828A085220CB66EC8",
+      "Name": "Swift_NAVFIT_UI_TestWorkspace_2026-10-10-r99.accdb"
+    }
+  ],
+  "Scope": "Native COM on scratch files; no computer use. Session-scoped pending recovery; physical accessibility and crash/startup comparison recovery not established. Published r98 unchanged."
+}

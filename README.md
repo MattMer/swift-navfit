@@ -10,7 +10,9 @@ See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](
 
 ## Current development baseline
 
-**r98 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the blank deployment and fresh synthetic demo from the [baseline prerelease](https://github.com/MattMer/swift-navfit/releases/tag/baseline-2026-10-10-r98). It includes the user-confirmed comparison-save repair, author UI refinements, Block 28, date selectors, all 35 directory columns and reviewed RUAD import/refresh. See [baseline scope and outstanding work](planning/BASELINE_R98_2026-10-10.md) and [artifact verification](planning/BASELINE_R98_VERIFICATION.json). This development baseline supersedes older local test candidates; 0.24.0-preview remains the previous versioned prerelease.
+**r103 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the [blank deployment prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103). This build includes direct editable group Members, safer failed-cell retry/discard, reduced snapshot creation, cached display calculations and change-driven validation/recovery. It also documents 117 VBA functions/subroutines. All 48 user-data tables are empty. See [deployment notes and verification limits](planning/DEPLOYMENT_R103_2026-10-10.md) and [artifact checksum](planning/DEPLOYMENT_R103_VERIFICATION.json).
+
+The [r98 baseline](https://github.com/MattMer/swift-navfit/releases/tag/baseline-2026-10-10-r98) retains a synthetic demo. Larger synthetic groups were measured locally at 25/50/100 members per report type; see [scale results](planning/SCALE_R102_2026-10-10.md). Report editor startup is the next performance target. Full printing, native round-trip and physical accessibility acceptance remain outstanding.
 
 ## UI redesign under review
 
@@ -47,15 +49,9 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-For the redesigned native UI, use the latest demo linked in
-[CURRENT_STATE.md](planning/CURRENT_STATE.md), or the separate local candidate
-package described in [UX_CANDIDATE_GUIDE.md](planning/UX_CANDIDATE_GUIDE.md).
-The prerelease is for review; existing workspaces are preserved.
-Settings & Help includes an in-app workspace guide. For existing data, provide
-an explicit blank candidate `-TemplatePath` to the migration script.
+Download the **blank r103 deployment** from the [current prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r103), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
 
-
-Download the deployment package from the [0.23.0-preview prerelease](https://github.com/MattMer/swift-navfit/releases/tag/v0.23.0-preview) and choose the blank workspace or synthetic demo. Make a working copy. Open it in trusted desktop Microsoft Access, complete workspace setup, and use Home to open the draft library. The Access Runtime and x86 environments have not been verified.
+This is an empty development build. Use the older r98 release for a synthetic demo. Preserve existing workspaces and migrate their data into a separate blank file with an explicit `-TemplatePath`. Access Runtime and x86 environments have not been verified.
 
 Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
 

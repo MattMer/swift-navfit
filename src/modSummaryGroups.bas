@@ -30,6 +30,8 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "CreateSummaryGroup", message
 End Function
+' Describe saved group/member revision and archive state for historical or write-bound
+' guards. Do not calculate this for ordinary live Members row-focus events.
 Public Function GroupStamp(ByVal groupID As Long, Optional ByVal includeWorkflowLocks As Boolean = True) As String
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -45,6 +47,8 @@ Public Function GroupStamp(ByVal groupID As Long, Optional ByVal includeWorkflow
     Loop
     r.Close
 End Function
+' Validate explicit group membership and record it transactionally, then invalidate
+' editor membership/average context after success.
 Public Sub AddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal paygrade As String, Optional ByVal exceptionReason As String = "")
     Dim g As DAO.Recordset, r As DAO.Recordset, f As Object, author As Long, w As DAO.Workspace, operation As Long, failure As Long, message As String, db As DAO.Database, stage As String
     On Error GoTo Failed
@@ -64,7 +68,7 @@ Public Sub AddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal p
     CurrentDb.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     operation = BeginOperation("Add group member", "Group " & groupID & ", report " & reportID & ", explicit paygrade " & paygrade & ": " & exceptionReason)
     FinishOperation operation, "Completed", "Membership added; committed report values unchanged."
-    w.CommitTrans: Exit Sub
+    w.CommitTrans: Call UXEditorContextChanged(): Exit Sub
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
@@ -74,6 +78,8 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "AddGroupMember", stage & ": " & message
 End Sub
+' Remove live membership transactionally while retaining historical snapshots;
+' invalidate editor context only after the mutation succeeds.
 Public Sub RemoveGroupMember(ByVal groupID As Long, ByVal reportID As Long)
     Dim author As Long, operation As Long, w As DAO.Workspace, failure As Long, message As String
     author = MajorAuthor(): Set w = DBEngine.Workspaces(0): w.BeginTrans
@@ -84,7 +90,7 @@ Public Sub RemoveGroupMember(ByVal groupID As Long, ByVal reportID As Long)
     CurrentDb.Execute "DELETE FROM GroupMember WHERE GroupID=" & groupID & " AND ReportID=" & reportID, dbFailOnError
     CurrentDb.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     FinishOperation operation, "Completed", "Membership removed; frozen rosters retained."
-    w.CommitTrans: Exit Sub
+    w.CommitTrans: Call UXEditorContextChanged(): Exit Sub
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
@@ -92,6 +98,8 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "RemoveGroupMember", message
 End Sub
+' Capture an explicit immutable roster with saved revisions and calculated member
+' values. Ordinary live Members opening/saving must not create these history copies.
 Public Function FreezeSummaryGroup(ByVal groupID As Long, ByVal completenessNote As String) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb

@@ -21,7 +21,7 @@ Public Sub ChangeSummaryGroup(ByVal id As Long, ByVal stamp As String, ByVal act
     If action = "Rename" Then r!Title = title Else r!IsArchived = (action = "Archive")
     r!VersionCounter = r!VersionCounter + 1: r.Update: r.Close
     FinishOperation op, "Completed", IIf(action = "Rename", "New name: " & title, action & " completed") & "; reports, members, defaults and history retained."
-    w.CommitTrans: started = False: Exit Sub
+    w.CommitTrans: Call UXEditorContextChanged(): started = False: Exit Sub
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next

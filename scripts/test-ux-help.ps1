@@ -7,11 +7,12 @@ $app=New-Object -ComObject Access.Application;$checks=0
 try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true);$app.DoCmd.RunCommand(126)
 $app.DoCmd.OpenForm('frmUXHelp');if($app.Eval('Forms!frmUXHelp!lstTopics.ListCount') -ne $topics.Count){throw 'Guide topic list incomplete'};$checks++
 for($i=0;$i -lt $topics.Count;$i++){
-if($app.Eval('UXHelpText('+$i+')') -cne $topics[$i].Body){throw ('Native guide differs from canonical topic '+$i)};$checks++
-if(-not $guide.Contains($topics[$i].Body)){throw ('Workspace guide differs from topic '+$i)};$checks++
+$body=$topics[$i].Body.Replace('{APP_VERSION}',[string]$app.Eval('DLookup("AppVersion","AppMetadata")')).Replace('{SCHEMA_VERSION}',[string]$app.Eval('DLookup("SchemaVersion","AppMetadata")'))
+if($app.Eval('UXHelpText('+$i+')') -cne $body){throw ('Native guide differs from canonical topic '+$i)};$checks++
+if(-not $guide.Contains($body)){throw ('Workspace guide differs from topic '+$i)};$checks++
 $app.Forms.Item('frmUXHelp').Controls.Item('lstTopics').Value=$i
 [void]$app.Eval('UXHelpSelected()')
-if($app.Eval('Forms!frmUXHelp!txtGuide') -cne $topics[$i].Body){throw ('Selection did not render topic '+$i)};$checks++
+if($app.Eval('Forms!frmUXHelp!txtGuide') -cne $body){throw ('Selection did not render topic '+$i)};$checks++
 }
 if(-not $app.Eval('Forms!frmUXHelp!txtGuide.Locked And Forms!frmUXHelp!txtGuide.ScrollBars=2')){throw 'Long guide text is not read-only/scrollable'};$checks++
 $app.DoCmd.Close(2,'frmUXHelp',2)

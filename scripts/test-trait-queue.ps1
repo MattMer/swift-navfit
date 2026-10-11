@@ -8,4 +8,4 @@ try {
  $app.LoadFromText(5,'TraitQueueHarness',(Join-Path $root 'tests/TraitQueueHarness.bas'))
  $app.DoCmd.RunCommand(126);$result=$app.Eval('TestTraitQueue()');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
-} finally {$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+} finally {try{if($app.CurrentProject.AllForms.Item('frmUXComparison').IsLoaded){[void]$app.Eval('UXGridDiscardPending()')}}catch{};$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

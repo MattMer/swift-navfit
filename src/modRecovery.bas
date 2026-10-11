@@ -3,7 +3,9 @@ Option Compare Database
 Option Explicit
 Private sessionKey As String
 Private baseRevision As Long
+Private checkpointSignature As String
 Private baseline(0 To 78) As Variant
+' Keep the editor control order aligned with DraftFieldKeys and recovery storage fields.
 Private Function ControlsList() As Variant
     ControlsList = Array("cboKind", "txtTitle", "txtMember", "txtStart", "txtEnd", "txtNotes", "txtOfficialComments", "txtOfficialName", "txtRankRate", "txtDesignator", "txtUnitUIC", "txtShipStation", "cboTrait33", "cboTrait34", "cboTrait35", "cboTrait36", "cboTrait37", "cboTrait38", "cboTrait39", "cboObservationStatus", "cboPromotionRecommendation", "cboPromotionStatus", "txtReportingSeniorName", "txtReportingSeniorGrade", "txtReportingSeniorDesignator", "txtReportingSeniorTitle", "txtReportingSeniorUIC", _
         "txtOccasionPeriodic", "txtOccasionDetachment", "txtOccasionFrocking", "txtOccasionSpecial", "txtReportRegular", "txtReportConcurrent", "txtReportOperationalCommander", "txtPrimaryDuty", "txtDutyDescription", _
@@ -13,6 +15,8 @@ Private Function ControlsList() As Variant
         "txtReportingSeniorSSN", "txtReportingSeniorDoDID", "txtReportingSeniorAddress1", "txtReportingSeniorAddress2", "txtReportingSeniorCity", "txtReportingSeniorState", "txtReportingSeniorZip", "txtReportingSeniorPhone", "txtReportingSeniorDSN", "txtRaterName", "txtRaterDate", "txtSeniorRaterName", "txtSeniorRaterDate", _
         "txtMemberFirstName", "txtMemberMiddleInitial", "txtMemberLastName", "txtMemberSuffix", "txtReportingSeniorLastName", "txtReportingSeniorFirstInitial", "txtReportingSeniorMiddleInitial", "txtCounselorLastName", "txtCounselorFirstInitial", "txtCounselorMiddleInitial", "txtCommandEmployment")
 End Function
+' Return all 79 pending fields, including active text and the visible surface buffer.
+' This reads the draft; it does not create a saved revision.
 Public Function EditorPendingFields() As Object
     Dim fields As Object, names As Variant, keys As Variant, i As Long
     Set fields = CreateObject("Scripting.Dictionary")
@@ -22,6 +26,8 @@ Public Function EditorPendingFields() As Object
     Next
     Set EditorPendingFields = fields
 End Function
+' Read the canonical pending control value, including text before focus leaves the field.
+' Normalize dates so dirty comparisons and recovery use a stable representation.
 Private Function PendingValue(ByVal control As Control) As Variant
     Dim value As Variant
     value = control.Value
@@ -33,11 +39,14 @@ Private Function PendingValue(ByVal control As Control) As Variant
     If VarType(value) = vbDate Then value = Format$(value, "yyyy-mm-dd")
     PendingValue = value
 End Function
+' Start a fresh recovery session and capture its saved baseline; reset timer/context caches.
 Public Function BeginEditorRecovery() As Boolean
-    sessionKey = NewIdentity()
+    Call UXLiveReset(): Call UXEditorContextChanged()
+    checkpointSignature = "": sessionKey = NewIdentity()
     Call ResetEditorBaseline()
     BeginEditorRecovery = True
 End Function
+' Capture editor values and the saved revision used by dirty and stale-save guards.
 Public Function ResetEditorBaseline() As Boolean
     Dim names As Variant, i As Long
     names = ControlsList()
@@ -45,6 +54,8 @@ Public Function ResetEditorBaseline() As Boolean
     baseRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)), 0)
     ResetEditorBaseline = True
 End Function
+' Reject a save against a newer revision. One user can still change a report through
+' another form or import while this editor holds pending values.
 Public Function GuardEditorBaseline() As Boolean
     Dim id As Long
     id = Nz(Forms!frmEditor!txtReportID, 0)
@@ -53,6 +64,8 @@ Public Function GuardEditorBaseline() As Boolean
     End If
     GuardEditorBaseline = True
 End Function
+' Compare pending values with the editor baseline, preserving the distinction between
+' Null and an empty string; return False when the editor is closed.
 Public Function EditorHasPending() As Boolean
     Dim names As Variant, i As Long, value As Variant
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
@@ -62,13 +75,17 @@ Public Function EditorHasPending() As Boolean
         If IsNull(value) <> IsNull(baseline(i)) Or StrComp(Nz(value, ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then EditorHasPending = True: Exit Function
     Next
 End Function
+' Delete only this editor session's checkpoint and invalidate its successful-write signature.
 Public Function DiscardEditorCheckpoint() As Boolean
     If Len(sessionKey) > 0 Then CurrentDb.Execute "DELETE FROM RecoveryDraft WHERE SessionGuid='" & sessionKey & "'", dbFailOnError
-    DiscardEditorCheckpoint = True
+    checkpointSignature = "": DiscardEditorCheckpoint = True
 End Function
+' Persist raw pending edits atomically without creating a report revision. Skip an
+' unchanged successful checkpoint, recreate missing rows, and retain the prior checkpoint
+' on failure; update the signature only after commit.
 Public Function CheckpointEditor() As Boolean
     Dim names As Variant, fields As Variant, current(0 To 78) As Variant, i As Long, changed As Boolean
-    Dim r As DAO.Recordset, w As DAO.Workspace, trans As Boolean
+    Dim r As DAO.Recordset, w As DAO.Workspace, trans As Boolean, signature As String
     On Error GoTo Failed
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Or Len(sessionKey) = 0 Then Exit Function
     names = ControlsList(): fields = Array("FormKind", "DraftTitle", "MemberDisplay", "StartEntry", "EndEntry", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation", "PromotionStatus", "ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", _
@@ -80,13 +97,20 @@ Public Function CheckpointEditor() As Boolean
         "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
     For i = 0 To 78
         current(i) = PendingValue(Forms!frmEditor.Controls(names(i)))
+        signature = signature & IIf(IsNull(current(i)), "N", "V") & Len(Nz(current(i), "")) & ":" & Nz(current(i), "")
         If IsNull(current(i)) <> IsNull(baseline(i)) Or StrComp(Nz(current(i), ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then changed = True
     Next
     If Not changed Then
-        Call DiscardEditorCheckpoint()
+        If DCount("*", "RecoveryDraft", "SessionGuid='" & sessionKey & "'") > 0 Then
+            Call DiscardEditorCheckpoint()
+            If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
+        End If
         Forms!frmEditor!lblRecovery.Caption = "No pending changes to checkpoint."
-        If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
         CheckpointEditor = True: Exit Function
+    End If
+    signature = sessionKey & "|" & baseRevision & "|" & Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) & "|" & signature
+    If signature = checkpointSignature Then
+        If DCount("*", "RecoveryDraft", "SessionGuid='" & sessionKey & "'") > 0 Then CheckpointEditor = True: Exit Function
     End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RecoveryDraft WHERE SessionGuid='" & sessionKey & "'", dbOpenDynaset)
@@ -96,7 +120,7 @@ Public Function CheckpointEditor() As Boolean
     If baseRevision > 0 Then r!BaseRevisionID = baseRevision Else r!BaseRevisionID = Null
     For i = 0 To 78: r.Fields(fields(i)) = current(i): Next
     r!CheckpointAt = Now(): r.Update: r.Close
-    w.CommitTrans: trans = False
+    w.CommitTrans: trans = False: checkpointSignature = signature
     Forms!frmEditor!lblRecovery.Caption = "Recovery checkpoint: " & Now() & " (not a saved revision)"
     If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
     CheckpointEditor = True: Exit Function
@@ -106,6 +130,7 @@ Failed:
     If Not r Is Nothing Then r.Close
     Forms!frmEditor!lblRecovery.Caption = "Checkpoint failed. Use Save draft to retain these edits."
 End Function
+' List checkpoints owned by the active contributor, newest first.
 Public Function LoadRecoveries() As Boolean
     Dim pid As Long
     pid = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
@@ -113,6 +138,8 @@ Public Function LoadRecoveries() As Boolean
     Forms!frmRecovery!lstRecoveries.Requery
     LoadRecoveries = True
 End Function
+' Restore a contributor-owned checkpoint into the unbound editor. Reject changed or
+' locked saved baselines unless recovering as a new draft; saving remains explicit.
 Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal asNewDraft As Boolean = False) As Boolean
     Dim r As DAO.Recordset, id As Long, names As Variant, fields As Variant, i As Long
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 901, , "Close the current editor before recovering another draft."
@@ -140,6 +167,7 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
     r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel(): Call UXRefreshEditor()
     Forms!frmEditor.SetFocus: RestoreRecoveryDraft = True
 End Function
+' Restore the selected checkpoint and present recoverable failures to the user.
 Public Function RecoverSelectedUI(Optional ByVal asNewDraft As Boolean = False) As Boolean
     On Error GoTo Failed
     RecoverSelectedUI = RestoreRecoveryDraft(Nz(Forms!frmRecovery!lstRecoveries, 0), asNewDraft)
@@ -147,6 +175,7 @@ Public Function RecoverSelectedUI(Optional ByVal asNewDraft As Boolean = False) 
 Failed:
     MsgBox Err.Description, vbExclamation, "Recover pending edits"
 End Function
+' Confirm permanent checkpoint removal, restricted to the active contributor and a closed editor.
 Public Function DeleteRecoveryUI() As Boolean
     Dim id As Long
     id = Nz(Forms!frmRecovery!lstRecoveries, 0)

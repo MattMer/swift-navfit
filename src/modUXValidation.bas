@@ -6,14 +6,34 @@ Private priorSignature As String
 Private nextCheckpoint As Date
 Private busy As Boolean
 Private pageIndex As Long
+Private liveSignature As String
+Private liveResult As Collection
+Private validationDirty As Boolean
+Private recoveryDirty As Boolean
+Private validationDate As Date
+Private paintCount As Long
+' Escape a value for an Access value-list cell; flatten newlines for the list display.
 Private Function Cell(ByVal value As Variant) As String
     Cell = Chr$(34) & Replace(Replace(Replace(Nz(value, ""), Chr$(34), Chr$(34) & Chr$(34)), vbCr, " "), vbLf, " ") & Chr$(34)
 End Function
+' Validate pending editor values and paint the issue summary. Cache findings by exact
+' inputs and date; dirty/save state is independent of saved report revisions.
 Public Function UXLivePaint() As Boolean
     Dim result As Collection, item As Object, invalid As Long, policy As Long, incomplete As Long, review As Long
+    Dim pending As Object, key As Variant, signature As String
     If busy Or Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
     On Error GoTo Failed
-    busy = True: Set result = ValidateLiveFields(EditorPendingFields(), Nz(Forms!frmEditor!txtReportID, 0))
+    paintCount = paintCount + 1
+    busy = True: Set pending = EditorPendingFields()
+    signature = Nz(Forms!frmEditor!txtReportID, 0) & "|" & Date & "|"
+    For Each key In pending.Keys
+        signature = signature & IIf(IsNull(pending(key)), "N", "V") & Len(Nz(pending(key), "")) & ":" & Nz(pending(key), "")
+    Next
+    If liveResult Is Nothing Or signature <> liveSignature Then
+        Set liveResult = ValidateLiveFields(pending, Nz(Forms!frmEditor!txtReportID, 0))
+        liveSignature = signature
+    End If
+    Set result = liveResult
     For Each item In result
         Select Case item("Severity")
             Case "Invalid entry": invalid = invalid + 1
@@ -24,6 +44,8 @@ Public Function UXLivePaint() As Boolean
     Next
     Forms!frmEditor!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes") & " | " & result.count & " issues"
     Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review. Pending values; no saved revision created."
+    If EditorHasPending() Then recoveryDirty = True
+    validationDirty = False: validationDate = Date
     UXLivePaint = True
 Finished:
     busy = False: Exit Function
@@ -31,17 +53,41 @@ Failed:
     Forms!frmEditor!uxDirty.Caption = "Validation unavailable - open issues"
     Resume Finished
 End Function
-Public Function UXLiveTyped() As Boolean
-    UXLiveTyped = UXLivePaint()
+' Expose the validation-paint count for diagnostics without querying the database.
+Public Function UXLivePaintCount() As Long
+    UXLivePaintCount = paintCount
 End Function
+' Mark validation and recovery dirty after a local edit; defer typing checks to the timer.
+Public Function UXEditorChanged() As Boolean
+    validationDirty = True: recoveryDirty = True
+    UXEditorChanged = True
+End Function
+' Reset validation and checkpoint scheduling for a new editor session.
+Public Function UXLiveReset() As Boolean
+    validationDirty = True: recoveryDirty = False: nextCheckpoint = DateAdd("s", 30, Now())
+    liveSignature = "": Set liveResult = Nothing
+    UXLiveReset = True
+End Function
+' Handle textbox OnChange without validating on every keystroke. Field exit and the
+' dirty timer flush the checks; active text remains available to recovery.
+Public Function UXLiveTyped() As Boolean
+    Call UXEditorChanged()
+    UXLiveTyped = True
+End Function
+' Process dirty validation and due recovery work only. Failed checkpoints retain the
+' dirty flag so a later tick retries; an unchanged editor does not scan its fields.
 Public Function UXLiveTimer() As Boolean
-    UXLivePaint
+    If validationDirty Or validationDate <> Date Then Call UXLivePaint()
     If nextCheckpoint = 0 Then nextCheckpoint = DateAdd("s", 30, Now())
     If Now() >= nextCheckpoint Then
-        CheckpointEditor: nextCheckpoint = DateAdd("s", 30, Now())
+        If recoveryDirty Then
+            If CheckpointEditor() Then recoveryDirty = False
+        End If
+        nextCheckpoint = DateAdd("s", 30, Now())
     End If
     UXLiveTimer = True
 End Function
+' Open report or group findings using an explicit context; reset paging and selection.
 Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False) As Boolean
     Dim context As String
     If groupMode Then context = "G:" & Nz(Forms!frmMajorWorkbench!cboGroup, 0) Else context = "R:" & Nz(Forms!frmEditor!txtReportID, 0)
@@ -50,6 +96,8 @@ Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False) As
     DoCmd.OpenForm "frmUXValidation", , , , , , context
     UXOpenValidation = True
 End Function
+' Evaluate current findings, including open pending values, and show 50 per page.
+' The display signature suppresses redundant list repainting, not the underlying checks.
 Public Function UXLoadValidation() As Boolean
     Dim f As Access.Form, item As Object, result As Collection, id As Long, signature As String, rows As String, i As Long, selection As String, identity As String, selected As Long
     On Error GoTo Failed
@@ -95,6 +143,7 @@ Failed:
     f!lblCount.Caption = "Validation failed: " & Err.Description
     f!cmdOpen.Enabled = False
 End Function
+' Show the selected finding and its policy citation; enable its field-navigation action.
 Public Function UXValidationSelection() As Boolean
     
     Dim item As Object
@@ -107,10 +156,13 @@ Public Function UXValidationSelection() As Boolean
     End With
     UXValidationSelection = True
 End Function
+' Move the findings page and rebuild its visible rows, keeping page indices nonnegative.
 Public Function UXValidationPage(ByVal offset As Long) As Boolean
     pageIndex = pageIndex + offset: If pageIndex < 0 Then pageIndex = 0
     UXValidationPage = UXLoadValidation()
 End Function
+' Navigate to the finding's report section and focus its field without losing another
+' report's pending edits; failed navigation leaves the finding available.
 Public Function UXValidationOpenField() As Boolean
     Dim item As Object, id As Long
     On Error GoTo Failed
@@ -135,11 +187,13 @@ Public Function UXValidationOpenField() As Boolean
 Failed:
     Forms!frmUXValidation!txtEvidence = Err.Description
 End Function
+' Release the findings cache and close its window.
 Public Function UXValidationClose() As Boolean
     priorSignature = "": Set issues = Nothing
     DoCmd.Close acForm, "frmUXValidation", acSaveNo
     UXValidationClose = True
 End Function
+' Size the findings list and evidence panel for the available native form viewport.
 Public Function UXValidationLayout() As Boolean
     Dim f As Access.Form, width As Long, height As Long
     On Error GoTo Finished

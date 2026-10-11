@@ -23,7 +23,7 @@ try{
  $app.Forms.Item('frmUXGroups').Controls.Item('lstGroups').Value=$app.Eval('DMin("GroupID","SummaryGroup")')
  if(-not $app.Eval('UXOpenGroup()')){throw 'Group failed to open'};$checks++
  if(-not $app.CurrentProject.AllForms.Item('frmUXComparison').IsLoaded){throw 'Group did not open directly to editable members'};$checks++
- if($app.Forms.Item('frmMajorWorkbench').Visible){throw 'Legacy workbench was displayed on the direct member route'};$checks++
+ if($app.CurrentProject.AllForms.Item('frmMajorWorkbench').IsLoaded -and $app.Forms.Item('frmMajorWorkbench').Visible){throw 'Legacy workbench was displayed on the direct member route'};$checks++
  $app.DoCmd.Close(2,'frmUXComparison',2)
  Write-Output ('PASS: '+$checks+' author properties, obsolete-control absence, startup and populated navigation checks')
 }finally{try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{};$app.Quit(2)}

@@ -1,6 +1,25 @@
 Attribute VB_Name = "modMeetings"
 Option Compare Binary
 Option Explicit
+' Reuse only a matching immutable group baseline with no proposals. Changed group
+' stamps or any proposal history require a new set; existing historical rows are not edited.
+Public Function ReuseGroupComparison(ByVal groupID As Long, ByVal title As String) As Long
+    Dim db As DAO.Database, r As DAO.Recordset, stamp As String, snapshot As Long
+    stamp = GroupStamp(groupID)
+    Set db = CurrentDb
+    Set r = db.OpenRecordset("SELECT c.SetID,g.Stamp FROM ComparisonSet AS c INNER JOIN GroupSnapshot AS g ON c.GroupSnapshotID=g.SnapshotID WHERE g.GroupID=" & groupID & " AND c.SetID NOT IN (SELECT SetID FROM MeetingProposal) ORDER BY c.SetID DESC", dbOpenSnapshot)
+    Do While Not r.EOF
+        If StrComp(Nz(r!Stamp, ""), stamp, vbBinaryCompare) = 0 Then ReuseGroupComparison = r!SetID: Exit Do
+        r.MoveNext
+    Loop
+    r.Close
+    If ReuseGroupComparison = 0 Then
+        snapshot = FreezeSummaryGroup(groupID, "Automatically captured for comparison; membership eligibility is not certified.")
+        ReuseGroupComparison = CreateComparisonSet(snapshot, title)
+    End If
+End Function
+' Copy an explicit group snapshot into an ordered comparison set atomically; live
+' Members does not call this during ordinary opening or direct editing.
 Public Function CreateComparisonSet(ByVal snapshotID As Long, ByVal title As String) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -27,6 +46,8 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "CreateComparisonSet", message
 End Function
+' Record a field proposal against the comparison's saved revision and supersede prior
+' proposals for that field; leave the saved report unchanged.
 Public Function ProposeMeetingField(ByVal setID As Long, ByVal reportID As Long, ByVal fieldKey As String, ByVal value As Variant) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -52,11 +73,13 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "ProposeMeetingField", message
 End Function
+' Apply a single proposal through the same validated atomic batch service.
 Public Sub ApplyMeetingProposal(ByVal proposalID As Long)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
     ApplyMeetingProposals CStr(proposalID)
 End Sub
+' Record an order containing every comparison member exactly once without changing report values.
 Public Sub SetMeetingOrder(ByVal setID As Long, ByVal reportsCSV As String)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -80,6 +103,8 @@ Failed:
     On Error GoTo 0
     Err.Raise failure, "SetMeetingOrder", message
 End Sub
+' Apply selected proposals from one comparison atomically after revision/group/workflow
+' checks; record applied revisions and reject stale or already resolved proposals.
 Public Sub ApplyMeetingProposals(ByVal proposalIDsCSV As String)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb

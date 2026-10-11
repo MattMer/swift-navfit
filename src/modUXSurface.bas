@@ -56,6 +56,8 @@ Public Function UXFlushSurface() As Boolean
     Forms!frmEditor.Controls(c.Name) = value
 Finished:
 End Function
+' Copy one visible field into the canonical buffer, validate it inline and invalidate
+' event-driven checks. Resize only when error visibility changes; preserve field focus.
 Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     If surfaceBusy Then Exit Function
     Dim f As Access.Form, name As String, hadError As Boolean
@@ -68,7 +70,7 @@ Public Function UXSurfaceEdited(ByVal key As String) As Boolean
         f.Controls(name).SetFocus
     End If
     If IsTraitKey(key) Then UXSurfaceTrait CLng(Mid$(key, 6))
-    UXRefreshEditor
+    Call UXEditorChanged(): UXRefreshEditor key
     UXSurfaceEdited = True
 End Function
 Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
@@ -141,6 +143,8 @@ Public Function UXSurfaceErrorSelected() As Boolean
     Surface().Controls(UXFieldControl(key)).SetFocus
     UXSurfaceErrorSelected = True
 End Function
+' Synchronize the visible section from the unbound buffer while preserving active
+' typed text; the busy flag prevents recursive surface updates.
 Public Function UXSurfaceRefresh() As Boolean
     Dim f As Access.Form, c As Access.Control, key As String, value As Variant, active As String
     If surfaceBusy Or Not UXSurfaceAvailable() Then Exit Function
@@ -207,6 +211,8 @@ Public Function UXLayoutWidth(ByVal key As String, ByVal available As Long, Opti
     If result > available Then result = available
     UXLayoutWidth = result
 End Function
+' Show and lay out applicable fields for one official/local section without discarding
+' pending buffer values; report type determines labels and available blocks.
 Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean) As Boolean
     On Error GoTo Failed
     Dim f As Access.Form, c As Access.Control, key As Variant, kind As String, row As Long, slot As Long, top As Long, x As Long, multi As Boolean, applicable As Boolean, tabOrder As Long, columns As Long, cellWidth As Long, usableWidth As Long, band As String, priorBand As String, rowHeight As Long, fieldWidth As Long, flag As Boolean
@@ -302,6 +308,8 @@ Failed:
     Forms!frmEditor!uxError.Caption = "Section could not open: " & Err.Number & " " & Err.Description
 End Function
 
+' Arrange the editor for its viewport while preserving focus and text selection;
+' section content and action areas remain separate from saved report data.
 Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
     Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant, active As Access.Control, caret As Long, selection As Long, compact As Boolean, surfaceTop As Long
     If layoutBusy Or Not UXSurfaceAvailable() Then Exit Function

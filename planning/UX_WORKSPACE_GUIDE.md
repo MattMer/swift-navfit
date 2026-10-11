@@ -39,7 +39,7 @@ Overview or Settings & Help > Recover pending edits opens checkpoints, separate 
 
 ## Preview limits and diagnostics
 
-This is version 0.23.0-preview, schema 21, a native Access review candidate. Automated native checks do not establish screen-reader or physical display/DPI acceptance. Desktop Access is verified within the documented tests; Runtime and x86 remain unverified. No network integration, synchronization, authentication or official signatures are added. Settings & Help > Support and limitations provides technical diagnostics. Read CURRENT_STATE.md for exact artifact evidence and outstanding work.
+This is version 0.25.0-dev, schema 25, a native Access development candidate. Automated native checks do not establish screen-reader or physical display/DPI acceptance. Desktop Access is verified within the documented tests; Runtime and x86 remain unverified. No network integration, synchronization, authentication or official signatures are added. Settings & Help > Support and limitations provides technical diagnostics. Read CURRENT_STATE.md for exact artifact evidence and outstanding work.
 
 ## Feature destinations
 

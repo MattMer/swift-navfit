@@ -26,10 +26,11 @@ Public Function TestTraitQueue() As String
  If UXGridDrain() Then Err.Raise vbObjectError + 7923, , "Invalid queue accepted"
  Set rows = Forms!frmUXComparison!uxTraitGrid.Form
  Set r = rows.RecordsetClone: r.FindFirst "ReportID=" & first: rows.Bookmark = r.Bookmark: r.Close
- If Not IsNull(rows!Trait39) Or Not IsNull(DLookup("Trait39", "Report", "ReportID=" & first)) Then Err.Raise vbObjectError + 7924, , "Failed queue left phantom pending values"
+ If rows!Trait39 <> "1.0" Or Not IsNull(DLookup("Trait39", "Report", "ReportID=" & first)) Or UXGridPendingCount() <> 2 Then Err.Raise vbObjectError + 7924, , "Failed queue did not preserve unsaved values separately from saved values"
+ rows!AssignmentRecommendationA = "VALID": UXGridQueue "AssignmentRecommendationA"
  rows!Trait39 = "1.0": UXGridQueue "Trait39"
  If Not UXGridDrain() Then Err.Raise vbObjectError + 7925, , "Retry failed"
- TestTraitQueue = "PASS: E6 1.0 marks, row identity, coalescing, failure reset and retry": Exit Function
+ TestTraitQueue = "PASS: E6 1.0 marks, row identity, coalescing, failed-queue preservation and retry": Exit Function
 Failed:
  TestTraitQueue = "FAIL: " & Err.Number & " " & Err.Description
 End Function

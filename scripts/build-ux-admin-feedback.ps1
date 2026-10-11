@@ -13,7 +13,7 @@ try {
     foreach($formName in @('frmEditor','frmUXComparison')){
         $app.DoCmd.OpenForm($formName,1);$form=$app.Forms.Item($formName)
         $form.HasModule=$true;$form.OnUnload='[Event Procedure]';$module=$form.Module
-        $statement=if($formName -eq 'frmEditor'){'    If Not UXEditorUnload() Then Cancel = True'}else{'    UXGridUnload Me'}
+        $statement=if($formName -eq 'frmEditor'){'    If Not UXEditorUnload() Then Cancel = True'}else{'    If Not UXGridUnload(Me) Then Cancel = True'}
         if($module.Lines(1,$module.CountOfLines) -notmatch [regex]::Escape($statement.Trim())){
             $line=$module.CreateEventProc('Unload','Form');$module.InsertLines($line+1,$statement)
         }

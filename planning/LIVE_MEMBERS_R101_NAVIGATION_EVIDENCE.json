@@ -1,0 +1,27 @@
+﻿{
+    "Date":  "2026-10-10",
+    "Basis":  "Synthetic deployment demo scratch copy; three group opens/closes; no report edits",
+    "GroupID":  1,
+    "Before":  {
+                   "Report":  9,
+                   "SummaryGroup":  3,
+                   "GroupSnapshot":  0,
+                   "GroupSnapshotMember":  0,
+                   "ComparisonSet":  0,
+                   "ComparisonMember":  0
+               },
+    "After":  {
+                  "Report":  9,
+                  "SummaryGroup":  3,
+                  "GroupSnapshot":  0,
+                  "GroupSnapshotMember":  0,
+                  "ComparisonSet":  0,
+                  "ComparisonMember":  0
+              },
+    "GroupOpenMilliseconds":  [
+                                  999.1476,
+                                  1066.7875000000001,
+                                  1081.2603000000001
+                              ],
+    "Limit":  "Small fixture on this machine; not a scale or physical-display benchmark"
+}

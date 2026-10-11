@@ -740,8 +740,9 @@ try {
     $comparisonForm.HasModule=$true;$comparisonForm.OnUnload='[Event Procedure]'
     $comparisonModule=$comparisonForm.Module
     $comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')
-    $comparisonModule.InsertLines($comparisonLine+1,'    UXGridUnload Me')
+    if($comparisonModule.Lines(1,$comparisonModule.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){$comparisonModule.InsertLines($comparisonLine+1,'    If Not UXGridUnload(Me) Then Cancel = True')}
     $app.DoCmd.Close(2,'frmUXComparison',1)
+    . (Join-Path $PSScriptRoot 'apply-ux-efficiency.ps1')
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)
@@ -751,7 +752,7 @@ try {
     $app.DoCmd.Close(2,'frmEditor',2)
     $app.DoCmd.OpenForm('frmUXComparison',1)
     $verifiedComparison=$app.Forms.Item('frmUXComparison')
-    if($verifiedComparison.OnUnload -ne '[Event Procedure]' -or $verifiedComparison.Module.Lines(1,$verifiedComparison.Module.CountOfLines) -notmatch 'UXGridUnload Me'){throw 'Native comparison unload handler did not persist.'}
+    if($verifiedComparison.OnUnload -ne '[Event Procedure]' -or $verifiedComparison.Module.Lines(1,$verifiedComparison.Module.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){throw 'Native comparison unload handler did not persist.'}
     $app.DoCmd.Close(2,'frmUXComparison',2)
     $app.CloseCurrentDatabase()
 

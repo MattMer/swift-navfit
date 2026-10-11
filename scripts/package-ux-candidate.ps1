@@ -67,7 +67,7 @@ $app.DoCmd.OpenForm($form,1);$f=$app.Forms.Item($form)
 if($f.OnUnload -ne '[Event Procedure]'){throw ($form+' unload handler missing')}
 $code=$f.Module.Lines(1,$f.Module.CountOfLines)
 if($form -eq 'frmEditor' -and $code -notmatch 'If Not UXEditorUnload\(\) Then Cancel = True'){throw 'Editor save guard missing'}
-if($form -eq 'frmUXComparison' -and $code -notmatch 'UXGridUnload Me'){throw 'Comparison cleanup guard missing'}
+if($form -eq 'frmUXComparison' -and $code -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){throw 'Comparison pending-save guard missing'}
 $app.DoCmd.Close(2,$form,2)
 }
 $app.DoCmd.RunCommand(126)

@@ -1,6 +1,10 @@
 Attribute VB_Name = "modUX"
 Option Compare Binary
 Option Explicit
+Private editorGroupRefreshes As Long
+Private editorContextDirty As Boolean
+Private editorContextReport As Long
+Private editorContextGroup As Long
 Private currentSection As Long
 Private currentPage As Long
 Private bulkChanges As Object
@@ -18,6 +22,16 @@ Private bulkMixed As Object
 Private bulkDefaults As Boolean
 Private bulkDefaultStamp As String
 Private bulkDefaultResets As Object
+' Invalidate cached membership and saved group-average data after a local mutation;
+' read it on the next editor refresh rather than polling on every field edit.
+Public Function UXEditorContextChanged() As Boolean
+    editorContextDirty = True: UXEditorContextChanged = True
+End Function
+' Expose context-refresh frequency for performance diagnostics without database reads.
+Public Function UXEditorGroupRefreshCount() As Long
+    UXEditorGroupRefreshCount = editorGroupRefreshes
+End Function
+' Apply the summary-group report filter. The control name is retained for legacy form compatibility.
 Public Function UXFolderFilterChanged() As Boolean
     If Not IsNumeric(Nz(Forms!frmLibrary!uxFolderFilter, "")) Then
         Forms!frmLibrary!lblCount.Caption = "Choose a summary group from the list."
@@ -27,22 +41,26 @@ Public Function UXFolderFilterChanged() As Boolean
     Forms!frmLibrary!lstFolders = Forms!frmLibrary!uxFolderFilter
     UXFolderFilterChanged = RefreshLibrary()
 End Function
+' Probe optional generated controls so adapters can tolerate form layout differences.
 Public Function UXHasControl(ByVal f As Access.Form, ByVal name As String) As Boolean
     On Error GoTo Missing
     Dim c As Access.Control: Set c = f.Controls(name): UXHasControl = True
 Missing:
 End Function
+' Store the modal decision and close the dialog for its waiting caller.
 Public Function UXDecide(ByVal decision As String) As Boolean
     TempVars!UXDecision = decision
     DoCmd.Close acForm, "frmUXDecision", acSaveNo
     UXDecide = True
 End Function
+' Open a modal decision dialog, defaulting to Cancel if no choice is completed.
 Public Function UXAsk(ByVal mode As String) As String
     On Error Resume Next: TempVars.Remove "UXDecision": On Error GoTo 0
     TempVars.Add "UXDecision", "Cancel"
     DoCmd.OpenForm "frmUXDecision", , , , , acDialog, mode
     UXAsk = CStr(TempVars!UXDecision): TempVars.Remove "UXDecision"
 End Function
+' Adapt decision wording for review, reporting-senior editing or report exit.
 Public Function UXLoadDecision() As Boolean
     With Forms!frmUXDecision
         If Nz(.OpenArgs, "") = "Review" Then
@@ -61,6 +79,8 @@ Public Function UXLoadDecision() As Boolean
     End With
     UXLoadDecision = True
 End Function
+' Flush visible pending values and save by default before leaving. A failed save
+' returns False and preserves the buffer; explicit discard clears the session checkpoint.
 Public Function UXPrepareEditorClose(Optional ByVal decision As String = "") As Boolean
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then UXPrepareEditorClose = True: Exit Function
     If editorCloseBusy Then Exit Function
@@ -84,11 +104,14 @@ Failed:
     UXShowSaveError "Unable to leave this report: " & Err.Description
     Resume Finished
 End Function
+' Authorize native form closure only after exit handling succeeds; checkpoint raw
+' values when a failed save blocks normal closure.
 Public Function UXEditorUnload() As Boolean
     If editorCloseAuthorized Then UXEditorUnload = True Else UXEditorUnload = UXPrepareEditorClose()
     ' Forced Access shutdown can ignore Cancel. Retain raw edits when saving fails.
     If Not UXEditorUnload Then CheckpointEditor
 End Function
+' Close the editor once exit handling succeeds, avoiding a duplicate unload save.
 Public Function UXLeaveEditor(Optional ByVal decision As String = "") As Boolean
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then UXLeaveEditor = True: Exit Function
     If Not UXPrepareEditorClose(decision) Then Exit Function
@@ -99,6 +122,7 @@ Public Function UXLeaveEditor(Optional ByVal decision As String = "") As Boolean
 Finished:
     editorCloseAuthorized = False
 End Function
+' Checkpoint and close the editor for backup without committing pending values as a revision.
 Public Function UXCloseEditorForBackup() As Boolean
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then UXCloseEditorForBackup = True: Exit Function
     On Error GoTo Failed
@@ -113,6 +137,7 @@ Failed:
     UXShowSaveError "Unable to checkpoint and close for backup: " & Err.Description
     Resume Finished
 End Function
+' Leave contributor/report editors safely before opening the requested workspace.
 Public Function UXNavigate(ByVal target As String) As Boolean
     On Error GoTo Failed
     If Not RSLeaveSeniorEditor() Then Exit Function
@@ -123,11 +148,14 @@ Public Function UXNavigate(ByVal target As String) As Boolean
 Failed:
     MsgBox Err.Description, vbExclamation, "Unable to open this workspace"
 End Function
+' Initialize the report workspace at its first official section.
 Public Function UXEditorStart() As Boolean
     currentSection = 0: currentPage = 0
     Call UXSelectSection(0)
     UXEditorStart = True
 End Function
+' Show the requested official/local section using the same unbound buffer. Section
+' changes preserve pending values and do not create report revisions.
 Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, tags As Variant, id As Long, locked As Boolean, maxPage As Long
     If section = 1 Then section = 0
@@ -168,13 +196,16 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     UXRefreshEditor
     UXSelectSection = True
 End Function
+' Return a changed report type to its first section so form-specific fields and captions refresh.
 Public Function UXEditorKindChanged() As Boolean
     Call EditorTypeChanged()
     UXEditorKindChanged = UXSelectSection(currentSection)
 End Function
+' Move within the current section's paging layout.
 Public Function UXEditorPage(ByVal delta As Long) As Boolean
     UXEditorPage = UXSelectSection(currentSection, currentPage + delta)
 End Function
+' Map legacy checkbox state into canonical saved-field values, then invalidate and refresh that field.
 Public Function UXFieldChanged(ByVal controlName As String, ByVal key As String) As Boolean
     Dim f As Access.Form, value As Variant
     Set f = Forms!frmEditor
@@ -184,9 +215,12 @@ Public Function UXFieldChanged(ByVal controlName As String, ByVal key As String)
     Else
         If IsNull(value) Then f.Controls("txt" & key) = Null Else If value Then f.Controls("txt" & key) = "Yes" Else f.Controls("txt" & key) = "No"
     End If
-    UXRefreshEditor: UXFieldChanged = True
+    Call UXEditorChanged(): UXRefreshEditor key: UXFieldChanged = True
 End Function
-Public Function UXRefreshEditor() As Boolean
+' Refresh pending header/ITA and field presentation. Membership and saved SGA are
+' read only when their context is invalidated or selected group/report changes; a field
+' key limits pending ITA work. Saved SGA never includes unsaved trait edits.
+Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boolean
     Dim f As Access.Form, id As Long, r As DAO.Recordset, db As DAO.Database, groups As Long, groupID As Long, total As Double, count As Long, average As Variant, c As Access.Control, key As String, raw As Variant, memberLabel As String, priorAlias As String
     Set f = Forms!frmEditor
     If Not UXHasControl(f, "uxDirty") Then Exit Function
@@ -196,8 +230,13 @@ Public Function UXRefreshEditor() As Boolean
     f!uxAlias.Caption = ""
     If Len(Trim$(Nz(f!txtMember, ""))) > 0 And Trim$(Nz(f!txtMember, "")) <> Trim$(Nz(f!txtOfficialName, "")) And Len(Trim$(Nz(f!txtOfficialName, ""))) > 0 Then f!uxAlias.Caption = "Local name: " & Replace(f!txtMember, "&", "&&")
     f!uxReport.Caption = Replace(memberLabel, "&", "&&") & vbCrLf & Nz(f!cboKind, "") & " | " & Nz(f!txtRankRate, "Grade / rate") & " | " & Nz(f!txtStart, "Start date") & " to " & Nz(f!txtEnd, "End date")
+    If changedKey = "" Or IsTraitKey(changedKey) Or changedKey = "ObservationStatus" Then
     f!uxITA.Caption = "ITA - pending: " & TraitSummary(TraitsFromEditor())
     If Nz(f!cboObservationStatus, "") = "NOB" Then f!uxITA.Caption = "ITA - pending: NOB (whole report)"
+    End If
+    id = Nz(f!txtReportID, 0)
+    If editorContextDirty Or editorContextReport <> id Or editorContextGroup <> Nz(f!uxGroup, 0) Then
+    editorGroupRefreshes = editorGroupRefreshes + 1
     id = Nz(f!txtReportID, 0): Set db = CurrentDb
     f!uxGroup.RowSource = "SELECT g.GroupID,g.Title FROM SummaryGroup AS g INNER JOIN GroupMember AS m ON g.GroupID=m.GroupID WHERE m.ReportID=" & id & " AND g.IsArchived=False ORDER BY g.Title"
     f!uxGroup.Requery
@@ -206,11 +245,11 @@ Public Function UXRefreshEditor() As Boolean
     If groups = 1 And IsNull(f!uxGroup) Then f!uxGroup = groupID
     If groups = 0 Then f!uxGroup = Null
     If Nz(f!uxGroup, 0) > 0 Then
-        Set r = db.OpenRecordset("SELECT r.CurrentRevisionID,r.ObservationStatus FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!uxGroup & " AND r.IsArchived=False", dbOpenSnapshot)
+        Set r = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!uxGroup & " AND r.IsArchived=False", dbOpenSnapshot)
         Do While Not r.EOF
             If Nz(r!ObservationStatus, "") <> "NOB" Then
                 For Each average In TraitKeys()
-                    raw = MajorRevisionValue(Nz(r!CurrentRevisionID, 0), CStr(average))
+                    raw = r.Fields(CStr(average)).Value
                     Select Case Nz(raw, "")
                         Case "1.0", "2.0", "3.0", "4.0", "5.0": total = total + CDbl(raw): count = count + 1
                     End Select
@@ -222,6 +261,8 @@ Public Function UXRefreshEditor() As Boolean
         If count > 0 Then f!uxSGA.Caption = "Summary Group Average - saved values: " & Format$(total / count, "0.00") & " (" & count & " graded traits; arithmetic only)" Else f!uxSGA.Caption = "Summary Group Average: unavailable (no graded traits)"
     Else
         f!uxSGA.Caption = "Summary Group Average: " & IIf(groups > 1, "choose the explicit group context", "not assigned to a group")
+    End If
+    editorContextReport = id: editorContextGroup = Nz(f!uxGroup, 0): editorContextDirty = False
     End If
     For Each c In f.Controls
         If Left$(c.Name, 5) = "uxChk" Then
@@ -235,6 +276,7 @@ Public Function UXRefreshEditor() As Boolean
     UXLivePaint
     UXRefreshEditor = True
 End Function
+' Keep pending values visible and explain how to undo them after a failed save.
 Public Function UXShowSaveError(ByVal message As String) As Boolean
     Dim f As Access.Form
     Set f = Forms!frmEditor
@@ -242,6 +284,8 @@ Public Function UXShowSaveError(ByVal message As String) As Boolean
     f!uxError.Caption = "Unable to save: " & message & " Pending values are preserved. Use Undo pending changes to reload the saved report and leave."
     UXShowSaveError = True
 End Function
+' Validate and flush the visible surface before the normal atomic draft save;
+' refresh saved context afterward and retain the editor buffer on failure.
 Public Function UXSaveEditor() As Boolean
     On Error GoTo Failed
     Dim f As Access.Form
@@ -256,13 +300,21 @@ Public Function UXSaveEditor() As Boolean
 Failed:
     UXShowSaveError Err.Description
 End Function
+' Delegate summary-group directory loading to its current list adapter.
 Public Function UXLoadGroups() As Boolean
     UXLoadGroups = UXGroupList()
 End Function
+' Open populated Members directly from the directory without creating a legacy
+' context host. prepareOnly and empty groups retain the existing group-management path.
 Public Function UXOpenGroup(Optional ByVal prepareOnly As Boolean = False) As Boolean
     On Error GoTo Failed
     groupContext = Nz(Forms!frmUXGroups!lstGroups, 0)
     If groupContext = 0 Then MsgBox "Choose a summary group.", vbInformation: Exit Function
+    If Not prepareOnly And DCount("*", "GroupMember", "GroupID=" & groupContext) > 0 Then
+        DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & groupContext
+        UXGroupTabState "frmUXComparison", 0
+        UXOpenGroup = True: Exit Function
+    End If
     DoCmd.Echo False
     If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , , "ContextOnly"
     Forms!frmMajorWorkbench!cboRun = Null
@@ -284,6 +336,7 @@ Failed:
     DoCmd.Echo True
     Err.Raise Err.Number, "UXOpenGroup", Err.Description
 End Function
+' Show the retained group tools for one mode and refresh their focused group context.
 Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
     Dim f As Access.Form, c As Access.Control, tags As Variant
     Set f = Forms!frmMajorWorkbench
@@ -300,6 +353,7 @@ Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
     UXFocusedGroupMode mode
     UXWorkbenchMode = True
 End Function
+' Populate available/member selections for explicit group membership editing.
 Public Function UXChooseMembers() As Boolean
     Dim f As Access.Form, i As Long, id As Long, kind As String
     groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
@@ -315,6 +369,7 @@ Public Function UXChooseMembers() As Boolean
     GroupMembersStart groupContext
     UXChooseMembers = True
 End Function
+' Apply selected membership changes and return to the group member view.
 Public Function UXSaveMembers() As Boolean
     Dim f As Access.Form, i As Long, id As Long, grade As String, w As DAO.Workspace, started As Boolean
     On Error GoTo Failed
@@ -334,6 +389,8 @@ Failed:
     If started Then w.Rollback
     Forms!frmUXMembers!lblStatus.Caption = Err.Description
 End Function
+' Open live Members or an explicitly requested historical comparison according to
+' the workbench mode; reuse an existing window rather than replacing its pending edits.
 Public Function UXOpenComparison() As Boolean
     Dim f As Access.Form, id As Long, snapshot As Long, title As String
     On Error GoTo Failed
@@ -343,45 +400,51 @@ Public Function UXOpenComparison() As Boolean
         f!lblStatus.Caption = "A comparison is already open. Finish or close it before opening another group comparison."
         Exit Function
     End If
-    id = 0
-    If id = 0 Then
-        snapshot = FreezeSummaryGroup(Nz(f!cboGroup, 0), "Automatically captured for comparison; membership eligibility is not certified.")
+    If Nz(f!uxMode, "Members") = "Comparison" Then
         title = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & Nz(f!cboGroup, 0)), "Comparison")
-        id = CreateComparisonSet(snapshot, title & " comparison"): f!cboMeeting = id
+        id = ReuseGroupComparison(Nz(f!cboGroup, 0), title & " comparison"): f!cboMeeting = id
+        DoCmd.OpenForm "frmUXComparison", , , , , , CStr(id)
+    Else
+        DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & Nz(f!cboGroup, 0)
     End If
-    DoCmd.OpenForm "frmUXComparison", , , , , , CStr(id)
     UXGroupTabState "frmUXComparison", IIf(Nz(f!uxMode, "Members") = "Members", 0, 3)
     UXOpenComparison = True: Exit Function
 Failed:
     Forms!frmMajorWorkbench!lblStatus.Caption = Err.Description
 End Function
+' Resolve live-group or historical-set context and load the editable grid plus one
+' proposal preview; no duplicate hidden roster query is required.
 Public Function UXLoadComparison() As Boolean
     Dim f As Access.Form, block As Long, sql As String
-    Set f = Forms!frmUXComparison: f!txtMeeting = CLng(f.OpenArgs)
-    f!lblHeading.Caption = Nz(MajorScalar("SELECT Title FROM ComparisonSet WHERE SetID=" & f!txtMeeting), "Comparison")
-    sql = "SELECT ReportID,UXRevisionMemberLabel(RevisionID) AS Member"
-    For block = 33 To 39: sql = sql & ",MajorRevisionValue(RevisionID,'Trait" & block & "') AS T" & block: Next
-    sql = sql & ",NumericTraitAverage(RevisionID) AS ITA,MajorRevisionValue(RevisionID,'PromotionRecommendation') AS Recommendation,RevisionID FROM ComparisonMember WHERE SetID=" & f!txtMeeting & " ORDER BY SortOrdinal"
-    f!lstTraits.RowSource = sql: f!lstTraits.Requery
-    f!lstProposals.RowSource = "SELECT p.ProposalID,UXIdentity(r.OfficialName,r.MemberName) AS Member,UXFieldLabel(p.FieldKey),p.ValueText,p.ProposalState FROM MeetingProposal AS p INNER JOIN Report AS r ON p.ReportID=r.ReportID WHERE p.SetID=" & f!txtMeeting & " ORDER BY p.ProposalID DESC"
-    f!lstProposals.Requery
+    Set f = Forms!frmUXComparison
+    If Left$(Nz(f.OpenArgs, ""), 2) = "G:" Then
+        f!txtMeeting = 0: f!uxGroupContext = CLng(Mid$(f.OpenArgs, 3))
+        f!lblHeading.Caption = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & f!uxGroupContext), "Group") & " members"
+    Else
+        f!txtMeeting = CLng(f.OpenArgs)
+        f!lblHeading.Caption = Nz(MajorScalar("SELECT Title FROM ComparisonSet WHERE SetID=" & f!txtMeeting), "Comparison")
+        f!uxGroupContext = Nz(MajorScalar("SELECT g.GroupID FROM GroupSnapshot AS g INNER JOIN ComparisonSet AS c ON g.SnapshotID=c.GroupSnapshotID WHERE c.SetID=" & f!txtMeeting), 0)
+    End If
     UXRefreshComparisonPreview
     UXGridLoad
     If UXHasControl(f, "uxMarksPage") Then UXComparisonPage "Marks"
     UXLoadComparison = True
 End Function
+' Populate the retained proposal adapter from the active grid row and its saved
+' revision; the obsolete hidden roster selector is no longer required.
 Public Function UXSelectComparisonMember() As Boolean
     Dim f As Access.Form, block As Long, id As Long, locked As Boolean
-    Set f = Forms!frmUXComparison: id = Nz(f!lstTraits, 0): If id = 0 Then Exit Function
-    For block = 33 To 39: f.Controls("cboTrait" & block) = f!lstTraits.Column(block - 31): Next
-    f!cboPromotion = f!lstTraits.Column(10)
+    Set f = Forms!frmUXComparison: id = Nz(f!uxTraitGrid.Form!ReportID, 0): If id = 0 Then Exit Function
+    For block = 33 To 39: f.Controls("cboTrait" & block) = MajorRevisionValue(f!uxTraitGrid.Form!RevisionID, "Trait" & block): Next
+    f!cboPromotion = MajorRevisionValue(f!uxTraitGrid.Form!RevisionID, "PromotionRecommendation")
     locked = Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & id), True) Or Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & id), "") <> "Draft"
     f!cmdStage.Enabled = Not locked
     For block = 33 To 39: f.Controls("cboTrait" & block).Locked = locked: Next
     f!cboPromotion.Locked = locked
-    f!uxMember.Caption = Nz(f!lstTraits.Column(1), "") & IIf(locked, " - locked; reopen in the report workspace to edit", " - proposed edits; stage and review before Apply")
+    f!uxMember.Caption = Nz(f!uxTraitGrid.Form!Member, "") & IIf(locked, " - locked; reopen in the report workspace to edit", " - proposed edits; stage and review before Apply")
     Call UXComparisonAverage: UXSelectComparisonMember = True
 End Function
+' Display the proposed trait average from the retained proposal controls.
 Public Function UXComparisonAverage() As Boolean
     Dim values As Variant, i As Long
     values = Array(Null, Null, Null, Null, Null, Null, Null)
@@ -389,12 +452,19 @@ Public Function UXComparisonAverage() As Boolean
     Forms!frmUXComparison!uxITA.Caption = "Proposed ITA: " & TraitSummary(values)
     UXComparisonAverage = True
 End Function
+' Stage changes against the selected row's saved revision. Materialize a durable
+' comparison only for explicit proposal work; do not modify saved reports during staging.
 Public Function UXStageComparison() As Boolean
     Dim f As Access.Form, id As Long, revision As Long, block As Long, before As Variant, value As Variant, count As Long, w As DAO.Workspace, started As Boolean
     On Error GoTo Failed
-    Set f = Forms!frmUXComparison: id = Nz(f!lstTraits, 0)
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before staging proposals."
+    Set f = Forms!frmUXComparison: id = Nz(f!uxTraitGrid.Form!ReportID, 0)
     If id = 0 Then Err.Raise vbObjectError + 4700, , "Choose a member in the comparison grid."
-    revision = Nz(f!lstTraits.Column(11), 0)
+    revision = Nz(f!uxTraitGrid.Form!RevisionID, 0)
+    If CurrentRevision(id) <> revision Then Err.Raise vbObjectError + 4810, , "Saved report changed. Reopen Members before staging proposals."
+    If Nz(f!txtMeeting, 0) = 0 Then
+        f!txtMeeting = ReuseGroupComparison(f!uxGroupContext, "Group proposals")
+    End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans: started = True
     For block = 33 To 39
         before = MajorRevisionValue(revision, "Trait" & block): value = f.Controls("cboTrait" & block).Value
@@ -403,7 +473,7 @@ Public Function UXStageComparison() As Boolean
     before = MajorRevisionValue(revision, "PromotionRecommendation"): value = f!cboPromotion.Value
     If Not SameFieldValue(before, value) Then ProposeMeetingField f!txtMeeting, id, "PromotionRecommendation", value: count = count + 1
     w.CommitTrans: started = False
-    UXLoadComparison
+    UXGridLoad: UXRefreshComparisonPreview
     f!lblStatus.Caption = count & " proposals staged. Saved reports are unchanged. Select one proposal per field below, then Apply."
     If UXHasControl(f, "uxPreviewPage") And count > 0 Then UXComparisonPage "Preview"
     UXStageComparison = True: Exit Function
@@ -411,9 +481,12 @@ Failed:
     If started Then w.Rollback
     Forms!frmUXComparison!lblStatus.Caption = Err.Description
 End Function
+' Apply selected reviewed proposals atomically, then show results and treat that
+' comparison as historical; pending direct-edit cells must be resolved first.
 Public Function UXApplyComparison() As Boolean
     Dim item As Variant, csv As String
     On Error GoTo Failed
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before applying proposals."
     For Each item In Forms!frmUXComparison!lstProposals.ItemsSelected
         If Len(csv) > 0 Then csv = csv & ","
         csv = csv & Forms!frmUXComparison!lstProposals.ItemData(item)
@@ -429,6 +502,7 @@ Public Function UXApplyComparison() As Boolean
 Failed:
     Forms!frmUXComparison!lblStatus.Caption = Err.Description & " No partial proposal batch was applied."
 End Function
+' Resolve whether review should use saved or pending values before opening saved-revision review.
 Public Function UXEditorReview(ByVal mode As String) As Boolean
     Dim decision As String, f As Access.Form, i As Long, id As Long
     If EditorHasPending() Then
@@ -445,6 +519,8 @@ Public Function UXEditorReview(ByVal mode As String) As Boolean
     DoCmd.OpenForm "frmUXReview", , , , , , CStr(id)
     UXEditorReview = True
 End Function
+' Seed the contextual shared-block/default editor from saved values, tracking mixed
+' fields and inherited defaults without changing reports.
 Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False, Optional ByVal globalMode As Boolean = False) As Boolean
     Dim r As DAO.Recordset, key As Variant, values As Object, f As Access.Form, seen As Boolean, base As Object, db As DAO.Database
     If globalMode Then groupContext = 0 Else groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
@@ -514,6 +590,7 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False,
     Call UXBulkSection(0)
     UXStartGroupBulk = True
 End Function
+' Capture one explicit bulk edit and invalidate any preview based on older pending values.
 Public Function UXBulkChanged(ByVal key As String) As Boolean
     If Not bulkDefaultResets Is Nothing Then
         If bulkDefaultResets.Exists(key) Then bulkDefaultResets.Remove key
@@ -535,6 +612,7 @@ Public Function UXBulkChanged(ByVal key As String) As Boolean
     Forms!frmUXBulk!uxStatus.Caption = bulkChanges.Count & " changed entries staged; no report revisions saved."
     UXBulkChanged = True
 End Function
+' Clear the staged apply context when values or reason change; disable Apply until previewed again.
 Public Function UXInvalidateBulkPreview(Optional ByVal clearPreview As Boolean = True) As Boolean
     bulkBatch = 0: bulkPreviewReason = "": bulkPreviewStamp = ""
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
@@ -549,17 +627,22 @@ Public Function UXInvalidateBulkPreview(Optional ByVal clearPreview As Boolean =
     End If
     UXInvalidateBulkPreview = True
 End Function
+' Expose a staged block value to Access preview expressions.
 Public Function UXBulkPending(ByVal key As String) As Variant
     UXBulkPending = bulkDefaultPreview(key)
 End Function
+' Expose the saved effective default captured before preview to Access expressions.
 Public Function UXBulkBefore(ByVal key As String) As Variant
     UXBulkBefore = bulkDefaultBefore(key)
 End Function
+' Navigate the shared-block editor's section without applying changes.
 Public Function UXBulkSection(ByVal section As Long, Optional ByVal page As Long = 0) As Boolean
     If section = 1 Then section = 0
     Forms!frmUXBulk!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
     UXBlockMode "Edit": UXBulkSection = UXBlockLayout(section)
 End Function
+' Validate edited blocks and capture complete before/after values and context stamps.
+' Preview remains separate from the later atomic apply.
 Public Function UXPreviewBulk() As Boolean
     On Error GoTo Failed
     UXInvalidateBulkPreview
@@ -594,6 +677,8 @@ Public Function UXPreviewBulk() As Boolean
 Failed:
     Forms!frmUXBulk!uxStatus.Caption = Err.Description
 End Function
+' Reject a changed preview/context, then commit defaults or the report batch through
+' the appropriate transactional service; stale previews are invalidated before writes.
 Public Function UXApplyBulk() As Boolean
     On Error GoTo Failed
     If bulkBatch = 0 Then Err.Raise vbObjectError + 4702, , "Preview the current changes before applying."
@@ -628,9 +713,11 @@ Failed:
     If started Then w.Rollback
     Forms!frmUXBulk!uxStatus.Caption = Err.Description & " No partial batch was applied."
 End Function
+' Return whether the shared-block editor currently edits defaults rather than saved reports.
 Public Function UXEditingDefaults() As Boolean
     UXEditingDefaults = bulkDefaults
 End Function
+' Stage removal of a group/global default override so parent inheritance can apply again.
 Public Function UXResetDefault(ByVal key As String) As Boolean
     Dim value As Variant, c As Access.Control
     If Not bulkDefaults Then Exit Function
@@ -646,6 +733,7 @@ Public Function UXResetDefault(ByVal key As String) As Boolean
     UXInvalidateBulkPreview
     UXResetDefault = True
 End Function
+' Show complete values for the selected preview item, outside its condensed row.
 Public Function UXBulkDetail() As Boolean
     Dim id As Long, r As DAO.Recordset, db As DAO.Database
     If bulkDefaults Then
@@ -659,6 +747,7 @@ Public Function UXBulkDetail() As Boolean
     Forms!frmUXBulk!txtFullValues = UXFieldLabel(r!FieldKey) & vbCrLf & "BEFORE:" & vbCrLf & Nz(r!BeforeValue, "(not entered)") & vbCrLf & "AFTER:" & vbCrLf & Nz(r!NewValue, "(clear value)")
     r.Close: UXBulkDetail = True
 End Function
+' Update workspace/contributor headers only when their text changes and resize the active workspace.
 Public Function UXLoadContext() As Boolean
     Dim f As Access.Form, active As Access.Form, context As String
     context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace"), 0)), ""), "&", "&&")
@@ -677,10 +766,12 @@ Public Function UXLoadContext() As Boolean
     UXLoadContext = True
 End Function
 
+' Close a utility form without saving design changes.
 Public Function UXCloseScreen(ByVal formName As String) As Boolean
     DoCmd.Close acForm, formName, acSaveNo
     UXCloseScreen = True
 End Function
+' Return resource tools to Resources; snippets use their report-return adapter instead.
 Public Function UXCloseResource(ByVal formName As String) As Boolean
     If formName = "frmSnippets" Then UXCloseResource = UXReturnSnippets(): Exit Function
     DoCmd.Close acForm, formName, acSaveNo
@@ -688,6 +779,7 @@ Public Function UXCloseResource(ByVal formName As String) As Boolean
     UXCloseResource = True
 End Function
 
+' Load retained group-tool selectors, skipping the Members refresh when opened as a context-only host.
 Public Function UXLoadWorkbench() As Boolean
     If Not LoadMajorWorkbench() Then Exit Function
     If Nz(Forms!frmMajorWorkbench.OpenArgs, "") <> "ContextOnly" Then Call UXWorkbenchMode("Members")
@@ -695,6 +787,7 @@ Public Function UXLoadWorkbench() As Boolean
 End Function
 
 
+' Refresh workflow locks only when the affected report is the open editor.
 Public Function UXRefreshEditorWorkflow(ByVal reportID As Long) As Boolean
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then UXRefreshEditorWorkflow = True: Exit Function
     If Nz(Forms!frmEditor!txtReportID, 0) <> reportID Then UXRefreshEditorWorkflow = True: Exit Function
@@ -702,6 +795,7 @@ Public Function UXRefreshEditorWorkflow(ByVal reportID As Long) As Boolean
     UXRefreshEditorWorkflow = UXSelectSection(currentSection, currentPage)
 End Function
 
+' Detect a live bulk preview or staged field/default edits before allowing a group-page exit.
 Public Function UXGroupBulkPending() As Boolean
     If Not bulkChanges Is Nothing Then UXGroupBulkPending = (bulkChanges.Count > 0)
 End Function

@@ -66,17 +66,18 @@ Public Function TestRSDirectory() As String
     Forms!frmUXSeniors!lstSeniors = senior: Check RSOpenSenior(), "Directory record failed to open"
     Set f = Forms!frmUXSeniorEditor: Check f!rsReportingSeniorSSN = "000123456", "Directory UI lost SSN"
     Call RSSelectSeniorPage(1): Check f!rsReportingSeniorAddress1.Visible, "Address section hidden"
-    Call RSSelectSeniorPage(2): Check f!rsReportingSeniorLastName.Visible, "Name parts section hidden"
+    Call RSSelectSeniorPage(2): Check Not f!rsReportingSeniorLastName.Visible, "Redundant name parts exposed"
     Call RSSelectSeniorPage(3): f!cboPaygrade = "E6": f!txtAsOf = "2026-02-30": f!txtRSCA = "4.00": f!txtTraitCount = "10"
     Check Not RSAddBaselineUI(), "Invalid baseline date accepted"
     Check f!txtAsOf = "2026-02-30", "Baseline failure lost pending values"
     f!txtAsOf = "2026-04-01": Check RSAddBaselineUI(), "Baseline UI save failed"
     DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
     stage = "comparison UI": DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID
+    Forms!frmMajorWorkbench!uxMode = "Comparison"
     snapshot = DCount("*", "GroupSnapshot"): Check UXOpenComparison(), "Automatic comparison failed"
     Check DCount("*", "GroupSnapshot") = snapshot + 1, "Comparison did not automatically capture baseline"
-    Forms!frmUXComparison!lstTraits = reportID
-    Check Forms!frmUXComparison!lstTraits.Column(0) = reportID, "Comparison roster not loaded"
+    Forms!frmUXComparison!uxTraitGrid.Form.Recordset.FindFirst "ReportID=" & reportID
+    Check Forms!frmUXComparison!uxTraitGrid.Form!ReportID = reportID, "Comparison roster not loaded"
     Check UXSelectComparisonMember(), "Inline comparison controls did not load"
     stage = "group calculator UI"
     Check RSOpenGroupCalculator(), "Group calculator failed to open"

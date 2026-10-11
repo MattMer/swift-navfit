@@ -1,0 +1,32 @@
+{
+  "Artifacts": [
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Blank_2026-10-10-r101.accdb",
+      "SHA256": "3B0E82D37CDFEE3832F1440F7972684853B9EF73C11D00449F8F6E45EFB2B8C4"
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-10-r101.accdb",
+      "SHA256": "2662E59E7690788DFE4A9E09F8863BFB6D67F5A1F19165BD523726DFB3E8A029"
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_TestWorkspace_2026-10-10-r101.accdb",
+      "SHA256": "81570A69DD4F3237148D6B109D80DD51A93E6E13DC5FF0F0DE96BEB208EDFCA3"
+    }
+  ],
+  "LiveCellSaveAddedGroupSnapshots": 0,
+  "Schema": 25,
+  "Date": "2026-10-10",
+  "Candidate": "r101",
+  "NavigationAddedHistoryRows": 0,
+  "Checks": [
+    "61 live/historical assertions",
+    "42 pending-cell assertions",
+    "26 approval retry assertions",
+    "native events all report types",
+    "queue coalescing/retry",
+    "354 author UI checks",
+    "49 user tables identical"
+  ],
+  "RowFocusGuardDatabaseQueries": 0,
+  "SpeedupEstablished": false
+}

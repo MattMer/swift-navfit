@@ -2,14 +2,18 @@ Attribute VB_Name = "modUXGroupPages"
 Option Explicit
 Private createGroup As Long, createGroupStamp As String, createDefaultStamp As String
 Private createdReport As Long, createdReportGroup As Long
+' Route group tabs with one resolved context and member count. Keep Members/Comparison
+' in the live view, preserve pending-cell/bulk guards, and keep the required Defaults
+' context host hidden; always resume painting after a transition failure.
 Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As Boolean
-    Dim id As Long, modes As Variant
+    Dim id As Long, modes As Variant, members As Long
     On Error GoTo Failed
     id = Nz(Forms(screen)!uxGroupContext, 0)
     If id = 0 Then Exit Function
     If screen = "frmUXComparison" And (page = 0 Or page = 3) Then
         UXGroupTabState screen, page
-        UXGroupNavigate = True: Exit Function
+        DoCmd.Echo True
+    UXGroupNavigate = True: Exit Function
     End If
     If screen = "frmUXBulk" And page = 1 Then
         If Forms(screen)!lblHeading.Caption = "Group defaults" Then UXGroupNavigate = True: Exit Function
@@ -21,34 +25,36 @@ Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As B
         End If
         DoCmd.Close acForm, "frmUXBulk", acSaveNo
     End If
-    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then DoCmd.Close acForm, "frmUXComparison", acSaveNo
-    If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
-    Forms!frmMajorWorkbench!cboGroup = id
-    modes = Array("Members", "Defaults", "Review", "Comparison", "History")
-    If (page = 0 Or page = 3) And DCount("*", "GroupMember", "GroupID=" & id) > 0 Then
-        Forms!frmMajorWorkbench!uxMode = CStr(modes(page))
+    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+        If Not UXCloseComparison(False) Then Exit Function
+    End If
+    If (page = 0 Or page = 1 Or page = 3) And CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then Forms!frmMajorWorkbench.Visible = False
+    DoCmd.Echo False
+    members = DCount("*", "GroupMember", "GroupID=" & id)
+    If (page = 0 Or page = 3) And members > 0 Then
+        DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id
+        UXGroupTabState "frmUXComparison", page
     Else
-        UXWorkbenchMode CStr(modes(page))
-        If page <> 1 Then
-            Forms!frmMajorWorkbench.Visible = True
-            Forms!frmMajorWorkbench.SetFocus
+        If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
+        Forms!frmMajorWorkbench.Visible = False
+        Forms!frmMajorWorkbench!cboGroup = id
+        modes = Array("Members", "Defaults", "Review", "Comparison", "History")
+        If page = 1 Then
+            If Not UXOpenGroupDefaults() Then DoCmd.Echo True: Exit Function
+            Forms!frmMajorWorkbench.Visible = False
+            If CurrentProject.AllForms("frmUXBulk").IsLoaded Then Forms!frmUXBulk!uxGroupContext = id
+        Else
+            UXWorkbenchMode CStr(modes(page))
+            Forms!frmMajorWorkbench.Visible = True: Forms!frmMajorWorkbench.SetFocus
         End If
     End If
-    Select Case page
-        Case 0, 3
-            If DCount("*", "GroupMember", "GroupID=" & id) > 0 Then
-                UXOpenComparison
-                Forms!frmUXComparison!uxGroupContext = id
-                UXGroupTabState "frmUXComparison", page
-            End If
-        Case 1
-            UXOpenGroupDefaults
-            If CurrentProject.AllForms("frmUXBulk").IsLoaded Then Forms!frmUXBulk!uxGroupContext = id
-    End Select
+    DoCmd.Echo True
     UXGroupNavigate = True: Exit Function
 Failed:
+    DoCmd.Echo True
     MsgBox Err.Description, vbExclamation, "Summary group"
 End Function
+' Mark the active group tab and show group actions only when a group context exists.
 Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long) As Boolean
     Dim i As Long, f As Access.Form
     Set f = Forms(screen)
@@ -59,9 +65,12 @@ Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long) As B
     If UXHasControl(f, "uxAddGroupReport") Then f!uxAddGroupReport.Visible = (Nz(f!uxGroupContext, 0) > 0)
     UXGroupTabState = True
 End Function
+' Open report creation from a saved group/default baseline, refusing pending cells,
+' unapplied bulk changes or archived groups.
 Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before adding a report."
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
         If UXGroupBulkPending() Then
             Forms!frmUXBulk!uxStatus.Caption = "Apply the previewed defaults or close this tool before adding a report. New reports use saved starting defaults."
@@ -81,6 +90,7 @@ Public Function UXGroupAddReport(ByVal screen As String) As Boolean
 Failed:
     MsgBox Err.Description, vbExclamation, "Add report"
 End Function
+' Copy the selected directory identity and version into the creation form without saving it.
 Public Function UXGroupReportMember() As Boolean
     Dim f As Access.Form
     Set f = Forms!frmUXGroupReport
@@ -88,6 +98,8 @@ Public Function UXGroupReportMember() As Boolean
     f!txtName = f!cboMember.Column(1): f!txtRank = f!cboMember.Column(2): f!txtOfficial = f!cboMember.Column(3): f!txtSSN = f!cboMember.Column(4): f!txtMemberVersion = f!cboMember.Column(5)
     UXGroupReportMember = True
 End Function
+' Validate member identity, dates, group/default baselines and duplicate periods, then
+' create the report and membership in one transaction using inherited starting values.
 Public Function CreateGroupDraft(ByVal groupID As Long, ByVal groupBaseline As String, ByVal defaultBaseline As String, ByVal memberID As Long, ByVal memberVersion As Long, ByVal name As String, ByVal official As String, ByVal rank As String, ByVal ssn As String, ByVal startEntry As Variant, ByVal endEntry As Variant) As Long
     Dim w As DAO.Workspace, values As Object, key As Variant, kind As String, grade As String, id As Long, startDate As Variant, endDate As Variant, failure As Long, message As String
     If Trim$(name) = "" Or Len(name) > 120 Then Err.Raise vbObjectError + 7061, , "Enter a member name within 120 characters."
@@ -135,9 +147,11 @@ Failed:
     On Error Resume Next: DirectoryCreationContext 0: w.Rollback
     On Error GoTo 0: Err.Raise failure, "CreateGroupDraft", message
 End Function
+' Create the pending report from its captured context and open it for editing; retain errors in the dialog.
 Public Function UXGroupReportCreate() As Boolean
     Dim f As Access.Form, id As Long
     On Error GoTo Failed
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before creating a report."
     Set f = Forms!frmUXGroupReport
     id = CreateGroupDraft(createGroup, createGroupStamp, createDefaultStamp, Nz(f!cboMember, 0), Nz(f!txtMemberVersion, 0), Nz(f!txtName, ""), Nz(f!txtOfficial, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), f!txtFrom, f!txtTo)
     DoCmd.Close acForm, f.Name, acSaveNo
@@ -156,6 +170,7 @@ Failed:
         f!lblStatus.Caption = Err.Description
     End If
 End Function
+' Return to the originating group after its newly created report closes.
 Public Function UXGroupCreatedReportClose() As Boolean
     Dim id As Long, groupID As Long
     On Error GoTo Failed

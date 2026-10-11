@@ -1,0 +1,60 @@
+﻿{
+    "Date":  "2026-10-10",
+    "Basis":  "Separate scratch copy/session; EVAL groups only; 3 cache reloads and 5 unchanged average refreshes per size; COM stopwatch includes overhead",
+    "Rows":  [
+                 {
+                     "AverageRefreshMedianMs":  9.26,
+                     "CacheReloadRawMs":  [
+                                              189.4163,
+                                              133.59730000000002,
+                                              185.9499
+                                          ],
+                     "OpenMs":  952.67500000000007,
+                     "AverageRefreshRawMs":  [
+                                                 8.6485,
+                                                 11.863100000000001,
+                                                 9.2580000000000009,
+                                                 8.877,
+                                                 10.899000000000001
+                                             ],
+                     "CacheReloadMedianMs":  185.95,
+                     "Size":  25
+                 },
+                 {
+                     "AverageRefreshMedianMs":  9.05,
+                     "CacheReloadRawMs":  [
+                                              328.456,
+                                              259.2117,
+                                              271.9646
+                                          ],
+                     "OpenMs":  945.0535000000001,
+                     "AverageRefreshRawMs":  [
+                                                 11.6814,
+                                                 10.0893,
+                                                 9.0465,
+                                                 7.3621000000000008,
+                                                 8.5808
+                                             ],
+                     "CacheReloadMedianMs":  271.96,
+                     "Size":  50
+                 },
+                 {
+                     "AverageRefreshMedianMs":  10.41,
+                     "CacheReloadRawMs":  [
+                                              311.0178,
+                                              392.9827,
+                                              366.4524
+                                          ],
+                     "OpenMs":  1098.5401000000002,
+                     "AverageRefreshRawMs":  [
+                                                 9.1173,
+                                                 10.634,
+                                                 10.4092,
+                                                 11.9862,
+                                                 6.4379
+                                             ],
+                     "CacheReloadMedianMs":  366.45,
+                     "Size":  100
+                 }
+             ]
+}

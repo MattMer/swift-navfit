@@ -1,3 +1,31 @@
+## 2026-10-10 - r103 blank deployment prepared
+
+Built latest source into a separate blank r103 file, compiled, verified empty user tables and setup startup, then passed exact-file scratch checks for Members, pending saves, approval retry and change-driven timers. README, deployment notes, verification and manifest updated for GitHub publication. Existing deployments/workspaces preserved.
+
+## 2026-10-10 - VBA function comments added
+
+Added purpose and decision comments to 117 functions/subroutines across nine source modules covering navigation, live validation, recovery, comparison queues, snapshots, defaults and transactional saves. Executable text is unchanged. Imported all nine modules into a scratch r102 blank database and compiled successfully. Deployment databases remain unchanged.
+
+## 2026-10-10 - larger synthetic groups measured
+
+Created a separate 525-report scale database: 25/50/100-report groups for each report type. Measured native group opens, row navigation, queued saves and editor opens on scratch copies. Row moves 5-7 ms; saves 93-110 ms; group opening 0.64-1.09 s; report editor opening 2.44-4.01 s. Exactly 90 tested edits produced 90 revisions and zero group-history rows. Next priority: profile editor startup before optimizing. See [scale results](SCALE_R102_2026-10-10.md). No production source or schema changes.
+
+## 2026-10-10 - r102 efficiency priorities 3-6 complete
+
+Completed targeted editor/group refresh caching; removed duplicate hidden comparison list and adapted proposal selection to the grid; routed Members directly and simplified group tab transitions; made validation/recovery timer work event-driven. Idle calls produce zero validation scans. Saved averages refresh after commit; typing and field-exit checks/recovery remain. All 49 user tables preserved; schema 25. See [implementation and verification](EFFICIENCY_R102_2026-10-10.md). Physical display/accessibility and scale performance verification remain outstanding.
+
+## 2026-10-10 - r101 live Members and cached display guards
+
+Completed single-user efficiency priorities 1 and 2. Members reads current reports directly and no longer creates historical snapshots on opening or direct cell saves. Row focus uses loaded state; authoritative checks run at save. Historical proposal baselines/conflict checks and pending-save recovery remain. Three group opens add zero history rows. All 49 user tables preserved; schema 25. See [implementation and verification](LIVE_MEMBERS_R101_2026-10-10.md). Next: target editor refreshes, prove/remove legacy comparison controls, then simplify group page navigation.
+
+## 2026-10-10 - r100 performance candidate
+
+Completed unchanged comparison baseline reuse, input-driven live validation caching, unchanged checkpoint write suppression, joined saved-average reads, and conditional comparison ITA writes. Three unchanged group opens add 8 rather than 24 history rows; timing speedup is not established. Pending-save safeguards retained; schema 25; all 49 user tables preserved. See [performance notes](PERFORMANCE_R100_2026-10-10.md). Successful cell-save snapshot creation remains a follow-up.
+
+## 10 October — r99 review priority 1 completed
+
+Queued-cell failure recovery now retains failed and later edits, offers Retry/Discard, cancels failed native closure, guards contributor attribution and prevents proposal/group operations bypassing pending cells. 42 failure-path checks pass, alongside existing save/approval/event/startup/UI suites and 49-table preservation. Details in PENDING_CELL_RECOVERY_R99_2026-10-10.md. Local r99 blank/demo/preserved workspace created; no publication. Priorities 2/3 (snapshot lifecycle and change-driven editor work) remain outstanding.
+
 ## Current — r97 RUAD import / refresh (9 October 2026)
 
 The user confirmed r96 resolves the interactive comparison save failure. r97 adds Resources → Command member directory → Import / refresh RUAD CSV: explicit identity selection, complete 35-column preview, six vacant-row skips, provisional new members, three-way roster refresh with manual conflict preservation, stale/duplicate guards and atomic apply/results. Source baseline/path/time use existing RUADData XML; schema remains 25. No absent members are automatically removed. Archive filter now says Archive status.

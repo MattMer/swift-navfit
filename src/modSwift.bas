@@ -22,6 +22,8 @@ Public Function NewIdentity() As String
     NewIdentity = Left$(buffer, result - 1)
 End Function
 
+' Bind DAO query parameters using an owned database reference kept alive until
+' execution completes; return RecordsAffected and let callers handle transactional failures.
 Private Function ExecuteParams(ByVal statement As String, ParamArray values() As Variant) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -95,6 +97,9 @@ Private Function FieldText(ByVal value As Variant) As Variant
     End If
 End Function
 
+' Validate and atomically commit report values, their revision snapshot and audit changes.
+' Keep the report write cursor alive through revision-pointer assignment to avoid DAO
+' lock failures; invalidate editor context after a successful local save.
 Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
     Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant) As Long
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
@@ -217,7 +222,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
-            r.Close: SyncReportDirectory reportID: w.CommitTrans: CommitDraft = reportID: Exit Function
+            r.Close: SyncReportDirectory reportID: w.CommitTrans: Call UXEditorContextChanged(): CommitDraft = reportID: Exit Function
         End If
         parentID = r!CurrentRevisionID
         Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
@@ -244,7 +249,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     r.Close: Set r = Nothing
     SyncReportDirectory reportID
     w.CommitTrans
-    CommitDraft = reportID
+    Call UXEditorContextChanged(): CommitDraft = reportID
     Exit Function
 Failed:
     Dim failure As Long, explanation As String
@@ -266,7 +271,7 @@ Public Function ArchiveDraft(ByVal reportID As Long, ByVal archived As Boolean) 
     w.BeginTrans
     ExecuteParams "PARAMETERS flag Bit, id Long; UPDATE Report SET IsArchived=flag, ModifiedAt=Now() WHERE ReportID=id", archived, reportID
     ExecuteParams "PARAMETERS id Long, author Long, action Text(40); INSERT INTO ReportEvent (ReportID,AuthorProfileID,EventAt,EventKind) VALUES (id,author,Now(),action)", reportID, pid, IIf(archived, "Archived", "Recovered")
-    w.CommitTrans: ArchiveDraft = True: Exit Function
+    w.CommitTrans: Call UXEditorContextChanged(): ArchiveDraft = True: Exit Function
 Failed:
     w.Rollback: Err.Raise Err.Number, "ArchiveDraft", Err.Description
 End Function

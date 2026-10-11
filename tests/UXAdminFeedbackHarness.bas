@@ -37,6 +37,7 @@ Public Function TestUXAdminFeedback() As String
     Check Forms!frmMajorWorkbench!uxMode1.OnClick = "=UXOpenGroupDefaults()", "Defaults requires intermediate navigation"
     Check Forms!frmMajorWorkbench!uxMode3.OnClick = "=UXOpenComparison()", "Comparison requires intermediate navigation"
     Check Forms!frmMajorWorkbench!lstReports.OnDblClick = "=UXGroupRowOpen()", "Member double click missing"
+    Forms!frmMajorWorkbench!uxMode = "Comparison"
     Check UXOpenComparison(), "Comparison failed"
     Set f = Forms!frmUXComparison: Set s = f!uxTraitGrid.Form
     Check s!Member.OnDblClick = "=UXGridOpenReport()", "Comparison name double click missing"

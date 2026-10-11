@@ -1,0 +1,32 @@
+{
+  "HistoryRowsBefore": 24,
+  "Schema": 25,
+  "HistoryRowsAfter": 8,
+  "Artifacts": [
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Blank_2026-10-10-r100.accdb",
+      "SHA256": "ECA67CDD638504A242A3D4E250ECBE647704C54CBBFCB2ABDC501CFEF318A39D"
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-10-r100.accdb",
+      "SHA256": "EF1AB5DB8978AF93A9E023A80F2E6A43116221B03183FC7586C6E16CDD727D81"
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_TestWorkspace_2026-10-10-r100.accdb",
+      "SHA256": "052E056D464F5F5D5A0954FC5DB75963C21908465F81B6D718435D8140037EFB"
+    }
+  ],
+  "Date": "2026-10-10",
+  "Checks": [
+    "16 performance assertions",
+    "42 pending-cell assertions",
+    "26 approved-trait assertions",
+    "35 recovery assertions and automatic timer",
+    "queued identity/coalescing/retry",
+    "354 author UI and navigation checks",
+    "demo normal startup",
+    "49 user tables identical"
+  ],
+  "Candidate": "r100",
+  "NavigationSpeedupEstablished": false
+}
