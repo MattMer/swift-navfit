@@ -15,8 +15,7 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Check Forms!frmImportReview!cmdImport.OnClick = "=UXApplyFullNAVFIT()", "Full apply not wired"
     Check Not Forms!frmImportReview!cmdImport.Enabled, "Apply enabled before preview"
     Forms!frmImportReview!lstImportReports = 2: Call ReviewReportFields
-    Check Not UXPreviewFullNAVFIT(), "Two-digit date century inferred"
-    Forms!frmImportReview!cboNAVFITCentury = 2000
+    Check UXPreviewFullNAVFIT(), "Automatic 20xx preview failed"
     Forms!frmImportReview!txtImportMember = "Synthetic local display"
     before = DCount("*", "Report")
     Check UXPreviewFullNAVFIT(), "Full preview failed"
@@ -69,7 +68,7 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Check UXNAVFITInputChanged() And Not Forms!frmNAVFITExchange!cmdExportGroup.Enabled, "Group preview not invalidated"
     Check Not UXExportNAVFITGroup(), "Unpreviewed group exported"
     Check UXPreviewNAVFITGroup() And UXExportNAVFITGroup(), "Reviewed group cannot export"
-    Check Len(Dir$(source & ".ui-group.accdb.swift-baseline.accdb")) > 0, "Group baseline absent"
+    Check Len(Dir$(Forms!frmNAVFITExchange!txtExportPath & ".swift-baseline.accdb")) > 0, "Group baseline absent at the actual generated export path"
     TestUXNAVFIT = "PASS: " & checks & " NAVFIT UI assertions": Exit Function
 Failed:
     TestUXNAVFIT = "FAIL after " & checks & " checks (" & phase & "): " & Err.Number & " " & Err.Source & " " & Err.Description

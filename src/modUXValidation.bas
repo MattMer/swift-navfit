@@ -97,6 +97,18 @@ Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False) As
     DoCmd.OpenForm "frmUXValidation", , , , , , context
     UXOpenValidation = True
 End Function
+' Export pages pass an explicit saved report/group context and expose every finding.
+Public Function UXExportReadiness(ByVal groupMode As Boolean) As Boolean
+    Dim id As Long, context As String
+    With Forms!frmNAVFITExchange
+        If groupMode Then id = Nz(!cboGroup, 0): context = "G:" Else id = Nz(!cboReport, 0): context = "R:"
+        If id = 0 Then !txtStatus = "Choose a report or summary group first.": Exit Function
+    End With
+    If CurrentProject.AllForms("frmUXValidation").IsLoaded Then DoCmd.Close acForm, "frmUXValidation", acSaveNo
+    priorSignature = "": pageIndex = 0: Set issues = Nothing
+    DoCmd.OpenForm "frmUXValidation", , , , , , context & id
+    UXExportReadiness = True
+End Function
 ' Evaluate current findings, including open pending values, and show 50 per page.
 ' The display signature suppresses redundant list repainting, not the underlying checks.
 Public Function UXLoadValidation() As Boolean

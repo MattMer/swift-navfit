@@ -140,6 +140,7 @@ try {
     $app.LoadFromText(5,'modNAVFITMapping',(Join-Path $root 'src\modNAVFITMapping.bas'))
     $app.LoadFromText(5,'modNAVFITExchange',(Join-Path $root 'src\modNAVFITExchange.bas'))
     $app.LoadFromText(5,'modNAVFITAdapter',(Join-Path $root 'src\modNAVFITAdapter.bas'))
+    $app.LoadFromText(5,'modNAVFITUpgrade',(Join-Path $root 'src/modNAVFITUpgrade.bas'))
     $app.LoadFromText(5,'modImportReview',(Join-Path $root 'src\modImportReview.bas'))
     function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
         $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
@@ -718,6 +719,12 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-directory-identity-picker.ps1')
 . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-admin-feedback.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-immediate-defaults.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-resource-tools.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-readiness.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-group-discovery.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-member-psg.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-import-rank.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)

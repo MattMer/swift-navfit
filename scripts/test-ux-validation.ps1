@@ -9,4 +9,4 @@ $app.LoadFromText(5,'UXValidationHarness',(Join-Path $root 'tests/UXValidationHa
 $result=$app.Eval('TestUXValidation()')
 if(-not $result.StartsWith('PASS:')){throw $result}
 Write-Output $result
-}finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+}finally{try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{};$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

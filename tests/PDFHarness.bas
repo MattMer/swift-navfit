@@ -10,12 +10,9 @@ Public Function TestPDFImport(ByVal directory As String) As String
         Set preview = PreviewStructuredPDF(path)
         If preview("FormKind") <> kind Then Err.Raise 5, , "Wrong PDF kind"
         count = count + 1: before = DCount("*", "Report")
-        On Error Resume Next
-        id = ImportPDFPreview("", "SSN"): failure = Err.Number <> 0: Err.Clear
-        On Error GoTo Failed
-        If Not failure Or DCount("*", "Report") <> before Then Err.Raise 5, , "Century rejection failed"
+        id = ImportPDFPreview("", "SSN")
+        If DCount("*", "Report") <> before + 1 Then Err.Raise 5, , "Automatic 20xx import failed"
         count = count + 1
-        id = ImportPDFPreview("20", "SSN")
         If MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & id) <> kind Then Err.Raise 5, , "Wrong committed kind"
         If MajorScalar("SELECT ShipStation FROM Report WHERE ReportID=" & id) <> "SYNTHETIC UNIT" Then Err.Raise 5, , "Wrong committed unit"
         If MajorScalar("SELECT PeriodStart FROM Report WHERE ReportID=" & id) <> #1/1/2026# Then Err.Raise 5, , "Wrong committed date"

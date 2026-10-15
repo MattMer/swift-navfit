@@ -92,7 +92,7 @@
     "CREATE UNIQUE INDEX UX_MajorComparison ON ComparisonMember (SetID,ReportID)",
     "CREATE TABLE ReportingSeniorRecord (SeniorID COUNTER PRIMARY KEY, SeniorGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, CreatedBy LONG NOT NULL, ModifiedAt DATETIME, VersionCounter LONG)",
     "CREATE TABLE ReportingSeniorValue (ValueID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText TEXT(255), IsNullValue BIT)",
-    "CREATE TABLE RSCABaseline (BaselineID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, Paygrade TEXT(2) NOT NULL, AsOfDate DATETIME NOT NULL, CurrentRSCA DOUBLE, TraitCount LONG NOT NULL, TraitSum DOUBLE, SourceNote TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME)",
+    "CREATE TABLE RSCABaseline (BaselineID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, Paygrade TEXT(5) NOT NULL, AsOfDate DATETIME NOT NULL, CurrentRSCA DOUBLE, TraitCount LONG NOT NULL, TraitSum DOUBLE, SourceNote TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME)",
     "CREATE TABLE GroupRSCABaseline (GroupID LONG PRIMARY KEY, SeniorID LONG NOT NULL, BaselineID LONG, ExcludesGroup BIT)",
     "ALTER TABLE ReportingSeniorRecord ADD CONSTRAINT FK_RSAuthor FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
     "ALTER TABLE ReportingSeniorValue ADD CONSTRAINT FK_RSValue FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",

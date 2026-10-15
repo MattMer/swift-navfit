@@ -370,6 +370,7 @@ Public Function UXGridRefreshAverages() As Boolean
     r.Close
     Forms!frmUXComparison!uxGridAverage.Caption = "Group trait average: " & IIf(count > 0, Format$(sum / IIf(count = 0, 1, count), "0.00"), "Unavailable") & " | " & count & " numeric traits | " & nob & " whole-report NOB excluded"
     Forms!frmUXComparison!uxTraitGrid.Form.Refresh
+    UXRefreshGroupSenior
     UXGridRefreshAverages = True
 End Function
 ' Populate full before/after proposal rows for the current comparison; optionally include applied results.

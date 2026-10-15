@@ -16,8 +16,18 @@ Private returnedFrozen As Object
 Private returnedNativeText As String
 Private returnedNativeBase As Object
 Private returnedNativeIncoming As Object
+Private reportReadiness As Collection
+Private groupReadiness As Collection
+Public Function NAVFITLastGroupReadiness() As Collection
+    Set NAVFITLastGroupReadiness = groupReadiness
+End Function
+' Return the findings from the saved revision actually exported by the service.
+Public Function NAVFITLastReportReadiness() As Collection
+    Set NAVFITLastReportReadiness = reportReadiness
+End Function
 Public Function NAVFITGroupPreview(ByVal groupID As Long, Optional ByVal usePSG As Boolean = False) As Object
     Dim result As Object, members As DAO.Recordset, values As Object, first As Object, key As Variant, id As Long, code As Variant, counts(0 To 5) As Long, psg As Object, text As String, token As String, title As String
+    Dim readiness As Collection, savedOnly As Object
     If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 5350, , "Choose an active summary group."
     title = CStr(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupID))
     If Len(title) > 50 Then Err.Raise vbObjectError + 5350, , "NAVFIT folder names allow 50 characters. Shorten this group name before exporting."
@@ -53,6 +63,10 @@ Public Function NAVFITGroupPreview(ByVal groupID As Long, Optional ByVal usePSG 
     End If
     text = text & "One native folder; saved revisions only. Native validation is required. Group-return reconciliation is not yet supported; keep this frozen baseline."
     token = GroupStamp(groupID) & "|" & CStr(usePSG) & "|" & NAVFITDisplay(psg("Value")) & "|" & psg("Reason") & "|" & CStr(psg("Estimated")) & "|" & CStr(psg("Partial"))
+    Set readiness = ValidateLiveGroup(groupID, , , False)
+    Set groupReadiness = readiness
+    text = text & vbCrLf & vbCrLf & ReadinessSummary(readiness)
+    result.Add "Readiness", readiness
     result.Add "Token", token: result.Add "Text", text: result.Add "Title", title: result.Add "PSG", psg("Value")
     For id = 0 To 5: result.Add "Count" & id, counts(id): Next
     Set NAVFITGroupPreview = result
@@ -111,7 +125,9 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
         If usePSG Then report!RSCA = CDec(Round(CDbl(preview("PSG")), 2))
         report.Update: report.Close: Set report = Nothing: members.MoveNext
     Loop
-    members.Close: Set members = Nothing: native.Close: Set native = Nothing
+    members.Close: Set members = Nothing
+    VerifyNativeGroupSummary native, preview
+    native.Close: Set native = Nothing
     FileCopy pending, pendingManifest: Set baseline = DBEngine.OpenDatabase(pendingManifest)
     baseline.Execute "CREATE TABLE SwiftGroupExport (WorkspaceGuid TEXT(38), GroupGuid TEXT(38), GroupID LONG, GroupToken LONGTEXT, OperationID LONG, UsePSG BIT)", dbFailOnError
     baseline.Execute "CREATE TABLE SwiftGroupReport (SwiftReportID LONG PRIMARY KEY, ReportGuid TEXT(38), BaseRevisionID LONG, ExternalReportID LONG, SourceReceiptID LONG, CounselingCentury LONG)", dbFailOnError
@@ -163,6 +179,7 @@ Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As 
     On Error GoTo Failed
     NAVFITCheckTarget reportID, False
     Set values = SavedFields(reportID): revision = CurrentRevision(reportID)
+    Set reportReadiness = ValidateLiveFields(values, reportID)
     If Len(Dir$(destination)) > 0 Or Len(Dir$(destination & ".swift-baseline.accdb")) > 0 Then Err.Raise vbObjectError + 5300, , "Choose a new export filename; existing files are not overwritten."
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 5300, , "Export filename must end in .accdb."
     receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
@@ -397,7 +414,7 @@ End Function
 
 Public Sub NAVFITRebuildSource(ByVal receiptID As Long, ByVal blankTemplate As String, ByVal destination As String)
     Dim db As DAO.Database, localDb As DAO.Database, rows As DAO.Recordset, cells As DAO.Recordset, table As Variant, q As DAO.QueryDef, names As String, parameterNames As String, i As Long, value As Variant, decimalMark As String
-    Dim failure As Long, message As String, stage As String, inserted As DAO.Recordset, rowID As Long, identityField As String
+    Dim failure As Long, message As String, stage As String, inserted As DAO.Recordset, rowID As Long, identityField As String, seenFields As Object
     On Error GoTo Failed
     decimalMark = Mid$(CStr(1.5), 2, 1)
     If InStr(Nz(MajorScalar("SELECT ValueEncoding FROM ImportReceipt WHERE ImportReceiptID=" & receiptID), ""), "decimal=" & decimalMark) = 0 Then Err.Raise vbObjectError + 5320, , "Retained values use another decimal encoding. Restore the original source or convert its provenance explicitly."
@@ -408,10 +425,15 @@ Public Sub NAVFITRebuildSource(ByVal receiptID As Long, ByVal blankTemplate As S
         Set rows = localDb.OpenRecordset("SELECT DISTINCT SourceRow FROM ImportRawValue WHERE ImportReceiptID=" & receiptID & " AND SourceTable=" & QuoteSQL(CStr(table)) & " ORDER BY SourceRow", dbOpenSnapshot)
         Do While Not rows.EOF
             Set cells = localDb.OpenRecordset("SELECT * FROM ImportRawValue WHERE ImportReceiptID=" & receiptID & " AND SourceTable=" & QuoteSQL(CStr(table)) & " AND SourceRow=" & rows!SourceRow & " ORDER BY FieldOrdinal", dbOpenSnapshot)
-            names = "": parameterNames = "": i = 0
+            names = "": parameterNames = "": i = 0: Set seenFields = CreateObject("Scripting.Dictionary")
             Do While Not cells.EOF
                 If i > 0 Then names = names & ",": parameterNames = parameterNames & ","
-                If cells!FieldOrdinal <> i Or cells!FieldKey <> db.TableDefs(CStr(table)).Fields(i).Name Or cells!DAOType <> db.TableDefs(CStr(table)).Fields(i).Type Then Err.Raise vbObjectError + 5321, , "Retained native row does not match the verified template."
+                ' The official v33 upgrader appends columns. Retain source ordinals for
+                ' provenance, but bind verified export columns by unique name/type.
+                If cells!FieldOrdinal <> i Or seenFields.Exists(CStr(cells!FieldKey)) Then Err.Raise vbObjectError + 5321, , "Duplicate or incomplete native provenance."
+                If Not NAVFITHasField(db.TableDefs(CStr(table)), CStr(cells!FieldKey)) Then Err.Raise vbObjectError + 5321, , "Unknown retained native field."
+                If cells!DAOType <> db.TableDefs(CStr(table)).Fields(CStr(cells!FieldKey)).Type Then Err.Raise vbObjectError + 5321, , "Retained native type does not match the verified template."
+                seenFields.Add CStr(cells!FieldKey), True
                 names = names & "[" & cells!FieldKey & "]"
                 ' DAO infers an empty text parameter as Null. A constant empty
                 ' string preserves the recorded distinction without interpolation.

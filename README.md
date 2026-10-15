@@ -10,9 +10,15 @@ See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](
 
 ## Current development baseline
 
-**r104 — 10 October 2026 · 0.25.0-dev · schema 25.** Download the [blank workspace and synthetic demo](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104). This build adds fixed, form-shaped comments fields with locked plain-text Courier New, consistent margins, live character counts and narrow-view wrapping disclosure. Overflow remains scrollable and fully saved. The demo includes Jamie Taylor's EVAL with the supplied synthetic Lorem Ipsum example. See [narrative layout and limitations](planning/NARRATIVE_LAYOUT_R104_2026-10-10.md) and [artifact verification](planning/NARRATIVE_LAYOUT_R104_VERIFICATION.json).
+**r113 — 15 October 2026 · 0.25.0-dev · schema 25.** Current tested downloads: [blank workspace](https://drive.google.com/file/d/1oVLR6_3xvLSnIydOmRxwbXCWXhRdkG6s/view) and [synthetic demo](https://drive.google.com/file/d/10Bqvj97rj4VyzMPIDPdYuy5LQULWuDx7/view). The latest GitHub-hosted deployment asset remains [r104](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104); source and current-state notes now cover r105–r113.
+
+Recent changes include automatic older NAVFIT schema conversion; immediate confirmed recursive defaults; reporting-senior RSCA tables and clearer group tools; shared live/saved/export readiness with policy references; visible import groups with unresolved paygrades; automatic PSG selection saving and group-page PSG refresh; SSN/unique-name matching and report-driven RUAD profile enrichment; automatic 20xx import dates; and paygrade/specific-rate filters for single and batch member report creation.
+
+The r113 candidate passed **668 relevant native assertions**, including real Acrobat extraction, import preview/apply safeguards, atomic group import, directory creation and identity/history/PSG behavior. Both builds compile/start, the blank has 48 checked user-data tables empty, and the demo has nine synthetic reports. See [r113 scope and verification](planning/IMPORT_RANK_R113_2026-10-15.md), [r112 member/PSG behavior](planning/MEMBER_PSG_R112_2026-10-15.md), and [r110 readiness coverage](planning/READINESS_R110_2026-10-14.md). Manual display, keyboard/screen-reader and printed-layout acceptance remain outstanding.
 
 It retains [r103's single-user performance and save-recovery improvements](planning/DEPLOYMENT_R103_2026-10-10.md). Larger synthetic groups were measured locally at 25/50/100 members per report type; see [scale results](planning/SCALE_R102_2026-10-10.md). Report editor startup is the next performance target. Exact printed wrapping, native round-trip and physical accessibility acceptance remain outstanding.
+
+Build scripts and individual change/verification notes for r105–r113 are in `scripts/` and `planning/`. Access databases, local test data and supplied NAVFIT program files remain excluded from Git; use the explicit download links above for the app.
 
 ## UI redesign under review
 
@@ -49,7 +55,7 @@ Internal review acceptance is separate from official approval. Local contributor
 
 ## Try the app
 
-Download the **blank r104 deployment** from the [current prerelease](https://github.com/MattMer/swift-navfit/releases/tag/deployment-2026-10-10-r104), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
+Download the **blank r113 workspace** from the [current Drive copy](https://drive.google.com/file/d/1oVLR6_3xvLSnIydOmRxwbXCWXhRdkG6s/view), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
 
 The release includes a separate blank workspace and synthetic demo. Use the demo for practice and the blank for a new workspace. Preserve existing workspaces and migrate their data into a separate blank file with an explicit `-TemplatePath`. Access Runtime and x86 environments have not been verified.
 

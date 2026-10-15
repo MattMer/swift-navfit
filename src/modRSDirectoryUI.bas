@@ -1,6 +1,7 @@
 Attribute VB_Name = "modRSDirectoryUI"
 Option Compare Binary
 Option Explicit
+Private loadingGroupCalculation As Boolean
 Private seniorInitial As Object
 Private seniorInitialTitle As String
 
@@ -9,14 +10,14 @@ Public Function RSLeaveSeniorEditor() As Boolean
     RSLeaveSeniorEditor = True
     If Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then Exit Function
     Set f = Forms!frmUXSeniorEditor
-    pendingBaseline = Len(Nz(f!txtAsOf, "")) > 0 Or Len(Nz(f!txtRSCA, "")) > 0 Or Len(Nz(f!txtTraitCount, "")) > 0 Or Len(Nz(f!txtTraitSum, "")) > 0 Or Len(Nz(f!txtSource, "")) > 0
+    pendingBaseline = RSTableDirty()
     If RSSeniorDirty() Or pendingBaseline Then
         decision = UXAsk("Senior")
         If decision = "Cancel" Then RSLeaveSeniorEditor = False: Exit Function
         If decision = "Save" Then
             If Not RSSaveSeniorUI() Then RSLeaveSeniorEditor = False: Exit Function
             If pendingBaseline Then
-                If Not RSAddBaselineUI() Then RSLeaveSeniorEditor = False: Exit Function
+                If Not RSSaveTable() Then RSLeaveSeniorEditor = False: Exit Function
             End If
         End If
     End If
@@ -46,7 +47,7 @@ Public Function RSLoadSeniorEditor() As Boolean
     seniorInitialTitle = Nz(MajorScalar("SELECT Title FROM ReportingSeniorRecord WHERE SeniorID=" & id), "")
     f!txtTitle = seniorInitialTitle: f!txtVersion = Nz(MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id), 0)
     For Each key In RSSeniorKeys(): f.Controls("rs" & key) = seniorInitial(CStr(key)): Next
-    RSReloadBaselines: RSSelectSeniorPage 0: RSLoadSeniorEditor = True
+    RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0: RSLoadSeniorEditor = True
 End Function
 Public Function RSReadSeniorUI() As Object
     Dim result As Object, key As Variant, c As Access.Control
@@ -88,11 +89,12 @@ Public Function RSSelectSeniorPage(ByVal page As Long) As Boolean
     For Each c In Forms!frmUXSeniorEditor.Controls
         If Left$(c.Tag, 3) = "SR:" Then c.Visible = (CLng(Mid$(c.Tag, 4)) = page)
     Next
+    RSTablePage page
     RSSelectSeniorPage = True
 End Function
 Public Function RSReloadBaselines() As Boolean
     Forms!frmUXSeniorEditor!lstBaselines.RowSource = "SELECT Paygrade,AsOfDate,CurrentRSCA,TraitCount,TraitSum,SourceNote FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " ORDER BY AsOfDate DESC,BaselineID DESC"
-    Forms!frmUXSeniorEditor!lstBaselines.Requery: RSReloadBaselines = True
+    Forms!frmUXSeniorEditor!lstBaselines.Requery: RSTableReloadVisible: RSReloadBaselines = True
 End Function
 Public Function RSAddBaselineUI() As Boolean
     Dim f As Access.Form, count As Double, average As Variant, total As Variant, dateEntry As String, asOf As Date, id As Long
@@ -126,13 +128,17 @@ Public Function RSUseSeniorInEditor() As Boolean
 Failed:
     Forms!frmEditor!uxError.Caption = Err.Description
 End Function
-Public Function RSOpenGroupCalculator() As Boolean
+Public Function RSOpenGroupCalculator(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
-    id = Nz(Forms!frmMajorWorkbench!cboGroup, 0): If id = 0 Then Exit Function
+    id = groupID: If id = 0 Then id = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+    If id = 0 Then Exit Function
+    If CurrentProject.AllForms("frmUXGroupRSCA").IsLoaded Then DoCmd.Close acForm, "frmUXGroupRSCA", acSaveNo
     DoCmd.OpenForm "frmUXGroupRSCA", , , , , , CStr(id): RSOpenGroupCalculator = True
 End Function
 Public Function RSLoadGroupCalculator() As Boolean
     Dim f As Access.Form, id As Long
+    On Error GoTo Failed
+    loadingGroupCalculation = True
     Set f = Forms!frmUXGroupRSCA: id = CLng(f.OpenArgs): f!txtGroupID = id
     f!lblHeading.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & id), "Group PSG RSCA")
     f!cboSenior.RowSource = "SELECT SeniorID,Title FROM ReportingSeniorRecord ORDER BY Title"
@@ -140,22 +146,32 @@ Public Function RSLoadGroupCalculator() As Boolean
     RSGroupSeniorChanged
     f!cboBaseline = MajorScalar("SELECT BaselineID FROM GroupRSCABaseline WHERE GroupID=" & id)
     f!chkExcludes = Nz(MajorScalar("SELECT ExcludesGroup FROM GroupRSCABaseline WHERE GroupID=" & id), False)
+    loadingGroupCalculation = False
     Call RSShowGroupCalculation: RSLoadGroupCalculator = True
+    Exit Function
+Failed:
+    loadingGroupCalculation = False
+    Err.Raise Err.Number, "RSLoadGroupCalculator", Err.Description
 End Function
 Public Function RSGroupSeniorChanged() As Boolean
     Dim f As Access.Form, grade As String
     Set f = Forms!frmUXGroupRSCA: grade = Nz(MajorScalar("SELECT Paygrade FROM SummaryGroup WHERE GroupID=" & f!txtGroupID), "")
     f!cboBaseline = Null: f!chkExcludes = False
     f!cboBaseline.RowSource = "SELECT BaselineID,Format(AsOfDate,'yyyy-mm-dd') & ' / RSCA ' & Nz(CurrentRSCA,'none') & ' / ' & TraitCount & ' traits' FROM RSCABaseline WHERE SeniorID=" & Nz(f!cboSenior, 0) & " AND Paygrade=" & QuoteSQL(grade) & " ORDER BY AsOfDate DESC,BaselineID DESC"
-    f!cboBaseline.Requery: f!lblStatus.Caption = "Choose a historical baseline for " & grade & ", confirm it excludes this group, then save the selection."
+    f!cboBaseline.Requery: f!lblStatus.Caption = "Choose historical totals for " & grade & ". Selections save automatically. Confirm these reports are not included in the BOL totals."
+    If Not loadingGroupCalculation Then RSSaveGroupCalculation
     RSGroupSeniorChanged = True
+End Function
+Public Function RSGroupBaselineChanged() As Boolean
+    Forms!frmUXGroupRSCA!chkExcludes = False
+    RSGroupBaselineChanged = RSSaveGroupCalculation()
 End Function
 Public Function RSSaveGroupCalculation() As Boolean
     On Error GoTo Failed
     With Forms!frmUXGroupRSCA
         RSSetGroupBaseline CLng(!txtGroupID), Nz(!cboSenior, 0), Nz(!cboBaseline, 0), Nz(!chkExcludes, False)
     End With
-    Call RSShowGroupCalculation: RSSaveGroupCalculation = True: Exit Function
+    Call RSShowGroupCalculation: UXRefreshGroupSenior: RSSaveGroupCalculation = True: Exit Function
 Failed:
     Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description
 End Function
@@ -173,18 +189,18 @@ Public Function RSShowGroupCalculation() As Boolean
     End With
     RSShowGroupCalculation = True
 End Function
-Public Function RSStageGroupSenior() As Boolean
-    Dim values As Object, key As Variant
+Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0) As Boolean
+    Dim values As Object, groupID As Long
     On Error GoTo Failed
-    Forms!frmMajorWorkbench!cboGroup = Forms!frmUXGroupRSCA!txtGroupID
-    Set values = RSSeniorValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
+    groupID = Nz(Forms!frmUXGroupRSCA!txtGroupID, 0)
     If Nz(Forms!frmUXGroupRSCA!cboSenior, 0) = 0 Then Err.Raise vbObjectError + 4800, , "Choose a reporting senior."
-    If Not UXStartGroupBulk() Then Exit Function
-    For Each key In RSSeniorKeys()
-        Forms!frmUXBulk.Controls("uxValue" & key) = values(CStr(key)): UXBulkChanged CStr(key)
-    Next
-    Forms!frmUXBulk!txtReason = "Apply selected reporting senior details to group members"
-    UXBulkSection 1: RSStageGroupSenior = True: Exit Function
+    Set values = RSSeniorValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
+    RSStageGroupSenior = UXConfirmReportFields(groupID, values, "Apply selected reporting senior details", decision)
+    If RSStageGroupSenior Then
+        RSShowGroupCalculation: UXRefreshGroupSenior
+        Forms!frmUXGroupRSCA!lblStatus.Caption = "Reporting senior details saved to group members. " & Forms!frmUXGroupRSCA!lblStatus.Caption
+    End If
+    Exit Function
 Failed:
-    Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description
+    Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description & " No partial changes were saved."
 End Function

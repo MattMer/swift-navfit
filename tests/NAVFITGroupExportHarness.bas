@@ -20,6 +20,12 @@ Private Function MemberRejected(ByVal groupID As Long, ByVal reportID As Long) A
 Failed:
     MemberRejected = Err.Description
 End Function
+Private Function SummaryRejected(ByVal db As DAO.Database, ByVal preview As Object) As Boolean
+    On Error GoTo Rejected
+    VerifyNativeGroupSummary db, preview: Exit Function
+Rejected:
+    SummaryRejected = True
+End Function
 Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template As String) As String
     Dim id As Long, copy As Long, groupID As Long, values As Object, preview As Object, native As DAO.Database, baseline As DAO.Database, r As DAO.Recordset, decoded As Object, key As Variant, file As String, kind As String, grade As String, old As Variant, token As String, revisionCount As Long, original As DAO.Database, before As DAO.Recordset, senior As Object, seniorID As Long, baselineID As Long, psg As Object
     On Error GoTo Failed
@@ -73,6 +79,9 @@ Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template 
         Check r!N = 2, "Baseline member identities missing": r.Close
         Set r = baseline.OpenRecordset("SELECT Count(*) AS N FROM SwiftGroupValue", dbOpenSnapshot)
         Check r!N = 2 * (UBound(DraftFieldKeys()) + 1), "Baseline does not freeze all current saved fields": r.Close: baseline.Close
+        FileCopy file, file & ".corrupt.accdb": Set native = DBEngine.OpenDatabase(file & ".corrupt.accdb")
+        native.Execute "UPDATE Reports SET SummaryEP='999' WHERE ReportType Is Not Null", dbFailOnError
+        Check SummaryRejected(native, preview), "Corrupted native summary was accepted": native.Close
         Check InStr(Rejected(groupID, file, template, token), "not overwritten") > 0, "Existing export overwritten"
         Set values = SavedFields(copy): old = values("ReportingSeniorSSN"): values("ReportingSeniorSSN") = "999999999"
         Call NAVFITCommitFields(copy, values, "Synthetic group member", "Mismatch test")

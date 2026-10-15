@@ -4,6 +4,7 @@ Private memberID As Long, memberVersion As Long
 Private historyMember As Long, priorID As Long, priorVersion As Long
 Public Function UXDirectoryLoad() As Boolean
     Dim f As Access.Form, term As String
+    RepairPDFDirectoryLinks
     Set f = Forms!frmUXDirectory: term = Replace(Nz(f!txtSearch, ""), "'", "''")
     f!lstMembers.RowSourceType = "Table/Query"
     f!lstMembers.RowSource = "SELECT MemberID,FullName AS [Member],RankRate AS [Rank/rate],IIf(MemberSSN Is Null,'Unentered','***-**-' & Right(MemberSSN,4)) AS [SSN],SourceKind AS [Source] FROM CommandMember WHERE IsArchived=False AND InStr(1,FullName,'" & term & "',1)>0 ORDER BY FullName"
@@ -93,9 +94,40 @@ Failed:
 End Function
 Public Function UXDirectoryBatchOpen() As Boolean
     DoCmd.OpenForm "frmUXDirectoryBatch"
-    Forms!frmUXDirectoryBatch!lstMembers.RowSource = "SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False ORDER BY FullName"
+    UXMemberRankChoices Forms!frmUXDirectoryBatch
+    UXDirectoryRankFilter
     Forms!frmUXDirectoryBatch!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
     UXDirectoryBatchOpen = True
+End Function
+Public Sub UXMemberRankChoices(ByVal f As Access.Form)
+    Dim db As DAO.Database, r As DAO.Recordset, grades As Object, grade As String, key As Variant
+    Set db = CurrentDb: Set grades = CreateObject("Scripting.Dictionary")
+    f!cboRankFilter.RowSourceType = "Value List": f!cboRankFilter.RowSource = "All ranks/rates;Unentered"
+    Set r = db.OpenRecordset("SELECT DISTINCT RankRate FROM CommandMember WHERE IsArchived=False AND RankRate Is Not Null AND RankRate<>'' ORDER BY RankRate", dbOpenSnapshot)
+    Do While Not r.EOF
+        grade = ValidationWornPaygrade(CStr(r!RankRate))
+        If grade <> "" Then grades(grade) = True
+        r.MoveNext
+    Loop
+    For Each key In grades.Keys: f!cboRankFilter.AddItem CStr(key): Next
+    If Not (r.BOF And r.EOF) Then r.MoveFirst
+    Do While Not r.EOF
+        If Not grades.Exists(CStr(r!RankRate)) Then f!cboRankFilter.AddItem """" & Replace(CStr(r!RankRate), """", """""") & """"
+        r.MoveNext
+    Loop
+    r.Close: f!cboRankFilter = "All ranks/rates"
+End Sub
+Public Function UXMemberRankWhere(ByVal rank As String) As String
+    If rank = "All ranks/rates" Or rank = "" Then Exit Function
+    If rank = "Unentered" Then UXMemberRankWhere = " AND Len(Trim(Nz(RankRate,'')))=0": Exit Function
+    UXMemberRankWhere = " AND (RankRate=" & QuoteSQL(rank) & " OR ValidationWornPaygrade(Nz(RankRate,''))=" & QuoteSQL(rank) & ")"
+End Function
+Public Function UXDirectoryRankFilter() As Boolean
+    With Forms!frmUXDirectoryBatch
+        !lstMembers.RowSource = "SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False" & UXMemberRankWhere(Nz(!cboRankFilter, "All ranks/rates")) & " ORDER BY FullName"
+        !lstMembers.Requery: !cmdApply.Enabled = False: !txtStamp = Null: !txtPreview = Null
+    End With
+    UXDirectoryRankFilter = True
 End Function
 Private Function UXDirectoryBatchSelection() As String
     Dim row As Variant, result As String

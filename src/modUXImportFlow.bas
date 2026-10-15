@@ -43,7 +43,7 @@ Public Function UXChoosePDFFile(ByVal path As String) As Boolean
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdOpenResult.Enabled = False
     Set result = PreviewStructuredPDF(path)
-    Forms!frmPDFImport!txtPreview = "Source: " & path & vbCrLf & "Report type: " & result("FormKind") & vbCrLf & "Choose the identifier interpretation and explicit century for six-digit dates, then Preview mapping."
+    Forms!frmPDFImport!txtPreview = "Source: " & path & vbCrLf & "Report type: " & result("FormKind") & vbCrLf & "Choose the identifier interpretation, then Preview mapping. Two-digit years use 20xx."
     Call ImportState("frmPDFImport", "2. Preview", "Review mapping before applying. No draft created.", False)
     UXChoosePDFFile = True: Exit Function
 Failed:
@@ -73,11 +73,11 @@ Public Function UXPreviewPDFImport() As Boolean
     Forms!frmPDFImport!cmdPreview.SetFocus
     Forms!frmPDFImport!cmdOpenResult.Enabled = False
     If Nz(Forms!frmPDFImport!cboIdentifier, "") = "DoDID" And Not Nz(Forms!frmPDFImport!chkLegacy, False) Then Err.Raise vbObjectError + 4903, , "Enable legacy compatibility explicitly before mapping DoDID."
-    Set incoming = PDFMappedValues(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""))
+    Set incoming = PDFMappedValues("20", Nz(Forms!frmPDFImport!cboIdentifier, ""))
     kind = PDFImportKind()
     target = Nz(Forms!frmPDFImport!cboTarget, 0): mode = Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields")
     If target > 0 Then
-        Set changes = PDFPrepareMerge(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""), target, mode)
+        Set changes = PDFPrepareMerge("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), target, mode)
         Set before = SavedFields(target)
         text = "MERGE INTO " & UXMemberLabel(target) & " - " & mode & vbCrLf
     Else
@@ -105,7 +105,7 @@ End Function
 Public Function UXApplyPDFImport() As Boolean
     On Error GoTo Failed
     If Len(pdfSignature) = 0 Or pdfSignature <> UXPDFSignature() Then Err.Raise vbObjectError + 4901, , "Preview the current mapping before Apply."
-    pdfCreated = ImportPDFPreview(Nz(Forms!frmPDFImport!cboCentury, ""), Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"))
+    pdfCreated = ImportPDFPreview("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"))
     pdfSignature = ""
     Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
     Forms!frmPDFImport!cmdOpenResult.Enabled = True
@@ -117,7 +117,7 @@ Failed:
 End Function
 Private Function UXPDFSignature() As String
     With Forms!frmPDFImport
-        UXPDFSignature = PDFImportStamp() & "|" & Nz(!cboCentury, "") & "|" & Nz(!cboIdentifier, "") & "|" & Nz(!cboTarget, 0) & "|" & Nz(!cboMergeMode, "Fill empty fields")
+        UXPDFSignature = PDFImportStamp() & "|" & "20" & "|" & Nz(!cboIdentifier, "") & "|" & Nz(!cboTarget, 0) & "|" & Nz(!cboMergeMode, "Fill empty fields")
     End With
 End Function
 Public Function UXPDFDependencyCheck() As Boolean

@@ -47,7 +47,7 @@ Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, 
         Select Case f.Name
             Case "frmEditor", "frmLibrary": f!uxCompactNav = "frmLibrary"
             Case "frmMajorWorkbench", "frmUXBulk", "frmUXComparison", "frmUXGroupRSCA", "frmUXGroups": f!uxCompactNav = "frmUXGroups"
-            Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXResources": f!uxCompactNav = "frmUXResources"
+            Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXResources", "frmUXRouteTemplates": f!uxCompactNav = "frmUXResources"
             Case "frmMyWork": f!uxCompactNav = "frmMyWork"
             Case "frmUXSettings": f!uxCompactNav = "frmUXSettings"
             Case Else: f!uxCompactNav = "frmHome"
@@ -128,6 +128,10 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     'Keep authored row grouping and readable font sizes. Vertical scrolling is
     'the fallback for shorter windows; horizontal scrolling is never required.
     f.ScrollBars = 2: f.Width = width - 100
+    UXPositionGroupFooter f
+    If UXHasControl(f, "uxCurrentExport") Then
+        If f!uxCurrentExport.Visible Then bottom = f!uxCurrentExport.Top + f!uxCurrentExport.Height
+    End If
     f!uxRail.Height = bottom + 300
     f.Section(acDetail).Height = bottom + 300
     state("AppliedWidth") = width: state("AppliedHeight") = height

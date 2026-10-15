@@ -1,0 +1,43 @@
+﻿{
+    "PrintJobsSubmitted":  0,
+    "AssemblyVersion":  "2.2.0.332",
+    "AssemblyComVisible":  [
+                               false
+                           ],
+    "Kind":  "Bounded non-REA runtime proof",
+    "ExecutableSHA256":  "5366F1C1BB147F1706094C5E3E1D62981F34FC6CB301E4006A892ACFBFAB58CF",
+    "Images":  [
+                   {
+                       "SHA256":  "F4BF8996FCEDF40C33D0B00BC53491E2D1A7CAFD28FDB977EBD2447A136D5F9F",
+                       "SampledInkPixels":  4418,
+                       "Methods":  [
+                                       "NF_EvalPage2Frame",
+                                       "NF_EvalPage2Text"
+                                   ],
+                       "Image":  "D:\\Development\\Swift NAVFIT\\output\\NAVFIT_Print_Proof_2026-10-14\\EVAL-page2.png"
+                   },
+                   {
+                       "SHA256":  "623C65AFED2D08152CD5E175D52EDA0B517921E48D3CBCD77E2077F33481D636",
+                       "SampledInkPixels":  4273,
+                       "Methods":  [
+                                       "NF_FitRepPage2Frame",
+                                       "NF_FitRepPage2Text"
+                                   ],
+                       "Image":  "D:\\Development\\Swift NAVFIT\\output\\NAVFIT_Print_Proof_2026-10-14\\FITREP-page2.png"
+                   },
+                   {
+                       "SHA256":  "FA8707FA77E74049067B53054B043CCD0E0671A8AA7C450B8D1D64B4D2BDC719",
+                       "SampledInkPixels":  854,
+                       "Methods":  [
+                                       "NF_ChiefPage2Frame"
+                                   ],
+                       "Image":  "D:\\Development\\Swift NAVFIT\\output\\NAVFIT_Print_Proof_2026-10-14\\CHIEFEVAL-page2-frame.png"
+                   }
+               ],
+    "Fonts":  [
+
+              ],
+    "Limits":  "Static frame/text only; CHIEF text and all report data excluded; bitmap is not a printer fidelity proof.",
+    "Runtime":  "4.0.30319.42000",
+    "DatabaseMethodsCalled":  false
+}

@@ -8,10 +8,10 @@ Private fullCreated As Long
 Private fullMember As String
 Private groupExportToken As String
 Private returnChoices As Collection
-Public Function UXOpenNAVFITGroupExport() As Boolean
+Public Function UXOpenNAVFITGroupExport(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
     If Not UXLeaveEditor() Then Exit Function
-    id = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+    id = groupID: If id = 0 Then id = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
     If id = 0 Then Exit Function
     Call UXOpenNAVFITExchange
     Forms!frmNAVFITExchange!cboGroup = id
@@ -28,11 +28,14 @@ Failed:
     Forms!frmNAVFITExchange!txtStatus = "Group preview failed: " & Err.Description
 End Function
 Public Function UXExportNAVFITGroup() As Boolean
+    Dim findings As Collection
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), Nz(!cboGroup, 0), 0)
         Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False))
+        Set findings = NAVFITLastGroupReadiness()
         !txtStatus = "Group export complete: " & !txtExportPath & vbCrLf & "Open this file in NAVFIT98A, select the group folder, validate its reports and use NAVFIT's Print Folder/Print Summary actions. Keep the group baseline locally. Group-return reconciliation is pending."
+        !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
         !cmdExportGroup.Enabled = False
     End With
     groupExportToken = "": UXExportNAVFITGroup = True: Exit Function
@@ -43,7 +46,7 @@ Public Function UXPreviewFullNAVFIT() As Boolean
     Dim values As Object, key As Variant, text As String, century As Long, id As Long
     On Error GoTo Failed
     fullSource = 0: fullHash = "": fullCreated = 0
-    century = Nz(Forms!frmImportReview!cboNAVFITCentury, 0): id = Nz(Forms!frmImportReview!lstImportReports, 0)
+    century = 2000: id = Nz(Forms!frmImportReview!lstImportReports, 0)
     fullMember = Nz(Forms!frmImportReview!txtImportMember, "")
     Set values = FullNAVFITImportValues(id, century)
     text = "NEW " & values("FormKind") & " REPORT" & vbCrLf & "74 saved official fields are mapped. All 128 native report columns, folder defaults and summary values are retained in provenance. Native-only values are preserved for export; they are not editable in Swift's current editor. Native validation is not a local approval." & vbCrLf
@@ -64,7 +67,7 @@ End Function
 Public Function UXApplyFullNAVFIT() As Boolean
     On Error GoTo Failed
     If fullMember <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 5500, , "Display name changed. Preview again."
-    If fullSource = 0 Or fullSource <> Nz(Forms!frmImportReview!lstImportReports, 0) Or fullCentury <> Nz(Forms!frmImportReview!cboNAVFITCentury, 0) Then Err.Raise vbObjectError + 5500, , "Preview the current source and date century before Apply."
+    If fullSource = 0 Or fullSource <> Nz(Forms!frmImportReview!lstImportReports, 0) Then Err.Raise vbObjectError + 5500, , "Preview the current source before Apply."
     fullCreated = ImportReviewedReport(fullSource, fullHash, fullCentury, fullMember): fullSource = 0: fullHash = ""
     With Forms!frmImportReview
         !cmdPreview.SetFocus: !cmdImport.Enabled = False: !cmdOpenResult.Enabled = True
@@ -98,12 +101,14 @@ Public Function UXChooseNAVFITPath(ByVal controlName As String, ByVal savePath A
     UXChooseNAVFITPath = True
 End Function
 Public Function UXExportNAVFIT() As Boolean
+    Dim findings As Collection
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
-        !txtStatus = "Preparing single-report export."
+        !txtStatus = "Checking saved report readiness and preparing export. Open All report readiness issues to inspect findings before exporting."
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), 0, Nz(!cboReport, 0))
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
-        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group."
+        Set findings = NAVFITLastReportReadiness()
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group." & vbCrLf & vbCrLf & ReadinessSummary(findings)
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"
     End With
     UXExportNAVFIT = True: Exit Function
@@ -115,7 +120,7 @@ Public Function UXPreviewNAVFITReturn() As Boolean
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
         !cmdApply.Enabled = False
-        Set returnChoices = NAVFITPreviewReturned(Nz(!txtReturned, ""), Nz(!txtBaseline, ""), Nz(!cboReturnCentury, 0))
+        Set returnChoices = NAVFITPreviewReturned(Nz(!txtReturned, ""), Nz(!txtBaseline, ""), 2000)
         !lstChoices.RowSourceType = "Value List": !lstChoices.RowSource = ""
         For Each row In returnChoices
             parts = Split(row, "|")

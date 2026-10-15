@@ -5,10 +5,13 @@ Option Explicit
 Private reviewDb As DAO.Database
 Private reviewReader As DAO.Workspace
 Private reviewPrefix As String
+Private reviewOriginalPath As String, reviewOriginalHash As String
+Private reviewCopyPath As String, reviewPreparedHash As String
 
 Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showReview As Boolean = True) As Boolean
     Dim candidate As DAO.Database, reader As DAO.Workspace, r As DAO.Recordset
     Dim i As Long, prefix As String, kind As String, failure As Long, message As String
+    Dim prepared As String, originalHash As String, preparedHash As String
     On Error GoTo Failed
     If StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise vbObjectError + 400, , "Choose a NAVFIT source or isolated staging file."
     Set reader = DBEngine.CreateWorkspace("SwiftReview", "admin", "", dbUseJet)
@@ -18,14 +21,30 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
     prefix = candidate.TableDefs("RawReports").Name
     On Error GoTo Failed
     If prefix = "RawReports" Then prefix = "Raw" Else prefix = ""
-    Call ValidateReviewSchema(candidate, prefix)
+    Call ValidateReviewSchema(candidate, prefix, prefix = "")
+    If prefix = "" Then
+        If NAVFITNeedsV33Upgrade(candidate) Then
+            originalHash = SourceFileHash(filePath)
+            candidate.Close: Set candidate = Nothing
+            prepared = Environ$("TEMP") & "\SwiftNAVFIT-v33p2-" & NewIdentity() & ".accdb"
+            FileCopy filePath, prepared: SetAttr prepared, vbNormal
+            If SourceFileHash(prepared) <> originalHash Or SourceFileHash(filePath) <> originalHash Then Err.Raise vbObjectError + 420, , "Source changed while preparing the upgrade. Choose it again."
+            UpgradeNAVFITV33Copy prepared, reader
+            preparedHash = SourceFileHash(prepared)
+            Set candidate = reader.OpenDatabase(prepared, False, True)
+            Call ValidateReviewSchema(candidate, prefix)
+        End If
+    End If
     Set r = candidate.OpenRecordset("SELECT ReportID,ReportType,FullName FROM [" & prefix & "Reports] ORDER BY ReportID", dbOpenSnapshot)
     Call CloseReviewFile()
     Set reviewDb = candidate: Set reviewReader = reader: reviewPrefix = prefix
+    reviewOriginalPath = filePath: reviewOriginalHash = originalHash
+    reviewCopyPath = prepared: reviewPreparedHash = preparedHash
     If Not showReview Then r.Close: OpenReviewFile = True: Exit Function
     Call OpenScreen("frmImportReview")
     With Forms!frmImportReview
         !txtSource = filePath
+        !txtSource.ControlTipText = ReviewUpgradeMessage()
         !lstImportReports.RowSourceType = "Value List"
         !lstImportReports.RowSource = ""
         Do While Not r.EOF
@@ -38,17 +57,38 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
             r.MoveNext
         Loop
         !txtFieldValue = "Select a report, then inspect its Comments field before creating a narrative draft."
-        !lblImportResult.Caption = "No import performed."
+        !lblImportResult.Caption = ReviewUpgradeMessage() & "No import performed."
     End With
     Call UXNarrativeInputChanged
     r.Close: OpenReviewFile = True: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
+    If Not r Is Nothing Then r.Close
     If Not candidate Is Nothing Then candidate.Close
     If Not reader Is Nothing Then reader.Close
+    If Len(prepared) > 0 Then Kill prepared
     On Error GoTo 0
     Err.Raise failure, "OpenReviewFile", message
+End Function
+
+
+' Keep receipts/duplicates bound to the original bytes, not a random temporary name.
+' Recheck both original and prepared input before preview/apply to retain stale guards.
+Private Function ReviewImportHash() As String
+    Dim hash As String
+    hash = SourceFileHash(reviewOriginalPath)
+    If Len(reviewCopyPath) > 0 Then
+        If hash <> reviewOriginalHash Or SourceFileHash(reviewCopyPath) <> reviewPreparedHash Then Err.Raise vbObjectError + 420, , "Source or prepared upgrade changed. Choose the source again."
+    End If
+    ReviewImportHash = hash
+End Function
+' Diagnostic path of the owned disposable conversion; empty for current/staged input.
+Public Function ReviewPreparedCopyPath() As String
+    ReviewPreparedCopyPath = reviewCopyPath
+End Function
+Public Function ReviewUpgradeMessage() As String
+    If Len(reviewCopyPath) > 0 Then ReviewUpgradeMessage = "Older v33 database upgraded automatically for import to Patch 2 on a temporary copy. Original unchanged. "
 End Function
 
 Public Function ChooseReviewFile() As Boolean
@@ -108,6 +148,10 @@ Public Function CloseReviewFile() As Boolean
     If Not reviewDb Is Nothing Then reviewDb.Close
     If Not reviewReader Is Nothing Then reviewReader.Close
     Set reviewDb = Nothing: Set reviewReader = Nothing
+    If Len(reviewCopyPath) > 0 Then
+        If Len(Dir$(reviewCopyPath)) > 0 Then Kill reviewCopyPath
+    End If
+    reviewCopyPath = "": reviewPreparedHash = "": reviewOriginalPath = "": reviewOriginalHash = ""
     CloseReviewFile = True
 End Function
 
@@ -127,8 +171,8 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     If Len(memberDisplay) > 120 Then Err.Raise vbObjectError + 411, , "Member display name exceeds 120 characters."
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0)
     On Error GoTo Failed
-    operationID = BeginOperation("Narrative import", reviewDb.Name & " report " & externalID)
-    hash = SourceFileHash(reviewDb.Name)
+    operationID = BeginOperation("Narrative import", ReviewUpgradeMessage() & reviewOriginalPath & " report " & externalID)
+    hash = ReviewImportHash()
     If Len(expectedSourceHash) > 0 And hash <> expectedSourceHash Then Err.Raise vbObjectError + 420, , "Source changed after preview. Choose the source and preview again."
     If DCount("*", "ImportReceipt", "SourceHash='" & hash & "' AND ExternalReportID=" & externalID) > 0 Then Err.Raise vbObjectError + 412, , "This exact source report has already been imported. Existing drafts are not overwritten."
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
@@ -168,7 +212,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     Set target = db.OpenRecordset("SELECT CurrentRevisionID FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = hash
-    receipt!SourcePath = reviewDb.Name: receipt!ExternalReportID = externalID: receipt!ReportID = id
+    receipt!SourcePath = reviewOriginalPath: receipt!ExternalReportID = externalID: receipt!ReportID = id
     receipt!AuthorProfileID = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
     receipt!ImportedAt = Now(): receipt!AdapterVersion = "comments-v1/local-CStr"
     If fullReport Then receipt!AdapterVersion = "navfit-full-v1/local-CStr"
@@ -197,8 +241,8 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
         raw.Close
     Next
     values.Close
-    If SourceFileHash(reviewDb.Name) <> hash Then Err.Raise vbObjectError + 415, , "Source changed during import. Review it again."
-    Call FinishOperation(operationID, "Completed", "Applied narrative to Swift report " & id)
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 415, , "Source changed during import. Review it again."
+    Call FinishOperation(operationID, "Completed", ReviewUpgradeMessage() & "Applied narrative to Swift report " & id)
     w.CommitTrans: trans = False
     ImportReviewedNarrative = id
     Exit Function
@@ -222,7 +266,7 @@ End Function
 Public Function NarrativeImportValues(ByVal externalID As Long) As Object
     Dim r As DAO.Recordset, result As Object, kind As String, sourceHash As String
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
-    sourceHash = SourceFileHash(reviewDb.Name)
+    sourceHash = ReviewImportHash()
     Set r = reviewDb.OpenRecordset("SELECT ReportType,FullName,Comments FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
     If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
     Select Case Nz(r!ReportType, "")
@@ -234,446 +278,13 @@ Public Function NarrativeImportValues(ByVal externalID As Long) As Object
     Set result = CreateObject("Scripting.Dictionary")
     result.Add "FormKind", kind: result.Add "OfficialComments", r!Comments.Value: result.Add "SourceName", r!FullName.Value
     r.Close
-    If SourceFileHash(reviewDb.Name) <> sourceHash Then Err.Raise vbObjectError + 420, , "Source changed during preview. Choose it again."
+    If ReviewImportHash() <> sourceHash Then Err.Raise vbObjectError + 420, , "Source changed during preview. Choose it again."
     result.Add "SourceHash", sourceHash
     Set NarrativeImportValues = result
 End Function
 
-Private Sub ValidateReviewSchema(ByVal db As DAO.Database, ByVal prefix As String)
-    Dim t As DAO.TableDef, f As DAO.Field
-    Set t = db.TableDefs(prefix & "Folders")
-    If t.Attributes <> 0 Then Err.Raise vbObjectError + 404, , "Linked or hidden source tables are unsupported."
-    If t.Fields.Count <> 78 Then Err.Raise vbObjectError + 402, , "Unrecognized staging table."
-    Set f = t.Fields(0)
-    If StrComp(f.Name, "FolderName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 50 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(1)
-    If StrComp(f.Name, "FolderID", vbBinaryCompare) <> 0 Or f.Type <> 4 Or f.Size <> 4 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(2)
-    If StrComp(f.Name, "Parent", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(3)
-    If StrComp(f.Name, "FullName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 27 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(4)
-    If StrComp(f.Name, "Rate", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(5)
-    If StrComp(f.Name, "Desig", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 12 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(6)
-    If StrComp(f.Name, "SSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(7)
-    If StrComp(f.Name, "Active", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(8)
-    If StrComp(f.Name, "TAR", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(9)
-    If StrComp(f.Name, "Inactive", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(10)
-    If StrComp(f.Name, "ATADSW", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(11)
-    If StrComp(f.Name, "UIC", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(12)
-    If StrComp(f.Name, "ShipStation", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(13)
-    If StrComp(f.Name, "PromotionStatus", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(14)
-    If StrComp(f.Name, "DateReported", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(15)
-    If StrComp(f.Name, "Periodic", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(16)
-    If StrComp(f.Name, "DetInd", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(17)
-    If StrComp(f.Name, "Frocking", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(18)
-    If StrComp(f.Name, "Special", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(19)
-    If StrComp(f.Name, "FromDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(20)
-    If StrComp(f.Name, "ToDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(21)
-    If StrComp(f.Name, "NOB", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(22)
-    If StrComp(f.Name, "Regular", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(23)
-    If StrComp(f.Name, "Concurrent", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(24)
-    If StrComp(f.Name, "OpsCdr", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(25)
-    If StrComp(f.Name, "PhysicalReadiness", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 4 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(26)
-    If StrComp(f.Name, "BilletSubcat", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(27)
-    If StrComp(f.Name, "ReportingSenior", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(28)
-    If StrComp(f.Name, "RSGrade", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(29)
-    If StrComp(f.Name, "RSDesig", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(30)
-    If StrComp(f.Name, "RSTitle", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 14 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(31)
-    If StrComp(f.Name, "RSUIC", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(32)
-    If StrComp(f.Name, "RSSSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(33)
-    If StrComp(f.Name, "Achievements", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(34)
-    If StrComp(f.Name, "PrimaryDuty", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 14 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(35)
-    If StrComp(f.Name, "Duties", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(36)
-    If StrComp(f.Name, "DateCounseled", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(37)
-    If StrComp(f.Name, "Counseler", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(38)
-    If StrComp(f.Name, "PROF", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(39)
-    If StrComp(f.Name, "QUAL", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(40)
-    If StrComp(f.Name, "EO", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(41)
-    If StrComp(f.Name, "MIL", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(42)
-    If StrComp(f.Name, "PA", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(43)
-    If StrComp(f.Name, "TEAM", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(44)
-    If StrComp(f.Name, "LEAD", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(45)
-    If StrComp(f.Name, "MIS", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(46)
-    If StrComp(f.Name, "TAC", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(47)
-    If StrComp(f.Name, "RecommendA", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(48)
-    If StrComp(f.Name, "RecommendB", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(49)
-    If StrComp(f.Name, "Rater", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(50)
-    If StrComp(f.Name, "RaterDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(51)
-    If StrComp(f.Name, "CommentsPitch", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(52)
-    If StrComp(f.Name, "Comments", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(53)
-    If StrComp(f.Name, "Qualifications", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(54)
-    If StrComp(f.Name, "PromotionRecom", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(55)
-    If StrComp(f.Name, "SummarySP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(56)
-    If StrComp(f.Name, "SummaryProg", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(57)
-    If StrComp(f.Name, "SummaryProm", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(58)
-    If StrComp(f.Name, "SummaryMP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(59)
-    If StrComp(f.Name, "SummaryEP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(60)
-    If StrComp(f.Name, "RetentionYes", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(61)
-    If StrComp(f.Name, "RetentionNo", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(62)
-    If StrComp(f.Name, "RSAddress", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(63)
-    If StrComp(f.Name, "RSAddress1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(64)
-    If StrComp(f.Name, "RSAddress2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(65)
-    If StrComp(f.Name, "RSCity", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 15 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(66)
-    If StrComp(f.Name, "RSState", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(67)
-    If StrComp(f.Name, "RSZipCd", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(68)
-    If StrComp(f.Name, "RSPhone", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(69)
-    If StrComp(f.Name, "RSDSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 7 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(70)
-    If StrComp(f.Name, "SeniorRater", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(71)
-    If StrComp(f.Name, "SeniorRaterDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(72)
-    If StrComp(f.Name, "StatementYes", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(73)
-    If StrComp(f.Name, "StatementNo", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(74)
-    If StrComp(f.Name, "RSInfo", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(75)
-    If StrComp(f.Name, "AutoSummary", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(76)
-    If StrComp(f.Name, "UserComments", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(77)
-    If StrComp(f.Name, "Psswrd", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set t = db.TableDefs(prefix & "Reports")
-    If t.Attributes <> 0 Then Err.Raise vbObjectError + 404, , "Linked or hidden source tables are unsupported."
-    If t.Fields.Count <> 128 Then Err.Raise vbObjectError + 402, , "Unrecognized staging table."
-    Set f = t.Fields(0)
-    If StrComp(f.Name, "Parent", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 12 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(1)
-    If StrComp(f.Name, "ReportID", vbBinaryCompare) <> 0 Or f.Type <> 4 Or f.Size <> 4 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(2)
-    If StrComp(f.Name, "ReportType", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 15 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(3)
-    If StrComp(f.Name, "FullName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 27 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(4)
-    If StrComp(f.Name, "FirstName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 27 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(5)
-    If StrComp(f.Name, "MI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(6)
-    If StrComp(f.Name, "LastName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 27 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(7)
-    If StrComp(f.Name, "Suffix", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(8)
-    If StrComp(f.Name, "Rate", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(9)
-    If StrComp(f.Name, "Desig", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 12 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(10)
-    If StrComp(f.Name, "SSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(11)
-    If StrComp(f.Name, "DoDID", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(12)
-    If StrComp(f.Name, "Active", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(13)
-    If StrComp(f.Name, "TAR", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(14)
-    If StrComp(f.Name, "Inactive", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(15)
-    If StrComp(f.Name, "ATADSW", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(16)
-    If StrComp(f.Name, "UIC", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(17)
-    If StrComp(f.Name, "ShipStation", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(18)
-    If StrComp(f.Name, "PromotionStatus", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(19)
-    If StrComp(f.Name, "DateReported", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(20)
-    If StrComp(f.Name, "Periodic", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(21)
-    If StrComp(f.Name, "DetInd", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(22)
-    If StrComp(f.Name, "Frocking", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(23)
-    If StrComp(f.Name, "Special", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(24)
-    If StrComp(f.Name, "FromDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(25)
-    If StrComp(f.Name, "ToDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(26)
-    If StrComp(f.Name, "NOB", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(27)
-    If StrComp(f.Name, "Regular", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(28)
-    If StrComp(f.Name, "Concurrent", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(29)
-    If StrComp(f.Name, "OpsCdr", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(30)
-    If StrComp(f.Name, "PhysicalReadiness", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 4 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(31)
-    If StrComp(f.Name, "PhysicalReadiness2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 15 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(32)
-    If StrComp(f.Name, "PhysicalReadinessDt", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(33)
-    If StrComp(f.Name, "BilletSubcat", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(34)
-    If StrComp(f.Name, "RSLastName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(35)
-    If StrComp(f.Name, "RSFI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(36)
-    If StrComp(f.Name, "RSMI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(37)
-    If StrComp(f.Name, "ReportingSenior", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 18 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(38)
-    If StrComp(f.Name, "RSGrade", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(39)
-    If StrComp(f.Name, "RSDesig", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(40)
-    If StrComp(f.Name, "RSTitle", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 14 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(41)
-    If StrComp(f.Name, "RSUIC", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(42)
-    If StrComp(f.Name, "RSSSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(43)
-    If StrComp(f.Name, "RSDoDID", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(44)
-    If StrComp(f.Name, "Achievements", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(45)
-    If StrComp(f.Name, "PrimaryDuty", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 14 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(46)
-    If StrComp(f.Name, "Duties", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(47)
-    If StrComp(f.Name, "DateCounseled", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(48)
-    If StrComp(f.Name, "Counseler", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(49)
-    If StrComp(f.Name, "CounselerLN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(50)
-    If StrComp(f.Name, "CounselerFI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(51)
-    If StrComp(f.Name, "CounselerMI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(52)
-    If StrComp(f.Name, "PROF", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(53)
-    If StrComp(f.Name, "PROFDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(54)
-    If StrComp(f.Name, "PROFDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(55)
-    If StrComp(f.Name, "PROFDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(56)
-    If StrComp(f.Name, "QUAL", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(57)
-    If StrComp(f.Name, "QUALDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(58)
-    If StrComp(f.Name, "QUALDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(59)
-    If StrComp(f.Name, "QUALDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(60)
-    If StrComp(f.Name, "EO", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(61)
-    If StrComp(f.Name, "EODN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(62)
-    If StrComp(f.Name, "EODN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(63)
-    If StrComp(f.Name, "EODN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(64)
-    If StrComp(f.Name, "MIL", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(65)
-    If StrComp(f.Name, "MILDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(66)
-    If StrComp(f.Name, "MILDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(67)
-    If StrComp(f.Name, "MILDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(68)
-    If StrComp(f.Name, "PA", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(69)
-    If StrComp(f.Name, "PADN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(70)
-    If StrComp(f.Name, "PADN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(71)
-    If StrComp(f.Name, "PADN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(72)
-    If StrComp(f.Name, "TEAM", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(73)
-    If StrComp(f.Name, "TEAMDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(74)
-    If StrComp(f.Name, "TEAMDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(75)
-    If StrComp(f.Name, "TEAMDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(76)
-    If StrComp(f.Name, "LEAD", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(77)
-    If StrComp(f.Name, "LEADDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(78)
-    If StrComp(f.Name, "LEADDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(79)
-    If StrComp(f.Name, "LEADDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(80)
-    If StrComp(f.Name, "MIS", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(81)
-    If StrComp(f.Name, "MISDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(82)
-    If StrComp(f.Name, "MISDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(83)
-    If StrComp(f.Name, "MISDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(84)
-    If StrComp(f.Name, "TAC", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(85)
-    If StrComp(f.Name, "TACDN1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(86)
-    If StrComp(f.Name, "TACDN2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(87)
-    If StrComp(f.Name, "TACDN3", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 255 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(88)
-    If StrComp(f.Name, "RecommendA", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(89)
-    If StrComp(f.Name, "RecommendB", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 20 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(90)
-    If StrComp(f.Name, "Rater", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 28 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(91)
-    If StrComp(f.Name, "RaterDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(92)
-    If StrComp(f.Name, "CommentsPitch", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(93)
-    If StrComp(f.Name, "Comments", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(94)
-    If StrComp(f.Name, "Qualifications", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(95)
-    If StrComp(f.Name, "PromotionRecom", vbBinaryCompare) <> 0 Or f.Type <> 3 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(96)
-    If StrComp(f.Name, "SummaryRank", vbBinaryCompare) <> 0 Or f.Type <> 4 Or f.Size <> 4 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(97)
-    If StrComp(f.Name, "SummarySP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(98)
-    If StrComp(f.Name, "SummaryProg", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(99)
-    If StrComp(f.Name, "SummaryProm", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(100)
-    If StrComp(f.Name, "SummaryMP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(101)
-    If StrComp(f.Name, "SummaryEP", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(102)
-    If StrComp(f.Name, "RetentionYes", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(103)
-    If StrComp(f.Name, "RetentionNo", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(104)
-    If StrComp(f.Name, "RSCA", vbBinaryCompare) <> 0 Or f.Type <> 20 Or f.Size <> 16 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(105)
-    If StrComp(f.Name, "RSAddress", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(106)
-    If StrComp(f.Name, "RSAddress1", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(107)
-    If StrComp(f.Name, "RSAddress2", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(108)
-    If StrComp(f.Name, "RSCity", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 15 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(109)
-    If StrComp(f.Name, "RSState", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 2 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(110)
-    If StrComp(f.Name, "RSZipCd", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 9 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(111)
-    If StrComp(f.Name, "RSPhone", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(112)
-    If StrComp(f.Name, "RSDSN", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 7 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(113)
-    If StrComp(f.Name, "SeniorRater", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 28 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(114)
-    If StrComp(f.Name, "SeniorRaterDate", vbBinaryCompare) <> 0 Or f.Type <> 8 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(115)
-    If StrComp(f.Name, "StatementYes", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(116)
-    If StrComp(f.Name, "StatementNo", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(117)
-    If StrComp(f.Name, "RSInfo", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(118)
-    If StrComp(f.Name, "RRSFI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(119)
-    If StrComp(f.Name, "RRSMI", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 3 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(120)
-    If StrComp(f.Name, "RRSLastName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 25 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(121)
-    If StrComp(f.Name, "RRSGrade", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(122)
-    If StrComp(f.Name, "RRSCommand", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(123)
-    If StrComp(f.Name, "RRSUIC", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 5 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(124)
-    If StrComp(f.Name, "UserComments", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(125)
-    If StrComp(f.Name, "Psswrd", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 8 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(126)
-    If StrComp(f.Name, "Standards", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 30 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(127)
-    If StrComp(f.Name, "IsValidated", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set t = db.TableDefs(prefix & "Summary")
-    If t.Attributes <> 0 Then Err.Raise vbObjectError + 404, , "Linked or hidden source tables are unsupported."
-    If t.Fields.Count <> 6 Then Err.Raise vbObjectError + 402, , "Unrecognized staging table."
-    Set f = t.Fields(0)
-    If StrComp(f.Name, "ProfileName", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 50 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(1)
-    If StrComp(f.Name, "OnTimeYes", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(2)
-    If StrComp(f.Name, "OnTimeNo", vbBinaryCompare) <> 0 Or f.Type <> 1 Or f.Size <> 1 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(3)
-    If StrComp(f.Name, "ISICAddress", vbBinaryCompare) <> 0 Or f.Type <> 12 Or f.Size <> 0 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(4)
-    If StrComp(f.Name, "EMail", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 50 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
-    Set f = t.Fields(5)
-    If StrComp(f.Name, "Phone", vbBinaryCompare) <> 0 Or f.Type <> 10 Or f.Size <> 10 Then Err.Raise vbObjectError + 403, , "Unrecognized staging field."
+Private Sub ValidateReviewSchema(ByVal db As DAO.Database, ByVal prefix As String, Optional ByVal allowV33 As Boolean = False)
+    ValidateNAVFITSourceSchema db, prefix, allowV33
 End Sub
 
 
@@ -689,7 +300,7 @@ Public Function PreviewIncomingNarrative(ByVal externalID As Long, ByVal reportI
     DoCmd.OpenForm "frmReconcile"
     With Forms!frmReconcile
         !txtExternalID = externalID: !txtReportID = reportID: !txtExpectedRevision = target!CurrentRevisionID
-        !txtSourceHash = SourceFileHash(reviewDb.Name)
+        !txtSourceHash = ReviewImportHash()
         !txtCurrent = target!OfficialComments: !txtIncoming = source!Comments
         !lblContext.Caption = "Swift report " & reportID & " - saved revision " & target!CurrentRevisionID & " versus source report " & externalID
     End With
@@ -703,7 +314,7 @@ Failed:
 End Function
 Public Function AcceptIncomingNarrative(ByVal externalID As Long, ByVal reportID As Long, ByVal expectedRevision As Long, ByVal expectedHash As String) As Long
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, , "Source review is closed."
-    If SourceFileHash(reviewDb.Name) <> expectedHash Then Err.Raise vbObjectError + 422, , "Source changed after preview. Compare again."
+    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 422, , "Source changed after preview. Compare again."
     AcceptIncomingNarrative = ImportReviewedNarrative(externalID, "", reportID, expectedRevision)
 End Function
 Public Function AcceptIncomingUI() As Boolean
@@ -727,11 +338,11 @@ End Function
 Public Function FullNAVFITImportValues(ByVal externalID As Long, Optional ByVal counselingCentury As Long = 0) As Object
     Dim r As DAO.Recordset, result As Object, hash As String
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
-    hash = SourceFileHash(reviewDb.Name)
+    hash = ReviewImportHash()
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
     If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
     Set result = NAVFITReadFields(r, counselingCentury): r.Close
-    If SourceFileHash(reviewDb.Name) <> hash Then Err.Raise vbObjectError + 420, , "Source changed during preview."
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 420, , "Source changed during preview."
     result.Add "SourceHash", hash
     Set FullNAVFITImportValues = result
 End Function
@@ -761,26 +372,39 @@ Public Function NAVFITImportScope(ByVal reportID As Long) As String
     If adapter = "navfit-full-v1/local-CStr" Then NAVFITImportScope = "Full report" Else NAVFITImportScope = "Narrative only"
 End Function
 
-Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0) As Object
+Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0, Optional ByVal gradeOverrides As Object, Optional ByVal discoverOnly As Boolean = False) As Object
     Dim groups As Object, item As Object, r As DAO.Recordset, folder As DAO.Recordset, values As Object, defaults As Object, key As Variant, row As Variant, parts As Variant
     Dim parent As String, fid As Long, kind As String, grade As String, token As String, hash As String, field As DAO.Field, exists As Boolean
+    Dim unresolved As Boolean, missingKey As String, blocked As String
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 6940, , "Choose a NAVFIT source first."
-    hash = SourceFileHash(reviewDb.Name): Set groups = CreateObject("Scripting.Dictionary")
+    hash = ReviewImportHash(): Set groups = CreateObject("Scripting.Dictionary")
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportType Is Not Null ORDER BY ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         kind = NAVFITKind(r!ReportType): grade = ValidationWornPaygrade(Nz(r!Rate, ""))
-        If grade = "" Then Err.Raise vbObjectError + 6940, , "Source member " & Nz(r!FullName, "Unnamed") & " has unresolved worn rank/rate; correct the source before group import."
-        If (kind = "EVAL" And (Left$(grade, 1) <> "E" Or Val(Mid$(grade, 2)) > 6)) Or (kind = "CHIEFEVAL" And (Left$(grade, 1) <> "E" Or Val(Mid$(grade, 2)) < 7)) Or (kind = "FITREP" And Left$(grade, 1) <> "O" And Left$(grade, 1) <> "W") Then Err.Raise vbObjectError + 6940, , "Source report type and worn paygrade disagree. Correct the source before group import."
+        unresolved = (grade = ""): blocked = ""
         parent = Nz(r!Parent, "")
         If Left$(parent, 2) <> "a " Then Err.Raise vbObjectError + 6940, , "Source report has an unsupported parent reference."
         fid = Val(Mid$(parent, 3))
         If parent <> "a " & CStr(fid) Then Err.Raise vbObjectError + 6940, , "Source report has a malformed folder reference."
+        missingKey = fid & "|" & kind & "|?"
+        If unresolved Then
+            grade = "?"
+            If Not gradeOverrides Is Nothing Then
+                If gradeOverrides.Exists(missingKey) Then grade = CStr(gradeOverrides(missingKey))
+            End If
+        End If
+        If grade = "?" Then
+            blocked = "Source rank/rate is blank or unrecognized. Assign a group paygrade before Preview; original report values will be preserved."
+        ElseIf Not NativeImportGradeMatches(kind, grade) Then
+            blocked = "Source report type and group paygrade disagree. Choose a compatible grade for unresolved source rates, or correct the source report."
+        End If
         token = fid & "|" & kind & "|" & grade
         If Not groups.Exists(token) Then
             Set folder = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Folders] WHERE FolderID=" & fid, dbOpenSnapshot)
             If folder.EOF Then Err.Raise vbObjectError + 6940, , "Source report references a missing folder."
             Set item = CreateObject("Scripting.Dictionary"): Set defaults = CreateObject("Scripting.Dictionary")
             item.Add "Title", Nz(folder!FolderName, "Imported group"): item.Add "Kind", kind: item.Add "Paygrade", grade: item.Add "Reports", "": item.Add "Count", 0
+            item.Add "UnresolvedCount", 0: item.Add "Blocked", blocked
             For Each row In NAVFITMapRows(kind)
                 parts = Split(row, "|"): exists = False
                 For Each key In UXSharedKeys()
@@ -791,29 +415,44 @@ Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0) As 
                     For Each field In folder.Fields
                         If field.Name = parts(1) Then exists = True: Exit For
                     Next
-                    If exists Then defaults.Add parts(0), NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century)
+                    If exists And Not discoverOnly Then defaults.Add parts(0), NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century)
                 End If
             Next
             item.Add "Defaults", defaults: item.Add "SourceHash", hash: groups.Add token, item: folder.Close
         End If
         Set item = groups(token)
+        If unresolved Then item("UnresolvedCount") = item("UnresolvedCount") + 1
         If item("Reports") <> "" Then item("Reports") = item("Reports") & ","
         item("Reports") = item("Reports") & r!ReportID: item("Count") = item("Count") + 1
         r.MoveNext
     Loop
     r.Close
-    If SourceFileHash(reviewDb.Name) <> hash Then Err.Raise vbObjectError + 6940, , "Source changed during group preview. Choose it again."
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 6940, , "Source changed during group preview. Choose it again."
     Set NAVFITReviewGroupChoices = groups
 End Function
-Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expectedHash As String, ByVal century As Long) As Collection
+' Only explicit supported paygrades may fill missing source grouping metadata.
+Public Function NativeImportGradeMatches(ByVal kind As String, ByVal grade As String) As Boolean
+    Dim prefix As String, number As Long
+    If Len(grade) < 2 Or Len(grade) > 3 Then Exit Function
+    prefix = Left$(grade, 1)
+    If Mid$(grade, 2) Like "*[!0-9]*" Then Exit Function
+    number = Val(Mid$(grade, 2)): If grade <> prefix & CStr(number) Then Exit Function
+    Select Case kind
+        Case "EVAL": NativeImportGradeMatches = (prefix = "E" And number >= 1 And number <= 6)
+        Case "CHIEFEVAL": NativeImportGradeMatches = (prefix = "E" And number >= 7 And number <= 9)
+        Case "FITREP": NativeImportGradeMatches = ((prefix = "O" And number >= 1 And number <= 10) Or (prefix = "W" And number >= 1 And number <= 5))
+    End Select
+End Function
+Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expectedHash As String, ByVal century As Long, Optional ByVal gradeOverrides As Object) As Collection
     Dim groups As Object, item As Object, result As New Collection, selected As Variant, ids As Variant, nativeID As Variant, key As Variant, values As Object, defaults As Object
     Dim w As DAO.Workspace, id As Long, g As Long, failure As Long, message As String, trans As Boolean, title As String
     On Error GoTo Failed
-    Set groups = NAVFITReviewGroupChoices(century)
+    Set groups = NAVFITReviewGroupChoices(century, gradeOverrides)
     If selections.Count = 0 Then Err.Raise vbObjectError + 6941, , "Select at least one source group."
     For Each selected In selections
         If Not groups.Exists(CStr(selected)) Then Err.Raise vbObjectError + 6941, , "Source groups changed. Preview again."
         Set item = groups(CStr(selected))
+        If item("Blocked") <> "" Then Err.Raise vbObjectError + 6941, , item("Title") & ": " & item("Blocked")
         If item("SourceHash") <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed after preview."
         For Each nativeID In Split(item("Reports"), ",")
             Set values = FullNAVFITImportValues(CLng(nativeID), century)
@@ -831,7 +470,7 @@ Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expecte
         Next
         result.Add g
     Next
-    If SourceFileHash(reviewDb.Name) <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed during group import. No selected group was committed."
+    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed during group import. No selected group was committed."
     w.CommitTrans: trans = False: Set ImportNAVFITGroups = result: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description

@@ -1,3 +1,41 @@
+## Local r113 — automatic 20xx imports and member rank filters (15 October 2026)
+
+Removed century selectors from PDF, native group/report import and returned-file workflows; two-digit years use 20xx automatically. Added paygrade/specific-rate filters to single and batch command-member report creation, with selection/preview invalidation. Blank/demo r113 verified and delivered to Drive; 668 relevant assertions pass. See [details](IMPORT_RANK_R113_2026-10-15.md).
+
+## Local r112 — automatic PSG and report-linked member profiles (15 October 2026)
+
+Reporting-senior/baseline/exclusion selections save automatically; group pages display PSG RSCA beside the senior and refresh after native trait autosave. PDF drafts are created with extracted identity. SSN-first/unique-name matching links reports to RUAD profiles, enriching missing SSNs and dated rank/report-name details while preserving other RUAD fields. Scoped repair retires unused legacy PDF placeholders when opening the directory. Blank/demo r112 verified and uploaded; 721 relevant assertions passed. See [details](MEMBER_PSG_R112_2026-10-15.md).
+
+## Local r111 — NAVFIT import group discovery (14 October 2026)
+
+Populated source folders remain visible when report rank/rate is blank or unrecognized. Assign compatible paygrades locally before preview; source report fields stay unchanged. Discovery no longer decodes folder defaults before listing groups. Separate blank/demo candidates compile and start; 28 targeted and 248 existing native group assertions passed. See [details](GROUP_DISCOVERY_R111_2026-10-14.md). Both copies uploaded to the established Google Drive folder, with names, parent and sizes verified. No GitHub publication in this change.
+
+## Local r110 — shared readiness and added validation (14 October 2026)
+
+Implemented the REA-derived report/group validation additions with verified instruction excerpts and explicit native compatibility review findings. Live findings, a new immutable saved checklist and export readiness share the same engine; group exports reconcile written native summary totals. Blank/demo r110 preserve r109. See [scope, verification and boundaries](READINESS_R110_2026-10-14.md).
+
+## Local r109 — group footer actions and Members navigation (14 October 2026)
+
+Subsequent read-only REA investigation compared 91 native validation-module methods with Swift report/group checks. Recommended next work is consistent readiness across live, saved and export workflows, then missing conditional completeness rules and dated catalogue checks. No app rules changed. See [validation comparison and proposed priorities](NAVFIT_VALIDATION_COMPARISON_2026-10-14.md).
+
+Reporting senior and NAVFIT export actions moved below group fields. Removed the duplicate Comparison tab; Members retains the editable comparison table and old links resolve there. Separate blank/demo r109 candidates preserve r108. See [details](GROUP_NAVIGATION_R109_2026-10-14.md).
+
+## Local r108 — reporting-senior table and group tools (14 October 2026)
+
+RSCA history is now a paygrade table with average, previous graded trait count and BOL verification date, retaining historical observations. Resources opens dedicated ordered route templates. Current group pages show the reporting senior and expose senior/PSG details and NAVFIT group export. Separate blank/demo candidates; 414 native assertions passed. See [implementation and verification](RESOURCE_TOOLS_R108_2026-10-14.md). Published GitHub release remains r104.
+
+## Local r107 — defaults context switching (14 October 2026)
+
+Returning to Summary groups without Close no longer blocks global/group defaults or leaves their shared host in the previous context. Reopening reloads values, report type, group tabs and the confirmation baseline. Separate blank/demo candidates retain app 0.25.0-dev/schema 25. See [fix and verification](DEFAULTS_CONTEXT_R107_2026-10-14.md). Published GitHub release remains r104.
+
+## Local r106 — direct recursive defaults (14 October 2026)
+
+Inheritance descriptions, per-field Reset/Clear controls and defaults preview/apply controls removed. A field edit confirms its recursive scope and saves defaults plus existing report revisions atomically; affected approvals return to In-Work with history retained. Cancel/failure restores the field. Separate blank and synthetic demo candidates preserve r105 conversion. App 0.25.0-dev/schema 25. See [behavior, verification and files](RECURSIVE_DEFAULTS_R106_2026-10-14.md). GitHub r104 remains published.
+
+## Local r105 — automatic NAVFIT v33 import conversion (14 October 2026)
+
+Recognized older/partial v33 imports automatically receive the supplied Patch 2 converter's exact nine additions and NULL initialization on a temporary copy. Originals and receipt hashes are preserved; standard imports stay read-only. Rebuilt exports support appended field order with integrity checks. 1,397 native Access assertions passed. App 0.25.0-dev/schema 25. See [implementation and candidates](NAVFIT_V33_UPGRADE_R105_2026-10-14.md). GitHub r104 remains published.
+
 ## Published r104 narrative editor prerelease (10 October 2026)
 
 Fixed Courier New/plain-text comments geometry by report type; supplied EVAL PDF measured. Open output/ux/Swift_NAVFIT_UI_Demo_2026-10-10-r104.accdb for the synthetic Lorem Ipsum example; matching truly blank is Swift_NAVFIT_UI_Blank_2026-10-10-r104-clean.accdb. Existing locally populated r103 preserved. See [layout details and limits](NARRATIVE_LAYOUT_R104_2026-10-10.md). App/schema unchanged; r104 prerelease includes verified blank and synthetic demo. Older releases remain available.

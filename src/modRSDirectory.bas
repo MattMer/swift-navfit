@@ -71,7 +71,7 @@ Failed:
 End Function
 Public Sub RSValidateBaseline(ByVal paygrade As String, ByVal average As Variant, ByVal traitCount As Long, ByVal traitSum As Variant)
     Dim allowed As Boolean, grade As Variant
-    For Each grade In Array("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "W1", "W2", "W3", "W4", "W5", "O1", "O2", "O3", "O4", "O5", "O6")
+    For Each grade In RSTableGrades()
         If grade = paygrade Then allowed = True
     Next
     If Not allowed Then Err.Raise vbObjectError + 4807, , "Choose an evaluated paygrade."

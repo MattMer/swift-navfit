@@ -47,7 +47,7 @@ $f.Controls('lblHeading').Top=[int](1200)
 [void](Control $f 106 'chkExcludes' 400 4250 350 350)
 [void](Control $f 100 'lblExcludes' 850 4250 12000 650 'Historical totals exclude every report in this summary group. Confirm this to prevent double counting.')
 [void](Control $f 104 'cmdSave' 400 5200 6000 550 'Save selection and calculate PSG RSCA' '=RSSaveGroupCalculation()')
-[void](Control $f 104 'cmdStage' 7000 5200 6000 550 'Stage senior details for group members' '=RSStageGroupSenior()')
+[void](Control $f 104 'cmdStage' 7000 5200 6000 550 'Apply reporting senior details' '=RSStageGroupSenior()')
 [void](Control $f 100 'lblCalculation' 400 6150 12600 500 'PSG RSCA: unavailable');$script:swiftControl.FontSize=14
 [void](Control $f 100 'lblStatus' 400 6850 12600 700 '')
 [void](Control $f 104 'cmdDirectory' 400 7800 6000 500 'Manage reporting seniors' '=RSOpenDirectory()')

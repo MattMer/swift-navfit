@@ -27,9 +27,13 @@ Public Function PromotionCapacity(ByVal paygrade As String, ByVal observedGroupS
     Set PromotionCapacity = result
 End Function
 Public Function InstallNavyDraftChecks() As Long
+    InstallNavyDraftChecks = InstallSharedReadinessPack()
+End Function
+' Keep the original bounded pack available for historical runs, never rewrite it.
+Public Function InstallLegacyNavyDraftChecks() As Long
     Dim p As DAO.Recordset, d As DAO.Recordset, w As DAO.Workspace, id As Long, rule As Variant, failure As Long, message As String
     id = Nz(MajorScalar("SELECT PackID FROM RulePack WHERE VersionName='1610.10H CH-2 / draft-checks-v1'"), 0)
-    If id > 0 Then InstallNavyDraftChecks = id: Exit Function
+    If id > 0 Then InstallLegacyNavyDraftChecks = id: Exit Function
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     Set p = CurrentDb.OpenRecordset("RulePack", dbOpenDynaset)
@@ -46,7 +50,7 @@ Public Function InstallNavyDraftChecks() As Long
         If rule(0) = "JUNIOR-OFFICER" Then d!FormKind = "FITREP"
         d.Update
     Next
-    d.Close: w.CommitTrans: InstallNavyDraftChecks = id: Exit Function
+    d.Close: w.CommitTrans: InstallLegacyNavyDraftChecks = id: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
@@ -73,6 +77,7 @@ End Function
 Public Function RunRulePack(ByVal reportID As Long, ByVal packID As Long) As Long
     Dim p As DAO.Recordset, d As DAO.Recordset, r As DAO.Recordset, f As DAO.Recordset, fields As Object, id As Long, revision As Long, state As String, value As Variant
     Dim w As DAO.Workspace, failure As Long, message As String
+    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = "1610.10H CH-2 / shared-readiness-r110" Then RunRulePack = RunSharedReadiness(reportID, packID): Exit Function
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     revision = CurrentRevision(reportID): Set fields = SavedFields(reportID)

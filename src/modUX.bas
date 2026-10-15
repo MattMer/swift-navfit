@@ -520,7 +520,7 @@ Public Function UXEditorReview(ByVal mode As String) As Boolean
     UXEditorReview = True
 End Function
 ' Seed the contextual shared-block/default editor from saved values, tracking mixed
-' fields and inherited defaults without changing reports.
+' fields/defaults before edits are confirmed and applied recursively.
 Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False, Optional ByVal globalMode As Boolean = False) As Boolean
     Dim r As DAO.Recordset, key As Variant, values As Object, f As Access.Form, seen As Boolean, base As Object, db As DAO.Database
     If globalMode Then groupContext = 0 Else groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
@@ -528,6 +528,14 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False,
     Set bulkMixed = CreateObject("Scripting.Dictionary")
     If groupContext > 0 Then
         If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupContext), True) Then Forms!frmMajorWorkbench!lblStatus.Caption = "Recover this group before changing shared blocks or defaults.": Exit Function
+    End If
+    ' A workspace tab can leave this shared form open. Finish its active control
+    ' under the old confirmation context, then reopen with fresh OpenArgs/buffers.
+    ' Closing an unbound form does not discard confirmed report/default changes.
+    If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
+        Forms!frmUXBulk.SetFocus
+        Forms!frmUXBulk!cmdBack.SetFocus
+        DoCmd.Close acForm, "frmUXBulk", acSaveNo
     End If
     bulkDefaults = defaultsMode: bulkDefaultStamp = UXDefaultsStamp(groupContext)
     bulkTargetStamp = UXBulkContextStamp(groupContext)
@@ -560,7 +568,7 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False,
     UXInvalidateBulkPreview
     f!uxKind = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & groupContext), "EVAL")
     f!lblHeading.Caption = IIf(globalMode, "Global defaults", IIf(defaultsMode, "Group defaults", "Shared report blocks"))
-    f!lstPreview.RowSourceType = "Table/Query"
+
     For Each key In UXSharedKeys()
         If UXHasControl(f, "uxValue" & key) Then
             If f.Controls("uxValue" & key).ControlType = acCheckBox Then
@@ -576,55 +584,21 @@ Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False,
             End If
         End If
     Next
-    f!uxGroupTitle.Caption = IIf(globalMode, "All summary groups - starting values; group and report overrides remain editable", Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupContext), "Summary group"))
+    f!uxGroupTitle.Caption = IIf(globalMode, "All active summary groups", Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupContext), "Summary group"))
     UXBlockRefresh
-    For Each key In UXSharedKeys()
-        If defaultsMode Then
-            UXBlockState CStr(key), IIf(DCount("*", "FieldDefault", UXDefaultScopeWhere(groupContext) & " AND FieldKey=" & QuoteSQL(key)) = 0, IIf(groupContext = 0, "No global default", "Inherited global starting value"), IIf(IsNull(base(key)), "Default: clear value", "Saved default override"))
-        Else
-            UXBlockState CStr(key), IIf(bulkMixed.Exists(key), "Mixed values - unchanged", IIf(IsNull(base(key)) Or Len(Nz(base(key), "")) = 0, "Blank - unchanged", "Shared saved value - unchanged"))
-        End If
-    Next
-    f!uxStatus.Caption = IIf(defaultsMode, "Defaults are suggestions; applying does not change reports.", DCount("*", "GroupMember", "GroupID=" & groupContext) & " reports. Only edited blocks change; Clear explicitly removes a value.")
+    f!uxStatus.Caption = "Edit a field to confirm and apply it."
+    Call UXBeginImmediateBlocks(groupContext, defaultsMode, bulkCSV)
     UXBlockMode "Edit"
     Call UXBulkSection(0)
     UXStartGroupBulk = True
 End Function
-' Capture one explicit bulk edit and invalidate any preview based on older pending values.
+' Confirm and apply one explicit shared-field edit.
 Public Function UXBulkChanged(ByVal key As String) As Boolean
-    If Not bulkDefaultResets Is Nothing Then
-        If bulkDefaultResets.Exists(key) Then bulkDefaultResets.Remove key
-    End If
-    If bulkChanges Is Nothing Then Set bulkChanges = CreateObject("Scripting.Dictionary")
-    Dim c As Access.Control, value As Variant
-    Set c = Forms!frmUXBulk.Controls("uxValue" & key): value = c.Value
-    If c.ControlType = acCheckBox And Not IsNull(value) Then
-        If key = "ObservationStatus" Then
-            If value Then value = "NOB" Else value = "Observed"
-        Else
-            If value Then value = "Yes" Else value = "No"
-        End If
-    End If
-    bulkChanges(key) = value
-    Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key) = c.Value
-    UXBlockState key, IIf(IsNull(value), "Clear value staged", "Change staged")
-    UXInvalidateBulkPreview
-    Forms!frmUXBulk!uxStatus.Caption = bulkChanges.Count & " changed entries staged; no report revisions saved."
-    UXBulkChanged = True
+    UXBulkChanged = UXConfirmBlockChange(key)
 End Function
-' Clear the staged apply context when values or reason change; disable Apply until previewed again.
+' Compatibility cleanup: direct confirmed edits no longer stage a preview.
 Public Function UXInvalidateBulkPreview(Optional ByVal clearPreview As Boolean = True) As Boolean
     bulkBatch = 0: bulkPreviewReason = "": bulkPreviewStamp = ""
-    If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
-        With Forms!frmUXBulk
-            On Error Resume Next
-            If Screen.ActiveControl.Name = "cmdApply" Then !cmdPreview.SetFocus
-            On Error GoTo 0
-            !cmdApply.Enabled = False
-            If clearPreview Then !lstPreview.RowSource = "": !txtFullValues = ""
-            !uxStatus.Caption = "Changes need a fresh preview before Apply is available."
-        End With
-    End If
     UXInvalidateBulkPreview = True
 End Function
 ' Expose a staged block value to Access preview expressions.
@@ -644,74 +618,12 @@ End Function
 ' Validate edited blocks and capture complete before/after values and context stamps.
 ' Preview remains separate from the later atomic apply.
 Public Function UXPreviewBulk() As Boolean
-    On Error GoTo Failed
-    UXInvalidateBulkPreview
-    If UXBulkContextStamp(groupContext) <> bulkTargetStamp Then Err.Raise vbObjectError + 4701, , "Group members or saved reports changed. Reopen shared report blocks before previewing."
-    Set bulkChanges = UXBlockValidated(bulkChanges, Nz(Forms!frmUXBulk!uxKind, "EVAL"))
-    If bulkDefaults Then
-        If bulkChanges.Count = 0 Or Len(Trim$(Nz(Forms!frmUXBulk!txtReason, ""))) = 0 Then Err.Raise vbObjectError + 4803, , "Change a block and enter a reason before previewing."
-        If UXDefaultsStamp(groupContext) <> bulkDefaultStamp Then Err.Raise vbObjectError + 4804, , "Group defaults changed. Reopen defaults before previewing."
-        Dim key As Variant, sql As String
-        Set bulkDefaultBefore = CreateObject("Scripting.Dictionary"): Set bulkDefaultPreview = CreateObject("Scripting.Dictionary")
-        For Each key In bulkChanges.Keys
-            bulkDefaultBefore(key) = UXEffectiveDefault(groupContext, CStr(key)): bulkDefaultPreview(key) = bulkChanges(key)
-            If Len(sql) > 0 Then sql = sql & " UNION ALL "
-            sql = sql & "SELECT " & QuoteSQL(key) & " AS ItemID, " & QuoteSQL(IIf(groupContext = 0, "Global default", "Group default")) & " AS Member," & QuoteSQL(UXFieldCaption(key, Nz(Forms!frmUXBulk!uxKind, "EVAL"))) & " AS Block, UXBulkBefore(" & QuoteSQL(key) & ") AS [Before], UXBlockPendingValue(" & QuoteSQL(key) & ") AS [After] FROM Workspace WHERE WorkspaceID=1"
-        Next
-        bulkBatch = -1: Forms!frmUXBulk!lstPreview.RowSource = sql
-    Else
-    bulkBatch = PreviewReportChanges(bulkCSV, bulkChanges, Nz(Forms!frmUXBulk!txtReason, ""))
-    bulkPreviewReason = Nz(Forms!frmUXBulk!txtReason, "")
-    bulkPreviewStamp = UXBulkContextStamp(groupContext)
-    Forms!frmUXBulk!lstPreview.RowSource = "SELECT i.ItemID,UXIdentity(r.OfficialName,r.MemberName) AS Member,UXFieldLabel(i.FieldKey),i.BeforeValue,i.NewValue FROM ChangeItem AS i INNER JOIN Report AS r ON i.ReportID=r.ReportID WHERE i.BatchID=" & bulkBatch & " ORDER BY UXIdentity(r.OfficialName,r.MemberName),i.ItemID"
-    End If
-    bulkPreviewReason = Nz(Forms!frmUXBulk!txtReason, ""): bulkPreviewStamp = UXBulkContextStamp(groupContext)
-    Forms!frmUXBulk!lstPreview.Requery
-    UXBlockMode "Preview"
-    Forms!frmUXBulk!uxStatus.Caption = "Preview only. Review each complete before/after value before applying."
-    If UXHasControl(Forms!frmUXBulk, "txtGroupImpact") Then
-        If bulkDefaults Then Forms!frmUXBulk!txtGroupImpact = "Defaults are suggestions; saved reports and current group calculations are unchanged." Else Forms!frmUXBulk!txtGroupImpact = GroupBulkImpact(groupContext, bulkBatch)
-    End If
-    Forms!frmUXBulk!cmdApply.Enabled = True
-    UXPreviewBulk = True: Exit Function
-Failed:
-    Forms!frmUXBulk!uxStatus.Caption = Err.Description
+    'Retired UI entry point: field edits now confirm and commit immediately.
 End Function
 ' Reject a changed preview/context, then commit defaults or the report batch through
 ' the appropriate transactional service; stale previews are invalidated before writes.
 Public Function UXApplyBulk() As Boolean
-    On Error GoTo Failed
-    If bulkBatch = 0 Then Err.Raise vbObjectError + 4702, , "Preview the current changes before applying."
-    If bulkPreviewReason <> Nz(Forms!frmUXBulk!txtReason, "") Or bulkPreviewStamp <> UXBulkContextStamp(groupContext) Then
-        UXInvalidateBulkPreview
-        Err.Raise vbObjectError + 4703, , "The reason, group members or saved reports changed. Create a fresh preview."
-    End If
-    If bulkDefaults Then
-        If UXDefaultsStamp(groupContext) <> bulkDefaultStamp Then UXInvalidateBulkPreview: Err.Raise vbObjectError + 4804, , "Group defaults changed. Reopen and preview again."
-        Dim w As DAO.Workspace, key As Variant, started As Boolean
-        Set w = DBEngine.Workspaces(0): w.BeginTrans: started = True
-        For Each key In bulkChanges.Keys
-            If bulkDefaultResets.Exists(key) Then
-                UXRemoveDefault groupContext, CStr(key)
-            Else
-                SetFieldDefault IIf(groupContext = 0, "Command", "Group"), IIf(groupContext = 0, 1, groupContext), CStr(key), bulkChanges(key)
-            End If
-        Next
-        Dim operation As Long
-        operation = BeginOperation("Group defaults preview", "Group " & groupContext & "; reason: " & bulkPreviewReason)
-        FinishOperation operation, "Completed", bulkChanges.Count & " defaults applied; reports unchanged."
-        w.CommitTrans: started = False: bulkDefaultStamp = UXDefaultsStamp(groupContext)
-    Else
-        ApplyFieldBatch bulkBatch
-    End If
-    UXInvalidateBulkPreview False
-    bulkTargetStamp = UXBulkContextStamp(groupContext)
-    Set bulkChanges = CreateObject("Scripting.Dictionary")
-    Forms!frmUXBulk!uxStatus.Caption = IIf(bulkDefaults, "Applied defaults. Saved reports unchanged.", "Applied reviewed block changes. One revision per report; previous values retained for guarded undo.")
-    UXApplyBulk = True: Exit Function
-Failed:
-    If started Then w.Rollback
-    Forms!frmUXBulk!uxStatus.Caption = Err.Description & " No partial batch was applied."
+    'Retired UI entry point: field edits now confirm and commit immediately.
 End Function
 ' Return whether the shared-block editor currently edits defaults rather than saved reports.
 Public Function UXEditingDefaults() As Boolean
@@ -719,33 +631,11 @@ Public Function UXEditingDefaults() As Boolean
 End Function
 ' Stage removal of a group/global default override so parent inheritance can apply again.
 Public Function UXResetDefault(ByVal key As String) As Boolean
-    Dim value As Variant, c As Access.Control
-    If Not bulkDefaults Then Exit Function
-    If groupContext = 0 Then value = Null Else value = UXGroupDefaultValue(0, key)
-    Set c = Forms!frmUXBulk.Controls("uxValue" & key)
-    If c.ControlType = acCheckBox Then
-        If IsNull(value) Or Len(Nz(value, "")) = 0 Then c = Null Else If key = "ObservationStatus" Then c = (value = "NOB") Else c = (value = "Yes")
-    Else
-        c = value
-    End If
-    bulkChanges(key) = value: bulkDefaultResets(key) = True
-    UXBlockRefresh: UXBlockState key, "Reset to inherited value staged"
-    UXInvalidateBulkPreview
-    UXResetDefault = True
+    'Retired UI entry point; edit the field directly to replace or blank its value.
 End Function
 ' Show complete values for the selected preview item, outside its condensed row.
 Public Function UXBulkDetail() As Boolean
-    Dim id As Long, r As DAO.Recordset, db As DAO.Database
-    If bulkDefaults Then
-        Dim key As String
-        key = Nz(Forms!frmUXBulk!lstPreview, ""): If Len(key) = 0 Then Exit Function
-        Forms!frmUXBulk!txtFullValues = UXFieldCaption(key, Nz(Forms!frmUXBulk!uxKind, "EVAL")) & vbCrLf & "BEFORE: " & Nz(bulkDefaultBefore(key), "(no value)") & vbCrLf & "AFTER: " & Nz(bulkDefaultPreview(key), "(clear value)")
-        UXBulkDetail = True: Exit Function
-    End If
-    id = Nz(Forms!frmUXBulk!lstPreview, 0): If id = 0 Then Exit Function
-    Set db = CurrentDb: Set r = db.OpenRecordset("SELECT * FROM ChangeItem WHERE ItemID=" & id, dbOpenSnapshot)
-    Forms!frmUXBulk!txtFullValues = UXFieldLabel(r!FieldKey) & vbCrLf & "BEFORE:" & vbCrLf & Nz(r!BeforeValue, "(not entered)") & vbCrLf & "AFTER:" & vbCrLf & Nz(r!NewValue, "(clear value)")
-    r.Close: UXBulkDetail = True
+    'Retired UI entry point: field edits now confirm and commit immediately.
 End Function
 ' Update workspace/contributor headers only when their text changes and resize the active workspace.
 Public Function UXLoadContext() As Boolean
@@ -797,5 +687,5 @@ End Function
 
 ' Detect a live bulk preview or staged field/default edits before allowing a group-page exit.
 Public Function UXGroupBulkPending() As Boolean
-    If Not bulkChanges Is Nothing Then UXGroupBulkPending = (bulkChanges.Count > 0)
+    'There is no staged defaults/bulk preview to hold navigation open.
 End Function

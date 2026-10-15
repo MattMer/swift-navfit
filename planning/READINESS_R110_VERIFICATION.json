@@ -1,0 +1,134 @@
+{
+  "Candidate": "r110",
+  "Date": "2026-10-14",
+  "AppVersion": "0.25.0-dev",
+  "Schema": 25,
+  "TotalAssertions": 1770,
+  "Artifacts": [
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Blank_2026-10-14-r110.accdb",
+      "StartupForms": [
+        "frmSetup"
+      ],
+      "Reports": 0,
+      "SHA256": "7D1AED696CF7EB5EFCD5A190F30B879578C6D26E7DA4998E36189A17858DA661",
+      "Bytes": 17625088
+    },
+    {
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-14-r110.accdb",
+      "StartupForms": [
+        "frmHome"
+      ],
+      "Reports": 9,
+      "SHA256": "FCB1460D1566B34D938E89434182D2F20CBC729E3EE9849E9D299BC72C3AC3B3",
+      "Bytes": 14811136
+    }
+  ],
+  "BlankTables": {
+    "ChangeBatch": 0,
+    "ChangeItem": 0,
+    "CommandMember": 0,
+    "ComparisonMember": 0,
+    "ComparisonSet": 0,
+    "FieldDefault": 0,
+    "Folder": 0,
+    "FolderBatchChange": 0,
+    "FolderMove": 0,
+    "GroupMember": 0,
+    "GroupRSCABaseline": 0,
+    "GroupSnapshot": 0,
+    "GroupSnapshotMember": 0,
+    "ImportRawValue": 0,
+    "ImportReceipt": 0,
+    "LibraryPreference": 0,
+    "MeetingProposal": 0,
+    "MemberReport": 0,
+    "NarrativeSnippet": 0,
+    "OperationJournal": 0,
+    "PriorEvaluation": 0,
+    "PriorEvaluationTrait": 0,
+    "RecoveryDraft": 0,
+    "Report": 0,
+    "ReportEvent": 0,
+    "ReportingSeniorRecord": 0,
+    "ReportingSeniorValue": 0,
+    "ReportNote": 0,
+    "ReportNoteDraft": 0,
+    "ReportRevision": 0,
+    "ReviewComment": 0,
+    "ReviewCommentEvent": 0,
+    "ReviewTask": 0,
+    "ReviewTaskEvent": 0,
+    "RevisionChange": 0,
+    "RevisionValue": 0,
+    "RouteRun": 0,
+    "RouteRunStep": 0,
+    "RouteTemplate": 0,
+    "RouteTemplateStep": 0,
+    "RSCABaseline": 0,
+    "RuleDefinition": 0,
+    "RulePack": 0,
+    "SummaryGroup": 0,
+    "UserProfile": 0,
+    "ValidationFinding": 0,
+    "ValidationRun": 0,
+    "Workspace": 0
+  },
+  "Tests": [
+    "64 shared readiness",
+    "102 live validation",
+    "97 legacy source-table/rule preservation",
+    "61 live members",
+    "507 NAVFIT adapter",
+    "876 group export/reconciliation",
+    "35 NAVFIT UI",
+    "28 efficiency plus real timer/recovery checkpoint",
+    "47 verified policy excerpts (separate source checks)"
+  ],
+  "Limitations": [
+    "Physical keyboard, screen reader and display/DPI acceptance not established",
+    "Confirmation choices injected in automated tests; native modal interaction not manually verified"
+  ],
+  "Published": false,
+  "GoogleDrive": {
+    "FolderID": "14vylyonimhXhhJzaQhh0c51_UenHhzGg",
+    "UploadedAndMetadataVerified": true,
+    "Demo": "https://drive.google.com/file/d/1Kbmdi16IV6EiKMif5YkEFqyTd24FJAt5/view",
+    "Blank": "https://drive.google.com/file/d/1y2jbpFGsqvnBuwhxV9Srr7fn7kCONcsT/view",
+    "Verification": "Readback of names, parent folder and exact sizes; remote checksums not returned by connector."
+  },
+  "SourceModules": [
+    {
+      "Path": "src\\modValidationExpansion.bas",
+      "SHA256": "45b2318e674f82fd12e733e82bbf95730e4bffb65010ec19377eca4b046716c2"
+    },
+    {
+      "Path": "src\\modValidationReferences.bas",
+      "SHA256": "c3ada386f5794a1e7dad6ca0f181ae3beb51dd89fdb3b4d608adfb647f132592"
+    },
+    {
+      "Path": "src\\modSavedReadiness.bas",
+      "SHA256": "cd3c7d06da13e40b7438594ca7f6cd381194dbaccf07c727f95e7bd82441fd17"
+    },
+    {
+      "Path": "src\\modLiveValidation.bas",
+      "SHA256": "a72213d6a37f8cbebfe03e20b804f49c4a6bb4647448ca132d03612d996962fc"
+    },
+    {
+      "Path": "src\\modValidation.bas",
+      "SHA256": "3ea707ef93bdf6c68d6d8db8147c0742c43387821aaac1625007edc77ea919bb"
+    },
+    {
+      "Path": "src\\modUXValidation.bas",
+      "SHA256": "f05289cd30d49dbde06b23299729a858b2a3f0ce3504db6dbea9b4d14e02ac5d"
+    },
+    {
+      "Path": "src\\modNAVFITExchange.bas",
+      "SHA256": "25bfa4288139011c052acccc2fde8f389b7c23cdfd696d09cb88fb0727b55b7a"
+    },
+    {
+      "Path": "src\\modUXNAVFIT.bas",
+      "SHA256": "07bf2cf6b3366cccca6b9c489a6097cd5ba07af6678c45fd7b17f25223968a21"
+    }
+  ]
+}

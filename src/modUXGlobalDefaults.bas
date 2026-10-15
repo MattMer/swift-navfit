@@ -7,11 +7,6 @@ Public Function UXBulkContextStamp(ByVal groupID As Long) As String
     If groupID = 0 Then UXBulkContextStamp = "Global:" & UXDefaultsStamp(0) Else UXBulkContextStamp = GroupStamp(groupID)
 End Function
 Public Function UXOpenGlobalDefaults() As Boolean
-    If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
-        Forms!frmUXBulk.SetFocus
-        Forms!frmUXBulk!uxStatus.Caption = "Finish or close this block editor before opening global defaults."
-        Exit Function
-    End If
     UXOpenGlobalDefaults = UXStartGroupBulk(True, True)
 End Function
 Public Function UXSeedGlobalDefaults() As Boolean

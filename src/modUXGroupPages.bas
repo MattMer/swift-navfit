@@ -8,6 +8,7 @@ Private createdReport As Long, createdReportGroup As Long
 Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As Boolean
     Dim id As Long, modes As Variant, members As Long
     On Error GoTo Failed
+    If page = 3 Then page = 0 'Legacy Comparison links now resolve to Members.
     id = Nz(Forms(screen)!uxGroupContext, 0)
     If id = 0 Then Exit Function
     If screen = "frmUXComparison" And (page = 0 Or page = 3) Then
@@ -58,13 +59,37 @@ End Function
 Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long) As Boolean
     Dim i As Long, f As Access.Form
     Set f = Forms(screen)
+    If page = 3 Then page = 0
     For i = 0 To 4
-        f.Controls("uxGroupTab" & i).FontBold = (i = page)
-        f.Controls("uxGroupTab" & i).Visible = (Nz(f!uxGroupContext, 0) > 0)
+        If UXHasControl(f, "uxGroupTab" & i) Then
+            f.Controls("uxGroupTab" & i).FontBold = (i = page)
+            f.Controls("uxGroupTab" & i).Visible = (Nz(f!uxGroupContext, 0) > 0 And i <> 3)
+        End If
     Next
     If UXHasControl(f, "uxAddGroupReport") Then f!uxAddGroupReport.Visible = (Nz(f!uxGroupContext, 0) > 0)
+    If UXHasControl(f, "uxCurrentExport") Then
+        f!uxCurrentExport.Visible = (Nz(f!uxGroupContext, 0) > 0)
+        f!uxCurrentSenior.Visible = f!uxCurrentExport.Visible: f!uxSeniorCaption.Visible = f!uxCurrentExport.Visible
+        If f!uxCurrentExport.Visible Then f!uxSeniorCaption.Caption = UXGroupSeniorCaption(CLng(f!uxGroupContext))
+    End If
+    UXPositionGroupFooter f
     UXGroupTabState = True
 End Function
+' Place contextual actions after the visible fields and status of the active page.
+Public Sub UXPositionGroupFooter(ByVal f As Access.Form)
+    Dim c As Access.Control, bottom As Long
+    If Not UXHasControl(f, "uxCurrentExport") Then Exit Sub
+    If Not f!uxCurrentExport.Visible Then Exit Sub
+    bottom = 2600
+    For Each c In f.Controls
+        If c.Visible And c.Left >= 200 And c.Tag <> "GroupFooter" And c.Name <> "uxRail" Then
+            If c.Top + c.Height > bottom Then bottom = c.Top + c.Height
+        End If
+    Next
+    f!uxSeniorCaption.Top = bottom + 150
+    f!uxCurrentSenior.Top = bottom + 500: f!uxCurrentExport.Top = bottom + 500
+    If f.Section(acDetail).Height < bottom + 1100 Then f.Section(acDetail).Height = bottom + 1100
+End Sub
 ' Open report creation from a saved group/default baseline, refusing pending cells,
 ' unapplied bulk changes or archived groups.
 Public Function UXGroupAddReport(ByVal screen As String) As Boolean
@@ -84,11 +109,21 @@ Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     DoCmd.OpenForm "frmUXGroupReport"
     Set f = Forms!frmUXGroupReport
     f!lblGroup.Caption = DLookup("Title", "SummaryGroup", "GroupID=" & createGroup) & " | " & DLookup("FormKind", "SummaryGroup", "GroupID=" & createGroup) & " | " & DLookup("Paygrade", "SummaryGroup", "GroupID=" & createGroup)
-    f!cboMember.RowSource = "SELECT MemberID,FullName,RankRate,ReportName,MemberSSN,VersionCounter FROM CommandMember WHERE IsArchived=False ORDER BY FullName"
+    UXMemberRankChoices f: UXGroupMemberFilter
     f!txtFrom = UXEffectiveDefault(createGroup, "PeriodStart"): f!txtTo = UXEffectiveDefault(createGroup, "PeriodEnd")
     UXGroupAddReport = True: Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Add report"
+End Function
+Public Function UXGroupMemberFilter() As Boolean
+    Dim f As Access.Form
+    Set f = Forms!frmUXGroupReport
+    f!cboMember = Null
+    f!cboMember.RowSource = "SELECT MemberID,FullName,RankRate,ReportName,MemberSSN,VersionCounter FROM CommandMember WHERE IsArchived=False" & UXMemberRankWhere(Nz(f!cboRankFilter, "All ranks/rates")) & " ORDER BY FullName"
+    f!cboMember.Requery
+    'A changed filter must not retain a hidden member identity or its copied data.
+    f!txtName = Null: f!txtOfficial = Null: f!txtRank = Null: f!txtSSN = Null: f!txtMemberVersion = Null
+    UXGroupMemberFilter = True
 End Function
 ' Copy the selected directory identity and version into the creation form without saving it.
 Public Function UXGroupReportMember() As Boolean

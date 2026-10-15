@@ -50,8 +50,7 @@ Public Function TestUXImportFlow(ByVal source As String, ByVal pdfPath As String
     Check Forms!frmPDFImport!cmdPreview.TabIndex < Forms!frmPDFImport!cmdImport.TabIndex, "PDF tab order skips preview"
     Check InStr(Forms!frmPDFImport!cboIdentifier.RowSource, "DoDID") = 0, "Legacy ID exposed by default"
     Check UXChoosePDFFile(pdfPath), "PDF choose failed"
-    Check Not UXPreviewPDFImport(), "Missing date century accepted"
-    Forms!frmPDFImport!cboCentury = "20": Forms!frmPDFImport!cboIdentifier = "SSN"
+    Forms!frmPDFImport!cboIdentifier = "SSN"
     Check UXPreviewPDFImport(), "PDF mapping preview failed"
     Check InStr(Forms!frmPDFImport!txtPreview, "4. SSN") > 0 And InStr(Forms!frmPDFImport!txtPreview, "After: 000000000") > 0, "Official caption/value absent"
     Check DCount("*", "Report") = before, "PDF preview wrote draft"
@@ -65,9 +64,9 @@ Public Function TestUXImportFlow(ByVal source As String, ByVal pdfPath As String
     Forms!frmPDFImport!chkLegacy = False: Call UXPDFLegacyChanged
     Check Forms!frmPDFImport!cboIdentifier = "SSN" And Not Forms!frmPDFImport!cmdImport.Enabled, "Leaving legacy mode retained stale Apply"
     Check UXPreviewPDFImport(), "SSN preview restore failed"
-    Forms!frmPDFImport!cboCentury = "19"
-    Check Not UXApplyPDFImport() And DCount("*", "Report") = before, "Changed century bypassed preview"
-    Forms!frmPDFImport!cboCentury = "20": Check UXPreviewPDFImport(), "PDF repreview failed"
+    Forms!frmPDFImport!cboIdentifier = "Retain only"
+    Check Not UXApplyPDFImport() And DCount("*", "Report") = before, "Changed identifier bypassed preview"
+    Forms!frmPDFImport!cboIdentifier = "SSN": Check UXPreviewPDFImport(), "PDF repreview failed"
     Check UXApplyPDFImport(), "PDF Apply failed: " & Forms!frmPDFImport!uxState.Caption
     Check InStr(Forms!frmPDFImport!uxState.Caption, "4. Results") > 0 And Forms!frmPDFImport!cmdOpenResult.Enabled, "PDF results missing"
     Check Not UXApplyPDFImport() And DCount("*", "Report") = before + 1, "PDF repeated Apply created draft"

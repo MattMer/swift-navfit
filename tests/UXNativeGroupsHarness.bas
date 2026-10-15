@@ -25,7 +25,7 @@ Public Function TestUXNativeGroups(ByVal source As String, ByVal bad As String, 
     Check DCount("*", "SummaryGroup") = 0 And DCount("*", "Report") = 0 And DCount("*", "ImportReceipt") = 0, "Failed batch left partial groups/reports/receipts"
     CloseReviewFile
     Check UXChooseNativeGroupFile(source), "Source chooser adapter failed"
-    Forms!frmUXNativeGroups!cboCentury = 2000
+    Check Forms!frmUXNativeGroups!lstGroups.ListCount = 3, "Initial discovery hid groups before century selection: " & Forms!frmUXNativeGroups!lblStatus.Caption
     Check UXLoadNativeGroups(), "Groups did not load: " & Forms!frmUXNativeGroups!lblStatus.Caption
     Check Forms!frmUXNativeGroups!lstGroups.ListCount = 3, "Native group partitions missing"
     Forms!frmUXNativeGroups!lstGroups.Selected(0) = True

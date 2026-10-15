@@ -1,3 +1,23 @@
+## Local r107 — defaults context switching (14 October 2026)
+
+Returning to Summary groups without Close no longer blocks global/group defaults or leaves their shared host in the previous context. Reopening reloads values, report type, group tabs and the confirmation baseline. Separate blank/demo candidates retain app 0.25.0-dev/schema 25. See [fix and verification](DEFAULTS_CONTEXT_R107_2026-10-14.md). Published GitHub release remains r104.
+
+## 2026-10-14 - recursive defaults simplified (r106)
+
+Removed inheritance descriptions, Reset/Clear controls and the defaults preview/apply stage. Changed fields now confirm once and recursively update saved defaults and active member reports, atomically reopening affected local approvals. Cancel and injected later-report failure restore all values; retry tested. Reporting-senior application also uses one confirmation. Corrected the reserved test variable shown in the compile screenshot. Separate blank/demo candidates; no schema change or GitHub publication. See RECURSIVE_DEFAULTS_R106_2026-10-14.md and verification JSON.
+
+## 2026-10-14 - installed NAVFIT print handoff investigated
+
+Verified the installed NIWC Atlantic executable matches the inspected binary. REA startup/handler analysis found saved-DBPath reopening and native File/Open/selection/Print workflows, but no supported automatic file/report/print command interface. Recommend an assisted Prepare and open NAVFIT action with a persistent print workspace; no per-job temporary database or renderer executable. Actual launch/UI automation/printing was not attempted. See NAVFIT_ACCESS_HANDOFF_2026-10-14.md.
+
+## 2026-10-14 - REA print-handler investigation and offscreen reuse proof
+
+Used installed REA CLI 6.5.0 for exact-binary managed/CIL evidence. Confirmed 63 PrintModule methods and mapped print/settings/catalog dependencies. Separate hash-gated runtime proof rendered three blank report surfaces through native drawing methods, with zero print jobs. Recommend a separate .NET helper; populated report/state initialization remains unproven. See NAVFIT_PRINT_REA_2026-10-14.md. No Access app changes or release publication.
+
+## 2026-10-14 - automatic older NAVFIT import conversion complete (r105)
+
+Matched the supplied converter's nine text fields and NULL-to-empty changes. Added automatic isolated-copy preparation for recognized older/partial v33 schemas, original source/hash provenance, stale guards and temporary cleanup. Export reconstruction now supports officially appended field order. All 1,397 targeted/adapter/exchange/group assertions passed; blank/demo compile and startup verified. No Swift schema change or GitHub publication. See NAVFIT_V33_UPGRADE_R105_2026-10-14.md.
+
 ## 2026-10-10 - standardized comments input r104
 
 Measured the supplied printed EVAL example and implemented fixed report-shaped comments input, locked plain-text Courier New and margins, narrow-view disclosure, and active-text counts. Overflow preserved. 129 native geometry/save assertions passed. Synthetic demo contains Lorem Ipsum; separate clean blank prepared without changing populated local r103. Exact printed fit remains pending. See NARRATIVE_LAYOUT_R104_2026-10-10.md.
@@ -235,3 +255,22 @@ Release regression checks exposed and fixed the backup worker’s schema-21 ceil
 The subsequent admin/comparison feedback is implemented in 0.25.0-dev / schema 24. Combined Admin data includes Block 28; redundant canonical-name/readiness subfields are hidden without losing background values. Direct Defaults/Comparison, member double-click opening, immediate comparison saves with approval reopening, full-height trait guidance, My Work contributor and populated rate filters are implemented. Reviewed-proposal application uses owned DAO database references and passes the native regression.
 
 Open `output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r86.accdb`. This supersedes r75 for development testing; published 0.24.0 remains unchanged. Focused checks: 142; responsive: 2,113; exact-demo journeys: 36. Detailed evidence and remaining acceptance items: `ADMIN_COMPARISON_FEEDBACK_2026-10-06.md`.
+# 14 October — r108 resources and group access
+
+r110: implemented the requested validation expansion and shared live/saved/export readiness. Added dated periodic schedules, conditional counseling/PFA, completeness and relationship checks, group senior/occasion differences, known Regular continuity and native summary reconciliation. Policy/native authority remains explicit; legacy histories and saveable drafts retained. See [r110 scope and verification](READINESS_R110_2026-10-14.md).
+
+r109 follow-up: moved group senior/export actions below fields and removed the redundant Comparison tab, retaining the editable Members table. See [navigation update](GROUP_NAVIGATION_R109_2026-10-14.md).
+
+Completed: paygrade RSCA table (RSCA, previous graded traits, BOL verification date); dedicated route-template destination; reporting-senior caption/details and NAVFIT export from current group pages. Prior RSCA history and explicit group baseline selection retained. Separate blank/demo candidates; 414 native assertions passed. See [r108 details](RESOURCE_TOOLS_R108_2026-10-14.md). Native physical layout/accessibility review remains outstanding.
+
+# 14 October 2026 — r111 import group discovery
+
+Fixed empty NAVFIT group chooser caused by blank/unrecognized source rank/rate. Lists populated groups first, supports explicit compatible local paygrade assignment, preserves source fields and previews/imports atomically. Verified actual TEST_DB visibility, 28 targeted checks and 248 existing native group assertions. Separate blank/demo r111 candidates verified; see GROUP_DISCOVERY_R111_2026-10-14.md.
+
+# 15 October 2026 — r112 PSG and member identity
+
+Completed automatic group senior/baseline selection saving, explicit BOL exclusion wording, live group-footer PSG display, PDF identity-first creation, unique-name/SSN RUAD matching and profile enrichment with chronological rank protection. Added scoped legacy placeholder repair and tests; 721 relevant assertions pass. Both r112 copies verified and delivered to the existing Drive folder. See MEMBER_PSG_R112_2026-10-15.md for limits, evidence and links.
+
+# 15 October 2026 — r113 automatic import years and member rank filters
+
+Removed century selectors throughout import UI; two-digit import years use 20xx. Added paygrade/specific-rank filters to single and batch command-member report creation, clearing hidden selections and stale previews. 668 relevant assertions passed; blank/demo r113 verified and uploaded. See IMPORT_RANK_R113_2026-10-15.md.

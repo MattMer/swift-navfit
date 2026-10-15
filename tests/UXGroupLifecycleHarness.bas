@@ -40,11 +40,11 @@ Public Function TestUXGroupLifecycle() As String
     Check f!lstGroups.AfterUpdate = "=UXGroupSelection()", "Keyboard selection event missing"
     f!lstGroups = g: UXGroupSelection
     Check f!uxRename.Enabled And f!uxArchive.Enabled And Not f!uxRecover.Enabled, "Active actions incorrect"
-    Check UXOpenGroup(), "Group open failed"
+    Check UXOpenGroup(True), "Group context setup failed": UXWorkbenchMode "Members"
     proposal = ProposeMeetingField(meeting, id, "Trait33", "4.0")
     Check UXStartGroupBulk(), "Bulk setup failed"
-    Forms!frmUXBulk!uxValueShipStation = "CHANGED": UXBulkChanged "ShipStation": Forms!frmUXBulk!txtReason = "Test stale rename"
-    Check UXPreviewBulk(), "Bulk preview setup failed"
+    Forms!frmUXBulk!uxValueShipStation = "CHANGED": Check Not UXConfirmBlockChange("ShipStation", vbNo), "Cancelled shared edit applied"
+    Check Not UXGroupBulkPending(), "Shared editor retained staging state"
     stage = "rename dialog"
     DoCmd.OpenForm "frmUXRenameGroup", , , , , , CStr(g)
     Forms!frmUXRenameGroup!txtName = "Renamed O'Neil group"
@@ -53,7 +53,7 @@ Public Function TestUXGroupLifecycle() As String
     Check Forms!frmMajorWorkbench!uxGroupTitle.Caption = "Renamed O'Neil group", "Open workspace title stale"
     Check Rejected(g, stamp, "Archive"), "Stale lifecycle write accepted"
     Check RejectMeeting(proposal), "Comparison survived renamed baseline"
-    Check Not UXApplyBulk(), "Bulk preview survived renamed baseline"
+    Check Not UXGroupBulkPending(), "Rename created pending shared changes"
     UXCloseBlocks
     Check CurrentRevision(id) = rev And DCount("*", "GroupMember", "GroupID=" & g) = 1, "Rename changed report or members"
     stage = "archive"
@@ -65,7 +65,7 @@ Public Function TestUXGroupLifecycle() As String
     f!lstGroups = g: Check UXGroupSelection(), "Archive selection failed"
     Check f!uxRecover.Enabled And Not f!uxRename.Enabled And Not f!uxArchive.Enabled, "Archived actions incorrect"
     Check f!lstGroups.Column(5) = "Archived" And CLng(f!lstGroups.Column(4)) = 1, "Archive status/count wrong"
-    Check UXOpenGroup(), "Archived inspection failed"
+    Check UXOpenGroup(True), "Archived context setup failed": UXWorkbenchMode "Members"
     Check Not Forms!frmMajorWorkbench!uxBulk.Enabled And Not Forms!frmMajorWorkbench!uxMembers.Enabled, "Archived workspace editable"
     Check InStr(Forms!frmMajorWorkbench!lblStatus.Caption, "Archived group") > 0, "Archived reason missing"
     Check Not UXStartGroupBulk(), "Archived bulk opened"

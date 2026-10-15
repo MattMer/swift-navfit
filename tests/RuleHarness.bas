@@ -30,8 +30,8 @@ Public Function TestRules() As String
     If result("CombinedMaximum") <> 2 Then Err.Raise 5, , "LDO exception failed"
     count = count + 1
     Call ConfigureWorkspace("SYNTHETIC COMMAND", "Synthetic rule tester")
-    pack = InstallNavyDraftChecks()
-    If InstallNavyDraftChecks() <> pack Or DCount("*", "RulePack") <> 1 Then Err.Raise 5, , "Rule pack installation is not idempotent"
+    pack = InstallLegacyNavyDraftChecks()
+    If InstallLegacyNavyDraftChecks() <> pack Or DCount("*", "RulePack") <> 1 Then Err.Raise 5, , "Legacy rule pack installation is not idempotent"
     count = count + 1
     id = CommitDraft(0, "EVAL", "Synthetic policy checks", "Synthetic Example", #1/1/2026#, #9/30/2026#, "", "Test")
     run = RunRulePack(id, pack)

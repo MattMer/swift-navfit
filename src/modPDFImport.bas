@@ -57,8 +57,7 @@ Private Function PDFDate(ByVal value As Variant, ByVal century As String) As Var
     text = Trim$(CStr(value))
     If text = "" Then PDFDate = Null: Exit Function
     If Len(text) = 6 Then
-        If century <> "19" And century <> "20" And century <> "21" Then Err.Raise vbObjectError + 4710, , "Choose a century explicitly for two-digit PDF dates."
-        text = century & Left$(text, 2) & "-" & Mid$(text, 3, 2) & "-" & Right$(text, 2)
+        text = "20" & Left$(text, 2) & "-" & Mid$(text, 3, 2) & "-" & Right$(text, 2)
     ElseIf Len(text) = 8 Then
         text = Left$(text, 4) & "-" & Mid$(text, 5, 2) & "-" & Right$(text, 2)
     End If
@@ -167,7 +166,14 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     operationID = BeginOperation("PDF import", pdfPath)
     stage = "Create draft"
     If targetID = 0 Then
-        id = CommitDraft(0, pdfPreview("FormKind"), "Imported PDF draft", "Imported PDF member", Null, Null, "Unmapped PDF fields are retained as source XML and require review.", "PDF import")
+        'Create the directory link from extracted identity, never a placeholder.
+        Dim identity As Object, identityKey As Variant
+        Set identity = CreateObject("Scripting.Dictionary")
+        For Each identityKey In Array("OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported")
+            identity.Add CStr(identityKey), Null
+            If changes.Exists(CStr(identityKey)) Then identity(identityKey) = changes(identityKey)
+        Next
+        id = CommitDraft(0, pdfPreview("FormKind"), "Imported PDF draft", Nz(identity("OfficialName"), "Unnamed member"), Null, Null, "Unmapped PDF fields are retained as source XML and require review.", "PDF import", administration:=FieldsSubset(identity, AdministrationKeys()), memberDetails:=FieldsSubset(identity, MemberDetailsKeys()))
         expected = CurrentRevision(id)
         If changes.Exists("OfficialName") Then changes.Add "MemberName", Left$(CStr(changes("OfficialName")), 120)
     Else

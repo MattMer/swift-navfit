@@ -23,7 +23,7 @@ Public Function TestUXValidation() As String
         f("UnitUIC") = "1234A": f("ReportingSeniorUIC") = "12345": f("CounselingDate") = "NOT REQ"
         Set result = ValidateLiveFields(f)
         Check Not HasCode(result, "UIC-FORMAT") And Not HasCode(result, "APP-DATE"), "Official UIC/counseling status rejected"
-        Check HasCode(result, "CAREER-PRESENT"), "Missing first career recommendation"
+        Check HasCode(result, "CAREER-PRESENT") = (key <> "CHIEFEVAL"), "Form-specific career recommendation applicability"
         f("AssignmentRecommendationA") = "NONE": f("CounselingDate") = "NOT PERF"
         Set result = ValidateLiveFields(f): Check HasCode(result, "COUNSELOR"), "NOT PERF explanation missing"
         f("CounselorName") = "ILLNESS": Set result = ValidateLiveFields(f)
@@ -93,7 +93,7 @@ Public Function TestUXValidation() As String
     revision = CurrentRevision(id): runs = DCount("*", "ValidationRun"): revisions = DCount("*", "ReportRevision"): operations = DCount("*", "OperationJournal")
     Forms!frmEditor!txtMemberFirstName = "Pending first name"
     Check EditorPendingFields()("MemberFirstName") = "Pending first name", "Pending snapshot lost field"
-    Check EditorPendingFields().count = 78, "Pending snapshot lost fields"
+    Check EditorPendingFields().count = UBound(DraftFieldKeys()) + 1, "Pending snapshot lost fields"
     Forms!frmEditor!uxFieldSurface.SetFocus
     Forms!frmEditor!uxFieldSurface.Form!txtMemberSSN.SetFocus
     Forms!frmEditor!uxFieldSurface.Form!txtMemberSSN.Text = "321"

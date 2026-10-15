@@ -7,6 +7,7 @@ $app=$null
 try {
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
+    $app.LoadFromText(5,'RecursiveDefaultsHarness',(Join-Path $root 'tests/RecursiveDefaultsHarness.bas'))
     $app.LoadFromText(5,'UXBlockToolsHarness',(Join-Path $root 'tests/UXBlockToolsHarness.bas'))
     $app.DoCmd.RunCommand(126)
     $result=$app.Eval('TestUXBlockTools()')

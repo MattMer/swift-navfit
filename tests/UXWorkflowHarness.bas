@@ -75,32 +75,19 @@ Public Function TestUXWorkflows() As String
     Check UXLeaveEditor(), "Custom automatic save failed"
     Check CurrentRevision(id) <> revision, "Custom leave did not save"
     Check prompts = beforePrompts, "Custom leave asked a second time"
-    stage = "bulk invalidation"
+    stage = "confirmed shared field edits"
     groupID = CreateSummaryGroup("Workflow group", "EVAL", "E5"): AddGroupMember groupID, id, "E5"
-    DoCmd.OpenForm "frmUXGroups": Forms!frmUXGroups!lstGroups = groupID: UXOpenGroup
+    DoCmd.OpenForm "frmUXGroups": Forms!frmUXGroups!lstGroups = groupID: UXOpenGroup True
     Call UXStartGroupBulk(): Set f = Forms!frmUXBulk
-    Check Not f!cmdApply.Enabled, "Apply enabled without preview"
-    f!uxValueShipStation = "PREVIEW A": f!txtReason = "Review changes": UXBulkChanged "ShipStation"
-    Check UXPreviewBulk() And f!cmdApply.Enabled, "Preview did not enable Apply"
-    f!uxValueShipStation = "EDIT B": UXBulkChanged "ShipStation"
-    Check Not f!cmdApply.Enabled And Len(f!lstPreview.RowSource) = 0, "Changed input retained preview"
-    revision = CurrentRevision(id)
-    Check Not UXApplyBulk() And CurrentRevision(id) = revision, "Stale input applied"
-    Check UXPreviewBulk(), "Fresh preview failed"
-    f!txtReason = "Different reason"
-    Check Not UXApplyBulk() And Not f!cmdApply.Enabled, "Reason change applied old preview"
-    Check UXPreviewBulk(), "Reason refresh failed"
-    Check UXApplyBulk(), "Reviewed EDIT B apply failed"
-    Check DLookup("ShipStation", "Report", "ReportID=" & id) = "EDIT B", "Applied old value"
-    Check Not f!cmdApply.Enabled And Not UXApplyBulk(), "Repeated apply allowed"
-    f!uxValueShipStation = "Membership change": UXBulkChanged "ShipStation": Check UXPreviewBulk(), "Second preview failed"
-    thirdID = CommitDraft(0, "EVAL", "New group member", "Third member", Null, Null, "", "Test", "")
-    AddGroupMember groupID, thirdID, "E5": revision = CurrentRevision(id)
-    Check Not UXApplyBulk() And CurrentRevision(id) = revision, "Changed membership applied"
-    Check Not UXPreviewBulk(), "Old target roster previewed after membership changed"
-    Call UXStartGroupBulk(): Check Not f!cmdApply.Enabled, "Reopened bulk retained old batch"
-    Check InStr(f!txtReason.AfterUpdate, "UXInvalidateBulkPreview") > 0, "Reason event missing"
-    Check InStr(f!txtReason.OnChange, "UXInvalidateBulkPreview") > 0 And InStr(f!uxValueShipStation.OnChange, "UXInvalidateBulkPreview") > 0, "Typing does not invalidate preview"
+    Check Not UXHasControl(f, "cmdApply") And Not UXHasControl(f, "cmdPreview"), "Preview controls retained"
+    revision = CurrentRevision(id): f!uxValueShipStation = "CANCELLED"
+    Check Not UXConfirmBlockChange("ShipStation", vbNo), "Cancel applied"
+    Check CurrentRevision(id) = revision, "Cancel created revision"
+    f!uxValueShipStation = "EDIT B"
+    Check UXConfirmBlockChange("ShipStation", vbYes), "Confirmed shared edit failed"
+    Check DLookup("ShipStation", "Report", "ReportID=" & id) = "EDIT B", "Confirmed value missing"
+    Check CurrentRevision(id) <> revision And Not UXGroupBulkPending(), "Confirmed edit remained staged"
+    Check UXBulkSection(0), "Section navigation failed after save"
     DoCmd.Close acForm, "frmUXBulk", acSaveNo
     stage = "report review context"
     otherID = CommitDraft(0, "EVAL", "Outside group", "Second member", #1/1/2026#, #9/30/2026#, "", "Test", "")
@@ -123,8 +110,8 @@ Public Function TestUXWorkflows() As String
     DoCmd.Close acForm, "frmUXReview", acSaveNo
     Check UXLeaveEditor("Discard"), "Review editor cleanup failed"
     Forms!frmUXGroups!lstGroups = groupID: Check UXOpenGroup(), "Return to group failed"
-    Check Forms!frmMajorWorkbench!uxMode0.Visible And Forms!frmMajorWorkbench!uxMode3.Visible, "Group navigation not restored"
-    TestUXWorkflows = "PASS: " & checks & " native-close, bulk-preview and report-review assertions": Exit Function
+    Check CurrentProject.AllForms("frmUXComparison").IsLoaded, "Group members not restored"
+    TestUXWorkflows = "PASS: " & checks & " native-close, direct shared-field and report-review assertions": Exit Function
 Failed:
     TestUXWorkflows = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
 End Function

@@ -11,8 +11,7 @@ Public Function UXBlockRefresh() As Boolean
 End Function
 Public Function UXBlockEdit(ByVal key As String) As Boolean
     Forms!frmUXBulk.Controls("uxValue" & key) = UXDateEntry(Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key).Value)
-    UXBlockEdit = UXBulkChanged(key)
-    UXBlockState key, IIf(IsNull(Forms!frmUXBulk.Controls("uxValue" & key)), "Clear value staged", "Change staged")
+    UXBlockEdit = UXConfirmBlockChange(key)
 End Function
 Public Function UXBlockClear(ByVal key As String) As Boolean
     Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key) = Null
@@ -35,35 +34,20 @@ Public Function UXBlockLayout(ByVal section As Long) As Boolean
             If multi Then size = usable: band = CStr(key)
             If x > 150 And (band <> prior Or x + size > usable + 150) Then y = y + rowHeight: x = 150: rowHeight = 0
             With f.Controls("label" & key)
-                .Caption = UXFieldCaption(key, kind): .Left = x: .Top = y: .Width = size - 500: .Height = 300: .Visible = True
+                .Caption = UXFieldCaption(key, kind): .Left = x: .Top = y: .Width = size: .Height = 300: .Visible = True
             End With
             With f.Controls("value" & key)
-                .Left = x: .Top = y + 320: .Width = size - 500: .Height = IIf(multi, 1800, 360): .Visible = True: .TabIndex = tabOrder
+                .Left = x: .Top = y + 320: .Width = size: .Height = IIf(multi, 1800, 360): .Visible = True: .TabIndex = tabOrder
                 tabOrder = tabOrder + 1
                 If flag Then .Top = y: .Width = 280: .Height = 280
             End With
             If flag Then
-                f.Controls("label" & key).Left = x + 360: f.Controls("label" & key).Width = size - 860
-            End If
-            With f.Controls("clear" & key)
-                .Left = x + size - 450: .Top = y + IIf(flag, 0, 320): .Width = 450: .Height = 330: .Visible = True: .TabIndex = tabOrder
-                tabOrder = tabOrder + 1
-            End With
-            With f.Controls("state" & key)
-                .Left = x: .Top = y + IIf(flag, 320, IIf(multi, 2150, 700)): .Width = size: .Height = 260: .Visible = True
-            End With
-            If UXHasControl(f, "reset" & key) And UXEditingDefaults() Then
-                With f.Controls("reset" & key)
-                    .Left = x + size - 1350: .Top = y + IIf(flag, 0, 320): .Width = 800: .Height = 330: .Visible = True: .TabIndex = tabOrder
-                End With
-                tabOrder = tabOrder + 1
-                If Not flag Then f.Controls("value" & key).Width = size - 1450
-                f.Controls("label" & key).Width = size - 1450
+                f.Controls("label" & key).Left = x + 360: f.Controls("label" & key).Width = size - 360
             End If
             If multi Then
-                rowHeight = 2450
-            ElseIf rowHeight < IIf(flag, 650, 1000) Then
-                rowHeight = IIf(flag, 650, 1000)
+                rowHeight = 2220
+            ElseIf rowHeight < IIf(flag, 380, 760) Then
+                rowHeight = IIf(flag, 380, 760)
             End If
             x = x + size + 160: prior = band
         End If
@@ -125,23 +109,20 @@ Public Function UXBlockViewport() As Boolean
     If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
     If IsNull(Forms!frmUXBulk!uxGroupContext) And Len(Nz(Forms!frmUXBulk.OpenArgs, "")) > 0 Then Forms!frmUXBulk!uxGroupContext = CLng(Forms!frmUXBulk.OpenArgs)
     Dim i As Long
-    For i = 0 To 4: Forms!frmUXBulk.Controls("uxGroupTab" & i).Visible = (Nz(Forms!frmUXBulk!uxGroupContext, 0) > 0): Next
+    For i = 0 To 4
+        If UXHasControl(Forms!frmUXBulk, "uxGroupTab" & i) Then Forms!frmUXBulk.Controls("uxGroupTab" & i).Visible = (Nz(Forms!frmUXBulk!uxGroupContext, 0) > 0 And i <> 3)
+    Next
     Forms!frmUXBulk!uxAddGroupReport.Visible = (Nz(Forms!frmUXBulk!uxGroupContext, 0) > 0)
     UXResizeWorkspace "frmUXBulk"
     UXBlockResize
     UXBlockViewport = True
 End Function
 Public Sub UXBlockState(ByVal key As String, ByVal caption As String)
-    Forms!frmUXBulk!uxBlocks.Form.Controls("state" & key).Caption = caption
+    ' Per-field inheritance/staging explanations have been removed.
 End Sub
 Public Function UXOpenGroupDefaults() As Boolean
     UXOpenGroupDefaults = UXStartGroupBulk(True)
 End Function
 Public Function UXBlockMode(ByVal page As String) As Boolean
-    Dim f As Access.Form
-    Set f = Forms!frmUXBulk: f!cmdPreview.SetFocus
-    UXRestoreViewport f
-    f!uxBlocks.Visible = (page <> "Preview"): f!lstPreview.Visible = (page = "Preview"): f!txtFullValues.Visible = (page = "Preview")
-    If UXHasControl(f, "txtGroupImpact") Then f!txtGroupImpact.Visible = (page = "Preview")
-    Call UXBlockViewport: UXBlockMode = True
+    UXBlockMode = UXImmediateBlockMode()
 End Function

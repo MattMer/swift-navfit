@@ -10,6 +10,56 @@ Private Function DirectorySSN(ByVal value As Variant) As String
     Next
     DirectorySSN = s
 End Function
+ ' SSN is authoritative. Name fallback is exact after punctuation/spacing
+ ' normalization, unique among active members, and never crosses conflicting SSNs.
+Public Function DirectoryIdentityMatch(ByVal name As String, ByVal official As String, ByVal ssn As String) As Long
+    Dim db As DAO.Database, r As DAO.Recordset, candidate As Long, matches As Long
+    Set db = CurrentDb
+    If ssn <> "" Then
+        DirectoryIdentityMatch = Nz(MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(ssn) & " AND IsArchived=False"), 0)
+        If DirectoryIdentityMatch > 0 Then Exit Function
+    End If
+    If DirectoryName(name) = "" And DirectoryName(official) = "" Then Exit Function
+    Set r = db.OpenRecordset("SELECT MemberID,FullName,ReportName,MemberSSN FROM CommandMember WHERE IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        If (ssn = "" Or Nz(r!MemberSSN, "") = "" Or ssn = Nz(r!MemberSSN, "")) Then
+            If (DirectoryName(name) <> "" And DirectoryName(name) = DirectoryName(r!FullName)) Or (DirectoryName(official) <> "" And DirectoryName(official) = DirectoryName(r!ReportName)) Then
+                matches = matches + 1: candidate = r!MemberID
+            End If
+        End If
+        r.MoveNext
+    Loop
+    r.Close
+    If matches = 1 Then DirectoryIdentityMatch = candidate
+End Function
+'Refresh core identity from a confirmed report. Older/undated reports may fill
+'blanks but cannot replace information supplied by a later dated report.
+Public Sub RefreshDirectoryFromReport(ByVal memberID As Long, ByVal reportID As Long)
+    Dim db As DAO.Database, member As DAO.Recordset, report As DAO.Recordset, latest As DAO.Recordset
+    Dim ssn As String, rank As String, official As String, display As String, version As Long, fresh As Boolean, changed As Boolean, incoming As String
+    Set db = CurrentDb
+    Set member = db.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+    Set report = db.OpenRecordset("SELECT OfficialName,MemberSSN,RankRate,PeriodEnd FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    ssn = Nz(member!MemberSSN, ""): incoming = DirectorySSN(report!MemberSSN)
+    If incoming <> "" And ssn <> "" And incoming <> ssn Then member.Close: report.Close: Exit Sub
+    If (incoming = "" Or incoming = ssn) And (Nz(report!RankRate, "") = "" Or Nz(report!RankRate, "") = Nz(member!RankRate, "")) And (Nz(report!OfficialName, "") = "" Or Nz(report!OfficialName, "") = Nz(member!ReportName, "")) Then member.Close: report.Close: Exit Sub
+    Set latest = db.OpenRecordset("SELECT Max(r.PeriodEnd) AS LatestEnd FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & memberID & " AND m.MatchState='Confirmed' AND r.ReportID<>" & reportID, dbOpenSnapshot)
+    fresh = False
+    If Not IsNull(report!PeriodEnd) Then
+        If IsNull(latest!LatestEnd) Then fresh = True Else fresh = (report!PeriodEnd >= latest!LatestEnd)
+    End If
+    latest.Close
+    display = member!FullName: official = Nz(member!ReportName, ""): rank = Nz(member!RankRate, ""): version = member!VersionCounter
+    If incoming <> "" And ssn = "" Then
+        If Nz(MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(incoming) & " AND MemberID<>" & memberID), 0) = 0 Then ssn = incoming: changed = True
+    End If
+    incoming = Nz(report!RankRate, "")
+    If incoming <> "" And incoming <> rank And (fresh Or rank = "") Then rank = incoming: changed = True
+    incoming = Nz(report!OfficialName, "")
+    If incoming <> "" And incoming <> official And (fresh Or official = "") Then official = incoming: changed = True
+    member.Close: report.Close
+    If changed Then SaveDirectoryMember memberID, version, display, official, rank, ssn, "Report"
+End Sub
 Private Function DirectoryName(ByVal value As Variant) As String
     Dim s As String
     s = UCase$(Trim$(Nz(value, "")))
@@ -78,28 +128,73 @@ Public Function SyncReportDirectory(ByVal reportID As Long) As Long
         If ssn <> "" And ssn <> Nz(member!MemberSSN, "") Then
             state = "Needs review"
             existing = MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(ssn))
-            If IsNull(existing) And Nz(member!MemberSSN, "") = "" And source = "Report creation" Then
-                SaveDirectoryMember id, member!VersionCounter, member!FullName, Nz(member!ReportName, ""), Nz(member!RankRate, ""), ssn, "Report"
+            If IsNull(existing) And Nz(member!MemberSSN, "") = "" Then
                 state = "Confirmed"
             End If
         End If
         member.Close
     Else
-        If ssn <> "" Then existing = MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(ssn)) Else existing = Null
-        If IsNull(existing) Then
+        existing = DirectoryIdentityMatch(name, official, ssn)
+        If existing = 0 Then
             id = SaveDirectoryMember(0, 0, name, official, Nz(report!RankRate, ""), ssn, "Report")
             state = IIf(ssn = "", "Provisional", "Confirmed"): source = "Report creation"
         Else
-            id = CLng(existing): source = "SSN match"
-            Set member = ownedDB.OpenRecordset("SELECT FullName,ReportName FROM CommandMember WHERE MemberID=" & id, dbOpenSnapshot)
-            state = "Needs review"
-            If DirectoryName(name) = DirectoryName(member!FullName) Or (official <> "" And DirectoryName(official) = DirectoryName(member!ReportName)) Then state = "Confirmed"
+            id = CLng(existing): source = "Unique name match": state = "Confirmed"
+            Set member = ownedDB.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & id, dbOpenSnapshot)
+            If ssn <> "" And ssn = Nz(member!MemberSSN, "") Then source = "SSN match"
             member.Close
         End If
     End If
     If link.EOF Then link.AddNew: link!ReportID = reportID Else link.Edit
     link!MemberID = id: link!MatchState = state: link!MatchSource = source: link!UpdatedBy = MajorAuthor(): link!UpdatedAt = Now(): link.Update
-    link.Close: report.Close: SyncReportDirectory = id
+    link.Close: report.Close
+    If state = "Confirmed" Then RefreshDirectoryFromReport id, reportID
+    SyncReportDirectory = id
+End Function
+'Repair only the known PDF placeholder bug; preserve genuine profiles and history.
+Public Function RepairPDFDirectoryLinks() As Long
+    Dim db As DAO.Database, r As DAO.Recordset, link As DAO.Recordset, w As DAO.Workspace, candidates As New Collection, candidate As Variant, fields As Object, official As String, ssn As String
+    Dim oldID As Long, reportID As Long, newID As Long, failure As Long, message As String, stage As String, matched As Boolean, operation As Long
+    Set db = CurrentDb
+    On Error GoTo Failed
+    stage = "Find legacy placeholders"
+    Set r = db.OpenRecordset("SELECT DISTINCT m.ReportID,m.MemberID FROM (MemberReport AS m INNER JOIN CommandMember AS c ON m.MemberID=c.MemberID) INNER JOIN ImportReceipt AS i ON m.ReportID=i.ReportID WHERE c.FullName='Imported PDF member' AND c.MemberSSN Is Null AND c.SourceKind='Report' AND c.IsArchived=False AND m.MatchSource='Report creation' AND i.AdapterVersion Like 'pdf-xfa-v*' AND i.IsUndone=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        candidates.Add Array(CLng(r!ReportID), CLng(r!MemberID)): r.MoveNext
+    Loop
+    r.Close
+    stage = "Begin repair": Set w = DBEngine.Workspaces(0): w.BeginTrans
+    For Each candidate In candidates
+        reportID = candidate(0): oldID = candidate(1): Set fields = SavedFields(reportID)
+        official = Nz(fields("OfficialName"), ""): ssn = DirectorySSN(fields("MemberSSN"))
+        If Len(official) > 0 Then
+            stage = "Match extracted identity": newID = DirectoryIdentityMatch(official, official, ssn)
+            matched = (newID > 0)
+            If newID = 0 Then newID = SaveDirectoryMember(0, 0, official, official, Nz(fields("RankRate"), ""), ssn, "Report")
+            stage = "Replace legacy link"
+            Set link = db.OpenRecordset("SELECT * FROM MemberReport WHERE ReportID=" & reportID, dbOpenDynaset)
+            link.Edit: link!MemberID = newID: link!MatchState = IIf(ssn <> "" Or matched, "Confirmed", "Provisional")
+            link!MatchSource = "Repaired PDF identity": link!UpdatedBy = MajorAuthor(): link!UpdatedAt = Now(): link.Update: link.Close
+            If ssn <> "" Or matched Then RefreshDirectoryFromReport newID, reportID
+            stage = "Retire unused placeholder"
+            'Use the transaction's own DAO connection; domain aggregates can
+            'still see the pre-transaction member link through the UI connection.
+            Set link = db.OpenRecordset("SELECT Count(*) AS N FROM MemberReport WHERE MemberID=" & oldID, dbOpenSnapshot)
+            If link!n = 0 Then
+                link.Close: Set link = db.OpenRecordset("SELECT Count(*) AS N FROM PriorEvaluation WHERE MemberID=" & oldID, dbOpenSnapshot)
+                If link!n = 0 Then db.Execute "UPDATE CommandMember SET IsArchived=True WHERE MemberID=" & oldID, dbFailOnError
+            End If
+            link.Close
+            operation = BeginOperation("Repair PDF member identity", "Report " & reportID & "; placeholder member " & oldID & "; matched member " & newID)
+            FinishOperation operation, "Completed", "Report values, import receipt and historical evaluations retained."
+            RepairPDFDirectoryLinks = RepairPDFDirectoryLinks + 1
+        End If
+    Next
+    w.CommitTrans: Exit Function
+Failed:
+    failure = Err.Number: message = stage & ": " & Err.Description
+    On Error Resume Next: w.Rollback: r.Close
+    On Error GoTo 0: Err.Raise failure, "RepairPDFDirectoryLinks", message
 End Function
 Public Function SyncDirectoryFromReports() As Long
     Dim ownedDB As DAO.Database

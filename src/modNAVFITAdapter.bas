@@ -47,7 +47,8 @@ Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String,
             If s = "" Then NAVFITDecode = "": Exit Function
             If IsCounselingStatus(s) Then NAVFITDecode = s: Exit Function
             If IsValidIsoDate(s) Then NAVFITDecode = s: Exit Function
-            If century <> 1900 And century <> 2000 Then Err.Raise vbObjectError + 5104, , "Choose 1900 or 2000 explicitly for the NAVFIT counseling date."
+            If century = 0 Then century = 2000
+            If century <> 1900 And century <> 2000 Then Err.Raise vbObjectError + 5104, , "Unsupported counseling century."
             If Len(s) <> 7 Then Err.Raise vbObjectError + 5104, , "Counseling text cannot be represented as a Swift date. Source value must be reviewed."
             If Not Left$(s, 2) Like "##" Or Not Right$(s, 2) Like "##" Then Err.Raise vbObjectError + 5104, , "Unsupported counseling date encoding."
             months = Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
