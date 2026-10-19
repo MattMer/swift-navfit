@@ -6,7 +6,7 @@ Copy-Item -LiteralPath $TemplatePath -Destination $OutputPath
 $app=New-Object -ComObject Access.Application
 try {
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($OutputPath,$true)
- foreach($m in @('modUX','modUXSurface','modUXViewport','modUXMyWork','modUXDashboard','modUXGroupLifecycle')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+ foreach($m in @('modUXReadRows','modUX','modUXSurface','modUXViewport','modUXMyWork','modUXDashboard','modUXGroupLifecycle')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
  . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
  $app.DoCmd.RunCommand(126);$app.CloseCurrentDatabase()
  Write-Output ('Compiled themed build: '+$OutputPath)

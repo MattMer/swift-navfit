@@ -100,6 +100,45 @@ Public Function SeedUXDemo() As String
     If Not CheckpointEditor() Then Err.Raise vbObjectError + 5101, , "Demo recovery checkpoint could not be created."
     ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
     Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
+    SeedValidationGroups senior
     db.Execute "UPDATE AppMetadata SET CompatibilityStatus='Synthetic UX demo - NAVFIT exchange remains unverified'", dbFailOnError
-    SeedUXDemo = "PASS: 9 synthetic reports, 3 groups, 2 contributors, 1 reporting senior, 3 RSCA baselines, review/approval/archive/NOB/recovery examples."
+    SeedUXDemo = "PASS: 13 synthetic reports, 5 groups (including zero-report-issue and three-report-issue examples), 2 contributors, 1 reporting senior, 3 RSCA baselines, review/approval/archive/NOB/recovery examples."
 End Function
+
+Private Function DemoValidationReport(ByVal member As String, ByVal number As Long, ByVal senior As Object) As Long
+ Dim id As Long, f As Object, changes As Object, key As Variant, findings As Collection, item As Object, message As String
+ id = DemoReport("EVAL", member, "IT1", number, senior)
+ Set f = SavedFields(id)
+ f("ReportingSeniorName") = "DEMO, A": f("ReportingSeniorGrade") = "CDR": f("ReportingSeniorDesignator") = "1110"
+ f("OccasionPeriodic") = "No": f("OccasionDetachment") = "Yes": f("Designator") = "AW"
+ f("AssignmentRecommendationA") = "TECHNICIAN": f("AssignmentRecommendationB") = Null
+ f("RetentionYes") = "Yes": f("RetentionNo") = "No"
+ f("ReadinessSummary") = "P": f("ReadinessDate") = "2026-06-01"
+ f("CounselorName") = "COUNSELOR, A": f("RaterName") = "RATER, A, ITC": f("SeniorRaterName") = "NONE AVAILABLE"
+ For Each key In TraitKeys(): f(CStr(key)) = "4.0": Next
+ Set changes = CreateObject("Scripting.Dictionary")
+ For Each key In f.Keys
+  If key <> "FormKind" Then changes.Add CStr(key), f(key)
+ Next
+ CommitSavedFields id, CurrentRevision(id), changes, "Populate synthetic validation baseline"
+ Set findings = ValidateLiveFields(SavedFields(id), id)
+ If findings.Count <> 0 Then
+  For Each item In findings: message = message & item("Code") & ":" & item("Key") & " " & item("Message") & vbCrLf: Next
+  Err.Raise vbObjectError + 5102, , "Clean synthetic baseline has findings: " & message
+ End If
+ DemoValidationReport = id
+End Function
+Private Sub SeedValidationGroups(ByVal senior As Object)
+ Dim clean As Long, few As Long, a As Long, b As Long, c As Long, d As Long, changes As Object, findings As Collection
+ clean = CreateSummaryGroup("DEMO - Clean reports (0 report issues)", "EVAL", "E6")
+ few = CreateSummaryGroup("DEMO - Practice corrections (3 report issues)", "EVAL", "E6")
+ a = DemoValidationReport("Morgan Ellis", 21, senior): b = DemoValidationReport("Taylor Hayes", 22, senior)
+ c = DemoValidationReport("Cameron Avery", 23, senior): d = DemoValidationReport("Reese Parker", 24, senior)
+ AddGroupMember clean, a, "E6": AddGroupMember clean, b, "E6"
+ AddGroupMember few, c, "E6": AddGroupMember few, d, "E6"
+ Set changes = CreateObject("Scripting.Dictionary")
+ changes.Add "CommandEmployment", Null: changes.Add "DutyDescription", Null: changes.Add "ReadinessSummary", Null
+ CommitSavedFields c, CurrentRevision(c), changes, "Synthetic practice: three missing required blocks"
+ Set findings = ValidateLiveFields(SavedFields(c), c)
+ If findings.Count <> 3 Then Err.Raise vbObjectError + 5103, , "Practice report expected three issues, got " & findings.Count
+End Sub

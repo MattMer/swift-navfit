@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 # Final additive UI pass: table history, dedicated resources, explicit live-group tools.
 $db=$app.CurrentDb();if($db.TableDefs('RSCABaseline').Fields('Paygrade').Size -lt 3){$db.Execute('ALTER TABLE RSCABaseline ALTER COLUMN Paygrade TEXT(5)',128)}
 foreach($m in @('modUXSeniorTable','modUXResourceTools','modRSDirectory','modRSDirectoryUI','modUXNAVFIT','modUXTraitGrid','modUXGroupPages','modUXViewport','modUXDashboard','modUXHelp','modUXBlockTools')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
@@ -76,12 +77,12 @@ foreach($screen in @('frmUXComparison','frmUXBulk','frmMajorWorkbench')){
  try{$app.DeleteControl($screen,'uxGroupTab3')}catch{}
  $tabs=@(0,1,2,4);$lefts=@(2850,4900,9100,11200);$widths=@(1900,4050,1950,2100)
  for($i=0;$i -lt 4;$i++){$c=$f.Controls('uxGroupTab'+$tabs[$i]);$c.Left=$lefts[$i];$c.Width=$widths[$i]}
- $f.Section(0).Height=[math]::Max($f.Section(0).Height,$bottom+1100)
+ SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($bottom+1100)))
  $app.DoCmd.Close(2,$f.Name,1)
 }
 
 $app.DoCmd.OpenForm('frmUXGroupRSCA',1);$f=$app.Forms.Item('frmUXGroupRSCA')
 try{$app.DeleteControl($f.Name,'cmdViewSenior')}catch{}
 AddResourceControl $f 104 'cmdViewSenior' 2850 8800 10450 450 'Open selected reporting senior record' '=RSViewGroupSenior()'
-$f.Section(0).Height=[math]::Max($f.Section(0).Height,9500)
+SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]9500))
 $app.DoCmd.Close(2,$f.Name,1)

@@ -322,6 +322,7 @@ End Function
 
 Public Function OpenScreen(ByVal formName As String) As Boolean
     On Error GoTo Failed
+    If formName = "frmHelp" Then formName = "frmUXHelp"
     If formName = "frmSnippets" Then UXResetSnippetOrigin
     DoCmd.OpenForm formName
     Forms(formName).SetFocus
@@ -394,7 +395,7 @@ Public Function LoadEditor() As Boolean
         f!txtCommandEmployment = StoredBlock28(id)
         f!cboPromotionStatus = r!PromotionStatus
         f!cboObservationStatus = r!ObservationStatus: f!cboPromotionRecommendation = r!PromotionRecommendation
-        f!lblSaved.Caption = "Last saved: " & r!ModifiedAt
+        f!lblSaved.Caption = "Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!CurrentRevisionID), "?") & " at " & r!ModifiedAt
         f!cmdSave.Enabled = Not r!IsArchived
         f!cmdRestore.Enabled = Not r!IsArchived
         r.Close: f!cboKind.Enabled = False
@@ -429,12 +430,13 @@ Public Function SaveEditor() As Boolean
     id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value)
     Call DiscardEditorCheckpoint()
     w.CommitTrans: trans = False
-    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved " & Now() & " - local draft only"
+    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved revision " & Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & id), "?") & " at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
     Call ResetEditorBaseline()
     Call RefreshTraitSummary()
-    f!lblRecovery.Caption = "Saved; no pending recovery checkpoint."
+    f!lblRecovery.Caption = "Recovery: no unsaved edits to checkpoint."
+    If UXHasControl(f, "uxReviewSetup") Then UXHeaderReviewState
     SaveEditor = True: Exit Function
 Failed:
     Dim message As String

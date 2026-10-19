@@ -1,6 +1,6 @@
 # Run after the existing UI helpers; retain all backend control identities.
 . (Join-Path $PSScriptRoot 'apply-ux-block28-schema.ps1')
-foreach($m in @('modSummaryGroups','modOperations','modUXGroupLifecycle','modUXBlockTools','modUXSurface','modUX','modUXFeedback','modUXMyWork','modUXTraitGrid','modSnippets','modMeetings','modRouteTemplates')){
+foreach($m in @('modUXReadRows','modSummaryGroups','modOperations','modUXGroupLifecycle','modUXBlockTools','modUXSurface','modUX','modUXFeedback','modUXMyWork','modUXTraitGrid','modSnippets','modMeetings','modRouteTemplates')){
     $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))
 }
 $layout=Get-Content (Join-Path $root 'scripts/apply-ux-layout.ps1') -Raw

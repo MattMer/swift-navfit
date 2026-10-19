@@ -1,4 +1,4 @@
-foreach($m in @('modUXGroupOrganization','modWorkspace','modUX','modGroupPolicy','modUXGroupLifecycle')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+foreach($m in @('modUXReadRows','modUXGroupOrganization','modWorkspace','modUX','modGroupPolicy','modUXGroupLifecycle')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
 [void](Control $f 100 'uxGroupOrganization' 0 0 100 100 'Groups');$script:swiftControl.Visible=$false
 $f.Controls('cboDestination').Visible=$false

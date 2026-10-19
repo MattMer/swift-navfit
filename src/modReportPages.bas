@@ -10,12 +10,18 @@ Public Function UXFixedRenderCount() As Long
 End Function
 Private Sub Place(ByVal f As Access.Form, ByVal name As String, ByVal x As Long, ByVal y As Long, ByVal width As Long, ByVal height As Long)
  If f.Name = "frmEditor" Then x = x + ReportLeft
- With f.Controls(name): .Left = x: .Top = y: .Width = width: .Height = height: .Visible = True: End With
+ With f.Controls(name)
+  If .Left <> x Then .Left = x
+  If .Top <> y Then .Top = y
+  If .Width <> width Then .Width = width
+  If .Height <> height Then .Height = height
+  If Not .Visible Then .Visible = True
+ End With
 End Sub
 'Fixed sheet geometry never depends on the window. Only the scroll viewport and
 'action bar change height; resizing does not rebuild fields or refresh data.
-Public Function UXFixedResize(Optional ByVal height As Long = 0) As Boolean
- Dim f As Access.Form, body As Long, i As Long, names As Variant, c As Access.Control
+Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal viewportWidth As Long = 0) As Boolean
+ Dim f As Access.Form, body As Long, i As Long, names As Variant, c As Access.Control, width As Long, viewingWidth As Long
  If arranging Then Exit Function
  arranging = True
  On Error GoTo Failed
@@ -23,7 +29,12 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0) As Boolean
  If height = 0 Then height = f.InsideHeight
  If height < 7000 Then height = 7000
  body = height - 5000
- f.ScrollBars = 3: f.Width = 12400 + ReportLeft
+ width = f.InsideWidth
+ If viewportWidth > 0 Then width = viewportWidth
+ viewingWidth = width - (250 + ReportLeft) - 400
+ If viewingWidth < 12600 Then viewingWidth = 12600
+ f.ScrollBars = 3
+ If f.Width <> viewingWidth + ReportLeft + 650 Then f.Width = viewingWidth + ReportLeft + 650
  'The fixed paper canvas lives beside the application rail, never over it.
  UXNavigationLayout f, False, f.Width
  Place f, "uxContext", 250, 100, 8500, 300
@@ -42,7 +53,7 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0) As Boolean
  Place f, "uxSection", 250, 3320, 11800, 350
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
- Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), 12000, body
+ Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), viewingWidth, body
  f!uxFieldSurface.Visible = (sheet < 8)
  Dim footer As Long
  footer = f!uxFieldSurface.Top + body + 120
@@ -60,17 +71,24 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0) As Boolean
   Place f, "cmdCompare", 250, 4150, 2800, 450: Place f, "cmdRestore", 3250, 4150, 2800, 450
   Place f, "lstRevisions", 250, 4750, 11800, body - 700
  End If
- f.Section(acDetail).Height = footer + 1250
+ If sheet = 0 Then
+  Place f, "uxSeniorRecord", 250, footer + 1250, 7600, 400
+  Place f, "uxUseSenior", 8100, footer + 1250, 3900, 400
+ End If
+ f.Section(acDetail).Height = footer + IIf(sheet = 0, 1850, 1250)
  f!uxRail.Height = f.Section(acDetail).Height
  arranging = False: UXFixedResize = True: Exit Function
 Failed:
  arranging = False: f!uxError.Caption = "Layout: " & Err.Description
 End Function
 Public Function UXFixedSelect(ByVal section As Long) As Boolean
- Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, id As Long
+ Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, id As Long, parentPaint As Boolean, surfacePaint As Boolean, paintHeld As Boolean
  On Error GoTo Failed
  UXFlushSurface
- Set f = Forms!frmEditor: f!cmdClose.SetFocus
+ Set f = Forms!frmEditor: Set surface = f!uxFieldSurface.Form
+ parentPaint = f.Painting: surfacePaint = surface.Painting
+ f.Painting = False: surface.Painting = False: paintHeld = True
+ f!cmdClose.SetFocus
  If section <= 4 Then sheet = 0 Else If section <= 6 Then sheet = 1 Else sheet = section
  id = Nz(f!txtReportID, 0): Set db = CurrentDb
  If id > 0 Then
@@ -100,9 +118,17 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  If sheet = 7 Then UXSortHeaders Forms!frmEditor!uxFieldSurface.Form
  UXRefreshEditor
  UXHeaderReviewState
- UXFixedSelect = True: Exit Function
+ UXFixedSelect = True
+Finished:
+ If paintHeld Then
+  surface.Painting = surfacePaint: f.Painting = parentPaint
+ End If
+ Exit Function
 Failed:
+ On Error Resume Next
  f!uxError.Caption = "Unable to open report page: " & Err.Number & " " & Err.Description
+ UXFixedSelect = False
+ Resume Finished
 End Function
 Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
  Dim f As Access.Form, row As Variant, parts As Variant, key As String, kind As String, c As Access.Control, y As Long, bottom As Long, trait As Boolean, order As Long
@@ -145,8 +171,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
   End If
  Next
- f.Width = 11900: f.ScrollBars = 2
- UXSurfaceRefresh
+ f.Width = 12200: f.ScrollBars = 3
  If f!uxTraitGuidance.Visible Then
   For Each row In ReportPageRows(kind, page)
    key = Split(CStr(row), "|")(0)

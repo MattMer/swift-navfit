@@ -1,4 +1,4 @@
-param([string]$BuildPath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.2.1-tested.accdb'))
+param([string]$BuildPath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.25.0-dev.accdb'))
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 $out=Join-Path $root 'build\tests'
@@ -29,9 +29,8 @@ try {
     Assert ((Scalar 'SELECT Count(*) FROM Report') -eq 0) 'Blank report data'
     Assert ((Scalar 'SELECT Count(*) FROM Workspace') -eq 0) 'First-run setup required'
     $app.DoCmd.OpenForm('frmSetup')
-    $setup=$app.Forms.Item('frmSetup')
-    $setup.Controls.Item('txtCommand').Value='SYNTHETIC TEST COMMAND'
-    $setup.Controls.Item('txtProfile').Value='Synthetic Tester'
+    [void](InvokeVba 'SmokeSetControlValue' @('frmSetup','txtCommand','SYNTHETIC TEST COMMAND'))
+    [void](InvokeVba 'SmokeSetControlValue' @('frmSetup','txtProfile','Synthetic Tester'))
     Assert ($app.Eval('SaveSetup()')) 'First-run setup action succeeds'
     Write-Host 'Workspace configured'
     $ids=@()
@@ -82,7 +81,7 @@ try {
     foreach($name in @('frmHome','frmLibrary','frmEditor','frmSupport')){
         if($name -eq 'frmEditor'){$app.DoCmd.OpenForm($name,0,'','',0,0,[string]$id)}else{$app.DoCmd.OpenForm($name)}
         Assert ($app.Eval('Forms("'+$name+'").Controls.Count') -gt 0) "Form opens: $name"
-        if($name -eq 'frmLibrary'){Assert (($app.Forms.Item($name).Controls.Item('lstReports').ListCount - 1) -eq 5) 'Library initially displays active reports'}
+        if($name -eq 'frmLibrary'){Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 5')) 'Library initially displays active reports'}
         if($name -eq 'frmEditor'){[void]$app.Eval('UXSelectSection(9)');Assert ($app.Eval('(Forms!frmEditor!lstRevisions.ListCount - Abs(Forms!frmEditor!lstRevisions.ColumnHeads)) = 3')) 'History section displays all revisions'}
         if(-not $app.Eval('SmokeFormFits("'+$name+'")')){throw "Control outside form width: $name"}
         $app.DoCmd.Close(2,$name,2)
@@ -90,39 +89,38 @@ try {
     $app.SaveAsText(2,'frmEditor',(Join-Path $out 'editor-form.txt'))
     Assert $true 'Visible controls stay within form width'
     $app.DoCmd.OpenForm('frmLibrary')
-    $library=$app.Forms.Item('frmLibrary')
     $smokeGroup=InvokeVba 'CreateSummaryGroup' @('Smoke group','EVAL','E5')
     [void](InvokeVba 'SmokeAddGroupMember' @($smokeGroup,$id,'E5',''))
     [void]$app.Eval('UXRefreshGroupFilter()')
-    $library.Controls.Item('lstFolders').Value=$smokeGroup
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','lstFolders',$smokeGroup))
     [void]$app.Eval('RefreshLibrary()')
-    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 1) 'Summary-group selection filters reports'
-    $library.Controls.Item('lstReports').Value=$id
+    Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 1')) 'Summary-group selection filters reports'
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','lstReports',$id))
     Assert ($app.Eval('UXChooseReportGroup()')) 'Move report opens summary-group selector'
-    $app.Forms.Item('frmUXMoveGroup').Controls.Item('cboGroup').Value=0
+    [void](InvokeVba 'SmokeSetControlValue' @('frmUXMoveGroup','cboGroup',0))
     Assert ($app.Eval('UXPreviewMoveGroup()')) 'Summary-group move preview succeeds'
     Assert ($app.Eval('UXApplyMoveGroup()')) 'Summary-group move apply succeeds'
     $app.DoCmd.Close(2,'frmUXMoveGroup',2)
-    Assert ([Math]::Max(0,($library.Controls.Item('lstReports').ListCount-1)) -eq 0) 'Move refreshes current summary-group view'
+    Assert ($app.Eval('Forms!frmLibrary!lstReports.ListCount = 0')) 'Move refreshes current summary-group view'
     [void](InvokeVba 'SmokeAddGroupMember' @($smokeGroup,$id,'E5',''))
-    $library.Controls.Item('lstFolders').Value=-1
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','lstFolders',-1))
     [void]$app.Eval('RefreshLibrary()')
-    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 4) 'Ungrouped view locates drafts outside summary groups'
-    $library.Controls.Item('lstFolders').Value=0
-    $library.Controls.Item('txtSearch').Value="O'Brien"
+    Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 4')) 'Ungrouped view locates drafts outside summary groups'
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','lstFolders',0))
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','txtSearch',"O'Brien"))
     [void]$app.Eval('RefreshLibrary()')
-    Assert ([Math]::Max(0,($library.Controls.Item('lstReports').ListCount - 1)) -eq 0) 'Search safely handles apostrophes'
-    $library.Controls.Item('txtSearch').Value='Synthetic draft EVAL'
+    Assert ($app.Eval('Forms!frmLibrary!lstReports.ListCount = 0')) 'Search safely handles apostrophes'
+    [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','txtSearch','Synthetic draft EVAL'))
     [void]$app.Eval('RefreshLibrary()')
-    Assert (($library.Controls.Item('lstReports').ListCount - 1) -eq 2) 'Search finds title matches'
+    Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 2')) 'Search finds title matches'
     $app.DoCmd.Close(2,'frmLibrary',2)
     $app.DoCmd.OpenForm('frmEditor',0,'','',0,0,'0')
     [void]$app.Eval('SmokeEditorEntries()')
     Assert ($app.Eval('SaveEditor()')) 'Editor save action succeeds'
     Assert ($app.Eval('Left(Forms!frmEditor!lblSaved.Caption,6)="Saved "')) 'Editor displays save confirmation'
     [void]$app.Eval('ShowHelp("Saving")')
-    Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmHelp') 'Help becomes the active form'
-    Assert ($app.Forms.Item('frmHelp').Controls.Item('txtHelp').Value.Contains('Save incomplete drafts')) 'Help contains topic-specific guidance'
+    Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmUXHelp') 'Help becomes the active form'
+    Assert ($app.Eval('InStr(Forms!frmUXHelp!txtGuide,"Save draft creates an atomic revision") > 0')) 'Help contains topic-specific guidance'
     [void]$app.Eval('CloseHelp()')
     Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmEditor') 'Closing help returns to the editor'
     $app.DoCmd.Close(2,'frmEditor',2)

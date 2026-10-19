@@ -43,6 +43,8 @@ Public Function TestRecursiveDefaults() As String
  stage = "Open and control cleanup": TraceStage stage
  Check UXOpenGlobalDefaults(), "Global defaults failed to open"
  Set f = Forms!frmUXBulk
+ Check UXSharedScope(), "Scope banner failed before field selection"
+ Check InStr(f!uxScope.Caption, "Scope: all ") = 1 And InStr(f!uxScope.Caption, "locally approved") > 0, "Scope banner missing counts or approval warning"
  For Each name In Array("cmdPreview", "cmdApply", "lstPreview", "txtFullValues", "txtGroupImpact", "lblReason", "txtReason")
   Check Not UXHasControl(f, CStr(name)), "Retired preview control remains: " & name
  Next

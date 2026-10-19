@@ -141,6 +141,10 @@ End Function
 ' Leave contributor/report editors safely before opening the requested workspace.
 Public Function UXNavigate(ByVal target As String) As Boolean
     On Error GoTo Failed
+    If target = "frmHelp" Or target = "frmUXHelp" Then
+        DoCmd.OpenForm "frmUXHelp"
+        UXNavigate = True: Exit Function
+    End If
     If Not RSLeaveSeniorEditor() Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm target
@@ -291,7 +295,8 @@ Public Function UXShowSaveError(ByVal message As String) As Boolean
     Dim f As Access.Form
     Set f = Forms!frmEditor
     If Not UXHasControl(f, "uxError") Then Exit Function
-    f!uxError.Caption = "Unable to save: " & message & " Pending values are preserved. Use Undo pending changes to reload the saved report and leave."
+    f!uxError.Caption = "Not saved: " & message & " Pending values are preserved. Correct the problem and retry Save draft. Undo pending changes discards these edits."
+    f!uxDirty.Caption = "Not saved - pending edits retained"
     UXShowSaveError = True
 End Function
 ' Validate and flush the visible surface before the normal atomic draft save;
@@ -302,7 +307,10 @@ Public Function UXSaveEditor() As Boolean
     Set f = Forms!frmEditor
     f!uxError.Caption = ""
     If UXSurfaceAvailable() Then
-        If Not UXSurfaceCheckAll() Then Exit Function
+        If Not UXSurfaceCheckAll() Then
+            f!uxDirty.Caption = "Not saved - correct invalid entries; pending edits retained"
+            Exit Function
+        End If
     End If
     UXSaveEditor = SaveEditor()
     UXRefreshEditor
@@ -531,13 +539,24 @@ Public Function UXEditorReview(ByVal mode As String) As Boolean
 End Function
 ' Seed the contextual shared-block/default editor from saved values, tracking mixed
 ' fields/defaults before edits are confirmed and applied recursively.
-Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False, Optional ByVal globalMode As Boolean = False) As Boolean
+Public Function UXStartGroupBulk(Optional ByVal defaultsMode As Boolean = False, Optional ByVal globalMode As Boolean = False, Optional ByVal requestedGroup As Long = -1) As Boolean
     Dim r As DAO.Recordset, key As Variant, values As Object, f As Access.Form, seen As Boolean, base As Object, db As DAO.Database
-    If globalMode Then groupContext = 0 Else groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+    If globalMode Then
+        groupContext = 0
+    ElseIf requestedGroup >= 0 Then
+        groupContext = requestedGroup
+    ElseIf CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then
+        groupContext = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+    Else
+        Exit Function
+    End If
     If groupContext = 0 And Not globalMode Then MsgBox "Select a group first.": Exit Function
+    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+        If Not UXGridDrain() Then Exit Function
+    End If
     Set bulkMixed = CreateObject("Scripting.Dictionary")
     If groupContext > 0 Then
-        If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupContext), True) Then Forms!frmMajorWorkbench!lblStatus.Caption = "Recover this group before changing shared blocks or defaults.": Exit Function
+        If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupContext), True) Then Exit Function
     End If
     ' A workspace tab can leave this shared form open. Finish its active control
     ' under the old confirmation context, then reopen with fresh OpenArgs/buffers.

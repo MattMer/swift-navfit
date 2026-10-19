@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 foreach($m in @('modNAVFITAdapter','modPDFImport','modUXNativeGroups','modUXNAVFIT','modUXImportFlow','modUXDirectory','modUXGroupPages','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 foreach($entry in @(@('frmPDFImport','cboCentury','lblCentury'),@('frmUXNativeGroups','cboCentury','lblCentury'),@('frmImportReview','cboNAVFITCentury','lblNAVFITCentury'),@('frmNAVFITExchange','cboReturnCentury','lblReturnCentury'))){
  $app.DoCmd.OpenForm($entry[0],1);$f=$app.Forms.Item($entry[0])
@@ -22,6 +23,6 @@ foreach($screen in @('frmUXGroupReport','frmUXDirectoryBatch')){
  $c.ControlTipText='Choose a paygrade (such as E6) or a specific rank/rate. All ranks/rates shows every active member.'
  $order=if($screen -eq 'frmUXGroupReport'){@('cboRankFilter','cboMember','txtName','txtOfficial','txtRank','txtSSN','txtFrom','txtTo','cmdCreate','cmdCancel')}else{@('cboGroup','txtFrom','txtTo','cboRankFilter','lstMembers','cmdPreview','txtPreview','cmdApply','cmdClose')}
  for($i=0;$i -lt $order.Count;$i++){$f.Controls($order[$i]).TabIndex=$i}
- $f.Section(0).Height=[math]::Max($f.Section(0).Height,($f.Controls($(if($screen -eq 'frmUXGroupReport'){'cmdCreate'}else{'cmdApply'})).Top+1000))
+ SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($f.Controls($(if($screen -eq 'frmUXGroupReport'){'cmdCreate'}else{'cmdApply'})).Top+1000)))
  $app.DoCmd.Close(2,$f.Name,1)
 }

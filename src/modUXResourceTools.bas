@@ -18,7 +18,7 @@ Failed:
   Forms(screen)!uxStatus.Caption = Err.Description
  End If
 End Function
-Public Function UXGroupSeniorCaption(ByVal id As Long) As String
+Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPSG As Object = Nothing) As String
  Dim title As String, db As DAO.Database, r As DAO.Recordset, psg As Object
  title = Nz(MajorScalar("SELECT s.Title FROM GroupRSCABaseline AS g INNER JOIN ReportingSeniorRecord AS s ON g.SeniorID=s.SeniorID WHERE g.GroupID=" & id), "")
  If title = "" Then
@@ -30,7 +30,7 @@ Public Function UXGroupSeniorCaption(ByVal id As Long) As String
   r.Close
  End If
  If title = "" Then title = "Not selected"
- Set psg = RSGroupPSG(id)
+ If preparedPSG Is Nothing Then Set psg = RSGroupPSG(id) Else Set psg = preparedPSG
  UXGroupSeniorCaption = "Reporting senior: " & title & " | PSG RSCA: "
  If IsNull(psg("Value")) Then
   UXGroupSeniorCaption = UXGroupSeniorCaption & "Unavailable"

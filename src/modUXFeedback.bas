@@ -72,8 +72,10 @@ Public Function UXTableGroups(ByVal id As Long) As String
     If Len(UXTableGroups) = 0 Then UXTableGroups = "Ungrouped"
 End Function
 Public Function UXListGroupDefaults() As Boolean
-    If Not UXOpenGroup(True) Then Exit Function
-    UXListGroupDefaults = UXOpenGroupDefaults()
+    Dim id As Long
+    id = Nz(Forms!frmUXGroups!lstGroups, 0)
+    If id = 0 Then Exit Function
+    UXListGroupDefaults = UXOpenGroupDefaults(id)
 End Function
 Public Function UXOpenGroupMembers() As Boolean
     UXOpenGroupMembers = UXOpenGroup()

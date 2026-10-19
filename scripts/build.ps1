@@ -130,6 +130,7 @@ try {
     $app.LoadFromText(5,'modAdministration',(Join-Path $root 'src\modAdministration.bas'))
     $app.LoadFromText(5,'modRouting',(Join-Path $root 'src\modRouting.bas'))
     $app.LoadFromText(5,'modSnippets',(Join-Path $root 'src\modSnippets.bas'))
+    $app.LoadFromText(5,'modUXReadRows',(Join-Path $root 'src/modUXReadRows.bas'))
     $app.LoadFromText(5,'modLibraryViews',(Join-Path $root 'src\modLibraryViews.bas'))
     $app.LoadFromText(5,'modChecklist',(Join-Path $root 'src\modChecklist.bas'))
     $app.LoadFromText(5,'modRecovery',(Join-Path $root 'src\modRecovery.bas'))
@@ -727,6 +728,12 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-native-dates.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-compat-pages.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-priority-actions.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-context-help.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-navigation-context.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-visual.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-page-switch.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-page-width.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
@@ -739,8 +746,8 @@ try {
     $editorForm=$app.Forms.Item('frmEditor')
     $editorForm.HasModule=$true;$editorForm.OnUnload='[Event Procedure]'
     $editorModule=$editorForm.Module
-    $unloadLine=$editorModule.CreateEventProc('Unload','Form')
-    $editorModule.InsertLines($unloadLine+1,'    If Not UXEditorUnload() Then Cancel = True')
+    try{$unloadLine=$editorModule.ProcStartLine('Form_Unload',0)}catch{$unloadLine=$editorModule.CreateEventProc('Unload','Form')}
+    if($editorModule.Lines(1,$editorModule.CountOfLines) -notmatch 'If Not UXEditorUnload\(\) Then Cancel = True'){$editorModule.InsertLines($unloadLine+1,'    If Not UXEditorUnload() Then Cancel = True')}
     # Saving the form before closing can miss its newly created class code.
     # Close with acSaveYes so Access persists both the form and event procedure.
     $app.DoCmd.Close(2,'frmEditor',1)
@@ -748,7 +755,7 @@ try {
     $comparisonForm=$app.Forms.Item('frmUXComparison')
     $comparisonForm.HasModule=$true;$comparisonForm.OnUnload='[Event Procedure]'
     $comparisonModule=$comparisonForm.Module
-    $comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')
+    try{$comparisonLine=$comparisonModule.ProcStartLine('Form_Unload',0)}catch{$comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')}
     if($comparisonModule.Lines(1,$comparisonModule.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){$comparisonModule.InsertLines($comparisonLine+1,'    If Not UXGridUnload(Me) Then Cancel = True')}
     $app.DoCmd.Close(2,'frmUXComparison',1)
     . (Join-Path $PSScriptRoot 'apply-ux-efficiency.ps1')
@@ -767,11 +774,25 @@ try {
     $app.CloseCurrentDatabase()
 
 } finally {
-    if ($null -ne $app) { $app.Quit(2); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app) }
+    if ($null -ne $app) { $app.Quit(2) }
+    # Generated forms/modules and CurrentDb clones can outlive Application.Quit.
+    # Release only COM references owned by this build's script scope before hashing.
+    foreach($buildVariable in @(Get-Variable -Scope Script)){
+        if($buildVariable.Name -eq 'app'){continue}
+        $buildValue=$buildVariable.Value
+        $buildObjects=if($buildValue -is [Array]){$buildValue}else{,$buildValue}
+        foreach($buildObject in $buildObjects){
+            if($null -ne $buildObject -and [Runtime.InteropServices.Marshal]::IsComObject($buildObject)){
+                try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($buildObject)}catch{}
+            }
+        }
+    }
+    if ($null -ne $app) { [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app) }
+    [GC]::Collect();[GC]::WaitForPendingFinalizers();[GC]::Collect()
 }
 $builtHash=$null
-for($attempt=0;$attempt -lt 20;$attempt++){
+for($attempt=0;$attempt -lt 120;$attempt++){
     try{$builtHash=(Get-FileHash -LiteralPath $OutputPath -Algorithm SHA256 -ErrorAction Stop).Hash;break}
-    catch{if($attempt -eq 19){throw};Start-Sleep -Milliseconds 250}
+    catch{if($attempt -eq 119){throw};Start-Sleep -Milliseconds 250}
 }
 [pscustomobject]@{Output=$OutputPath;SHA256=$builtHash;Status='Built; smoke test required'} | ConvertTo-Json

@@ -4,7 +4,7 @@ Start with README.md, planning/ROADMAP.md and the current usage guides. planning
 
 ## Development environment
 
-Use Windows with desktop Microsoft Access installed. Current verification uses Access 16.0, build 20430, through Access COM and DAO. Access Runtime and x86 have not been verified. GitHub-hosted runners do not have the required Access installation, so Access integration tests run locally.
+Use Windows with desktop Microsoft Access installed. Current verification uses Access 16.0, build 20430, through Access COM and DAO. Free Access Runtime is not a supported target; x86 has not been verified. GitHub-hosted runners do not have the required Access installation, so Access integration tests run locally.
 
 The editable source of truth is src/*.bas and scripts/build.ps1. Do not merge binary Access databases as source. Keep test fixtures synthetic and local. TEST_DB.accdb and NAVFIT_BLANK.accdb are intentionally excluded from the repository, along with supplied Navy reference PDFs, the NAVFIT98A application bundle and third-party converter files. Arrange those fixtures with the maintainer when working on import compatibility. Missing fixtures are not a passing compatibility test.
 

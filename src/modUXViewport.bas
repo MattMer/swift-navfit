@@ -93,7 +93,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
         Set state = CreateObject("Scripting.Dictionary"): Set geometry = CreateObject("Scripting.Dictionary")
         baseWidth = 10450
         For Each c In f.Controls
-            If c.Left >= 2450 And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
+            If c.Left >= 2450 And c.Name <> "cmdWindowHelp" And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
                 geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height)
                 If c.Visible And c.Left + c.Width - 2850 > baseWidth Then baseWidth = c.Left + c.Width - 2850
             End If
@@ -138,7 +138,11 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     layoutPasses = layoutPasses + 1
     UXResizeWorkspace = True
 Finished:
-    If Not f Is Nothing Then UXSortHeaders f
+    If Not f Is Nothing Then
+        UXSortHeaders f
+        UXWindowHelpLayout f.Name
+        UXApplyVisual f
+    End If
     viewportBusy = False
     Exit Function
 Failed:

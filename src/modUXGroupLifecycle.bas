@@ -49,7 +49,7 @@ Public Function UXGroupList() As Boolean
     f!lstGroups = id
     On Error GoTo 0
     Call UXGroupSelection
-    f!lstGroups.ColumnCount = 8: f!lstGroups.ColumnWidths = "0;2900;1150;800;700;1300;1850;1700"
+    f!lstGroups.ColumnCount = 8: f!lstGroups.ColumnWidths = "0;3200;1400;1200;1100;1600;2200;2000"
     UXResizeWorkspace f.Name: UXGroupList = True
 End Function
 Public Function GroupCloseout(ByVal groupID As Long, ByVal members As Long, ByVal dated As Long, ByVal firstDate As Variant, ByVal lastDate As Variant) As Variant
@@ -80,6 +80,8 @@ Public Function UXGroupSelection() As Boolean
     f!cmdOpen.Enabled = (id > 0): f!uxRename.Enabled = (id > 0 And Not archived)
     f!uxArchive.Enabled = (id > 0 And Not archived): f!uxRecover.Enabled = (id > 0 And archived)
     f!uxLifecycleStatus.Caption = IIf(id = 0, "Choose a group. Archived groups keep members, defaults and history.", IIf(archived, "Archived group: inspect or recover. Member reports are not archived.", "Archiving hides this group; member reports remain available."))
+    f!uxLifecycleStatus.ControlTipText = "Group status is independent of member review and official submission."
+    f!uxLifecycleStatus.Caption = f!uxLifecycleStatus.Caption & " Group status is separate from member review and official submission."
     UXGroupSelection = True
 End Function
 Public Function UXGroupAction(ByVal action As String) As Boolean

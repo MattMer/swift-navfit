@@ -28,7 +28,7 @@ Public Function UXLoadReview() As Boolean
     UXLoadReview = UXReviewStatus()
 End Function
 Public Function UXReviewStatus() As Boolean
-    Dim f As Access.Form, id As Long, run As Long, r As DAO.Recordset, state As String, current As Boolean, author As Long, assignee As Long, editable As Boolean, message As String
+    Dim f As Access.Form, id As Long, run As Long, r As DAO.Recordset, state As String, current As Boolean, author As Long, assignee As Long, editable As Boolean, message As String, primary As String, nextAction As String, action As Variant
     Set f = Forms!frmUXReview: id = Nz(f!txtReportID, 0): run = Nz(f!cboRun, 0): author = MajorAuthor()
     editable = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Draft"
     f!cmdStart.Enabled = editable And DCount("*", "RouteRun", "ReportID=" & id & " AND RunState='Pending'") = 0
@@ -65,10 +65,49 @@ Public Function UXReviewStatus() As Boolean
         f!cmdCancel.Enabled = state = "Pending" And r!RequestedBy = author
         r.Close
     End If
+    If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then
+        nextAction = "Recover this archived report from Reports before continuing."
+    ElseIf Nz(f!txtGroupID, 0) > 0 And Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & Nz(f!txtGroupID, 0)), False) Then
+        nextAction = "Recover this archived group before starting or restarting review."
+    ElseIf f!cmdReopen.Enabled Then
+        primary = "cmdReopen": nextAction = "Reopen local approval to edit."
+    ElseIf f!cmdRestart.Enabled Then
+        primary = "cmdRestart": nextAction = "Restart this stale route as its requester."
+    ElseIf f!cmdAccept.Enabled Then
+        primary = "cmdAccept": nextAction = "Enter a note, then Accept step or Return report."
+    ElseIf f!cmdApprove.Enabled Then
+        primary = "cmdApprove": nextAction = "Enter a note and record local approval as the final reviewer."
+    ElseIf state = "Pending" Or state = "Accepted" Then
+        nextAction = "Wait for the assigned contributor or requester shown above."
+    ElseIf f!cmdStart.Enabled Then
+        primary = "cmdStart": nextAction = "Choose a route template, then Start review."
+    Else
+        nextAction = "Recover the archived report/group or reopen local approval before continuing."
+    End If
+    message = "Next: " & nextAction & vbCrLf & message
+    For Each action In Array("cmdStart", "cmdAccept", "cmdReturn", "cmdRestart", "cmdApprove", "cmdCancel", "cmdReopen")
+        With f.Controls(action)
+            .UseTheme = False: .FontBold = (.Name = primary And .Enabled)
+            .BackColor = IIf(.FontBold, UXColor("Primary"), UXColor("Neutral"))
+            If .Enabled Then
+                .ControlTipText = "Applies to saved values. " & nextAction
+            Else
+                Select Case CStr(action)
+                    Case "cmdStart": .ControlTipText = "Unavailable: start requires an active draft/group without a pending route."
+                    Case "cmdAccept", "cmdReturn": .ControlTipText = Left$("Unavailable: decisions require a current pending step assigned to you. " & message, 255)
+                    Case "cmdApprove": .ControlTipText = "Unavailable: local approval requires all steps accepted on current values and the final reviewer."
+                    Case "cmdRestart": .ControlTipText = "Unavailable: only the requester can restart a stale pending or accepted route."
+                    Case "cmdCancel": .ControlTipText = "Unavailable: only the requester can cancel a pending route."
+                    Case "cmdReopen": .ControlTipText = "Unavailable: reopen requires an active, locally approved report."
+                End Select
+            End If
+        End With
+    Next
     f!cboRun.Requery
     f!cboTemplate.Requery
     f!lblStatus.Caption = message
-    f!lblUnavailable.Caption = "Disabled actions: decisions require the assigned contributor and a current pending route; restart/cancel require its requester; approval requires the final reviewer. Archived reports and groups must be recovered. Start requires a draft without a pending route."
+    f!lblUnavailable.Caption = "Local approval is not official submission; group status is separate. Disabled actions: decisions require the assigned contributor and a current pending route; restart/cancel require its requester; approval requires the final reviewer. Archived reports and groups must be recovered. Start requires a draft without a pending route."
+    UXApplyVisual f
     UXReviewStatus = True
 End Function
 Public Function UXReviewStep() As Boolean

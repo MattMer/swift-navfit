@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'ensure-native-unload.ps1')
 # Remove the duplicate, hidden comparison list after adapters use the editable grid.
 $app.DoCmd.OpenForm('frmUXComparison',1);$f=$app.Forms.Item('frmUXComparison')
 if(@($f.Controls|ForEach-Object {$_.Name}).Contains('lstTraits')){$app.DeleteControl('frmUXComparison','lstTraits')}

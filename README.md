@@ -1,109 +1,116 @@
 # Swift NAVFIT
 
-A local Microsoft Access app for drafting and reviewing Navy evaluations and fitness reports. One operational `.accdb` contains the workspace, VBA, forms, draft data, history and local review tools.
+**Draft, review, and manage Navy evaluations in one local workspace.**
 
-**Previous versioned prerelease: 0.24.0-preview · schema 23.** Download the blank workspace or synthetic demo from the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.24.0-preview). Includes the native workspace redesign, summary-group tools, command directory and prior evaluations, contributor notes, expanded rate-filtered narratives and cited live validation. Supported NAVFIT report/group exports and selected-group imports retain provenance; single-report returned files use three-way reconciliation. Full policy coverage, returned-group reconciliation and exact printed fit remain pending.
+Swift NAVFIT is a Windows application built in Microsoft Access for EVALs, CHIEFEVALs, and FITREPs. It brings report drafting, summary groups, member history, local review, revision tracking, and recovery into one `.accdb` file.
 
-See [major foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md) for summary groups, reviewed defaults/batches, multi-step routes, meeting proposals, limited Navy checks, structured PDF import and guided backup/restore.
+The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and manual tracking that surround the report-writing process. Swift works alongside NAVFIT98A through supported import/export workflows; NAVFIT98A remains the destination for final native validation and printing.
 
-See [0.24.0 release notes](planning/RELEASE_0.24.0_PREVIEW.md), [current state](planning/CURRENT_STATE.md) and [policy review/recommendations](planning/NARRATIVE_POLICY_REVIEW_2026-10-06.md) for verified behavior and remaining work.
+## What Swift adds to the workflow
 
-## Current development baseline
+### Know what changed—and recover it
 
-**r116 — 17 October 2026 · 0.25.0-dev · schema 25.** Current tested downloads: [blank workspace](https://drive.google.com/file/d/17CstK6T_HE4yvxII67DqrjoTxgUCw1mJ/view?usp=drivesdk) and [synthetic demo](https://drive.google.com/file/d/1Az-qzF9BtoPJMmj2eNt3MzrZdNYdaOBK/view?usp=drivesdk). The report canvas now clears the left navigation, and all seven traits are grouped on Front Page. 322 targeted assertions, recovery timer and schema-1–25 transfer/rollback checks passed; blank/demo startup and data state verified. See [r116 notes](planning/REPORT_RAIL_R116_2026-10-17.md). The 18 October source checkpoint includes r114–r116; the latest GitHub-hosted deployment asset remains r104, with current Access builds linked above on Drive.
+- **Field-level revision history:** see who saved a change, when it changed, and the previous/new values.
+- **Compare and restore revisions:** inspect differences and restore an earlier version as a new revision without erasing history.
+- **Unsaved-edit recovery:** automatic/manual checkpoints preserve pending editor work separately from saved revisions.
+- **Clear save feedback:** distinguish unsaved edits, recovery checkpoints, failed saves, and committed revisions. Failed saves retain pending values for correction and retry.
+- **Archive and recover:** keep reports out of active views without losing their history.
 
-New in r115: full prior-Swift workspace transfer from first-run setup or Settings & Help; fixed Front Page/Back Page report fields; summary-group Closeout date from report ending dates; and ascending/descending table-heading sorting. Report-open median improved from 2.59 to 1.13 seconds in a four-open synthetic benchmark on this computer. Existing save/recovery and local review services remain in use.
+### Coordinate review without a separate tracker
 
-To carry data forward, open the new **blank** release and choose **Import data from a previous Swift NAVFIT version**. Preview and import its `.accdb`, then close and reopen the new app. This preserves the source and copies all workspace data/history; it does not merge independent populated workspaces. Initial setup in an otherwise blank destination is replaced. The demo is for exploration.
+- **My Work:** one queue for assigned reviews, current route steps, ready local approvals, and unresolved comments, with status and next actions.
+- **Ordered review routes:** assign contributors to steps, accept or return work with decision notes, and retain earlier decisions when a stale route is restarted.
+- **Revision-linked comments:** reply, resolve, and reopen discussion threads tied to saved report values.
+- **Stale-review protection:** later report changes invalidate earlier review eligibility instead of silently carrying approval forward.
+- **Local attribution:** contributor names, decision notes, and timestamps make the local review trail readable.
 
-Verification includes 546 relevant native assertions/binding checks, a real 30-second recovery checkpoint, transfers from retained schemas 1–25, populated schema-20/history and same-schema migrations, source hashes and rollback/rejection guards. Both final builds compile/start; 48 checked user-data tables are empty in the blank and the demo has nine synthetic reports. Manual physical display, keyboard/screen-reader and printed-layout acceptance remain outstanding. See [r115 scope and transfer guide](planning/WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md) and [verification manifest](planning/WORKSPACE_COMPAT_PAGES_R115_VERIFICATION.json).
+### Work across a command and summary groups
 
-Earlier improvements include [r114 timestamped native dates](planning/NATIVE_DATES_R114_2026-10-16.md), [r113 automatic 20xx imports/rank filters](planning/IMPORT_RANK_R113_2026-10-15.md), [r112 member/PSG behavior](planning/MEMBER_PSG_R112_2026-10-15.md), and [r110 shared readiness](planning/READINESS_R110_2026-10-14.md). Larger synthetic groups were measured at 25/50/100 members per report type; see [scale results](planning/SCALE_R102_2026-10-10.md).
+- **Command member directory:** reuse identities and filter report creation by paygrade or rank/rate; create reports individually or in batches.
+- **Prior evaluation history:** keep historical evaluations alongside each member for reference without replacing the current report.
+- **Shared fields and defaults:** apply group or command defaults with a visible scope, per-field confirmation, and disclosure when customized values or local approvals are affected.
+- **Live member tables:** edit trait cells in place; failed cells remain available for retry or deliberate discard.
+- **Comparison and proposals:** inspect group marks and stage changes with safeguards against changed membership, revisions, and locks.
+- **Reporting-senior directory and RSCA history:** reuse senior details and dated baselines; distinguish exact historical totals from rounded-average estimates and select a group's baseline deliberately.
 
-Access databases, local test data and supplied NAVFIT program files remain excluded from Git. Build scripts and verification notes are in `scripts/` and `planning/`. Future releases must satisfy the compatibility gates in `AGENTS.md`.
+### Catch problems while drafting
 
-## UI redesign under review
+- **Live, cited findings:** check pending report values and groups, with references and navigation to the affected block.
+- **Distinct issue types:** separate invalid entries, incomplete drafts, policy issues, and matters needing human review.
+- **Drafts remain editable:** incomplete information does not prevent an otherwise valid draft save.
+- **Guided report pages:** fixed Front/Back layouts, all seven traits together on Front Page, contextual help, and consistent navigation/status colors.
+- **Narrative tools:** rate-filtered, attributed snippets and local draft notes remain separate from the official narrative.
 
-The [r26 PDF-import notes](planning/PDF_IMPORT_R26.md) describe expanded mappings, existing-draft merges and the target-computer extraction check. The [r25 live-validation notes](planning/UX_LIVE_VALIDATION_2026-10-04.md) describe live report/group diagnostics and policy citations. The [r24 milestone notes](planning/GITHUB_R24_NOTES_2026-10-04.md) retain the earlier native redesign checkpoint and acceptance limitations.
+### Bring existing data forward
 
-Start with the [native workspace guide](planning/UX_WORKSPACE_GUIDE.md) for current workflows and the [current state](planning/CURRENT_STATE.md) for exact native artifacts and verification limits. The [candidate guide](planning/UX_CANDIDATE_GUIDE.md) explains blank versus demo files and source-preserving migration.
+- **NAVFIT98A exchange:** import supported report/group data and export saved reports or summary groups while retaining native provenance.
+- **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
+- **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Supported extraction requires desktop Adobe Acrobat.
+- **Previous-Swift workspace transfer:** move supported older workspace data and history into a separate blank build, preserving the source and verifying the copied values.
+- **Backup/restore and operation history:** guarded tools for protecting the workspace and undoing supported operations.
 
-The working source is 0.25.0-dev, schema 25. The [clickable design prototype](prototype/index.html) runs locally through `scripts/build-ux-prototype.ps1`; see [review journeys and scope](planning/UX_REDESIGN_REVIEW.md). It adds section navigation, automatic comparison baselines, reusable reporting seniors and rank-specific historical RSCA/PSG calculations. The native rebuild is under verification; the prior 0.21.0 checkpoint is retained. Visual, keyboard, screen-reader and scaling acceptance remain pending.
+## Swift NAVFIT compared with NAVFIT98A
 
-Build reviewable native previews with `scripts/build-preview.ps1`. They include synthetic reports, groups, review work, reporting seniors/RSCA and recovery examples. Each preview has a unique `UI_Demo` filename and a visibly synthetic command name. Demo seeding refuses any populated workspace. Use `scripts/build.ps1` for separate blank templates and release verification; never migrate operational data into a seeded demo.
+NAVFIT98A already provides report editing, folder/default management, validation, import/export, automatic summary functions, and report/folder/summary printing. Those are **shared foundations**, not features invented by Swift. Swift's main additions are the history, recovery, and review services around the report.
 
-Transfer an existing workspace into a separate **blank** template using `scripts/upgrade-workspace.ps1`; the source remains unchanged. Schema 21 adds four directory/baseline tables while retaining all 78 report fields. The native redesign remains under review and has not been established as visually equivalent to the browser prototype.
+| Capability | NAVFIT98A's documented workflow | Swift NAVFIT |
+| --- | --- | --- |
+| Saved-change history | Edit and save reports; field-level revision comparison/restore is not described in the reviewed guides. | Contributor-attributed revisions, before/after values, comparison, and restore as a new revision. |
+| Pending-edit checkpoints | A separate unsaved-checkpoint recovery workflow is not described. | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
+| Review tracking | Ordered contributor routes and a unified review-work queue are not described. | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
+| Discussion history | Revision-linked discussion threads are not described. | Comments, replies, resolve/reopen history, and direct navigation from My Work. |
+| Member reuse and history | Report/folder-centered editing and import/export. | A command directory, rank/paygrade filters, batch report creation, and separate prior evaluations. |
+| Reporting-senior averages | Summary/average calculations are part of NAVFIT98A. | Reusable senior records and dated RSCA baselines, with exact-versus-estimated provenance and deliberate group baseline selection. |
+| Shared group values | Folder defaults and common report values are supported. | Explicit affected-report scope, confirmation of replacements, and reopening of affected local approvals. |
+| Validation | Native individual-report and folder validation. | Live checks of pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
+| Returned report files | Report/folder import and export. | A retained export baseline and three-way conflict preview for supported single-report returns. |
+| Final native printing | Built-in report, folder, and summary printing. | Export to NAVFIT98A; Swift does not yet provide an equivalent native print engine or verified final printed fit. |
 
-See [native demo build guide](planning/UX_DEMO_BUILD_GUIDE.md) for the synthetic examples and journeys to try.
+The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the locally inspected v33 Patch 2 package. “Not described” identifies an addition to the reviewed workflow, not an exhaustive claim about every NAVFIT98A version. See the [package findings](planning/NAVFIT_PACKAGE_FINDINGS.md), [native validation comparison](planning/NAVFIT_VALIDATION_COMPARISON_2026-10-14.md), and [print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md) for the evidence and version boundaries. Historical comparisons may describe gaps addressed by later Swift work.
 
-## Current features
+## Try Swift NAVFIT
 
-- EVAL, CHIEFEVAL and FITREP drafts with administrative fields, reporting-senior details, traits/reference guidance, arithmetic summaries and official narratives; incomplete saves.
-- Explicit promotion/observation selections, report occasions and categories, primary duty and separate multiline duty descriptions.
-- Member identifiers, checkbox service-component selections and date reported in Member & report details.
-- Counseling date/name, physical-readiness details/date and billet subcategory in their official report sections, with reference suggestions.
-- Assignment recommendations A/B, retention selections and member-statement selections, distinct from promotion and review acceptance.
-- Reporting-senior identifiers/contact details and rater/senior-rater names and dates.
-- Familiar full-name fields for members, reporting seniors and counselors; structured export fields remain in the background.
-- Summary-group filtering and report organization, search and saved library views; legacy folder storage remains for compatibility.
-- Committed revisions, restore as a new revision, duplicate, archive/recover and field-level comparison.
-- Automatic/manual pending-editor checkpoints and recovery.
-- Full supported-value NAVFIT import, single-report export, frozen baselines, three-way returned-file conflicts and retained native provenance. See [r27 scope and proof](planning/NAVFIT_EXCHANGE_R27.md).
-- Attributed narrative snippets and a local draft completeness checklist.
-- Revision-linked review comments, replies and resolve/reopen history.
-- Local reviewer assignments, due dates, My Work, contributor switching and accept/return/cancel history.
+**Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-Internal review acceptance is separate from official approval. Local contributor profiles provide attribution, not authentication. Use one contributor at a time in the same authoritative file; separate copies do not synchronize.
+1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
+2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.
+3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
+4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-## Try the app
+**Source and downloads can differ.** The repository currently develops `0.25.0-dev` / schema 25. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
 
-Download the **blank r113 workspace** from the [current Drive copy](https://drive.google.com/file/d/1oVLR6_3xvLSnIydOmRxwbXCWXhRdkG6s/view), make a working copy, and open it in trusted desktop Microsoft Access. Workspace setup opens automatically. Enter your command and active contributor, then create summary groups and reports. Settings & Help contains the workspace guide.
+The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 
-The release includes a separate blank workspace and synthetic demo. Use the demo for practice and the blank for a new workspace. Preserve existing workspaces and migrate their data into a separate blank file with an explicit `-TemplatePath`. Access Runtime and x86 environments have not been verified.
+## Important boundaries
 
-Existing populated workspaces need migration into the new app rather than replacement with its blank distribution:
+- This is an independent development project, not an official Navy system or a replacement for governing instructions and human review.
+- **Local approval is not official submission, signature, or Navy approval.** Group workflow status is also separate from member-report review.
+- Contributor profiles provide attribution, not authentication. Use one authoritative workspace file, one contributor at a time. Separate copies do not synchronize.
+- Validation and exchange cover implemented cases, not every policy or native encoding. Returned-group reconciliation, arbitrary-source matching, and full native printing remain outside the supported workflow.
+- Save checkpoints, revisions, backups, and migration have different purposes. A workspace transfer preserves a source and creates a separate destination; it does not merge independent populated files.
 
-```powershell
-powershell -NoProfile -File scripts/upgrade-workspace.ps1 -SourcePath 'C:\path\existing.accdb' -DestinationPath 'C:\path\upgraded.accdb'
-```
+## Build and contribute
 
-The script defaults to the current release template in `output/`; download that release asset into `output/` or provide `-TemplatePath`. It preserves the source, refuses destination overwrites and verifies copied records.
-
-## Build and collaborate
-
-Windows and desktop Microsoft Access are required for building and integration testing. Build from text source into a fresh file:
+Editable source lives in `src/`; Access builders and focused checks live in `scripts/` and `tests/`. Databases, supplied Navy files, and generated scratch builds stay out of Git. Build into a fresh filename on Windows with desktop Access:
 
 ```powershell
 powershell -NoProfile -File scripts/build.ps1 -OutputPath output/Swift_NAVFIT_review.accdb
 powershell -NoProfile -File scripts/smoke-test.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, focused checks, migration requirements and pull requests. Binary databases, generated evidence, local test fixtures and supplied reference PDFs are excluded from Git. Source changes belong in `src/`, `scripts/` and `tests/`. Verified blank binaries are release assets.
+See [contributing](CONTRIBUTING.md) for prerequisites and checks. New releases must pass the retained-schema data-transfer/rollback checks and blank/demo inventory gates. Physical scaling, accessibility, and final printed fit require their own acceptance; automated checks do not establish them.
 
-## Progress and guides
+## Guides and project status
 
-- [Roadmap and current progress](planning/ROADMAP.md)
-- [Structured member, senior and counselor names](planning/STRUCTURED_NAMES_GUIDE.md)
-- [Reporting senior contact details and raters](planning/REPORT_PEOPLE_GUIDE.md)
-- [Assignment recommendations, retention and statement](planning/DECISION_DETAILS_GUIDE.md)
-- [Counseling, readiness and billet details](planning/SERVICE_DETAILS_GUIDE.md)
-- [Identifiers, components and date reported](planning/MEMBER_DETAILS_GUIDE.md)
-- [Occasions, categories and duty descriptions](planning/REPORT_CONTEXT_GUIDE.md)
-- [Reporting senior details](planning/REPORTING_SENIOR_GUIDE.md)
-- [Promotion status](planning/PROMOTION_STATUS_GUIDE.md)
-- [Observation and recommendation selections](planning/ASSESSMENT_GUIDE.md)
-- [Trait summaries](planning/TRAIT_SUMMARY_GUIDE.md)
-- [Trait editor guide](planning/TRAITS_GUIDE.md)
-- [Administrative draft fields](planning/ADMINISTRATION_GUIDE.md)
-- [NAVFIT package findings](planning/NAVFIT_PACKAGE_FINDINGS.md)
+- [Recent development and verification](planning/RECENT_DEVELOPMENT.md)
+- [Current state](planning/CURRENT_STATE.md) and [roadmap](planning/ROADMAP.md)
+- [Summary groups, review routes, and workflow foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md)
+- [Workspace guide](planning/UX_WORKSPACE_GUIDE.md)
 - [Review assignments and My Work](planning/REVIEW_ROUTING_GUIDE.md)
 - [Review comments](planning/REVIEW_COMMENTS_GUIDE.md)
+- [Reporting seniors and averages](planning/REPORTING_SENIOR_GUIDE.md)
+- [Workspace transfer and fixed report pages](planning/WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md)
 - [Import provenance](planning/PROVENANCE_GUIDE.md)
-- [Workflow tools](planning/WORKFLOW_TOOLS_GUIDE.md)
-- [Detailed build and verification history](planning/BUILD_STATUS.md)
-- [Architecture and implementation plan](planning/IMPLEMENTATION_PLAN.md)
-- [Current release manifest](output/MANIFEST.json)
-
-The 0.21.0 build passed 2001 behavioral assertions and 218 reference checks, plus exact narrative-import/provenance checks. Schema-18-to-19, schema-19-to-19 and schema-5-to-19 migrations preserved every original row/field and reopened. All 20 user-data tables in the blank distribution are empty. Full visual inspection and Runtime/x86 testing remain pending.
+- [Build and verification history](planning/BUILD_STATUS.md)
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.

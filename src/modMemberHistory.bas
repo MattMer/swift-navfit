@@ -79,3 +79,64 @@ End Function
 Private Function SQLDate(ByVal value As Date) As String
     SQLDate = "#" & Format$(value, "yyyy-mm-dd") & "#"
 End Function
+
+' Batch identity and candidate-history reads for one grid refresh. Selected ITA still
+' uses its source-specific calculation; ties use the existing ambiguity behavior.
+Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Object
+    Dim db As DAO.Database, r As DAO.Recordset, contexts As Object, candidates As Object, results As Object, computed As Object
+    Dim context As Variant, item As Variant, first As Variant, id As Variant, memberSQL As String, sql As String, token As String
+    Dim list As Collection, result As Object, selected As Boolean, tied As Boolean
+    Set db = CurrentDb: Set contexts = CreateObject("Scripting.Dictionary"): Set candidates = CreateObject("Scripting.Dictionary")
+    Set results = CreateObject("Scripting.Dictionary"): Set computed = CreateObject("Scripting.Dictionary")
+    Set r = db.OpenRecordset("SELECT r.ReportID,r.PeriodStart,m.MemberID,m.MatchState FROM Report AS r LEFT JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE r.ReportID In (" & reportSQL & ")", dbOpenSnapshot)
+    Do While Not r.EOF
+        If Nz(r!MatchState, "") = "Confirmed" Then contexts(CStr(r!ReportID)) = Array(r!MemberID.Value, r!PeriodStart.Value) Else contexts(CStr(r!ReportID)) = Array(Null, r!PeriodStart.Value)
+        r.MoveNext
+    Loop
+    r.Close
+    memberSQL = "SELECT MemberID FROM MemberReport WHERE MatchState='Confirmed' AND ReportID In (" & reportSQL & ")"
+    sql = "SELECT 'External' AS SourceKind,PriorID AS SourceID,MemberID,PeriodStart,PeriodEnd,PromotionRecommendation,SourceNote AS SourceDetail FROM PriorEvaluation WHERE IsArchived=False AND MemberID In (" & memberSQL & ")"
+    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,m.MemberID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,r.WorkflowState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MatchState='Confirmed' AND m.MemberID In (" & memberSQL & ") ORDER BY PeriodEnd DESC"
+    Set r = db.OpenRecordset(sql, dbOpenSnapshot)
+    Do While Not r.EOF
+        token = CStr(r!MemberID)
+        If Not candidates.Exists(token) Then Set list = New Collection: candidates.Add token, list
+        Set list = candidates(token)
+        list.Add Array(r!SourceKind.Value, r!SourceID.Value, r!PeriodStart.Value, r!PeriodEnd.Value, r!PromotionRecommendation.Value, r!SourceDetail.Value)
+        r.MoveNext
+    Loop
+    r.Close
+    For Each id In contexts.Keys
+        context = contexts(id): selected = False: tied = False
+        Set result = CreateObject("Scripting.Dictionary"): result.Add "ITA", "Unavailable": result.Add "Promotion", "Unavailable": result.Add "Period", "": result.Add "Source", "No earlier evaluation recorded"
+        If IsNull(context(0)) Or IsNull(context(1)) Then
+            result("Source") = "Confirm member identity and report start date to select prior history"
+        ElseIf candidates.Exists(CStr(context(0))) Then
+            Set list = candidates(CStr(context(0)))
+            For Each item In list
+                If Not IsNull(item(3)) Then
+                    If item(3) < DateValue(context(1)) And Not (item(0) = "Swift" And CLng(item(1)) = CLng(id)) Then
+                        If Not selected Then
+                            first = item: selected = True
+                        Else
+                            tied = (item(3) = first(3)): Exit For
+                        End If
+                    End If
+                End If
+            Next
+            If tied Then
+                Set result = PreviousMemberEvaluation(CLng(id))
+            ElseIf selected Then
+                token = first(0) & ":" & first(1)
+                If Not computed.Exists(token) Then
+                    If first(0) = "External" Then computed(token) = PriorEvaluationITA(CLng(first(1))) Else computed(token) = UXTableITA(CLng(first(1)))
+                End If
+                result("ITA") = computed(token): result("Promotion") = Nz(first(4), "Unavailable")
+                result("Period") = Format$(first(2), "yyyy-mm-dd") & " to " & Format$(first(3), "yyyy-mm-dd")
+                If first(0) = "External" Then result("Source") = "Prior record: " & first(5) Else result("Source") = "Saved Swift report (local state " & first(5) & ")"
+            End If
+        End If
+        results.Add CStr(id), result
+    Next
+    Set PreviousMemberEvaluationBatch = results
+End Function

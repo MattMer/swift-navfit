@@ -128,7 +128,12 @@ Failed:
     On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
     On Error GoTo 0: Err.Raise failure, "RSSetGroupBaseline", message
 End Sub
-Public Function RSGroupPSG(ByVal groupID As Long) As Object
+Public Function RSGroupRows(ByVal groupID As Long) As DAO.Recordset
+    Dim db As DAO.Database
+    Set db = CurrentDb
+    Set RSGroupRows = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
+End Function
+Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.Recordset = Nothing) As Object
     Dim result As Object, r As DAO.Recordset, members As DAO.Recordset, senior As Object, values As Object, key As Variant, count As Long, total As Double, previousCount As Long, previousSum As Double, memberCount As Long
     Set result = CreateObject("Scripting.Dictionary"): result.Add "Value", Null: result.Add "Reason", "Choose a reporting senior and historical baseline.": result.Add "Estimated", False: result.Add "Partial", False
     Set r = CurrentDb.OpenRecordset("SELECT b.*,g.ExcludesGroup,g.SeniorID AS SelectedSeniorID FROM GroupRSCABaseline AS g INNER JOIN RSCABaseline AS b ON g.BaselineID=b.BaselineID WHERE g.GroupID=" & groupID, dbOpenSnapshot)
@@ -147,20 +152,20 @@ Public Function RSGroupPSG(ByVal groupID As Long) As Object
         previousSum = r!TraitSum
     End If
     r.Close
-    Set members = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID, dbOpenSnapshot)
+    If loaded Is Nothing Then Set members = RSGroupRows(groupID) Else Set members = loaded.Clone
+    If Not (members.BOF And members.EOF) Then members.MoveFirst
     Do While Not members.EOF
-        Set values = SavedFields(members!ReportID)
-        If Len(Nz(senior("ReportingSeniorSSN"), "")) = 0 Or Nz(values("ReportingSeniorSSN"), "") <> Nz(senior("ReportingSeniorSSN"), "") Then
+        If Len(Nz(senior("ReportingSeniorSSN"), "")) = 0 Or Nz(members!ReportingSeniorSSN, "") <> Nz(senior("ReportingSeniorSSN"), "") Then
             result("Reason") = "All group reports must use the selected reporting senior SSN. Apply senior details first.": members.Close: Set RSGroupPSG = result: Exit Function
         End If
-        If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & members!ReportID), True) Then
+        If Nz(members!IsArchived, True) Then
             result("Reason") = "Remove or recover archived group members before calculating PSG RSCA.": members.Close: Set RSGroupPSG = result: Exit Function
         End If
-        If Nz(values("ObservationStatus"), "") <> "NOB" Then
+        If Nz(members!ObservationStatus, "") <> "NOB" Then
             memberCount = 0
             For Each key In TraitKeys()
-                Select Case Nz(values(CStr(key)), "")
-                    Case "1.0", "2.0", "3.0", "4.0", "5.0": total = total + CDbl(values(CStr(key))): count = count + 1: memberCount = memberCount + 1
+                Select Case Nz(members.Fields(CStr(key)).Value, "")
+                    Case "1.0", "2.0", "3.0", "4.0", "5.0": total = total + CDbl(members.Fields(CStr(key)).Value): count = count + 1: memberCount = memberCount + 1
                 End Select
             Next
             If memberCount < 7 Then result("Partial") = True

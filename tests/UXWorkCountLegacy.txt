@@ -1,0 +1,15 @@
+Public Function UXWorkCountLegacy() As Long
+    Dim r As DAO.Recordset, pid As Long, kind As Variant, table As String, key As String
+    pid = MajorAuthor()
+    ' Count the same visible records without evaluating presentation columns or sorting.
+    For Each kind In Array("Assignment", "Route", "Comment")
+        Select Case kind
+            Case "Assignment": table = "ReviewTask": key = "TaskID"
+            Case "Route": table = "RouteRun": key = "RunID"
+            Case "Comment": table = "ReviewComment": key = "CommentID"
+        End Select
+        Set r = CurrentDb.OpenRecordset("SELECT Count(*) FROM " & table & " WHERE " & WorkFilter(CStr(kind), key, pid, False), dbOpenSnapshot)
+        UXWorkCountLegacy = UXWorkCountLegacy + CLng(r.fields(0).value)
+        r.Close
+    Next
+End Function

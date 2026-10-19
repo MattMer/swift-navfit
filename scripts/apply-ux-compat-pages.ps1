@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 foreach($m in @('modMigration','modWorkspaceImport','modReportPageMap','modReportPages','modUX','modUXSurface','modUXValidation','modUXGroupLifecycle','modUXNotes','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 function PageControl($f,$type,$name,$x,$y,$w,$h,$caption='',$event=''){
  $c=$app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h);$c.Name=$name
@@ -20,7 +21,7 @@ foreach($screen in @('frmUXSettings','frmSetup')){
  try{$app.DeleteControl($f.Name,'cmdImportSwift')}catch{}
  $left=if($screen -eq 'frmSetup'){400}else{2850}
  PageControl $f 104 'cmdImportSwift' $left ($bottom+250) 9950 550 'Import data from a previous Swift NAVFIT version' '=UXChooseSwiftWorkspace()'
- $f.Section(0).Height=[math]::Max($f.Section(0).Height,($bottom+1100));$f.ScrollBars=2
+ SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($bottom+1100)));$f.ScrollBars=2
  $app.DoCmd.Save(2,$f.Name);$app.DoCmd.Close(2,$f.Name,2)
 }
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')

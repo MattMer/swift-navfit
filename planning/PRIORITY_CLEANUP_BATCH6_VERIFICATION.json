@@ -1,0 +1,35 @@
+{
+  "Candidate": "build/priority-batch6-final.accdb",
+  "SHA256": "9384EBB8DF2D6136CA7A6413A48B91F93BD895D6089AD147EC833FA752916E9C",
+  "NativeTests": {
+    "SharedDefaults": 200,
+    "HeaderReview": 24,
+    "PendingCells": 42,
+    "RecoveryPreparation": 12,
+    "Recovery": 23,
+    "RecoveryTimerAndReopen": "PASS",
+    "FixedPages": 264,
+    "Smoke": "PASS"
+  },
+  "SourceAlignment": {
+    "Matched": [
+      "modUX",
+      "modSwift",
+      "modRecovery",
+      "modUXValidation",
+      "modUXTraitGrid",
+      "modUXRecursiveDefaults",
+      "modUXHeaderReview",
+      "modUXReview",
+      "modUXGroupLifecycle"
+    ],
+    "Method": "Normalized Access export; strings preserved, whitespace/case/call formatting ignored"
+  },
+  "PreviousBatchHashUnchanged": true,
+  "PopulatedR116HashUnchanged": true,
+  "Limitations": [
+    "Visual display-scaling inspection pending",
+    "Access Runtime and x86 not tested",
+    "Full standard generator not rerun"
+  ]
+}

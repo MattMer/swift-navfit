@@ -100,6 +100,8 @@ Failed:
     Err.Raise failure, "FinishReview", message
 End Function
 Public Function OpenMyWork(Optional ByVal reportID As Long = 0) As Boolean
+    Dim wasLoaded As Boolean
+    wasLoaded = CurrentProject.AllForms("frmMyWork").IsLoaded
     DoCmd.OpenForm "frmMyWork"
     Forms!frmMyWork!txtReportID = reportID
     Forms!frmMyWork!txtExpectedRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
@@ -108,12 +110,12 @@ Public Function OpenMyWork(Optional ByVal reportID As Long = 0) As Boolean
     Else
         Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
     End If
-    Call LoadMyWork(): OpenMyWork = True
+    Call LoadMyWork(wasLoaded): OpenMyWork = True
 End Function
 Public Function RoutingFromEditor() As Boolean
     RoutingFromEditor = OpenMyWork(Nz(Forms!frmEditor!txtReportID, 0))
 End Function
-Public Function LoadMyWork() As Boolean
+Public Function LoadMyWork(Optional ByVal refreshQueue As Boolean = True) As Boolean
     Dim sql As String, pid As Long, reportID As Long
     pid = RouteProfile()
     reportID = Nz(Forms!frmMyWork!txtReportID, 0)
@@ -130,7 +132,7 @@ Public Function LoadMyWork() As Boolean
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
     Forms!frmMyWork!lstTasks.RowSource = sql & " ORDER BY t.TaskID DESC": Forms!frmMyWork!lstTasks.Requery
     Forms!frmMyWork!txtHistory = Null
-    If UXHasControl(Forms!frmMyWork, "lstWork") Then Call UXLoadWorkQueue
+    If refreshQueue And UXHasControl(Forms!frmMyWork, "lstWork") Then Call UXLoadWorkQueue
     LoadMyWork = True
 End Function
 Public Function TaskDetails() As Boolean

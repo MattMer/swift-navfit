@@ -44,6 +44,7 @@ Public Function BeginEditorRecovery() As Boolean
     Call UXLiveReset(): Call UXEditorContextChanged()
     checkpointSignature = "": sessionKey = NewIdentity()
     Call ResetEditorBaseline()
+    Forms!frmEditor!lblRecovery.Caption = "Recovery: no unsaved edits to checkpoint."
     BeginEditorRecovery = True
 End Function
 ' Capture editor values and the saved revision used by dirty and stale-save guards.
@@ -105,7 +106,7 @@ Public Function CheckpointEditor() As Boolean
             Call DiscardEditorCheckpoint()
             If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
         End If
-        Forms!frmEditor!lblRecovery.Caption = "No pending changes to checkpoint."
+        Forms!frmEditor!lblRecovery.Caption = "Recovery: no unsaved edits to checkpoint."
         CheckpointEditor = True: Exit Function
     End If
     signature = sessionKey & "|" & baseRevision & "|" & Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) & "|" & signature
@@ -121,14 +122,14 @@ Public Function CheckpointEditor() As Boolean
     For i = 0 To 78: r.Fields(fields(i)) = current(i): Next
     r!CheckpointAt = Now(): r.Update: r.Close
     w.CommitTrans: trans = False: checkpointSignature = signature
-    Forms!frmEditor!lblRecovery.Caption = "Recovery checkpoint: " & Now() & " (not a saved revision)"
+    Forms!frmEditor!lblRecovery.Caption = "Recovery checkpoint: " & Format$(Now(), "h:nn:ss AM/PM") & " - edits are still unsaved. Use Save draft."
     If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
     CheckpointEditor = True: Exit Function
 Failed:
     On Error Resume Next
     If trans Then w.Rollback
     If Not r Is Nothing Then r.Close
-    Forms!frmEditor!lblRecovery.Caption = "Checkpoint failed. Use Save draft to retain these edits."
+    Forms!frmEditor!lblRecovery.Caption = "Recovery failed - latest edits are not checkpointed. Pending values remain here; use Save draft."
 End Function
 ' List checkpoints owned by the active contributor, newest first.
 Public Function LoadRecoveries() As Boolean
@@ -163,7 +164,7 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
         "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
     For i = 0 To 78: Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
     Forms!frmEditor!lblSaved.Caption = "Recovered pending edits. Use Save draft to commit."
-    Forms!frmEditor!lblRecovery.Caption = "Recovered checkpoint " & r!CheckpointAt
+    Forms!frmEditor!lblRecovery.Caption = "Recovered checkpoint " & r!CheckpointAt & " - pending edits, not a saved revision."
     r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel(): Call UXRefreshEditor()
     Forms!frmEditor.SetFocus: RestoreRecoveryDraft = True
 End Function

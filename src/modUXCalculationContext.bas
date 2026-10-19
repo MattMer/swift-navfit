@@ -17,21 +17,21 @@ Public Function UXTraitContext(ByVal values As Object) As String
     If graded > 0 Then UXTraitContext = UXTraitContext & " = " & Format$(total / graded, "0.00") Else UXTraitContext = UXTraitContext & ": unavailable"
     UXTraitContext = UXTraitContext & ". Excluded: " & nob & " NOB, " & blank & " blank/ungraded. Arithmetic only."
 End Function
-Public Function UXGroupCalculationText(ByVal groupID As Long) As String
+Public Function UXGroupCalculationText(ByVal groupID As Long, Optional ByVal loaded As DAO.Recordset = Nothing) As String
     Dim r As DAO.Recordset, values As Object, key As Variant, marks As Long, total As Double, archived As Long, nob As Long, ungraded As Long, reports As Long, baseline As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
+    If loaded Is Nothing Then Set r = RSGroupRows(groupID) Else Set r = loaded.Clone
+    If Not (r.BOF And r.EOF) Then r.MoveFirst
     Do While Not r.EOF
         reports = reports + 1
         If r!IsArchived Then
             archived = archived + 1
         Else
-            Set values = SavedFields(r!ReportID)
-            If Nz(values("ObservationStatus"), "") = "NOB" Then
+            If Nz(r!ObservationStatus, "") = "NOB" Then
                 nob = nob + 1
             Else
                 For Each key In TraitKeys()
-                    Select Case Nz(values(CStr(key)), "")
-                        Case "1.0", "2.0", "3.0", "4.0", "5.0": marks = marks + 1: total = total + CDbl(values(CStr(key)))
+                    Select Case Nz(r.Fields(CStr(key)).Value, "")
+                        Case "1.0", "2.0", "3.0", "4.0", "5.0": marks = marks + 1: total = total + CDbl(r.Fields(CStr(key)).Value)
                         Case Else: ungraded = ungraded + 1
                     End Select
                 Next

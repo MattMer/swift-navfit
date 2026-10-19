@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 foreach($m in @('modNavyWriterCatalog','modUXNavyWriter')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 NewScreen 'frmUXNavyWriter' 'NavyWriter examples catalog' 11200;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 100 'lblScope' 400 950 12600 650 'Short examples with source links. Edit the wording for the member''s actual accomplishments before adding it to your snippets. Examples are not policy guidance.')
@@ -18,5 +19,5 @@ $f.OnLoad='=UXLoadNavyWriter()';SaveScreen $f 'frmUXNavyWriter'
 $app.DoCmd.OpenForm('frmUXResources',1);$f=$app.Forms.Item('frmUXResources')
 $bottom=([int](($f.Controls | Where-Object {$_.ControlType -eq 104 -and $_.Visible -and $_.Name -notmatch '^uxNav'} | ForEach-Object {$_.Top+$_.Height} | Measure-Object -Maximum).Maximum))+450
 [void](Control $f 104 'uxNavyWriter' 2850 $bottom 10450 550 'NavyWriter examples catalog' '=OpenScreen("frmUXNavyWriter")')
-$f.Section(0).Height=[int]([Math]::Max($f.Section(0).Height,$bottom+1100));$f.ScrollBars=2
+SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($bottom+1100)));$f.ScrollBars=2
 SaveScreen $f 'frmUXResources'

@@ -120,8 +120,8 @@ End Function
 Public Sub UXBlockState(ByVal key As String, ByVal caption As String)
     ' Per-field inheritance/staging explanations have been removed.
 End Sub
-Public Function UXOpenGroupDefaults() As Boolean
-    UXOpenGroupDefaults = UXStartGroupBulk(True)
+Public Function UXOpenGroupDefaults(Optional ByVal groupID As Long = -1) As Boolean
+    UXOpenGroupDefaults = UXStartGroupBulk(True, False, groupID)
 End Function
 Public Function UXBlockMode(ByVal page As String) As Boolean
     UXBlockMode = UXImmediateBlockMode()

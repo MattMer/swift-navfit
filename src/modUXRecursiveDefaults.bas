@@ -8,6 +8,7 @@ Public Function UXBeginImmediateBlocks(ByVal groupID As Long, ByVal defaults As 
  directGroup = groupID: directDefaults = defaults: directCSV = reportsCSV
  Set confirmedValues = CreateObject("Scripting.Dictionary")
  For Each key In UXSharedKeys(): confirmedValues(key) = Forms!frmUXBulk.Controls("uxValue" & key).Value: Next
+ Call UXSharedScope()
  UXBeginImmediateBlocks = True
 End Function
 Private Function BlockCanonical(ByVal key As String, ByVal value As Variant) As Variant
@@ -125,12 +126,14 @@ Public Function UXConfirmBlockChange(ByVal key As String, Optional ByVal decisio
  DoCmd.Hourglass True
  ApplyRecursiveDefault plan, True
  confirmedValues(key) = c.Value
- Forms!frmUXBulk!uxStatus.Caption = "Saved. Applied to " & plan("Reports").Count & " existing reports."
+ Forms!frmUXBulk!uxStatus.Caption = "Saved changes to " & plan("Reports").Count & " existing reports; " & plan("Approvals") & " local approvals reopened."
  UXConfirmBlockChange = True
 Finished:
+ Call UXSharedScope(key)
  DoCmd.Hourglass False
  Exit Function
 Restore:
+ Forms!frmUXBulk!uxStatus.Caption = "Not saved - cancelled. Previous field value restored; no report revisions changed."
  c.Value = confirmedValues(key)
  Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key) = c.Value
  GoTo Finished
@@ -138,7 +141,7 @@ Failed:
  message = Err.Description
  On Error Resume Next
  c.Value = confirmedValues(key): Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key) = c.Value
- Forms!frmUXBulk!uxStatus.Caption = message & " No partial changes were saved."
+ Forms!frmUXBulk!uxStatus.Caption = "Not saved: " & message & " No partial changes were saved; previous field value restored."
  DoCmd.Hourglass False
 End Function
 ' Apply the report-shaped layout without any reset/clear/inheritance controls.
@@ -195,4 +198,46 @@ Failed:
  If trans Then w.Rollback
  On Error GoTo 0
  Err.Raise failure, "UXConfirmReportFields", message
+End Function
+
+' Scope is advisory before editing; the existing confirmation recomputes exact changes.
+Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
+ Dim db As DAO.Database, r As DAO.Recordset, sql As String, title As String, count As Long, approved As Long, locked As Long, message As String, groups As Long, applies As Boolean
+ On Error GoTo Failed
+ If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
+ If Not UXHasControl(Forms!frmUXBulk, "uxScope") Then Exit Function
+ Set db = CurrentDb
+ If directDefaults Then
+  sql = "SELECT DISTINCT r.ReportID,r.FormKind,r.WorkflowState FROM (Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID) INNER JOIN SummaryGroup AS g ON m.GroupID=g.GroupID WHERE r.IsArchived=False AND g.IsArchived=False"
+  If directGroup > 0 Then sql = sql & " AND m.GroupID=" & directGroup
+  If directGroup = 0 Then
+   groups = DCount("*", "SummaryGroup", "IsArchived=False"): title = "all " & groups & " active groups"
+  Else
+   title = "this group and its defaults"
+  End If
+ Else
+  sql = "SELECT ReportID,FormKind,WorkflowState FROM Report WHERE IsArchived=False AND ReportID In (" & IIf(Len(directCSV) = 0, "0", directCSV) & ")"
+  title = "selected members only"
+ End If
+ Set r = db.OpenRecordset(sql, dbOpenSnapshot)
+ Do While Not r.EOF
+  applies = True
+  If Len(key) > 0 Then applies = UXFieldApplies(key, CStr(r!FormKind))
+  If applies Then
+   count = count + 1
+   If r!WorkflowState = "Approved" Then approved = approved + 1
+   If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then locked = locked + 1
+  End If
+  r.MoveNext
+ Loop
+ r.Close
+ message = "Scope: " & title & "; " & count & " active reports, " & approved & " locally approved."
+ message = message & " Custom values may be replaced; changed approvals reopen after confirmation. Archived items excluded."
+ If locked > 0 Then message = message & " " & locked & " locked reports may block changes."
+ Forms!frmUXBulk!uxScope.Caption = message: Forms!frmUXBulk!uxScope.ControlTipText = Left$(message, 255)
+ UXSharedScope = True: Exit Function
+Failed:
+ On Error Resume Next
+ If Not r Is Nothing Then r.Close
+ Forms!frmUXBulk!uxScope.Caption = "Scope unavailable. Exact affected reports and approvals are checked before confirmation."
 End Function

@@ -101,7 +101,7 @@ Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As
     End Select
     r.Close
 End Function
-Public Function UXWorkSQL(ByVal pid As Long, Optional ByVal history As Boolean = False) As String
+Public Function UXWorkSQL(ByVal pid As Long, Optional ByVal history As Boolean = False, Optional ByVal prepared As Boolean = False) As String
     Dim kind As Variant, table As String, key As String, sql As String, branch As String
     For Each kind In Array("Assignment", "Route", "Comment")
         Select Case kind
@@ -110,18 +110,29 @@ Public Function UXWorkSQL(ByVal pid As Long, Optional ByVal history As Boolean =
             Case "Comment": table = "ReviewComment": key = "CommentID"
         End Select
         branch = "SELECT '" & kind & "' & ':' & " & key & " AS WorkKey,'" & kind & "' AS WorkKind," & key & " AS ItemID,ReportID,RevisionID,UXWorkReport(ReportID) AS [Member and report],UXWorkText('" & kind & "'," & key & ",'Label') AS [Work item],UXWorkText('" & kind & "'," & key & ",'Owner') AS [Contributor],UXWorkText('" & kind & "'," & key & ",'Due') AS [Due date],UXWorkText('" & kind & "'," & key & ",'Status') AS [Status],UXWorkText('" & kind & "'," & key & ",'Action') AS [Next action] FROM " & table & " WHERE "
-        If kind = "Comment" Then branch = branch & "ThreadID Is Null AND "
-        If history Then branch = branch & "True" Else branch = branch & "UXWorkVisible('" & kind & "'," & key & "," & pid & ")"
+        If prepared Then
+            branch = "SELECT '" & kind & "' & ':' & " & key & " AS WorkKey,'" & kind & "' AS WorkKind," & key & " AS ItemID,ReportID,RevisionID,UXWorkRowCell('" & kind & "'," & key & ",0) AS [Member and report],UXWorkRowCell('" & kind & "'," & key & ",1) AS [Work item],UXWorkRowCell('" & kind & "'," & key & ",2) AS [Contributor],UXWorkRowCell('" & kind & "'," & key & ",3) AS [Due date],UXWorkRowCell('" & kind & "'," & key & ",4) AS [Status],UXWorkRowCell('" & kind & "'," & key & ",5) AS [Next action] FROM " & table & " WHERE UXWorkRowExists('" & kind & "'," & key & ")"
+        Else
+            branch = branch & WorkFilter(CStr(kind), key, pid, history)
+        End If
         If Len(sql) > 0 Then sql = sql & " UNION ALL "
         sql = sql & branch
     Next
     UXWorkSQL = sql & " ORDER BY [Member and report],WorkKind,ItemID"
 End Function
+Private Function WorkFilter(ByVal kind As String, ByVal key As String, ByVal pid As Long, ByVal history As Boolean) As String
+    If kind = "Comment" Then WorkFilter = "ThreadID Is Null AND "
+    If history Then
+        WorkFilter = WorkFilter & "True"
+    Else
+        WorkFilter = WorkFilter & "UXWorkVisible('" & kind & "'," & key & "," & pid & ")"
+    End If
+End Function
 Public Function UXWorkCount() As Long
-    Dim r As DAO.Recordset
-    Set r = CurrentDb.OpenRecordset(UXWorkSQL(MajorAuthor()), dbOpenSnapshot)
-    If Not r.EOF Then r.MoveLast: UXWorkCount = r.RecordCount
-    r.Close
+    Dim visible As Object
+    ' A fresh inclusion snapshot only; do not materialize presentation or replace it.
+    Set visible = UXWorkVisibleRows(MajorAuthor())
+    UXWorkCount = visible.Count
 End Function
 Public Function UXLoadWorkQueue() As Boolean
     Dim f As Access.Form, selected As String, i As Long
@@ -133,7 +144,8 @@ Public Function UXLoadWorkQueue() As Boolean
         f!uxContributor = MajorAuthor()
     End If
     selected = Nz(f!lstWork, "")
-    f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False))
+    Call UXPrepareWorkRows(MajorAuthor(), Nz(f!chkAll, False))
+    f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False), True)
     f!lstWork = Null
     For i = 1 To f!lstWork.ListCount - 1
         If Nz(f!lstWork.Column(0, i), "") = selected Then f!lstWork = selected
@@ -210,7 +222,11 @@ Public Function UXWorkChanged() As Boolean
 End Function
 Public Function UXWorkBack() As Boolean
     If Not UXLeaveEditor() Then Exit Function
-    DoCmd.OpenForm "frmMyWork": Call LoadMyWork: Call UXMyWorkMode("Assignments")
+    If CurrentProject.AllForms("frmMyWork").IsLoaded Then
+        Call UXLoadMyWork
+    Else
+        DoCmd.OpenForm "frmMyWork"
+    End If
     UXWorkBack = True
 End Function
 Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal height As Long = 0) As Boolean

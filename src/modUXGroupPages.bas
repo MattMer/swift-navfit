@@ -3,13 +3,14 @@ Option Explicit
 Private createGroup As Long, createGroupStamp As String, createDefaultStamp As String
 Private createdReport As Long, createdReportGroup As Long
 ' Route group tabs with one resolved context and member count. Keep Members/Comparison
-' in the live view, preserve pending-cell/bulk guards, and keep the required Defaults
-' context host hidden; always resume painting after a transition failure.
+' in the live view and preserve pending-cell/bulk guards. Defaults use the resolved
+' group directly; only Review/History/empty Members need the workbench adapter.
 Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As Boolean
     Dim id As Long, modes As Variant, members As Long
     On Error GoTo Failed
     If page = 3 Then page = 0 'Legacy Comparison links now resolve to Members.
-    id = Nz(Forms(screen)!uxGroupContext, 0)
+    If page < 0 Or page > 4 Then Exit Function
+    id = UXResolvedGroupContext(screen)
     If id = 0 Then Exit Function
     If screen = "frmUXComparison" And (page = 0 Or page = 3) Then
         UXGroupTabState screen, page
@@ -35,19 +36,15 @@ Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As B
     If (page = 0 Or page = 3) And members > 0 Then
         DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id
         UXGroupTabState "frmUXComparison", page
+    ElseIf page = 1 Then
+        If Not UXOpenGroupDefaults(id) Then DoCmd.Echo True: Exit Function
     Else
         If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
         Forms!frmMajorWorkbench.Visible = False
         Forms!frmMajorWorkbench!cboGroup = id
         modes = Array("Members", "Defaults", "Review", "Comparison", "History")
-        If page = 1 Then
-            If Not UXOpenGroupDefaults() Then DoCmd.Echo True: Exit Function
-            Forms!frmMajorWorkbench.Visible = False
-            If CurrentProject.AllForms("frmUXBulk").IsLoaded Then Forms!frmUXBulk!uxGroupContext = id
-        Else
-            UXWorkbenchMode CStr(modes(page))
-            Forms!frmMajorWorkbench.Visible = True: Forms!frmMajorWorkbench.SetFocus
-        End If
+        UXWorkbenchMode CStr(modes(page))
+        Forms!frmMajorWorkbench.Visible = True: Forms!frmMajorWorkbench.SetFocus
     End If
     DoCmd.Echo True
     UXGroupNavigate = True: Exit Function
@@ -56,7 +53,7 @@ Failed:
     MsgBox Err.Description, vbExclamation, "Summary group"
 End Function
 ' Mark the active group tab and show group actions only when a group context exists.
-Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long) As Boolean
+Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Optional ByVal preparedPSG As Object = Nothing) As Boolean
     Dim i As Long, f As Access.Form
     Set f = Forms(screen)
     If page = 3 Then page = 0
@@ -70,7 +67,7 @@ Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long) As B
     If UXHasControl(f, "uxCurrentExport") Then
         f!uxCurrentExport.Visible = (Nz(f!uxGroupContext, 0) > 0)
         f!uxCurrentSenior.Visible = f!uxCurrentExport.Visible: f!uxSeniorCaption.Visible = f!uxCurrentExport.Visible
-        If f!uxCurrentExport.Visible Then f!uxSeniorCaption.Caption = UXGroupSeniorCaption(CLng(f!uxGroupContext))
+        If f!uxCurrentExport.Visible Then f!uxSeniorCaption.Caption = UXGroupSeniorCaption(CLng(f!uxGroupContext), preparedPSG)
     End If
     UXPositionGroupFooter f
     UXGroupTabState = True
@@ -219,4 +216,13 @@ Public Function UXGroupCreatedReportClose() As Boolean
     createdReport = 0: createdReportGroup = 0: UXGroupCreatedReportClose = True: Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Return to summary group"
+End Function
+
+' One explicit context resolver for group-page transitions; never infer context
+' from a different hidden form or an earlier global-defaults session.
+Public Function UXResolvedGroupContext(ByVal screen As String) As Long
+    Dim f As Access.Form
+    Set f = Forms(screen)
+    If UXHasControl(f, "uxGroupContext") Then UXResolvedGroupContext = Nz(f!uxGroupContext, 0)
+    If UXResolvedGroupContext = 0 And screen = "frmMajorWorkbench" Then UXResolvedGroupContext = Nz(f!cboGroup, 0)
 End Function

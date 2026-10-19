@@ -52,8 +52,9 @@ End Function
 ' Use a separate DAO workspace to avoid locking the report save transaction; cached row
 ' state serves display-time guards. Refuse reload while unsaved queue values exist.
 Public Function UXGridLoad() As Boolean
-    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object
+    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object, priorRows As Object, savedValues As Object, proposals As Object, entries As Collection, entry As Variant, reportSQL As String, revisionSQL As String, trans As Boolean, failure As Long, message As String, savedValue As Variant, memberLabel As String
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before refreshing the comparison."
+    On Error GoTo Failed
     gridSortKey = "": gridSortDescending = False
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
     loading = True
@@ -71,15 +72,41 @@ Public Function UXGridLoad() As Boolean
     liveGroup = 0
     If Left$(Nz(Forms!frmUXComparison.OpenArgs, ""), 2) = "G:" And Nz(Forms!frmUXComparison!txtMeeting, 0) = 0 Then
         liveGroup = CLng(Mid$(Forms!frmUXComparison.OpenArgs, 3))
+        reportSQL = "SELECT ReportID FROM GroupMember WHERE GroupID=" & liveGroup
+        revisionSQL = "SELECT CurrentRevisionID FROM Report WHERE ReportID In (" & reportSQL & ")"
         Set r = db.OpenRecordset("SELECT r.*,r.CurrentRevisionID AS RevisionID,r.ReportID AS SortOrdinal FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & liveGroup & " ORDER BY r.ReportID", dbOpenSnapshot)
     Else
+        reportSQL = "SELECT ReportID FROM ComparisonMember WHERE SetID=" & Forms!frmUXComparison!txtMeeting
+        revisionSQL = "SELECT RevisionID FROM ComparisonMember WHERE SetID=" & Forms!frmUXComparison!txtMeeting
         Set r = db.OpenRecordset("SELECT m.*,r.IsArchived,r.WorkflowState,r.CurrentRevisionID FROM ComparisonMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.SetID=" & Forms!frmUXComparison!txtMeeting & " ORDER BY m.SortOrdinal", dbOpenSnapshot)
     End If
+    Set priorRows = PreviousMemberEvaluationBatch(reportSQL)
+    Set savedValues = CreateObject("Scripting.Dictionary"): Set proposals = CreateObject("Scripting.Dictionary")
+    sql = "SELECT RevisionID,FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID In (" & revisionSQL & ") AND FieldKey In ('OfficialName','MemberName'"
+    If liveGroup = 0 Then sql = sql & ",'ObservationStatus','Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39','PromotionRecommendation','AssignmentRecommendationA','AssignmentRecommendationB'"
+    Set p = db.OpenRecordset(sql & ")", dbOpenSnapshot)
+    Do While Not p.EOF
+        If p!IsNullValue Then savedValues(p!RevisionID & ":" & p!FieldKey) = Null Else savedValues(p!RevisionID & ":" & p!FieldKey) = p!ValueText.Value
+        p.MoveNext
+    Loop
+    p.Close
+    If liveGroup = 0 Then
+        Set p = db.OpenRecordset("SELECT ReportID,FieldKey,ValueText,IsNullValue FROM MeetingProposal WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " AND ProposalState='Proposed' ORDER BY ProposalID", dbOpenSnapshot)
+        Do While Not p.EOF
+            If Not proposals.Exists(CStr(p!ReportID)) Then Set entries = New Collection: proposals.Add CStr(p!ReportID), entries
+            Set entries = proposals(CStr(p!ReportID))
+            entries.Add Array(p!FieldKey.Value, p!ValueText.Value, p!IsNullValue.Value)
+            p.MoveNext
+        Loop
+        p.Close
+    End If
+    cacheWorkspace.BeginTrans: trans = True
     Do While Not r.EOF
         cacheRows.AddNew: id = r!ReportID
         rowStates(CStr(id)) = Array(CBool(r!IsArchived), CStr(r!WorkflowState), CLng(Nz(r!CurrentRevisionID, 0)))
         cacheRows!ReportID = id: cacheRows!SortOrdinal = r!SortOrdinal: cacheRows!RevisionID = r!RevisionID
-        cacheRows!Member = UXRevisionMemberLabel(r!RevisionID)
+        memberLabel = UXIdentity(UXGridSavedValue(savedValues, r!RevisionID, "OfficialName"), UXGridSavedValue(savedValues, r!RevisionID, "MemberName"))
+        cacheRows!Member = memberLabel
         If liveGroup > 0 Then
             cacheRows!ObservationStatus = r!ObservationStatus
             For block = 33 To 39: cacheRows.Fields("Trait" & block) = r.Fields("Trait" & block): Next
@@ -87,25 +114,29 @@ Public Function UXGridLoad() As Boolean
             cacheRows!AssignmentRecommendationA = r!AssignmentRecommendationA
             cacheRows!AssignmentRecommendationB = r!AssignmentRecommendationB
         Else
-            cacheRows!ObservationStatus = MajorRevisionValue(r!RevisionID, "ObservationStatus")
-            For block = 33 To 39: cacheRows.Fields("Trait" & block) = MajorRevisionValue(r!RevisionID, "Trait" & block): Next
-            cacheRows!PromotionRecommendation = MajorRevisionValue(r!RevisionID, "PromotionRecommendation")
-            cacheRows!AssignmentRecommendationA = MajorRevisionValue(r!RevisionID, "AssignmentRecommendationA")
-            cacheRows!AssignmentRecommendationB = MajorRevisionValue(r!RevisionID, "AssignmentRecommendationB")
+            savedValue = UXGridSavedValue(savedValues, r!RevisionID, "ObservationStatus"): cacheRows!ObservationStatus = savedValue
+            For block = 33 To 39
+                savedValue = UXGridSavedValue(savedValues, r!RevisionID, "Trait" & block)
+                cacheRows.Fields("Trait" & block) = savedValue
+            Next
+            savedValue = UXGridSavedValue(savedValues, r!RevisionID, "PromotionRecommendation"): cacheRows!PromotionRecommendation = savedValue
+            savedValue = UXGridSavedValue(savedValues, r!RevisionID, "AssignmentRecommendationA"): cacheRows!AssignmentRecommendationA = savedValue
+            savedValue = UXGridSavedValue(savedValues, r!RevisionID, "AssignmentRecommendationB"): cacheRows!AssignmentRecommendationB = savedValue
         End If
-        Set previous = PreviousMemberEvaluation(id)
+        Set previous = priorRows(CStr(id))
         cacheRows!PriorITA = previous("ITA"): cacheRows!PriorPromotion = previous("Promotion"): cacheRows!PriorPeriod = previous("Period"): cacheRows!PriorSource = previous("Source")
-        Set p = db.OpenRecordset("SELECT * FROM MeetingProposal WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " AND ReportID=" & id & " AND ProposalState='Proposed' ORDER BY ProposalID", dbOpenSnapshot)
-        Do While Not p.EOF
-            If p!IsNullValue Then cacheRows.Fields(p!FieldKey) = Null Else cacheRows.Fields(p!FieldKey) = p!ValueText
-            p.MoveNext
-        Loop
-        p.Close
+        If proposals.Exists(CStr(id)) Then
+            Set entries = proposals(CStr(id))
+            For Each entry In entries
+                If entry(2) Then cacheRows.Fields(entry(0)) = Null Else cacheRows.Fields(entry(0)) = entry(1)
+            Next
+        End If
         cacheRows!RowStatus = UXGridLockReason(id, r!RevisionID)
         If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable - saves automatically"
         cacheRows.Update: r.MoveNext
     Loop
     r.Close
+    cacheWorkspace.CommitTrans: trans = False
     cacheRows.Close
     Set cacheRows = cacheDB.OpenRecordset("SELECT * FROM PendingTraits ORDER BY SortOrdinal", dbOpenDynaset)
     If Not cacheRows.EOF Then cacheRows.MoveLast: cacheRows.MoveFirst
@@ -119,6 +150,26 @@ Public Function UXGridLoad() As Boolean
     f!headingAssignmentRecommendationB.Caption = UXFieldCaption("AssignmentRecommendationB", kind)
     Call UXGridRefreshAverages: loading = False
     Call UXGridCurrent: Call UXGridViewport: UXGridLoad = True
+    Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    Resume CleanFailed
+CleanFailed:
+    On Error Resume Next
+    If trans Then cacheWorkspace.Rollback
+    If Not r Is Nothing Then r.Close
+    If Not p Is Nothing Then p.Close
+    Set f.Recordset = Nothing
+    Call UXGridClose
+    loading = False
+    On Error GoTo 0
+    Err.Raise failure, "UXGridLoad", message
+End Function
+Private Function UXGridSavedValue(ByVal values As Object, ByVal revision As Long, ByVal key As String) As Variant
+    Dim token As String
+    token = revision & ":" & key
+    If Not values.Exists(token) Then Err.Raise vbObjectError + 4007, , "Snapshot field missing."
+    UXGridSavedValue = values(token)
 End Function
 ' Use loaded archive/workflow/revision state for display without database reads. With
 ' authoritative=True, recheck the report and live membership or historical group stamp
@@ -176,8 +227,9 @@ Public Function UXGridQueue(ByVal key As String) As Boolean
     identity = CStr(f!ReportID) & ":" & key
     queuedCells(identity) = Array(CLng(f!ReportID), key, f.Controls(key).Value, MajorAuthor())
     Forms!frmUXComparison.TimerInterval = 150
-    Forms!frmUXComparison!lblStatus.Caption = "Saving pending cell changes..."
+    Forms!frmUXComparison!lblStatus.Caption = "Not saved yet - " & UXGridPendingCount() & " pending cells; saving automatically..."
     UXGridPendingActions
+    UXApplyVisual Forms!frmUXComparison
     UXGridQueue = True: Exit Function
 Failed:
     Forms!frmUXComparison!lblStatus.Caption = "Queue cell save: " & Err.Number & " " & Err.Description
@@ -211,6 +263,8 @@ Public Function UXGridDrain() As Boolean
     Else
         Set queuedCells = Nothing
         UXGridPendingActions
+        Forms!frmUXComparison!lblStatus.Caption = "Saved automatically - no pending cells. Local report revisions only."
+        UXApplyVisual Forms!frmUXComparison
     End If
     UXGridDrain = ok: Exit Function
 Failed:
@@ -234,7 +288,9 @@ Private Sub UXGridRetainPending(ByVal failure As String)
     Forms!frmUXComparison!uxTraitGrid.Form.Refresh
 Finished:
     Forms!frmUXComparison!lblStatus.Caption = failure & " " & UXGridPendingCount() & " cells remain unsaved; earlier successful cells are saved. Use Retry pending cells or Discard pending cells." & restoreFailure
-    UXGridPendingActions: Exit Sub
+    UXGridPendingActions
+    UXApplyVisual Forms!frmUXComparison
+    Exit Sub
 Failed:
     restoreFailure = " Pending values remain in memory; display refresh failed: " & Err.Number & " " & Err.Description
     On Error Resume Next
@@ -328,7 +384,7 @@ Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As
     UXGridRefreshAverages
     stage = "Refresh comparison preview"
     UXRefreshComparisonPreview
-    Forms!frmUXComparison!lblStatus.Caption = "Saved automatically at " & Format$(Now(), "h:nn:ss AM/PM")
+    Forms!frmUXComparison!lblStatus.Caption = "Saved automatically at " & Format$(Now(), "h:nn:ss AM/PM") & " - local report revision"
     saving = False: UXGridEdit = True: Exit Function
 Failed:
     failure = stage & ": " & Err.Number & " " & Err.Description

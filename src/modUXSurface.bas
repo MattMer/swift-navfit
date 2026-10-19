@@ -356,7 +356,7 @@ End Function
 ' Arrange the editor for its viewport while preserving focus and text selection;
 ' section content and action areas remain separate from saved report data.
 Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
-    If UXFixedEnabled() Then UXResizeEditor = UXFixedResize(viewportHeight): Exit Function
+    If UXFixedEnabled() Then UXResizeEditor = UXFixedResize(viewportHeight, viewportWidth): Exit Function
     Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant, active As Access.Control, caret As Long, selection As Long, compact As Boolean, surfaceTop As Long
     If layoutBusy Or Not UXSurfaceAvailable() Then Exit Function
     On Error GoTo Failed

@@ -176,17 +176,19 @@ Failed:
     Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description
 End Function
 Public Function RSShowGroupCalculation() As Boolean
-    Dim result As Object
-    Set result = RSGroupPSG(CLng(Forms!frmUXGroupRSCA!txtGroupID))
+    Dim result As Object, loaded As DAO.Recordset
+    Set loaded = RSGroupRows(CLng(Forms!frmUXGroupRSCA!txtGroupID))
+    Set result = RSGroupPSG(CLng(Forms!frmUXGroupRSCA!txtGroupID), loaded)
     With Forms!frmUXGroupRSCA
         If IsNull(result("Value")) Then
             !lblCalculation.Caption = "PSG RSCA: unavailable"
         Else
             !lblCalculation.Caption = "PSG RSCA (saved group): " & Format$(result("Value"), "0.00") & IIf(result("Estimated"), " - estimate", "")
         End If
-        !txtCalculationContext = UXGroupCalculationText(CLng(!txtGroupID))
+        !txtCalculationContext = UXGroupCalculationText(CLng(!txtGroupID), loaded)
         !lblStatus.Caption = result("Reason") & IIf(result("Partial"), ". Some traits are blank/NOB; only graded numeric traits are included.", "") & IIf(result("Estimated"), ". Enter the exact historical trait sum to calculate from exact totals.", "")
     End With
+    loaded.Close
     RSShowGroupCalculation = True
 End Function
 Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0) As Boolean

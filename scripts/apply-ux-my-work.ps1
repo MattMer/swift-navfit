@@ -1,5 +1,5 @@
 # Unified saved-review inbox and native review findings. No schema changes.
-foreach($module in @('modUXHelp','modUXMyWork','modUXReportReturn','modRouting','modReviewComments','modUXReview','modUXDashboard','modUXSurface','modLibraryViews','modUX')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+foreach($module in @('modUXReadRows','modUXHelp','modUXMyWork','modUXReportReturn','modRouting','modReviewComments','modUXReview','modUXDashboard','modUXSurface','modLibraryViews','modUX')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
 $app.DoCmd.OpenForm('frmMyWork',1);$f=$app.Forms.Item('frmMyWork')
 [void](Control $f 110 'lstWork' 2850 3000 10450 1900);$c=$script:swiftControl;$c.ColumnCount=11;$c.ColumnHeads=$true;$c.ColumnWidths='0;0;0;0;0;3000;1600;1700;1100;1500;2200';$c.AfterUpdate='=UXWorkSelection()';$c.OnDblClick='=UXWorkOpen()';$c.Tag='MWX:body'
 [void](Control $f 100 'uxWorkStatus' 2850 2450 8000 450 '');$script:swiftControl.Tag='MWX:body'

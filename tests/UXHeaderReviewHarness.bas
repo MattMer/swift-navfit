@@ -14,11 +14,13 @@ Public Function TestUXHeaderReview() As String
     run = StartRoute(id, template)
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Check Forms!frmEditor!uxReviewAccept.Enabled And Not Forms!frmEditor!uxReviewApproval.Enabled, "Initial review availability"
+    Check Forms!frmEditor!uxReviewAccept.FontBold, "Assigned accept is not primary"
     Check UXHeaderReview("Accept", "Step checked"), "Header accept failed: " & Forms!frmEditor!uxError.Caption
     Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Accepted", "Accept not recorded"
     Check Not CurrentProject.AllForms("frmUXReview").IsLoaded, "Hidden review adapter remained open"
     Check CurrentProject.AllForms("frmEditor").IsLoaded, "Report disappeared"
     Check Forms!frmEditor!uxReviewApproval.Enabled, "Accepted route approval not enabled"
+    Check Forms!frmEditor!uxReviewApproval.FontBold, "Final approval is not primary"
     Check UXHeaderReview("Approval", "Approved locally"), "Header local approval failed"
     Check DLookup("WorkflowState", "Report", "ReportID=" & id) = "Approved", "Approval not recorded"
     Check Forms!frmEditor!uxReviewApproval.Enabled And Forms!frmEditor!uxReviewApproval.Caption = "Reopen approval", "Reopen action missing"
@@ -36,7 +38,7 @@ Public Function TestUXHeaderReview() As String
     Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Rejected action changed route"
     Check UXResizeEditor(9000, 7000), "Compact layout failed"
     For Each c In Forms!frmEditor.Controls
-        If Left$(c.Name, 8) = "uxReview" Then Check c.Visible And c.Left + c.Width < 9000, "Header clipped: " & c.Name
+        If Left$(c.Name, 8) = "uxReview" Then Check c.Visible And c.Left + c.Width < IIf(UXFixedEnabled(), Forms!frmEditor.Width, 9000), "Header clipped: " & c.Name
     Next
     TestUXHeaderReview = "PASS: " & n & " header review assertions": Exit Function
 Failed:

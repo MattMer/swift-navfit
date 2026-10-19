@@ -34,13 +34,13 @@ Public Function UXLoadHelp() As Boolean
     Forms!frmUXHelp!lstTopics.RowSourceType = "Value List"
     Forms!frmUXHelp!lstTopics.RowSource = ""
     Forms!frmUXHelp!lstTopics.AddItem "0;Start here"
-    Forms!frmUXHelp!lstTopics.AddItem "1;Create, edit and save a report"
+    Forms!frmUXHelp!lstTopics.AddItem "1;Create and save reports"
     Forms!frmUXHelp!lstTopics.AddItem "2;Find reports and history"
     Forms!frmUXHelp!lstTopics.AddItem "3;Summary groups and comparisons"
     Forms!frmUXHelp!lstTopics.AddItem "4;Reporting seniors and averages"
     Forms!frmUXHelp!lstTopics.AddItem "5;My Work and local review"
-    Forms!frmUXHelp!lstTopics.AddItem "6;Checks, snippets and imports"
-    Forms!frmUXHelp!lstTopics.AddItem "7;Recovery, backups and migration"
+    Forms!frmUXHelp!lstTopics.AddItem "6;Checks and imports"
+    Forms!frmUXHelp!lstTopics.AddItem "7;Recovery and backups"
     Forms!frmUXHelp!lstTopics.AddItem "8;Preview limits and diagnostics"
     Forms!frmUXHelp!lstTopics = 0
     Call UXHelpSelected
@@ -49,4 +49,81 @@ End Function
 Public Function UXHelpSelected() As Boolean
     Forms!frmUXHelp!txtGuide = UXHelpText(Nz(Forms!frmUXHelp!lstTopics, -1))
     UXHelpSelected = True
+End Function
+
+' Context help never navigates away, flushes buffers or commits work.
+Public Function UXWindowHelp(ByVal formName As String) As Boolean
+    Dim topic As Long
+    topic = UXWindowHelpTopic(formName)
+    DoCmd.OpenForm "frmUXHelp"
+    Forms!frmUXHelp!lstTopics = topic
+    UXHelpSelected
+    Forms!frmUXHelp!txtGuide = UXWindowHelpIntro(formName) & vbCrLf & vbCrLf & UXHelpText(topic)
+    Forms!frmUXHelp!lblGuide.Caption = "Help for " & Forms(formName).Caption
+    Forms!frmUXHelp.SetFocus
+    UXWindowHelp = True
+End Function
+Public Function UXWindowHelpTopic(ByVal formName As String) As Long
+    Select Case formName
+        Case "frmEditor", "frmReportingSenior", "frmMemberDetails", "frmServiceDetails", "frmDecisionDetails", "frmReportPeople", "frmPartyNames", "frmRevisionCompare": UXWindowHelpTopic = 1
+        Case "frmLibrary", "frmBulkFolders", "frmProvenance": UXWindowHelpTopic = 2
+        Case "frmUXGroups", "frmMajorWorkbench", "frmUXBulk", "frmUXComparison", "frmUXSharedFields", "frmUXNewGroup", "frmUXMoveGroup", "frmUXRenameGroup", "frmUXGroupPolicy", "frmUXMembers", "frmUXGroupReport", "frmUXNewReport": UXWindowHelpTopic = 3
+        Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXGroupRSCA", "frmUXSeniorHistory": UXWindowHelpTopic = 4
+        Case "frmMyWork", "frmUXReview", "frmReviewComments", "frmUXRouteTemplates": UXWindowHelpTopic = 5
+        Case "frmRecovery", "frmBackup", "frmOperations", "frmUXWorkspaceImport", "frmUXSettings": UXWindowHelpTopic = 7
+        Case "frmSupport": UXWindowHelpTopic = 8
+        Case "frmHome", "frmSetup": UXWindowHelpTopic = 0
+        Case Else: UXWindowHelpTopic = 6
+    End Select
+End Function
+Public Function UXWindowHelpLayout(ByVal formName As String) As Boolean
+    Dim f As Access.Form, width As Long, c As Access.Control
+    Set f = Forms(formName)
+    If Not UXHasControl(f, "cmdWindowHelp") Then Exit Function
+    width = f.InsideWidth
+    If width < 1500 Then width = f.Width
+    With f!cmdWindowHelp
+        .Left = width - 800: .Top = 150: .Width = 500: .Height = 400
+    End With
+    If UXHasControl(f, "uxContext") Then
+        f!uxContext.Width = f!cmdWindowHelp.Left - f!uxContext.Left - 150
+    End If
+    For Each c In f.Controls
+        If c.ControlType = acLabel And c.Top < 550 And c.Left < f!cmdWindowHelp.Left And c.Left + c.Width > f!cmdWindowHelp.Left Then
+            c.Width = f!cmdWindowHelp.Left - c.Left - 150
+        End If
+    Next
+    UXWindowHelpLayout = True
+End Function
+Public Function UXHelpResize(ByVal formName As String, ByVal original As String) As Boolean
+    If Len(original) > 0 Then Eval original
+    UXHelpResize = UXWindowHelpLayout(formName)
+    UXApplyVisual Forms(formName)
+End Function
+
+Public Function UXWindowHelpIntro(ByVal formName As String) As String
+    Select Case formName
+        Case "frmUXDirectory", "frmUXMemberEditor", "frmUXDirectoryBatch", "frmUXRUADImport", "frmUXConfirmIdentity"
+            UXWindowHelpIntro = "Command directory: maintain member identities before creating reports. Preview batch creation or roster imports before applying. Changing a filter clears the earlier selection. Identity corrections do not silently replace saved report revisions."
+        Case "frmUXMemberHistory", "frmUXPriorEditor"
+            UXWindowHelpIntro = "Member history: inspect prior evaluations separately from the current report. Verify dates, grade and provenance before saving historical entries."
+        Case "frmUXBulk"
+            UXWindowHelpIntro = "Shared fields and defaults: read the scope banner before editing. Each field change has its own confirmation and immediate save; Cancel restores its previous value. Changed local approvals reopen only after confirmation."
+        Case "frmUXComparison"
+            UXWindowHelpIntro = "Members: edit trait cells in place. Queued cells save automatically; failed cells remain pending for retry or explicit discard. Resolve pending cells before leaving or changing groups."
+        Case "frmUXNoteComposer", "frmUXNoteRecovery"
+            UXWindowHelpIntro = "Draft notes: these are local notes, separate from the official narrative. Keep pending text until it is saved or deliberately discarded. Recovery checkpoints are not saved report revisions."
+        Case "frmUXNavyWriter", "frmSnippets"
+            UXWindowHelpIntro = "Narrative resources: filter by rate and inspect the source and attribution before inserting an excerpt. Review wording for this member; source collections are not automatic policy approval."
+        Case "frmUXImportChoose", "frmPDFImport", "frmImportReview", "frmReconcile", "frmNAVFITExchange", "frmUXNativeGroups"
+            UXWindowHelpIntro = "Import and exchange: choose the source, inspect the before/after preview, then apply deliberately. Changed sources or saved targets require a fresh preview. Keep the export baseline for return reconciliation."
+        Case "frmUXReview", "frmReviewComments"
+            UXWindowHelpIntro = "Review: decisions use saved values and require the assigned contributor. Enter a decision note. Stale routes need the requester to restart them. Local approval is separate from group status and official submission."
+        Case "frmEditor"
+            UXWindowHelpIntro = "Report editor: Front and Back preserve pending edits. Save draft commits a revision; recovery only checkpoints unsaved work. Opening or closing this guide leaves your report and pending values in place."
+        Case "frmUXSettings"
+            UXWindowHelpIntro = "Settings and help: open the complete workspace guide here, or use the top-right ? in any window for its workflow. Recovery, backups and previous-version transfer remain separate guarded tools."
+        Case Else
+            UXWindowHelpIntro = "This guide explains the workflow for this window. Choose another topic on the left for related tasks. Close guide to return to your unchanged work."
+    End Select
 End Function

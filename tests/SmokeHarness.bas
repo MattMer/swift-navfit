@@ -57,3 +57,9 @@ Public Function SmokeAddGroupMember(ByVal groupID As Long, ByVal reportID As Lon
     Call AddGroupMember(groupID, reportID, paygrade, reason)
     SmokeAddGroupMember = True
 End Function
+
+' Keep runtime form/control access inside Access, including forms with class modules.
+Public Function SmokeSetControlValue(ByVal formName As String, ByVal controlName As String, ByVal value As Variant) As Boolean
+    Forms(formName).Controls(controlName).Value = value
+    SmokeSetControlValue = True
+End Function

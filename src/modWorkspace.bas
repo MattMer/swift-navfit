@@ -107,7 +107,7 @@ Public Function RefreshLibrary() As Boolean
         filter = Nz(f!uxTypeFilter, "All")
         If filter <> "All" Then sql = sql & " AND FormKind=" & QuoteSQL(filter)
         filter = Nz(f!uxStatusFilter, "All")
-        If filter <> "All" Then sql = sql & " AND UXReportState(ReportID)=" & QuoteSQL(filter)
+        If filter <> "All" Then sql = sql & " AND UXReportRowCell(ReportID,1)=" & QuoteSQL(filter)
     End If
     term = Replace(Trim$(Nz(f!txtSearch, "")), "'", "''")
     If Len(term) > 0 Then sql = sql & " AND (InStr(1,Nz([Title],''),'" & term & "',1)>0 OR InStr(1,Nz([MemberName],''),'" & term & "',1)>0 OR InStr(1,Nz([OfficialName],''),'" & term & "',1)>0)"
@@ -167,20 +167,18 @@ Failed:
 End Function
 
 Public Function ShowHelp(ByVal topic As String) As Boolean
-    DoCmd.OpenForm "frmHelp"
-    Forms!frmHelp!lblTopic.Caption = topic
+    Dim id As Long
     Select Case topic
-        Case "Folders"
-            Forms!frmHelp!txtHelp = "Folders organize your local drafts. Select a folder to see its reports; Unassigned shows reports without a folder. Create folder uses the selected folder as its parent. Choose a destination, then Move report or Move folder. Moving organization does not change draft fields or official summary-group membership. All reports is a view, not a folder. Folder hierarchy uses native Access controls and requires no tree-view installation."
-        Case "Saving"
-            Forms!frmHelp!txtHelp = "Save incomplete drafts at any time. The Saved message confirms a committed save. Each changed save records contributor, time and previous/new values. A save with unchanged values adds no revision. Restore writes a new revision and preserves older history. Save before closing. Draft notes are not an official narrative block and their character count does not guarantee NAVFIT printed fit."
-        Case Else
-            Forms!frmHelp!txtHelp = "Swift is a local drafting workspace. Profiles label contributors; they are not authentication. Use one authoritative file, one person at a time. NAVFIT exchange and official validation remain unavailable until their compatibility proof passes. Final official printing remains in NAVFIT."
+        Case "Saving": id = 1
+        Case "Folders": id = 2
+        Case Else: id = 0
     End Select
-    Forms!frmHelp.SetFocus: ShowHelp = True
+    DoCmd.OpenForm "frmUXHelp"
+    Forms!frmUXHelp!lstTopics = id
+    ShowHelp = UXHelpSelected()
 End Function
 
 Public Function CloseHelp() As Boolean
-    DoCmd.Close acForm, "frmHelp", acSaveNo
+    If CurrentProject.AllForms("frmUXHelp").IsLoaded Then DoCmd.Close acForm, "frmUXHelp", acSaveNo
     CloseHelp = True
 End Function

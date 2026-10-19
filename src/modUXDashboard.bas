@@ -30,20 +30,30 @@ Public Function UXReportState(ByVal reportID As Long) As String
     UXReportState = "Draft"
 End Function
 Public Function UXGroupAverage(ByVal groupID As Long) As Variant
-    Dim r As DAO.Recordset, key As Variant, value As Variant, total As Double, marks As Long
-    Set r = CurrentDb.OpenRecordset("SELECT r.CurrentRevisionID,r.ObservationStatus FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False", dbOpenSnapshot)
-    Do While Not r.EOF
-        If Nz(r!ObservationStatus, "") <> "NOB" Then
+    Dim db As DAO.Database, members As DAO.Recordset, traits As DAO.Recordset, values As Object, key As Variant, token As String, value As Variant, total As Double, marks As Long
+    Set db = CurrentDb: Set values = CreateObject("Scripting.Dictionary")
+    Set members = db.OpenRecordset("SELECT r.CurrentRevisionID,r.ObservationStatus FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False", dbOpenSnapshot)
+    Set traits = db.OpenRecordset("SELECT v.RevisionID,v.FieldKey,v.ValueText,v.IsNullValue FROM (RevisionValue AS v INNER JOIN Report AS r ON v.RevisionID=r.CurrentRevisionID) INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND v.FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')", dbOpenSnapshot)
+    Do While Not traits.EOF
+        token = traits!RevisionID & ":" & traits!FieldKey
+        If traits!IsNullValue Then values(token) = Null Else values(token) = traits!ValueText.Value
+        traits.MoveNext
+    Loop
+    traits.Close
+    Do While Not members.EOF
+        If Nz(members!ObservationStatus, "") <> "NOB" Then
             For Each key In TraitKeys()
-                value = MajorRevisionValue(Nz(r!CurrentRevisionID, 0), CStr(key))
+                token = Nz(members!CurrentRevisionID, 0) & ":" & key
+                If Not values.Exists(token) Then Err.Raise vbObjectError + 4007, , "Snapshot field missing."
+                value = values(token)
                 Select Case Nz(value, "")
                     Case "1.0", "2.0", "3.0", "4.0", "5.0": total = total + CDbl(value): marks = marks + 1
                 End Select
             Next
         End If
-        r.MoveNext
+        members.MoveNext
     Loop
-    r.Close
+    members.Close
     If marks > 0 Then UXGroupAverage = total / marks Else UXGroupAverage = Null
 End Function
 Public Function UXNewGroup() As Boolean
@@ -132,16 +142,13 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     Next
     UXResizeWorkspace f.Name
     f!uxGroupContext = id
-    UXGroupTabState f.Name, Switch(mode = "Members", 0, mode = "Defaults", 1, mode = "Review", 2, mode = "Comparison", 3, mode = "History", 4)
+    UXGroupTabState f.Name, Switch(mode = "Members", 0, mode = "Defaults", 1, mode = "Review", 2, mode = "Comparison", 3, mode = "History", 4), psg
     UXGroupLocks f, id
     UXFocusedGroupMode = True
 End Function
 Public Function UXComparisonPage(ByVal page As String) As Boolean
     Dim f As Access.Form, c As Access.Control, preview As Boolean
     Set f = Forms!frmUXComparison: UXRestoreViewport f: preview = (page = "Preview")
-    For Each c In f.Controls
-        If c.Name Like "cboTrait##" Or c.Name Like "lblTrait##" Or c.Name = "lstTraits" Or c.Name = "uxMember" Or c.Name = "uxITA" Or c.Name = "cboPromotion" Or c.Name = "cmdStage" Then c.Visible = Not preview
-    Next
     f!uxTraitGrid.Visible = Not preview: f!uxGridAverage.Visible = Not preview: f!uxProposalDetail.Visible = preview
     For Each c In f.Controls
         If c.Name Like "cboTrait##" Or c.Name Like "lblTrait##" Or c.Name = "lstTraits" Or c.Name = "uxMember" Or c.Name = "uxITA" Or c.Name = "cboPromotion" Or c.Name = "cmdStage" Then c.Visible = False
@@ -187,7 +194,8 @@ Public Function UXChooseAssignmentReport() As Boolean
     UXChooseAssignmentReport = True
 End Function
 Public Function UXLoadMyWork() As Boolean
-    If Not LoadMyWork() Then Exit Function
+    ' The Assignments mode owns the initial unified queue refresh.
+    If Not LoadMyWork(False) Then Exit Function
     UXMyWorkMode "Assignments"
     UXLoadMyWork = True
 End Function

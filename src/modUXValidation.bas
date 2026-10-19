@@ -49,6 +49,7 @@ Public Function UXLivePaint() As Boolean
     validationDirty = False: validationDate = Date
     UXLivePaint = True
 Finished:
+    UXApplyVisual Forms!frmEditor
     busy = False: Exit Function
 Failed:
     Forms!frmEditor!uxDirty.Caption = "Validation unavailable - open issues"
@@ -61,6 +62,19 @@ End Function
 ' Mark validation and recovery dirty after a local edit; defer typing checks to the timer.
 Public Function UXEditorChanged() As Boolean
     validationDirty = True: recoveryDirty = True
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        Forms!frmEditor!lblRecovery.Caption = "Recovery: latest edits are not checkpointed yet. Save draft or keep this editor open."
+        If Forms!frmEditor!cmdSave.Enabled Then
+            Forms!frmEditor!uxLocked.Caption = "Next: Save draft; review uses saved values."
+            Dim action As Variant
+            For Each action In Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
+                If UXHasControl(Forms!frmEditor, CStr(action)) Then
+                    Forms!frmEditor.Controls(action).FontBold = False: Forms!frmEditor.Controls(action).BackColor = UXColor("Neutral")
+                End If
+            Next
+            Forms!frmEditor!cmdSave.FontBold = True: Forms!frmEditor!cmdSave.BackColor = UXColor("Primary")
+        End If
+    End If
     UXEditorChanged = True
 End Function
 ' Reset validation and checkpoint scheduling for a new editor session.

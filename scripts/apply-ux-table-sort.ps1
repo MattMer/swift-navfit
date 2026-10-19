@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 foreach($m in @('modTableSort','modUXTraitGrid','modUXSeniorTable','modUXViewport')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 $coverage=@()
 foreach($screen in @($app.CurrentProject.AllForms|ForEach-Object {$_.Name})){
@@ -22,7 +23,7 @@ foreach($screen in @($app.CurrentProject.AllForms|ForEach-Object {$_.Name})){
    $already=$false
    try{$already=($f.Controls('sort_'+$c.Name+'_0').Tag -like 'SORT:*')}catch{}
    $top=$c.Top
-   if($already){$top-=350}else{$c.Top=[int]($c.Top+350);$c.Height=[math]::Max(600,$c.Height-350)}
+   if($already){$top-=350}else{$c.Top=[int]($c.Top+350);SetAccessProperty $c 'Height' ([Math]::Max([int]600,[int]($c.Height-350)))}
    for($i=0;$i -lt $c.ColumnCount;$i++){
     $name='sort_'+$c.Name+'_'+$i
     try{$app.DeleteControl($f.Name,$name)}catch{}

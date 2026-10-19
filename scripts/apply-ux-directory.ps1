@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'access-properties.ps1')
 $app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))
 NewScreen 'frmUXDirectory' 'Command member directory' 7600;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 100 'lblScope' 400 950 12600 600 'Members are linked by SSN or deliberate confirmation. Name-only records remain provisional. Profile edits do not rewrite existing reports.')
@@ -18,4 +19,4 @@ SaveScreen $f 'frmUXMemberEditor'
 $app.DoCmd.OpenForm('frmUXResources',1);$f=$app.Forms.Item('frmUXResources')
 $bottom=([int](($f.Controls | Where-Object {$_.ControlType -eq 104 -and $_.Visible -and $_.Name -notmatch '^uxNav'} | ForEach-Object {$_.Top+$_.Height} | Measure-Object -Maximum).Maximum))+450
 [void](Control $f 104 'uxDirectory' 2850 $bottom 10450 550 'Command member directory' '=OpenScreen("frmUXDirectory")')
-$f.Section(0).Height=[int]([Math]::Max($f.Section(0).Height,$bottom+1100));$f.ScrollBars=2;SaveScreen $f 'frmUXResources'
+SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($bottom+1100)));$f.ScrollBars=2;SaveScreen $f 'frmUXResources'
