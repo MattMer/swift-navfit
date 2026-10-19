@@ -55,18 +55,26 @@ NAVFIT98A already provides report editing, folder/default management, validation
 
 | Capability | NAVFIT98A's documented workflow | Swift NAVFIT |
 | --- | --- | --- |
-| Saved-change history | Edit and save reports; field-level revision comparison/restore is not described in the reviewed guides. | Contributor-attributed revisions, before/after values, comparison, and restore as a new revision. |
-| Pending-edit checkpoints | A separate unsaved-checkpoint recovery workflow is not described. | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
-| Review tracking | Ordered contributor routes and a unified review-work queue are not described. | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
-| Discussion history | Revision-linked discussion threads are not described. | Comments, replies, resolve/reopen history, and direct navigation from My Work. |
-| Member reuse and history | Report/folder-centered editing and import/export. | A command directory, rank/paygrade filters, batch report creation, and separate prior evaluations. |
+| Saved-change history | - | Contributor-attributed revisions, before/after values, comparison, and restore as a new revision. |
+| Pending-edit checkpoints | - | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
+| Review tracking | - | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
+| Discussion history | - | Comments, replies, resolve/reopen history, and direct navigation from My Work. |
+| Member reuse and history | - | A command directory, rank/paygrade filters, batch report creation, and separate prior evaluations. |
 | Reporting-senior averages | Summary/average calculations are part of NAVFIT98A. | Reusable senior records and dated RSCA baselines, with exact-versus-estimated provenance and deliberate group baseline selection. |
 | Shared group values | Folder defaults and common report values are supported. | Explicit affected-report scope, confirmation of replacements, and reopening of affected local approvals. |
 | Validation | Native individual-report and folder validation. | Live checks of pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
-| Returned report files | Report/folder import and export. | A retained export baseline and three-way conflict preview for supported single-report returns. |
+| Three-way returned-report reconciliation | - | A retained export baseline and three-way conflict preview for supported single-report returns. |
 | Final native printing | Built-in report, folder, and summary printing. | Export to NAVFIT98A; Swift does not yet provide an equivalent native print engine or verified final printed fit. |
 
-The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the locally inspected v33 Patch 2 package. “Not described” identifies an addition to the reviewed workflow, not an exhaustive claim about every NAVFIT98A version. See the [package findings](planning/NAVFIT_PACKAGE_FINDINGS.md), [native validation comparison](planning/NAVFIT_VALIDATION_COMPARISON_2026-10-14.md), and [print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md) for the evidence and version boundaries. Historical comparisons may describe gaps addressed by later Swift work.
+The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the locally inspected v33 Patch 2 package. A **-** means no equivalent feature was identified in the reviewed NAVFIT98A documentation/package; it is not an exhaustive claim about every version. NAVFIT98A still supports ordinary report/folder import and export. See the [package findings](planning/NAVFIT_PACKAGE_FINDINGS.md), [native validation comparison](planning/NAVFIT_VALIDATION_COMPARISON_2026-10-14.md), and [print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md) for the evidence and version boundaries. Historical comparisons may describe gaps addressed by later Swift work.
+
+## Data security and offline operation
+
+Swift NAVFIT stores reports, revisions, review history, and recovery checkpoints locally in the workspace `.accdb`. Normal drafting and review do not communicate with the internet: the app does not upload report data, synchronize with an online service, or send telemetry. No internet account, cloud service, or separate application-specific network protection is required.
+
+The workspace uses the Windows file/folder access controls and storage protections of its location. Place it in the same approved, protected folder you would use for other files containing the same data; it inherits that folder's permissions under normal Windows inheritance settings and respects explicit file permissions. Existing device encryption, backup, and organizational data-handling rules continue to apply. Swift does not add a separate authentication or encryption layer, and contributor profiles are attribution labels rather than access controls.
+
+Optional source links, such as NavyWriter, open an external website only when selected; report contents are not included in those links. Microsoft Access/Office and any cloud synchronization configured for the containing folder operate under their own settings, independently of Swift.
 
 ## Try Swift NAVFIT
 
