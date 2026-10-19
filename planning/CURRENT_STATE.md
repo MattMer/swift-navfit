@@ -1,3 +1,21 @@
+## GitHub source checkpoint — 18 October 2026
+
+This checkpoint includes r114 native timestamp import compatibility, r115 workspace transfer/fixed report pages/sorting, and r116 navigation clearance with all traits on Front Page. README and in-app/workspace guides reflect the current behavior; source, build/test helpers, compatibility requirements and verification manifests are included. Current blank/demo downloads remain on Drive. Existing native verification results are recorded below; this source publication does not establish additional manual display, accessibility or print acceptance.
+
+## r116 — report rail clearance and Front Page traits (17 October 2026)
+
+Report content, errors and actions now clear the main left navigation rail, which remains available. All seven traits are grouped on Front Page for all three report types; stored values and print/export mappings are unchanged. 322 targeted native assertions plus the 30-second recovery checkpoint and 25-schema transfer/rollback matrix passed. Blank/demo startup and data state verified; both delivered to Drive. See [details](REPORT_RAIL_R116_2026-10-17.md). Manual display/scaling acceptance remains outstanding.
+
+## Local r115 — full Swift data transfer, fixed report pages and sorting (17 October 2026)
+
+Settings & Help and first-run setup now import a prior Swift workspace into a new blank release, preserving all source data through the production migration engine. Retained schemas 1–25 passed exact row/field transfer and unchanged-source checks; populated schema-20 history/feature and same-schema transfers also passed. Rejection/rollback guards cover populated targets, changed sources, unknown tables and future schemas. New release compatibility gates are recorded in AGENTS.md.
+
+Reports use fixed Front Page/Back Page field geometry with current form-specific page splits and retained notes/review/history. Report-open median fell from 2.59 to 1.13 seconds in a controlled four-open synthetic test. Summary groups show report ending date as Closeout date (Mixed/Incomplete when needed). Multi-column tables, editable member grids and RSCA entries support heading sorting. Separate blank/demo r115 compile/start, have verified blank/synthetic data states and are delivered to the established Drive folder; physical display/keyboard/screen-reader checks remain outstanding. See [scope and verification](WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md).
+
+## Local r114 — native timestamps accepted on import (16 October 2026)
+
+Native typed Date/Time values now import as calendar dates even when they contain a clock time. Reports and folder defaults retain their original timestamps in raw import provenance; originals are unchanged. Preview explains normalization. 1,327 native assertions passed; temporary Reports/Folders SQL cleanup also verified. Separate blank/demo r114 compiled, startup/data-state verified and delivered to Drive. See [fix and temporary instructions](NATIVE_DATES_R114_2026-10-16.md).
+
 ## Local r113 — automatic 20xx imports and member rank filters (15 October 2026)
 
 Removed century selectors from PDF, native group/report import and returned-file workflows; two-digit years use 20xx automatically. Added paygrade/specific-rate filters to single and batch command-member report creation, with selection/preview invalidation. Blank/demo r113 verified and delivered to Drive; 668 relevant assertions pass. See [details](IMPORT_RANK_R113_2026-10-15.md).

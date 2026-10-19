@@ -53,7 +53,7 @@ Public Function TestNAVFITGuards(ByVal directory As String, ByVal template As St
     Check EncodeFailure("Unknown", "promotion") <> "ACCEPTED", "Unknown promotion exported"
     Check EncodeFailure("2026-02-30", "date") <> "ACCEPTED", "Impossible date exported"
     Check EncodeFailure("2100-01-01", "counseling") <> "ACCEPTED", "Unresolvable counseling century exported"
-    Check DecodeFailure(#1/1/2026 12:00:00 PM#, "date") <> "ACCEPTED", "Native date time silently discarded"
+    Check NAVFITDecode(#1/1/2026 12:00:00 PM#, "date") = "2026-01-01", "Native timestamp did not normalize to calendar date"
     Check EncodeFailure(#1/1/2026 12:00:00 PM#, "date") <> "ACCEPTED", "Swift date time silently discarded"
     Set rows = NAVFITPreviewReturned(file, baseline)
     Set db = DBEngine.OpenDatabase(file): db.Execute "UPDATE Reports SET Comments='Changed after preview' WHERE ReportType Is Not Null", dbFailOnError: db.Close

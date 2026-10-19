@@ -7,6 +7,7 @@ Private editorContextReport As Long
 Private editorContextGroup As Long
 Private currentSection As Long
 Private currentPage As Long
+Private editorStarting As Boolean
 Private bulkChanges As Object
 Private bulkCSV As String
 Private bulkBatch As Long
@@ -150,9 +151,12 @@ Failed:
 End Function
 ' Initialize the report workspace at its first official section.
 Public Function UXEditorStart() As Boolean
+    On Error GoTo Finished
+    editorStarting = True
     currentSection = 0: currentPage = 0
-    Call UXSelectSection(0)
-    UXEditorStart = True
+    UXEditorStart = UXSelectSection(0)
+Finished:
+    editorStarting = False
 End Function
 ' Show the requested official/local section using the same unbound buffer. Section
 ' changes preserve pending values and do not create report revisions.
@@ -160,6 +164,10 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     Dim f As Access.Form, c As Access.Control, tags As Variant, id As Long, locked As Boolean, maxPage As Long
     If section = 1 Then section = 0
     Set f = Forms!frmEditor
+    If UXFixedEnabled() Then
+        currentSection = section: currentPage = page
+        UXSelectSection = UXFixedSelect(section): Exit Function
+    End If
     If UXHasControl(f, "cmdClose") Then f!cmdClose.SetFocus
     currentSection = section: currentPage = page: id = Nz(f!txtReportID, 0)
     locked = Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & id), False) Or Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & id), "Draft") <> "Draft"
@@ -273,7 +281,9 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
     Next
     If UXSurfaceAvailable() Then UXSurfaceRefresh
     If priorAlias <> f!uxAlias.Caption Then UXResizeEditor
-    UXLivePaint
+    'First paint does not wait for full policy checks. The existing one-second
+    'dirty timer runs them immediately after display; field exits still validate.
+    If Not editorStarting Then UXLivePaint
     UXRefreshEditor = True
 End Function
 ' Keep pending values visible and explain how to undo them after a failed save.

@@ -17,10 +17,9 @@ try {
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1 # Known target VBA only; source opened read-only via DAO, without macros.
     $app.OpenCurrentDatabase($work,$true)
-    $app.LoadFromText(5,'modMigration',(Join-Path $PSScriptRoot '..\tests\modMigration.bas'))
+    $app.LoadFromText(5,'modMigration',(Join-Path $PSScriptRoot '..\src\modMigration.bas'))
     $result=$app.Eval('MigrateWorkspace("'+$SourcePath.Replace('"','""')+'")')
     if(-not $result.StartsWith('PASS:')){throw $result}
-    $app.DoCmd.DeleteObject(5,'modMigration')
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($work,$true)

@@ -1,0 +1,93 @@
+{
+  "Date": "2026-10-16",
+  "Schema": 25,
+  "BlankTables": {
+    "ImportRawValue": 0,
+    "OperationJournal": 0,
+    "ReportEvent": 0,
+    "ReportNoteDraft": 0,
+    "ReviewComment": 0,
+    "PriorEvaluation": 0,
+    "RouteTemplate": 0,
+    "UserProfile": 0,
+    "ReportingSeniorValue": 0,
+    "GroupSnapshotMember": 0,
+    "Workspace": 0,
+    "ValidationRun": 0,
+    "MeetingProposal": 0,
+    "SummaryGroup": 0,
+    "ComparisonSet": 0,
+    "RSCABaseline": 0,
+    "ReportNote": 0,
+    "PriorEvaluationTrait": 0,
+    "RevisionValue": 0,
+    "FieldDefault": 0,
+    "RulePack": 0,
+    "ImportReceipt": 0,
+    "RouteRun": 0,
+    "ReviewTask": 0,
+    "FolderBatchChange": 0,
+    "GroupMember": 0,
+    "ChangeBatch": 0,
+    "ChangeItem": 0,
+    "RouteRunStep": 0,
+    "GroupRSCABaseline": 0,
+    "MemberReport": 0,
+    "RouteTemplateStep": 0,
+    "ReportingSeniorRecord": 0,
+    "RuleDefinition": 0,
+    "ReportRevision": 0,
+    "RecoveryDraft": 0,
+    "ValidationFinding": 0,
+    "ComparisonMember": 0,
+    "Report": 0,
+    "FolderMove": 0,
+    "NarrativeSnippet": 0,
+    "RevisionChange": 0,
+    "ReviewTaskEvent": 0,
+    "GroupSnapshot": 0,
+    "ReviewCommentEvent": 0,
+    "Folder": 0,
+    "LibraryPreference": 0,
+    "CommandMember": 0
+  },
+  "ManualDisplayVerification": false,
+  "Assertions": 1327,
+  "Artifacts": [
+    {
+      "SHA256": "C5FE82001A90BBF9444425ED3F302CC4B3C361084ED60795B92D8DDAE2E90528",
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Blank_2026-10-16-r114.accdb",
+      "Bytes": 17719296,
+      "Reports": 0,
+      "StartupForms": [
+        "frmSetup"
+      ]
+    },
+    {
+      "SHA256": "14A14BFC84382BB022EC345C61047934F6D8A29CF972A92D4C6A3BC97CD00D6B",
+      "Path": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb",
+      "Bytes": 14811136,
+      "Reports": 9,
+      "StartupForms": [
+        "frmHome"
+      ]
+    }
+  ],
+  "Candidate": "r114",
+  "AppVersion": "0.25.0-dev",
+  "DriveDelivery": [
+    {
+      "Variant": "Blank",
+      "Bytes": 17719296,
+      "ID": "1FVhtbDlvbUGmcTqHZbNPLk6cBBYwCAdO"
+    },
+    {
+      "Variant": "Demo",
+      "Bytes": 14811136,
+      "ID": "198JFSwUYwYfRviM7MiDkO3cf4OrB-NtY"
+    }
+  ],
+  "DriveMetadataVerified": true,
+  "SourceUnchanged": true,
+  "TemporarySQLVerified": true
+}

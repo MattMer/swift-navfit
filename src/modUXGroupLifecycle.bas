@@ -35,7 +35,7 @@ Public Function UXGroupList() As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0): filter = Nz(f!uxArchiveFilter, "Active")
     If filter = "Active" Then where = "WHERE g.IsArchived=False "
     If filter = "Archived" Then where = "WHERE g.IsArchived=True "
-    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(GroupWorkflow(g.GroupID)) AS [Group status] FROM SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
+    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(GroupWorkflow(g.GroupID)) AS [Group status],GroupCloseout(g.GroupID,Count(r.ReportID),Count(r.PeriodEnd),Min(r.PeriodEnd),Max(r.PeriodEnd)) AS [Closeout date] FROM (SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID) LEFT JOIN Report AS r ON m.ReportID=r.ReportID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
     If id > 0 Then
         If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then
             id = 0
@@ -49,8 +49,21 @@ Public Function UXGroupList() As Boolean
     f!lstGroups = id
     On Error GoTo 0
     Call UXGroupSelection
-    f!lstGroups.ColumnCount = 7: f!lstGroups.ColumnWidths = "0;3000;1200;850;800;1400;2500"
+    f!lstGroups.ColumnCount = 8: f!lstGroups.ColumnWidths = "0;2900;1150;800;700;1300;1850;1700"
     UXResizeWorkspace f.Name: UXGroupList = True
+End Function
+Public Function GroupCloseout(ByVal groupID As Long, ByVal members As Long, ByVal dated As Long, ByVal firstDate As Variant, ByVal lastDate As Variant) As Variant
+ Dim value As Variant
+ If members = 0 Then
+  value = UXEffectiveDefault(groupID, "PeriodEnd")
+  If IsNull(value) Or Len(Nz(value, "")) = 0 Then GroupCloseout = Null Else GroupCloseout = Format$(CDate(value), "yyyy-mm-dd")
+ ElseIf dated <> members Then
+  GroupCloseout = "Incomplete"
+ ElseIf firstDate <> lastDate Then
+  GroupCloseout = "Mixed"
+ Else
+  GroupCloseout = Format$(lastDate, "yyyy-mm-dd")
+ End If
 End Function
 Public Function UXGroupSelection() As Boolean
     Dim f As Access.Form, id As Long, archived As Boolean

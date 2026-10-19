@@ -109,7 +109,7 @@ Public Function UXPreviewNativeGroups() As Boolean
         Next
     Next
     Set selectedPreview = picks
-    Forms!frmUXNativeGroups!txtPreview = text & vbCrLf & "Native-only values and summary/folder columns are retained in report provenance. Import does not establish roster completeness or Navy compliance. No existing draft is overwritten."
+    Forms!frmUXNativeGroups!txtPreview = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance. Native-only values and summary/folder columns are retained in report provenance. Import does not establish roster completeness or Navy compliance. No existing draft is overwritten."
     Forms!frmUXNativeGroups!lblStatus.Caption = "Preview ready. Apply creates selected groups and reports together."
     Forms!frmUXNativeGroups!cmdApply.Enabled = True
     UXPreviewNativeGroups = True: Exit Function

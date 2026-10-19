@@ -717,7 +717,6 @@ try {
 . (Join-Path $PSScriptRoot 'apply-ux-directory-batch.ps1')
 . (Join-Path $PSScriptRoot 'apply-ux-directory-identity.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-directory-identity-picker.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-admin-feedback.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-immediate-defaults.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-resource-tools.ps1')
@@ -725,6 +724,9 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-group-discovery.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-member-psg.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-import-rank.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-native-dates.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-compat-pages.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
@@ -750,6 +752,7 @@ try {
     if($comparisonModule.Lines(1,$comparisonModule.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){$comparisonModule.InsertLines($comparisonLine+1,'    If Not UXGridUnload(Me) Then Cancel = True')}
     $app.DoCmd.Close(2,'frmUXComparison',1)
     . (Join-Path $PSScriptRoot 'apply-ux-efficiency.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-table-sort.ps1')
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)

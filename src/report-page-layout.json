@@ -1,0 +1,1541 @@
+{
+  "EVAL:0": {
+    "height": 15120,
+    "fields": [
+      {
+        "key": "OfficialName",
+        "x": 180,
+        "y": 180,
+        "w": 5400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RankRate",
+        "x": 5740,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Designator",
+        "x": 7550,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "MemberSSN",
+        "x": 9360,
+        "y": 180,
+        "w": 2420,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentActive",
+        "x": 180,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentTAR",
+        "x": 2532,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentInactive",
+        "x": 4884,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentATADSW",
+        "x": 7236,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "UnitUIC",
+        "x": 9588,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ShipStation",
+        "x": 180,
+        "y": 2040,
+        "w": 6100,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PromotionStatus",
+        "x": 6440,
+        "y": 2040,
+        "w": 2500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DateReported",
+        "x": 9100,
+        "y": 2040,
+        "w": 2680,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionPeriodic",
+        "x": 180,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionDetachment",
+        "x": 3120,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionFrocking",
+        "x": 6060,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionSpecial",
+        "x": 9000,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodStart",
+        "x": 180,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodEnd",
+        "x": 2240,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ObservationStatus",
+        "x": 4300,
+        "y": 3620,
+        "w": 2400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportRegular",
+        "x": 6860,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportConcurrent",
+        "x": 8520,
+        "y": 3620,
+        "w": 1600,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportOperationalCommander",
+        "x": 10280,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessSummary",
+        "x": 180,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessDate",
+        "x": 4100,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "BilletSubcategory",
+        "x": 8020,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorName",
+        "x": 180,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorGrade",
+        "x": 2140,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDesignator",
+        "x": 4100,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorTitle",
+        "x": 6060,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorUIC",
+        "x": 8020,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorSSN",
+        "x": 9980,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CommandEmployment",
+        "x": 180,
+        "y": 6410,
+        "w": 11600,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "PrimaryDuty",
+        "x": 180,
+        "y": 7930,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DutyDescription",
+        "x": 6060,
+        "y": 7930,
+        "w": 5720,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "CounselingDate",
+        "x": 180,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CounselorName",
+        "x": 6060,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait33",
+        "x": 180,
+        "y": 10380,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait34",
+        "x": 180,
+        "y": 11000,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait35",
+        "x": 180,
+        "y": 11620,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait36",
+        "x": 180,
+        "y": 12240,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait37",
+        "x": 180,
+        "y": 12860,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait38",
+        "x": 180,
+        "y": 13480,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait39",
+        "x": 180,
+        "y": 14100,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "@guidance",
+        "x": 5550,
+        "y": 10380,
+        "w": 6000,
+        "h": 4260
+      }
+    ]
+  },
+  "EVAL:1": {
+    "height": 12084,
+    "fields": [
+      {
+        "key": "AssignmentRecommendationA",
+        "x": 180,
+        "y": 180,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "AssignmentRecommendationB",
+        "x": 4100,
+        "y": 180,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterName",
+        "x": 8020,
+        "y": 180,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterDate",
+        "x": 180,
+        "y": 1110,
+        "w": 11600,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OfficialComments",
+        "x": 180,
+        "y": 2040,
+        "w": 11600,
+        "h": 3924,
+        "trait": false
+      },
+      {
+        "key": "PromotionRecommendation",
+        "x": 180,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionYes",
+        "x": 4100,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionNo",
+        "x": 8020,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress1",
+        "x": 180,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress2",
+        "x": 4100,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorCity",
+        "x": 8020,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorState",
+        "x": 180,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorZip",
+        "x": 4100,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorPhone",
+        "x": 8020,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDSN",
+        "x": 180,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterName",
+        "x": 4100,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterDate",
+        "x": 8020,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementYes",
+        "x": 180,
+        "y": 11234,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementNo",
+        "x": 6060,
+        "y": 11234,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      }
+    ]
+  },
+  "CHIEFEVAL:0": {
+    "height": 15120,
+    "fields": [
+      {
+        "key": "OfficialName",
+        "x": 180,
+        "y": 180,
+        "w": 5400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RankRate",
+        "x": 5740,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Designator",
+        "x": 7550,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "MemberSSN",
+        "x": 9360,
+        "y": 180,
+        "w": 2420,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentActive",
+        "x": 180,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentTAR",
+        "x": 2532,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentInactive",
+        "x": 4884,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentATADSW",
+        "x": 7236,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "UnitUIC",
+        "x": 9588,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ShipStation",
+        "x": 180,
+        "y": 2040,
+        "w": 6100,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PromotionStatus",
+        "x": 6440,
+        "y": 2040,
+        "w": 2500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DateReported",
+        "x": 9100,
+        "y": 2040,
+        "w": 2680,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionPeriodic",
+        "x": 180,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionDetachment",
+        "x": 3120,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionFrocking",
+        "x": 6060,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionSpecial",
+        "x": 9000,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodStart",
+        "x": 180,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodEnd",
+        "x": 2240,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ObservationStatus",
+        "x": 4300,
+        "y": 3620,
+        "w": 2400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportRegular",
+        "x": 6860,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportConcurrent",
+        "x": 8520,
+        "y": 3620,
+        "w": 1600,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportOperationalCommander",
+        "x": 10280,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessSummary",
+        "x": 180,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessDate",
+        "x": 4100,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "BilletSubcategory",
+        "x": 8020,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorName",
+        "x": 180,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorGrade",
+        "x": 2140,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDesignator",
+        "x": 4100,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorTitle",
+        "x": 6060,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorUIC",
+        "x": 8020,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorSSN",
+        "x": 9980,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CommandEmployment",
+        "x": 180,
+        "y": 6410,
+        "w": 11600,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "PrimaryDuty",
+        "x": 180,
+        "y": 7930,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DutyDescription",
+        "x": 6060,
+        "y": 7930,
+        "w": 5720,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "CounselingDate",
+        "x": 180,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CounselorName",
+        "x": 6060,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait33",
+        "x": 180,
+        "y": 10380,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait34",
+        "x": 180,
+        "y": 11000,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait35",
+        "x": 180,
+        "y": 11620,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait36",
+        "x": 180,
+        "y": 12240,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait37",
+        "x": 180,
+        "y": 12860,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait38",
+        "x": 180,
+        "y": 13480,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait39",
+        "x": 180,
+        "y": 14100,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "@guidance",
+        "x": 5550,
+        "y": 10380,
+        "w": 6000,
+        "h": 4260
+      }
+    ]
+  },
+  "CHIEFEVAL:1": {
+    "height": 9066,
+    "fields": [
+      {
+        "key": "OfficialComments",
+        "x": 180,
+        "y": 180,
+        "w": 11600,
+        "h": 1836,
+        "trait": false
+      },
+      {
+        "key": "PromotionRecommendation",
+        "x": 180,
+        "y": 3566,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterName",
+        "x": 4100,
+        "y": 3566,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterDate",
+        "x": 8020,
+        "y": 3566,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionYes",
+        "x": 180,
+        "y": 4496,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionNo",
+        "x": 4100,
+        "y": 4496,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementYes",
+        "x": 8020,
+        "y": 4496,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementNo",
+        "x": 180,
+        "y": 5146,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterName",
+        "x": 4100,
+        "y": 5146,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterDate",
+        "x": 8020,
+        "y": 5146,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress1",
+        "x": 180,
+        "y": 6076,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress2",
+        "x": 4100,
+        "y": 6076,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorCity",
+        "x": 8020,
+        "y": 6076,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorState",
+        "x": 180,
+        "y": 7006,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorZip",
+        "x": 4100,
+        "y": 7006,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorPhone",
+        "x": 8020,
+        "y": 7006,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDSN",
+        "x": 180,
+        "y": 7936,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "AssignmentRecommendationA",
+        "x": 4100,
+        "y": 7936,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "AssignmentRecommendationB",
+        "x": 8020,
+        "y": 7936,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      }
+    ]
+  },
+  "FITREP:0": {
+    "height": 15120,
+    "fields": [
+      {
+        "key": "OfficialName",
+        "x": 180,
+        "y": 180,
+        "w": 5400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RankRate",
+        "x": 5740,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Designator",
+        "x": 7550,
+        "y": 180,
+        "w": 1650,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "MemberSSN",
+        "x": 9360,
+        "y": 180,
+        "w": 2420,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentActive",
+        "x": 180,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentTAR",
+        "x": 2532,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentInactive",
+        "x": 4884,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ComponentATADSW",
+        "x": 7236,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "UnitUIC",
+        "x": 9588,
+        "y": 1110,
+        "w": 2192,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ShipStation",
+        "x": 180,
+        "y": 2040,
+        "w": 6100,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PromotionStatus",
+        "x": 6440,
+        "y": 2040,
+        "w": 2500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DateReported",
+        "x": 9100,
+        "y": 2040,
+        "w": 2680,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionPeriodic",
+        "x": 180,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionDetachment",
+        "x": 3120,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionFrocking",
+        "x": 6060,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OccasionSpecial",
+        "x": 9000,
+        "y": 2970,
+        "w": 2780,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodStart",
+        "x": 180,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "PeriodEnd",
+        "x": 2240,
+        "y": 3620,
+        "w": 1900,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ObservationStatus",
+        "x": 4300,
+        "y": 3620,
+        "w": 2400,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportRegular",
+        "x": 6860,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportConcurrent",
+        "x": 8520,
+        "y": 3620,
+        "w": 1600,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportOperationalCommander",
+        "x": 10280,
+        "y": 3620,
+        "w": 1500,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessSummary",
+        "x": 180,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReadinessDate",
+        "x": 4100,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "BilletSubcategory",
+        "x": 8020,
+        "y": 4550,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorName",
+        "x": 180,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorGrade",
+        "x": 2140,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDesignator",
+        "x": 4100,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorTitle",
+        "x": 6060,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorUIC",
+        "x": 8020,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorSSN",
+        "x": 9980,
+        "y": 5480,
+        "w": 1800,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CommandEmployment",
+        "x": 180,
+        "y": 6410,
+        "w": 11600,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "PrimaryDuty",
+        "x": 180,
+        "y": 7930,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "DutyDescription",
+        "x": 6060,
+        "y": 7930,
+        "w": 5720,
+        "h": 950,
+        "trait": false
+      },
+      {
+        "key": "CounselingDate",
+        "x": 180,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "CounselorName",
+        "x": 6060,
+        "y": 9450,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait33",
+        "x": 180,
+        "y": 10380,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait34",
+        "x": 180,
+        "y": 11000,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait35",
+        "x": 180,
+        "y": 11620,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait36",
+        "x": 180,
+        "y": 12240,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait37",
+        "x": 180,
+        "y": 12860,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait38",
+        "x": 180,
+        "y": 13480,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "Trait39",
+        "x": 180,
+        "y": 14100,
+        "w": 5000,
+        "h": 360,
+        "trait": true
+      },
+      {
+        "key": "@guidance",
+        "x": 5550,
+        "y": 10380,
+        "w": 6000,
+        "h": 4260
+      }
+    ]
+  },
+  "FITREP:1": {
+    "height": 12364,
+    "fields": [
+      {
+        "key": "AssignmentRecommendationA",
+        "x": 180,
+        "y": 180,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "AssignmentRecommendationB",
+        "x": 6060,
+        "y": 180,
+        "w": 5720,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "OfficialComments",
+        "x": 180,
+        "y": 1110,
+        "w": 11600,
+        "h": 3924,
+        "trait": false
+      },
+      {
+        "key": "PromotionRecommendation",
+        "x": 180,
+        "y": 6584,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterName",
+        "x": 4100,
+        "y": 6584,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RaterDate",
+        "x": 8020,
+        "y": 6584,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress1",
+        "x": 180,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorAddress2",
+        "x": 4100,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorCity",
+        "x": 8020,
+        "y": 7514,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorState",
+        "x": 180,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorZip",
+        "x": 4100,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorPhone",
+        "x": 8020,
+        "y": 8444,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "ReportingSeniorDSN",
+        "x": 180,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementYes",
+        "x": 4100,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "StatementNo",
+        "x": 8020,
+        "y": 9374,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionYes",
+        "x": 180,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "RetentionNo",
+        "x": 4100,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterName",
+        "x": 8020,
+        "y": 10304,
+        "w": 3760,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "SeniorRaterDate",
+        "x": 180,
+        "y": 11234,
+        "w": 11600,
+        "h": 360,
+        "trait": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,162 @@
+Attribute VB_Name = "modReportPages"
+Option Explicit
+Private sheet As Long, renders As Long, arranging As Boolean
+Private Const ReportLeft As Long = 2600
+Public Function UXFixedEnabled() As Boolean
+ If CurrentProject.AllForms("frmEditor").IsLoaded Then UXFixedEnabled = UXHasControl(Forms!frmEditor, "uxFrontPage")
+End Function
+Public Function UXFixedRenderCount() As Long
+ UXFixedRenderCount = renders
+End Function
+Private Sub Place(ByVal f As Access.Form, ByVal name As String, ByVal x As Long, ByVal y As Long, ByVal width As Long, ByVal height As Long)
+ If f.Name = "frmEditor" Then x = x + ReportLeft
+ With f.Controls(name): .Left = x: .Top = y: .Width = width: .Height = height: .Visible = True: End With
+End Sub
+'Fixed sheet geometry never depends on the window. Only the scroll viewport and
+'action bar change height; resizing does not rebuild fields or refresh data.
+Public Function UXFixedResize(Optional ByVal height As Long = 0) As Boolean
+ Dim f As Access.Form, body As Long, i As Long, names As Variant, c As Access.Control
+ If arranging Then Exit Function
+ arranging = True
+ On Error GoTo Failed
+ Set f = Forms!frmEditor
+ If height = 0 Then height = f.InsideHeight
+ If height < 7000 Then height = 7000
+ body = height - 5000
+ f.ScrollBars = 3: f.Width = 12400 + ReportLeft
+ 'The fixed paper canvas lives beside the application rail, never over it.
+ UXNavigationLayout f, False, f.Width
+ Place f, "uxContext", 250, 100, 8500, 300
+ Place f, "uxReport", 250, 550, 8700, 650
+ Place f, "uxTypeCaption", 9500, 500, 2500, 300
+ Place f, "cboKind", 9500, 850, 2500, 350
+ Place f, "uxITA", 250, 1250, 5500, 350
+ Place f, "uxSGA", 5800, 1250, 6200, 350
+ Place f, "uxLocked", 250, 1630, 8700, 350
+ Place f, "uxAlias", 250, 1980, 8700, 300
+ Place f, "uxGroup", 9200, 1750, 2800, 400
+ names = Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
+ For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2350, 2850, 400: Next
+ names = Array("uxFrontPage", "uxBackPage", "uxPageNotes", "uxPageReview", "uxPageHistory")
+ For i = 0 To 4: Place f, CStr(names(i)), 250 + i * 2400, 2850, 2250, 400: Next
+ Place f, "uxSection", 250, 3320, 11800, 350
+ Place f, "uxError", 250, 3690, 11800, 350
+ f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
+ Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), 12000, body
+ f!uxFieldSurface.Visible = (sheet < 8)
+ Dim footer As Long
+ footer = f!uxFieldSurface.Top + body + 120
+ Place f, "lblSaved", 250, footer, 5600, 300
+ Place f, "uxDirty", 6000, footer, 6000, 300
+ Place f, "cmdClose", 250, footer + 370, 2250, 450
+ Place f, "uxUndoPending", 2700, footer + 370, 3000, 450
+ Place f, "uxPageValidation", 5950, footer + 370, 2700, 450
+ Place f, "cmdSave", 9000, footer + 370, 3000, 450
+ Place f, "lblRecovery", 250, footer + 860, 11750, 300
+ If sheet = 8 Then
+  names = Array("cmdRoute", "cmdComments", "cmdChecklist", "cmdCalculations")
+  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 4150, 2850, 450: Next
+ ElseIf sheet = 9 Then
+  Place f, "cmdCompare", 250, 4150, 2800, 450: Place f, "cmdRestore", 3250, 4150, 2800, 450
+  Place f, "lstRevisions", 250, 4750, 11800, body - 700
+ End If
+ f.Section(acDetail).Height = footer + 1250
+ f!uxRail.Height = f.Section(acDetail).Height
+ arranging = False: UXFixedResize = True: Exit Function
+Failed:
+ arranging = False: f!uxError.Caption = "Layout: " & Err.Description
+End Function
+Public Function UXFixedSelect(ByVal section As Long) As Boolean
+ Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, id As Long
+ On Error GoTo Failed
+ UXFlushSurface
+ Set f = Forms!frmEditor: f!cmdClose.SetFocus
+ If section <= 4 Then sheet = 0 Else If section <= 6 Then sheet = 1 Else sheet = section
+ id = Nz(f!txtReportID, 0): Set db = CurrentDb
+ If id > 0 Then
+  Set r = db.OpenRecordset("SELECT IsArchived,WorkflowState FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
+  locked = r!IsArchived Or r!WorkflowState <> "Draft": r.Close
+ End If
+ For Each c In f.Controls
+  If c.Name Like "uxSection#" Then c.Visible = False
+  If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = sheet)
+ Next
+ f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
+ f!uxLocked.Caption = IIf(locked, "Read only. Reopen local approval or recover the report to edit.", "")
+ Select Case sheet
+  Case 0: f!uxSection.Caption = "Front Page"
+  Case 1: f!uxSection.Caption = "Back Page"
+  Case 7: f!uxSection.Caption = "Draft notes (local)"
+  Case 8: f!uxSection.Caption = "Review (local)"
+  Case 9: f!uxSection.Caption = "History (local)"
+ End Select
+ If sheet < 2 Then
+  UXRenderFixedSheet sheet, locked
+ ElseIf sheet = 7 Then
+  UXSurfaceSection 7, locked
+ End If
+ f!uxFrontPage.FontBold = (sheet = 0): f!uxBackPage.FontBold = (sheet = 1)
+ UXFixedResize
+ If sheet = 7 Then UXSortHeaders Forms!frmEditor!uxFieldSurface.Form
+ UXRefreshEditor
+ UXHeaderReviewState
+ UXFixedSelect = True: Exit Function
+Failed:
+ f!uxError.Caption = "Unable to open report page: " & Err.Number & " " & Err.Description
+End Function
+Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
+ Dim f As Access.Form, row As Variant, parts As Variant, key As String, kind As String, c As Access.Control, y As Long, bottom As Long, trait As Boolean, order As Long
+ Set f = Forms!frmEditor!uxFieldSurface.Form: kind = Nz(Forms!frmEditor!cboKind, "EVAL")
+ f!uxFocusAnchor.SetFocus
+ For Each c In f.Controls
+  If c.Name <> "uxFocusAnchor" And c.Visible Then c.Visible = False
+ Next
+ renders = renders + 1
+ For Each row In ReportPageRows(kind, page)
+  parts = Split(CStr(row), "|"): key = parts(0): y = CLng(parts(2))
+  If key = "@guidance" Then
+   Place f, "uxTraitGuidance", CLng(parts(1)), y, CLng(parts(3)), CLng(parts(4))
+  Else
+   trait = IsTraitKey(key)
+   Place f, "label" & key, CLng(parts(1)), y, CLng(parts(3)), 340
+   f.Controls("label" & key).Caption = UXFieldCaption(key, kind): f.Controls("label" & key).FontSize = 8
+   Place f, UXFieldControl(key), CLng(parts(1)), y + 350, CLng(parts(3)), CLng(parts(4))
+   Set c = f.Controls(UXFieldControl(key)): c.TabIndex = order: order = order + 1
+   c.Locked = locked Or Not UXFieldApplies(key, kind)
+   If c.ControlType <> acCheckBox Then c.FontName = "Segoe UI": c.FontSize = 10
+   If UXFieldFlag(key) Then
+    c.Left = CLng(parts(1)): c.Top = y + 40: c.Width = 280: c.Height = 280
+    With f.Controls("label" & key): .Left = c.Left + 350: .Width = CLng(parts(3)) - 350: .Height = 430: End With
+   End If
+   If trait Then
+    f.Controls("label" & key).Width = 4000
+    c.Left = 4400: c.Top = y: c.Width = 1000
+   End If
+   If key = "OfficialComments" Then
+    c.FontName = "Courier New": c.FontSize = UXNarrativeFontSize(kind): c.TextFormat = 0: c.Width = UXNarrativeWidth(kind)
+    c.LeftMargin = 90: c.RightMargin = 90: c.TopMargin = 90: c.BottomMargin = 90: c.ScrollBars = 2
+    Place f, "uxNarrativeCount", c.Left, c.Top + c.Height + 260, 11400, 400
+    Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: f!cmdSnippets.Enabled = Not locked
+   End If
+   Place f, "err" & key, CLng(parts(1)), y + IIf(trait, 390, IIf(UXFieldFlag(key), 430, CLng(parts(4)) + 360)), CLng(parts(3)), 200
+   f.Controls("err" & key).FontSize = 8
+   UXSurfaceValidate key
+   bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
+   If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
+  End If
+ Next
+ f.Width = 11900: f.ScrollBars = 2
+ UXSurfaceRefresh
+ If f!uxTraitGuidance.Visible Then
+  For Each row In ReportPageRows(kind, page)
+   key = Split(CStr(row), "|")(0)
+   If IsTraitKey(key) Then UXSurfaceTrait CLng(Mid$(key, 6)): Exit For
+  Next
+ End If
+End Sub
+'Used by validation findings and legacy detail actions to select the actual page.
+Public Function UXFixedOpenField(ByVal key As String) As Boolean
+ Dim page As Long
+ page = ReportPageForField(Nz(Forms!frmEditor!cboKind, "EVAL"), key)
+ UXFixedOpenField = UXSelectSection(IIf(page = 0, 0, 5))
+End Function

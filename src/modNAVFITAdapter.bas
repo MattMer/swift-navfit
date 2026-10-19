@@ -24,7 +24,8 @@ Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String,
         Case "text": NAVFITDecode = CStr(value)
         Case "date"
             If VarType(value) <> vbDate Then Err.Raise vbObjectError + 5101, , "Native date is not a typed date."
-            If TimeValue(value) <> TimeSerial(0, 0, 0) Then Err.Raise vbObjectError + 5101, , "Native date contains a time that Swift's date-only field cannot preserve. Review the source value."
+            'NAVFIT Date/Time fields may carry incidental clock values. Import
+            'their calendar date; the receipt retains the original typed value.
             NAVFITDecode = Format$(value, "yyyy-mm-dd")
         Case "flag", "observation"
             If VarType(value) <> vbBoolean Then Err.Raise vbObjectError + 5102, , "Native checkbox is not Boolean."

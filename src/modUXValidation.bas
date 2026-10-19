@@ -186,7 +186,7 @@ Public Function UXValidationOpenField() As Boolean
         End If
     End If
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
-    UXSelectSection UXFieldSection(item("Key"))
+    If UXFixedEnabled() Then UXFixedOpenField CStr(item("Key")) Else UXSelectSection UXFieldSection(item("Key"))
     Forms!frmEditor.SetFocus
     If UXSurfaceAvailable() Then
         If UXHasControl(Forms!frmEditor!uxFieldSurface.Form, UXFieldControl(item("Key"))) Then

@@ -1,5 +1,7 @@
 Attribute VB_Name = "modUXSeniorTable"
 Option Explicit
+Private rsSortKey As String, rsSortDescending As Boolean
+
 Private initialRows As Object
 Private shown As Boolean
 Public Sub RSTableReset()
@@ -131,4 +133,35 @@ End Sub
 Public Function RSTableChanged() As Boolean
  Forms!frmUXSeniorEditor!lblStatus.Caption = "Unsaved RSCA table entries. Save RSCA table to record verified baselines."
  RSTableChanged = True
+End Function
+
+Public Function RSTableSort(ByVal key As String) As Boolean
+ Dim grades As Variant, order() As Long, values() As Variant, i As Long, j As Long, temp As Long, f As Access.Form, grade As String, c As Variant
+ If key <> "grade" And key <> "avg" And key <> "count" And key <> "date" Then Exit Function
+ Set f = Forms!frmUXSeniorEditor!uxRSCATable.Form: grades = RSTableGrades()
+ ReDim order(0 To UBound(grades)): ReDim values(0 To UBound(grades))
+ If rsSortKey = key Then rsSortDescending = Not rsSortDescending Else rsSortDescending = False
+ rsSortKey = key
+ For i = 0 To UBound(grades)
+  order(i) = i
+  If key = "grade" Then values(i) = i Else values(i) = TableValue(key & grades(i))
+ Next
+ For i = 1 To UBound(order)
+  temp = order(i): j = i - 1
+  Do While j >= 0
+   If UXCompareCells(values(order(j)), values(temp)) * IIf(rsSortDescending, -1, 1) <= 0 Then Exit Do
+   order(j + 1) = order(j): j = j - 1
+  Loop
+  order(j + 1) = temp
+ Next
+ For i = 0 To UBound(order)
+  grade = grades(order(i))
+  For Each c In Array("grade", "avg", "count", "date")
+   f.Controls(c & grade).Top = 500 + i * 390
+  Next
+  f.Controls("avg" & grade).TabIndex = i * 3
+  f.Controls("count" & grade).TabIndex = i * 3 + 1
+  f.Controls("date" & grade).TabIndex = i * 3 + 2
+ Next
+ RSTableSort = True
 End Function

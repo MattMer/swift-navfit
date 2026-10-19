@@ -1,5 +1,7 @@
 Attribute VB_Name = "modUXTraitGrid"
 Option Explicit
+Private gridSortKey As String, gridSortDescending As Boolean
+
 Private cacheWorkspace As DAO.Workspace
 Private cacheDB As DAO.Database
 Private cacheRows As DAO.Recordset
@@ -52,6 +54,7 @@ End Function
 Public Function UXGridLoad() As Boolean
     Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before refreshing the comparison."
+    gridSortKey = "": gridSortDescending = False
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
     loading = True
     Set f.Recordset = Nothing
@@ -442,4 +445,27 @@ Public Function UXCloseComparison(Optional ByVal revealDestination As Boolean = 
 Failed:
     If Err.Number = 2501 Then Exit Function
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then Forms!frmUXComparison!lblStatus.Caption = "Close comparison: " & Err.Number & " " & Err.Description
+End Function
+
+Public Function UXSortGrid(ByVal key As String) As Boolean
+ Dim f As Access.Form, field As DAO.Field, allowed As Boolean, id As Long, rows As DAO.Recordset
+ On Error GoTo Failed
+ If Not UXGridDrain() Then Exit Function
+ Set f = Forms!frmUXComparison!uxTraitGrid.Form
+ If cacheDB Is Nothing Then Exit Function
+ If f.Recordset.EOF Then UXSortGrid = True: Exit Function
+ For Each field In cacheDB.TableDefs("PendingTraits").Fields
+  If field.Name = key Then allowed = True
+ Next
+ If Not allowed Then Exit Function
+ id = Nz(f!ReportID, 0)
+ If f.Dirty Then f.Dirty = False
+ If gridSortKey = key Then gridSortDescending = Not gridSortDescending Else gridSortDescending = False
+ gridSortKey = key
+ Set rows = cacheDB.OpenRecordset("SELECT * FROM PendingTraits ORDER BY [" & key & "] " & IIf(gridSortDescending, "DESC", "ASC") & ", SortOrdinal", dbOpenDynaset)
+ Set f.Recordset = rows
+ If id > 0 Then rows.FindFirst "ReportID=" & id
+ UXSortGrid = True: Exit Function
+Failed:
+ Forms!frmUXComparison!lblStatus.Caption = "Unable to sort: " & Err.Description & ". Pending edits were retained."
 End Function

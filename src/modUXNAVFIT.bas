@@ -50,6 +50,7 @@ Public Function UXPreviewFullNAVFIT() As Boolean
     fullMember = Nz(Forms!frmImportReview!txtImportMember, "")
     Set values = FullNAVFITImportValues(id, century)
     text = "NEW " & values("FormKind") & " REPORT" & vbCrLf & "74 saved official fields are mapped. All 128 native report columns, folder defaults and summary values are retained in provenance. Native-only values are preserved for export; they are not editable in Swift's current editor. Native validation is not a local approval." & vbCrLf
+    text = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance." & vbCrLf
     text = text & vbCrLf & "Local display name: " & IIf(fullMember = "", NAVFITDisplay(values("OfficialName")), fullMember) & vbCrLf
     For Each key In values.Keys
         If key <> "SourceHash" And key <> "FormKind" Then text = text & vbCrLf & UXFieldCaption(CStr(key), values("FormKind")) & vbCrLf & "Before: [new report]" & vbCrLf & "After: " & NAVFITDisplay(values(key)) & vbCrLf

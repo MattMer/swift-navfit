@@ -17,6 +17,7 @@ Public Function UXNotesSection(ByVal f As Access.Form, ByVal width As Long) As B
     With f!uxNoteDetails: .Visible = True: .Left = 200: .Top = 2100: .Width = width: .Height = 1650: .Value = Null: End With
     With f!uxAddNote: .Visible = True: .Left = 200: .Top = 3900: .Width = width: .Height = 450: .Enabled = id > 0 And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True): End With
     With f!uxNoteDrafts
+        .ColumnCount = 2
         .Visible = True: .Left = 200: .Top = 4500: .Width = width: .Height = 1000
         .RowSource = "SELECT DraftGuid,'Unposted note - ' & Format(CheckpointAt,'yyyy-mm-dd hh:nn') AS Checkpoint FROM ReportNoteDraft WHERE ReportID=" & id & " AND AuthorProfileID=" & MajorAuthor() & " ORDER BY CheckpointAt DESC"
         .ColumnWidths = "0;" & CStr(width - 100): .Requery

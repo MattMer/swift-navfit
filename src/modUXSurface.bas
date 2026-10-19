@@ -118,6 +118,7 @@ Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
     If Not UXSurfaceAvailable() Then Exit Function
     Call ShowTraitGuidance(block)
     Surface()!uxTraitGuidance = Forms!frmEditor!txtTraitGuidance
+    If UXFixedEnabled() Then UXSurfaceTrait = True: Exit Function
     With Surface()!uxTraitGuidance
         If Surface().Width < 7000 Then
             .Left = 200: .Width = Surface().Width - 500
@@ -179,7 +180,7 @@ End Function
 Public Function UXSurfaceErrorSelected() As Boolean
     Dim key As String
     key = Nz(Forms!frmEditor!uxErrorList, ""): If Len(key) = 0 Then Exit Function
-    Call UXSelectSection(UXFieldSection(key))
+    If UXFixedEnabled() Then UXFixedOpenField key Else UXSelectSection UXFieldSection(key)
     Forms!frmEditor!uxFieldSurface.SetFocus
     Surface().Controls(UXFieldControl(key)).SetFocus
     UXSurfaceErrorSelected = True
@@ -355,6 +356,7 @@ End Function
 ' Arrange the editor for its viewport while preserving focus and text selection;
 ' section content and action areas remain separate from saved report data.
 Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
+    If UXFixedEnabled() Then UXResizeEditor = UXFixedResize(viewportHeight): Exit Function
     Dim f As Access.Form, width As Long, height As Long, contentLeft As Long, contentWidth As Long, footer As Long, i As Long, actions As Variant, active As Access.Control, caret As Long, selection As Long, compact As Boolean, surfaceTop As Long
     If layoutBusy Or Not UXSurfaceAvailable() Then Exit Function
     On Error GoTo Failed

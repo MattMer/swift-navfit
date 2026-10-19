@@ -24,5 +24,12 @@ schema = re.search(r'SCHEMA_VERSION As Long = (\d+)', constants).group(1)
 guide_path = ROOT/'planning/UX_WORKSPACE_GUIDE.md'
 guide = guide_path.read_text(encoding='utf-8-sig')
 version_body = topics[8]['Body'].replace('{APP_VERSION}', version).replace('{SCHEMA_VERSION}', schema)
+
+#Keep every managed topic aligned with the native help, preserving the separate
+#feature-destination table and other guide content after these sections.
+for topic in topics:
+    body=topic['Body'].replace('{APP_VERSION}',version).replace('{SCHEMA_VERSION}',schema)
+    pattern=r'(## '+re.escape(topic['Title'])+r'\n\n).*?(?=\n## |\Z)'
+    guide=re.sub(pattern,lambda match:match.group(1)+body+'\n',guide,flags=re.S)
 guide = re.sub(r'^This is version [^\n]+', lambda _: version_body, guide, flags=re.M)
 guide_path.write_text(guide, encoding='utf-8')

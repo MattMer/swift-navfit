@@ -1,3 +1,11 @@
+## r116 — report rail clearance and Front Page traits (17 October 2026)
+
+Report content, errors and actions now clear the main left navigation rail, which remains available. All seven traits are grouped on Front Page for all three report types; stored values and print/export mappings are unchanged. 322 targeted native assertions plus the 30-second recovery checkpoint and 25-schema transfer/rollback matrix passed. Blank/demo startup and data state verified; both delivered to Drive. See [details](REPORT_RAIL_R116_2026-10-17.md). Manual display/scaling acceptance remains outstanding.
+
+## 2026-10-17 — r115 transfer, report pages and table sorting
+
+Implemented full previous-Swift workspace data import in first-run setup and Settings & Help, with read-only source, exact field verification, atomic rollback and populated-destination protection. Schemas 1–25 checked against actual retained distributions; populated schema-20 transfer verified separately. Fixed official Front/Back report pages preserve pending values, error navigation, save/recovery and local workflows. Added group closeout date from PeriodEnd and ascending/descending heading sorting across table lists, live editable rows and RSCA entries. Corrected the screenshot's Left$ name collision with VBA.Left$ and ensured generated Access class events persist after reopen. Final blank/demo builds compile/start and are verified and delivered to Drive; see WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md.
+
 ## Local r107 — defaults context switching (14 October 2026)
 
 Returning to Summary groups without Close no longer blocks global/group defaults or leaves their shared host in the previous context. Reopening reloads values, report type, group tabs and the confirmation baseline. Separate blank/demo candidates retain app 0.25.0-dev/schema 25. See [fix and verification](DEFAULTS_CONTEXT_R107_2026-10-14.md). Published GitHub release remains r104.
@@ -274,3 +282,6 @@ Completed automatic group senior/baseline selection saving, explicit BOL exclusi
 # 15 October 2026 — r113 automatic import years and member rank filters
 
 Removed century selectors throughout import UI; two-digit import years use 20xx. Added paygrade/specific-rank filters to single and batch command-member report creation, clearing hidden selections and stale previews. 668 relevant assertions passed; blank/demo r113 verified and uploaded. See IMPORT_RANK_R113_2026-10-15.md.
+# 16 October 2026 — r114 timestamped native dates
+
+Fixed NAVFIT imports rejecting typed dates containing incidental times. Calendar dates import; original timestamps remain in raw provenance and the source stays unchanged. Tested the temporary Reports/Folders cleanup queries. 1,327 assertions passed; blank/demo r114 verified and uploaded. See NATIVE_DATES_R114_2026-10-16.md for temporary instructions and delivery links.
