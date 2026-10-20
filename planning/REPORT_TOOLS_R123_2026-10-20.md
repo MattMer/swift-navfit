@@ -1,0 +1,18 @@
+# Report workspace consolidation - r123a, 20 October 2026
+
+Report tools now embeds four real views in the report editor: Notes and replies, Review steps, Validation checks, and Trait calculations. The Notes page opens the same shared communication view. Report and My Work entry points select the corresponding report/view, and Back to My Work explicitly focuses its existing tab. Standalone comments, review, checklist and note-composer windows are removed; the review panel is an embedded subform. Validation Issues is a modeless, sizable popout and can remain beside the editable report. Its findings cache is separate from the embedded validation view.
+
+Notes and replies belong to reports, independent of revisions or local approval. They can continue after approval or report changes; archived reports remain read-only. There are no resolve/reopen controls. My Work keeps assignment/route tasks in its review queue and lists shared conversations in a separate Report notes tab. Private drafts checkpoint across tab changes and navigation, retain their reply target, and use contributor/version checks. Unsubmitted review decision text blocks closing until recorded or cleared. Review decisions require saved report values.
+
+Schema 26 adds ReportMessage and nullable reply context to ReportNoteDraft. Original ReportNote, ReviewComment and ReviewCommentEvent records remain unchanged, including prior resolution history, GUIDs, author attribution and revision references. Conversion is idempotent and retains origin references. Imported legacy roots and replies are read through DAO within the import transaction; Access domain lookups cannot reliably see newly inserted roots until commit. This fixes the schema-21 test interruption shown by the user. Source26 bulk imports defer message-parent and draft-parent links until all tables are copied. Every original source field is verified before commit.
+
+## Verification
+
+- Native compile; 35 new report-tool checks; 1,747 approval queue/scope/navigation assertions; 264 fixed-page/pending-buffer/recovery/closeout assertions; 41 workflow assertions; valid and invalid forced-shutdown recovery; 48 smoke and 39 populated Demo checks.
+- All 26 retained schema fixtures import through the production engine; current-schema Settings & Help Apply progress tested. Bootstrap rollback, future schema, unknown table, changed-source and populated-target rejection passed. Older empty fixtures establish their actual schema boundaries; populated schema20 and26 upgrades separately verify complete fields and reopen.
+- Canonical conversations and private reply drafts survive schema26 transfer, including parent IDs sorting after replies, next AutoNumber and idempotent conversion.
+- Bulk benchmark preserves 20,856 revision values, long Unicode notes, and out-of-order legacy replies. Oversized memo rollback, late relationship failure cleanup and retry passed. Bulk mean remains about 0.67 seconds versus 10.63 seconds for the previous row importer; progress-enabled UI import 0.937 seconds on the synthetic fixture.
+- Exact Blank has no data rows outside AppMetadata. Synthetic Demo retains 13 reports, 5 groups, 12 prior evaluations, and 15 unified notes/messages. Earlier files were retained; original populated r116 hash remains unchanged.
+- Both dated artifacts are in output and uploaded to the designated Google Drive folder; remote names, byte sizes and parent IDs verified. Access is closed. Physical visual/DPI/accessibility/printing acceptance remains deferred; these are native automated checks.
+
+See REPORT_TOOLS_R123_VERIFICATION.json and output/CURRENT_FILES.json for fingerprints, paths and Drive links.

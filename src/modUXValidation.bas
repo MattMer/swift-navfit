@@ -100,6 +100,7 @@ Public Function UXLiveTimer() As Boolean
         End If
         nextCheckpoint = DateAdd("s", 30, Now())
     End If
+    UXToolsTimer
     UXLiveTimer = True
 End Function
 ' Open report or group findings using an explicit context; reset paging and selection.

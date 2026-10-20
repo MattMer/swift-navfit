@@ -134,9 +134,12 @@ Public Function RSGroupRows(ByVal groupID As Long) As DAO.Recordset
     Set RSGroupRows = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
 End Function
 Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.Recordset = Nothing) As Object
-    Dim result As Object, r As DAO.Recordset, members As DAO.Recordset, senior As Object, values As Object, key As Variant, count As Long, total As Double, previousCount As Long, previousSum As Double, memberCount As Long
+    Dim baselineID As Long, result As Object, r As DAO.Recordset, members As DAO.Recordset, senior As Object, values As Object, key As Variant, count As Long, total As Double, previousCount As Long, previousSum As Double, memberCount As Long
+    On Error GoTo AccountingUnavailable
     Set result = CreateObject("Scripting.Dictionary"): result.Add "Value", Null: result.Add "Reason", "Choose a reporting senior and historical baseline.": result.Add "Estimated", False: result.Add "Partial", False
-    Set r = CurrentDb.OpenRecordset("SELECT b.*,g.ExcludesGroup,g.SeniorID AS SelectedSeniorID FROM GroupRSCABaseline AS g INNER JOIN RSCABaseline AS b ON g.BaselineID=b.BaselineID WHERE g.GroupID=" & groupID, dbOpenSnapshot)
+    baselineID = Nz(DLookup("BaselineID", "GroupRSCABaseline", "GroupID=" & groupID), 0)
+    baselineID = RSCalculationBaseline(groupID, baselineID)
+    Set r = CurrentDb.OpenRecordset("SELECT b.*,g.ExcludesGroup,g.SeniorID AS SelectedSeniorID FROM GroupRSCABaseline AS g, RSCABaseline AS b WHERE b.BaselineID=" & baselineID & " AND g.GroupID=" & groupID, dbOpenSnapshot)
     If r.EOF Then r.Close: Set RSGroupPSG = result: Exit Function
     If Not r!ExcludesGroup Then result("Reason") = "Confirm that historical totals exclude the current group.": r.Close: Set RSGroupPSG = result: Exit Function
     If r!Paygrade <> MajorScalar("SELECT Paygrade FROM SummaryGroup WHERE GroupID=" & groupID) Then result("Reason") = "Historical baseline paygrade does not match this group.": r.Close: Set RSGroupPSG = result: Exit Function
@@ -151,7 +154,10 @@ Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.R
     Else
         previousSum = r!TraitSum
     End If
+    result.Add "SeniorID", CLng(r!SeniorID): result.Add "BaselineID", CLng(r!BaselineID)
     r.Close
+    RSExcludePostedGroup groupID, baselineID, previousSum, previousCount
+    result.Add "HistoricalSum", previousSum: result.Add "HistoricalCount", previousCount
     If loaded Is Nothing Then Set members = RSGroupRows(groupID) Else Set members = loaded.Clone
     If Not (members.BOF And members.EOF) Then members.MoveFirst
     Do While Not members.EOF
@@ -173,8 +179,14 @@ Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.R
         members.MoveNext
     Loop
     members.Close
+    result.Add "GroupSum", total: result.Add "GroupCount", count
     If count = 0 Then result("Reason") = "No graded traits are available.": Set RSGroupPSG = result: Exit Function
     result("Value") = (previousSum + total) / (CDbl(previousCount) + count)
     result("Reason") = "(" & Format$(previousSum, "0.00") & " historical sum + " & total & " group sum) / (" & previousCount & " historical traits + " & count & " group traits)"
+    Set RSGroupPSG = result
+    Exit Function
+AccountingUnavailable:
+    If Err.Number <> vbObjectError + 4851 And Err.Number <> vbObjectError + 4852 Then Err.Raise Err.Number, "RSGroupPSG", Err.Description
+    result("Value") = Null: result("Reason") = Err.Description
     Set RSGroupPSG = result
 End Function

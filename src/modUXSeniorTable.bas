@@ -38,8 +38,13 @@ Public Function RSTableLoad() As Boolean
  Set db = CurrentDb
  For Each grade In RSTableGrades()
   row = Array(Null, Null, Null, Null)
-  Set r = db.OpenRecordset("SELECT TOP 1 CurrentRSCA,TraitCount,AsOfDate,TraitSum FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " AND Paygrade=" & QuoteSQL(CStr(grade)) & " ORDER BY AsOfDate DESC,BaselineID DESC", dbOpenSnapshot)
-  If Not r.EOF Then row = Array(r!CurrentRSCA.Value, r!TraitCount.Value, r!AsOfDate.Value, r!TraitSum.Value)
+  Set r = db.OpenRecordset("SELECT TOP 1 CurrentRSCA,TraitCount,AsOfDate,TraitSum,SourceNote FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " AND Paygrade=" & QuoteSQL(CStr(grade)) & " ORDER BY AsOfDate DESC,BaselineID DESC", dbOpenSnapshot)
+  If Not r.EOF Then
+   row = Array(r!CurrentRSCA.Value, r!TraitCount.Value, r!AsOfDate.Value, r!TraitSum.Value)
+   f.Controls("date" & grade).ControlTipText = Left$(Nz(r!SourceNote, "Historical observation") & IIf(IsNull(r!TraitSum), "; estimated from average and trait count", "; exact historical sum"), 255)
+  Else
+   f.Controls("date" & grade).ControlTipText = "No baseline recorded for this paygrade."
+  End If
   r.Close
   f.Controls("avg" & grade) = row(0): f.Controls("count" & grade) = row(1): f.Controls("date" & grade) = row(2)
   initialRows.Add CStr(grade), row

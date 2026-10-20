@@ -200,7 +200,7 @@ Public Function UXGridLockReason(ByVal id As Long, ByVal revision As Long, Optio
     If state(1) <> "Draft" And state(1) <> "Approved" Then UXGridLockReason = "Review lock - reopen report"
 End Function
 ' Apply cached row locks and contextual status on row focus; avoid whole-group queries.
-Public Function UXGridCurrent() As Boolean
+Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) As Boolean
     Dim f As Access.Form, reason As String, block As Long
     If loading Or saving Or cacheRows Is Nothing Then Exit Function
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
@@ -208,7 +208,7 @@ Public Function UXGridCurrent() As Boolean
     If f.Recordset.EOF Then Exit Function
     f!PriorITA.ControlTipText = Nz(f!PriorPeriod, "") & " - " & Nz(f!PriorSource, "")
     f!PriorPromotion.ControlTipText = f!PriorITA.ControlTipText
-    reason = UXGridLockReason(f!ReportID, f!RevisionID)
+    reason = UXGridLockReason(f!ReportID, f!RevisionID, authoritative)
     For block = 33 To 39: f.Controls("Trait" & block).Locked = (Len(reason) > 0): Next
     f!PromotionRecommendation.Locked = (Len(reason) > 0)
     f!AssignmentRecommendationA.Locked = (Len(reason) > 0)
@@ -524,4 +524,13 @@ Public Function UXSortGrid(ByVal key As String) As Boolean
  UXSortGrid = True: Exit Function
 Failed:
  Forms!frmUXComparison!lblStatus.Caption = "Unable to sort: " & Err.Description & ". Pending edits were retained."
+End Function
+
+'Compare displayed numeric ITAs only; missing, NOB and invalid values stay neutral.
+Public Function UXITAChange(ByVal current As Variant, ByVal prior As Variant) As Long
+ If IsNull(current) Or IsNull(prior) Then Exit Function
+ If Not IsNumeric(current) Or Not IsNumeric(prior) Then Exit Function
+ If CDbl(current) < 1 Or CDbl(current) > 5 Or CDbl(prior) < 1 Or CDbl(prior) > 5 Then Exit Function
+ If CDbl(current) > CDbl(prior) Then UXITAChange = 1
+ If CDbl(current) < CDbl(prior) Then UXITAChange = -1
 End Function

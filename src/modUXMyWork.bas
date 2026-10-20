@@ -37,14 +37,7 @@ Public Function UXWorkVisible(ByVal kind As String, ByVal id As Long, ByVal pid 
             ElseIf r!RunState = "Accepted" Then
                 UXWorkVisible = Nz(r!ApprovedBy, 0) = pid Or (r!RequestedBy = pid And Not RouteIsCurrent(id))
             End If
-        Case "Comment"
-            If UXThreadOpen(id) Then
-                UXWorkVisible = DCount("*", "ReviewComment", "(CommentID=" & id & " OR ThreadID=" & id & ") AND AuthorProfileID=" & pid) > 0
-                If Not UXWorkVisible Then UXWorkVisible = DCount("*", "ReportRevision", "ReportID=" & report & " AND AuthorProfileID=" & pid) > 0
-                If Not UXWorkVisible Then UXWorkVisible = DCount("*", "ReviewTask", "ReportID=" & report & " AND TaskState='Pending' AND (AssignedTo=" & pid & " OR RequestedBy=" & pid & ")") > 0
-                If Not UXWorkVisible Then UXWorkVisible = DCount("*", "RouteRun", "ReportID=" & report & " AND RunState In ('Pending','Accepted') AND (RequestedBy=" & pid & " OR ApprovedBy=" & pid & ")") > 0
-                If Not UXWorkVisible Then UXWorkVisible = Nz(MajorScalar("SELECT Count(*) FROM RouteRunStep AS s INNER JOIN RouteRun AS u ON s.RunID=u.RunID WHERE u.ReportID=" & report & " AND u.RunState='Pending' AND s.StepOrdinal=u.CurrentStep AND s.AssigneeID=" & pid), 0) > 0
-            End If
+        Case "Comment": UXWorkVisible = False
     End Select
     r.Close
 End Function
@@ -103,7 +96,7 @@ Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As
 End Function
 Public Function UXWorkSQL(ByVal pid As Long, Optional ByVal history As Boolean = False, Optional ByVal prepared As Boolean = False) As String
     Dim kind As Variant, table As String, key As String, sql As String, branch As String
-    For Each kind In Array("Assignment", "Route", "Comment")
+    For Each kind In Array("Assignment", "Route")
         Select Case kind
             Case "Assignment": table = "ReviewTask": key = "TaskID"
             Case "Route": table = "RouteRun": key = "RunID"
@@ -180,40 +173,31 @@ Public Function UXWorkSelection() As Boolean
         text = text & vbCrLf & UXRouteLabel(id)
     End If
     r.Close: f!txtHistory = text
-    f!uxWorkStatus.Caption = "Assignment decisions use saved revisions. Routes and comments open their focused review screens."
+    f!uxWorkStatus.Caption = "Assignment decisions use saved revisions. Open selected work opens the report Review steps view. Shared communication is in the Report notes tab."
     UXWorkSelection = True
 End Function
 Public Function UXWorkOpen(Optional ByVal reportOnly As Boolean = False) As Boolean
-    Dim f As Access.Form, id As Long, report As Long, kind As String, decision As String, group As Long
-    On Error GoTo Failed
-    Set f = Forms!frmMyWork
-    If IsNull(f!lstWork) Then Exit Function
-    kind = f!lstWork.Column(1): id = f!lstWork.Column(2): report = f!lstWork.Column(3)
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        If Nz(Forms!frmEditor!txtReportID, 0) <> report Or reportOnly Then
-            If Not UXLeaveEditor() Then Exit Function
-        ElseIf EditorHasPending() Then
-            decision = UXAsk("Review")
-            If decision = "Save" Then
-                If Not UXSaveEditor() Then Exit Function
-            ElseIf decision <> "Discard" Then
-                Exit Function
-            End If
-        End If
-    End If
-    If reportOnly Or kind = "Assignment" Then
-        DoCmd.OpenForm "frmEditor", , , , , , CStr(report)
-    ElseIf kind = "Route" Then
-        group = Nz(DLookup("GroupID", "RouteRun", "RunID=" & id), 0)
-        If CurrentProject.AllForms("frmUXReview").IsLoaded Then DoCmd.Close acForm, "frmUXReview", acSaveNo
-        DoCmd.OpenForm "frmUXReview", , , , , , report & ":" & group & ":" & id
-    Else
-        Call OpenReviewComments(report)
-        Forms!frmReviewComments!lstThreads = id: Call ShowReviewThread
-    End If
-    UXWorkOpen = True: Exit Function
+ Dim f As Access.Form, id As Long, report As Long, kind As String, group As Long, message As Long
+ On Error GoTo Failed
+ Set f = Forms!frmMyWork
+ If IsNull(f!lstWork) Then Exit Function
+ kind = f!lstWork.Column(1): id = f!lstWork.Column(2): report = f!lstWork.Column(3)
+ If reportOnly Then
+  If Not UXOpenReportTool(report, "Notes") Then Exit Function
+  UXWorkOpen = UXSelectSection(0)
+ ElseIf kind = "Assignment" Then
+  UXWorkOpen = UXOpenReportTool(report, "Review", 0, 0, id)
+ ElseIf kind = "Route" Then
+  group = Nz(DLookup("GroupID", "RouteRun", "RunID=" & id), 0)
+  UXWorkOpen = UXOpenReportTool(report, "Review", group, id)
+ Else
+  MigrateReportMessages report
+  message = Nz(DLookup("MessageID", "ReportMessage", "LegacyCommentID=" & id), 0)
+  UXWorkOpen = UXOpenReportTool(report, "Notes", 0, 0, 0, message)
+ End If
+ Exit Function
 Failed:
-    Forms!frmMyWork!uxWorkStatus.Caption = Err.Description
+ Forms!frmMyWork!uxWorkStatus.Caption = Err.Description
 End Function
 Public Function UXWorkChanged() As Boolean
     If CurrentProject.AllForms("frmMyWork").IsLoaded Then Call UXLoadWorkQueue
@@ -221,13 +205,11 @@ Public Function UXWorkChanged() As Boolean
     UXWorkChanged = True
 End Function
 Public Function UXWorkBack() As Boolean
-    If Not UXLeaveEditor() Then Exit Function
-    If CurrentProject.AllForms("frmMyWork").IsLoaded Then
-        Call UXLoadMyWork
-    Else
-        DoCmd.OpenForm "frmMyWork"
-    End If
-    UXWorkBack = True
+ If Not UXLeaveEditor() Then Exit Function
+ DoCmd.OpenForm "frmMyWork"
+ UXLoadMyWork
+ Forms!frmMyWork.SetFocus
+ UXWorkBack = True
 End Function
 Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal height As Long = 0) As Boolean
     Dim f As Access.Form, size As Long, parts As Variant, part As Variant, columns As String

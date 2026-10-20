@@ -27,10 +27,14 @@ try{
  foreach($v in @($fixtures.Keys|Sort-Object)){
   $source=$fixtures[$v];$hash=(Get-FileHash -LiteralPath $source).Hash
   $target=OpenTarget ('schema-'+$v)
-  if($v -eq 25){
+  if($v -eq 26){
    if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$source+'")')){throw 'UI preview failed'}
    if(-not $app.Eval('UXApplySwiftWorkspace()')){throw 'UI apply failed'}
-   $result=$app.Forms.Item('frmUXWorkspaceImport').Controls('lblStatus').Caption
+   $result=$app.Eval('Forms!frmUXWorkspaceImport!lblStatus.Caption')
+   $log=$app.Eval('Forms!frmUXWorkspaceImport!txtProgress.Value')
+   $log|Set-Content (Join-Path $folder 'ui-progress.log')
+   foreach($phase in @('Import started','Copying Report','records copied','Verifying all fields','records checked','Import committed successfully')){if($log -notlike ('*'+$phase+'*')){throw ('Progress missing '+$phase)}}
+   if($app.Eval('UXWorkspaceImportBusy()') -or -not $app.Eval('Forms!frmUXWorkspaceImport!cmdClose.Enabled') -or $app.Eval('Forms!frmUXWorkspaceImport!cmdApply.Enabled')){throw 'Success UI state failed'}
   }else{$result=CallImport $source}
   if($result -notlike 'PASS:*'){throw $result}
   $count=$app.Eval('DCount("*","Report")')
@@ -50,6 +54,11 @@ try{
   $db.Execute('DROP TABLE Report',128)
  }finally{$db.Close()}
  $rejected=$false
+ if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$bad+'")')){throw 'Failure preview failed'}
+ if($app.Eval('UXApplySwiftWorkspace()')){throw 'Broken source UI import succeeded'}
+ if($app.Eval('UXWorkspaceImportBusy()') -or -not $app.Eval('Forms!frmUXWorkspaceImport!cmdClose.Enabled') -or -not $app.Eval('Forms!frmUXWorkspaceImport!cmdApply.Enabled')){throw 'Failure UI state failed'}
+ if($app.Eval('Forms!frmUXWorkspaceImport!txtProgress.Value') -notlike '*Target changes rolled back*'){throw 'Failure log missing rollback'}
+ $app.DoCmd.Close(2,'frmUXWorkspaceImport',2)
  $rejected=(CallImport $bad) -like 'REJECTED:*'
  if(-not $rejected -or $app.Eval('DLookup("CommandName","Workspace")') -ne $bootstrap -or $app.Eval('DCount("*","ReportRevision")') -ne 0){throw 'Failed import did not restore bootstrap/empty data'}
  $stale=$false

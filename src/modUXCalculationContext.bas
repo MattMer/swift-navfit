@@ -51,16 +51,5 @@ Public Function UXGroupCalculationText(ByVal groupID As Long, Optional ByVal loa
 
 End Function
 Public Function UXEditorCalculationDetails() As Boolean
-    Dim text As String, id As Long, groupID As Long, values As Object, key As Variant
-    Set values = CreateObject("Scripting.Dictionary")
-    values.Add "ObservationStatus", UXSurfacePending("cboObservationStatus", Forms!frmEditor!cboObservationStatus.Value)
-    For Each key In TraitKeys()
-        values.Add CStr(key), UXSurfacePending(UXFieldControl(CStr(key)), Forms!frmEditor.Controls(UXFieldControl(CStr(key))).Value)
-    Next
-    id = Nz(Forms!frmEditor!txtReportID, 0)
-    text = "Current editor values (pending): " & UXTraitContext(values) & vbCrLf & vbCrLf & "Latest saved revision: " & UXTraitContext(SavedFields(id))
-    groupID = Nz(Forms!frmEditor!uxGroup, 0)
-    If groupID > 0 Then text = text & vbCrLf & vbCrLf & UXGroupCalculationText(groupID)
-    MsgBox text, vbInformation, "Calculation details"
-    UXEditorCalculationDetails = True
+ UXEditorCalculationDetails = UXToolsChoose("Calculations")
 End Function

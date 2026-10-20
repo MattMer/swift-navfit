@@ -28,3 +28,9 @@ __pycache__/
 .venv/
 .DS_Store
 Thumbs.db
+
+# Local one-time editing and measurement helpers; maintained builders live in scripts/.
+/implement_demo_groups.py
+/implement_page_switch.py
+/implement_width.py
+/measure_page_stats.py

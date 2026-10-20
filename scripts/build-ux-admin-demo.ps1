@@ -11,6 +11,7 @@ try {
  foreach($expression in @('SeedUXDemo()','SeedDirectoryDemoHistory()')){
   $result=$app.Eval($expression);Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
  }
+ [void]$app.Eval('MigrateLegacyReportNotes()');[void]$app.Eval('MigrateReportMessages()')
  if(-not $app.Eval('EnsureStarterSnippets()')){throw 'Snippet seeding failed'}
  foreach($module in @('UXDemoSeed','DirectoryDemoSeed')){$app.DoCmd.DeleteObject(5,$module)}
  # Seed fixture simulates a crash; restore the saved native close handler afterwards.

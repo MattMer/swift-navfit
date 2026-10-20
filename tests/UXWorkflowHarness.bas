@@ -100,14 +100,14 @@ Public Function TestUXWorkflows() As String
     revision = CurrentRevision(otherID): nextDecision = "Discard"
     Check UXEditorReview("Review"), "Report review did not open"
     Check EditorHasPending() And CurrentRevision(otherID) = revision, "Use saved version discarded or saved pending edits"
-    Set f = Forms!frmUXReview
+    Set f = UXReviewForm()
     Check CLng(f!txtReportID) = otherID, "Wrong review report"
     Check f!cboRun.ListCount = 1 And CLng(f!cboRun.Column(0, 0)) = otherRoute, "Unrelated route exposed"
     Check InStr(f!lblHeading.Caption, "Second member") > 0, "Review context misleading"
     Check InStr(f!lblSaved.Caption, "saved revision 1") > 0, "Review shows internal revision ID instead of report revision number"
     Check InStr(f!lblSaved.Caption, "2030") = 0 And InStr(f!lblSaved.Caption, "2026") > 0, "Saved-version header showed pending period"
     Check Nz(f!txtGroupID, 0) = 0, "Report review retained unrelated group context"
-    DoCmd.Close acForm, "frmUXReview", acSaveNo
+    Check UXSelectSection(0), "Return from embedded review failed"
     Check UXLeaveEditor("Discard"), "Review editor cleanup failed"
     Forms!frmUXGroups!lstGroups = groupID: Check UXOpenGroup(), "Return to group failed"
     Check CurrentProject.AllForms("frmUXComparison").IsLoaded, "Group members not restored"

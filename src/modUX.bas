@@ -87,6 +87,7 @@ Public Function UXPrepareEditorClose(Optional ByVal decision As String = "") As 
     If editorCloseBusy Then Exit Function
     On Error GoTo Failed
     editorCloseBusy = True
+    If Not UXToolsCheckpoint(True) Then GoTo Finished
     UXFlushSurface
     If EditorHasPending() Then
         If Len(decision) = 0 Then decision = "Save"
@@ -118,6 +119,7 @@ Public Function UXLeaveEditor(Optional ByVal decision As String = "") As Boolean
     If Not UXPrepareEditorClose(decision) Then Exit Function
     On Error GoTo Finished
     editorCloseAuthorized = True
+    If CurrentProject.AllForms("frmUXValidation").IsLoaded Then DoCmd.Close acForm, "frmUXValidation", acSaveNo
     DoCmd.Close acForm, "frmEditor", acSaveNo
     UXLeaveEditor = True
 Finished:
@@ -147,7 +149,9 @@ Public Function UXNavigate(ByVal target As String) As Boolean
     End If
     If Not RSLeaveSeniorEditor() Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
+    If Not UXLeaveGroup() Then Exit Function
     DoCmd.OpenForm target
+    Forms(target).SetFocus
     UXLoadContext
     UXNavigate = True: Exit Function
 Failed:
@@ -328,6 +332,8 @@ Public Function UXOpenGroup(Optional ByVal prepareOnly As Boolean = False) As Bo
     On Error GoTo Failed
     groupContext = Nz(Forms!frmUXGroups!lstGroups, 0)
     If groupContext = 0 Then MsgBox "Choose a summary group.", vbInformation: Exit Function
+    If Not UXLeaveEditor() Then Exit Function
+    If Not UXLeaveGroup() Then Exit Function
     If Not prepareOnly And DCount("*", "GroupMember", "GroupID=" & groupContext) > 0 Then
         DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & groupContext
         UXGroupTabState "frmUXComparison", 0
@@ -522,20 +528,7 @@ Failed:
 End Function
 ' Resolve whether review should use saved or pending values before opening saved-revision review.
 Public Function UXEditorReview(ByVal mode As String) As Boolean
-    Dim decision As String, f As Access.Form, i As Long, id As Long
-    If EditorHasPending() Then
-        decision = UXAsk("Review")
-        If decision = "Save" Then
-            If Not UXSaveEditor() Then Exit Function
-        ElseIf decision <> "Discard" Then
-            Exit Function
-        End If
-    End If
-    id = Nz(Forms!frmEditor!txtReportID, 0)
-    If id = 0 Then MsgBox "Save this new report before starting saved-revision review.": Exit Function
-    If CurrentProject.AllForms("frmUXReview").IsLoaded Then DoCmd.Close acForm, "frmUXReview", acSaveNo
-    DoCmd.OpenForm "frmUXReview", , , , , , CStr(id)
-    UXEditorReview = True
+ UXEditorReview = UXToolsChoose("Review")
 End Function
 ' Seed the contextual shared-block/default editor from saved values, tracking mixed
 ' fields/defaults before edits are confirmed and applied recursively.

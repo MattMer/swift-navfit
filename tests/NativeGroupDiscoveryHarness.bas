@@ -20,7 +20,8 @@ Public Function TestNativeGroupDiscovery(ByVal source As String) As String
     ConfigureWorkspace "SYNTHETIC MISSING SOURCE RATE", "Importer"
     Check UXChooseNativeGroupFile(source), "Choose source"
     Check Forms!frmUXNativeGroups!lstGroups.ListCount = 3, "Missing rates hid source groups"
-    For i = 0 To 2: Forms!frmUXNativeGroups!lstGroups.Selected(i) = True: Next
+    Check UXSelectAllNativeGroups(True), "Select all failed"
+    For i = 0 To 2: Check Forms!frmUXNativeGroups!lstGroups.Selected(i), "Select all omitted group": Next
     Forms!frmUXNativeGroups!cboImportGrade = "E5"
     Check Not UXAssignNativeGroupGrade(), "Mixed incompatible selection accepted"
     Set groups = NAVFITReviewGroupChoices(0, , True)
@@ -42,10 +43,17 @@ Public Function TestNativeGroupDiscovery(ByVal source As String) As String
         Check Not Forms!frmUXNativeGroups!cmdApply.Enabled, "Assignment retained stale Apply"
         Check CStr(Forms!frmUXNativeGroups!lstGroups.Column(3, i)) = grade, "Assigned grade not visible"
     Next
-    For i = 0 To 2: Forms!frmUXNativeGroups!lstGroups.Selected(i) = True: Next
-    Forms!frmUXNativeGroups!cboCentury = 2000
+    Check UXSelectAllNativeGroups(True), "Select all failed"
+    For i = 0 To 2: Check Forms!frmUXNativeGroups!lstGroups.Selected(i), "Select all omitted group": Next
     Check UXPreviewNativeGroups(), "Preview failed: " & Forms!frmUXNativeGroups!lblStatus.Caption
     Check InStr(Forms!frmUXNativeGroups!txtPreview, "remain unchanged") > 0, "Missing source rate warning absent"
+    Check UXSelectAllNativeGroups(False), "Clear selection failed"
+    Check Not Forms!frmUXNativeGroups!cmdApply.Enabled, "Clear retained stale Apply"
+    Check Not UXApplyNativeGroups(), "Cleared preview could still import"
+    For i = 0 To 2: Check Not Forms!frmUXNativeGroups!lstGroups.Selected(i), "Clear omitted group": Next
+    Check UXSelectAllNativeGroups(True), "Reselect all failed"
+    Check Not Forms!frmUXNativeGroups!cmdApply.Enabled, "Select all retained stale Apply"
+    Check UXPreviewNativeGroups(), "Reselected preview failed"
     Check UXApplyNativeGroups(), "Apply failed: " & Forms!frmUXNativeGroups!lblStatus.Caption
     Check DCount("*", "SummaryGroup") = 3 And DCount("*", "Report") = 3 And DCount("*", "GroupMember") = 3, "Imported group/member counts"
     Check DCount("*", "ImportReceipt") = 3, "Provenance missing"

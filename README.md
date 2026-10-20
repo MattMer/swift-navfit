@@ -2,6 +2,10 @@
 
 **Draft, review, and manage Navy evaluations in one local workspace.**
 
+[User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) | [Read the guide online](docs/Swift_NAVFIT_User_Guide.md)
+
+The 22-page guide covers setup, drafting, notes and replies, validation, summary groups, RSCA, local review, exchange, recovery, and upgrades. It follows the procedure-based organization of the eNavFit guide and describes Swift's current local workflow.
+
 Swift NAVFIT is a Windows application built in Microsoft Access for EVALs, CHIEFEVALs, and FITREPs. It brings report drafting, summary groups, member history, local review, revision tracking, and recovery into one `.accdb` file.
 
 The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and manual tracking that surround the report-writing process. Swift works alongside NAVFIT98A through supported import/export workflows; NAVFIT98A remains the destination for final native validation and printing.
@@ -18,9 +22,9 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 
 ### Coordinate review without a separate tracker
 
-- **My Work:** one queue for assigned reviews, current route steps, ready local approvals, and unresolved comments, with status and next actions.
+- **My Work:** one queue for assigned reviews, current route steps, and ready local approvals, with status and next actions. A separate Report notes tab opens shared conversations.
 - **Ordered review routes:** assign contributors to steps, accept or return work with decision notes, and retain earlier decisions when a stale route is restarted.
-- **Revision-linked comments:** reply, resolve, and reopen discussion threads tied to saved report values.
+- **Shared report conversations:** notes and replies live inside the report workspace, independent of revisions and approval. Private unfinished drafts can be saved and resumed; conversations need no resolve/reopen workflow.
 - **Stale-review protection:** later report changes invalidate earlier review eligibility instead of silently carrying approval forward.
 - **Local attribution:** contributor names, decision notes, and timestamps make the local review trail readable.
 
@@ -58,11 +62,11 @@ NAVFIT98A already provides report editing, folder/default management, validation
 | Saved-change history | - | Contributor-attributed revisions, before/after values, comparison, and restore as a new revision. |
 | Pending-edit checkpoints | - | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
 | Review tracking | - | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
-| Discussion history | - | Comments, replies, resolve/reopen history, and direct navigation from My Work. |
+| Discussion history | - | Unified report notes and replies, private unfinished drafts, and direct navigation from My Work; independent of approval. |
 | Member reuse and history | - | A command directory, rank/paygrade filters, batch report creation, and separate prior evaluations. |
 | Reporting-senior averages | Summary/average calculations are part of NAVFIT98A. | Reusable senior records and dated RSCA baselines, with exact-versus-estimated provenance and deliberate group baseline selection. |
 | Shared group values | Folder defaults and common report values are supported. | Explicit affected-report scope, confirmation of replacements, and reopening of affected local approvals. |
-| Validation | Native individual-report and folder validation. | Live checks of pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
+| Validation | Native individual-report and folder validation. | Embedded checks plus a modeless Validation Issues popout, pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
 | Three-way returned-report reconciliation | - | A retained export baseline and three-way conflict preview for supported single-report returns. |
 | Final native printing | Built-in report, folder, and summary printing. | Export to NAVFIT98A; Swift does not yet provide an equivalent native print engine or verified final printed fit. |
 
@@ -85,7 +89,7 @@ Optional source links, such as NavyWriter, open an external website only when se
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** The repository currently develops `0.25.0-dev` / schema 25. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
+**Source and downloads can differ.** The repository currently develops `0.26.0-dev` / schema 26. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
 
 The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 
@@ -110,12 +114,15 @@ See [contributing](CONTRIBUTING.md) for prerequisites and checks. New releases m
 
 ## Guides and project status
 
+- [Swift NAVFIT User Guide - PDF](docs/Swift_NAVFIT_User_Guide.pdf) and [editable online edition](docs/Swift_NAVFIT_User_Guide.md)
+
 - [Recent development and verification](planning/RECENT_DEVELOPMENT.md)
 - [Current state](planning/CURRENT_STATE.md) and [roadmap](planning/ROADMAP.md)
 - [Summary groups, review routes, and workflow foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md)
 - [Workspace guide](planning/UX_WORKSPACE_GUIDE.md)
 - [Review assignments and My Work](planning/REVIEW_ROUTING_GUIDE.md)
-- [Review comments](planning/REVIEW_COMMENTS_GUIDE.md)
+- [Report tools, unified notes, and verification](planning/REPORT_TOOLS_R123_2026-10-20.md)
+- [Historical review-comment service notes](planning/REVIEW_COMMENTS_GUIDE.md)
 - [Reporting seniors and averages](planning/REPORTING_SENIOR_GUIDE.md)
 - [Workspace transfer and fixed report pages](planning/WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md)
 - [Import provenance](planning/PROVENANCE_GUIDE.md)

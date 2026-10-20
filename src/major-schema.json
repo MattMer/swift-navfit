@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 25,
+  "SchemaVersion": 26,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -28,7 +28,8 @@
     "CommandMember",
     "MemberReport",
     "PriorEvaluation",
-    "PriorEvaluationTrait"
+    "PriorEvaluationTrait",
+    "ReportMessage"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",

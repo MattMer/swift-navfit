@@ -96,7 +96,7 @@ Public Function UXFeedbackCloseEditor() As Boolean
     If Not UXLeaveEditor() Then Exit Function
     If id = gridReport And CurrentProject.AllForms("frmUXComparison").IsLoaded Then
         Forms!frmUXComparison.SetFocus
-        UXGridCurrent
+        UXGridCurrent True
     End If
     gridReport = 0: UXFeedbackCloseEditor = True
 End Function

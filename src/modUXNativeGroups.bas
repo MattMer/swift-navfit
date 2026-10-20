@@ -135,3 +135,21 @@ Public Function UXCloseNativeGroups() As Boolean
     CloseReviewFile: DoCmd.Close acForm, "frmUXNativeGroups", acSaveNo
     UXCloseNativeGroups = OpenScreen("frmUXImportChoose")
 End Function
+
+Public Function UXSelectAllNativeGroups(ByVal selectAll As Boolean) As Boolean
+ Dim f As Access.Form, i As Long, firstRow As Long, selectedCount As Long
+ On Error GoTo Failed
+ Set f = Forms!frmUXNativeGroups
+ UXNativeGroupSelectionChanged
+ firstRow = IIf(f!lstGroups.ColumnHeads, 1, 0)
+ For i = firstRow To f!lstGroups.ListCount - 1
+  f!lstGroups.Selected(i) = selectAll
+  If selectAll Then selectedCount = selectedCount + 1
+ Next
+ f!txtPreview = Null
+ f!lblStatus.Caption = selectedCount & " groups selected. Preview the selection before importing. Unresolved paygrades still need assignment."
+ UXSelectAllNativeGroups = True
+ Exit Function
+Failed:
+ Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
+End Function

@@ -100,9 +100,9 @@ Public Function SeedUXDemo() As String
     If Not CheckpointEditor() Then Err.Raise vbObjectError + 5101, , "Demo recovery checkpoint could not be created."
     ' Intentional crash fixture: retain pending checkpoint without a normal exit decision.
     Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
-    SeedValidationGroups senior
+    SeedValidationGroups senior, seniorID
     db.Execute "UPDATE AppMetadata SET CompatibilityStatus='Synthetic UX demo - NAVFIT exchange remains unverified'", dbFailOnError
-    SeedUXDemo = "PASS: 13 synthetic reports, 5 groups (including zero-report-issue and three-report-issue examples), 2 contributors, 1 reporting senior, 3 RSCA baselines, review/approval/archive/NOB/recovery examples."
+    SeedUXDemo = "PASS: 13 synthetic reports, 5 groups (including zero-report-issue and three-report-issue examples), 2 contributors, 1 reporting senior, 4 RSCA baselines, review/approval/archive/NOB/recovery examples."
 End Function
 
 Private Function DemoValidationReport(ByVal member As String, ByVal number As Long, ByVal senior As Object) As Long
@@ -128,14 +128,17 @@ Private Function DemoValidationReport(ByVal member As String, ByVal number As Lo
  End If
  DemoValidationReport = id
 End Function
-Private Sub SeedValidationGroups(ByVal senior As Object)
- Dim clean As Long, few As Long, a As Long, b As Long, c As Long, d As Long, changes As Object, findings As Collection
+Private Sub SeedValidationGroups(ByVal senior As Object, ByVal seniorID As Long)
+ Dim baseline As Long, clean As Long, few As Long, a As Long, b As Long, c As Long, d As Long, changes As Object, findings As Collection
  clean = CreateSummaryGroup("DEMO - Clean reports (0 report issues)", "EVAL", "E6")
  few = CreateSummaryGroup("DEMO - Practice corrections (3 report issues)", "EVAL", "E6")
  a = DemoValidationReport("Morgan Ellis", 21, senior): b = DemoValidationReport("Taylor Hayes", 22, senior)
  c = DemoValidationReport("Cameron Avery", 23, senior): d = DemoValidationReport("Reese Parker", 24, senior)
  AddGroupMember clean, a, "E6": AddGroupMember clean, b, "E6"
  AddGroupMember few, c, "E6": AddGroupMember few, d, "E6"
+ baseline = RSAddBaseline(seniorID, "E6", #12/31/2025#, 4.2, 100, 420, "Synthetic historical totals; both E6 demo groups excluded")
+ RSSetGroupBaseline clean, seniorID, baseline, True
+ RSSetGroupBaseline few, seniorID, baseline, True
  Set changes = CreateObject("Scripting.Dictionary")
  changes.Add "CommandEmployment", Null: changes.Add "DutyDescription", Null: changes.Add "ReadinessSummary", Null
  CommitSavedFields c, CurrentRevision(c), changes, "Synthetic practice: three missing required blocks"

@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-19",
+  "status": "Local development candidate; not a published release",
+  "access": "16.0 build 20430",
+  "artifacts": {
+    "build/rsca-review-v6.accdb": "775D4FE96910A6C40260EDE73F1243D4F2AE51A0E4444B77F8A1793D609E1350",
+    "build/rsca-review-demo-v6.accdb": "AD3879E4827F7BD538BBB256B9BD84DFD6B49B6610EE90DDCD92A06FD4D27010",
+    "build/wide-pages.accdb": "1F1A1C18E6805627D247322623A80601C56D87AEAF518AB149551E32C0C170C7",
+    "output/ux/Swift_NAVFIT_UI_Blank_2026-10-17-r116.accdb": "6ACE66A9C2883E1BE6CBCFBEC584249B254A61620D998486468E205BCECBEFE2"
+  },
+  "checks": {
+    "test-rs-completion": 285,
+    "test-page-switch": 29,
+    "test-compat-pages": 264,
+    "test-ux-workflows": 40,
+    "forced-shutdown": "PASS valid saves and invalid raw recovery",
+    "test-ux-demo": 39,
+    "test-rs-directory": 39,
+    "test-ux-group-reads": 204,
+    "smoke-test": 48
+  },
+  "visual": [
+    "Clean E6 group displays PSG RSCA 4.18 and group trait average 4.00",
+    "Draft notes shows contributor notes and checkpoint controls",
+    "Review shows Review routes, Review comments, Validation issues, Calculation details; notes absent"
+  ],
+  "preservation": "Incremental builder checked template hash unchanged. Original populated r116 hash remains 6ACE66A9C2883E1BE6CBCFBEC584249B254A61620D998486468E205BCECBEFE2. Native fixtures use disposable copies.",
+  "limits": [
+    "New independent BOL observations require reconciliation with prior local postings; no automatic merge",
+    "Full release migration matrix not run",
+    "Official print, submission and physical accessibility acceptance not established by these checks"
+  ]
+}

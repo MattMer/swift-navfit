@@ -60,18 +60,18 @@ Public Function TestUXMyWork() As String
     Check UXWorkVisible("Assignment", task, author), "Assignment missing"
     Check UXWorkVisible("Route", run, author), "Current step missing"
     Check Not UXWorkVisible("Route", run, other), "Future reviewer sees an actionable step"
-    Check UXWorkVisible("Comment", thread, author), "Author thread missing"
+    Check Not UXWorkVisible("Comment", thread, author), "Notes must not become approval tasks"
     Check Not UXWorkVisible("Comment", thread, other), "Unrelated future reviewer thread included"
     Call CheckCount
-    Check UXWorkCount() = 3, "Replies duplicated or inbox item missing"
+    Check UXWorkCount() = 2, "Replies duplicated or inbox item missing"
     SwitchContributor other
     reply = AddReviewComment(id, oldRevision, "Participation through reply only", thread)
     SwitchContributor author
-    Check UXWorkVisible("Comment", thread, other), "Reply author excluded from thread"
+    Check Not UXWorkVisible("Comment", thread, other), "Replies must stay out of approval queue"
     Check Not UXWorkVisible("Comment", thread, unrelated), "Unrelated contributor included"
     Call CheckCount
     DoCmd.OpenForm "frmMyWork": Set f = Forms!frmMyWork
-    Check f!lstWork.ListCount = 4, "Unified query/headings failed"
+    Check f!lstWork.ListCount = 3, "Unified query/headings failed"
     f!lstWork = "Assignment:" & task: Call UXWorkSelection
     Check f!cmdAccept.Enabled And f!cmdReturn.Enabled And f!cmdCancel.Enabled, "Current assignment actions"
     Check InStr(f!txtHistory, "Saved revision 1") > 0 And InStr(f!txtHistory, "revision ID") = 0, "Raw revision ID exposed"
@@ -82,36 +82,29 @@ Public Function TestUXMyWork() As String
     Check Not f!cmdAccept.Enabled And Not f!cmdReturn.Enabled And f!cmdCancel.Enabled, "Stale decisions enabled"
     Check InStr(UXWorkText("Route", run, "Action"), "restart") > 0, "Stale route next action"
     Check InStr(UXWorkText("Comment", thread, "Status"), "earlier revision") > 0, "Earlier thread misrepresented"
-    f!lstWork = "Comment:" & thread: Call UXWorkSelection
-    Check UXWorkOpen(), "Comment navigation failed"
-    Check Forms!frmReviewComments!lstThreads = thread, "Wrong comment selected"
-    Check InStr(Forms!frmReviewComments!txtHistory, "saved revision 1") > 0, "Historical baseline lost"
-    Call SetReviewThreadState(thread, True)
-    Call CheckCount
-    Check Not UXThreadOpen(thread) And Not UXWorkVisible("Comment", thread, author), "Resolved thread remains pending"
-    Call SetReviewThreadState(thread, False)
-    Call CheckCount
-    Check UXThreadOpen(thread) And UXWorkVisible("Comment", thread, author), "Reopened thread missing"
-    DoCmd.Close acForm, "frmReviewComments", acSaveNo
+    MigrateReportMessages id
+    Check UXOpenReportTool(id, "Notes"), "Notes navigation failed"
+    Check UXToolsForm()!lstMessages.ListCount > 1, "Historical conversation missing"
+    Check UXWorkBack(), "Notes return failed"
     run = RestartStaleRoute(run, CurrentRevision(id), "")
     Call DecideRouteStep(run, "Accepted", "First step complete")
     Check Not UXWorkVisible("Route", run, author) And UXWorkVisible("Route", run, other), "Ordered step did not advance"
     Call SwitchContributor(other): Call LoadMyWork
     f!lstWork = "Route:" & run: Call UXWorkSelection
     Check Not f!cmdAccept.Enabled And UXWorkOpen(), "Route should use focused decisions"
-    Check Forms!frmUXReview!cboRun = run And Forms!frmUXReview!cmdAccept.Enabled, "Wrong route or reviewer opened"
-    DoCmd.Close acForm, "frmUXReview", acSaveNo
+    Check UXReviewForm()!cboRun = run And UXReviewForm()!cmdAccept.Enabled, "Wrong route or reviewer opened"
+    Check UXWorkBack(), "Review return failed"
     Call DecideRouteStep(run, "Accepted", "Final step complete")
     Check UXWorkVisible("Route", run, other) And InStr(UXWorkText("Route", run, "Action"), "local approval") > 0, "Local approval work missing"
     Call ApproveSavedRoute(run, "Synthetic approval")
     Check Not UXWorkVisible("Route", run, other), "Approved route remains actionable"
-    Check UXWorkVisible("Comment", thread, other), "Reply participation lost after route approval"
+    Check Not UXWorkVisible("Comment", thread, other), "Approved report notes became approval tasks"
     SetReviewThreadState thread, True
     Call CheckCount
     Call LoadMyWork
     Check f!lstWork.ListCount <= 1 And InStr(f!uxWorkStatus.Caption, "No work") > 0, "Empty inbox guidance"
     f!chkAll = True: Call LoadMyWork
-    Check f!lstWork.ListCount >= 4, "Completed history unavailable"
+    Check f!lstWork.ListCount >= 3, "Completed history unavailable"
     f!lstWork = "Assignment:" & task: Call UXWorkSelection
     Check Not f!cmdAccept.Enabled, "Local approval assignment decision enabled"
     For Each width In Array(9000, 14000, 20000)

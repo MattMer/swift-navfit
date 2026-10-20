@@ -7,10 +7,13 @@ Public Function UXRouteLabel(ByVal runID As Long) As String
     If Not r.EOF Then UXRouteLabel = UXMemberLabel(r!ReportID) & " | " & Nz(DLookup("Title", "RouteTemplate", "TemplateID=" & r!TemplateID), "Review route") & " | Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & " | " & r!RunState & " | " & Format$(r!RequestedAt, "yyyy-mm-dd hh:nn")
     r.Close
 End Function
-Public Function UXLoadReview() As Boolean
+Public Function UXLoadReview(Optional ByVal reportID As Long = 0, Optional ByVal groupID As Long = -1, Optional ByVal runID As Long = 0) As Boolean
     Dim f As Access.Form, id As Long, r As DAO.Recordset, args As Variant
-    Set f = Forms!frmUXReview: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
-    If InStr(Nz(f.OpenArgs, ""), ":") > 0 Then f!txtGroupID = Val(Split(f.OpenArgs, ":")(1)) Else f!txtGroupID = 0
+    Set f = UXReviewForm()
+    If reportID > 0 Then f!txtReportID = reportID
+    id = Nz(f!txtReportID, Nz(Forms!frmEditor!txtReportID, 0))
+    If groupID >= 0 Then f!txtGroupID = groupID
+    If id = 0 Then Exit Function
     Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     If r.EOF Then r.Close: Exit Function
     f!lblHeading.Caption = "Review - " & UXMemberLabel(id)
@@ -19,17 +22,16 @@ Public Function UXLoadReview() As Boolean
     f!cboTemplate.RowSource = "SELECT TemplateID,Title FROM RouteTemplate WHERE IsArchived=False ORDER BY Title"
     f!cboRun.RowSource = "SELECT RunID,UXRouteLabel(RunID) AS Description FROM RouteRun WHERE ReportID=" & id & " ORDER BY RunID DESC"
     f!cboRun.Requery
-    args = Split(Nz(f.OpenArgs, "0"), ":")
-    If UBound(args) >= 2 And IsNull(f!cboRun) Then
-        If DCount("*", "RouteRun", "RunID=" & Val(args(2)) & " AND ReportID=" & id) > 0 Then f!cboRun = Val(args(2))
+    If runID > 0 Then
+        If DCount("*", "RouteRun", "RunID=" & runID & " AND ReportID=" & id) > 0 Then f!cboRun = runID
     End If
     If IsNull(f!cboRun) And f!cboRun.ListCount > 0 Then f!cboRun = f!cboRun.ItemData(0)
-    If f.Visible Then Call UXReviewLayout
+
     UXLoadReview = UXReviewStatus()
 End Function
 Public Function UXReviewStatus() As Boolean
     Dim f As Access.Form, id As Long, run As Long, r As DAO.Recordset, state As String, current As Boolean, author As Long, assignee As Long, editable As Boolean, message As String, primary As String, nextAction As String, action As Variant
-    Set f = Forms!frmUXReview: id = Nz(f!txtReportID, 0): run = Nz(f!cboRun, 0): author = MajorAuthor()
+    Set f = UXReviewForm(): id = Nz(f!txtReportID, 0): run = Nz(f!cboRun, 0): author = MajorAuthor()
     editable = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Draft"
     f!cmdStart.Enabled = editable And DCount("*", "RouteRun", "ReportID=" & id & " AND RunState='Pending'") = 0
     If Nz(f!txtGroupID, 0) > 0 Then f!cmdStart.Enabled = f!cmdStart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & f!txtGroupID), True)
@@ -112,7 +114,7 @@ Public Function UXReviewStatus() As Boolean
 End Function
 Public Function UXReviewStep() As Boolean
     Dim f As Access.Form, r As DAO.Recordset
-    Set f = Forms!frmUXReview
+    Set f = UXReviewForm()
     If IsNull(f!lstSteps) Then Exit Function
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RouteRunStep WHERE RunID=" & Nz(f!cboRun, 0) & " AND StepOrdinal=" & CLng(f!lstSteps), dbOpenSnapshot)
     If Not r.EOF Then f!txtStep = "Reviewer: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & r!AssigneeID), "Unknown") & vbCrLf & "Instructions: " & Nz(r!Instructions, "None") & vbCrLf & "Decision: " & r!StepState & vbCrLf & Nz(r!DecisionNote, "No decision note") & vbCrLf & Nz(r!DecisionAt, "")
@@ -153,7 +155,9 @@ End Function
 Public Function UXReviewAction(ByVal action As String) As Boolean
     Dim f As Access.Form, run As Long, id As Long, group As Long, stamp As String, expected As Long
     On Error GoTo Failed
-    Set f = Forms!frmUXReview: run = Nz(f!cboRun, 0): id = Nz(f!txtReportID, 0)
+    UXFlushSurface
+    If EditorHasPending() And action <> "Cancel" Then Err.Raise 5, , "Save or undo pending report changes before recording a review action."
+    Set f = UXReviewForm(): run = Nz(f!cboRun, 0): id = Nz(f!txtReportID, 0)
     Select Case action
         Case "Start": f!cboRun = StartRoute(id, Nz(f!cboTemplate, 0), Nz(f!txtGroupID, 0))
         Case "Restart"
@@ -168,13 +172,13 @@ Public Function UXReviewAction(ByVal action As String) As Boolean
         Case Else: Err.Raise vbObjectError + 5903, , "Unknown review action."
     End Select
     Call UXRefreshEditorWorkflow(CLng(f!txtReportID))
-    If f.Visible Then f!cmdBack.SetFocus
+    Forms!frmEditor!cmdClose.SetFocus
     f!txtNote = Null
     Call UXLoadReview
     Call UXWorkChanged
     UXReviewAction = True: Exit Function
 Failed:
-    If CurrentProject.AllForms("frmUXReview").IsLoaded Then Forms!frmUXReview!lblStatus.Caption = Err.Description
+    UXReviewForm()!lblStatus.Caption = Err.Description
 End Function
 Public Function UXGroupReview() As Boolean
     Dim i As Long, id As Long, f As Access.Form
@@ -186,7 +190,5 @@ Public Function UXGroupReview() As Boolean
         End If
     Next
     If id = 0 Then f!lblStatus.Caption = "Select one member to review.": Exit Function
-    If CurrentProject.AllForms("frmUXReview").IsLoaded Then DoCmd.Close acForm, "frmUXReview", acSaveNo
-    DoCmd.OpenForm "frmUXReview", , , , , , CStr(id) & ":" & Nz(f!cboGroup, 0)
-    UXGroupReview = True
+    UXGroupReview = UXOpenReportTool(id, "Review", Nz(f!cboGroup, 0))
 End Function

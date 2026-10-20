@@ -80,7 +80,11 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
    Case acRectangle
     If key = "uxrail" Then UXVisualSet c, "BackStyle", 1: UXVisualSet c, "BackColor", UXColor("Rail"): UXVisualSet c, "BorderColor", UXColor("Rail")
    Case acTextBox, acComboBox, acListBox
-    If f.CurrentView = 0 Or c.ControlType = acListBox Then UXVisualSet c, "BackColor", RGB(255, 255, 255): UXVisualSet c, "ForeColor", UXColor("Ink"): UXVisualSet c, "BorderColor", UXColor("Border")
+    If f.Name = "frmUXTraitRows" And (key = "priorita" Or key = "priorpromotion") Then
+     UXVisualSet c, "BackColor", UXColor("Neutral"): UXVisualSet c, "ForeColor", UXColor("Muted"): UXVisualSet c, "BorderColor", UXColor("Border")
+    ElseIf f.CurrentView = 0 Or c.ControlType = acListBox Then
+     UXVisualSet c, "BackColor", RGB(255, 255, 255): UXVisualSet c, "ForeColor", UXColor("Ink"): UXVisualSet c, "BorderColor", UXColor("Border")
+    End If
   End Select
  Next
  If f.Name = "frmEditor" Then

@@ -1,0 +1,381 @@
+{
+  "revision": "r118",
+  "date": "2026-10-19",
+  "artifacts": [
+    {
+      "kind": "Blank",
+      "path": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Blank_2026-10-19-r118.accdb",
+      "name": "Swift_NAVFIT_Blank_2026-10-19-r118.accdb",
+      "bytes": 15990784,
+      "sha256": "4D0ED41FBE937E6B0F89346C3AA9DFA8EC9FC7F061FFE9996027D3A3B4FB797C",
+      "drive_id": "1LoTrIZV0RGezpJCfT3rWeCV8xiwJe4kS",
+      "drive_url": "https://drive.google.com/file/d/1LoTrIZV0RGezpJCfT3rWeCV8xiwJe4kS/view?usp=drivesdk",
+      "verified_drive_parent": "14vylyonimhXhhJzaQhh0c51_UenHhzGg",
+      "drive_name_size_parent_verified": true
+    },
+    {
+      "kind": "Demo",
+      "path": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Demo_2026-10-19-r118.accdb",
+      "name": "Swift_NAVFIT_Demo_2026-10-19-r118.accdb",
+      "bytes": 15990784,
+      "sha256": "258CD57BDDA2586D565DDE58DCB93997729D823E288B11CD5EB77E26CC696FDA",
+      "drive_id": "1A4AHGXZiLg23f_kqQd2yZd_YXEKaBUAg",
+      "drive_url": "https://drive.google.com/file/d/1A4AHGXZiLg23f_kqQd2yZd_YXEKaBUAg/view?usp=drivesdk",
+      "verified_drive_parent": "14vylyonimhXhhJzaQhh0c51_UenHhzGg",
+      "drive_name_size_parent_verified": true
+    }
+  ],
+  "blank_user_data_empty": true,
+  "demo": {
+    "reports": 13,
+    "groups": 5,
+    "prior_evaluations": 12,
+    "synthetic_only": true
+  },
+  "native_checks": {
+    "prior_grid": 17,
+    "member_grid": 12,
+    "palette": 107,
+    "demo": 39,
+    "lifecycle": 40,
+    "forced_quit_and_recovery": "PASS",
+    "smoke": 48
+  },
+  "schema_matrix": {
+    "Rollback": true,
+    "ChangedSourceRejected": true,
+    "PopulatedTargetRejected": true,
+    "Fixtures": [
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.1.0.accdb",
+        "Schema": 1,
+        "Result": "PASS: all original rows and fields verified; schema 1 to 25",
+        "SourceSHA256": "3C2DD72F795CFAE177EF04301D609D91AFEDD3CB62F128A504122CF022D450F9",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-1.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.2.2-review.accdb",
+        "Schema": 2,
+        "Result": "PASS: all original rows and fields verified; schema 2 to 25",
+        "SourceSHA256": "EDBEBC22F6F5A488581322E504309BAA36B864650AA49542964C5E1D67DA8C48",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-2.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.3.0-official-narratives.accdb",
+        "Schema": 3,
+        "Result": "PASS: all original rows and fields verified; schema 3 to 25",
+        "SourceSHA256": "4A061659A28D27B4B1D64B783452D62109212C265852816B15645DEF5B3B9A10",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-3.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.4.1-revision-compare.accdb",
+        "Schema": 4,
+        "Result": "PASS: all original rows and fields verified; schema 4 to 25",
+        "SourceSHA256": "FBFF79FB1C65538D58E3136765241A325A6240CA98BC070D8E7F68323AF2CCE4",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-4.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.5.1-checklist.accdb",
+        "Schema": 5,
+        "Result": "PASS: all original rows and fields verified; schema 5 to 25",
+        "SourceSHA256": "FE922FBFD6F78C213E786185105104A9B31A626D3F4C12F8EAB1F3B258AB7254",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-5.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.6.1-provenance.accdb",
+        "Schema": 6,
+        "Result": "PASS: all original rows and fields verified; schema 6 to 25",
+        "SourceSHA256": "5138FA41FD7C799AE7FA905DAD9E676B7FC6586248023085406AF237E3D65FF7",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-6.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.7.0-review-comments.accdb",
+        "Schema": 7,
+        "Result": "PASS: all original rows and fields verified; schema 7 to 25",
+        "SourceSHA256": "7CA52F5565FB419CD1FC4E7CDF17D8F5264F6F2EB844DD99658CA674EA6D3A70",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-7.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.8.0-review-routing.accdb",
+        "Schema": 8,
+        "Result": "PASS: all original rows and fields verified; schema 8 to 25",
+        "SourceSHA256": "BE5980723A0CD2635B3717A664A6BC0583B7DD3A2337E948BACB72F7C6E0CA69",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-8.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.9.0-administration.accdb",
+        "Schema": 9,
+        "Result": "PASS: all original rows and fields verified; schema 9 to 25",
+        "SourceSHA256": "4AF1BD2C8D4E5255ECEF9B0D481B917CEB4C8A8A440B6B40F7E4CCA7367B41EB",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-9.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.11.0-trait-summary.accdb",
+        "Schema": 10,
+        "Result": "PASS: all original rows and fields verified; schema 10 to 25",
+        "SourceSHA256": "E8CD1AC0C0B1E2020371A8A57049D9017042715870A91F5F50C839C570A7678D",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-10.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.12.0-assessment.accdb",
+        "Schema": 11,
+        "Result": "PASS: all original rows and fields verified; schema 11 to 25",
+        "SourceSHA256": "75B1C351C8153AFF9303108ECEEA96D2454E7F7E6323CA7A03AD34D80BE48202",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-11.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.13.0-promotion-status.accdb",
+        "Schema": 12,
+        "Result": "PASS: all original rows and fields verified; schema 12 to 25",
+        "SourceSHA256": "AC8306DDCBEFEA975C6062A62B6A8DF175E5AF7049F8EE8D38C0837CCE86BA95",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-12.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.14.0-reporting-senior.accdb",
+        "Schema": 13,
+        "Result": "PASS: all original rows and fields verified; schema 13 to 25",
+        "SourceSHA256": "A8B71B2082525EC74905EF8CDED7F8CB949351009F066B33A568687D6C1D16F3",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-13.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.15.0-report-context.accdb",
+        "Schema": 14,
+        "Result": "PASS: all original rows and fields verified; schema 14 to 25",
+        "SourceSHA256": "F8715403D365EA38C71BECDD9D4B378791EED7170D6C18BB5E767C576135914B",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-14.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.16.0-member-details.accdb",
+        "Schema": 15,
+        "Result": "PASS: all original rows and fields verified; schema 15 to 25",
+        "SourceSHA256": "AA1B68D1A9FDC890EE294C4FC17F6486C1895ADFA53AD9207016FC2FDF0C03F5",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-15.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.17.0-service-details.accdb",
+        "Schema": 16,
+        "Result": "PASS: all original rows and fields verified; schema 16 to 25",
+        "SourceSHA256": "5B131BB48ED280170A02D5468828902076D7ED72D0C0E6C4FCA8F7088CC58057",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-16.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.18.0-decision-details.accdb",
+        "Schema": 17,
+        "Result": "PASS: all original rows and fields verified; schema 17 to 25",
+        "SourceSHA256": "CF964D41EC1D30A2A65F8EE9BDA1F513EEF49F68E467EFF1F52B0EA795F4E107",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-17.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.19.0-report-people.accdb",
+        "Schema": 18,
+        "Result": "PASS: all original rows and fields verified; schema 18 to 25",
+        "SourceSHA256": "0E3F26E927EEB2081CDCE4A53D61CC926E83C12BEAF717E61FDE958E8CF37680",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-18.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.20.0-structured-names.accdb",
+        "Schema": 19,
+        "Result": "PASS: all original rows and fields verified; schema 19 to 25",
+        "SourceSHA256": "27EFFE6334A6B5AB6499F25D281408CD921E6F275A9DD943DE099260EBAF1218",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-19.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.21.0-major-foundations.accdb",
+        "Schema": 20,
+        "Result": "PASS: all original rows and fields verified; schema 20 to 25",
+        "SourceSHA256": "C3F914D6C13EFB1796669010F5B6F2A2CC2EB402EB3F9331805DF40FEDDEB77C",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-20.accdb",
+        "Reports": 0
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.23.0-preview\\Swift_NAVFIT_0.23.0-preview-DEMO.accdb",
+        "Schema": 21,
+        "Result": "PASS: all original rows and fields verified; schema 21 to 25",
+        "SourceSHA256": "CD1E348968BCF90634E5FA3CF92BA29CF39836C1E0C5538ECC2FB1D247A4A3C1",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-21.accdb",
+        "Reports": 9
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb",
+        "Schema": 22,
+        "Result": "PASS: all original rows and fields verified; schema 22 to 25",
+        "SourceSHA256": "98F97BC62B54F259F5DD7FB1A549CBAE35C03686F292686EAECD52A7598CC06E",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-22.accdb",
+        "Reports": 9
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.24.0-preview\\Swift_NAVFIT_0.24.0-preview-DEMO.accdb",
+        "Schema": 23,
+        "Result": "PASS: all original rows and fields verified; schema 23 to 25",
+        "SourceSHA256": "BBB734E1B8F13BFBDF6333BD2D2CED80127DF708128B6B418AC9A44E618E660F",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-23.accdb",
+        "Reports": 9
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb",
+        "Schema": 24,
+        "Result": "PASS: all original rows and fields verified; schema 24 to 25",
+        "SourceSHA256": "4B9CA42AC89B7A15C12BFC3499F587CACA0FEE3E2570B127B9E6489662784B84",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-24.accdb",
+        "Reports": 10
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb",
+        "Schema": 25,
+        "Result": "PASS: all original rows and fields verified; schema 25 to 25. Close and reopen this app to load the imported workspace.",
+        "SourceSHA256": "36DA2CBA79F55664CA100ABC6AD9436CD48502F3A5E4C65BB06F84625DEC3192",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-fca68233-5bf5-40ab-a86d-125c64802f80\\schema-25.accdb",
+        "Reports": 9
+      }
+    ],
+    "FutureSchemaRejected": true,
+    "UnknownTableRejected": true,
+    "Status": "PASS",
+    "UIEntryPointTested": true
+  },
+  "populated_upgrade": {
+    "Status": "PASS",
+    "Fixture": "PASS: 46 major workflow assertions",
+    "Schema20Source": "D:\\Development\\Swift NAVFIT\\build\\tests\\upgrade-a714b3e0-2723-4cea-80d3-871389ed7166\\synthetic schema20.accdb",
+    "SourceSHA256": "83AB34002A993ED3FE2E9705B1AD5C5A3DE76EE344EBEC0077579937514A00B7",
+    "TemplateSHA256": "4D0ED41FBE937E6B0F89346C3AA9DFA8EC9FC7F061FFE9996027D3A3B4FB797C",
+    "Schema20Migration": {
+      "Destination": "D:\\Development\\Swift NAVFIT\\build\\tests\\upgrade-a714b3e0-2723-4cea-80d3-871389ed7166\\migrated current.accdb",
+      "Status": "PASS: all original rows and fields verified; schema 20 to 25",
+      "Counts": {
+        "Workspace": 1,
+        "UserProfile": 2,
+        "Report": 2,
+        "ReportRevision": 11,
+        "RevisionValue": 858,
+        "RevisionChange": 165,
+        "ReportEvent": 3,
+        "Folder": 0,
+        "FolderMove": 0,
+        "ImportReceipt": 0,
+        "ImportRawValue": 0,
+        "RecoveryDraft": 0,
+        "OperationJournal": 19,
+        "NarrativeSnippet": 0,
+        "LibraryPreference": 0,
+        "FolderBatchChange": 0,
+        "ReviewComment": 0,
+        "ReviewCommentEvent": 0,
+        "ReviewTask": 0,
+        "ReviewTaskEvent": 0,
+        "SummaryGroup": 1,
+        "GroupMember": 1,
+        "GroupSnapshot": 2,
+        "GroupSnapshotMember": 4,
+        "FieldDefault": 3,
+        "ChangeBatch": 5,
+        "ChangeItem": 9,
+        "RouteTemplate": 3,
+        "RouteTemplateStep": 5,
+        "RouteRun": 4,
+        "RouteRunStep": 7,
+        "ComparisonSet": 2,
+        "ComparisonMember": 4,
+        "MeetingProposal": 3,
+        "RulePack": 0,
+        "RuleDefinition": 0,
+        "ValidationRun": 0,
+        "ValidationFinding": 0,
+        "ReportingSeniorRecord": 0,
+        "ReportingSeniorValue": 0,
+        "RSCABaseline": 0,
+        "GroupRSCABaseline": 0,
+        "ReportNote": 0,
+        "ReportNoteDraft": 0,
+        "CommandMember": 2,
+        "MemberReport": 2,
+        "PriorEvaluation": 0,
+        "PriorEvaluationTrait": 0
+      },
+      "SourceSHA256": "83AB34002A993ED3FE2E9705B1AD5C5A3DE76EE344EBEC0077579937514A00B7",
+      "Reopened": true
+    },
+    "Schema21Migration": {
+      "Destination": "D:\\Development\\Swift NAVFIT\\build\\tests\\upgrade-a714b3e0-2723-4cea-80d3-871389ed7166\\same-schema copy.accdb",
+      "Status": "PASS: all original rows and fields verified; schema 25 to 25",
+      "Counts": {
+        "Workspace": 1,
+        "UserProfile": 2,
+        "Report": 13,
+        "ReportRevision": 33,
+        "RevisionValue": 2607,
+        "RevisionChange": 1644,
+        "ReportEvent": 2,
+        "Folder": 3,
+        "FolderMove": 8,
+        "ImportReceipt": 0,
+        "ImportRawValue": 0,
+        "RecoveryDraft": 1,
+        "OperationJournal": 69,
+        "NarrativeSnippet": 93,
+        "LibraryPreference": 0,
+        "FolderBatchChange": 0,
+        "ReviewComment": 2,
+        "ReviewCommentEvent": 0,
+        "ReviewTask": 3,
+        "ReviewTaskEvent": 3,
+        "SummaryGroup": 5,
+        "GroupMember": 11,
+        "GroupSnapshot": 0,
+        "GroupSnapshotMember": 0,
+        "FieldDefault": 3,
+        "ChangeBatch": 0,
+        "ChangeItem": 0,
+        "RouteTemplate": 2,
+        "RouteTemplateStep": 3,
+        "RouteRun": 3,
+        "RouteRunStep": 5,
+        "ComparisonSet": 0,
+        "ComparisonMember": 0,
+        "MeetingProposal": 0,
+        "RulePack": 0,
+        "RuleDefinition": 0,
+        "ValidationRun": 0,
+        "ValidationFinding": 0,
+        "ReportingSeniorRecord": 1,
+        "ReportingSeniorValue": 16,
+        "RSCABaseline": 4,
+        "GroupRSCABaseline": 5,
+        "ReportNote": 13,
+        "ReportNoteDraft": 0,
+        "CommandMember": 13,
+        "MemberReport": 13,
+        "PriorEvaluation": 12,
+        "PriorEvaluationTrait": 84
+      },
+      "SourceSHA256": "258CD57BDDA2586D565DDE58DCB93997729D823E288B11CD5EB77E26CC696FDA",
+      "Reopened": true
+    },
+    "OverwriteRejected": true,
+    "UnknownTableRejected": true,
+    "PopulatedTemplateRejected": true,
+    "Schema21SourceSHA256": "258CD57BDDA2586D565DDE58DCB93997729D823E288B11CD5EB77E26CC696FDA",
+    "SourceAndTemplateUnchanged": true
+  },
+  "drive_remote_checksum_returned": false,
+  "access_closed": true
+}

@@ -28,8 +28,7 @@ Public Function AddContributor(ByVal name As String) As Long
 End Function
 Public Function SwitchContributor(ByVal profileID As Long) As Boolean
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4815, , "Retry or discard pending comparison cells before switching contributors."
-    If CurrentProject.AllForms("frmUXNoteComposer").IsLoaded Then Err.Raise vbObjectError + 6954, , "Close or post the open note before switching contributors."
-    If CurrentProject.AllForms("frmEditor").IsLoaded Or CurrentProject.AllForms("frmReviewComments").IsLoaded Then Err.Raise vbObjectError + 1803, , "Close the draft editor and review comments before switching contributors."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1803, , "Close the draft editor and review comments before switching contributors."
     If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, , "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError
     SwitchContributor = True
@@ -180,12 +179,8 @@ Failed:
     MsgBox Err.Description, vbInformation, "Review outcome"
 End Function
 Public Function OpenReviewTaskDraft() As Boolean
-    Dim id As Long
-    On Error GoTo Failed
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1817, , "Close the current editor before opening another report."
-    id = Nz(DLookup("ReportID", "ReviewTask", "TaskID=" & Nz(Forms!frmMyWork!lstTasks, 0)), 0)
-    If id = 0 Then Err.Raise vbObjectError + 1811, , "Select a review assignment."
-    DoCmd.OpenForm "frmEditor", , , , , , CStr(id): OpenReviewTaskDraft = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbInformation, "Review draft"
+ Dim id As Long, task As Long
+ task = Nz(Forms!frmMyWork!lstTasks, 0)
+ id = Nz(DLookup("ReportID", "ReviewTask", "TaskID=" & task), 0)
+ If id > 0 Then OpenReviewTaskDraft = UXOpenReportTool(id, "Review", 0, 0, task)
 End Function

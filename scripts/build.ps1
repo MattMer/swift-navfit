@@ -86,7 +86,7 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.25.0-dev',25,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'0.26.0-dev',26,'Unverified - NAVFIT exchange disabled')"
     )
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
@@ -108,7 +108,7 @@ try {
     [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
     $app.LoadFromText(5,'modBackupWorker',$workerPath)
     $app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))
-    foreach($majorModule in @('modRSDirectory','modRSDirectoryUI','modPDFImport','modPDFMapping','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
+    foreach($majorModule in @('modUXGroupNavigation','modRSCompletion','modRSDirectory','modRSDirectoryUI','modPDFImport','modPDFMapping','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
     $app.LoadFromText(5,'modBulkFolders',(Join-Path $root 'src\modBulkFolders.bas'))
     $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
     $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
@@ -734,6 +734,12 @@ try {
     . (Join-Path $PSScriptRoot 'apply-ux-visual.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-page-switch.ps1')
     . (Join-Path $PSScriptRoot 'apply-ux-page-width.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-rsca-review.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-prior-readonly.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-group-exit.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-comments-ita.ps1')
+    . (Join-Path $PSScriptRoot 'apply-ux-import-progress.ps1')
+    . (Join-Path $PSScriptRoot 'apply-report-tools.ps1')
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)

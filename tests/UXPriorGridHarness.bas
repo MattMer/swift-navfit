@@ -22,6 +22,9 @@ Public Function TestUXPriorGrid() As String
     Set rows = Forms!frmUXComparison!uxTraitGrid.Form
     Check rows!PriorITA = "4.00" And rows!PriorPromotion = "Promotable", "Prior values missing from member grid"
     Check rows!PriorITA.Locked And rows!PriorPromotion.Locked, "Historical values editable"
+    Check Not rows!PriorITA.Enabled And Not rows!PriorPromotion.Enabled And Not rows!PriorITA.TabStop And Not rows!PriorPromotion.TabStop, "Prior cells can receive focus"
+    Check rows!PriorITA.BackColor = UXColor("Neutral") And rows!PriorPromotion.BackColor = UXColor("Neutral"), "Prior cells lack read-only shading"
+    Check rows!Trait33.Enabled And rows!PromotionRecommendation.Enabled, "Current-value cells were disabled"
     Check rows!uxOpenReport.OnClick = "=UXGridOpenReport()", "Row Open action missing"
     Check UXGridOpenReport(), "Row report entry failed"
     Check Forms!frmEditor!txtReportID = id, "Row opened wrong report"

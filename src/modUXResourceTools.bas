@@ -33,7 +33,7 @@ Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPS
  If preparedPSG Is Nothing Then Set psg = RSGroupPSG(id) Else Set psg = preparedPSG
  UXGroupSeniorCaption = "Reporting senior: " & title & " | PSG RSCA: "
  If IsNull(psg("Value")) Then
-  UXGroupSeniorCaption = UXGroupSeniorCaption & "Unavailable"
+  UXGroupSeniorCaption = UXGroupSeniorCaption & "Unavailable: " & psg("Reason")
  Else
   UXGroupSeniorCaption = UXGroupSeniorCaption & Format$(psg("Value"), "0.00") & IIf(psg("Estimated"), " (estimate)", "") & IIf(psg("Partial"), " (partial traits)", "")
  End If

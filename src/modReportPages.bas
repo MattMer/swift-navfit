@@ -64,9 +64,17 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  Place f, "uxPageValidation", 5950, footer + 370, 2700, 450
  Place f, "cmdSave", 9000, footer + 370, 3000, 450
  Place f, "lblRecovery", 250, footer + 860, 11750, 300
+ If UXHasControl(f, "uxToolsSurface") Then
+  With f!uxToolsSurface
+   .Left = 250 + ReportLeft: .Top = 4800: .Width = viewingWidth: .Height = body - 740
+   If .Height < 2400 Then .Height = 2400
+   .Visible = (sheet = 8)
+  End With
+ End If
  If sheet = 8 Then
-  names = Array("cmdRoute", "cmdComments", "cmdChecklist", "cmdCalculations")
+  names = Array("cmdComments", "cmdRoute", "cmdChecklist", "cmdCalculations")
   For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 4150, 2850, 450: Next
+  f!uxReviewCommentGuide.Visible = False
  ElseIf sheet = 9 Then
   Place f, "cmdCompare", 250, 4150, 2800, 450: Place f, "cmdRestore", 3250, 4150, 2800, 450
   Place f, "lstRevisions", 250, 4750, 11800, body - 700
@@ -84,12 +92,32 @@ End Function
 Public Function UXFixedSelect(ByVal section As Long) As Boolean
  Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, id As Long, parentPaint As Boolean, surfacePaint As Boolean, paintHeld As Boolean
  On Error GoTo Failed
+ If Not UXToolsCheckpoint() Then Exit Function
  UXFlushSurface
  Set f = Forms!frmEditor: Set surface = f!uxFieldSurface.Form
  parentPaint = f.Painting: surfacePaint = surface.Painting
- f.Painting = False: surface.Painting = False: paintHeld = True
  f!cmdClose.SetFocus
- If section <= 4 Then sheet = 0 Else If section <= 6 Then sheet = 1 Else sheet = section
+ If section <= 4 Then
+  sheet = 0
+ ElseIf section <= 6 Then
+  sheet = 1
+ ElseIf section = 7 Then
+  UXToolsSetNotes
+  sheet = 8
+ Else
+  sheet = section
+ End If
+ 'Hide the native child window before suspending parent painting. Otherwise
+ 'Access can leave its last notes page covering the parent's Review actions.
+ If sheet >= 8 Then
+  surface!uxFocusAnchor.SetFocus
+  f!cmdClose.SetFocus
+  For Each c In surface.Controls
+   If c.Name <> "uxFocusAnchor" Then c.Visible = False
+  Next
+  f!uxFieldSurface.Visible = False
+ End If
+ f.Painting = False: surface.Painting = False: paintHeld = True
  id = Nz(f!txtReportID, 0): Set db = CurrentDb
  If id > 0 Then
   Set r = db.OpenRecordset("SELECT IsArchived,WorkflowState FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
@@ -104,8 +132,8 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  Select Case sheet
   Case 0: f!uxSection.Caption = "Front Page"
   Case 1: f!uxSection.Caption = "Back Page"
-  Case 7: f!uxSection.Caption = "Draft notes (local)"
-  Case 8: f!uxSection.Caption = "Review (local)"
+  Case 7: f!uxSection.Caption = "Report notes (local)"
+  Case 8: f!uxSection.Caption = "Report tools"
   Case 9: f!uxSection.Caption = "History (local)"
  End Select
  If sheet < 2 Then
@@ -115,13 +143,16 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  End If
  f!uxFrontPage.FontBold = (sheet = 0): f!uxBackPage.FontBold = (sheet = 1)
  UXFixedResize
+ If sheet = 8 Then UXToolsRefresh
  If sheet = 7 Then UXSortHeaders Forms!frmEditor!uxFieldSurface.Form
  UXRefreshEditor
  UXHeaderReviewState
+ f!uxFieldSurface.Visible = (sheet < 8)
  UXFixedSelect = True
 Finished:
  If paintHeld Then
   surface.Painting = surfacePaint: f.Painting = parentPaint
+  If parentPaint Then f.Repaint
  End If
  Exit Function
 Failed:

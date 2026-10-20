@@ -17,7 +17,7 @@ Public Function TestUXDemo() As String
     On Error GoTo Failed
     stage = "dataset"
     Check DCount("*", "Report") = 13 And DCount("*", "SummaryGroup") = 5, "Synthetic roster incomplete"
-    Check DCount("*", "UserProfile") = 2 And DCount("*", "ReportingSeniorRecord") = 1 And DCount("*", "RSCABaseline") = 3, "Synthetic directory incomplete"
+    Check DCount("*", "UserProfile") = 2 And DCount("*", "ReportingSeniorRecord") = 1 And DCount("*", "RSCABaseline") = 4, "Synthetic directory incomplete"
     Check DCount("*", "Report", "IsArchived=True") = 1, "Archive example missing"
     Check DCount("*", "Report", "WorkflowState='Approved'") = 1, "Approval example missing"
     Check DCount("*", "Report", "ObservationStatus='NOB'") = 1, "NOB example missing"
@@ -26,6 +26,10 @@ Public Function TestUXDemo() As String
     Check DCount("*", "Report") = 13, "Rejected seed changed roster"
     Check DemoReportIssues("DEMO - Clean reports (0 report issues)") = 0, "Clean group member issues"
     Check DemoReportIssues("DEMO - Practice corrections (3 report issues)") = 3, "Practice group member issue count"
+    groupID = DLookup("GroupID", "SummaryGroup", "Title='DEMO - Clean reports (0 report issues)'")
+    Set average = RSGroupPSG(groupID)
+    Check Not IsNull(average("Value")), "Clean E6 group lacks matching RSCA baseline"
+    Check Abs(average("Value") - 476# / 114) < 0.00001, "Clean E6 PSG arithmetic incorrect"
     stage = "overview": DoCmd.OpenForm "frmHome"
     Check UXDashboardRefresh(), "Demo dashboard failed"
     Check CLng(Forms!frmHome!uxReportCount.Caption) = 12 And CLng(Forms!frmHome!uxGroupCount.Caption) = 5, "Demo metrics incorrect"

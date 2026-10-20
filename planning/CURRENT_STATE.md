@@ -1,3 +1,47 @@
+## 2026-10-20 - User guide version 1.0
+
+A 22-page user guide now accompanies r123a. Read the [PDF](../docs/Swift_NAVFIT_User_Guide.pdf) or [Markdown edition](../docs/Swift_NAVFIT_User_Guide.md). It follows the supplied eNavFit guide's training-manual organization while documenting Swift-specific local procedures. The PDF has linked contents, chapter bookmarks, numbered procedures, quick reference, practice exercise, and troubleshooting. All pages were rendered and visually inspected; this is document QA, not a new physical application visual acceptance. Rebuild with `python scripts/build_user_guide.py` using reportlab and pypdf. Historical source manuals and earlier workspaces remain unchanged.
+
+## 2026-10-20 - r123a consolidated report tools
+
+Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r123a.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r123a.accdb`. Both uploaded with name, size and folder readback verified. Access is closed; physical visual checks remain deferred.
+
+Report tools embeds Notes and replies, Review steps, Validation checks and Trait calculations. Notes and comments form one report-level conversation system independent of approval; no resolve/reopen workflow. Private reply drafts retain ownership/version checkpoints. My Work opens the correct report/view and receives focus on return. Validation Issues is also a modeless popout. Legacy notes/comments/events and review history remain intact through additive schema26 conversion. Fixed report geometry and pending-value recovery are preserved.
+
+Native gates passed: all26 retained-schema transfers and rollback/rejection checks; populated schema20/current preservation and reopen; canonical reply/private-draft transfer; 35 report-tools, 1,747 queue/navigation, 264 fixed-page, 41 workflow, forced-shutdown recovery, 48 smoke and39 Demo assertions. Bulk transfer remains about16x faster on the synthetic benchmark with full original-field verification. See `planning/REPORT_TOOLS_R123_2026-10-20.md`, `planning/REPORT_TOOLS_R123_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+
+## 2026-10-20 - r122c bulk workspace import
+
+Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r122c.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r122c.accdb`. Both uploaded to the designated Drive folder; names, sizes and folder membership verified. Access closed; physical visual checks remain deferred.
+
+Swift upgrades now use table-level append queries and bulk relationship restoration. Removed duplicate destination scans; retained one TOP 1 guard. Exact field verification, original identities/history and transactional rollback remain. Progress controls refresh at most four times per second, with immediate start/final messages. Temporary queries stay outside the single data transaction; late failure rolls back setup/data, removes queries and supports retry.
+
+Benchmark: 20,856 revision values, previous mean 10.510s vs bulk 0.659s (15.9x); actual progress-enabled Apply 0.821s. Includes full verification/source fingerprints; excludes startup and template copy. Native gates: all 25 retained schemas; populated schema20/current upgrades with exact fields/reopen; rejection and rollback; long Unicode memos; out-of-order parents; next AutoNumber; late-error retry; 39 Demo and 48 smoke assertions. Blank data tables empty; Demo synthetic 13 reports/5 groups. Earlier artifacts and original r116 hash preserved.
+
+See `planning/BULK_IMPORT_R122_2026-10-20.md`, `planning/BULK_IMPORT_R122_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+
+## 2026-10-19 - r121b import feedback and bulk selection
+
+Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-19-r121b.accdb` and `output/Swift_NAVFIT_Demo_2026-10-19-r121b.accdb`; both uploaded with name, size and folder readback verified. Swift workspace imports display timestamped copy/verification activity and record counts, disable repeated Apply/Close while running, and retain rollback/source guards. NAVFIT98A group import offers Select all for import / Clear selection and still requires a fresh valid preview.
+
+Native gates: all 25 retained schemas, progress success/failure and restored controls, populated schema20/current transfers and reopen/overwrite/unknown/populated guards, 45 native selection/paygrade assertions, 21 guided import assertions, 39 Demo assertions and 48 smoke checks. Blank data tables empty; Demo 13 reports/5 groups and synthetic data only. Original r116 hash unchanged. Access closed. Visual checks deferred by user. See `planning/IMPORT_FEEDBACK_R121_2026-10-19.md`, `planning/IMPORT_FEEDBACK_R121_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+
+## r120b - clearer notes/comments and per-report ITA colours (19 October 2026)
+
+Report notes has labelled posted-note/full-text/draft sections, author/time previews and explicit post/keep-draft actions. Comments and replies has labelled conversation/reading/writing areas, explicit new-comment/reply modes, refresh that preserves unfinished text and target, and state-aware resolve/reopen/archive actions. My Work respects an unfinished comment's report context. Each group ITA is green above that sailor's prior ITA, yellow below, and otherwise unchanged. Native comments/notes/ITA, lifecycle, inbox, fixed-page, demo and smoke checks passed; all 25 retained-schema transfers and populated preservation/rollback gates passed. The Blank and synthetic Demo are in `output/` and uploaded to the usual Drive folder with name/size/parent readback. Visual inspection could not be completed because Windows was locked; no physical visual acceptance is claimed. Access is closed. See [details](COMMENTS_ITA_R120_2026-10-19.md), [verification](COMMENTS_ITA_R120_VERIFICATION.json), and `output/CURRENT_FILES.json`.
+
+## r119b - summary-group exit and replacement (19 October 2026)
+
+Summary groups now have an explicit Back to summary groups button and close when leaving through the main menus. Opening another group drains valid queued edits, closes the old view and initializes the selected group; failed pending-cell saves retain the original group and values. Defaults, Review/History and empty-group hosts use the shared exit. Native group navigation, report lifecycle, demo and smoke checks passed, as did all 25 retained-schema transfers and populated schema-20/current-demo preservation checks. Blank and synthetic Demo are directly in `output/` and uploaded to the established Drive folder with name/size/parent readback. Access is closed. See [details](GROUP_EXIT_R119_2026-10-19.md), [verification](GROUP_EXIT_R119_VERIFICATION.json), and `output/CURRENT_FILES.json`.
+
+## r118 - read-only prior values and current delivery (19 October 2026)
+
+Prior ITA/Prior promotion cells are grey, locked, disabled and skipped by keyboard navigation. Returning from an edited member checks its row locks against saved state. The current Blank and synthetic Demo are directly in `output/` and uploaded to the designated Drive folder, with names, sizes and parents verified. All 25 retained-schema transfers and rejection/rollback guards passed, as did populated schema-20 and current-demo transfers and native UI/persistence checks. Access was closed after verification. Future delivery/cleanup conventions are recorded in AGENTS.md. See [details](PRIOR_COLUMNS_R118_2026-10-19.md), [verification](PRIOR_COLUMNS_R118_VERIFICATION.json), and `output/CURRENT_FILES.json` for exact artifacts and Drive links.
+
+## Local candidate - RSCA completion and distinct Review tab (19 October 2026)
+
+The E6 demonstration groups now select matching synthetic historical RSCA. Completed groups append local senior/paygrade totals once; corrected re-completion posts the difference, with exact/estimated provenance, rollback and duplicate-report guards. Review no longer retains the embedded Draft notes content. In-app help and the [end-to-end guide](RSCA_COMPLETION_REVIEW.md) explain ordered review, local approval and group closeout. Final candidate: `build/rsca-review-v6.accdb`; synthetic demo: `build/rsca-review-demo-v6.accdb`. Native checks and visible group/Review inspection passed; see [verification](RSCA_COMPLETION_REVIEW_VERIFICATION.json). These are development candidates, not a new published release; no release migration matrix was run.
+
 ## GitHub source checkpoint — 18 October 2026
 
 This checkpoint includes r114 native timestamp import compatibility, r115 workspace transfer/fixed report pages/sorting, and r116 navigation clearance with all traits on Front Page. README and in-app/workspace guides reflect the current behavior; source, build/test helpers, compatibility requirements and verification manifests are included. Current blank/demo downloads remain on Drive. Existing native verification results are recorded below; this source publication does not establish additional manual display, accessibility or print acceptance.

@@ -70,16 +70,6 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
         r.MoveNext
     Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT CommentID,ReportID FROM ReviewComment WHERE ThreadID Is Null", dbOpenSnapshot)
-    Do While Not r.EOF
-        token = CStr(r!CommentID): visible = True
-        If threads.Exists(token) Then visible = threads(token)
-        If visible Then
-            If authors.Exists(token) Or participants.Exists(CStr(r!ReportID)) Then rows("Comment:" & token) = True
-        End If
-        r.MoveNext
-    Loop
-    r.Close
     Set UXWorkVisibleRows = rows
 End Function
 Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
@@ -106,7 +96,7 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
         threads(CStr(r!ThreadID)) = (r!EventKind <> "Resolved"): r.MoveNext
     Loop
     r.Close
-    For Each kind In Array("Assignment", "Route", "Comment")
+    For Each kind In Array("Assignment", "Route")
         Select Case kind
             Case "Assignment": table = "ReviewTask": key = "TaskID"
             Case "Route": table = "RouteRun": key = "RunID"

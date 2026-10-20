@@ -2,46 +2,30 @@ Attribute VB_Name = "modUXHeaderReview"
 Option Compare Binary
 Option Explicit
 Public Function UXHeaderReview(ByVal action As String, Optional ByVal decisionNote As Variant) As Boolean
-    Dim id As Long, choice As String, f As Access.Form, button As String, note As String, owned As Boolean
-    On Error GoTo Failed
-    UXFlushSurface
-    If EditorHasPending() Then
-        choice = UXAsk("Review")
-        If choice = "Save" Then
-            If Not UXSaveEditor() Then Exit Function
-        ElseIf choice <> "Discard" Then
-            Exit Function
-        End If
-    End If
-    id = Nz(Forms!frmEditor!txtReportID, 0)
-    If id = 0 Then Err.Raise vbObjectError + 6910, , "Save this new report before reviewing its saved revision."
-    If CurrentProject.AllForms("frmUXReview").IsLoaded Then
-        If Forms!frmUXReview.Visible Then Err.Raise vbObjectError + 6910, , "Finish the open review window first so its decision note is preserved."
-        DoCmd.Close acForm, "frmUXReview", acSaveNo
-    End If
-    DoCmd.OpenForm "frmUXReview", , , , , acHidden, CStr(id): owned = True
-    Set f = Forms!frmUXReview
-    If action = "Approval" Then
-        If f!cmdReopen.Enabled Then action = "Reopen" Else action = "Approve"
-    End If
-    button = "cmd" & action
-    If Not f.Controls(button).Enabled Then Err.Raise vbObjectError + 6910, , f!lblStatus.Caption & " " & f!lblUnavailable.Caption
-    If IsMissing(decisionNote) Then
-        note = InputBox("Decision note for " & action & ". The action applies to the saved revision.", "Report review")
-        If Len(Trim$(note)) = 0 Then GoTo Finished
-    Else
-        note = CStr(decisionNote)
-    End If
-    f!txtNote = note
-    If Not UXReviewAction(action) Then Err.Raise vbObjectError + 6910, , f!lblStatus.Caption
-    Forms!frmEditor!uxError.Caption = "Review updated: " & action & ". Decisions apply to saved report values."
-    UXHeaderReview = True
-Finished:
-    If owned Then DoCmd.Close acForm, "frmUXReview", acSaveNo
-    Exit Function
+ Dim f As Access.Form, choice As String
+ On Error GoTo Failed
+ UXFlushSurface
+ If Not IsMissing(decisionNote) And EditorHasPending() Then
+  choice = UXAsk("Review")
+  If choice = "Save" Then
+   If Not UXSaveEditor() Then Exit Function
+  ElseIf choice <> "Discard" Then
+   Exit Function
+  End If
+ End If
+ If Not UXToolsChoose("Review") Then Exit Function
+ Set f = UXReviewForm()
+ If IsMissing(decisionNote) Then
+  f!txtNote.SetFocus: UXHeaderReview = True: Exit Function
+ End If
+ If action = "Approval" Then
+  If f!cmdReopen.Enabled Then action = "Reopen" Else action = "Approve"
+ End If
+ f!txtNote = CStr(decisionNote)
+ UXHeaderReview = UXReviewAction(action)
+ Exit Function
 Failed:
-    Forms!frmEditor!uxError.Caption = Err.Description
-    Resume Finished
+ Forms!frmEditor!uxError.Caption = Err.Description
 End Function
 Public Function UXHeaderReviewLayout(ByVal compact As Boolean, ByVal width As Long) As Boolean
     Dim f As Access.Form, names As Variant, i As Long, x As Long, span As Long

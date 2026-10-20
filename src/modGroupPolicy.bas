@@ -37,8 +37,9 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     If GroupStamp(groupID) <> expected Then Err.Raise vbObjectError + 6811, , "Group changed. Refresh and choose its status again."
     If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6812, , "Recover this group before changing its status."
     old = GroupWorkflow(groupID)
-    If old = state Then w.CommitTrans: Exit Sub
+    If old = state And state <> "Completed" Then w.CommitTrans: Exit Sub
     Set d = PolicyDocument(groupID)
+    If state = "Completed" Then RSPostGroupCompletion groupID, d
     PolicyPut d, "Workflow", state: PolicyPut d, "WorkflowBy", CStr(author): PolicyPut d, "WorkflowAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
     db.Execute "UPDATE SummaryGroup SET KeySpec=" & QuoteSQL(d.XML) & ",VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     op = BeginOperation("Change group workflow", "Group " & groupID & "; BEFORE: " & old & "; AFTER: " & state)
