@@ -104,4 +104,3 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  RSCompletionPolicyPut policy, "RSCAGroupSum", CStr(p("GroupSum")): RSCompletionPolicyPut policy, "RSCAGroupCount", CStr(p("GroupCount"))
  RSCompletionPolicyPut policy, "RSCAReportIDs", ids: RSCompletionPolicyPut policy, "RSCACompletedAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
 End Sub
-

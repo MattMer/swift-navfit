@@ -4,4 +4,3 @@ $app.DoCmd.OpenForm('frmUXRSCATable',1)
 $f=$app.Forms.Item('frmUXRSCATable')
 $f.Controls.Item('headdate').Caption='As of (BOL / local completion)'
 $app.DoCmd.Close(2,'frmUXRSCATable',1)
-

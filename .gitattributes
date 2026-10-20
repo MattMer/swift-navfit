@@ -6,3 +6,5 @@
 *.yml text eol=lf
 *.accdb binary
 *.png binary
+
+*.pdf binary
