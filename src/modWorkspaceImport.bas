@@ -2,10 +2,12 @@ Attribute VB_Name = "modWorkspaceImport"
 Option Explicit
 Private importPath As String, importHash As String
 Private importing As Boolean, importStarted As Date, progressText As String, lastProgressPaint As Single
+Private pulseBusy As Boolean, enabledBefore As Object, modalBefore As Boolean
 'The current app supplies forms/code/schema. Only data is read from the source;
 'source VBA/macros are never opened or executed. Migration verifies every field.
 Public Function UXChooseSwiftWorkspace() As Boolean
  Dim dialog As Object
+ If importing Then Exit Function
  On Error GoTo Failed
  Set dialog = Application.FileDialog(3): dialog.Title = "Import previous Swift NAVFIT workspace": dialog.AllowMultiSelect = False
  dialog.Filters.Clear: dialog.Filters.Add "Swift NAVFIT database", "*.accdb"
@@ -58,7 +60,7 @@ Failed:
 End Function
 Public Sub WorkspaceImportProgress(ByVal message As String, Optional ByVal forcePaint As Boolean = False)
  'Keep every log entry, but bound expensive control updates to four per second.
- 'Repaint without DoEvents: unrelated UI actions cannot run inside the transaction.
+ 'The modal importer disables actions; guarded pulses process repaint/window events.
  Dim elapsed As Single
  If Not importing Then Exit Sub
  On Error Resume Next
@@ -70,18 +72,48 @@ Public Sub WorkspaceImportProgress(ByVal message As String, Optional ByVal force
  lastProgressPaint = Timer
  With Forms!frmUXWorkspaceImport
   !txtProgress = progressText
-  !txtProgress.SelStart = Len(progressText)
+  If Screen.ActiveControl.Name = "txtProgress" Then !txtProgress.SelStart = Len(progressText)
   !lblStatus.Caption = "Import in progress - " & DateDiff("s", importStarted, Now) & " seconds elapsed. Please wait; keep Access open."
   .Repaint
  End With
  SysCmd acSysCmdSetStatus, message
+ WorkspaceImportPulse
+End Sub
+Public Sub WorkspaceImportPulse()
+ 'Only the modal, action-disabled importer can receive user input during a yield.
+ 'Do not pump events inside a DAO operation or allow nested progress callbacks.
+ If Not importing Or pulseBusy Then Exit Sub
+ pulseBusy = True
+ On Error GoTo FinishedPulse
+ DoEvents
+FinishedPulse:
+ pulseBusy = False
+End Sub
+Private Sub LockImportDisplay()
+ Dim c As Access.Control, f As Access.Form
+ Set f = Forms!frmUXWorkspaceImport
+ modalBefore = f.Modal: f.Modal = True
+ Set enabledBefore = CreateObject("Scripting.Dictionary")
+ For Each c In f.Controls
+  If c.ControlType = acCommandButton Then
+   enabledBefore.Add c.Name, c.Enabled: c.Enabled = False
+  End If
+ Next
 End Sub
 Public Function UXWorkspaceImportBusy() As Boolean
  UXWorkspaceImportBusy = importing
 End Function
 Private Sub FinishImportDisplay()
  On Error Resume Next
+ Dim name As Variant
+ If Not enabledBefore Is Nothing Then
+  For Each name In enabledBefore.Keys
+   Forms!frmUXWorkspaceImport.Controls(CStr(name)).Enabled = enabledBefore(name)
+  Next
+ End If
+ Forms!frmUXWorkspaceImport.Modal = modalBefore
  importing = False
+ Set enabledBefore = Nothing
  DoCmd.Hourglass False
  SysCmd acSysCmdClearStatus
  Forms!frmUXWorkspaceImport!cmdClose.Enabled = True
@@ -94,15 +126,15 @@ Public Function UXApplySwiftWorkspace() As Boolean
  If importPath = "" Then Err.Raise 5, , "Choose and preview a previous Swift file first."
  importStarted = Now: progressText = "": lastProgressPaint = 0: importing = True
  Forms!frmUXWorkspaceImport!txtProgress.SetFocus
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
- Forms!frmUXWorkspaceImport!cmdClose.Enabled = False
+ LockImportDisplay
  DoCmd.Hourglass True
- WorkspaceImportProgress "Import started. Copying workspace data, then verifying every original field.", True
+ WorkspaceImportProgress "Import started. Copying workspace data, then verifying every original field in database-engine batches.", True
  result = ImportSwiftWorkspaceData(importPath, importHash)
  WorkspaceImportProgress "Import committed successfully.", True
  Forms!frmUXWorkspaceImport!lblStatus.Caption = result & ". Close and reopen this app to load the imported workspace."
  importPath = "": importHash = "": UXApplySwiftWorkspace = True
  FinishImportDisplay
+ Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
  Exit Function
 Failed:
  message = Err.Description

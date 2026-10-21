@@ -50,7 +50,7 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 - **NAVFIT98A exchange:** import supported report/group data and export saved reports or summary groups while retaining native provenance.
 - **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
 - **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Supported extraction requires desktop Adobe Acrobat.
-- **Previous-Swift workspace transfer:** move supported older workspace data and history into a separate blank build, preserving the source and verifying the copied values.
+- **Previous-Swift workspace transfer:** bulk-copy supported older workspace data/history into a separate blank build, with exact database-engine verification and responsive progress between batches. Source and rollback protections remain.
 - **Backup/restore and operation history:** guarded tools for protecting the workspace and undoing supported operations.
 
 ## Swift NAVFIT compared with NAVFIT98A
@@ -83,6 +83,8 @@ Optional source links, such as NavyWriter, open an external website only when se
 ## Try Swift NAVFIT
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
+
+Current verified r124 files: [Blank](https://drive.google.com/file/d/1FIBB6Zox3JAxQGwwbf3e7NASnpdKMM_7/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1gk14i6bPXQEHGOyisczbnifjYe3wSvGo/view?usp=drivesdk). See [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for performance evidence and limitations.
 
 1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
 2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.

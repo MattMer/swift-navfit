@@ -1,3 +1,11 @@
+## 2026-10-20 - r124 database-engine import verification
+
+Current Blank/Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r124.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r124.accdb`; uploaded with name/size/folder readback verified. Access is closed.
+
+Exact field verification now uses primary-key database queries and bounded batches instead of per-field VBA recordset iteration. Text comparison remains binary/full-length; Nulls, original keys, histories and relationships are preserved. The modal, action-locked importer yields to window events between completed queries; it remains synchronous within an individual database operation. A 262,144-provenance-record Apply completed in 12.804 seconds, including 8.73 seconds verification. The old same-source comparison was stopped while still running after more than nine minutes; no completed old-time ratio is claimed.
+
+All 26 retained-schema migrations and rollback/source/populated guards pass. Also passed: 16 adversarial exactness cases, 46 responsive event turns with guarded-action checks, injected field-mismatch rollback/retry, populated schema 20/current upgrade and reopen, canonical replies/drafts, 48 smoke and 39 Demo checks. Blank empty; Demo 13 synthetic reports / 5 groups. Physical application visual acceptance remains deferred. See `planning/ENGINE_IMPORT_R124_2026-10-20.md` and `planning/ENGINE_IMPORT_R124_VERIFICATION.json`.
+
 ## 2026-10-20 - User guide version 1.0
 
 A 22-page user guide now accompanies r123a. Read the [PDF](../docs/Swift_NAVFIT_User_Guide.pdf) or [Markdown edition](../docs/Swift_NAVFIT_User_Guide.md). It follows the supplied eNavFit guide's training-manual organization while documenting Swift-specific local procedures. The PDF has linked contents, chapter bookmarks, numbered procedures, quick reference, practice exercise, and troubleshooting. All pages were rendered and visually inspected; this is document QA, not a new physical application visual acceptance. Rebuild with `python scripts/build_user_guide.py` using reportlab and pypdf. Historical source manuals and earlier workspaces remain unchanged.
@@ -8,7 +16,7 @@ Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r123a.ac
 
 Report tools embeds Notes and replies, Review steps, Validation checks and Trait calculations. Notes and comments form one report-level conversation system independent of approval; no resolve/reopen workflow. Private reply drafts retain ownership/version checkpoints. My Work opens the correct report/view and receives focus on return. Validation Issues is also a modeless popout. Legacy notes/comments/events and review history remain intact through additive schema26 conversion. Fixed report geometry and pending-value recovery are preserved.
 
-Native gates passed: all26 retained-schema transfers and rollback/rejection checks; populated schema20/current preservation and reopen; canonical reply/private-draft transfer; 35 report-tools, 1,747 queue/navigation, 264 fixed-page, 41 workflow, forced-shutdown recovery, 48 smoke and39 Demo assertions. Bulk transfer remains about16x faster on the synthetic benchmark with full original-field verification. See `planning/REPORT_TOOLS_R123_2026-10-20.md`, `planning/REPORT_TOOLS_R123_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+Native gates passed: all26 retained-schema transfers and rollback/rejection checks; populated schema 20/current preservation and reopen; canonical reply/private-draft transfer; 35 report-tools, 1,747 queue/navigation, 264 fixed-page, 41 workflow, forced-shutdown recovery, 48 smoke and 39 Demo assertions. Bulk transfer remains about16x faster on the synthetic benchmark with full original-field verification. See `planning/REPORT_TOOLS_R123_2026-10-20.md`, `planning/REPORT_TOOLS_R123_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
 
 ## 2026-10-20 - r122c bulk workspace import
 
@@ -16,7 +24,7 @@ Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r122c.ac
 
 Swift upgrades now use table-level append queries and bulk relationship restoration. Removed duplicate destination scans; retained one TOP 1 guard. Exact field verification, original identities/history and transactional rollback remain. Progress controls refresh at most four times per second, with immediate start/final messages. Temporary queries stay outside the single data transaction; late failure rolls back setup/data, removes queries and supports retry.
 
-Benchmark: 20,856 revision values, previous mean 10.510s vs bulk 0.659s (15.9x); actual progress-enabled Apply 0.821s. Includes full verification/source fingerprints; excludes startup and template copy. Native gates: all 25 retained schemas; populated schema20/current upgrades with exact fields/reopen; rejection and rollback; long Unicode memos; out-of-order parents; next AutoNumber; late-error retry; 39 Demo and 48 smoke assertions. Blank data tables empty; Demo synthetic 13 reports/5 groups. Earlier artifacts and original r116 hash preserved.
+Benchmark: 20,856 revision values, previous mean 10.510s vs bulk 0.659s (15.9x); actual progress-enabled Apply 0.821s. Includes full verification/source fingerprints; excludes startup and template copy. Native gates: all 25 retained schemas; populated schema 20/current upgrades with exact fields/reopen; rejection and rollback; long Unicode memos; out-of-order parents; next AutoNumber; late-error retry; 39 Demo and 48 smoke assertions. Blank data tables empty; Demo synthetic 13 reports / 5 groups. Earlier artifacts and original r116 hash preserved.
 
 See `planning/BULK_IMPORT_R122_2026-10-20.md`, `planning/BULK_IMPORT_R122_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
 
@@ -24,7 +32,7 @@ See `planning/BULK_IMPORT_R122_2026-10-20.md`, `planning/BULK_IMPORT_R122_VERIFI
 
 Current Blank and synthetic Demo: `output/Swift_NAVFIT_Blank_2026-10-19-r121b.accdb` and `output/Swift_NAVFIT_Demo_2026-10-19-r121b.accdb`; both uploaded with name, size and folder readback verified. Swift workspace imports display timestamped copy/verification activity and record counts, disable repeated Apply/Close while running, and retain rollback/source guards. NAVFIT98A group import offers Select all for import / Clear selection and still requires a fresh valid preview.
 
-Native gates: all 25 retained schemas, progress success/failure and restored controls, populated schema20/current transfers and reopen/overwrite/unknown/populated guards, 45 native selection/paygrade assertions, 21 guided import assertions, 39 Demo assertions and 48 smoke checks. Blank data tables empty; Demo 13 reports/5 groups and synthetic data only. Original r116 hash unchanged. Access closed. Visual checks deferred by user. See `planning/IMPORT_FEEDBACK_R121_2026-10-19.md`, `planning/IMPORT_FEEDBACK_R121_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+Native gates: all 25 retained schemas, progress success/failure and restored controls, populated schema 20/current transfers and reopen/overwrite/unknown/populated guards, 45 native selection/paygrade assertions, 21 guided import assertions, 39 Demo assertions and 48 smoke checks. Blank data tables empty; Demo 13 reports / 5 groups and synthetic data only. Original r116 hash unchanged. Access closed. Visual checks deferred by user. See `planning/IMPORT_FEEDBACK_R121_2026-10-19.md`, `planning/IMPORT_FEEDBACK_R121_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
 
 ## r120b - clearer notes/comments and per-report ITA colours (19 October 2026)
 

@@ -4,10 +4,10 @@ Option Explicit
 
 Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal showProgress As Boolean = False, Optional ByVal replaceSetup As Boolean = False, Optional ByVal expectedHash As String = "") As String
     Dim s As DAO.Database, t As DAO.Database, w As DAO.Workspace, reader As DAO.Workspace
-    Dim r As DAO.Recordset, a As DAO.Recordset, b As DAO.Recordset, q As DAO.QueryDef
+    Dim r As DAO.Recordset, q As DAO.QueryDef
     Dim tables As Variant, n As Variant, i As Long, ver As Long, sql As String
     Dim names As String, vals As String, trans As Boolean, message As String, stage As String, sourceSQL As String, temporaryQuery As String
-    Dim av As Variant, bv As Variant, fieldName As String, deferred As Variant, relationPair As Variant, copyStarted As Single, verifyStarted As Single
+    Dim fieldName As String, deferred As Variant, relationPair As Variant, copyStarted As Single, verifyStarted As Single
     Dim table As DAO.TableDef, known As Boolean, targetVersion As Long, copiedRows As Long, checkedRows As Long
     On Error GoTo Failed
     Set reader = DBEngine.CreateWorkspace("SwiftRead", "admin", "", dbUseJet)
@@ -46,12 +46,13 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     'an action-query failure can invalidate DAO handles while rolling back DDL.
     deferred = Array("Report|CurrentRevisionID|ReportID", "ReportRevision|ParentRevisionID|RevisionID", "Folder|ParentFolderID|FolderID", "ReviewComment|ThreadID|CommentID")
     If ver >= 26 Then deferred = Split(Join(deferred, "~") & "~ReportMessage|ParentMessageID|MessageID~ReportNoteDraft|ParentMessageID|DraftGuid", "~")
-    temporaryQuery = "zSwiftMigration" & Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", "")
+    temporaryQuery = "zSwiftMigration" & Left$(Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", ""), 24)
     sourceSQL = " IN " & Chr$(34) & sourcePath & Chr$(34)
-    For Each relationPair In deferred
-        relationPair = Split(CStr(relationPair), "|")
-        If Not (ver < 2 And relationPair(0) = "Folder") And Not (ver < 7 And relationPair(0) = "ReviewComment") Then
-            Set q = t.CreateQueryDef(temporaryQuery & relationPair(0), "SELECT * FROM [" & relationPair(0) & "]" & sourceSQL)
+    'Prepare read-only external-source queries before the data transaction.
+    'The same queries support relationship restoration and engine verification.
+    For Each table In s.TableDefs
+        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+            Set q = t.CreateQueryDef(temporaryQuery & table.Name, "SELECT * FROM [" & table.Name & "]" & sourceSQL)
             q.Close
         End If
     Next
@@ -118,28 +119,8 @@ NextTable:
         stage = "Verify " & n
         checkedRows = 0
         If showProgress Then Application.Run "WorkspaceImportProgress", "Verifying all fields in " & n & "..."
-        sql = "SELECT * FROM [" & n & "] ORDER BY [" & s.TableDefs(n).Fields(0).Name & "]"
-        If n = "PriorEvaluationTrait" Then sql = sql & ",BlockNumber"
-        Set a = s.OpenRecordset(sql, dbOpenSnapshot): Set b = t.OpenRecordset(sql, dbOpenSnapshot)
-        Do While Not a.EOF
-            If b.EOF Then Err.Raise vbObjectError + 304, , "Missing row in " & n
-            For i = 0 To a.Fields.Count - 1
-                av = a.Fields(i).Value: bv = b.Fields(a.Fields(i).Name).Value
-                If IsNull(av) <> IsNull(bv) Then Err.Raise vbObjectError + 305, , "Null mismatch in " & n
-                If Not IsNull(av) Then
-                    If VarType(av) = vbString Then
-                        If StrComp(CStr(av), CStr(bv), vbBinaryCompare) <> 0 Then Err.Raise vbObjectError + 306, , "Text mismatch in " & n
-                    Else
-                        If av <> bv Then Err.Raise vbObjectError + 307, , "Value mismatch in " & n
-                    End If
-                End If
-            Next
-            a.MoveNext: b.MoveNext
-            checkedRows = checkedRows + 1
-            If showProgress And checkedRows Mod 100 = 0 Then Application.Run "WorkspaceImportProgress", "Verifying " & n & ": " & checkedRows & " records checked"
-        Loop
-        If Not b.EOF Then Err.Raise vbObjectError + 308, , "Extra rows in " & n
-        a.Close: b.Close
+        checkedRows = VerifyMigrationTable(t, s.TableDefs(CStr(n)), temporaryQuery & CStr(n), showProgress)
+        If showProgress Then Application.Run "WorkspaceImportProgress", "Verified " & n & ": " & checkedRows & " records checked by database engine"
 NextCheck:
     Next
     If showProgress Then Application.Run "WorkspaceImportProgress", "Field verification finished in " & Format$(MigrationSeconds(verifyStarted), "0.00") & " seconds."
@@ -163,8 +144,6 @@ RollbackFailure:
     On Error Resume Next
     'Release readers/query handles before rollback invalidates their objects.
     If Not r Is Nothing Then r.Close
-    If Not a Is Nothing Then a.Close
-    If Not b Is Nothing Then b.Close
     If Not q Is Nothing Then q.Close
     If trans Then w.Rollback
     RemoveMigrationQueries temporaryQuery
@@ -172,6 +151,100 @@ RollbackFailure:
     If Not reader Is Nothing Then reader.Close
     Err.Clear
     MigrateWorkspace = "FAIL: " & stage & ": " & message
+End Function
+
+ 'Exact set verification: indexed joins and binary string comparisons run in ACE.
+'VBA builds a bounded number of queries and reads only counts/mismatch results.
+'Chunk numeric primary keys so the UI gets a guarded event turn between batches.
+Public Function VerifyMigrationTable(ByVal db As DAO.Database, ByVal sourceTable As DAO.TableDef, ByVal sourceQuery As String, Optional ByVal showProgress As Boolean = False) As Long
+    Dim idx As DAO.Index, key As DAO.Field, fld As DAO.Field, rows As DAO.Recordset
+    Dim keys As Collection, join As String, firstKey As String, predicate As String
+    Dim sourceCount As Long, targetCount As Long, low As Long, high As Long, haveLow As Boolean
+    Dim numericKey As Boolean, range As String, boundary As String, fromSQL As String
+    Dim first As Long, last As Long, i As Long, part As String, checked As Long, chunkCount As Long
+    Dim failure As Long, message As String
+    Const BatchRows As Long = 8192
+    Const BatchFields As Long = 12
+    On Error GoTo Failed
+    Set keys = New Collection
+    For Each idx In sourceTable.Indexes
+        If idx.Primary Then
+            For Each key In idx.Fields
+                keys.Add key.Name
+            Next
+            Exit For
+        End If
+    Next
+    If keys.count = 0 Then Err.Raise vbObjectError + 311, , "Source table has no primary key: " & sourceTable.Name
+    firstKey = CStr(keys(1))
+    For i = 1 To keys.count
+        If Len(join) > 0 Then join = join & " AND "
+        join = join & "src.[" & keys(i) & "]=dst.[" & keys(i) & "]"
+    Next
+    Set rows = db.OpenRecordset("SELECT Count(*) AS N FROM [" & sourceQuery & "]", dbOpenSnapshot)
+    sourceCount = rows!n: rows.Close
+    Set rows = db.OpenRecordset("SELECT Count(*) AS N FROM [" & sourceTable.Name & "]", dbOpenSnapshot)
+    targetCount = rows!n: rows.Close
+    If sourceCount <> targetCount Then Err.Raise vbObjectError + 304, , "Row count mismatch in " & sourceTable.Name
+    If sourceCount = 0 Then Exit Function
+    numericKey = (sourceTable.Fields(firstKey).Type = dbLong)
+    fromSQL = " FROM [" & sourceQuery & "] AS src LEFT JOIN [" & sourceTable.Name & "] AS dst ON " & join
+    Do
+        range = "": chunkCount = sourceCount
+        If numericKey Then
+            boundary = ""
+            If haveLow Then boundary = " WHERE [" & firstKey & "]>" & low
+            Set rows = db.OpenRecordset("SELECT TOP " & BatchRows & " [" & firstKey & "] FROM [" & sourceQuery & "]" & boundary & " ORDER BY [" & firstKey & "]", dbOpenSnapshot)
+            If rows.EOF Then rows.Close: Exit Do
+            rows.MoveLast: high = rows.Fields(0): rows.MoveFirst
+            'The boundary query returns at most BatchRows keys, never field values.
+            range = "src.[" & firstKey & "]<=" & high & " AND "
+            If haveLow Then range = "src.[" & firstKey & "]>" & low & " AND " & range
+            chunkCount = rows.RecordCount: rows.Close
+        End If
+        For first = 0 To sourceTable.Fields.count - 1 Step BatchFields
+            last = first + BatchFields - 1
+            If last >= sourceTable.Fields.count Then last = sourceTable.Fields.count - 1
+            predicate = "dst.[" & firstKey & "] Is Null"
+            For i = first To last
+                Set fld = sourceTable.Fields(i)
+                part = MigrationDifference(fld)
+                predicate = predicate & " OR " & part
+            Next
+            Set rows = db.OpenRecordset("SELECT TOP 1 src.[" & firstKey & "]" & fromSQL & " WHERE " & range & "(" & predicate & ")", dbOpenSnapshot)
+            If Not rows.EOF Then Err.Raise vbObjectError + 306, , "Missing row or field mismatch in " & sourceTable.Name & " (fields " & first + 1 & "-" & last + 1 & ")."
+            rows.Close
+            If showProgress Then Application.Run "WorkspaceImportPulse"
+        Next
+        checked = checked + chunkCount
+        If showProgress Then Application.Run "WorkspaceImportProgress", "Verifying " & sourceTable.Name & ": " & checked & " records checked by database engine"
+        If Not numericKey Then Exit Do
+        low = high: haveLow = True
+    Loop
+    VerifyMigrationTable = sourceCount
+    Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    Resume CleanupVerification
+CleanupVerification:
+    On Error Resume Next
+    If Not rows Is Nothing Then rows.Close
+    On Error GoTo 0
+    Err.Raise failure, "VerifyMigrationTable", message
+End Function
+Private Function MigrationDifference(ByVal field As DAO.Field) As String
+    Dim a As String, b As String, compare As String
+    a = "src.[" & field.Name & "]": b = "dst.[" & field.Name & "]"
+    Select Case field.Type
+        Case dbText, dbMemo
+            'Binary comparison preserves case, Unicode, trailing spaces and full memos.
+            compare = "StrComp(" & a & "," & b & ",0)<>0"
+        Case dbBoolean, dbByte, dbInteger, dbLong, dbCurrency, dbSingle, dbDouble, dbDate, dbDecimal, dbGUID
+            compare = a & "<>" & b
+        Case Else
+            Err.Raise vbObjectError + 312, , "Unsupported verification field type: " & field.Name & " (" & field.Type & ")"
+    End Select
+    MigrationDifference = "((" & a & " Is Null)<>(" & b & " Is Null) OR " & compare & ")"
 End Function
 
 Private Function IsMajorTable(ByVal name As String) As Boolean
