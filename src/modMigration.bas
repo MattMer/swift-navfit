@@ -14,15 +14,16 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 26 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If ver < 1 Or ver > 27 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion <> 21 And targetVersion <> 22 And targetVersion <> 23 And targetVersion <> 24 And targetVersion <> 25 And targetVersion <> 26 Then Err.Raise vbObjectError + 302, , "Target schema must be 21, 22, 23, 24, 25 or 26."
+    If targetVersion <> 21 And targetVersion <> 22 And targetVersion <> 23 And targetVersion <> 24 And targetVersion <> 25 And targetVersion <> 26 And targetVersion <> 27 Then Err.Raise vbObjectError + 302, , "Target schema must be 21 through 27."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, , "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
     If targetVersion >= 22 Then tables = Split(Join(tables, "|") & "|ReportNote|ReportNoteDraft", "|")
     If targetVersion >= 23 Then tables = Split(Join(tables, "|") & "|CommandMember|MemberReport|PriorEvaluation|PriorEvaluationTrait", "|")
     If targetVersion >= 26 Then tables = Split(Join(tables, "|") & "|ReportMessage", "|")
+    If targetVersion >= 27 Then tables = Split(Join(tables, "|") & "|DirectoryMerge|DirectoryMergeReport|DirectoryMergePrior", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             known = (table.Name = "AppMetadata")
@@ -63,6 +64,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     End If
     copyStarted = Timer
     For Each n In tables
+        If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextTable
         If ver < 26 And n = "ReportMessage" Then GoTo NextTable
         If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextTable
         If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextTable
@@ -105,6 +107,7 @@ NextTable:
     If showProgress Then Application.Run "WorkspaceImportProgress", "Bulk copying finished in " & Format$(MigrationSeconds(copyStarted), "0.00") & " seconds. Verifying copied values..."
     verifyStarted = Timer
     For Each n In tables
+        If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextCheck
         If ver < 26 And n = "ReportMessage" Then GoTo NextCheck
         If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextCheck
         If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextCheck

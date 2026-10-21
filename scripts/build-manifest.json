@@ -11,6 +11,7 @@
     "src/modCommandDirectory.bas",
     "src/modDecisionDetails.bas",
     "src/modDirectoryBatch.bas",
+    "src/modDirectoryMerge.bas",
     "src/modFileHash.bas",
     "src/modGroupPolicy.bas",
     "src/modImportReview.bas",
@@ -67,6 +68,7 @@
     "src/modUXCalculationContext.bas",
     "src/modUXDashboard.bas",
     "src/modUXDirectory.bas",
+    "src/modUXDirectoryMerge.bas",
     "src/modUXExportNames.bas",
     "src/modUXFeedback.bas",
     "src/modUXGlobalDefaults.bas",
@@ -694,11 +696,19 @@
       ]
     },
     {
+      "id": "apply-directory-merge",
+      "phase": "finalize",
+      "file": "scripts/apply-directory-merge.ps1",
+      "requires": [
+        "apply-ux-table-sort"
+      ]
+    },
+    {
       "id": "finalize-application",
       "phase": "finalize",
       "file": "scripts/finalize-application.ps1",
       "requires": [
-        "apply-ux-table-sort"
+        "apply-directory-merge"
       ]
     }
   ]

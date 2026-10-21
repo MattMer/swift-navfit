@@ -30,7 +30,7 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 
 ### Work across a command and summary groups
 
-- **Command member directory:** reuse identities and filter report creation by paygrade or rank/rate; create reports individually or in batches.
+- **Command member directory:** reuse identities and filter report creation by paygrade or rank/rate; create reports individually or in batches. [Review possible duplicate Sailors](docs/Duplicate_Sailor_Review.md), inspect masked identities and affected links, and merge with retained history and guarded undo.
 - **Prior evaluation history:** keep historical evaluations alongside each member for reference without replacing the current report.
 - **Shared fields and defaults:** apply group or command defaults with a visible scope, per-field confirmation, and disclosure when customized values or local approvals are affected.
 - **Live member tables:** edit trait cells in place; failed cells remain available for retry or deliberate discard.
@@ -63,7 +63,7 @@ NAVFIT98A already provides report editing, folder/default management, validation
 | Pending-edit checkpoints | - | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
 | Review tracking | - | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
 | Discussion history | - | Unified report notes and replies, private unfinished drafts, and direct navigation from My Work; independent of approval. |
-| Member reuse and history | - | A command directory, rank/paygrade filters, batch report creation, and separate prior evaluations. |
+| Member reuse and history | - | A command directory, rank/paygrade filters, batch report creation, separate prior evaluations, and reviewed duplicate merging with retained history and guarded undo. |
 | Reporting-senior averages | Summary/average calculations are part of NAVFIT98A. | Reusable senior records and dated RSCA baselines, with exact-versus-estimated provenance and deliberate group baseline selection. |
 | Shared group values | Folder defaults and common report values are supported. | Explicit affected-report scope, confirmation of replacements, and reopening of affected local approvals. |
 | Validation | Native individual-report and folder validation. | Embedded checks plus a modeless Validation Issues popout, pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
@@ -76,7 +76,7 @@ The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy
 
 Swift NAVFIT stores reports, revisions, review history, and recovery checkpoints locally in the workspace `.accdb`. Normal drafting and review do not communicate with the internet: the app does not upload report data, synchronize with an online service, or send telemetry. No internet account, cloud service, or separate application-specific network protection is required.
 
-The workspace uses the Windows file/folder access controls and storage protections of its location. Place it in the same approved, protected folder you would use for other files containing the same data; it inherits that folder's permissions under normal Windows inheritance settings and respects explicit file permissions. Existing device encryption, backup, and organizational data-handling rules continue to apply. Swift does not add a separate authentication or encryption layer, and contributor profiles are attribution labels rather than access controls.
+The workspace uses the Windows file/folder access controls and storage protections of its location. Place it in the same approved, protected folder you would use for other files containing the same data; it inherits that folder's permissions under normal Windows inheritance settings and respects explicit file permissions. Existing device encryption, backup, and organizational data-handling rules continue to apply. Swift does not add a separate authentication or encryption layer, and contributor profiles are attribution labels rather than access controls. SSNs remain readable inside the database, including revisions, recovery and retained import data; masked displays do not encrypt storage.
 
 Optional source links, such as NavyWriter, open an external website only when selected; report contents are not included in those links. Microsoft Access/Office and any cloud synchronization configured for the containing folder operate under their own settings, independently of Swift.
 
@@ -84,7 +84,7 @@ Optional source links, such as NavyWriter, open an external website only when se
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-Current verified r126 files: [Blank](https://drive.google.com/file/d/16zArkr-VBeUODNQZQFVWJhfIDQvRlBFN/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1U5HK0iu24Y4nmualAs_67PMOon3Ja7mW/view?usp=drivesdk). PDF extraction now runs locally without Acrobat. See [local PDF extraction and verification](planning/LOCAL_PDF_R126_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
+Current verified r127 files: [Blank](https://drive.google.com/file/d/1OQu61JnjRKjZJ5zw4DeKzLz_GLC4eCNO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1-Yh1_2Z49WBOhzd5Oz_0Ul7XJWo22YgA/view?usp=drivesdk). This release adds reviewed duplicate Sailor merging with guarded undo. PDF extraction continues to run locally without Acrobat. See [duplicate-review procedure](docs/Duplicate_Sailor_Review.md), [r127 verification](planning/DIRECTORY_MERGE_R127_2026-10-21.md), [local PDF extraction](planning/LOCAL_PDF_R126_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
 
 1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
 2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.

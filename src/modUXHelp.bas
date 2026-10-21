@@ -103,6 +103,8 @@ End Function
 
 Public Function UXWindowHelpIntro(ByVal formName As String) As String
     Select Case formName
+        Case "frmUXDirectoryMerge"
+            UXWindowHelpIntro = "Duplicate Sailor review: choose an original profile and a survivor. Surname matches only suggest candidates; choose any active survivor for a changed name. Preview masked identities and all report/prior links, independently confirm the same Sailor, and enter a reason without identifiers. Conflicting SSNs or DoD IDs block merging. Keep the SSN-owning profile as survivor. Apply moves stable member links, archives and retains the original profile, and preserves report fields, revisions, notes, review history and prior traits. Profile fields are not combined. Select merge history to undo only if no later affected changes exist. Close editors before merging or undoing. Folder permissions remain the storage protection; masking does not encrypt stored identifiers."
         Case "frmUXDirectory", "frmUXMemberEditor", "frmUXDirectoryBatch", "frmUXRUADImport", "frmUXConfirmIdentity"
             UXWindowHelpIntro = "Command directory: maintain member identities before creating reports. Preview batch creation or roster imports before applying. Changing a filter clears the earlier selection. Identity corrections do not silently replace saved report revisions."
         Case "frmUXMemberHistory", "frmUXPriorEditor"

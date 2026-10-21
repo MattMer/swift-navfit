@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[ValidateRange(1,26)][int]$MinimumSchema=1)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[ValidateRange(1,27)][int]$MinimumSchema=1,[string]$CurrentSchemaPath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
@@ -9,6 +9,7 @@ $paths=@(Get-ChildItem (Join-Path $root 'output') -Filter *.accdb | Where-Object
 $paths+=@(Get-ChildItem (Join-Path $root 'output/Swift_NAVFIT_0.23.0-preview'),(Join-Path $root 'output/Swift_NAVFIT_0.24.0-preview') -Filter '*DEMO.accdb')
 $paths+=Get-Item (Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb')
 $paths+=Get-Item (Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb'),(Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb')
+if($CurrentSchemaPath){$paths+=Get-Item -LiteralPath $CurrentSchemaPath}
 foreach($file in $paths){
  $db=$dao.OpenDatabase($file.FullName,$false,$true)
  try{$r=$db.OpenRecordset('SELECT SchemaVersion FROM AppMetadata',4);$v=[int]$r.Fields.Item(0).Value;$r.Close();$fixtures[$v]=$file.FullName}finally{$db.Close()}
@@ -27,7 +28,7 @@ try{
  foreach($v in @($fixtures.Keys|Where-Object {$_ -ge $MinimumSchema}|Sort-Object)){
   $source=$fixtures[$v];$hash=(Get-FileHash -LiteralPath $source).Hash
   $target=OpenTarget ('schema-'+$v)
-  if($v -eq 26){
+  if($v -eq 27){
    if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$source+'")')){throw 'UI preview failed'}
    if(-not $app.Eval('UXApplySwiftWorkspace()')){throw 'UI apply failed'}
    $result=$app.Eval('Forms!frmUXWorkspaceImport!lblStatus.Caption')

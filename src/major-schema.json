@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 26,
+  "SchemaVersion": 27,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -29,7 +29,10 @@
     "MemberReport",
     "PriorEvaluation",
     "PriorEvaluationTrait",
-    "ReportMessage"
+    "ReportMessage",
+    "DirectoryMerge",
+    "DirectoryMergeReport",
+    "DirectoryMergePrior"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -128,6 +131,17 @@
     "ALTER TABLE PriorEvaluation ADD CONSTRAINT FK_PriorCreator FOREIGN KEY (CreatedBy) REFERENCES UserProfile (UserProfileID)",
     "ALTER TABLE PriorEvaluation ADD CONSTRAINT FK_PriorEditor FOREIGN KEY (ModifiedBy) REFERENCES UserProfile (UserProfileID)",
     "CREATE TABLE PriorEvaluationTrait (PriorID LONG NOT NULL, BlockNumber SHORT NOT NULL, MarkValue TEXT(3), CONSTRAINT PK_PriorTrait PRIMARY KEY (PriorID,BlockNumber))",
-    "ALTER TABLE PriorEvaluationTrait ADD CONSTRAINT FK_PriorTrait FOREIGN KEY (PriorID) REFERENCES PriorEvaluation (PriorID)"
+    "ALTER TABLE PriorEvaluationTrait ADD CONSTRAINT FK_PriorTrait FOREIGN KEY (PriorID) REFERENCES PriorEvaluation (PriorID)",
+    "CREATE TABLE DirectoryMerge (MergeID COUNTER PRIMARY KEY, MergeGuid TEXT(38) NOT NULL, FromMemberID LONG NOT NULL, ToMemberID LONG NOT NULL, OperationID LONG NOT NULL, MergeState TEXT(12) NOT NULL, Reason TEXT(255) NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, UndoneBy LONG, UndoneAt DATETIME, AfterFingerprint TEXT(64), SourceWasArchived BIT, SourceModifiedBy LONG, SourceModifiedAt DATETIME, TargetModifiedBy LONG, TargetModifiedAt DATETIME)",
+    "CREATE UNIQUE INDEX UX_DirectoryMergeGuid ON DirectoryMerge (MergeGuid)",
+    "CREATE TABLE DirectoryMergeReport (MergeID LONG NOT NULL, ReportID LONG NOT NULL, MatchState TEXT(20), MatchSource TEXT(30), UpdatedBy LONG NOT NULL, UpdatedAt DATETIME, CONSTRAINT PK_DirectoryMergeReport PRIMARY KEY (MergeID,ReportID))",
+    "CREATE TABLE DirectoryMergePrior (MergeID LONG NOT NULL, PriorID LONG NOT NULL, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME, CONSTRAINT PK_DirectoryMergePrior PRIMARY KEY (MergeID,PriorID))",
+    "ALTER TABLE DirectoryMerge ADD CONSTRAINT FK_DirectoryMerge_FromMemberID FOREIGN KEY (FromMemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE DirectoryMerge ADD CONSTRAINT FK_DirectoryMerge_ToMemberID FOREIGN KEY (ToMemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE DirectoryMerge ADD CONSTRAINT FK_DirectoryMerge_OperationID FOREIGN KEY (OperationID) REFERENCES OperationJournal (OperationID)",
+    "ALTER TABLE DirectoryMergeReport ADD CONSTRAINT FK_DirectoryMergeReport_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
+    "ALTER TABLE DirectoryMergeReport ADD CONSTRAINT FK_DirectoryMergeReport_ReportID FOREIGN KEY (ReportID) REFERENCES Report (ReportID)",
+    "ALTER TABLE DirectoryMergePrior ADD CONSTRAINT FK_DirectoryMergePrior_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
+    "ALTER TABLE DirectoryMergePrior ADD CONSTRAINT FK_DirectoryMergePrior_PriorID FOREIGN KEY (PriorID) REFERENCES PriorEvaluation (PriorID)"
   ]
 }

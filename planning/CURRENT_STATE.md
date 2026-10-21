@@ -1,3 +1,17 @@
+## 2026-10-21 - r127 reviewed duplicate Sailor merging
+
+Current verified files: `output/Swift_NAVFIT_Blank_2026-10-21-r127.accdb` and `output/Swift_NAVFIT_Demo_2026-10-21-r127.accdb`, app 0.27.0-dev / schema 27. Both uploaded to the designated Drive folder with name, size and parent readback verified. Blank has no user rows; Demo has 13 synthetic reports, five groups and 13 directory members. Neither distribution contains scratch merge rows. All owned Access sessions are closed.
+
+**C01:** the user explicitly chose folder permissions as the protection boundary. No password, encryption or key setup added. SSNs remain readable in current fields, revisions, recovery and retained import/provenance data; masking does not encrypt storage. README and backlog document the accepted decision.
+
+**C02:** Resources > Command member directory > Review possible duplicate Sailors offers surname candidates, deliberate changed-name selection, masked identity comparisons, affected report/prior lists, required reviewed preview/reason, atomic merge mappings and guarded undo. Original profiles are archived and retained; existing stable member relationships move while report fields, revisions, notes/reviews and prior traits remain intact. Conflicting identifiers, stale previews and open editors block apply. Later affected changes block undo; active nested merges are not supported. The window has top-right contextual help. See [procedure](../docs/Duplicate_Sailor_Review.md).
+
+Final-artifact native gates passed: 47 merge, 72 directory/history, 20 batch creation, 21 directory UI, 57 context help, 27 cleanup, 48 smoke, 39 Demo and 35 report-tools checks. All 27 retained schema fixtures transferred through the production engine with exact value/source-hash checks and rollback/rejection guards. Separate populated schema-20 and current Demo upgrades passed. Committed/undone merge history transferred exactly, reopened, allowed guarded undo and advanced the next merge AutoNumber correctly. Oldest retained fixtures are blank distributions; they do not establish populated historical workflows beyond the separate populated fixtures tested.
+
+The verified incremental assembler uses r126's blank UI, applies the additive schema/form stage, compiles/reopens and checks all 99 static modules and bindings across 66 forms. Full fresh-generation proof remains outstanding as documented for r126. Physical display, accessibility and print acceptance remain deferred.
+
+The r126 Blank and populated r116 workspace match recorded baseline hashes. The local r126 Demo differs from its published receipt; its current source contents and before/after hash passed the read-only transfer gate. It was preserved as found; the cause of the older hash difference is not established. Full evidence: [r127 implementation notes](DIRECTORY_MERGE_R127_2026-10-21.md), `planning/DIRECTORY_MERGE_R127_VERIFICATION.json`, and `output/CURRENT_FILES.json`.
+
 ## 2026-10-20 - r126 local PDF extraction
 
 Current verified files: `output/Swift_NAVFIT_Blank_2026-10-20-r126.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r126.accdb`. Both uploaded to the designated Drive folder with name, size and parent readback verified. Blank is empty; Demo has 13 synthetic reports in five groups. Earlier releases and the populated r116 workspace are hash-verified unchanged. Access is closed.

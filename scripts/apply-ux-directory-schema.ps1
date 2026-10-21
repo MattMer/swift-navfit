@@ -7,7 +7,7 @@ if($present.Count -gt 0 -and $present.Count -ne 4){throw 'Incomplete directory s
 if($present.Count -eq 0){
  $schema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
  $w=$app.DBEngine.Workspaces.Item(0);$w.BeginTrans()
- try{foreach($sql in $schema.SQL | Where-Object {$_ -match 'CommandMember|MemberReport|PriorEvaluation|UX_PriorGuid|PK_PriorTrait'}){$db.Execute($sql,128)};$db.Execute('UPDATE AppMetadata SET SchemaVersion=23',128);$w.CommitTrans()}catch{$w.Rollback();throw}
+ try{foreach($sql in $schema.SQL | Where-Object {$_ -match 'CommandMember|MemberReport|PriorEvaluation|UX_PriorGuid|PK_PriorTrait' -and $_ -notmatch 'DirectoryMerge'}){$db.Execute($sql,128)};$db.Execute('UPDATE AppMetadata SET SchemaVersion=23',128);$w.CommitTrans()}catch{$w.Rollback();throw}
 }
 $db.TableDefs.Refresh()
 foreach($name in @('CommandMember','PriorEvaluation','PriorEvaluationTrait')){foreach($field in $db.TableDefs.Item($name).Fields){if($field.Type -eq 10 -and -not $field.Required){$field.AllowZeroLength=$true}}}
