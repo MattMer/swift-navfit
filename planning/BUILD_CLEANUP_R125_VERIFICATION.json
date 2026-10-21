@@ -1,0 +1,1115 @@
+{
+  "Revision": "r125",
+  "AppVersion": "0.26.0-dev",
+  "Schema": 26,
+  "Status": "PASS",
+  "PreflightChecks": 11,
+  "SourceNormalizationChecks": 8,
+  "GenerationRegression": {
+    "Artifact": "D:\\Development\\Swift NAVFIT\\build\\managed-r125-v1.accdb",
+    "SHA256": "EA264A7F967AE5F81CD0ECB803F17AAEB192FC6E5AB0E4C47FA79C39EC5C725E",
+    "StaticModules": 94,
+    "GeneratedModules": 4,
+    "Forms": 65,
+    "RetiredFormsAbsent": true,
+    "EventBindingsVerified": true,
+    "CleanupFolderHistoryUndoChecks": 27,
+    "OrganizationChecks": 22,
+    "SmokeChecks": 48,
+    "ContextHelpChecks": 57,
+    "GroupExitChecks": 54,
+    "FixedPageChecks": 264,
+    "WorkflowChecks": 41,
+    "ForcedQuitRecovery": true,
+    "TraitCatalogueFidelityChecks": 169
+  },
+  "Migration": {
+    "UnknownTableRejected": true,
+    "Fixtures": [
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.1.0.accdb",
+        "Reports": 0,
+        "Schema": 1,
+        "SourceSHA256": "3C2DD72F795CFAE177EF04301D609D91AFEDD3CB62F128A504122CF022D450F9",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-1.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 1 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.2.2-review.accdb",
+        "Reports": 0,
+        "Schema": 2,
+        "SourceSHA256": "EDBEBC22F6F5A488581322E504309BAA36B864650AA49542964C5E1D67DA8C48",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-2.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 2 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.3.0-official-narratives.accdb",
+        "Reports": 0,
+        "Schema": 3,
+        "SourceSHA256": "4A061659A28D27B4B1D64B783452D62109212C265852816B15645DEF5B3B9A10",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-3.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 3 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.4.1-revision-compare.accdb",
+        "Reports": 0,
+        "Schema": 4,
+        "SourceSHA256": "FBFF79FB1C65538D58E3136765241A325A6240CA98BC070D8E7F68323AF2CCE4",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-4.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 4 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.5.1-checklist.accdb",
+        "Reports": 0,
+        "Schema": 5,
+        "SourceSHA256": "FE922FBFD6F78C213E786185105104A9B31A626D3F4C12F8EAB1F3B258AB7254",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-5.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 5 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.6.1-provenance.accdb",
+        "Reports": 0,
+        "Schema": 6,
+        "SourceSHA256": "5138FA41FD7C799AE7FA905DAD9E676B7FC6586248023085406AF237E3D65FF7",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-6.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 6 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.7.0-review-comments.accdb",
+        "Reports": 0,
+        "Schema": 7,
+        "SourceSHA256": "7CA52F5565FB419CD1FC4E7CDF17D8F5264F6F2EB844DD99658CA674EA6D3A70",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-7.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 7 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.8.0-review-routing.accdb",
+        "Reports": 0,
+        "Schema": 8,
+        "SourceSHA256": "BE5980723A0CD2635B3717A664A6BC0583B7DD3A2337E948BACB72F7C6E0CA69",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-8.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 8 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.9.0-administration.accdb",
+        "Reports": 0,
+        "Schema": 9,
+        "SourceSHA256": "4AF1BD2C8D4E5255ECEF9B0D481B917CEB4C8A8A440B6B40F7E4CCA7367B41EB",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-9.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 9 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.11.0-trait-summary.accdb",
+        "Reports": 0,
+        "Schema": 10,
+        "SourceSHA256": "E8CD1AC0C0B1E2020371A8A57049D9017042715870A91F5F50C839C570A7678D",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-10.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 10 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.12.0-assessment.accdb",
+        "Reports": 0,
+        "Schema": 11,
+        "SourceSHA256": "75B1C351C8153AFF9303108ECEEA96D2454E7F7E6323CA7A03AD34D80BE48202",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-11.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 11 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.13.0-promotion-status.accdb",
+        "Reports": 0,
+        "Schema": 12,
+        "SourceSHA256": "AC8306DDCBEFEA975C6062A62B6A8DF175E5AF7049F8EE8D38C0837CCE86BA95",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-12.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 12 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.14.0-reporting-senior.accdb",
+        "Reports": 0,
+        "Schema": 13,
+        "SourceSHA256": "A8B71B2082525EC74905EF8CDED7F8CB949351009F066B33A568687D6C1D16F3",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-13.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 13 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.15.0-report-context.accdb",
+        "Reports": 0,
+        "Schema": 14,
+        "SourceSHA256": "F8715403D365EA38C71BECDD9D4B378791EED7170D6C18BB5E767C576135914B",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-14.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 14 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.16.0-member-details.accdb",
+        "Reports": 0,
+        "Schema": 15,
+        "SourceSHA256": "AA1B68D1A9FDC890EE294C4FC17F6486C1895ADFA53AD9207016FC2FDF0C03F5",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-15.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 15 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.17.0-service-details.accdb",
+        "Reports": 0,
+        "Schema": 16,
+        "SourceSHA256": "5B131BB48ED280170A02D5468828902076D7ED72D0C0E6C4FCA8F7088CC58057",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-16.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 16 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.18.0-decision-details.accdb",
+        "Reports": 0,
+        "Schema": 17,
+        "SourceSHA256": "CF964D41EC1D30A2A65F8EE9BDA1F513EEF49F68E467EFF1F52B0EA795F4E107",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-17.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 17 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.19.0-report-people.accdb",
+        "Reports": 0,
+        "Schema": 18,
+        "SourceSHA256": "0E3F26E927EEB2081CDCE4A53D61CC926E83C12BEAF717E61FDE958E8CF37680",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-18.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 18 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.20.0-structured-names.accdb",
+        "Reports": 0,
+        "Schema": 19,
+        "SourceSHA256": "27EFFE6334A6B5AB6499F25D281408CD921E6F275A9DD943DE099260EBAF1218",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-19.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 19 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.21.0-major-foundations.accdb",
+        "Reports": 0,
+        "Schema": 20,
+        "SourceSHA256": "C3F914D6C13EFB1796669010F5B6F2A2CC2EB402EB3F9331805DF40FEDDEB77C",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-20.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 20 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.23.0-preview\\Swift_NAVFIT_0.23.0-preview-DEMO.accdb",
+        "Reports": 9,
+        "Schema": 21,
+        "SourceSHA256": "CD1E348968BCF90634E5FA3CF92BA29CF39836C1E0C5538ECC2FB1D247A4A3C1",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-21.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 21 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb",
+        "Reports": 9,
+        "Schema": 22,
+        "SourceSHA256": "98F97BC62B54F259F5DD7FB1A549CBAE35C03686F292686EAECD52A7598CC06E",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-22.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 22 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.24.0-preview\\Swift_NAVFIT_0.24.0-preview-DEMO.accdb",
+        "Reports": 9,
+        "Schema": 23,
+        "SourceSHA256": "BBB734E1B8F13BFBDF6333BD2D2CED80127DF708128B6B418AC9A44E618E660F",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-23.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 23 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb",
+        "Reports": 10,
+        "Schema": 24,
+        "SourceSHA256": "4B9CA42AC89B7A15C12BFC3499F587CACA0FEE3E2570B127B9E6489662784B84",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-24.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 24 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb",
+        "Reports": 9,
+        "Schema": 25,
+        "SourceSHA256": "36DA2CBA79F55664CA100ABC6AD9436CD48502F3A5E4C65BB06F84625DEC3192",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-25.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 25 to 26"
+      },
+      {
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Demo_2026-10-20-r125.accdb",
+        "Reports": 13,
+        "Schema": 26,
+        "SourceSHA256": "A369E456C7F8DE081254DE733D70755E5113F22FA287330E57ED6F2DA3CC04E7",
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\data-import-b294c08a-c276-46f8-af77-3e808d80c98f\\schema-26.accdb",
+        "Result": "PASS: all original rows and fields verified; schema 26 to 26. Close and reopen this app to load the imported workspace."
+      }
+    ],
+    "Status": "PASS",
+    "ChangedSourceRejected": true,
+    "Rollback": true,
+    "PopulatedTargetRejected": true,
+    "UIEntryPointTested": true,
+    "FutureSchemaRejected": true
+  },
+  "PopulatedSchema20And26ExactReopen": true,
+  "InjectedMismatchRollbackRetry": true,
+  "EngineAdversarialChecks": 16,
+  "LargeImport": {
+    "SourceSHA256": "18FBE37E1C8233EC51B44A5ACF040CAE76D45A57F966AE40287B76AEA1C3F5C5",
+    "Speedup": null,
+    "Rows": 262144,
+    "Status": "PASS",
+    "SourceUnchanged": true,
+    "BuildSHA256": "EA264A7F967AE5F81CD0ECB803F17AAEB192FC6E5AB0E4C47FA79C39EC5C725E",
+    "Source": "D:\\Development\\Swift NAVFIT\\build\\tests\\engine-import-dc2565b8-0de4-49dd-925a-43f214beb9f0\\large synthetic provenance.accdb",
+    "Runs": [
+      {
+        "Engine": "engine",
+        "Seconds": 14.1960734,
+        "RawRecords": 262144,
+        "Target": "D:\\Development\\Swift NAVFIT\\build\\tests\\engine-import-dc2565b8-0de4-49dd-925a-43f214beb9f0\\engine.accdb",
+        "Status": "PASS: all original rows and fields verified; schema 26 to 26. Close and reopen this app to load the imported workspace.",
+        "UI": "PASS: 52 responsive event turns; nested import, preview, chooser and close blocked"
+      }
+    ],
+    "ExactAdversarialChecks": 16
+  },
+  "PhysicalVisualAcceptance": "Deferred by user",
+  "OriginalR116SHA256": "6ACE66A9C2883E1BE6CBCFBEC584249B254A61620D998486468E205BCECBEFE2",
+  "HistoricalToolsHarness": "Superseded standalone frmChecklist expectation fails; retained folder batch/undo tested by current BuildCleanupHarness instead",
+  "NativeComAliasCleanup": true,
+  "HistoricalTraitsHarness": "Historical 78-field snapshot and standalone checklist expectations; current catalogue fidelity passes 169 exact checks, with trait behavior covered by fixed-page/workflow suites",
+  "BuildReceipt": {
+    "Output": "D:\\Development\\Swift NAVFIT\\build\\managed-r125-final-v4.accdb",
+    "Verification": {
+      "SourceModules": 94,
+      "Forms": 65,
+      "NativeUnloadGuards": true,
+      "RetiredFormsAbsent": true,
+      "Identity": true
+    },
+    "SchemaVersion": 26,
+    "SHA256": "C6B7A1181239715012FB61B51FB8A86D7B0B2F6EB1F4766013332AD541551F83",
+    "Status": "Built and structurally verified; workflow tests required",
+    "Inputs": {
+      "prototype/fields.mjs": "8012905A30EE9FA1485DFBBD35A7C5A7BF204B5CCF013B670370DF31828C7F1C",
+      "scripts/access-properties.ps1": "5097255D97E1BC3B8D5F4E12CB64461008244873D509FD974A59F302D456D4DA",
+      "scripts/apply-report-tools.ps1": "CF6298FEAA0906930496D3144BF9C3BCCF935C56FDA7F41D278CB3AE5A020F28",
+      "scripts/apply-rs-directory-layout.ps1": "49FB2EBE54688CC8F1AAF992CA8228A77B6CD3916FF5F4C751FF620DFE963BCA",
+      "scripts/apply-ui-author-baseline.ps1": "2172138D38C1CC91D1897E5CC16413DC89776306D6FF34C0E12A3EFC8065FA1E",
+      "scripts/apply-ux-admin-feedback.ps1": "6F3A659E7CCA0EAF5639E23BE8962C62417A26CEBE973831CE26C32672F80BDC",
+      "scripts/apply-ux-block-tools.ps1": "67A16C42EE9898A3E9F41EC403924B151C3805EBB08B4C40A969FB62B3DD2195",
+      "scripts/apply-ux-block28-schema.ps1": "D6E242088E4B33AC166997B114DF4B2FFDDC586E038702C1F9D04C77727C622D",
+      "scripts/apply-ux-career-columns.ps1": "FCFD40B9D93F8CD079C6C472220B0147DB2976159D2E4E1E48F06A6E356768F3",
+      "scripts/apply-ux-comments-ita.ps1": "2EF0FF85BEC923EAE0AFBF1184A952EA35C0F619347B2F274FAF155B2C3DF84C",
+      "scripts/apply-ux-comparison-autosave.ps1": "4BD3A2C6D09A53C836B6D3F6026108C02D55B6C6BB0EC35AB274431BAB8B08C8",
+      "scripts/apply-ux-compat-pages.ps1": "FFBD886C9FDFC9CEE1B1B41CE297208D44B469CE7CA84978D350B80C6090E5EC",
+      "scripts/apply-ux-context-help.ps1": "BA39B47D0C49E51DF18778BE2CA5089E0C6E80A87175D10D7919EA98B078222A",
+      "scripts/apply-ux-context.ps1": "4CDE4C9D1D462BACD0DDE7B4519B6B09189CC7DB8BC48F1624C817CB0B8F1F2B",
+      "scripts/apply-ux-date-pickers.ps1": "04726057A9DC34A1F989099D0FAF6644D208F56261B07078F72E90DCEE121B18",
+      "scripts/apply-ux-default-resets.ps1": "D80D973D50EBCBEE160A5F5A109D76358FA205473A135473DC61737D7AD8F888",
+      "scripts/apply-ux-directory-batch.ps1": "CF4C9290A34A393A1EEB6FE87FABB660BDFD2468326B9AD994E8DAA62092C6AA",
+      "scripts/apply-ux-directory-identity-picker.ps1": "20AAAE2B9CA08447C8E717F32D0B494B9B9DF0033F97C4A568B60E3722F208E1",
+      "scripts/apply-ux-directory-identity.ps1": "4AA00A278A7740BC9D5048C446ABBCBEA3C1ACF6DC0D41D3F9D796D8777FCC56",
+      "scripts/apply-ux-directory-schema.ps1": "06297AF1FB632AF68BE94C4A64D26122C9AC510D7D6F72898CE0394BDE85F702",
+      "scripts/apply-ux-directory.ps1": "0439E79D5798D149176C375A26542E1BAB96DD619683F25EB1995EC10152C843",
+      "scripts/apply-ux-efficiency.ps1": "48E67A2055F652B30C4E934142CC90CEDAFABC22C02AF36758D724083692BFEF",
+      "scripts/apply-ux-export-names.ps1": "CE6B05B7130F7E9B0B72D2B98CC635E0A9BF9BA64583D7900B3B8FCBB762DB28",
+      "scripts/apply-ux-feedback-tables.ps1": "B74C3C14689DF889C2470DD7537CF337AE7D66B677E3BF723EA58E50DF2DA94E",
+      "scripts/apply-ux-feedback.ps1": "91D06EAE8D1237072ED157FD1109B60E78775D44EE9612C370EA0243C6F89D52",
+      "scripts/apply-ux-field-catalogue.ps1": "59584642CD6C43A6B2D832873A419816BB21E2249C505E3C7762E1BC5231745E",
+      "scripts/apply-ux-global-defaults.ps1": "6EA715B55740041939D4FDFABA9438108F38CBCA4FBBFBEA57F2DCA10E896729",
+      "scripts/apply-ux-group-directory.ps1": "AEAE414175F5BFF690B5B6C678E63BC406A495330578857F6B0D7F6A2C7FE882",
+      "scripts/apply-ux-group-discovery.ps1": "F87051D8AF0C43761BEFC0179F1116E030B2AE36EB95DCD2869A408A76C092C6",
+      "scripts/apply-ux-group-exit.ps1": "927B375314DE68AE095773A033F58F5949E6B85E1959E428217B7F04AC4B846F",
+      "scripts/apply-ux-group-lifecycle.ps1": "5B1EE4380D37E325946B62BD059A1446AAC52F2F38BCF17F316381C673908BDE",
+      "scripts/apply-ux-group-organization.ps1": "44125153BBBAE5C5904FF3BC10FF4EDFC89A220159FCC0026482021CA0BD284B",
+      "scripts/apply-ux-group-policy.ps1": "3F0F1E4C63D67E4B8C1066E2EE17FED1FEA358B8FF54E705E47CFEDCC94E8275",
+      "scripts/apply-ux-header-review.ps1": "C152EDC2FDB847998F2B1155BAC65AB72436F704C832C13C76EB71FF55A88B99",
+      "scripts/apply-ux-help.ps1": "EC19056B9E7029DD964ACF1DFFC94F8CED2F6C378D8F86DEA5FDB11B7D38AAA2",
+      "scripts/apply-ux-immediate-defaults.ps1": "705766B011030D6BD37F4EA2046A179996B93A9AD084780E6225DAADF4B96D0E",
+      "scripts/apply-ux-import-flow.ps1": "3D61E5B02ACE934E8D3F8E2C32A0CA45114EFDBF125B73537C09EE56D8D8890E",
+      "scripts/apply-ux-import-progress.ps1": "3CC7516A977DEA97FA27817544DB6E50DB26B34F196F82475BE52205DC23E77A",
+      "scripts/apply-ux-import-rank.ps1": "B439900ACEDF569E0A6E89E2ACC8A0B3B20C5982905432EB56E39586EFBE0ECB",
+      "scripts/apply-ux-import-scope.ps1": "23FD625898089111816D489B810C300103BCC8D49F065EA134DAF5C87760C87C",
+      "scripts/apply-ux-layout.ps1": "543B0F00BF0169EBC5CAB10A8DB629656C9CD989CEC9768B60877AC0243AF718",
+      "scripts/apply-ux-member-grid.ps1": "E47043A8745DE50A5DC44A656CEE6A9FAA1771E10744E8C4E56C4DFDB7A98B54",
+      "scripts/apply-ux-member-history.ps1": "4D7BCFE23A19BECE7797DD33608AC123D4ABB215625DC446324ECCBF5585E33F",
+      "scripts/apply-ux-member-psg.ps1": "C9050FB70038DDC3F78DF68BFDA4546F1FC42B0034B084C4CBA7181E58E0C10C",
+      "scripts/apply-ux-my-work.ps1": "35267A5556BF555002AE290086DED8609C0554D42F4206A90C5A6868B03B411D",
+      "scripts/apply-ux-native-dates.ps1": "9C90606732A939621B3835C5B909125F07DECA7712A7F78EF3EB09A378FE0D4D",
+      "scripts/apply-ux-native-groups.ps1": "F6F0AACFBC7E883F68EFD8247FA746F092EB0EEE75709056A383AB6EA00F316F",
+      "scripts/apply-ux-navfit.ps1": "0E6C5B48CC6B5E8C59B9E1C8E977B985E7C88DF2C12A0E1726CA200466AFBB8E",
+      "scripts/apply-ux-navigation-context.ps1": "71BC5ECA860C9715C58639BBFEB9DF34513D2E0CEF6C45087025B28A199275E4",
+      "scripts/apply-ux-navywriter.ps1": "9FE79E6EACB8F085A77B6CC355CAD415CD2A2EF98B18BDABEB0E40E46D29AF69",
+      "scripts/apply-ux-note-entries.ps1": "8A6FB74AE6EB25FEF9D4B9124E765DA5F261708B5A98BEB7DECEBD192F3D8E04",
+      "scripts/apply-ux-notes-schema.ps1": "27C119CD611F97FB6F99A339ABDDCCA7D3399330040450255B6CD81ED7319787",
+      "scripts/apply-ux-page-switch.ps1": "F6D1AC0B270AD5087EA67636B03673867ED5E61F974730B7C6FDAA8DD14DFC05",
+      "scripts/apply-ux-page-width.ps1": "CA77090FAA313263A9B9D5EBE832D78F449214A88DCB4899F8E8FCA96B8C3799",
+      "scripts/apply-ux-prior-columns.ps1": "B30E8008E86DFF1FEF206E3F43541905CC5FBA978947712E79204C8A2578EEF9",
+      "scripts/apply-ux-prior-readonly.ps1": "07A3296F5B7D93F1FFC691051E9912BF7D190045BEB6CA533AC4D4D424499447",
+      "scripts/apply-ux-priority-actions.ps1": "4603D318770684FDA3BF6CB2549F0013C3E845D192ADE217A787D10FE23F0D61",
+      "scripts/apply-ux-readiness.ps1": "412F23F219FEC09E24AE91F408CAD60F3DA115D295EC86BCDDC7A22DAF2B3E6A",
+      "scripts/apply-ux-resource-tools.ps1": "0B9BAAC674B371DE7AB6B3EC29FB92BFCFE88D15540CF123A4883F622F557245",
+      "scripts/apply-ux-review-return.ps1": "54E5E62761F75681656C15E81455A63AB5A736A9E93D81341142D7E05FFD92F7",
+      "scripts/apply-ux-rsca-review.ps1": "6AF3F5AA4ABE5E7C65C8046202C6E13C88C39FEADDAD7DE4603C6CB23813527E",
+      "scripts/apply-ux-ruad-import.ps1": "6E080B72CC94A45E0B92FCC8F53DBE27C30CDBFFB434322D63F6D44B55872011",
+      "scripts/apply-ux-shell.ps1": "23BA39B5E562CFC152CB74505DD01FE776786F2CF266AFCCE516558F5F98CA72",
+      "scripts/apply-ux-snippet-rates.ps1": "542DF339E73F278B353C539BE7F53D07FFE739E819D38C2DE7DBB7885F5CE11A",
+      "scripts/apply-ux-surface-catalogue.ps1": "87B74248A14A52B9F835F2D746B1C2E10F666067430DBDE77A68EABC58A9EF66",
+      "scripts/apply-ux-table-sort.ps1": "88C26606A97AEDDEC6ED209D7B3DE85C5A3A53EF9A0AD36C9E45AC08D4CD94E0",
+      "scripts/apply-ux-theme.ps1": "4F204A1226AB0039F8A818B7D7C733551D84A0611E834C8593BCE3A3A14B08C0",
+      "scripts/apply-ux-validation.ps1": "A70D9BA9F4D015A228D6900721E1E2532CBF655777B462E12F1A68265653F2CE",
+      "scripts/apply-ux-visual.ps1": "2E86C7D72C0A141DAC9AB96C90959120BDCF483EE6CCE63B903BBA8467BE5D06",
+      "scripts/apply-ux-workspace.ps1": "FDFF761274DD25C20F75803E02045332C441BEAC903C4019C9328099514B4B41",
+      "scripts/build-plan.ps1": "B1282C796D90D23C67B5106A43E55E9A01F0F371704478BBCFB7FFF09C3AABD8",
+      "scripts/build.ps1": "AD9C9A9BB2E5422C45824EDC3A2645DA6D61DC2CA5C9A8409CF46ED57F6BA2EA",
+      "scripts/ensure-native-unload.ps1": "6360401AE055D279C7B7DECC2E631458D39B0E4D48014DB80D6C44F33770001C",
+      "scripts/finalize-application.ps1": "424E549C6FEAB2B18D15724F472E7B7AB4D57444BF7F06CE44DB982578F6822F",
+      "scripts/invoke-build-phase.ps1": "986C315D93DAD72484B26044A13716773905DBA3C7D95CB8AF3C21B0AA494E80",
+      "scripts/vba-source-normalization.ps1": "1323E6180A97813643103EBCF97E1F8425275F0AB584724D9860955653A74B3E",
+      "scripts/verify-built-application.ps1": "55CBF6C4D729A005C6A6628A775D47DD1275D35CDE2C412EAF694152CF5FCF42",
+      "scripts/workspace-backup.ps1": "462BC71B4BEA1DB14D279D2A01BBF5BBAEB87089E9E57EC69E5AB3DABBC7E669",
+      "scripts/write-trait-catalogue.ps1": "5A4B78064B810BB572CFE9198B5CB5840E09392CCEA61812654836392F239713",
+      "src/AutoExec.txt": "0B73ED052E44186AD8817CBB3959BCB4AE3607B04FB7616B667BC19FBD37F204",
+      "src/BlankForm.txt": "4751B162CE4716B1ED7A32A46C4A89678D9B842384BAB57C2AE92BC446CA5AF4",
+      "src/major-schema.json": "EE92B063413FB35F958AEF6A83FABDB204D8DD1A2CB77DFAE157360BADB5E9BD",
+      "src/modAdministration.bas": "076060B850D946424FC7AF291126DE8DD0C1D2E27463FF146FBCC6999B4BAF66",
+      "src/modAssessment.bas": "D745116F2E603BCEC88421AFA4558DA4D4C2B508D808D35D8E78C3008CB779B3",
+      "src/modBackupUI.bas": "DB6A26A215DEC0E10DA4D182B6EC172F12CA079001BCC8C8AEA2D7FF5BF2CFF6",
+      "src/modBulkFolders.bas": "ED6275E26361EC2A42C1E2F2E93C2AD2044010DB5BBEB2B81A68184D34CD2B42",
+      "src/modChecklist.bas": "9151C11CB38DE6B3781608F8D063754CB3A09ECF1F37D5A37C7FE31D0A6E87D8",
+      "src/modCommandDirectory.bas": "E0223024DAE2A448EA739E0044B20E22EBE27C322720581128642C28F6CF2640",
+      "src/modDecisionDetails.bas": "37A33D17582D7A0531D767CBBE0F93C96C8702D19F0E3E707B1C6AF959C2B67D",
+      "src/modDirectoryBatch.bas": "87EA96D61FF7206126717375FFD97E7F8AFBCB8A85C9813E843463538A54CD9A",
+      "src/modFileHash.bas": "0FE9C1518D715A261CFE68FD2436BCE4DD26A8E62DDB547C9659B8CC9090CB40",
+      "src/modGroupPolicy.bas": "88B8CF71144314BA241946BE71299DA85E39C53E519385DC612F291C326B9A0C",
+      "src/modImportReview.bas": "F82CABE5ABE7E49FA02B9A1EE1567F5894227AEE8117F53374960C98F6F07AA2",
+      "src/modLibraryViews.bas": "D3D32579121708A8CFC75E3A3AD69F491F055859CA58EEEC118BD0A3B06E0C66",
+      "src/modLiveValidation.bas": "A72213D6A37F8CBEBFE03E20B804F49C4A6BB4647448CA132D03612D996962FC",
+      "src/modMajorCore.bas": "2F24139CE515C2E98BEEE94E1999D1AA4A634DBB19FBA1779AE9B9A1493A6DAA",
+      "src/modMajorUI.bas": "B46A16DE4C930E67344C5FFBD2C82AE1D7E53B6D51BAF9A430B8BE3E20B80857",
+      "src/modMeetings.bas": "1DE426FFC99384826434D71320E378D25FFC64D590D90DE6156E95DA38EF8995",
+      "src/modMemberDetails.bas": "E9FDDA07FB7A37DBFF0181B4009529C3DA05F2278C43F09C7484479362A753A4",
+      "src/modMemberHistory.bas": "11DE14D3E594CA9274ECC09F1100A64542EA1EC575D58FA46B2AFD69482514B0",
+      "src/modMigration.bas": "C126ABE73704C1B3F44733BB04B62B3B9A14E2F385290CE7EA5FD72857AD6D2D",
+      "src/modNAVFITAdapter.bas": "6F1DA6500D6DDC782343315C87037527E3423F1606D45874B0DEC3CDAE127C94",
+      "src/modNAVFITExchange.bas": "25BFA4288139011C052ACCCC2FDE8F389B7C23CDFD696D09CB88FB0727B55B7A",
+      "src/modNAVFITMapping.bas": "162ED3CE5F2723AD010AC53443D5A669208C3DCABD74BADD3D7AF354748F638A",
+      "src/modNAVFITUpgrade.bas": "1041AD37643C98F5E1E2C85D6C7A6B5D44EF08310D7B194256C17A67877CB788",
+      "src/modNavyWriterCatalog.bas": "745B800696FB439DBF3CD30EF3000986A6806E7C3A05DE69CD9A74AEB97A5BD3",
+      "src/modOfficialBatch.bas": "6C1634D91ADBCAA0D3C57CEBBA7235736BDB53E3EE6B9C0BD5DF2EDDC4E6BDCD",
+      "src/modOperations.bas": "054586014F016905E507F48F45A7811BD1F6CE57298351FA5FE627E0C54C3581",
+      "src/modPartyNames.bas": "368302E15F513CBADC93FE90DBA84C81CE9E3F269469D2980FDE3A7DCD540644",
+      "src/modPDFImport.bas": "5934D7D010C066070A8069D60004BB54AC547747D5CE8A68FB3E85F6F595BCFB",
+      "src/modPDFMapping.bas": "347513B0E6C9DEA955905106B7B5DA73039EF125185E91111EAE6643532AA537",
+      "src/modPromotionStatus.bas": "EF20953B128EBD0B24EB6F090369D1DCD33AB5564D61F862849005F16EFEB244",
+      "src/modProvenance.bas": "9DD5CE17A30B5A80D3AA2D1FDCE9E09B3D3ED026299AC6DAF9B6904D35A4E977",
+      "src/modRecovery.bas": "7B8BE93AA85154AA79596C4EEA83B694C39051F922044274D78056A886392FE0",
+      "src/modReportContext.bas": "E5C497D5B38C34A0FB3BE061F41A86B5BF962DF62D4A1BEF93AF9603B9E1B0BE",
+      "src/modReportingSenior.bas": "811B72299E40E89C7BC1FABB6818DF362A64699FA2C88C1C343B04C43B504E46",
+      "src/modReportMessages.bas": "A8E163C706688D10A586827BA8359BB468BAD90115E7A8E3BA6A55086739A338",
+      "src/modReportNotes.bas": "CDE551CB88EE00C51087FA5958238FEB7B7A0DE1CAD84ADD421EABFBF1C5C6A5",
+      "src/modReportPageMap.bas": "8709B046C88B3363FE03CD5F06DDF5D2CB4C35F7E47879D9AF71AB2D15DA94EB",
+      "src/modReportPages.bas": "AAF1550346B71FAF52824A507ADE8CA5D74F7CA3BB5E89BBA6FA4C138567932F",
+      "src/modReportPeople.bas": "3F950150A2A5117CCDDD531831D0550195F4F72F68863416EB1CDED5EB7F40BC",
+      "src/modReportTools.bas": "989102945D12E37E34A52C09D769EABCF16E349F6D74F61300750642E46CA54B",
+      "src/modReviewComments.bas": "047EA295B758EA7E58C1911D3F99D4595600B8BF1E5E0F44578D89526E093541",
+      "src/modRevisionCompare.bas": "9C7D3C2C1AD4815B62ABC9FC05D675AB58DE4963D5CC8AB2E43895B3E0985083",
+      "src/modRouteTemplates.bas": "651FF8928288F5CB92E8F771116505E6995CF0D81AA089371C4A160A87F89BA8",
+      "src/modRouting.bas": "FE9D5B7AB196E6853547A2F8ACAFDB775FAD7E9B39FCC4489F60E9F1131E1728",
+      "src/modRSCompletion.bas": "B22D019F2753022DC8658F15952C1DCE738E6444E3BB2B7360A499D79939C52E",
+      "src/modRSDirectory.bas": "F40F6ACB573CF602D7FEDC942FF3DDB74AED00F206EF615A783F3E4D44C92FC8",
+      "src/modRSDirectoryUI.bas": "32EC3F5A9875D4D76D89E44763110481780D6BCDEE1CC36A543F384B36414DFD",
+      "src/modRUADImport.bas": "D7AC519C56FBFCE48F3F4A06DF7794D8B6A0CFA7E7977B95A939157405F3C9B7",
+      "src/modRUADProfiles.bas": "A46C55D1A07563F48D4BA45201B7E76ED97DEB7C88BCFD1B0EAD41895B8D450F",
+      "src/modSavedReadiness.bas": "CD3C7D06DA13E40B7438594CA7F6CD381194DBACCF07C727F95E7BD82441FD17",
+      "src/modServiceDetails.bas": "16FC48B7273023372D822725F44CCB9C24627CDCD643C33BE18B635179FF9E1B",
+      "src/modSnippets.bas": "4EA5BD6185354D77429A8B2ABF4849F18BF0CA3975C36D328E78DCF3268DFE42",
+      "src/modSummaryGroups.bas": "998951D04BC438E4F58178FB15B4C27E39B7EAAEA12A0A3E1FB7852852AC4235",
+      "src/modSwift.bas": "1B93C95567ED68D432D430CFEB24D43F5FE9BAC305C13A41C37779BA4EE98E6A",
+      "src/modTableSort.bas": "A37412A07E98D3F69365C002DC4940D18409271DDD17B3FB1BCC91E3C1926B89",
+      "src/modTraits.bas": "D0276776CADF17EC00411B8712CB8B8DFAEDF5F80CD97861DC20FB4B39B44C10",
+      "src/modUX.bas": "ACA1A77642488C7C88CD6ECBC86241B6A06F7D1569F129DF581C73FDA257366D",
+      "src/modUXBlockTools.bas": "92D874F8841C35FE93F365F74BA2D84ED28FBF035E77E5BE8F3F1370A127EEC5",
+      "src/modUXCalculationContext.bas": "07DE5B4C67A7551E6E975A460E4940616862A6E5D24C2A94A18A366567FE4A88",
+      "src/modUXDashboard.bas": "37A1E6C34EE30C07CFD74E9BE6B5DF4CA8698E35A5E354EDA2689FED3E28A6FB",
+      "src/modUXDirectory.bas": "9C628E61A9B3EC484C733BA008729FD3727B0F58A285FE9A189312180105A034",
+      "src/modUXExportNames.bas": "9E75540537D9B1D697331C0430D025CE88D1F07598A46A417C0985CEDB9BEF13",
+      "src/modUXFeedback.bas": "6A77879627B0726B5F56E5265AF2606848799C5C1A55F599843A732DC7960BFF",
+      "src/modUXGlobalDefaults.bas": "9330619DF30831FA42D62ACBD095B39538B456E86FC75FF481F2307EB152C4C0",
+      "src/modUXGroupLifecycle.bas": "523F38C8BA9EE0DB20438E70D4AF52F93E6C7DCFF856E260420D23F306FA8D66",
+      "src/modUXGroupNavigation.bas": "EEAC1625BB622EEE93BE44CCE3DF6B2C4EC78D05F612393835E6341100FDD378",
+      "src/modUXGroupOrganization.bas": "837B50BDBBDACEF924D8261668F91D458F3845864E508B6BC25CAF9806C04276",
+      "src/modUXGroupPages.bas": "8D3642095C90D8003445321AF013013EA7C6CE30E65847878A88FCE37645983B",
+      "src/modUXHeaderReview.bas": "47E837D897AA19BBF0C01586F77159ED91E9F608D71B92BB75FCA0BA2A190FC7",
+      "src/modUXHelp.bas": "3C55EA79546395388BD0BD00A87761ABC11F45330D152769EAD6196178EC9D23",
+      "src/modUXImportFlow.bas": "8037B467A117E82A0072FE4D650EFCFF093102B9E2EBD54888D69EB595CF8E8F",
+      "src/modUXMyWork.bas": "E39A278BD9940B30DA4ED49A183FBF0629128F465E104C197496539799D873BD",
+      "src/modUXNativeGroups.bas": "C448C888ED19246B65C64C30A283749D2A1156729109FB8740D9A4C342436B74",
+      "src/modUXNAVFIT.bas": "C8DC53C6A4606B0A0760053B1D1E70C4F93083B9B06BB8211B8981D4916716A9",
+      "src/modUXNavyWriter.bas": "EAB4CD26890E698D124A9B5F09F6C4942D60312F3418ADA594F1498CE86AD595",
+      "src/modUXNotes.bas": "DB6933224185AB17679B0432287A7BBF445D4EC120C3E442917E590A0DB77729",
+      "src/modUXReadRows.bas": "82ADAFF8C8CCD8BC97B55CBFE73FF95A9D4565955C7C752B93649EC5B43627A0",
+      "src/modUXRecursiveDefaults.bas": "6BBB46C1B9C0AD9EB2406EBACDD326D264F6D4B0690521F10E5D6367A8767892",
+      "src/modUXReportReturn.bas": "6589FCAD13677F755D546AC5BF78A8773C340D5C036F93298E5A30E914A879A3",
+      "src/modUXResourceTools.bas": "EC5782D6341BA731506D791EECF1A89B6D32EFFDB04D1BC0423E299E2B8BD5FC",
+      "src/modUXReview.bas": "6822821B16EC729F8AFDCF99371C40099736352500E7B4E5B818B24469F7E02E",
+      "src/modUXReviewLayout.bas": "ABA57B790BC7E59320F31B99FBFC3605A8D73F577C8F0821E15BFD9BBA63D5FB",
+      "src/modUXRUADImport.bas": "20F3DDDA016A9BE2D4C70004EA4E67EE5E4075B31B0FA18E5BAD614646A9B38A",
+      "src/modUXSeniorTable.bas": "13A098B8A352FDE5DDDFFB665FE518B7A38B4A165E65CD284092BF8D17DA0395",
+      "src/modUXSurface.bas": "645511DC7D57074810409262D6E7B520251D6714779EC679A937D90985DE8E21",
+      "src/modUXTraitGrid.bas": "BF5C79AD1A7A7753A8C8D62D53776931DD2ED54BB26E2D1AD4B7825EDAC1356C",
+      "src/modUXValidation.bas": "D321761E4ACDEB06707DDF3376157ECAF1C7C5E07AA3D62DE2590274AADB78ED",
+      "src/modUXViewport.bas": "EC3594C0832E3BF919A4674842421AE090CA81234D60A333C8CF91D68B0D379E",
+      "src/modUXVisual.bas": "B1E86DA28E066356BB2A5DE9DFBD0CC051556A9A5139DD4D3279D3E877D266FB",
+      "src/modValidation.bas": "3EA707EF93BDF6C68D6D8DB8147C0742C43387821AAAC1625007EDC77EA919BB",
+      "src/modValidationExpansion.bas": "45B2318E674F82FD12E733E82BBF95730E4BFFB65010EC19377ECA4B046716C2",
+      "src/modValidationReferences.bas": "C3ADA386F5794A1E7DAD6CA0F181AE3BEB51DD89FDB3B4D608ADFB647F132592",
+      "src/modWorkspace.bas": "114BB4DD29210FF8E51D1F8F60BF2ED4FEE15227FEE63A33252A9FAED53FD9FA",
+      "src/modWorkspaceImport.bas": "8594DE21B257B4F34369F4DCB857F908E5805D47AAE26FB740A902823ADFE46C",
+      "src/navfit-field-map.json": "7E25B60DA33D64FFC2111E2A9EC42FDFA80BEB65239870C18F6E295C35A4E004",
+      "src/navywriter-catalog.json": "C715E4BC6B848D20FBE29E7E45BAC680B813B7F931B39DB104A6FE81CF53AB83",
+      "src/pdf-field-map.json": "E319D18CEE2D323652CEEDCBF7BD6B15A728442BDAB12125674407F5A0D40237",
+      "src/report-page-layout.json": "D70424C19CFF3C925AC1AD89DE50EFCFC18BC95B883550B20EBE55E9D4AEDF76",
+      "src/report-page-map.json": "20D47452D46A9A18F359790AD58A99A91C3E6188AC5FBD535FCE47AB4CA70D9F",
+      "src/ruad-profile-fields.json": "97611DD9DDDD25ADCACD601D4F7BA8044C1AC686A9E8000F0AD8639E4A3C60C9",
+      "src/service-reference.json": "B792D26E906359F14D991762C4DF8D4AB881EA7E460FAC35E06F4677D908C347",
+      "src/trait-catalogue.json": "D78D49A6055F84CA2AEE644341A7E9405492C829E583AEE4A16C9F38A1F1C8E3",
+      "src/ui-author-baseline.json": "CB5BC615F383B7FA9854E4E54795E25FB79C636AF1340737373A4BF6A63042E0",
+      "src/ux-help-topics.json": "11306FCA215FE60E6C61185DD9F07A65A4AF3DC55E3D99853C4777B4DFDEF5F8",
+      "D:\\Development\\Swift NAVFIT\\scripts\\build-manifest.json": "A4F96C85E5638D61F0F960D02C62F588BF3BCF73CC753A2AD26114EB589C7520"
+    },
+    "Stages": [
+      {
+        "Id": "apply-ux-snippet-rates",
+        "Phase": "base-resources",
+        "File": "scripts/apply-ux-snippet-rates.ps1",
+        "Seconds": 0.2664974,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-block28-schema",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-block28-schema.ps1",
+        "Seconds": 0.9619011,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-field-catalogue",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-field-catalogue.ps1",
+        "Seconds": 0.0512105,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-layout",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-layout.ps1",
+        "Seconds": 21.8721021,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-rs-directory-layout",
+        "Phase": "presentation",
+        "File": "scripts/apply-rs-directory-layout.ps1",
+        "Seconds": 5.6909445,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-shell",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-shell.ps1",
+        "Seconds": 636.3722442,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-surface-catalogue",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-surface-catalogue.ps1",
+        "Seconds": 0.1192792,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-workspace",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-workspace.ps1",
+        "Seconds": 27.8145123,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-block-tools",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-block-tools.ps1",
+        "Seconds": 10.1606813,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-lifecycle",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-lifecycle.ps1",
+        "Seconds": 1.3673488,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-context",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-context.ps1",
+        "Seconds": 1.9399437,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-help",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-help.ps1",
+        "Seconds": 1.0199345,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-import-flow",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-import-flow.ps1",
+        "Seconds": 2.6819848,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-review-return",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-review-return.ps1",
+        "Seconds": 1.8993802,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-my-work",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-my-work.ps1",
+        "Seconds": 5.7488016,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-validation",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-validation.ps1",
+        "Seconds": 2.9060883,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-navfit",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-navfit.ps1",
+        "Seconds": 2.4855421,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-policy",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-policy.ps1",
+        "Seconds": 1.8974699,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-feedback",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-feedback.ps1",
+        "Seconds": 1.2789019,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-career-columns",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-career-columns.ps1",
+        "Seconds": 0.6731166,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-feedback-tables",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-feedback-tables.ps1",
+        "Seconds": 0.4224882,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-member-grid",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-member-grid.ps1",
+        "Seconds": 1.1117568,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-organization",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-organization.ps1",
+        "Seconds": 1.6193476,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-global-defaults",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-global-defaults.ps1",
+        "Seconds": 0.3849712,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-default-resets",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-default-resets.ps1",
+        "Seconds": 2.356823,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-export-names",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-export-names.ps1",
+        "Seconds": 0.4790352,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-navywriter",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-navywriter.ps1",
+        "Seconds": 1.0451747,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-header-review",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-header-review.ps1",
+        "Seconds": 0.7062496,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-import-scope",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-import-scope.ps1",
+        "Seconds": 0.2610063,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-native-groups",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-native-groups.ps1",
+        "Seconds": 0.5150821,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-notes-schema",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-notes-schema.ps1",
+        "Seconds": 0.1000343,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-note-entries",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-note-entries.ps1",
+        "Seconds": 1.6775859,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-directory-schema",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-directory-schema.ps1",
+        "Seconds": 0.0855784,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-directory",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-directory.ps1",
+        "Seconds": 1.2551971,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-member-history",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-member-history.ps1",
+        "Seconds": 1.4411367,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-prior-columns",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-prior-columns.ps1",
+        "Seconds": 0.5309698,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-directory-batch",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-directory-batch.ps1",
+        "Seconds": 0.5827329,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-directory-identity",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-directory-identity.ps1",
+        "Seconds": 0.7513261,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-directory-identity-picker",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-directory-identity-picker.ps1",
+        "Seconds": 0.1761586,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-admin-feedback",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-admin-feedback.ps1",
+        "Seconds": 3.6547356,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-date-pickers",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-date-pickers.ps1",
+        "Seconds": 17.409422,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ui-author-baseline",
+        "Phase": "presentation",
+        "File": "scripts/apply-ui-author-baseline.ps1",
+        "Seconds": 7.7490618,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-directory",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-directory.ps1",
+        "Seconds": 6.6073072,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-comparison-autosave",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-comparison-autosave.ps1",
+        "Seconds": 0.9532686,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-ruad-import",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-ruad-import.ps1",
+        "Seconds": 1.2689335,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-immediate-defaults",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-immediate-defaults.ps1",
+        "Seconds": 2.7182295,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-resource-tools",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-resource-tools.ps1",
+        "Seconds": 8.316908,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-readiness",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-readiness.ps1",
+        "Seconds": 0.4139421,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-discovery",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-discovery.ps1",
+        "Seconds": 0.3661691,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-member-psg",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-member-psg.ps1",
+        "Seconds": 0.4587592,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-import-rank",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-import-rank.ps1",
+        "Seconds": 1.6733075,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-native-dates",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-native-dates.ps1",
+        "Seconds": 0.0057707,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-compat-pages",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-compat-pages.ps1",
+        "Seconds": 2.1442423,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-theme",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-theme.ps1",
+        "Seconds": 25.1221081,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-priority-actions",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-priority-actions.ps1",
+        "Seconds": 0.4994871,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-context-help",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-context-help.ps1",
+        "Seconds": 23.4833943,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-navigation-context",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-navigation-context.ps1",
+        "Seconds": 0.0052937,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-visual",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-visual.ps1",
+        "Seconds": 26.1504742,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-page-switch",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-page-switch.ps1",
+        "Seconds": 0.0109915,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-page-width",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-page-width.ps1",
+        "Seconds": 0.0054018,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-rsca-review",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-rsca-review.ps1",
+        "Seconds": 0.1656862,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-prior-readonly",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-prior-readonly.ps1",
+        "Seconds": 0.1772817,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-group-exit",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-group-exit.ps1",
+        "Seconds": 1.014282,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-comments-ita",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-comments-ita.ps1",
+        "Seconds": 3.0458534,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-import-progress",
+        "Phase": "presentation",
+        "File": "scripts/apply-ux-import-progress.ps1",
+        "Seconds": 0.7692919,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-report-tools",
+        "Phase": "presentation",
+        "File": "scripts/apply-report-tools.ps1",
+        "Seconds": 4.0897667,
+        "Status": "PASS"
+      },
+      {
+        "Id": "ensure-native-unload",
+        "Phase": "finalize",
+        "File": "scripts/ensure-native-unload.ps1",
+        "Seconds": 2.0680893,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-efficiency",
+        "Phase": "finalize",
+        "File": "scripts/apply-ux-efficiency.ps1",
+        "Seconds": 1.3134373,
+        "Status": "PASS"
+      },
+      {
+        "Id": "apply-ux-table-sort",
+        "Phase": "finalize",
+        "File": "scripts/apply-ux-table-sort.ps1",
+        "Seconds": 39.6750804,
+        "Status": "PASS"
+      },
+      {
+        "Id": "finalize-application",
+        "Phase": "finalize",
+        "File": "scripts/finalize-application.ps1",
+        "Seconds": 43.7589728,
+        "Status": "PASS"
+      }
+    ],
+    "AppVersion": "0.26.0-dev"
+  },
+  "Files": [
+    {
+      "kind": "Blank",
+      "path": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Blank_2026-10-20-r125.accdb",
+      "name": "Swift_NAVFIT_Blank_2026-10-20-r125.accdb",
+      "bytes": 17432576,
+      "sha256": "C6B7A1181239715012FB61B51FB8A86D7B0B2F6EB1F4766013332AD541551F83",
+      "appVersion": "0.26.0-dev",
+      "schema": 26,
+      "counts": {
+        "AppMetadata": 1,
+        "ChangeBatch": 0,
+        "ChangeItem": 0,
+        "CommandMember": 0,
+        "ComparisonMember": 0,
+        "ComparisonSet": 0,
+        "FieldDefault": 0,
+        "Folder": 0,
+        "FolderBatchChange": 0,
+        "FolderMove": 0,
+        "GroupMember": 0,
+        "GroupRSCABaseline": 0,
+        "GroupSnapshot": 0,
+        "GroupSnapshotMember": 0,
+        "ImportRawValue": 0,
+        "ImportReceipt": 0,
+        "LibraryPreference": 0,
+        "MeetingProposal": 0,
+        "MemberReport": 0,
+        "NarrativeSnippet": 0,
+        "OperationJournal": 0,
+        "PriorEvaluation": 0,
+        "PriorEvaluationTrait": 0,
+        "RecoveryDraft": 0,
+        "Report": 0,
+        "ReportEvent": 0,
+        "ReportingSeniorRecord": 0,
+        "ReportingSeniorValue": 0,
+        "ReportMessage": 0,
+        "ReportNote": 0,
+        "ReportNoteDraft": 0,
+        "ReportRevision": 0,
+        "ReviewComment": 0,
+        "ReviewCommentEvent": 0,
+        "ReviewTask": 0,
+        "ReviewTaskEvent": 0,
+        "RevisionChange": 0,
+        "RevisionValue": 0,
+        "RouteRun": 0,
+        "RouteRunStep": 0,
+        "RouteTemplate": 0,
+        "RouteTemplateStep": 0,
+        "RSCABaseline": 0,
+        "RuleDefinition": 0,
+        "RulePack": 0,
+        "SummaryGroup": 0,
+        "UserProfile": 0,
+        "ValidationFinding": 0,
+        "ValidationRun": 0,
+        "Workspace": 0
+      },
+      "drive_id": "1AHNDUtLl3LqyzLTyhB-BkrCS2ombB_w5",
+      "drive_url": "https://drive.google.com/file/d/1AHNDUtLl3LqyzLTyhB-BkrCS2ombB_w5/view?usp=drivesdk",
+      "drive_parent": "14vylyonimhXhhJzaQhh0c51_UenHhzGg",
+      "drive_name_size_parent_verified": true
+    },
+    {
+      "kind": "Demo",
+      "path": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Demo_2026-10-20-r125.accdb",
+      "name": "Swift_NAVFIT_Demo_2026-10-20-r125.accdb",
+      "bytes": 17432576,
+      "sha256": "A369E456C7F8DE081254DE733D70755E5113F22FA287330E57ED6F2DA3CC04E7",
+      "appVersion": "0.26.0-dev",
+      "schema": 26,
+      "counts": {
+        "AppMetadata": 1,
+        "ChangeBatch": 0,
+        "ChangeItem": 0,
+        "CommandMember": 13,
+        "ComparisonMember": 0,
+        "ComparisonSet": 0,
+        "FieldDefault": 3,
+        "Folder": 3,
+        "FolderBatchChange": 0,
+        "FolderMove": 8,
+        "GroupMember": 11,
+        "GroupRSCABaseline": 5,
+        "GroupSnapshot": 0,
+        "GroupSnapshotMember": 0,
+        "ImportRawValue": 0,
+        "ImportReceipt": 0,
+        "LibraryPreference": 0,
+        "MeetingProposal": 0,
+        "MemberReport": 13,
+        "NarrativeSnippet": 93,
+        "OperationJournal": 69,
+        "PriorEvaluation": 12,
+        "PriorEvaluationTrait": 84,
+        "RecoveryDraft": 1,
+        "Report": 13,
+        "ReportEvent": 2,
+        "ReportingSeniorRecord": 1,
+        "ReportingSeniorValue": 16,
+        "ReportMessage": 15,
+        "ReportNote": 13,
+        "ReportNoteDraft": 0,
+        "ReportRevision": 33,
+        "ReviewComment": 2,
+        "ReviewCommentEvent": 0,
+        "ReviewTask": 3,
+        "ReviewTaskEvent": 3,
+        "RevisionChange": 1644,
+        "RevisionValue": 2607,
+        "RouteRun": 3,
+        "RouteRunStep": 5,
+        "RouteTemplate": 2,
+        "RouteTemplateStep": 3,
+        "RSCABaseline": 4,
+        "RuleDefinition": 0,
+        "RulePack": 0,
+        "SummaryGroup": 5,
+        "UserProfile": 2,
+        "ValidationFinding": 0,
+        "ValidationRun": 0,
+        "Workspace": 1
+      },
+      "drive_id": "1Tmrgk0tr4nd2x-9KS-kFw9GUUw3xlss4",
+      "drive_url": "https://drive.google.com/file/d/1Tmrgk0tr4nd2x-9KS-kFw9GUUw3xlss4/view?usp=drivesdk",
+      "drive_parent": "14vylyonimhXhhJzaQhh0c51_UenHhzGg",
+      "drive_name_size_parent_verified": true
+    }
+  ],
+  "FinalArtifactChecks": {
+    "Cleanup": 27,
+    "Smoke": 48,
+    "Demo": 39,
+    "ReportTools": 35,
+    "MyWork": 1747,
+    "TraitCatalogue": 169,
+    "HistoricalSchemas": 26,
+    "ReportToolsCleanupGuarded": true
+  },
+  "FinalPopulatedUpgradeAndReopen": true,
+  "FinalCanonicalRepliesAndDrafts": true,
+  "FinalExactnessAndMismatchRollbackRetry": true,
+  "AccessClosed": true,
+  "ReportToolsHarnessCleanup": "Guarded notes discard after the harness closes its editor; final 35-check rerun completes normally"
+}

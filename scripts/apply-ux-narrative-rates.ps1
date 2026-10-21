@@ -1,4 +1,4 @@
-foreach($m in @('modNavyWriterCatalog','modUXNavyWriter')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modNavyWriterCatalog','modUXNavyWriter')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXNavyWriter',1);$f=$app.Forms.Item('frmUXNavyWriter')
 $f.Controls.Item('txtSearch').Width=6300;$f.Controls.Item('txtSearch').Top=2000;$f.Controls.Item('cmdSearch').Top=2000
 [void](Control $f 100 'lblSearch' 400 1650 6300 300 'Search narrative sources')

@@ -1,5 +1,5 @@
 # Consolidate legacy help routes and install contextual help on standalone windows.
-foreach($m in @('modUXHelp','modWorkspace','modUXViewport','modUXGroupPages','modSwift','modUX')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXHelp','modWorkspace','modUXViewport','modUXGroupPages','modSwift','modUX')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $names=@($app.CurrentProject.AllForms|ForEach-Object {$_.Name})
 $helpCount=0
 foreach($name in $names){

@@ -1,3 +1,5 @@
+> Historical implementation reference. Current procedures are in [the user guide](../docs/Swift_NAVFIT_User_Guide.md); [current state](CURRENT_STATE.md) identifies the verified build. Standalone comments/review windows and resolved/reopened note threads described below are superseded by independent report notes/replies and embedded report tools.
+
 # Swift NAVFIT deployment prerelease
 
 This package is **0.24.0-preview, schema 23**. It is a deployment prerelease,

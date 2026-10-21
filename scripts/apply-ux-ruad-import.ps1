@@ -1,7 +1,7 @@
-foreach($module in @('modRUADProfiles','modCommandDirectory','modRUADImport','modUXRUADImport')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($module in @('modRUADProfiles','modCommandDirectory','modRUADImport','modUXRUADImport')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
 NewScreen 'frmUXRUADImport' 'Import or refresh command RUAD' 9500
 $f=$script:swiftForm;$f.PopUp=$true;$f.Width=13800;$f.ScrollBars=2
-[void](Control $f 100 'lblSteps' 400 900 12600 350 'Choose CSV → Review matches and full values → Preview → Apply → Results')
+[void](Control $f 100 'lblSteps' 400 900 12600 350 'Choose CSV â†’ Review matches and full values â†’ Preview â†’ Apply â†’ Results')
 [void](Control $f 109 'txtPath' 400 1350 9400 420);$script:swiftControl.Locked=$true
 [void](Control $f 104 'cmdChoose' 10100 1350 2900 450 'Choose RUAD CSV' '=UXRUADImportChoose()')
 [void](Control $f 104 'cmdNewProfiles' 400 1950 5100 450 'Select new profiles for unmatched names' '=UXRUADImportNew()')

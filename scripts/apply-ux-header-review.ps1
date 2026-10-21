@@ -1,4 +1,4 @@
-foreach($m in @('modUXHeaderReview','modUXReview','modUXSurface')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXHeaderReview','modUXReview','modUXSurface')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
 [void](Control $f 104 'uxReviewSetup' 5900 2650 1800 420 'Review setup' '=UXEditorReview("Routes")')
 [void](Control $f 104 'uxReviewAccept' 7800 2650 1800 420 'Accept step' '=UXHeaderReview("Accept")')

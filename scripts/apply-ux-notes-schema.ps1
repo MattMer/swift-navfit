@@ -1,5 +1,5 @@
-$app.LoadFromText(5,'modReportNotes',(Join-Path $root 'src/modReportNotes.bas'))
-$app.LoadFromText(5,'modSwift',(Join-Path $root 'src/modSwift.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modReportNotes',(Join-Path $root 'src/modReportNotes.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modSwift',(Join-Path $root 'src/modSwift.bas'))}
 $db=$app.CurrentDb();$tables=@($db.TableDefs | ForEach-Object {$_.Name})
 if(($tables -contains 'ReportNote') -xor ($tables -contains 'ReportNoteDraft')){throw 'Incomplete notes schema; refusing automatic repair'}
 if($tables -notcontains 'ReportNote'){

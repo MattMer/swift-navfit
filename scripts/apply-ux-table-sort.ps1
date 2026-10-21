@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modTableSort','modUXTraitGrid','modUXSeniorTable','modUXViewport')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modTableSort','modUXTraitGrid','modUXSeniorTable','modUXViewport')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $coverage=@()
 foreach($screen in @($app.CurrentProject.AllForms|ForEach-Object {$_.Name})){
  $app.DoCmd.OpenForm($screen,1);$f=$app.Forms.Item($screen)

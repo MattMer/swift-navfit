@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modNavyWriterCatalog','modUXNavyWriter')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modNavyWriterCatalog','modUXNavyWriter')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 NewScreen 'frmUXNavyWriter' 'NavyWriter examples catalog' 11200;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 100 'lblScope' 400 950 12600 650 'Short examples with source links. Edit the wording for the member''s actual accomplishments before adding it to your snippets. Examples are not policy guidance.')
 [void](Control $f 109 'txtSearch' 400 2000 6300 450)

@@ -1,4 +1,4 @@
-foreach($name in @('modUXRecursiveDefaults','modUXBlockTools','modUX','modRSDirectoryUI','modUXHelp','modUXGlobalDefaults')){$app.LoadFromText(5,$name,(Join-Path $root ('src/'+$name+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($name in @('modUXRecursiveDefaults','modUXBlockTools','modUX','modRSDirectoryUI','modUXHelp','modUXGlobalDefaults')){$app.LoadFromText(5,$name,(Join-Path $root ('src/'+$name+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXSharedFields',1);$f=$app.Forms.Item('frmUXSharedFields')
 foreach($name in @($f.Controls|Where-Object {$_.Name -match '^(state|reset|clear)'}|ForEach-Object {$_.Name})){$app.DeleteControl($f.Name,$name)}
 foreach($c in $f.Controls){if($c.Name -like 'value*' -and $c.ControlType -in @(109,111)){$c.OnChange=''}}

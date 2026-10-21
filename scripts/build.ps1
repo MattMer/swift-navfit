@@ -1,14 +1,19 @@
-param([string]$OutputPath = (Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.25.0-dev.accdb'))
+param([string]$OutputPath,[string]$ManifestPath = (Join-Path $PSScriptRoot 'build-manifest.json'))
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'build-plan.ps1')
+$swiftBuildPlan = GetSwiftBuildPlan $root $ManifestPath
+if(-not $OutputPath){$OutputPath=Join-Path $root ('output/Swift_NAVFIT_'+$swiftBuildPlan.AppVersion+'.accdb')}
+$swiftBuildTrace=[Collections.Generic.List[object]]::new()
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
 if (Test-Path -LiteralPath $OutputPath) { throw "Refusing to overwrite existing database: $OutputPath" }
 [void](New-Item -ItemType Directory -Force -Path (Split-Path $OutputPath -Parent))
 $app = $null
+$script:swiftManagedBuild=$true
 try {
     $app = New-Object -ComObject Access.Application
     $app.NewCurrentDatabase($OutputPath, 12)
-    $db = $app.CurrentDb()
+    $swiftBaseDatabase = $app.CurrentDb()
     $definitions = @(
         'CREATE TABLE AppMetadata (MetadataID LONG CONSTRAINT PK_AppMetadata PRIMARY KEY, AppVersion TEXT(40), SchemaVersion LONG, CompatibilityStatus TEXT(120))',
         'CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)',
@@ -86,19 +91,20 @@ try {
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveOldFolder FOREIGN KEY (OldFolderID) REFERENCES Folder (FolderID)',
         'ALTER TABLE FolderMove ADD CONSTRAINT FK_MoveNewFolder FOREIGN KEY (NewFolderID) REFERENCES Folder (FolderID)',
-        "INSERT INTO AppMetadata VALUES (1,'0.26.0-dev',26,'Unverified - NAVFIT exchange disabled')"
+        "INSERT INTO AppMetadata VALUES (1,'$($swiftBuildPlan.AppVersion)',$($swiftBuildPlan.SchemaVersion),'Development candidate - native validation/printing remains external')"
     )
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
-    foreach ($sql in $definitions) { try { $db.Execute($sql,128) } catch { throw ($sql + "`n" + $_.Exception.Message) } }
-    for($ti=0;$ti -lt $db.TableDefs.Count;$ti++) {
-        $table=$db.TableDefs.Item($ti)
+    foreach ($sql in $definitions) { try { $swiftBaseDatabase.Execute($sql,128) } catch { throw ($sql + "`n" + $_.Exception.Message) } }
+    for($ti=0;$ti -lt $swiftBaseDatabase.TableDefs.Count;$ti++) {
+        $table=$swiftBaseDatabase.TableDefs.Item($ti)
         if($table.Name.StartsWith('MSys')) {continue}
         for($fi=0;$fi -lt $table.Fields.Count;$fi++) {
             $field=$table.Fields.Item($fi)
             if(($field.Type -eq 10 -or $field.Type -eq 12) -and -not $field.Required) {$field.AllowZeroLength=$true}
         }
     }
+    $swiftBaseDatabase.Close(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($swiftBaseDatabase); $swiftBaseDatabase=$null
     [void][IO.Directory]::CreateDirectory((Join-Path $root 'build'))
     $workerLines=Get-Content -LiteralPath (Join-Path $root 'scripts/workspace-backup.ps1')
     $workerSource=@('Attribute VB_Name = "modBackupWorker"','Option Explicit','Public Function BackupWorkerScript() As String','    Dim result As String')
@@ -107,42 +113,12 @@ try {
     $workerPath=Join-Path $root 'build/modBackupWorker.bas'
     [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
     $app.LoadFromText(5,'modBackupWorker',$workerPath)
-    $app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))
-    foreach($majorModule in @('modUXGroupNavigation','modRSCompletion','modRSDirectory','modRSDirectoryUI','modPDFImport','modPDFMapping','modMajorUI','modMajorCore','modSummaryGroups','modOfficialBatch','modRouteTemplates','modMeetings','modValidation')){$app.LoadFromText(5,$majorModule,(Join-Path $root ('src/'+$majorModule+'.bas')))}
-    $app.LoadFromText(5,'modBulkFolders',(Join-Path $root 'src\modBulkFolders.bas'))
-    $app.LoadFromText(5,'modOperations',(Join-Path $root 'src\modOperations.bas'))
-    $app.LoadFromText(5,'modProvenance',(Join-Path $root 'src\modProvenance.bas'))
-    $app.LoadFromText(5,'modReviewComments',(Join-Path $root 'src\modReviewComments.bas'))
-    $app.LoadFromText(5,'modTraits',(Join-Path $root 'src\modTraits.bas'))
-    [void](New-Item -ItemType Directory -Force -Path (Join-Path $root 'build'))
-    $navTraitModule=Join-Path $root ('build\trait-catalogue-'+[guid]::NewGuid()+'.bas')
-    & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src\trait-catalogue.json') -OutputPath $navTraitModule
+    foreach($sourceModule in $swiftBuildPlan.Manifest.sourceModules){
+        $app.LoadFromText(5,[IO.Path]::GetFileNameWithoutExtension($sourceModule),(Join-Path $root $sourceModule))
+    }
+    $navTraitModule=Join-Path $root ('build/trait-catalogue-'+[guid]::NewGuid()+'.bas')
+    & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath $navTraitModule
     $app.LoadFromText(5,'modTraitCatalogue',$navTraitModule)
-    $app.LoadFromText(5,'modServiceDetails',(Join-Path $root 'src\modServiceDetails.bas'))
-    $app.LoadFromText(5,'modDecisionDetails',(Join-Path $root 'src\modDecisionDetails.bas'))
-    $app.LoadFromText(5,'modReportPeople',(Join-Path $root 'src\modReportPeople.bas'))
-    $app.LoadFromText(5,'modPartyNames',(Join-Path $root 'src\modPartyNames.bas'))
-    $app.LoadFromText(5,'modMemberDetails',(Join-Path $root 'src\modMemberDetails.bas'))
-    $app.LoadFromText(5,'modReportContext',(Join-Path $root 'src\modReportContext.bas'))
-    $app.LoadFromText(5,'modReportingSenior',(Join-Path $root 'src\modReportingSenior.bas'))
-    $app.LoadFromText(5,'modPromotionStatus',(Join-Path $root 'src\modPromotionStatus.bas'))
-    $app.LoadFromText(5,'modAssessment',(Join-Path $root 'src\modAssessment.bas'))
-    $app.LoadFromText(5,'modAdministration',(Join-Path $root 'src\modAdministration.bas'))
-    $app.LoadFromText(5,'modRouting',(Join-Path $root 'src\modRouting.bas'))
-    $app.LoadFromText(5,'modSnippets',(Join-Path $root 'src\modSnippets.bas'))
-    $app.LoadFromText(5,'modUXReadRows',(Join-Path $root 'src/modUXReadRows.bas'))
-    $app.LoadFromText(5,'modLibraryViews',(Join-Path $root 'src\modLibraryViews.bas'))
-    $app.LoadFromText(5,'modChecklist',(Join-Path $root 'src\modChecklist.bas'))
-    $app.LoadFromText(5,'modRecovery',(Join-Path $root 'src\modRecovery.bas'))
-    $app.LoadFromText(5,'modRevisionCompare',(Join-Path $root 'src\modRevisionCompare.bas'))
-    $app.LoadFromText(5,'modFileHash',(Join-Path $root 'src\modFileHash.bas'))
-    $app.LoadFromText(5,'modSwift',(Join-Path $root 'src\modSwift.bas'))
-    $app.LoadFromText(5,'modWorkspace',(Join-Path $root 'src\modWorkspace.bas'))
-    $app.LoadFromText(5,'modNAVFITMapping',(Join-Path $root 'src\modNAVFITMapping.bas'))
-    $app.LoadFromText(5,'modNAVFITExchange',(Join-Path $root 'src\modNAVFITExchange.bas'))
-    $app.LoadFromText(5,'modNAVFITAdapter',(Join-Path $root 'src\modNAVFITAdapter.bas'))
-    $app.LoadFromText(5,'modNAVFITUpgrade',(Join-Path $root 'src/modNAVFITUpgrade.bas'))
-    $app.LoadFromText(5,'modImportReview',(Join-Path $root 'src\modImportReview.bas'))
     function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
         $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
         $c.Name=$name
@@ -539,7 +515,7 @@ try {
     [void](Control $f 104 'cmdInsert' 5600 11200 3300 550 'Append to open draft' '=InsertSnippetUI()')
     [void](Control $f 104 'cmdClose' 9500 11200 3300 550 'Close snippets' '=CloseSnippetsUI()')
     $f.OnLoad='=LoadSnippets()'; SaveScreen $f 'frmSnippets'
-    . (Join-Path $PSScriptRoot 'apply-ux-snippet-rates.ps1')
+    . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'base-resources'
     NewScreen 'frmOperations' 'Operations and import undo' 12300; $f=$script:swiftForm
     [void](Control $f 100 'lblScope' 400 950 12600 750 'Started entries may represent interrupted work. Inspect receipts before retrying. Undo preserves history and refuses later edits.')
     Control $f 110 'lstOperations' 400 2000 12600 2100; $c=$script:swiftControl
@@ -683,115 +659,36 @@ try {
     [void](Control $f 100 'lblStatus' 400 8800 12600 650 'Requires Windows PowerShell and Access DAO. Other Access sessions must also release the source. Pending checkpoint values still require deliberate recovery after reopening. Runtime and other workstations remain untested.')
     [void](Control $f 104 'cmdHome' 400 9700 12600 450 'Return home' '=OpenScreen("frmHome")')
     SaveScreen $f 'frmBackup'
-    . (Join-Path $PSScriptRoot 'apply-ux-layout.ps1')
-    . (Join-Path $PSScriptRoot 'apply-rs-directory-layout.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-shell.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-workspace.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-block-tools.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-group-lifecycle.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-context.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-help.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-import-flow.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-review-return.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-my-work.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-validation.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-navfit.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-group-policy.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-feedback.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-career-columns.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-feedback-tables.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-member-grid.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-group-organization.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-global-defaults.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-default-resets.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-export-names.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-navywriter.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-header-review.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-import-scope.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-native-groups.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-notes-schema.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-note-entries.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-directory-schema.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-directory.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-member-history.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-prior-columns.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-directory-batch.ps1')
-. (Join-Path $PSScriptRoot 'apply-ux-directory-identity.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-directory-identity-picker.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-admin-feedback.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-immediate-defaults.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-resource-tools.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-readiness.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-group-discovery.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-member-psg.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-import-rank.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-native-dates.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-compat-pages.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-theme.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-priority-actions.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-context-help.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-navigation-context.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-visual.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-page-switch.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-page-width.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-rsca-review.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-prior-readonly.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-group-exit.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-comments-ita.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-import-progress.ps1')
-    . (Join-Path $PSScriptRoot 'apply-report-tools.ps1')
+    . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'presentation'
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
-    $db.Close(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($db)
     $app.CloseCurrentDatabase()
-    # Bind class events after the generated forms have been persisted and reopened.
-    # Access can drop new class-module edits made during the initial form-generation session.
+    # Reopen before persisting native event modules; the named final phase owns it.
     $app.OpenCurrentDatabase($OutputPath,$true)
-    $app.DoCmd.OpenForm('frmEditor',1)
-    $editorForm=$app.Forms.Item('frmEditor')
-    $editorForm.HasModule=$true;$editorForm.OnUnload='[Event Procedure]'
-    $editorModule=$editorForm.Module
-    try{$unloadLine=$editorModule.ProcStartLine('Form_Unload',0)}catch{$unloadLine=$editorModule.CreateEventProc('Unload','Form')}
-    if($editorModule.Lines(1,$editorModule.CountOfLines) -notmatch 'If Not UXEditorUnload\(\) Then Cancel = True'){$editorModule.InsertLines($unloadLine+1,'    If Not UXEditorUnload() Then Cancel = True')}
-    # Saving the form before closing can miss its newly created class code.
-    # Close with acSaveYes so Access persists both the form and event procedure.
-    $app.DoCmd.Close(2,'frmEditor',1)
-    $app.DoCmd.OpenForm('frmUXComparison',1)
-    $comparisonForm=$app.Forms.Item('frmUXComparison')
-    $comparisonForm.HasModule=$true;$comparisonForm.OnUnload='[Event Procedure]'
-    $comparisonModule=$comparisonForm.Module
-    try{$comparisonLine=$comparisonModule.ProcStartLine('Form_Unload',0)}catch{$comparisonLine=$comparisonModule.CreateEventProc('Unload','Form')}
-    if($comparisonModule.Lines(1,$comparisonModule.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){$comparisonModule.InsertLines($comparisonLine+1,'    If Not UXGridUnload(Me) Then Cancel = True')}
-    $app.DoCmd.Close(2,'frmUXComparison',1)
-    . (Join-Path $PSScriptRoot 'apply-ux-efficiency.ps1')
-    . (Join-Path $PSScriptRoot 'apply-ux-table-sort.ps1')
+    . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'finalize'
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)
-    $app.DoCmd.OpenForm('frmEditor',1)
-    $verifiedModule=$app.Forms.Item('frmEditor').Module
-    if($verifiedModule.Lines(1,$verifiedModule.CountOfLines) -notmatch 'If Not UXEditorUnload\(\) Then Cancel = True'){throw 'Native editor unload handler did not persist.'}
-    $app.DoCmd.Close(2,'frmEditor',2)
-    $app.DoCmd.OpenForm('frmUXComparison',1)
-    $verifiedComparison=$app.Forms.Item('frmUXComparison')
-    if($verifiedComparison.OnUnload -ne '[Event Procedure]' -or $verifiedComparison.Module.Lines(1,$verifiedComparison.Module.CountOfLines) -notmatch 'If Not UXGridUnload\(Me\) Then Cancel = True'){throw 'Native comparison unload handler did not persist.'}
-    $app.DoCmd.Close(2,'frmUXComparison',2)
+    . (Join-Path $PSScriptRoot 'verify-built-application.ps1')
     $app.CloseCurrentDatabase()
 
 } finally {
+    $script:swiftManagedBuild=$false
     if ($null -ne $app) { $app.Quit(2) }
     # Generated forms/modules and CurrentDb clones can outlive Application.Quit.
     # Release only COM references owned by this build's script scope before hashing.
+    function ReleaseSwiftBuildCom([object]$Value){
+        if($null -eq $Value){return}
+        if([Runtime.InteropServices.Marshal]::IsComObject($Value)){
+            try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($Value)}catch{}
+        }elseif($Value -is [Array]){
+            for($index=0;$index -lt $Value.Length;$index++){ReleaseSwiftBuildCom -Value $Value.GetValue($index)}
+        }
+    }
     foreach($buildVariable in @(Get-Variable -Scope Script)){
         if($buildVariable.Name -eq 'app'){continue}
-        $buildValue=$buildVariable.Value
-        $buildObjects=if($buildValue -is [Array]){$buildValue}else{,$buildValue}
-        foreach($buildObject in $buildObjects){
-            if($null -ne $buildObject -and [Runtime.InteropServices.Marshal]::IsComObject($buildObject)){
-                try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($buildObject)}catch{}
-            }
-        }
+        ReleaseSwiftBuildCom -Value $buildVariable.Value
     }
     if ($null -ne $app) { [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app) }
     [GC]::Collect();[GC]::WaitForPendingFinalizers();[GC]::Collect()
@@ -801,4 +698,6 @@ for($attempt=0;$attempt -lt 120;$attempt++){
     try{$builtHash=(Get-FileHash -LiteralPath $OutputPath -Algorithm SHA256 -ErrorAction Stop).Hash;break}
     catch{if($attempt -eq 119){throw};Start-Sleep -Milliseconds 250}
 }
-[pscustomobject]@{Output=$OutputPath;SHA256=$builtHash;Status='Built; smoke test required'} | ConvertTo-Json
+AssertSwiftBuildInputs $swiftBuildPlan
+@{Output=$OutputPath;SHA256=$builtHash;AppVersion=$swiftBuildPlan.AppVersion;SchemaVersion=$swiftBuildPlan.SchemaVersion;Inputs=$swiftBuildPlan.InputHashes;Stages=@($swiftBuildTrace.ToArray());Verification=$swiftBuildVerification;Status='Built and structurally verified; workflow tests required'} | ConvertTo-Json -Depth 8 | Set-Content ($OutputPath+'.build.json')
+[pscustomobject]@{Output=$OutputPath;SHA256=$builtHash;Receipt=($OutputPath+'.build.json');Status='Built and structurally verified; workflow tests required'} | ConvertTo-Json

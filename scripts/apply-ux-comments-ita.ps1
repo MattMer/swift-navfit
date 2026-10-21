@@ -1,6 +1,6 @@
 # Clear labels and reading/writing areas; existing storage, revision and attribution services remain authoritative.
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modUXNotes','modReviewComments','modUXTraitGrid','modReportPages','modUXMyWork')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXNotes','modReviewComments','modUXTraitGrid','modReportPages','modUXMyWork')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 function SetCommentRect($f,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h){$c=$f.Controls.Item($name);foreach($v in @(@('Left',$x),@('Top',$y),@('Width',$w),@('Height',$h))){SetAccessProperty $c $v[0] $v[1]}}
 function AddCommentLabel($f,[string]$name,[string]$caption,[int]$x,[int]$y,[int]$w,[int]$h){$c=$app.CreateControl($f.Name,100,0,'','',$x,$y,$w,$h);$c.Name=$name;$c.Caption=$caption;$c.FontName='Segoe UI';$c.FontSize=10;$c.Visible=$false;return $c}
 $app.DoCmd.OpenForm('frmUXEditorFields',1);$f=$app.Forms.Item('frmUXEditorFields')

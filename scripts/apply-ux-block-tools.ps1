@@ -1,5 +1,5 @@
 # Called after final workspace chrome and before compiling.
-foreach($module in @('modUXBlockTools','modUXTraitGrid')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($module in @('modUXBlockTools','modUXTraitGrid')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
 NewScreen 'frmUXSharedFields' 'Shared blocks' 5000;$f=$script:swiftForm
 $app.DeleteControl($f.Name,'lblHeading');$f.ScrollBars=2;$f.Width=10450
 [void](Control $f 104 'anchor' 0 0 100 100 '');$script:swiftControl.TabStop=$false

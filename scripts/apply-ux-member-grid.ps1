@@ -1,4 +1,4 @@
-foreach($m in @('modUXFeedback','modUXTraitGrid')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXFeedback','modUXTraitGrid')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXTraitRows',1);$f=$app.Forms.Item('frmUXTraitRows')
 foreach($c in $f.Controls){if($c.Visible){$c.Left=[int]($c.Left+700);$c.Tag=[string]$c.Left+':'+[string]$c.Width}}
 [void](Control $f 104 'uxOpenReport' 30 40 650 360 'Open' '=UXGridOpenReport()');$script:swiftControl.Tag='30:650'

@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modMigration','modWorkspaceImport','modReportPageMap','modReportPages','modUX','modUXSurface','modUXValidation','modUXGroupLifecycle','modUXNotes','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modMigration','modWorkspaceImport','modReportPageMap','modReportPages','modUX','modUXSurface','modUXValidation','modUXGroupLifecycle','modUXNotes','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 function PageControl($f,$type,$name,$x,$y,$w,$h,$caption='',$event=''){
  $c=$app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h);$c.Name=$name
  if($type -in @(100,104)){$c.Caption=$caption}

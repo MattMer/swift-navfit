@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modUXHelp',(Join-Path $root 'src/modUXHelp.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXHelp',(Join-Path $root 'src/modUXHelp.bas'))}
 NewScreen 'frmUXHelp' 'Swift NAVFIT workspace guide' 8100;$f=$script:swiftForm;$f.PopUp=$true;$f.Width=13400
 [void](Control $f 100 'lblTopics' 400 1100 3500 300 'Choose a workflow')
 [void](Control $f 110 'lstTopics' 400 1550 3500 5500);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;3300';$c.AfterUpdate='=UXHelpSelected()';$c.TabIndex=0

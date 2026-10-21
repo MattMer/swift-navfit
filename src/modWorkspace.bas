@@ -72,20 +72,8 @@ Failed:
 End Function
 
 Public Function RefreshFolders() As Boolean
-    Dim f As Form
-    Set f = Forms!frmLibrary
-    If UXHasControl(f, "uxGroupOrganization") Then RefreshFolders = UXRefreshGroupFilter(): Exit Function
-    f!lstFolders.RowSource = "SELECT 0 AS ID, 'All reports' AS Label FROM AppMetadata UNION ALL SELECT -1, 'Unassigned' FROM AppMetadata UNION ALL SELECT FolderID, FolderPath([FolderID]) FROM Folder ORDER BY Label"
-    f!lstFolders.Requery
-    f!cboDestination.RowSource = "SELECT 0 AS ID, 'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID, FolderPath([FolderID]) FROM Folder ORDER BY Label"
-    f!cboDestination.Requery
-    If IsNull(f!lstFolders) Then f!lstFolders = 0
-    If UXHasControl(f, "uxFolderFilter") Then
-        f!uxFolderFilter.Requery
-        f!uxFolderFilter = f!lstFolders
-    End If
-    If IsNull(f!cboDestination) Then f!cboDestination = 0
-    RefreshFolders = True
+    'Compatibility name; Reports is organized by summary group, not folder IDs.
+    RefreshFolders = UXRefreshGroupFilter()
 End Function
 
 Public Function RefreshLibrary() As Boolean
@@ -94,13 +82,8 @@ Public Function RefreshLibrary() As Boolean
     selection = Nz(f!lstReports, 0)
     sql = "SELECT " & LibraryViewSelect() & " FROM Report WHERE 1=1"
     folderID = Nz(f!lstFolders, 0): state = Nz(f!cboArchive, "Active")
-    If UXHasControl(f, "uxGroupOrganization") Then
-        If folderID = -1 Then sql = sql & " AND ReportID NOT IN (SELECT ReportID FROM GroupMember)"
-        If folderID > 0 Then sql = sql & " AND ReportID IN (SELECT ReportID FROM GroupMember WHERE GroupID=" & folderID & ")"
-    Else
-        If folderID = -1 Then sql = sql & " AND FolderID IS NULL"
-        If folderID > 0 Then sql = sql & " AND FolderID=" & folderID
-    End If
+    If folderID = -1 Then sql = sql & " AND ReportID NOT IN (SELECT ReportID FROM GroupMember)"
+    If folderID > 0 Then sql = sql & " AND ReportID IN (SELECT ReportID FROM GroupMember WHERE GroupID=" & folderID & ")"
     If state = "Active" Then sql = sql & " AND IsArchived=False"
     If state = "Archived" Then sql = sql & " AND IsArchived=True"
     If UXHasControl(f, "uxTypeFilter") Then
@@ -127,43 +110,14 @@ Public Function RefreshLibrary() As Boolean
 End Function
 
 Public Function AddFolderUI() As Boolean
-    Dim name As String, parent As Long
-    On Error GoTo Failed
-    parent = Nz(Forms!frmLibrary!lstFolders, 0): If parent < 0 Then parent = 0
-    name = InputBox("New folder name. A selected folder becomes its parent.", "Create organizational folder")
-    If Len(Trim$(name)) = 0 Then Exit Function
-    CreateFolder name, parent
-    Call RefreshFolders()
-    Call RefreshLibrary()
-    AddFolderUI = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation
+    'Orphan legacy callback: never interpret a summary-group ID as a folder ID.
+    AddFolderUI = UXNavigate("frmBulkFolders")
 End Function
-
 Public Function MoveReportUI() As Boolean
-    Dim id As Long, destination As Long
-    On Error GoTo Failed
-    id = Nz(Forms!frmLibrary!lstReports, 0): destination = Nz(Forms!frmLibrary!cboDestination, 0)
-    If id = 0 Then MsgBox "Select a report first.": Exit Function
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then MsgBox "Close the editor before moving a report.": Exit Function
-    AssignFolder id, destination
-    Call RefreshLibrary()
-    MoveReportUI = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation
+    MoveReportUI = UXChooseReportGroup()
 End Function
-
 Public Function MoveFolderUI() As Boolean
-    Dim id As Long, destination As Long
-    On Error GoTo Failed
-    id = Nz(Forms!frmLibrary!lstFolders, 0): destination = Nz(Forms!frmLibrary!cboDestination, 0)
-    If id <= 0 Then MsgBox "Select an organizational folder first.": Exit Function
-    MoveFolder id, destination
-    Call RefreshFolders()
-    Call RefreshLibrary()
-    MoveFolderUI = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation
+    MoveFolderUI = UXNavigate("frmBulkFolders")
 End Function
 
 Public Function ShowHelp(ByVal topic As String) As Boolean

@@ -1,13 +1,12 @@
 # Run after the existing UI helpers; retain all backend control identities.
-. (Join-Path $PSScriptRoot 'apply-ux-block28-schema.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-block28-schema.ps1')}
 foreach($m in @('modUXReadRows','modSummaryGroups','modOperations','modUXGroupLifecycle','modUXBlockTools','modUXSurface','modUX','modUXFeedback','modUXMyWork','modUXTraitGrid','modSnippets','modMeetings','modRouteTemplates')){
-    $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))
+if(-not $script:swiftManagedBuild){    $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 }
-$layout=Get-Content (Join-Path $root 'scripts/apply-ux-layout.ps1') -Raw
-Invoke-Expression ($layout.Substring(0,$layout.IndexOf('function UXChrome')))
-$workspace=Get-Content (Join-Path $root 'scripts/apply-ux-workspace.ps1') -Raw
-$begin=$workspace.IndexOf('$surfaceModule=');$end=$workspace.IndexOf("NewScreen 'frmUXEditorFields'")
-Invoke-Expression ($workspace.Substring($begin,$end-$begin))
+if(-not $script:swiftManagedBuild){
+ . (Join-Path $PSScriptRoot 'apply-ux-field-catalogue.ps1')
+ . (Join-Path $PSScriptRoot 'apply-ux-surface-catalogue.ps1')
+}
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
 $f.Controls('uxSection0').Caption='Admin data';$f.Controls('uxSection1').Visible=$false
 $f.Controls('uxSeniorRecord').Tag='LOCAL:0';$f.Controls('uxUseSenior').Tag='LOCAL:0'
@@ -74,12 +73,12 @@ foreach($key in @('ReportingSeniorLastName','ReportingSeniorFirstInitial','Repor
 }
 SaveScreen $f 'frmUXSeniorEditor'
 
-. (Join-Path $PSScriptRoot 'apply-ux-date-pickers.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-date-pickers.ps1')}
 
-. (Join-Path $PSScriptRoot 'apply-ui-author-baseline.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ui-author-baseline.ps1')}
 
-. (Join-Path $PSScriptRoot 'apply-ux-group-directory.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-group-directory.ps1')}
 
-. (Join-Path $PSScriptRoot 'apply-ux-comparison-autosave.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-comparison-autosave.ps1')}
 
-. (Join-Path $PSScriptRoot 'apply-ux-ruad-import.ps1')
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-ruad-import.ps1')}

@@ -1,5 +1,5 @@
 # Live diagnostics and source-backed report/group issue list. Schema unchanged.
-foreach($module in @('modLiveValidation','modUXValidation','modRecovery','modUX','modUXDashboard','modValidation','modUXSurface','modUXHelp','modSwift')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($module in @('modLiveValidation','modUXValidation','modRecovery','modUX','modUXDashboard','modValidation','modUXSurface','modUXHelp','modSwift')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
 NewScreen 'frmUXValidation' 'Validation issues' 10000;$f=$script:swiftForm
 $f.OnLoad='=UXLoadValidation()';$f.OnResize='=UXValidationLayout()';$f.OnTimer='=UXLoadValidation()';$f.TimerInterval=1000
 [void](Control $f 100 'lblBasis' 400 950 12600 750 '')

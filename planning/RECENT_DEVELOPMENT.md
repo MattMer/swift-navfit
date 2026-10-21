@@ -1,9 +1,12 @@
 # Recent Swift NAVFIT development
 
-Source update: 19 October 2026. Development version 0.25.0-dev, schema 25. These source changes do not constitute a new binary release. Existing downloads and historical verification notes describe their own exact artifacts.
+Current development identity: 0.26.0-dev, schema 26. See CURRENT_STATE.md for the latest verified distribution and exact-artifact evidence. The 19 October entries below retain their historical scope.
 
 | Area | Change and verification notes |
 | --- | --- |
+| Build and legacy cleanup | [Managed build pipeline and retained adapters](BUILD_PIPELINE.md); [r125 implementation and verification scope](BUILD_CLEANUP_R125_2026-10-20.md) |
+| Workspace import verification | [r124 database-engine exact verification](ENGINE_IMPORT_R124_2026-10-20.md) |
+| Consolidated report tools | [r123 notes, replies, review, validation and calculations](REPORT_TOOLS_R123_2026-10-20.md) |
 | Reports and My Work performance | [Batch 1](PRIORITY_CLEANUP_BATCH1.md), [display reads](PRIORITY_CLEANUP_BATCH2.md), [group calculations](PRIORITY_CLEANUP_BATCH3.md), [member-grid reads](PRIORITY_CLEANUP_BATCH4.md), [queue inclusion/counting](PRIORITY_CLEANUP_BATCH5.md) |
 | Save and recovery feedback | [Batch 6: saved revisions, pending work, scope and contextual actions](PRIORITY_CLEANUP_BATCH6.md) |
 | Navigation and help | [Canonical contextual guide](NAVIGATION_HELP_CONSOLIDATION.md), [explicit defaults context and comparison views](NAVIGATION_UPDATES.md) |

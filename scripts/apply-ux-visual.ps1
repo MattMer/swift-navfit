@@ -1,6 +1,6 @@
 # Semantic palette; retain native event expressions and all workflow authorities.
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modUXVisual','modUXHeaderReview','modUXReview','modUXHelp','modUXViewport','modUXValidation','modLibraryViews','modUXGroupLifecycle','modUXTraitGrid','modReportPages')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXVisual','modUXHeaderReview','modUXReview','modUXHelp','modUXViewport','modUXValidation','modLibraryViews','modUXGroupLifecycle','modUXTraitGrid','modReportPages')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $names=@($app.CurrentProject.AllForms|ForEach-Object {$_.Name})
 foreach($name in $names){
  $app.DoCmd.OpenForm($name,1);$f=$app.Forms.Item($name)

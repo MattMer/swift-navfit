@@ -323,6 +323,10 @@ End Function
 Public Function OpenScreen(ByVal formName As String) As Boolean
     On Error GoTo Failed
     If formName = "frmHelp" Then formName = "frmUXHelp"
+    Select Case formName
+        Case "frmHome", "frmLibrary", "frmUXGroups", "frmMyWork", "frmUXResources", "frmUXSettings", "frmBulkFolders", "frmUXHelp"
+            OpenScreen = UXNavigate(formName): Exit Function
+    End Select
     If formName = "frmSnippets" Then UXResetSnippetOrigin
     DoCmd.OpenForm formName
     Forms(formName).SetFocus

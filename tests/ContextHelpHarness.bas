@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  n = n + 1
 End Sub
 Public Function TestContextHelp() As String
- Dim id As Long, before As Long, f As Access.Form, name As Variant, x As Long, y As Long, w As Long
+ Dim id As Long, before As Long, f As Access.Form, name As Variant, x As Long, y As Long, w As Long, item As AccessObject, hasLegacy As Boolean
  On Error GoTo Failed
  ConfigureWorkspace "SYNTHETIC CONTEXT HELP", "Tester"
  id = CommitDraft(0, "EVAL", "Help test", "SYNTHETIC, MEMBER", #1/1/2026#, #9/30/2026#, "")
@@ -27,7 +27,10 @@ Public Function TestContextHelp() As String
  Check ShowHelp("Saving") And Forms!frmUXHelp!lstTopics = 1, "Legacy save help did not consolidate"
  Check ShowHelp("Folders") And Forms!frmUXHelp!lstTopics = 2, "Legacy folder help did not consolidate"
  Check OpenScreen("frmHelp"), "Bare legacy route failed"
- Check Not CurrentProject.AllForms("frmHelp").IsLoaded, "Legacy help window opened"
+ For Each item In CurrentProject.AllForms
+  If item.Name = "frmHelp" Then hasLegacy = True
+ Next
+ Check Not hasLegacy And Screen.ActiveForm.Name = "frmUXHelp", "Legacy help window retained or wrong guide opened"
  CloseHelp
  Check EditorHasPending(), "Closing help discarded edits"
  Check UXLeaveEditor("Discard"), "Test cleanup failed"

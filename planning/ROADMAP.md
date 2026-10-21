@@ -1,36 +1,27 @@
-# Swift NAVFIT roadmap â€” 4 October 2026
+# Swift NAVFIT roadmap
 
-Current native development preview: **0.22.0-ux-preview, schema 21, r23**.
-See [complete project-plan status](PROJECT_PLAN_STATUS_2026-10-04.md) for every
-original and redesign workstream, evidence limits and outstanding acceptance.
-The prior distributed checkpoint is 0.21.0/schema 20; old milestones below are
-historical and do not certify current full NAVFIT interchange or Navy validation.
+Updated 20 October 2026. Desktop Microsoft Access is the supported host; free Runtime support is not required. [Current state](CURRENT_STATE.md) identifies verified artifacts and their evidence. The application is 0.26.0-dev, schema 26.
 
-The core drafting/revision/recovery library, explicit groups, defaults/bulk/undo,
-compact editable comparison, senior/RSCA directory, local review/approval,
-partial imports and backup/migration services are implemented in their documented
-scope. r23 completes focused saved-report review/stale-route restart and native
-Reports scroll/selection return. Physical native acceptance remains outstanding.
+## Completed foundations
 
-Next focus:
-1. Native end-to-end visual/keyboard/scaling acceptance and integrate ordered
-   route steps/unresolved work into My Work.
-2. Complete verified NAVFIT field mappings, full staged import/export and
-   returned-file reconciliation/round-trip proof.
-3. Complete policy-defined grouping, exception/completeness and versioned rules.
-4. Exact-artifact broad regression, migration and Runtime/x86/workstation
-   verification before replacing the distributed prerelease.
-5. Later rollover/targeted comments/richer comparison/full PDF mapping. Printed
-   layout stays deferred; no network/authentication/synchronization/signatures.
+- Report drafting, saved revisions, recovery, fixed Front/Back pages and all seven Front Page traits.
+- Explicit summary groups, defaults, previewed bulk changes, history and undo; reporting senior directory and completion accounting.
+- Contextual help, guarded navigation, My Work, embedded report notes/replies, independent local review steps, validation views and trait calculations.
+- Table-level Swift workspace transfer with exact database-engine verification, transaction rollback and retained-schema compatibility.
+- Blank and synthetic Demo distributions, local backups and a procedure-based user guide.
 
-## Verified milestone
+## Current cleanup
 
-The 0.20.0 release passed 2001 assertions plus 218 reference checks across administrative, routing, comments, provenance, workflow, narrative, comparison, recovery, direct review and smoke suites. Narrative import verified all 2472 retained values. Schema-18-to-19, schema-19-to-19 and schema-5-to-19 migrations preserved every original row and field, source hashes and reopen behavior. All 20 user-data tables in the distribution are empty. See STRUCTURED_NAMES_GUIDE.md and BUILD_STATUS.md for exact scope and limits.
+The managed build plan makes generator order and dependencies explicit, centralizes static-module imports, and verifies installed source, native unload guards and event routes after reopening. Retired standalone help/review windows are removed only after binding inspection. Organizational folder tools and their history services remain supported. See [build pipeline](BUILD_PIPELINE.md).
 
-## Manual testing follow-up - 6 October 2026
+## Remaining priorities
 
-See [the manual-feedback change plan](MANUAL_FEEDBACK_CHANGE_PLAN_2026-10-06.md) for the r32 findings, clarification questions and implementation sequence. These changes are planned, not implemented. CURRENT_STATE.md identifies the current build; older roadmap checkpoints above are historical.
+1. Physical end-to-end visual, keyboard, scaling, accessibility and printed-layout acceptance. Automated geometry checks do not replace these checks; the user has deferred visual acceptance.
+2. Complete and prove NAVFIT98A field mappings, staged interchange and returned-file reconciliation. Existing partial compatibility is not full interchange certification.
+3. Extend versioned policy coverage, grouping exceptions, completeness and ready-for-signature guidance using authoritative rules.
+4. Continue focused performance and usability improvements with representative synthetic workloads and exact-artifact regression evidence.
+5. Assess proposed continuity history, counseling support and local submission tracking only after scope is agreed. These are proposals, not delivered features.
 
-## Leadership tools researched — 6 October 2026
+No cloud synchronization, internet communication, authentication service or electronic signature service is part of the application. Local approval remains separate from official submission.
 
-See [NARRATIVE_POLICY_REVIEW_2026-10-06.md](NARRATIVE_POLICY_REVIEW_2026-10-06.md). Next recommended: explicit Regular continuity history/timeline, versioned ready-for-signature checklist, counseling schedule/worksheet, then member accomplishment/evidence log. Later: local submission/return/error-code tracker, policy coverage dashboard, deliberate retention review and advisory narrative quality aids. These remain proposed; RUAD mapping, exact printed fit, physical display/accessibility and native NAVFIT UI acceptance retain their outstanding status.
+The [4 October roadmap](ROADMAP_2026-10-04.md) is retained as historical planning, including superseded versions and priorities. Earlier project-plan and manual-feedback documents are historical records; use the current state and user guide for current behavior.

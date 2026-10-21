@@ -1,5 +1,5 @@
 # Focused saved-revision review and native Reports viewport return.
-foreach($module in @('modUXReviewLayout','modRouteTemplates','modUXReview','modUXReportReturn','modUX','modSwift','modMajorUI','modUXDashboard')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($module in @('modUXReviewLayout','modRouteTemplates','modUXReview','modUXReportReturn','modUX','modSwift','modMajorUI','modUXDashboard')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
 NewScreen 'frmUXReview' 'Report review' 11200;$f=$script:swiftForm;$f.ScrollBars=2;$f.OnLoad='=UXLoadReview()'
 foreach($name in @('txtReportID','txtGroupID','txtExpectedRevision','txtExpectedStamp')){[void](Control $f 109 $name 0 0 100 100);$script:swiftControl.Visible=$false}
 [void](Control $f 100 'lblSaved' 400 1050 12600 650 '')

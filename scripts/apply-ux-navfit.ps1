@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modUXNAVFIT',(Join-Path $root 'src/modUXNAVFIT.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXNAVFIT',(Join-Path $root 'src/modUXNAVFIT.bas'))}
 $app.DoCmd.OpenForm('frmImportReview',1);$f=$app.Forms.Item('frmImportReview')
 foreach($existing in @('lblNAVFITCentury','cboNAVFITCentury')){
  if(@($f.Controls|ForEach-Object{$_.Name}) -contains $existing){$app.DeleteControl($f.Name,$existing)}

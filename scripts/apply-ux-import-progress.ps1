@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modWorkspaceImport','modMigration','modUXNativeGroups')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modWorkspaceImport','modMigration','modUXNativeGroups')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXWorkspaceImport',1);$f=$app.Forms.Item('frmUXWorkspaceImport')
 SetAccessProperty ($f.Controls.Item('txtPreview')) 'Height' 3000
 $c=$app.CreateControl($f.Name,100,0,'','',350,4350,12200,350);$c.Name='lblProgress';$c.Caption='Import activity - progress appears here after you start';$c.FontName='Segoe UI';$c.FontSize=10

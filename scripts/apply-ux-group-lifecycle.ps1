@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modUXGroupLifecycle',(Join-Path $root 'src/modUXGroupLifecycle.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXGroupLifecycle',(Join-Path $root 'src/modUXGroupLifecycle.bas'))}
 $app.DoCmd.OpenForm('frmUXGroups',1);$f=$app.Forms.Item('frmUXGroups')
 [void](Control $f 100 'uxFilterLabel' 2850 1950 2200 300 'Archive status')
 [void](Control $f 111 'uxArchiveFilter' 5250 1900 3300 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='Active;Archived;All';$c.DefaultValue='"Active"';$c.LimitToList=$true;$c.AfterUpdate='=UXGroupList()';$c.ControlTipText='Filter active, archived or all summary groups'

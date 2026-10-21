@@ -1,5 +1,5 @@
-$app.LoadFromText(5,'modDirectoryBatch',(Join-Path $root 'src/modDirectoryBatch.bas'))
-$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modDirectoryBatch',(Join-Path $root 'src/modDirectoryBatch.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))}
 $app.DoCmd.OpenForm('frmUXDirectory',1);$f=$app.Forms.Item('frmUXDirectory')
 [void](Control $f 104 'cmdCreateReports' 400 7300 12600 500 'Create group reports from directory members' '=UXDirectoryBatchOpen()');$f.Section(0).Height=8300;SaveScreen $f 'frmUXDirectory'
 NewScreen 'frmUXDirectoryBatch' 'Create reports from command members' 11200;$f=$script:swiftForm;$f.ScrollBars=2

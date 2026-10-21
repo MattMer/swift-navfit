@@ -1,3 +1,11 @@
+## 2026-10-20 - r125 build and legacy cleanup
+
+Current verified files: `output/Swift_NAVFIT_Blank_2026-10-20-r125.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r125.accdb`. Both uploaded with name, size and folder readback verified. Blank user-data tables are empty; Demo contains 13 synthetic reports in five groups. Earlier files and the populated r116 workspace are preserved. Access is closed.
+
+The managed build has an explicit 70-stage plan, 94 static modules and four generated modules. Named catalogue generators replace script-fragment execution. Preflight/input fingerprints and reopened source/form verification accompany a build receipt. Distinct database ownership and guarded COM cleanup fix two fresh-build teardown failures. The unused help form and obsolete Reports folder controls are retired; organizational folder services/history, the active folder tools and required hidden group context host remain. Legacy menu callbacks now use normal pending-save exit guards.
+
+Exact final artifacts passed 27 cleanup, 48 smoke, 39 Demo, 35 report-tools, 1,747 queue and 169 catalogue checks; all 26 retained-schema migrations and rollback/rejection gates; populated schema20/current transfers and reopen; canonical conversations/private reply drafts; and 16 adversarial verification cases with injected mismatch rollback/retry. Generation regression also passed 264 fixed-page, 41 lifecycle/forced-close, 54 group-exit, 57 help and 22 organization checks. The 262,144-row synthetic import completed in 14.196 seconds on the generation regression artifact. Physical visual/accessibility/printed acceptance remains deferred. See [scope](BUILD_CLEANUP_R125_2026-10-20.md), [verification](BUILD_CLEANUP_R125_VERIFICATION.json), and [build pipeline](BUILD_PIPELINE.md).
+
 ## 2026-10-20 - r124 database-engine import verification
 
 Current Blank/Demo: `output/Swift_NAVFIT_Blank_2026-10-20-r124.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r124.accdb`; uploaded with name/size/folder readback verified. Access is closed.

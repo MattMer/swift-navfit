@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-foreach($m in @('modNAVFITAdapter','modPDFImport','modUXNativeGroups','modUXNAVFIT','modUXImportFlow','modUXDirectory','modUXGroupPages','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modNAVFITAdapter','modPDFImport','modUXNativeGroups','modUXNAVFIT','modUXImportFlow','modUXDirectory','modUXGroupPages','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 foreach($entry in @(@('frmPDFImport','cboCentury','lblCentury'),@('frmUXNativeGroups','cboCentury','lblCentury'),@('frmImportReview','cboNAVFITCentury','lblNAVFITCentury'),@('frmNAVFITExchange','cboReturnCentury','lblReturnCentury'))){
  $app.DoCmd.OpenForm($entry[0],1);$f=$app.Forms.Item($entry[0])
  foreach($name in $entry[1..2]){try{$app.DeleteControl($f.Name,$name)}catch{}}

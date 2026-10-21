@@ -1,5 +1,5 @@
-$app.LoadFromText(5,'modDirectoryBatch',(Join-Path $root 'src/modDirectoryBatch.bas'))
-$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modDirectoryBatch',(Join-Path $root 'src/modDirectoryBatch.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))}
 $app.DoCmd.OpenForm('frmUXDirectoryBatch',1);$f=$app.Forms.Item('frmUXDirectoryBatch')
 [void](Control $f 100 'lblFrom' 7000 1000 2800 350 'Report from date');[void](Control $f 100 'lblTo' 10200 1000 2800 350 'Report to date');SaveScreen $f 'frmUXDirectoryBatch'
 $app.DoCmd.OpenForm('frmUXMemberHistory',1);$f=$app.Forms.Item('frmUXMemberHistory')

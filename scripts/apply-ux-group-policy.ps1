@@ -1,5 +1,5 @@
 # Group policy context and consequence previews, using existing schema-21 storage.
-foreach($m in @('modGroupPolicy','modLiveValidation','modSummaryGroups','modUX','modUXBlockTools')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modGroupPolicy','modLiveValidation','modSummaryGroups','modUX','modUXBlockTools')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 NewScreen 'frmUXGroupPolicy' 'Summary-group policy review' 11100;$f=$script:swiftForm;$f.ScrollBars=2
 foreach($name in @('groupID','baseline')){[void](Control $f 109 $name 0 0 100 100);$script:swiftControl.Visible=$false}
 [void](Control $f 100 'lblUIC' 400 1000 6000 350 'UIC / command grouping choice')

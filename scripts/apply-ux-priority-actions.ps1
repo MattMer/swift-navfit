@@ -1,6 +1,6 @@
 # Saving, pre-edit scope and contextual-action presentation; no report-field geometry changes.
 foreach($m in @('modUX','modSwift','modRecovery','modUXValidation','modUXTraitGrid','modUXRecursiveDefaults','modUXHeaderReview','modUXReview','modUXGroupLifecycle')){
- $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))
+if(-not $script:swiftManagedBuild){ $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 }
 $app.DoCmd.OpenForm('frmUXBulk',1);$f=$app.Forms.Item('frmUXBulk')
 if(-not @($f.Controls|ForEach-Object {$_.Name}).Contains('uxScope')){

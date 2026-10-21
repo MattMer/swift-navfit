@@ -1,6 +1,6 @@
 # Shared group baseline selections save on change; PDF creation uses real identity.
 foreach($m in @('modRSDirectoryUI','modUXResourceTools','modUXTraitGrid','modPDFImport','modCommandDirectory','modUXDirectory','modUXHelp')){
- $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))
+if(-not $script:swiftManagedBuild){ $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 }
 $app.DoCmd.OpenForm('frmUXGroupRSCA',1);$f=$app.Forms.Item('frmUXGroupRSCA')
 try{$app.DeleteControl($f.Name,'cmdSave')}catch{}

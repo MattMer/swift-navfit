@@ -1,5 +1,5 @@
-$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))
-$app.LoadFromText(5,'modMemberHistory',(Join-Path $root 'src/modMemberHistory.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modMemberHistory',(Join-Path $root 'src/modMemberHistory.bas'))}
 $app.DoCmd.OpenForm('frmUXDirectory',1);$f=$app.Forms.Item('frmUXDirectory')
 [void](Control $f 104 'cmdHistory' 400 6600 12600 500 'Written reports and prior evaluations for selected member' '=UXDirectoryHistory()');$f.Section(0).Height=7600;SaveScreen $f 'frmUXDirectory'
 NewScreen 'frmUXMemberHistory' 'Member evaluation history' 7600;$f=$script:swiftForm;$f.ScrollBars=2

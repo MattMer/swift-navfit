@@ -1,5 +1,5 @@
 # Prior evaluation values are reference-only: no mouse focus or keyboard tab stop.
-foreach($m in @('modUXVisual','modUXTraitGrid','modUXFeedback')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXVisual','modUXTraitGrid','modUXFeedback')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXTraitRows',1);$f=$app.Forms.Item('frmUXTraitRows')
 foreach($name in @('PriorITA','PriorPromotion')){
  $c=$f.Controls.Item($name);$c.Locked=$true;$c.Enabled=$false;$c.TabStop=$false

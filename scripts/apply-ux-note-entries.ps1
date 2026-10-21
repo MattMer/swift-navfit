@@ -1,4 +1,4 @@
-foreach($m in @('modUXNotes','modUXSurface','modRouting')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXNotes','modUXSurface','modRouting')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXEditorFields',1);$f=$app.Forms.Item('frmUXEditorFields')
 [void](Control $f 110 'uxNoteList' 200 200 8000 1750);$c=$script:swiftControl;$c.ColumnCount=3;$c.ColumnHeads=$true;$c.OnClick='=UXSelectReportNote()'
 [void](Control $f 109 'uxNoteDetails' 200 2100 8000 1650);$script:swiftControl.Locked=$true;$script:swiftControl.ScrollBars=2
@@ -17,7 +17,7 @@ $f.OnLoad='=UXLoadNoteComposer()';$f.OnTimer='=UXNoteCheckpoint()';$f.TimerInter
 SaveScreen $f 'frmUXNoteComposer'
 
 
-$app.LoadFromText(5,'modUXDashboard',(Join-Path $root 'src/modUXDashboard.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXDashboard',(Join-Path $root 'src/modUXDashboard.bas'))}
 $app.DoCmd.OpenForm('frmHome',1);$f=$app.Forms.Item('frmHome')
 [void](Control $f 104 'uxNoteRecovery' 7800 2090 5500 420 'Unposted notes' '=UXOpenNoteRecoveries()')
 SaveScreen $f 'frmHome'

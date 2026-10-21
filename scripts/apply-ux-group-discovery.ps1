@@ -1,5 +1,5 @@
 # Discover populated native folders even when report rank/rate needs completion.
-foreach($m in @('modImportReview','modUXNativeGroups')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modImportReview','modUXNativeGroups')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmUXNativeGroups',1);$f=$app.Forms.Item('frmUXNativeGroups')
 $f.Controls('lstGroups').Height=2050
 $f.Controls('lblCentury').Caption='Counseling date century (required only for ambiguous source dates)'

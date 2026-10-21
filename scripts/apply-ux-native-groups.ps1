@@ -1,4 +1,4 @@
-foreach($m in @('modImportReview','modUXNativeGroups','modOfficialBatch')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modImportReview','modUXNativeGroups','modOfficialBatch')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 NewScreen 'frmUXNativeGroups' 'Import NAVFIT groups' 13500;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 109 'txtSource' 400 950 12600 400);$script:swiftControl.Locked=$true
 [void](Control $f 100 'lblCentury' 400 1500 9500 400 'Choose counseling date century before loading and previewing groups')

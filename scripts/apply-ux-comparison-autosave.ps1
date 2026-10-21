@@ -1,6 +1,6 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
 # Finish bound-control events before the report transaction runs.
-$app.LoadFromText(5,'modUXTraitGrid',(Join-Path $root 'src/modUXTraitGrid.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXTraitGrid',(Join-Path $root 'src/modUXTraitGrid.bas'))}
 $app.DoCmd.OpenForm('frmUXTraitRows',1);$f=$app.Forms.Item('frmUXTraitRows')
 foreach($key in @('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39','PromotionRecommendation','AssignmentRecommendationA','AssignmentRecommendationB')){
     $f.Controls.Item($key).AfterUpdate='=UXGridQueue("'+$key+'")'

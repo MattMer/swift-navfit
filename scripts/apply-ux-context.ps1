@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modUXCalculationContext',(Join-Path $root 'src/modUXCalculationContext.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXCalculationContext',(Join-Path $root 'src/modUXCalculationContext.bas'))}
 $app.DoCmd.OpenForm('frmChecklist',1);$f=$app.Forms.Item('frmChecklist')
 [void](Control $f 104 'cmdOpenSection' 8200 8850 4500 550 'Open report section' '=ChecklistOpenSection()');$script:swiftControl.Enabled=$false
 $f.Controls('lstFindings').OnDblClick='=ChecklistOpenSection()'

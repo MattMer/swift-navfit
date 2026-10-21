@@ -3,7 +3,7 @@ $profileDB=$app.CurrentDb()
 if(-not @($profileDB.TableDefs.Item('CommandMember').Fields|ForEach-Object {$_.Name}).Contains('RUADData')){$profileDB.Execute('ALTER TABLE CommandMember ADD COLUMN RUADData LONGTEXT',128)}
 $profileDB=$app.CurrentDb();$profileDB.TableDefs.Refresh();$profileDB.TableDefs.Item('CommandMember').Fields.Refresh();$profileDB.TableDefs.Item('CommandMember').Fields.Item('RUADData').AllowZeroLength=$true
 $profileDB.Execute('UPDATE AppMetadata SET SchemaVersion=25',128)
-foreach($moduleName in @('modRUADProfiles','modCommandDirectory','modUXDirectory','modUXGroupPages','modDirectoryBatch','modUXDashboard','modUXViewport','modUX','modUXTraitGrid','modUXBlockTools')){$app.LoadFromText(5,$moduleName,(Join-Path $root ('src/'+$moduleName+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($moduleName in @('modRUADProfiles','modCommandDirectory','modUXDirectory','modUXGroupPages','modDirectoryBatch','modUXDashboard','modUXViewport','modUX','modUXTraitGrid','modUXBlockTools')){$app.LoadFromText(5,$moduleName,(Join-Path $root ('src/'+$moduleName+'.bas')))}}
 
 # Compact, complete profile. All pending field values remain in unbound controls across page changes.
 $app.DoCmd.DeleteObject(2,'frmUXMemberEditor')

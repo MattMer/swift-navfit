@@ -1,5 +1,5 @@
 # Native calendar buttons, preserving the unbound raw-value editor/recovery buffer.
-$app.LoadFromText(5,'modRSDirectoryUI',(Join-Path $root 'src/modRSDirectoryUI.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modRSDirectoryUI',(Join-Path $root 'src/modRSDirectoryUI.bas'))}
 $dateNames=@('txtDue','txtAsOf','txtFrom','txtTo')
 for($i=0;$i -lt $uxFields.Count;$i++){
     if($uxFields[$i].date){$dateNames+=@($uxNames[$i],('value'+$uxFields[$i].key))}

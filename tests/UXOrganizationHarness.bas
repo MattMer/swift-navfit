@@ -16,7 +16,7 @@ Public Function TestUXOrganization() As String
     bad = CreateSummaryGroup("Wrong grade", "EVAL", "E6")
     AddGroupMember g, id, "E5": rev = CurrentRevision(id)
     DoCmd.OpenForm "frmLibrary": RefreshFolders
-    Check Not Forms!frmLibrary!cboDestination.Visible, "Destination folder still visible"
+    Check Not UXHasControl(Forms!frmLibrary, "cboDestination"), "Obsolete destination folder control remains"
     Forms!frmLibrary!uxFolderFilter = g
     Check UXFolderFilterChanged(), "Group filter failed"
     Check Forms!frmLibrary!lstReports.ListCount = 2, "Group filter report missing"
@@ -53,7 +53,7 @@ Public Function TestUXOrganization() As String
     DoCmd.OpenForm "frmUXGroups": Forms!frmUXGroups!lstGroups = g: UXGroupSelection
     Forms!frmUXGroups!uxGroupState = "Ready for Signature"
     Check UXSetGroupWorkflow(), "Group-list status action failed"
-    Check Forms!frmUXGroups!lstGroups.ColumnCount = 7 And GroupWorkflow(g) = "Ready for Signature", "Group-list status not shown"
+    Check Forms!frmUXGroups!lstGroups.ColumnCount = 8 And GroupWorkflow(g) = "Ready for Signature" And Nz(Forms!frmUXGroups!lstGroups.Column(6), "") = "Ready for Signature", "Group-list status not shown"
     TestUXOrganization = "PASS: " & n & " group move/filter/status assertions": Exit Function
 Failed:
     TestUXOrganization = "FAIL after " & n & ": " & Err.Number & " " & Err.Description

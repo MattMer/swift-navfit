@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modSnippets',(Join-Path $root 'src/modSnippets.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modSnippets',(Join-Path $root 'src/modSnippets.bas'))}
 $app.DoCmd.OpenForm('frmSnippets',1);$f=$app.Forms.Item('frmSnippets')
 $f.Controls('txtSearch').Width=5700;$f.Controls('cmdSearch').Left=10300;$f.Controls('cmdSearch').Width=2500
 [void](Control $f 100 'lblRateFilter' 6400 1450 3500 300 'Filter by rate')

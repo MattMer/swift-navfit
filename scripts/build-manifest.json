@@ -1,0 +1,702 @@
+{
+  "manifestVersion": 1,
+  "identitySource": "src/modSwift.bas",
+  "schemaSource": "src/major-schema.json",
+  "sourceModules": [
+    "src/modAdministration.bas",
+    "src/modAssessment.bas",
+    "src/modBackupUI.bas",
+    "src/modBulkFolders.bas",
+    "src/modChecklist.bas",
+    "src/modCommandDirectory.bas",
+    "src/modDecisionDetails.bas",
+    "src/modDirectoryBatch.bas",
+    "src/modFileHash.bas",
+    "src/modGroupPolicy.bas",
+    "src/modImportReview.bas",
+    "src/modLibraryViews.bas",
+    "src/modLiveValidation.bas",
+    "src/modMajorCore.bas",
+    "src/modMajorUI.bas",
+    "src/modMeetings.bas",
+    "src/modMemberDetails.bas",
+    "src/modMemberHistory.bas",
+    "src/modMigration.bas",
+    "src/modNAVFITAdapter.bas",
+    "src/modNAVFITExchange.bas",
+    "src/modNAVFITMapping.bas",
+    "src/modNAVFITUpgrade.bas",
+    "src/modNavyWriterCatalog.bas",
+    "src/modOfficialBatch.bas",
+    "src/modOperations.bas",
+    "src/modPartyNames.bas",
+    "src/modPDFImport.bas",
+    "src/modPDFMapping.bas",
+    "src/modPromotionStatus.bas",
+    "src/modProvenance.bas",
+    "src/modRecovery.bas",
+    "src/modReportContext.bas",
+    "src/modReportingSenior.bas",
+    "src/modReportMessages.bas",
+    "src/modReportNotes.bas",
+    "src/modReportPageMap.bas",
+    "src/modReportPages.bas",
+    "src/modReportPeople.bas",
+    "src/modReportTools.bas",
+    "src/modReviewComments.bas",
+    "src/modRevisionCompare.bas",
+    "src/modRouteTemplates.bas",
+    "src/modRouting.bas",
+    "src/modRSCompletion.bas",
+    "src/modRSDirectory.bas",
+    "src/modRSDirectoryUI.bas",
+    "src/modRUADImport.bas",
+    "src/modRUADProfiles.bas",
+    "src/modSavedReadiness.bas",
+    "src/modServiceDetails.bas",
+    "src/modSnippets.bas",
+    "src/modSummaryGroups.bas",
+    "src/modSwift.bas",
+    "src/modTableSort.bas",
+    "src/modTraits.bas",
+    "src/modUX.bas",
+    "src/modUXBlockTools.bas",
+    "src/modUXCalculationContext.bas",
+    "src/modUXDashboard.bas",
+    "src/modUXDirectory.bas",
+    "src/modUXExportNames.bas",
+    "src/modUXFeedback.bas",
+    "src/modUXGlobalDefaults.bas",
+    "src/modUXGroupLifecycle.bas",
+    "src/modUXGroupNavigation.bas",
+    "src/modUXGroupOrganization.bas",
+    "src/modUXGroupPages.bas",
+    "src/modUXHeaderReview.bas",
+    "src/modUXHelp.bas",
+    "src/modUXImportFlow.bas",
+    "src/modUXMyWork.bas",
+    "src/modUXNativeGroups.bas",
+    "src/modUXNAVFIT.bas",
+    "src/modUXNavyWriter.bas",
+    "src/modUXNotes.bas",
+    "src/modUXReadRows.bas",
+    "src/modUXRecursiveDefaults.bas",
+    "src/modUXReportReturn.bas",
+    "src/modUXResourceTools.bas",
+    "src/modUXReview.bas",
+    "src/modUXReviewLayout.bas",
+    "src/modUXRUADImport.bas",
+    "src/modUXSeniorTable.bas",
+    "src/modUXSurface.bas",
+    "src/modUXTraitGrid.bas",
+    "src/modUXValidation.bas",
+    "src/modUXViewport.bas",
+    "src/modUXVisual.bas",
+    "src/modValidation.bas",
+    "src/modValidationExpansion.bas",
+    "src/modValidationReferences.bas",
+    "src/modWorkspace.bas",
+    "src/modWorkspaceImport.bas"
+  ],
+  "generatedModules": [
+    "modBackupWorker",
+    "modTraitCatalogue",
+    "modUXFields",
+    "modUXSurfaceFields"
+  ],
+  "inputs": [
+    "src/major-schema.json",
+    "src/navfit-field-map.json",
+    "src/navywriter-catalog.json",
+    "src/pdf-field-map.json",
+    "src/report-page-layout.json",
+    "src/report-page-map.json",
+    "src/ruad-profile-fields.json",
+    "src/service-reference.json",
+    "src/trait-catalogue.json",
+    "src/ui-author-baseline.json",
+    "src/ux-help-topics.json",
+    "prototype/fields.mjs",
+    "src/BlankForm.txt",
+    "src/AutoExec.txt",
+    "scripts/workspace-backup.ps1",
+    "scripts/write-trait-catalogue.ps1",
+    "scripts/access-properties.ps1",
+    "scripts/build-plan.ps1",
+    "scripts/invoke-build-phase.ps1",
+    "scripts/verify-built-application.ps1",
+    "scripts/build.ps1",
+    "scripts/vba-source-normalization.ps1"
+  ],
+  "retiredForms": {
+    "frmHelp": "frmUXHelp",
+    "frmReviewComments": "frmEditor",
+    "frmUXReview": "frmEditor",
+    "frmChecklist": "frmEditor",
+    "frmUXNoteComposer": "frmEditor"
+  },
+  "retainedAdapters": {
+    "frmMajorWorkbench": "Summary-group defaults/review context host",
+    "frmBulkFolders": "Active organizational-folder batch tools; independent of summary groups"
+  },
+  "stages": [
+    {
+      "id": "apply-ux-snippet-rates",
+      "phase": "base-resources",
+      "file": "scripts/apply-ux-snippet-rates.ps1",
+      "requires": []
+    },
+    {
+      "id": "apply-ux-block28-schema",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-block28-schema.ps1",
+      "requires": [
+        "apply-ux-snippet-rates"
+      ]
+    },
+    {
+      "id": "apply-ux-field-catalogue",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-field-catalogue.ps1",
+      "requires": [
+        "apply-ux-block28-schema"
+      ]
+    },
+    {
+      "id": "apply-ux-layout",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-layout.ps1",
+      "requires": [
+        "apply-ux-field-catalogue"
+      ]
+    },
+    {
+      "id": "apply-rs-directory-layout",
+      "phase": "presentation",
+      "file": "scripts/apply-rs-directory-layout.ps1",
+      "requires": [
+        "apply-ux-layout"
+      ]
+    },
+    {
+      "id": "apply-ux-shell",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-shell.ps1",
+      "requires": [
+        "apply-rs-directory-layout"
+      ]
+    },
+    {
+      "id": "apply-ux-surface-catalogue",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-surface-catalogue.ps1",
+      "requires": [
+        "apply-ux-shell"
+      ]
+    },
+    {
+      "id": "apply-ux-workspace",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-workspace.ps1",
+      "requires": [
+        "apply-ux-surface-catalogue"
+      ]
+    },
+    {
+      "id": "apply-ux-block-tools",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-block-tools.ps1",
+      "requires": [
+        "apply-ux-workspace"
+      ]
+    },
+    {
+      "id": "apply-ux-group-lifecycle",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-lifecycle.ps1",
+      "requires": [
+        "apply-ux-block-tools"
+      ]
+    },
+    {
+      "id": "apply-ux-context",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-context.ps1",
+      "requires": [
+        "apply-ux-group-lifecycle"
+      ]
+    },
+    {
+      "id": "apply-ux-help",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-help.ps1",
+      "requires": [
+        "apply-ux-context"
+      ]
+    },
+    {
+      "id": "apply-ux-import-flow",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-import-flow.ps1",
+      "requires": [
+        "apply-ux-help"
+      ]
+    },
+    {
+      "id": "apply-ux-review-return",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-review-return.ps1",
+      "requires": [
+        "apply-ux-import-flow"
+      ]
+    },
+    {
+      "id": "apply-ux-my-work",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-my-work.ps1",
+      "requires": [
+        "apply-ux-review-return"
+      ]
+    },
+    {
+      "id": "apply-ux-validation",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-validation.ps1",
+      "requires": [
+        "apply-ux-my-work"
+      ]
+    },
+    {
+      "id": "apply-ux-navfit",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-navfit.ps1",
+      "requires": [
+        "apply-ux-validation"
+      ]
+    },
+    {
+      "id": "apply-ux-group-policy",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-policy.ps1",
+      "requires": [
+        "apply-ux-navfit"
+      ]
+    },
+    {
+      "id": "apply-ux-feedback",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-feedback.ps1",
+      "requires": [
+        "apply-ux-group-policy"
+      ]
+    },
+    {
+      "id": "apply-ux-career-columns",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-career-columns.ps1",
+      "requires": [
+        "apply-ux-feedback"
+      ]
+    },
+    {
+      "id": "apply-ux-feedback-tables",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-feedback-tables.ps1",
+      "requires": [
+        "apply-ux-career-columns"
+      ]
+    },
+    {
+      "id": "apply-ux-member-grid",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-member-grid.ps1",
+      "requires": [
+        "apply-ux-feedback-tables"
+      ]
+    },
+    {
+      "id": "apply-ux-group-organization",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-organization.ps1",
+      "requires": [
+        "apply-ux-member-grid"
+      ]
+    },
+    {
+      "id": "apply-ux-global-defaults",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-global-defaults.ps1",
+      "requires": [
+        "apply-ux-group-organization"
+      ]
+    },
+    {
+      "id": "apply-ux-default-resets",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-default-resets.ps1",
+      "requires": [
+        "apply-ux-global-defaults"
+      ]
+    },
+    {
+      "id": "apply-ux-export-names",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-export-names.ps1",
+      "requires": [
+        "apply-ux-default-resets"
+      ]
+    },
+    {
+      "id": "apply-ux-navywriter",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-navywriter.ps1",
+      "requires": [
+        "apply-ux-export-names"
+      ]
+    },
+    {
+      "id": "apply-ux-header-review",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-header-review.ps1",
+      "requires": [
+        "apply-ux-navywriter"
+      ]
+    },
+    {
+      "id": "apply-ux-import-scope",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-import-scope.ps1",
+      "requires": [
+        "apply-ux-header-review"
+      ]
+    },
+    {
+      "id": "apply-ux-native-groups",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-native-groups.ps1",
+      "requires": [
+        "apply-ux-import-scope"
+      ]
+    },
+    {
+      "id": "apply-ux-notes-schema",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-notes-schema.ps1",
+      "requires": [
+        "apply-ux-native-groups"
+      ]
+    },
+    {
+      "id": "apply-ux-note-entries",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-note-entries.ps1",
+      "requires": [
+        "apply-ux-notes-schema"
+      ]
+    },
+    {
+      "id": "apply-ux-directory-schema",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-directory-schema.ps1",
+      "requires": [
+        "apply-ux-note-entries"
+      ]
+    },
+    {
+      "id": "apply-ux-directory",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-directory.ps1",
+      "requires": [
+        "apply-ux-directory-schema"
+      ]
+    },
+    {
+      "id": "apply-ux-member-history",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-member-history.ps1",
+      "requires": [
+        "apply-ux-directory"
+      ]
+    },
+    {
+      "id": "apply-ux-prior-columns",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-prior-columns.ps1",
+      "requires": [
+        "apply-ux-member-history"
+      ]
+    },
+    {
+      "id": "apply-ux-directory-batch",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-directory-batch.ps1",
+      "requires": [
+        "apply-ux-prior-columns"
+      ]
+    },
+    {
+      "id": "apply-ux-directory-identity",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-directory-identity.ps1",
+      "requires": [
+        "apply-ux-directory-batch"
+      ]
+    },
+    {
+      "id": "apply-ux-directory-identity-picker",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-directory-identity-picker.ps1",
+      "requires": [
+        "apply-ux-directory-identity"
+      ]
+    },
+    {
+      "id": "apply-ux-admin-feedback",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-admin-feedback.ps1",
+      "requires": [
+        "apply-ux-directory-identity-picker"
+      ]
+    },
+    {
+      "id": "apply-ux-date-pickers",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-date-pickers.ps1",
+      "requires": [
+        "apply-ux-admin-feedback"
+      ]
+    },
+    {
+      "id": "apply-ui-author-baseline",
+      "phase": "presentation",
+      "file": "scripts/apply-ui-author-baseline.ps1",
+      "requires": [
+        "apply-ux-date-pickers"
+      ]
+    },
+    {
+      "id": "apply-ux-group-directory",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-directory.ps1",
+      "requires": [
+        "apply-ui-author-baseline"
+      ]
+    },
+    {
+      "id": "apply-ux-comparison-autosave",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-comparison-autosave.ps1",
+      "requires": [
+        "apply-ux-group-directory"
+      ]
+    },
+    {
+      "id": "apply-ux-ruad-import",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-ruad-import.ps1",
+      "requires": [
+        "apply-ux-comparison-autosave"
+      ]
+    },
+    {
+      "id": "apply-ux-immediate-defaults",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-immediate-defaults.ps1",
+      "requires": [
+        "apply-ux-ruad-import"
+      ]
+    },
+    {
+      "id": "apply-ux-resource-tools",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-resource-tools.ps1",
+      "requires": [
+        "apply-ux-immediate-defaults"
+      ]
+    },
+    {
+      "id": "apply-ux-readiness",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-readiness.ps1",
+      "requires": [
+        "apply-ux-resource-tools"
+      ]
+    },
+    {
+      "id": "apply-ux-group-discovery",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-discovery.ps1",
+      "requires": [
+        "apply-ux-readiness"
+      ]
+    },
+    {
+      "id": "apply-ux-member-psg",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-member-psg.ps1",
+      "requires": [
+        "apply-ux-group-discovery"
+      ]
+    },
+    {
+      "id": "apply-ux-import-rank",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-import-rank.ps1",
+      "requires": [
+        "apply-ux-member-psg"
+      ]
+    },
+    {
+      "id": "apply-ux-native-dates",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-native-dates.ps1",
+      "requires": [
+        "apply-ux-import-rank"
+      ]
+    },
+    {
+      "id": "apply-ux-compat-pages",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-compat-pages.ps1",
+      "requires": [
+        "apply-ux-native-dates"
+      ]
+    },
+    {
+      "id": "apply-ux-theme",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-theme.ps1",
+      "requires": [
+        "apply-ux-compat-pages"
+      ]
+    },
+    {
+      "id": "apply-ux-priority-actions",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-priority-actions.ps1",
+      "requires": [
+        "apply-ux-theme"
+      ]
+    },
+    {
+      "id": "apply-ux-context-help",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-context-help.ps1",
+      "requires": [
+        "apply-ux-priority-actions"
+      ]
+    },
+    {
+      "id": "apply-ux-navigation-context",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-navigation-context.ps1",
+      "requires": [
+        "apply-ux-context-help"
+      ]
+    },
+    {
+      "id": "apply-ux-visual",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-visual.ps1",
+      "requires": [
+        "apply-ux-navigation-context"
+      ]
+    },
+    {
+      "id": "apply-ux-page-switch",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-page-switch.ps1",
+      "requires": [
+        "apply-ux-visual"
+      ]
+    },
+    {
+      "id": "apply-ux-page-width",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-page-width.ps1",
+      "requires": [
+        "apply-ux-page-switch"
+      ]
+    },
+    {
+      "id": "apply-ux-rsca-review",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-rsca-review.ps1",
+      "requires": [
+        "apply-ux-page-width"
+      ]
+    },
+    {
+      "id": "apply-ux-prior-readonly",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-prior-readonly.ps1",
+      "requires": [
+        "apply-ux-rsca-review"
+      ]
+    },
+    {
+      "id": "apply-ux-group-exit",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-group-exit.ps1",
+      "requires": [
+        "apply-ux-prior-readonly"
+      ]
+    },
+    {
+      "id": "apply-ux-comments-ita",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-comments-ita.ps1",
+      "requires": [
+        "apply-ux-group-exit"
+      ]
+    },
+    {
+      "id": "apply-ux-import-progress",
+      "phase": "presentation",
+      "file": "scripts/apply-ux-import-progress.ps1",
+      "requires": [
+        "apply-ux-comments-ita"
+      ]
+    },
+    {
+      "id": "apply-report-tools",
+      "phase": "presentation",
+      "file": "scripts/apply-report-tools.ps1",
+      "requires": [
+        "apply-ux-import-progress"
+      ]
+    },
+    {
+      "id": "ensure-native-unload",
+      "phase": "finalize",
+      "file": "scripts/ensure-native-unload.ps1",
+      "requires": [
+        "apply-report-tools"
+      ]
+    },
+    {
+      "id": "apply-ux-efficiency",
+      "phase": "finalize",
+      "file": "scripts/apply-ux-efficiency.ps1",
+      "requires": [
+        "ensure-native-unload"
+      ]
+    },
+    {
+      "id": "apply-ux-table-sort",
+      "phase": "finalize",
+      "file": "scripts/apply-ux-table-sort.ps1",
+      "requires": [
+        "apply-ux-efficiency"
+      ]
+    },
+    {
+      "id": "finalize-application",
+      "phase": "finalize",
+      "file": "scripts/finalize-application.ps1",
+      "requires": [
+        "apply-ux-table-sort"
+      ]
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+> Historical verification log. Current verified r125 artifacts, gates and limitations are in [CURRENT_STATE.md](CURRENT_STATE.md) and [BUILD_CLEANUP_R125_VERIFICATION.json](BUILD_CLEANUP_R125_VERIFICATION.json). Use [the managed build pipeline](BUILD_PIPELINE.md) for current builds. Earlier versions, preview builders and Runtime references below describe their own historical scope; free Runtime support is not required.
+
 # Working source - UI redesign preview
 
 Updated 2026-10-04: see [current-state notes](CURRENT_STATE.md), [complete plan status](PROJECT_PLAN_STATUS_2026-10-04.md) and [r24 priority-fix evidence](UX_MY_WORK_2026-10-04.md). Latest demo: `Swift_NAVFIT_UI_Demo_2026-10-04-r24.accdb`; separate blank: `build/ux-r24-blank.accdb`. Report reopening, unified My Work routes/comments and shared layout/state fixes are implemented. Final blank/demo compile and match all 50 standard source modules; all 42 blank user-data tables are empty. Preview gates, native exploratory journeys and the final 145-check reopening/filter regression passed. Physical scaling, screen-reader/keyboard, Runtime/x86 and full interoperability/policy acceptance remain pending.

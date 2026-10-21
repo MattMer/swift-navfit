@@ -1,5 +1,5 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
-$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXDirectory',(Join-Path $root 'src/modUXDirectory.bas'))}
 NewScreen 'frmUXDirectory' 'Command member directory' 7600;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 100 'lblScope' 400 950 12600 600 'Members are linked by SSN or deliberate confirmation. Name-only records remain provisional. Profile edits do not rewrite existing reports.')
 [void](Control $f 109 'txtSearch' 400 1750 9500 450);$script:swiftControl.AfterUpdate='=UXDirectoryLoad()'

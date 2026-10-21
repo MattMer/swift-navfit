@@ -1,6 +1,6 @@
-$app.LoadFromText(5,'modMemberHistory',(Join-Path $root 'src/modMemberHistory.bas'))
-$app.LoadFromText(5,'modCommandDirectory',(Join-Path $root 'src/modCommandDirectory.bas'))
-$app.LoadFromText(5,'modSwift',(Join-Path $root 'src/modSwift.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modMemberHistory',(Join-Path $root 'src/modMemberHistory.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modCommandDirectory',(Join-Path $root 'src/modCommandDirectory.bas'))}
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modSwift',(Join-Path $root 'src/modSwift.bas'))}
 $db=$app.CurrentDb();$tables=@($db.TableDefs | ForEach-Object {$_.Name})
 $present=@('CommandMember','MemberReport','PriorEvaluation','PriorEvaluationTrait') | Where-Object {$tables -contains $_}
 if($present.Count -gt 0 -and $present.Count -ne 4){throw 'Incomplete directory schema; refusing automatic repair'}

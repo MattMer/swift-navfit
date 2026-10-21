@@ -1,3 +1,5 @@
+> Historical implementation reference. Current procedures are in [the user guide](../docs/Swift_NAVFIT_User_Guide.md); [current state](CURRENT_STATE.md) identifies the verified build. Standalone comments/review windows and resolved/reopened note threads described below are superseded by independent report notes/replies and embedded report tools.
+
 # Local review assignments and My Work
 
 > Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and

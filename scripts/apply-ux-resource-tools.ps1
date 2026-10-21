@@ -1,7 +1,7 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
 # Final additive UI pass: table history, dedicated resources, explicit live-group tools.
 $db=$app.CurrentDb();if($db.TableDefs('RSCABaseline').Fields('Paygrade').Size -lt 3){$db.Execute('ALTER TABLE RSCABaseline ALTER COLUMN Paygrade TEXT(5)',128)}
-foreach($m in @('modUXSeniorTable','modUXResourceTools','modRSDirectory','modRSDirectoryUI','modUXNAVFIT','modUXTraitGrid','modUXGroupPages','modUXViewport','modUXDashboard','modUXHelp','modUXBlockTools')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXSeniorTable','modUXResourceTools','modRSDirectory','modRSDirectoryUI','modUXNAVFIT','modUXTraitGrid','modUXGroupPages','modUXViewport','modUXDashboard','modUXHelp','modUXBlockTools')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 function AddResourceControl($f,$type,$name,$x,$y,$w,$h,$caption='',$event=''){
  $c=$app.CreateControl($f.Name,$type,0,'','',[int]$x,[int]$y,[int]$w,[int]$h);$c.Name=$name
  if($type -in @(100,104)){$c.Caption=$caption}

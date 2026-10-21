@@ -84,7 +84,7 @@ Optional source links, such as NavyWriter, open an external website only when se
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-Current verified r124 files: [Blank](https://drive.google.com/file/d/1FIBB6Zox3JAxQGwwbf3e7NASnpdKMM_7/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1gk14i6bPXQEHGOyisczbnifjYe3wSvGo/view?usp=drivesdk). See [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for performance evidence and limitations.
+Current verified r125 files: [Blank](https://drive.google.com/file/d/1AHNDUtLl3LqyzLTyhB-BkrCS2ombB_w5/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1Tmrgk0tr4nd2x-9KS-kFw9GUUw3xlss4/view?usp=drivesdk). See [build and legacy cleanup](planning/BUILD_CLEANUP_R125_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
 
 1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
 2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.
@@ -131,3 +131,5 @@ See [contributing](CONTRIBUTING.md) for prerequisites and checks. New releases m
 - [Build and verification history](planning/BUILD_STATUS.md)
 
 This private repository has no selected open-source license. Coordinate use and redistribution with its owner.
+
+Build contributors: see [the managed build pipeline](planning/BUILD_PIPELINE.md) for explicit generator dependencies, input fingerprints and final source/event checks.

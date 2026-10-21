@@ -4,56 +4,7 @@ NewScreen 'frmEnableContent' 'Enable Swift NAVFIT content' 4500;$f=$script:swift
 [void](Control $f 100 'lblExplanation' 500 3300 11500 700 'Your reports are unchanged. Application features require enabled content.')
 SaveScreen $f 'frmEnableContent'
 # Native section surfaces and focused destinations. Called after shared chrome.
-$surfaceModule=[Collections.Generic.List[string]]::new()
-$surfaceModule.Add('Attribute VB_Name = "modUXSurfaceFields"');$surfaceModule.Add('Option Explicit')
-function SurfaceProperty($functionName,$type,$property,$default){
-    $surfaceModule.Add('Public Function '+$functionName+'(ByVal key As String) As '+$type)
-    $surfaceModule.Add('Select Case key')
-    for($i=0;$i -lt $uxFields.Count;$i++){
-        $field=$uxFields[$i]
-        $value=if($property -eq 'control'){'"'+$uxNames[$i]+'"'}elseif($type -eq 'String'){'"'+([string]$field.$property).Replace('"','""')+'"'}elseif($type -eq 'Boolean'){if($field.$property){'True'}else{'False'}}else{if($null -eq $field.$property){'0'}else{[string]$field.$property}}
-        if($property -eq 'options'){$value='"'+(($field.options -join ';').Replace('"','""'))+'"'}
-        $surfaceModule.Add('Case "'+$field.key+'": '+$functionName+' = '+$value)
-    }
-    $surfaceModule.Add('Case Else: '+$functionName+' = '+$default);$surfaceModule.Add('End Select');$surfaceModule.Add('End Function')
-}
-SurfaceProperty 'UXFieldControl' 'String' 'control' '""'
-SurfaceProperty 'UXFieldSection' 'Long' 'section' '7'
-SurfaceProperty 'UXFieldLimit' 'Long' 'limit' '0'
-SurfaceProperty 'UXFieldDigits' 'Long' 'digits' '0'
-SurfaceProperty 'UXFieldDate' 'Boolean' 'date' 'False'
-SurfaceProperty 'UXFieldFlag' 'Boolean' 'checkbox' 'False'
-SurfaceProperty 'UXFieldMultiline' 'Boolean' 'multiline' 'False'
-SurfaceProperty 'UXFieldLegacy' 'Boolean' 'legacyHidden' 'False'
-SurfaceProperty 'UXFieldOptions' 'String' 'options' '""'
-$surfaceModule.Add('Public Function UXFieldApplies(ByVal key As String, ByVal kind As String) As Boolean')
-$surfaceModule.Add('UXFieldApplies = True: Select Case key')
-foreach($field in $uxFields|Where-Object forms){$surfaceModule.Add('Case "'+$field.key+'": UXFieldApplies = ('+(($field.forms|ForEach-Object{'kind = "'+$_+'"'})-join ' Or ')+')')}
-$surfaceModule.Add('End Select: End Function')
-$surfaceModule.Add('Public Function UXFieldCaption(ByVal key As String, ByVal kind As String) As String')
-$surfaceModule.Add('Dim label As String, block As String: label = UXFieldLabel(key): Select Case key')
-foreach($field in $uxFields){
-    $surfaceModule.Add('Case "'+$field.key+'": block = "'+$field.block+'"')
-    if($field.blocks){foreach($kind in @('EVAL','CHIEFEVAL','FITREP')){$surfaceModule.Add('If kind = "'+$kind+'" Then block = "'+$field.blocks.$kind+'"')}}
-}
-$surfaceModule.Add('End Select')
-$surfaceModule.Add('If key = "Designator" Then block = "3"')
-$surfaceModule.Add('If key = "RankRate" And kind = "CHIEFEVAL" Then label = "Rating"')
-$surfaceModule.Add('If IsTraitKey(key) Then label = Replace(Replace(CatalogueTraitTitle(kind, CLng(Mid$(key, 6))), vbCr, ""), vbLf, " ")')
-$surfaceModule.Add('If Len(block) > 0 Then label = block & ". " & label')
-$surfaceModule.Add('UXFieldCaption = label: End Function')
-$surfaceModule.Add('Public Function UXSectionKeys(ByVal section As Long, ByVal kind As String) As Variant')
-$surfaceModule.Add('Select Case kind & ":" & section')
-foreach($kind in @('EVAL','CHIEFEVAL','FITREP')){for($section=0;$section -le 7;$section++){
-    $ordered=@($uxFields|Where-Object {$_.section -eq $section}|Sort-Object @{Expression={ $block=if($_.blocks){$_.blocks.$kind}else{$_.block};if($_.key -eq 'Designator'){$block='3'};if($block -match '^\d+'){[int]$Matches[0]}else{999}}})
-    $surfaceModule.Add('Case "'+$kind+':'+$section+'": UXSectionKeys = Array('+(($ordered|ForEach-Object{'"'+$_.key+'"'})-join ',')+')')
-}}
-$surfaceModule.Add('Case Else: UXSectionKeys = Array(): End Select: End Function')
-$surfaceModulePath=Join-Path $root 'build/modUXSurfaceFields.bas'
-[IO.File]::WriteAllText($surfaceModulePath,($surfaceModule -join "`r`n"),[Text.UTF8Encoding]::new($false))
-$app.LoadFromText(5,'modUXSurfaceFields',$surfaceModulePath)
-$app.LoadFromText(5,'modUXSurface',(Join-Path $root 'src/modUXSurface.bas'))
-$app.LoadFromText(5,'modUXDashboard',(Join-Path $root 'src/modUXDashboard.bas'))
+if(-not $script:swiftManagedBuild){. (Join-Path $PSScriptRoot 'apply-ux-surface-catalogue.ps1')}
 NewScreen 'frmUXEditorFields' 'Report section' 12500;$f=$script:swiftForm
 $f.Controls('lblHeading').Visible=$false;$f.Width=[int](8000);$f.ScrollBars=2;$f.BorderStyle=0;$f.Section(0).BackColor=16777215
 [void](Control $f 109 'uxFocusAnchor' 0 0 20 20);$c=$script:swiftControl;$c.Locked=$true;$c.TabStop=$false;$c.BorderStyle=0
@@ -198,7 +149,7 @@ $f.OnLoad='=UXLoadMyWork()'
 SaveScreen $f 'frmMyWork'
 
 # Shared compact navigation and viewport events, after final authored geometry.
-$app.LoadFromText(5,'modUXViewport',(Join-Path $root 'src/modUXViewport.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXViewport',(Join-Path $root 'src/modUXViewport.bas'))}
 foreach($screenName in $uxPages){
     $app.DoCmd.OpenForm($screenName,1);$f=$app.Forms.Item($screenName)
     [void](Control $f 111 'uxCompactNav' 250 150 2500 400);$c=$script:swiftControl

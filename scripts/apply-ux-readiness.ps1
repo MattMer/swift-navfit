@@ -1,6 +1,6 @@
 # Shared validation services and contextual access to the complete export findings.
 foreach($m in @('modValidationExpansion','modValidationReferences','modSavedReadiness','modLiveValidation','modValidation','modUXValidation','modNAVFITExchange','modUXNAVFIT','modUXHelp')){
- $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))
+if(-not $script:swiftManagedBuild){ $app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
 }
 $app.DoCmd.OpenForm('frmNAVFITExchange',1);$f=$app.Forms.Item('frmNAVFITExchange')
 $bottom=10000

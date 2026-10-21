@@ -1,4 +1,4 @@
-$app.LoadFromText(5,'modUXImportFlow',(Join-Path $root 'src/modUXImportFlow.bas'))
+if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXImportFlow',(Join-Path $root 'src/modUXImportFlow.bas'))}
 NewScreen 'frmUXImportChoose' 'Import reports' 5100;$f=$script:swiftForm;$f.ScrollBars=2
 [void](Control $f 100 'lblScope' 400 1200 12600 750 'Choose > Preview > Apply > Results. NAVFIT narrative import creates partial drafts. Structured PDF import can create a draft or merge reviewed values into an existing draft. Both retain source provenance.')
 [void](Control $f 104 'cmdNAVFIT' 400 2250 12600 600 'Choose NAVFIT database - narrative-only import' '=ChooseReviewFile()')

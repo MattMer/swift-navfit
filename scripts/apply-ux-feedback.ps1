@@ -1,5 +1,5 @@
 # Manual feedback phase 1; run after native workspace generation.
-foreach($m in @('modUXFeedback','modUX','modSwift','modSnippets','modUXSurface')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXFeedback','modUX','modSwift','modSnippets','modUXSurface')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $app.DoCmd.OpenForm('frmHome',1);$f=$app.Forms.Item('frmHome')
 $f.Controls('lblHeading').Width=4500
 [void](Control $f 100 'uxContributorLabel' 7800 900 5500 300 'Active contributor')

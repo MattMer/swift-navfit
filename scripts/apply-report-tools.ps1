@@ -11,7 +11,7 @@ $fields=@($db.TableDefs.Item('ReportNoteDraft').Fields|ForEach-Object {$_.Name})
 if($fields -notcontains 'ParentMessageID'){$db.Execute('ALTER TABLE ReportNoteDraft ADD COLUMN ParentMessageID LONG',128);$db.Execute('ALTER TABLE ReportNoteDraft ADD CONSTRAINT FK_NoteDraftMessage FOREIGN KEY (ParentMessageID) REFERENCES ReportMessage (MessageID)',128)}
 $db.Execute("UPDATE AppMetadata SET SchemaVersion=26,AppVersion='0.26.0-dev'",128)
 $db.Close()
-foreach($m in @('modReportMessages','modReportTools','modSwift','modMigration','modWorkspaceImport','modReportPages','modUX','modUXReview','modUXReviewLayout','modUXHeaderReview','modReviewComments','modUXNotes','modRouting','modUXMyWork','modUXReadRows','modUXDashboard','modUXValidation','modChecklist','modUXCalculationContext','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modReportMessages','modReportTools','modSwift','modMigration','modWorkspaceImport','modReportPages','modUX','modUXReview','modUXReviewLayout','modUXHeaderReview','modReviewComments','modUXNotes','modRouting','modUXMyWork','modUXReadRows','modUXDashboard','modUXValidation','modChecklist','modUXCalculationContext','modUXHelp')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 function ToolRect($form,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h){$c=$form.Controls.Item($name);foreach($v in @(@('Left',$x),@('Top',$y),@('Width',$w),@('Height',$h))){SetAccessProperty $c $v[0] $v[1]}}
 function ToolControl($form,[int]$type,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h,[string]$caption='',[string]$event='',[string]$tag=''){
  $c=$app.CreateControl($form.Name,$type,0,'','',$x,$y,$w,$h);$c.Name=$name;$c.FontName='Segoe UI';$c.FontSize=10;$c.Tag=$tag

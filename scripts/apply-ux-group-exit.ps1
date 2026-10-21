@@ -1,5 +1,5 @@
 # All group pages share a safe exit and explicit return to the group directory.
-foreach($m in @('modUXGroupNavigation','modUX')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+if(-not $script:swiftManagedBuild){foreach($m in @('modUXGroupNavigation','modUX')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 foreach($name in @('frmUXComparison','frmUXBulk','frmMajorWorkbench')){
  $app.DoCmd.OpenForm($name,1);$f=$app.Forms.Item($name)
  if($name -eq 'frmMajorWorkbench'){$f.Controls.Item('uxGroupMeta').Width=6800}
