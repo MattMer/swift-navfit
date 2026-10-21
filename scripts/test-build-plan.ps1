@@ -13,7 +13,7 @@ function RejectPlan($manifest,[string]$expected){
 }
 $plan=GetSwiftBuildPlan $root $manifestPath
 Check ($plan.Manifest.sourceModules.Count -eq (Get-ChildItem (Join-Path $root 'src') -Filter '*.bas').Count) 'Source module coverage differs'
-Check ($plan.AppVersion -eq '0.26.0-dev' -and $plan.SchemaVersion -eq 26) 'Identity differs'
+Check ($plan.AppVersion -eq '0.26.1-dev' -and $plan.SchemaVersion -eq 26) 'Identity differs'
 $m=$original|ConvertFrom-Json;$m.stages[0].file='scripts/does-not-exist.ps1';RejectPlan $m 'Missing build dependency'
 $m=$original|ConvertFrom-Json;$m.stages[1].id=$m.stages[0].id;RejectPlan $m 'Duplicate build stage'
 $m=$original|ConvertFrom-Json;$m.stages[0].requires=@($m.stages[-1].id);RejectPlan $m 'requires an earlier stage'

@@ -1,35 +1,35 @@
-param([string]$OutputPath='D:\Development\Swift NAVFIT\output\pdf\Swift_NAVFIT_PDF_Dependency_Check_r26.zip')
+param([string]$OutputPath='D:\Development\Swift NAVFIT\output\pdf\Swift_NAVFIT_Local_PDF_Check_r126.zip',
+ [string]$FixtureDirectory)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+if(-not $FixtureDirectory){$FixtureDirectory=Join-Path $root 'build/tests/pdf-local-expanded'}
 $OutputPath=[IO.Path]::GetFullPath($OutputPath)
 if(Test-Path -LiteralPath $OutputPath){throw "Refusing to overwrite $OutputPath"}
 $stage=Join-Path $root ('build/tests/pdf-target-kit-'+[guid]::NewGuid())
-foreach($directory in @('scripts','tests','output/pdf/r26')){[void](New-Item -ItemType Directory -Force -Path (Join-Path $stage $directory))}
+foreach($directory in @('scripts','tests','output/pdf/r126')){[void](New-Item -ItemType Directory -Force -Path (Join-Path $stage $directory))}
 Copy-Item -LiteralPath (Join-Path $root 'scripts/test-pdf-target-computer.ps1') -Destination (Join-Path $stage 'scripts')
 Copy-Item -LiteralPath (Join-Path $root 'tests/PDFDependencyHarness.bas') -Destination (Join-Path $stage 'tests')
-foreach($kind in @('eval','chiefeval','fitrep')){Copy-Item -LiteralPath (Join-Path $root ('output/pdf/r26/'+$kind+'-expanded.pdf')) -Destination (Join-Path $stage 'output/pdf/r26')}
+foreach($kind in @('eval','chiefeval','fitrep')){Copy-Item -LiteralPath (Join-Path $FixtureDirectory ($kind+'-expanded.pdf')) -Destination (Join-Path $stage 'output/pdf/r126')}
 @'
-Swift NAVFIT r26 PDF extraction acceptance check
+Swift NAVFIT r126 local PDF extraction acceptance check
 
 Unzip this kit, open PowerShell in this folder, then run:
 
-powershell.exe -NoProfile -File .\scripts\test-pdf-target-computer.ps1 -BuildPath 'C:\YourFolder\Swift_NAVFIT_UI_Demo_2026-10-04-r26.accdb'
+powershell.exe -NoProfile -File .\scripts\test-pdf-target-computer.ps1 -BuildPath 'C:\YourFolder\Swift_NAVFIT_Blank_2026-10-20-r126.accdb'
 
-Use an r26 app (blank or demo), desktop Microsoft Access and desktop Adobe Acrobat.
-Reader/browser PDF viewers do not supply the required automation. No software
-installation, licensing, trust or security configuration is changed by this kit.
+Use r126 or newer and desktop Microsoft Access. Extraction is embedded in the
+Access application. Acrobat, Python, external PDF utilities and an internet
+connection are not needed. No installation or security setting is changed.
 
-The three PDFs contain synthetic information only. This reads their structured
-data, verifies the expected values and uses a temporary copy of the app. It never
-imports reports into the supplied app. A JSON report appears under output\pdf
-with Access build/bitness, Acrobat version, input hashes and per-form results.
-The original app/PDF hashes must remain unchanged. You can set -ReportPath to a
-writable location. A failing check exits with code 1; keep its report for diagnosis.
+The three PDFs contain synthetic information only. The script checks their
+mapped fields using a temporary copy of the app; it does not import reports into
+the supplied app. A JSON report under output\pdf records Access build/bitness,
+input hashes and per-form results. Original app/PDF hashes must be unchanged.
+Use -ReportPath for another writable report location. Failure exits with code 1.
 
-Run as the intended user under the computer's normal approved configuration.
-PASS covers this extraction path on this computer, not complete workstation,
-Access Runtime, display/accessibility or printing acceptance. Runtime users can
-use the app's native Check PDF extraction on this computer button with a chosen
-supported PDF; this script additionally requires Access module-import automation.
+Run under the intended user's normal approved configuration. PASS verifies this
+extraction path on that computer. Physical display, accessibility and printing
+acceptance remain separate. The in-app Check PDF extraction on this computer
+button can also check a selected supported May 2025 fillable NAVPERS form.
 '@ | Set-Content -LiteralPath (Join-Path $stage 'README.txt') -Encoding UTF8
 Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $OutputPath
 Write-Output "Created: $OutputPath"

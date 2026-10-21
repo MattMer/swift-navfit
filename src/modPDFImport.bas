@@ -10,24 +10,15 @@ Private pdfTarget As Long
 Private pdfRevision As Long
 Private pdfChoice As String
 Public Function PreviewStructuredPDF(ByVal path As String) As Object
-    Dim p As Object, j As Object, x As Object, dom As Object, nodes As Object, result As Object, fields As Variant, key As Variant, templateHash As String, kind As String, value As Variant
+    Dim packets As Object, packet() As Byte, dom As Object, nodes As Object, result As Object, key As Variant, templateHash As String, kind As String, value As Variant
     Dim failure As Long, message As String, row As Variant, parts As Variant
     On Error GoTo Failed
     Call PDFClearPreview
-    If FileLen(path) > 30000000 Then Err.Raise vbObjectError + 4700, , "PDF exceeds the import size limit."
-    pdfHash = SourceFileHash(path)
-    Set p = CreateObject("AcroExch.PDDoc")
-    If Not p.Open(path) Then Err.Raise vbObjectError + 4701, , "Acrobat could not open this PDF."
-    Set j = p.GetJSObject(): Set x = j.xfa
-    templateHash = SourceTextHash(CStr(x.template.saveXML()))
-    Select Case templateHash
-        Case "B0184F00EC5C2F99CD6CE96FD4FD1A80DD142A3AA62C9BE53D4E51ECF8DAF076": kind = "EVAL"
-        Case "E1A0A124D4F927875C9920FE1B4004B6A90C0E69FA059B1D5F835E8AB1640EF4": kind = "CHIEFEVAL"
-        Case "4C006AC4201AC12472F8CA8D830C3010E4502D0685BFB93B9F54BEE7516C08D3": kind = "FITREP"
-        Case Else: Err.Raise vbObjectError + 4702, , "Unsupported PDF form revision. Flattened forms cannot be imported as structured data."
-    End Select
-    pdfXML = CStr(x.datasets.saveXML())
-    p.Close: Set p = Nothing
+    Set packets = PDFLocalPackets(path)
+    pdfHash = packets("sourceHash")
+    packet = packets("template"): templateHash = PDFBytesHash(packet)
+    kind = PDFTemplateKind(templateHash)
+    packet = packets("datasets"): pdfXML = PDFPacketText(packet)
     If Len(pdfXML) > 4000000 Then Err.Raise vbObjectError + 4703, , "PDF data exceeds the import size limit."
     Set dom = CreateObject("MSXML2.DOMDocument.6.0"): dom.async = False: dom.resolveExternals = False: dom.preserveWhiteSpace = True: dom.setProperty "ProhibitDTD", True
     If Not dom.LoadXML(pdfXML) Then Err.Raise vbObjectError + 4704, , "Invalid structured PDF data."
@@ -46,7 +37,6 @@ Public Function PreviewStructuredPDF(ByVal path As String) As Object
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
-    If Not p Is Nothing Then p.Close
     Set pdfPreview = Nothing: pdfXML = "": pdfPath = "": pdfHash = ""
     On Error GoTo 0
     Err.Raise failure, "PreviewStructuredPDF", message
@@ -184,7 +174,7 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     stage = "Retain receipt": Set db = CurrentDb
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = pdfHash: receipt!SourcePath = pdfPath: receipt!ExternalReportID = 0: receipt!ReportID = id
-    receipt!AuthorProfileID = MajorAuthor(): receipt!ImportedAt = Now(): receipt!AdapterVersion = "pdf-xfa-v2": receipt!ValueEncoding = "XFA XML; " & IIf(targetID = 0, "new draft", mode) & "; baseline " & expected: receipt!AppliedRevisionID = CurrentRevision(id): receipt!IsUndone = False
+    receipt!AuthorProfileID = MajorAuthor(): receipt!ImportedAt = Now(): receipt!AdapterVersion = "pdf-xfa-v3-local": receipt!ValueEncoding = "XFA XML; " & IIf(targetID = 0, "new draft", mode) & "; baseline " & expected: receipt!AppliedRevisionID = CurrentRevision(id): receipt!IsUndone = False
     If targetID > 0 Then receipt!BeforeRevisionID = expected
     receipt!OperationID = operationID
     receipt.Update: receipt.Bookmark = receipt.LastModified: receiptID = receipt!ImportReceiptID: receipt.Close
@@ -230,26 +220,32 @@ Public Function PDFPrepareMerge(ByVal century As String, ByVal identifierKind As
     pdfTarget = id: pdfChoice = century & "|" & identifierKind & "|" & mode
     Set pdfChanges = result: Set PDFPrepareMerge = result
 End Function
+Private Function PDFTemplateKind(ByVal templateHash As String) As String
+    Select Case templateHash
+        Case "54338AECE7EDDA4B2BE41389262219AACE3DB5EAAD59634D31C062E1AC4EE134": PDFTemplateKind = "EVAL"
+        Case "2F554C052290D1820604B6341438C861EAB251D89E4B2D7B2BD3A108C679532E": PDFTemplateKind = "CHIEFEVAL"
+        Case "41A9E82DA6016B25C3BB77604BEC66B453BF78B637659D008E3E8B897726CE91": PDFTemplateKind = "FITREP"
+        Case Else: Err.Raise vbObjectError + 4702, , "Unsupported PDF form revision. Choose a supported May 2025 NAVPERS fillable form; flattened/scanned forms need manual entry."
+    End Select
+End Function
 Public Function PDFExtractionStatus(Optional ByVal testPath As String = "") As String
-    Dim p As Object, j As Object, x As Object, text As String, before As String
+    Dim packets As Object, packet() As Byte, dom As Object, kind As String
     On Error GoTo Failed
-    Set p = CreateObject("AcroExch.PDDoc")
-    text = "Acrobat automation available; extraction has not been tested with a PDF in this session."
-    If Len(testPath) > 0 Then
-        before = SourceFileHash(testPath)
-        If Not p.Open(testPath) Then Err.Raise 5, , "Cannot open the test PDF."
-        Set j = p.GetJSObject(): Set x = j.xfa
-        If Len(CStr(x.template.saveXML())) = 0 Or Len(CStr(x.datasets.saveXML())) = 0 Then Err.Raise 5, , "No XFA template/data extraction."
-        text = "PASS: read-only XFA extraction; Acrobat " & CStr(j.app.viewerVersion)
-        p.Close
-        If SourceFileHash(testPath) <> before Then Err.Raise 5, , "Test PDF changed."
+    If Len(testPath) = 0 Then
+        PDFExtractionStatus = "Local PDF extraction available. Choose a supported May 2025 fillable NAVPERS PDF to check it. No Acrobat or internet connection required."
+        Exit Function
     End If
-    Set p = Nothing: PDFExtractionStatus = text: Exit Function
+    ' Probe independently: do not clear an existing preview or prepared merge.
+    Set packets = PDFLocalPackets(testPath)
+    packet = packets("template"): kind = PDFTemplateKind(PDFBytesHash(packet))
+    packet = packets("datasets")
+    Set dom = CreateObject("MSXML2.DOMDocument.6.0")
+    dom.async = False: dom.resolveExternals = False: dom.setProperty "ProhibitDTD", True
+    If Not dom.LoadXML(PDFPacketText(packet)) Then Err.Raise 5, , "Invalid structured PDF data."
+    PDFExtractionStatus = "PASS: local read-only " & kind & " XFA extraction; no Acrobat required."
+    Exit Function
 Failed:
-    text = "PDF extraction unavailable: " & Err.Description & ". Requires desktop Adobe Acrobat with working AcroExch.PDDoc / GetJSObject / XFA extraction. Reader and browser viewers are insufficient."
-    On Error Resume Next
-    If Not p Is Nothing Then p.Close
-    PDFExtractionStatus = text
+    PDFExtractionStatus = "PDF extraction unavailable for this file: " & Err.Description
 End Function
 Public Function ChoosePDFPreview() As Boolean
     Dim dialog As Object, result As Object, key As Variant, text As String

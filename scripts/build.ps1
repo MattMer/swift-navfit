@@ -164,7 +164,7 @@ try {
     [void](Control $f 104 'cmdOperations' 6500 6100 6300 550 'Operations and import undo' '=OpenScreen("frmOperations")')
     [void](Control $f 104 'cmdMyWork' 400 6800 12600 550 'My Work and local contributors' '=OpenMyWork()')
     [void](Control $f 104 'cmdMajor' 400 7500 12600 550 'Summary groups, batches, routes and meetings' '=OpenScreen("frmMajorWorkbench")')
-    [void](Control $f 104 'cmdPDF' 400 8250 12600 550 'Import structured PDF (Acrobat required)' '=OpenScreen("frmPDFImport")')
+    [void](Control $f 104 'cmdPDF' 400 8250 12600 550 'Import structured PDF' '=OpenScreen("frmPDFImport")')
     [void](Control $f 104 'cmdBackup' 400 8950 12600 550 'Verified backup and restore' '=OpenScreen("frmBackup")')
     $f.OnLoad='=LoadHome()'; $f.OnActivate='=LoadHome()'; SaveScreen $f 'frmHome'
     NewScreen 'frmLibrary' 'Report workspace' 8900; $f=$script:swiftForm
@@ -639,7 +639,7 @@ try {
     [void](Control $f 104 'cmdHome' 400 21700 12600 450 'Return home' '=OpenScreen("frmHome")')
     $f.OnLoad='=LoadMajorWorkbench()'; SaveScreen $f 'frmMajorWorkbench'
     NewScreen 'frmPDFImport' 'Import structured NAVPERS PDF' 9600; $f=$script:swiftForm
-    [void](Control $f 100 'lblInfo' 400 950 12600 850 'Requires Adobe Acrobat automation. Supports the supplied May 2025 EVAL, CHIEF EVAL and FITREP form revisions. Previewed fields: name, grade/rate, designation, identifier, ship/station, report dates and official comments. Other PDF values are retained as XML for review. Flattened PDFs require manual entry.')
+    [void](Control $f 100 'lblInfo' 400 950 12600 850 'Extracts supported form data locally without Acrobat. Supports the supplied May 2025 EVAL, CHIEF EVAL and FITREP form revisions. Previewed fields: name, grade/rate, designation, identifier, ship/station, report dates and official comments. Other PDF values are retained as XML for review. Flattened PDFs require manual entry.')
     [void](Control $f 104 'cmdChoose' 400 1950 12600 550 'Choose PDF and preview its values' '=ChoosePDFPreview()')
     [void](Control $f 109 'txtPreview' 400 2700 12600 3800);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
     [void](Control $f 100 'lblCentury' 400 6800 5500 400 'Century for six-digit report dates (explicit choice)')

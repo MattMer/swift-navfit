@@ -49,7 +49,7 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 
 - **NAVFIT98A exchange:** import supported report/group data and export saved reports or summary groups while retaining native provenance.
 - **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
-- **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Supported extraction requires desktop Adobe Acrobat.
+- **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Extraction runs locally without Acrobat or an internet connection.
 - **Previous-Swift workspace transfer:** bulk-copy supported older workspace data/history into a separate blank build, with exact database-engine verification and responsive progress between batches. Source and rollback protections remain.
 - **Backup/restore and operation history:** guarded tools for protecting the workspace and undoing supported operations.
 
@@ -84,14 +84,14 @@ Optional source links, such as NavyWriter, open an external website only when se
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-Current verified r125 files: [Blank](https://drive.google.com/file/d/1AHNDUtLl3LqyzLTyhB-BkrCS2ombB_w5/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1Tmrgk0tr4nd2x-9KS-kFw9GUUw3xlss4/view?usp=drivesdk). See [build and legacy cleanup](planning/BUILD_CLEANUP_R125_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
+Current verified r126 files: [Blank](https://drive.google.com/file/d/16zArkr-VBeUODNQZQFVWJhfIDQvRlBFN/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1U5HK0iu24Y4nmualAs_67PMOon3Ja7mW/view?usp=drivesdk). PDF extraction now runs locally without Acrobat. See [local PDF extraction and verification](planning/LOCAL_PDF_R126_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
 
 1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
 2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** The repository currently develops `0.26.0-dev` / schema 26. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
+**Source and downloads can differ.** The repository currently develops `0.26.1-dev` / schema 26. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
 
 The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 

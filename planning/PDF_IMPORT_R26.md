@@ -1,5 +1,7 @@
 # PDF import expansion and existing-draft merge — r26, 4 October 2026
 
+Historical evidence: r126 replaces the Acrobat extraction dependency with an embedded local reader. See [local PDF extraction](LOCAL_PDF_R126_2026-10-20.md) for current behavior; the r26 mapping/merge design below remains historical.
+
 This implements the user's clarified priority #4: expand the eight-field PDF
 mapping, merge into existing drafts, and verify the extraction dependency on
 target computers. It does not refer to the older release-packaging priority #4.

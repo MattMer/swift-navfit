@@ -2,7 +2,7 @@
 
 # Swift NAVFIT workspace guide
 
-Use the current [Swift NAVFIT User Guide (PDF)](../docs/Swift_NAVFIT_User_Guide.pdf) or [online edition](../docs/Swift_NAVFIT_User_Guide.md) for r123a / 0.26.0-dev / schema 26 procedures.
+Use the current [Swift NAVFIT User Guide (PDF)](../docs/Swift_NAVFIT_User_Guide.pdf) or [online edition](../docs/Swift_NAVFIT_User_Guide.md) for r126 / 0.26.1-dev / schema 26 procedures.
 
 The guide covers setup, navigation, report drafting, unified notes and replies, embedded review/validation/calculation views, summary groups, reporting seniors and RSCA, My Work, NAVFIT/PDF exchange, recovery, and workspace upgrades. It includes a quick start, status reference, troubleshooting, and a synthetic practice exercise.
 

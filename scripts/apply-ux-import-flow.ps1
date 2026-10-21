@@ -9,7 +9,7 @@ $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
 $f.Controls('uxImport').Caption='Import reports';$f.Controls('uxImport').OnClick='=UXOpenImportChooser()'
 SaveScreen $f 'frmLibrary'
 NewScreen 'frmPDFImport' 'Import structured PDF' 11200;$f=$script:swiftForm;$f.ScrollBars=2
-[void](Control $f 100 'lblInfo' 400 1000 12600 650 'Supplied May 2025 NAVPERS templates; desktop Adobe Acrobat required (Reader/browser viewers are insufficient). Expanded mapping remains partial. Blank source fields never clear existing values. Flattened PDFs need manual entry.')
+[void](Control $f 100 'lblInfo' 400 1000 12600 650 'Supplied May 2025 NAVPERS templates; local extraction; no Acrobat required. Expanded mapping remains partial. Blank source fields never clear existing values. Flattened PDFs need manual entry.')
 [void](Control $f 104 'cmdChoose' 400 1850 12600 500 'Choose PDF' '=ChoosePDFPreview()')
 [void](Control $f 100 'lblCentury' 400 2500 5500 350 'Explicit century for six-digit report dates')
 [void](Control $f 111 'cboCentury' 6200 2450 6600 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='19;20;21';$c.LimitToList=$true;$c.AfterUpdate='=UXPDFMappingChanged()'

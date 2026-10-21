@@ -1,3 +1,13 @@
+## 2026-10-20 - r126 local PDF extraction
+
+Current verified files: `output/Swift_NAVFIT_Blank_2026-10-20-r126.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r126.accdb`. Both uploaded to the designated Drive folder with name, size and parent readback verified. Blank is empty; Demo has 13 synthetic reports in five groups. Earlier releases and the populated r116 workspace are hash-verified unchanged. Access is closed.
+
+The supported May 2025 EVAL, CHIEFEVAL and FITREP forms now extract locally inside Access, without Acrobat, Python, an external PDF utility or network access. The reader follows active cross-references and saved revisions, decodes bounded Flate streams, and supports extraction-permitted R2-R4 forms with an empty user password, including the supplied CHIEFEVAL. Unsupported/flattened/scanned/password-required forms are rejected. Existing preview, mapping, merge, duplicate guards, retained XML, revision and undo behavior remains. App 0.26.1-dev; schema 26 unchanged. Guide version 1.1 remains 22 pages; changed pages were rendered and checked.
+
+Released-file checks passed: 34 independent reader cases, 28 import, 256 mapping/merge/undo, 12 counseling, three target extraction probes, 48 smoke, 57 context help, 27 cleanup, 39 Demo and 35 report-tools assertions; all26 retained-schema transfers and rollback/rejection gates; populated schema20/current upgrade and reopen; canonical conversation/private reply preservation; 16 adversarial verification checks and injected mismatch rollback/retry. An initial Access automation crash after schema24 did not recur in a clean complete26-schema rerun.
+
+Assembly used the verified r125 interface and refreshed changed source, then verified all97 static modules, generated modules and bindings across65 forms. A fresh full-generation attempt stopped on a closed-object error in the existing report-tools form pass; that incomplete artifact was not released, and no successful fresh-generation run is claimed. A generator hard-coded version was corrected to read the canonical constant. Physical visual/accessibility/printing acceptance remains deferred. See [implementation and limits](LOCAL_PDF_R126_2026-10-20.md) and [verification](LOCAL_PDF_R126_VERIFICATION.json).
+
 ## 2026-10-20 - r125 build and legacy cleanup
 
 Current verified files: `output/Swift_NAVFIT_Blank_2026-10-20-r125.accdb` and `output/Swift_NAVFIT_Demo_2026-10-20-r125.accdb`. Both uploaded with name, size and folder readback verified. Blank user-data tables are empty; Demo contains 13 synthetic reports in five groups. Earlier files and the populated r116 workspace are preserved. Access is closed.

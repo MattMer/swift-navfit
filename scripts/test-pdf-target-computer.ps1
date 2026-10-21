@@ -5,7 +5,7 @@ param(
 )
 # Run under the target user's normal account. No installs, trust changes or writes to the supplied app/PDFs.
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-if(-not $FixtureDirectory){$FixtureDirectory=Join-Path $root 'output/pdf/r26'}
+if(-not $FixtureDirectory){$FixtureDirectory=Join-Path $root 'output/pdf/r126'}
 if(-not $ReportPath){$ReportPath=Join-Path $root ('output/pdf/dependency-'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'.json')}
 $BuildPath=[IO.Path]::GetFullPath($BuildPath);$FixtureDirectory=[IO.Path]::GetFullPath($FixtureDirectory)
 $ReportPath=[IO.Path]::GetFullPath($ReportPath)

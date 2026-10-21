@@ -148,7 +148,7 @@ def build(source, output):
         canvas.setFillColor(NAVY)
         canvas.drawString(doc.leftMargin, h - 32, 'SWIFT NAVFIT  /  USER GUIDE')
         canvas.setFont(regular, 8)
-        canvas.drawRightString(w - doc.rightMargin, h - 32, 'Version 1.0  |  r123a')
+        canvas.drawRightString(w - doc.rightMargin, h - 32, 'Version 1.1  |  r126')
         canvas.setStrokeColor(colors.HexColor('#CCD8E0'))
         canvas.line(doc.leftMargin, 43, w - doc.rightMargin, 43)
         canvas.setFillColor(INK)
@@ -162,7 +162,7 @@ def build(source, output):
                    leftMargin=.775 * inch, rightMargin=.775 * inch,
                    topMargin=.78 * inch, bottomMargin=.76 * inch,
                    title='Swift NAVFIT User Guide', author='Swift NAVFIT Project',
-                   subject='Operating procedures for Swift NAVFIT r123a')
+                   subject='Operating procedures for Swift NAVFIT r126')
     doc.build(story, onFirstPage=furniture, onLaterPages=furniture)
     reader = PdfReader(output)
     if len(reader.pages) != len(chapters):

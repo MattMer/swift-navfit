@@ -4,7 +4,7 @@ The source of truth is `src/`, the ordered `scripts/build-manifest.json`, and th
 
 ## Ownership and order
 
-The manifest lists 94 static VBA modules, four generated modules and 70 ordered stages across base resources, presentation and finalization. Full builds centrally load static source before generating forms and suppress the old repeated stage imports. The field catalogue retains one compatibility refresh of modUX alongside its generated metadata. Named field and surface catalogue generators replace execution of sliced script text. Incremental scripts retain their standalone imports and dependency behavior for disposable development copies.
+The manifest lists 97 static VBA modules, four generated modules and 70 ordered stages across base resources, presentation and finalization. Full builds centrally load static source before generating forms and suppress the old repeated stage imports. The field catalogue retains one compatibility refresh of modUX alongside its generated metadata. Named field and surface catalogue generators replace execution of sliced script text. Incremental scripts retain their standalone imports and dependency behavior for disposable development copies.
 
 `build-plan.ps1` validates files, root boundaries, inventory, stage dependencies, phase order and identity before Access opens. It fingerprints all declared inputs. `invoke-build-phase.ps1` executes stages in manifest order and records durations. Helpers deliberately share the build script scope because later generators consume catalogue/layout helpers.
 

@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[ValidateRange(1,26)][int]$MinimumSchema=1)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
@@ -24,7 +24,7 @@ function OpenTarget([string]$name){
 }
 function CallImport([string]$source){return $app.Eval('TryWorkspaceImport("'+$source.Replace('"','""')+'")')}
 try{
- foreach($v in @($fixtures.Keys|Sort-Object)){
+ foreach($v in @($fixtures.Keys|Where-Object {$_ -ge $MinimumSchema}|Sort-Object)){
   $source=$fixtures[$v];$hash=(Get-FileHash -LiteralPath $source).Hash
   $target=OpenTarget ('schema-'+$v)
   if($v -eq 26){
