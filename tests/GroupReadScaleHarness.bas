@@ -1,14 +1,10 @@
 Attribute VB_Name = "GroupReadScaleHarness"
 Option Explicit
-Private Function SampleGroup(ByVal g As Long, ByVal legacy As Boolean, ByRef resultText As String) As Double
+Private Function SampleGroup(ByVal g As Long, ByRef resultText As String) As Double
     Dim started As Double, average As Variant, result As Object, rows As DAO.Recordset, details As String, key As Variant
     started = Timer
-    If legacy Then
-        average = LegacyUXGroupAverage(g): Set result = LegacyRSGroupPSG(g): details = LegacyUXGroupCalculationText(g)
-    Else
-        average = UXGroupAverage(g): Set rows = RSGroupRows(g)
-        Set result = RSGroupPSG(g, rows): details = UXGroupCalculationText(g, rows): rows.Close
-    End If
+    average = UXGroupAverage(g): Set rows = RSGroupRows(g)
+    Set result = RSGroupPSG(g, rows): details = UXGroupCalculationText(g, rows): rows.Close
     resultText = Nz(average, "NULL") & "|" & details
     For Each key In result.Keys: resultText = resultText & "|" & key & "=" & Nz(result(key), "NULL"): Next
     SampleGroup = Timer - started
@@ -16,7 +12,7 @@ Private Function SampleGroup(ByVal g As Long, ByVal legacy As Boolean, ByRef res
     SampleGroup = SampleGroup * 1000
 End Function
 Public Function TestGroupReadScale() As String
-    Dim target As Variant, i As Long, g As Long, id As Long, senior As Long, baseline As Long, values As Object, trial As Long, oldText As String, freshText As String, oldTime As Double, freshTime As Double, output As String, revisions As Long, snapshots As Long
+    Dim target As Variant, i As Long, g As Long, id As Long, senior As Long, baseline As Long, values As Object, trial As Long, baselineText As String, currentText As String, currentTime As Double, output As String, revisions As Long, snapshots As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC GROUP READ SCALE", "Tester"
     g = CreateSummaryGroup("Scale group", "EVAL", "E5")
@@ -24,7 +20,7 @@ Public Function TestGroupReadScale() As String
     senior = RSSaveSenior(0, "Scale senior", values)
     baseline = RSAddBaseline(senior, "E5", #1/1/2026#, 4, 100, 400, "Exact synthetic baseline")
     RSSetGroupBaseline g, senior, baseline, True
-    output = "Members,Trial,LegacyMs,PreparedMs" & vbCrLf
+    output = "Members,Trial,CurrentMs" & vbCrLf
     For Each target In Array(25, 50, 100)
         For i = DCount("*", "Report") + 1 To CLng(target)
             id = CommitDraft(0, "EVAL", "Scale report", "Member " & i, Null, Null, "")
@@ -35,13 +31,13 @@ Public Function TestGroupReadScale() As String
         Next
         revisions = DCount("*", "ReportRevision"): snapshots = DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet")
         For trial = 1 To 5
-            If trial Mod 2 = 1 Then
-                oldTime = SampleGroup(g, True, oldText): freshTime = SampleGroup(g, False, freshText)
-            Else
-                freshTime = SampleGroup(g, False, freshText): oldTime = SampleGroup(g, True, oldText)
+            currentTime = SampleGroup(g, currentText)
+            If trial = 1 Then
+                baselineText = currentText
+            ElseIf StrComp(baselineText, currentText, vbBinaryCompare) <> 0 Then
+                Err.Raise 5, , "Current calculation result is not repeatable"
             End If
-            If StrComp(oldText, freshText, vbBinaryCompare) <> 0 Then Err.Raise 5, , "Calculation result or explanation differs"
-            output = output & target & "," & trial & "," & Format$(oldTime, "0.0") & "," & Format$(freshTime, "0.0") & vbCrLf
+            output = output & target & "," & trial & "," & Format$(currentTime, "0.0") & vbCrLf
         Next
         If DCount("*", "ReportRevision") <> revisions Or DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet") <> snapshots Then Err.Raise 5, , "Calculation created history"
     Next

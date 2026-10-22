@@ -1,8 +1,9 @@
 # Observation status and promotion recommendation
 
-> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
-> [current state](CURRENT_STATE.md). This guide retains service details and
-> earlier verification history; legacy screen instructions may differ.
+> Historical service/verification reference. Current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md); current architecture and
+> decisions are in [PROJECT_STATE.md](../PROJECT_STATE.md). Retained field/source
+> details remain evidence, but old screens and test commands may be superseded.
 
 Swift NAVFIT 0.12.0 adds two manual selections near the top of the editor for all three form types. Whole-report observation status accepts Observed, NOB or blank. Promotion recommendation accepts NOB, Significant Problems, Progressing, Promotable, Must Promote, Early Promote or blank. The six recommendation labels were read from PromotionRecom in the supplied NAVFIT98A 2.2.0.332 lookup database; local storage uses text rather than external numeric codes.
 

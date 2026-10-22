@@ -1,96 +1,69 @@
-# Native UX demo previews
+# Build and review the synthetic Demo
 
-For future user-review builds, run:
+Use the existing [Demo builder](../scripts/build-ux-admin-demo.ps1) with a
+verified current blank template and a new destination. If a fresh blank is needed,
+use [develop.ps1](../scripts/develop.ps1) first:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/build-preview.ps1
+powershell.exe -NoProfile -File scripts/develop.ps1 -Action Build -BuildPath "build/dev/Swift_NAVFIT_demo_template.accdb"
+powershell.exe -NoProfile -File scripts/build-ux-admin-demo.ps1 -TemplatePath "build/dev/Swift_NAVFIT_demo_template.accdb" -OutputPath "build/tests/Swift_NAVFIT_demo_review.accdb"
 ```
 
-The default creates a uniquely named `output/ux/Swift_NAVFIT_UI_Demo_*.accdb`.
-It builds a blank source template, copies it, then seeds only the copy. An
-explicit `-TemplatePath` can reuse a verified blank template. `-OutputPath`
-can choose a different new destination. Existing destinations are never
-overwritten, and seeding refuses a populated database. The seed module is
-removed from the finished demo; users receive normal app services and data.
-The builder executes shared-block/default/comparison, responsive identity,
-native surface/workspace and workflow checks before seeding and
-the populated-demo journey checks afterward. A verification failure stops the
-build from reporting success.
+Both destinations must be new. The Demo builder verifies the blank through
+read-only DAO before creating its copy, seeds synthetic examples, removes seed
+modules, restores the editor's normal unload handler and startup macro, and
+compiles. It then runs the populated Demo journey and normal/enabled-content
+startup checks on disposable copies. The template hash must remain unchanged.
+A failed check does not produce a success report or authorize publication.
 
-Open the demo in desktop Access. If Access blocks active content, startup now
-opens an instruction screen instead of running blocked VBA. Click **Enable
-Content**, then close and reopen the file. Alternatively, add only the preview
-folder in Access Trust Center; the build scripts do not change Office security
-settings. `test-preview-launch.ps1` checks both the normal-security startup
-path and enabled-content startup on disposable copies.
+The old build-preview entry point is in [PROPOSED_PURGE](../PROPOSED_PURGE/README.md)
+for review. It is not an alternate supported build command. Its pre-seed suites
+remain available as focused tests; creating a Demo no longer automatically runs
+all historical feature suites.
 
-Setup is already completed under
-`SWIFT NAVFIT DEMO - SYNTHETIC DATA`, with `Alex Morgan (demo)` active.
-Browser prototype changes are separate and are not imported.
+## Check the changed behavior
 
-## Try these journeys
+| Changed area | Focused scripts retained under scripts/ |
+| --- | --- |
+| Review return / My Work | test-ux-review-return.ps1; test-ux-my-work.ps1 |
+| Validation and citations | test-ux-validation.ps1; applicable readiness/policy checks |
+| NAVFIT exchange | test-navfit-adapter.ps1; test-navfit-group-export.ps1; test-ux-navfit.ps1 |
+| PDF / guided import | test-pdf-expanded.ps1; test-ux-import-flow.ps1; applicable local-PDF checks |
+| Context / group defaults / shared blocks | test-ux-context.ps1; test-ux-group-lifecycle.ps1; test-ux-block-tools.ps1 |
+| Native surface / viewing area | test-ux-surface.ps1; test-ux-responsive-identity.ps1 |
+| Help | test-ux-help.ps1 |
+| Pending edits and normal exits | test-ux-workflows.ps1 |
 
-1. Overview: inspect active reports, group/work counts, recent reports and the
-   recovery checkpoint. Double-click a recent report to open it.
-2. Reports: search names; filter report type, folder and local review status.
-   Clear filters to restore the active report list. Use New report to choose
-   E1-E6 EVAL, Chief EVAL or FITREP.
-3. Jamie Taylor: edit complete official sections; pending values survive
-   section changes. Enter an incomplete SSN and select Save draft to inspect
-   the inline error and clickable summary. Correct it to save a revision.
-4. Summary groups: inspect the Reports count, then open the E5 group; inspect group averages and reporting
-   senior/PSG information. Comparison captures its baseline automatically.
-   Select a member, stage changed marks, review proposals and Apply.
-5. Jordan Reed: local approval locks editing. Review actions operate on saved
-   revisions; local approval is not an official signature.
-6. My Work: Casey Morgan has current review work; Avery Patel has intentionally
-   stale review work. Contributors and assigning review have separate views.
-7. Reporting seniors: Resources contains the fictional senior and E5/E7/O3
-   historical baselines. Exact sums/counts are synthetic and exclude the group.
-8. Recovery: Jamie Taylor has pending local notes that are not in the saved
-   revision. Recover or discard the checkpoint to explore that workflow.
-9. Reports: switch Show to Archived for Quinn Park; Sam Rivera demonstrates
-   whole-report NOB. Drew Blake is an incomplete draft to fill in yourself.
+These checks have distinct assertions; they were not declared equivalent to
+each other or deleted. Run those relevant to a change, and use
+[release-check.ps1](../scripts/release-check.ps1) plus applicable feature gates
+before publication. The former IncludePDFIntegrationChecks option belonged to
+the retired builder; invoke PDF checks directly when relevant. Demo creation is
+not a release-verification receipt.
 
-The rebuild preserves all 78 report fields, schema 21 and existing transaction,
-revision and recovery services. Native section fields are an unbound scrollable
-surface bridged to the original editor buffer. The report editor fills the
-window and reflows content-sized report block rows; related checkboxes share
-compact rows with adjacent labels, and save actions stay near the bottom. Active text is preserved when resizing. Official captions vary by report
-type. Name parts remain independent from full-name fields; legacy DoDID values
-are retained in storage but hidden from normal editing.
+## Try the Demo
 
-This is a development preview, not a finished or published redesign. Remaining
-work includes full current-template label review, responsive navigation/collapse,
-native keyboard and screen-reader acceptance, scaling at 100/125/150 percent,
-remaining review/import/bulk screen polish and native close-window dirty guards.
-Automated behavior and bounds checks do not prove visual equivalence.
+Open it in full desktop Access. Enable Content if prompted, then close and reopen.
+See [contributor startup](../docs/Contributor_Startup.md): setup is complete but
+each initialized launch requires an explicit contributor choice; nothing is
+preselected. Local contributors provide attribution, not authentication.
 
-Use `scripts/build.ps1` for blank templates and release verification. Migrate
-existing workspaces only into a blank template, never into a seeded demo.
+The synthetic workspace contains 13 reports, five groups, two contributors,
+one reporting senior, four RSCA baselines and 12 prior evaluations. Practice:
 
-The preview builder also runs `test-ux-responsive-identity.ps1` before seeding.
-This gate covers compact report navigation, active-field/caret preservation,
-shared viewport geometry and official-name identity. Native DPI, visual and
-screen-reader acceptance remain separate manual checks.
+1. Open Jamie Taylor, edit a field, switch Front/Back pages, correct an invalid
+   SSN and save. Pending values should survive page changes.
+2. Inspect the E5/E7/O3 groups and reporting-senior baselines; compare marks.
+3. Inspect Jordan Reed's local approval, Quinn Park's archive and Sam Rivera's NOB.
+4. Use My Work for current and intentionally stale review examples.
+5. Recover or discard Jamie Taylor's uncommitted checkpoint.
+6. Compare the clean E6 group with the group containing three deliberate report issues.
+7. Inspect synthetic member history and shared report conversations.
 
-## r20 calculation and checklist journeys
-
-Open a report, choose Review, then Calculation details or Draft checklist.
-In the checklist select a field and choose Open report section. For PSG RSCA,
-open a summary group, Members, Reporting senior and PSG RSCA. The scrolling
-context field shows counts, exclusions and manually entered baseline provenance.
-
-## Current help and import journeys
-
-Settings & Help > Workspace guide and quick start opens the native guide.
-Reports > Import reports opens the shared source chooser. Preview full mapping
-values before Apply; Results opens the created report. NAVFIT mapping remains
-narrative-only and PDF mapping remains limited to supported fields. Source
-inspection and existing-draft reconciliation remain separate contextual tools.
-
-Native preview gates do not require Acrobat by default. Add
-`-IncludePDFIntegrationChecks` for the complete PDF-import flow verification.
-Candidate packaging includes those checks on the verified build host.
-
-The current r23 demo is `output/ux/Swift_NAVFIT_UI_Demo_2026-10-04-r23.accdb`. Builds now run the focused saved-report review and native Reports return suite before seeding. `scripts/verify-ux-review-build.ps1` checks installed standard modules against source and native review/return event hooks on a disposable copy. See `planning/UX_REVIEW_RETURN_2026-10-04.md` for behavior and evidence.
+Report fields use fixed geometry; window resizing changes the viewing area.
+All seven traits remain together on Front Page. Browser prototype state is separate.
+Native checks do not establish physical display, keyboard/screen-reader,
+scaling or printed fit. NAVFIT98A remains the final native validation/printing
+destination. Structured PDF extraction is local; it does not require Acrobat.
+Never use a populated user workspace as the seed template or import real data
+into a synthetic Demo. Follow [AGENTS.md](../AGENTS.md) for any release delivery.

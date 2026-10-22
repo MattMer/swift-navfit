@@ -50,6 +50,15 @@ Public Function TestBuildCleanup() As String
  Check DCount("*", "FolderMove") = moves, "Navigation changed folder history"
  other = CommitDraft(0, "EVAL", "Batch fixture", "SYNTHETIC SECOND", Null, Null, "")
  selection = CStr(id) & "," & CStr(other): stamp = FolderBatchStamp(selection)
+ before = DCount("*", "FolderMove")
+ CurrentDb.TableDefs("FolderBatchChange").Fields("ReportID").ValidationRule = "<> " & other
+ On Error Resume Next
+ ApplyFolderBatch selection, child, stamp
+ failure = Err.Number: Err.Clear: On Error GoTo Failed
+ CurrentDb.TableDefs("FolderBatchChange").Fields("ReportID").ValidationRule = ""
+ Check failure <> 0, "Injected folder batch failure was accepted"
+ Check DCount("*", "FolderMove") = before And DLookup("FolderID", "Report", "ReportID=" & id) = folder And IsNull(DLookup("FolderID", "Report", "ReportID=" & other)), "Failed folder batch left partial moves"
+ Check DCount("*", "OperationJournal", "OperationState='Failed'") > 0, "Failed batch journal missing"
  operation = ApplyFolderBatch(selection, child, stamp)
  Check DCount("*", "FolderBatchChange", "OperationID=" & operation) = 2, "Folder batch history missing"
  Check DLookup("FolderID", "Report", "ReportID=" & id) = child And DLookup("FolderID", "Report", "ReportID=" & other) = child, "Folder batch did not move both reports"
@@ -61,6 +70,10 @@ Public Function TestBuildCleanup() As String
  UndoFolderBatch operation
  failure = Err.Number: Err.Clear: On Error GoTo Failed
  Check failure <> 0 And DLookup("FolderID", "Report", "ReportID=" & other) = child, "Stale undo partially changed folder assignments"
+ operation = BeginOperation("Synthetic interrupted", "Fixture only")
+ DoCmd.OpenForm "frmOperations": Forms!frmOperations!lstOperations = operation: OperationDetails
+ Check InStr(Forms!frmOperations!txtOutcome, "Started or interrupted") > 0, "Interrupted operation not explained"
+ DoCmd.Close acForm, "frmOperations", acSaveNo
  TestBuildCleanup = "PASS: " & checks & " build cleanup, folder-history and guarded legacy-route checks": Exit Function
 Failed:
  TestBuildCleanup = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description

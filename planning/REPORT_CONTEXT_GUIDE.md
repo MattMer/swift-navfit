@@ -1,8 +1,9 @@
 # Report occasions, report categories and duty descriptions
 
-> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
-> [current state](CURRENT_STATE.md). This guide retains service details and
-> earlier verification history; legacy screen instructions may differ.
+> Historical service/verification reference. Current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md); current architecture and
+> decisions are in [PROJECT_STATE.md](../PROJECT_STATE.md). Retained field/source
+> details remain evidence, but old screens and test commands may be superseded.
 
 Swift NAVFIT 0.15.0 adds three panels at the top of the draft editor for EVAL, CHIEFEVAL and FITREP.
 

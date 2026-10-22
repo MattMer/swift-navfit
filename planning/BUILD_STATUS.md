@@ -1,4 +1,4 @@
-> Historical verification log. Current verified r125 artifacts, gates and limitations are in [CURRENT_STATE.md](CURRENT_STATE.md) and [BUILD_CLEANUP_R125_VERIFICATION.json](BUILD_CLEANUP_R125_VERIFICATION.json). Use [the managed build pipeline](BUILD_PIPELINE.md) for current builds. Earlier versions, preview builders and Runtime references below describe their own historical scope; free Runtime support is not required.
+> Historical verification log. Read [PROJECT_STATE.md](../PROJECT_STATE.md) for current architecture, [CURRENT_STATE.md](CURRENT_STATE.md) for release evidence, and [the managed build pipeline](BUILD_PIPELINE.md) for current builds. The old build-preview command below is quarantined; use the [current Demo guide](UX_DEMO_BUILD_GUIDE.md). Earlier versions, preview builders and Runtime references describe their historical scope; free Runtime support is not required.
 
 # Working source - UI redesign preview
 

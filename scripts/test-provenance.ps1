@@ -1,9 +1,9 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-& (Join-Path $PSScriptRoot 'test-tools.ps1') -BuildPath $BuildPath
-$fixture=Get-Content (Join-Path $root 'build/tests/tools-results.json') -Raw | ConvertFrom-Json
-$scratch=$fixture.TestDatabase
+$sourceHash=(Get-FileHash -LiteralPath $BuildPath).Hash
+$scratch=Join-Path $root ('build/tests/provenance-'+[guid]::NewGuid()+'.accdb')
+Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=$null
 try {
     $app=New-Object -ComObject Access.Application
@@ -15,6 +15,9 @@ try {
     $app.CloseCurrentDatabase(); $app.OpenCurrentDatabase($scratch,$true)
     if(-not $app.Eval('OpenImportProvenance(DMin("ImportReceiptID","ImportReceipt"))')) {throw 'Viewer reopen failed'}
     $app.CloseCurrentDatabase()
-    @{Status=$result;Reopened=$true;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash;TestDatabase=$scratch} | ConvertTo-Json | Set-Content (Join-Path $root 'build/tests/provenance-results.json')
+    @{Status=$result;Reopened=$true;BuildSHA256=$sourceHash;TestDatabase=$scratch;Fixture='Self-contained synthetic viewer data; no external import fixture'} | ConvertTo-Json | Set-Content (Join-Path $root 'build/tests/provenance-results.json')
     Write-Output $result
-} finally {if($null -ne $app){$app.Quit(2)}}
+} finally {
+    if($null -ne $app){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+    if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $sourceHash){throw 'Provenance test changed its source artifact'}
+}

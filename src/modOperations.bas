@@ -5,8 +5,7 @@ Public Function BeginOperation(ByVal kind As String, ByVal source As String) As 
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
     Dim r As DAO.Recordset, pid As Long
-    pid = Nz(MajorScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
-    If pid = 0 Then Err.Raise vbObjectError + 1100, , "Configure a contributor first."
+    pid = ActiveContributorID()
     Set r = ownedDB.OpenRecordset("OperationJournal", dbOpenDynaset)
     r.AddNew: r!OperationGuid = NewIdentity(): r!OperationKind = kind: r!AuthorProfileID = pid
     r!SourceDescription = source: r!StartedAt = Now(): r!OperationState = "Started"

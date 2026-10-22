@@ -1,0 +1,21 @@
+{
+  "Status": "PASS",
+  "Package": "@modelcontextprotocol/server-filesystem",
+  "Version": "2.0.0",
+  "Server": "swift_files",
+  "Root": "D:/Development/Swift NAVFIT",
+  "EnabledReadTools": [
+    "read_text_file",
+    "read_multiple_files",
+    "list_directory",
+    "list_directory_with_sizes",
+    "directory_tree",
+    "search_files",
+    "get_file_info",
+    "list_allowed_directories"
+  ],
+  "ReadVerified": "AGENTS.md",
+  "OutsideRootDenied": true,
+  "Backup": "C:/Users/Matt/.codex/config.toml.before-file-reader-1792605135108.bak",
+  "CurrentChatToolsExposed": false
+}

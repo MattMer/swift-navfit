@@ -9,6 +9,7 @@
     "src/modBulkFolders.bas",
     "src/modChecklist.bas",
     "src/modCommandDirectory.bas",
+    "src/modContributorStartup.bas",
     "src/modDecisionDetails.bas",
     "src/modDirectoryBatch.bas",
     "src/modDirectoryMerge.bas",
@@ -704,11 +705,17 @@
       ]
     },
     {
+      "id": "apply-contributor-startup",
+      "phase": "finalize",
+      "file": "scripts/apply-contributor-startup.ps1",
+      "requires": ["apply-directory-merge"]
+    },
+    {
       "id": "finalize-application",
       "phase": "finalize",
       "file": "scripts/finalize-application.ps1",
       "requires": [
-        "apply-directory-merge"
+        "apply-contributor-startup"
       ]
     }
   ]

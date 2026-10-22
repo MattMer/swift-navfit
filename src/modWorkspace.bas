@@ -4,6 +4,7 @@ Option Explicit
 
 Public Function CreateFolder(ByVal folderName As String, Optional ByVal parentID As Long = 0) As Long
     Dim db As DAO.Database, r As DAO.Recordset
+    Call ActiveContributorID
     folderName = Trim$(folderName)
     If Len(folderName) = 0 Or Len(folderName) > 80 Then Err.Raise vbObjectError + 200, , "Enter a folder name of 1 to 80 characters."
     If parentID <> 0 And DCount("*", "Folder", "FolderID=" & parentID) = 0 Then Err.Raise vbObjectError + 201, , "Parent folder does not exist."
@@ -28,6 +29,7 @@ End Function
 
 Public Function MoveFolder(ByVal folderID As Long, ByVal parentID As Long) As Boolean
     Dim cursor As Long, depth As Long, q As DAO.QueryDef
+    Call ActiveContributorID
     If DCount("*", "Folder", "FolderID=" & folderID) = 0 Then Err.Raise vbObjectError + 204, , "Folder does not exist."
     cursor = parentID
     Do While cursor <> 0
@@ -46,8 +48,7 @@ End Function
 Public Function AssignFolder(ByVal reportID As Long, ByVal folderID As Long) As Boolean
     Dim w As DAO.Workspace, db As DAO.Database, q As DAO.QueryDef, r As DAO.Recordset
     Dim oldFolder As Variant, pid As Long, failure As Long, message As String
-    pid = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
-    If pid = 0 Then Err.Raise vbObjectError + 208, , "Set up a contributor profile first."
+    pid = ActiveContributorID()
     If folderID <> 0 And DCount("*", "Folder", "FolderID=" & folderID) = 0 Then Err.Raise vbObjectError + 209, , "Destination folder does not exist."
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed

@@ -9,7 +9,7 @@ try {
     $app.OpenCurrentDatabase($scratch,$true)
     $trusted=$app.CurrentProject.IsTrusted
     $app.DoCmd.RunMacro('AutoExec')
-    $expected=if(-not $trusted){'frmEnableContent'}elseif($app.Eval('DCount("*","Workspace")') -eq 0){'frmSetup'}else{'frmHome'}
+    $expected=if(-not $trusted){'frmEnableContent'}elseif($app.Eval('DCount("*","Workspace")') -eq 0){'frmSetup'}else{'frmContributorStart'}
     if(-not $app.Eval('CurrentProject.AllForms("'+$expected+'").IsLoaded')){throw 'AutoExec did not open the expected destination'}
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($scratch,$true)
@@ -20,7 +20,7 @@ try {
     $app.AutomationSecurity=1
     $app.OpenCurrentDatabase($scratch,$true)
     $app.DoCmd.RunMacro('AutoExec')
-    $expected=if($app.Eval('DCount("*","Workspace")') -eq 0){'frmSetup'}else{'frmHome'}
+    $expected=if($app.Eval('DCount("*","Workspace")') -eq 0){'frmSetup'}else{'frmContributorStart'}
     if(-not $app.Eval('CurrentProject.AllForms("'+$expected+'").IsLoaded')){throw 'Enabled-content startup failed'}
     'PASS: enabled-content AutoExec ('+$expected+')'
 } finally {

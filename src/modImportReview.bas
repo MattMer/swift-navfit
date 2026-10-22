@@ -213,7 +213,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = hash
     receipt!SourcePath = reviewOriginalPath: receipt!ExternalReportID = externalID: receipt!ReportID = id
-    receipt!AuthorProfileID = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
+    receipt!AuthorProfileID = ActiveContributorID()
     receipt!ImportedAt = Now(): receipt!AdapterVersion = "comments-v1/local-CStr"
     If fullReport Then receipt!AdapterVersion = "navfit-full-v1/local-CStr"
     receipt!BeforeRevisionID = beforeRevision: receipt!AppliedRevisionID = target!CurrentRevisionID

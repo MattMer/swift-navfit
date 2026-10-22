@@ -1,9 +1,13 @@
 # Recent Swift NAVFIT development
 
-Current development identity: 0.26.0-dev, schema 26. See CURRENT_STATE.md for the latest verified distribution and exact-artifact evidence. The 19 October entries below retain their historical scope.
+Current delivery: r128 / 0.27.1-dev, schema 27. See [PROJECT_STATE.md](../PROJECT_STATE.md) for current architecture and [release history](CURRENT_STATE.md) for exact-artifact evidence. Older entries below describe their own checkpoint.
 
 | Area | Change and verification notes |
 | --- | --- |
+| Startup contributor selection | [r128 explicit session choice, attribution and verification scope](CONTRIBUTOR_STARTUP_R128_2026-10-21.md) |
+| Reviewed duplicate Sailor merging | [r127 preview, identity guards, retained history and undo](DIRECTORY_MERGE_R127_2026-10-21.md) |
+| Local PDF input | [r126 local extraction and supported-form limits](LOCAL_PDF_R126_2026-10-20.md) |
+| Development consolidation | [Current workstream decisions and verification](CONSOLIDATION_PLAN.md) |
 | Build and legacy cleanup | [Managed build pipeline and retained adapters](BUILD_PIPELINE.md); [r125 implementation and verification scope](BUILD_CLEANUP_R125_2026-10-20.md) |
 | Workspace import verification | [r124 database-engine exact verification](ENGINE_IMPORT_R124_2026-10-20.md) |
 | Consolidated report tools | [r123 notes, replies, review, validation and calculations](REPORT_TOOLS_R123_2026-10-20.md) |
@@ -20,4 +24,4 @@ Each note names its exact development artifact, checks, and limits. `build/` art
 
 The target is full desktop Microsoft Access. Free Runtime support is not required. Release-migration acceptance, physical display/scaling, keyboard/screen-reader coverage, and final printed fit must be assessed separately from targeted native tests.
 
-Publication checks: the latest widened blank candidate passed the repository lifecycle/review workflow suite (40 native-close, direct shared-field and report-review assertions, including the script's forced-quit checks). Changed PowerShell and JSON files parse, README local links resolve, and the staged diff passes whitespace checks. Binary databases, recordings and local scratch helpers are excluded from this source update.
+Historical widened-candidate publication checks included 40 lifecycle/review assertions. That checkpoint is not current release acceptance; use the exact release receipts above. Binary databases, recordings and local scratch artifacts remain outside maintained source.

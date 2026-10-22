@@ -84,27 +84,56 @@ Private Sub VRReadiness(ByVal findings As Collection, ByVal f As Object, ByVal i
   If (text = "N" Or text = "OTHER") And VRText(f, "DutyDescription") = "" Then VAdd findings, f, id, "DutyDescription", "Incomplete draft", "VR-PFA", "Explain the CHIEFEVAL no-test/Other result in block 29."
  End If
 End Sub
-' The supplied CH-2 tables have different O5/O6 dates starting in 2027.
+' Versioned calendars from CH-1 enclosure (1), tables 1/1A in the retained
+' CH-2 compilation (PDF17/18). Earlier calendars have not been verified.
+Public Function PeriodicScheduleVersion(ByVal ending As Date) As String
+ Dim row As Variant
+ For Each row In Array(Array(#12/16/2025#, #12/31/2026#, "CH1-T1"), Array(#1/1/2027#, #12/31/9999#, "CH1-T1A"))
+  If DateValue(ending) >= row(0) And DateValue(ending) <= row(1) Then PeriodicScheduleVersion = row(2): Exit Function
+ Next
+End Function
+Public Function ValidationApplicabilityReason(ByVal f As Object) As String
+ Dim row As Variant, ending As Date
+ If Not IsDate(VRText(f, "PeriodEnd")) Then
+  ValidationApplicabilityReason = "An ending date is required to select policy applicability."
+  Exit Function
+ End If
+ ending = DateValue(f("PeriodEnd"))
+ ' General-rule coverage is distinct from the calendar and exemption windows.
+ For Each row In Array(Array(#5/26/2026#, #12/31/9999#, "CH2-GENERAL"))
+  If ending >= row(0) And ending <= row(1) Then Exit Function
+ Next
+ ValidationApplicabilityReason = "General policy checks use the verified CH-2 compilation from 26 May 2026; earlier policy coverage is not verified. Periodic calendars are evaluated separately from 16 December 2025."
+End Function
+Public Function PeriodicPolicyReference(ByVal f As Object) As String
+ Dim ending As String
+ ending = VRText(f, "PeriodEnd")
+ PeriodicPolicyReference = "BUPERSINST 1610.10H CH-1, 16 December 2025, enclosure (1), table 1 (through 2026), table 1A (from 2027); retained CH-2 compilation PDF pages 17-18. Source SHA-256: " & NAVY_RULE_SOURCE_HASH
+ If IsDate(ending) Then PeriodicPolicyReference = PeriodicPolicyReference & vbCrLf & "Selected calendar: " & PeriodicScheduleVersion(CDate(ending))
+ PeriodicPolicyReference = PeriodicPolicyReference & vbCrLf & "Command-senior-enlisted exceptions: CH-2 enclosure (2), paragraph 3-4a-d, 26 May 2026. Highest-paygrade Regular periodic exemptions: NAVADMIN 132/26, paragraphs 1 and 3, effective 3 June 2026 (authoritative effective date). Permanent LDO grade/NEC/assignment require human confirmation."
+ PeriodicPolicyReference = PeriodicPolicyReference & vbCrLf & "https://www.mynavyhr.navy.mil/Portals/55/Messages/NAVADMIN/NAV2026/NAV26132.pdf"
+End Function
 Public Function PeriodicExpectedDate(ByVal worn As String, ByVal ending As Date, Optional ByVal rankRate As String = "") As Variant
- Dim month As Long, dayNumber As Long
- If UCase$(rankRate) = "CMDCS" Then PeriodicExpectedDate = DateSerial(Year(ending), 11, 15): Exit Function
- Select Case worn
-  Case "O1": month = 5: dayNumber = 31
-  Case "O2": month = 2: dayNumber = Day(DateSerial(Year(ending), 3, 0))
-  Case "O3": month = 1: dayNumber = 31
-  Case "O4": month = 10: dayNumber = 31
-  Case "O5": month = IIf(Year(ending) >= 2027, 6, 4): dayNumber = 30
-  Case "O6": month = IIf(Year(ending) >= 2027, 3, 7): dayNumber = 31
-  Case "W1", "W2": month = 9: dayNumber = 30
-  Case "W3", "W4", "W5": month = 3: dayNumber = 31
-  Case "E1", "E2", "E3": month = 7: dayNumber = 15
-  Case "E4": month = 6: dayNumber = 15
-  Case "E5": month = 3: dayNumber = 15
-  Case "E6": month = 11: dayNumber = 15
-  Case "E7", "E8": month = 9: dayNumber = 15
-  Case "E9": month = 4: dayNumber = 15
- End Select
- If month = 0 Or Year(ending) < 2026 Then PeriodicExpectedDate = Null Else PeriodicExpectedDate = DateSerial(Year(ending), month, dayNumber)
+ Dim version As String, entries As String, entry As Variant, parts As Variant, month As Long, dayNumber As Long
+ PeriodicExpectedDate = Null
+ version = PeriodicScheduleVersion(ending): If version = "" Then Exit Function
+ ' Month/day=0 means the last day of that month; handles leap/century years.
+ entries = "O1:5:0|O2:2:0|O3:1:0|O4:10:0|W1:9:0|W2:9:0|W3:3:0|W4:3:0|W5:3:0|E1:7:15|E2:7:15|E3:7:15|E4:6:15|E5:3:15|E6:11:15|E7:9:15|E8:9:15|E9:4:15"
+ If version = "CH1-T1" Then entries = entries & "|O5:4:0|O6:7:0" Else entries = entries & "|O5:6:0|O6:3:0"
+ If UCase$(Trim$(rankRate)) = "CMDCS" Then
+  If UCase$(worn) <> "E8" Then Exit Function
+  entries = "E8:11:15"
+ End If
+ For Each entry In Split(entries, "|")
+  parts = Split(CStr(entry), ":")
+  If UCase$(worn) = parts(0) Then
+   month = CLng(parts(1)): dayNumber = CLng(parts(2))
+   If dayNumber = 0 Then
+    dayNumber = Day(DateSerial(Year(ending), month + 1, 0))
+   End If
+   PeriodicExpectedDate = DateSerial(Year(ending), month, dayNumber): Exit Function
+  End If
+ Next
 End Function
 ' Warn only from explicitly linked, known Regular reports; prior imported evals
 ' do not record report type, so they cannot prove a Regular continuity gap.
@@ -126,8 +155,12 @@ Private Sub VRPeriodic(ByVal findings As Collection, ByVal f As Object, ByVal id
  If VRText(f, "OccasionPeriodic") <> "Yes" Then Exit Sub
  ending = VRText(f, "PeriodEnd"): If Not IsDate(ending) Then Exit Sub
  worn = ValidationWornPaygrade(VRText(f, "RankRate"))
- If worn = "E9" Or worn = "W5" Or (worn = "O6" And Left$(VRText(f, "Designator"), 1) = "6") Or UCase$(VRText(f, "RankRate")) = "CMDCM" Then
-  VRWarn findings, f, id, "OccasionPeriodic", "VR-PERIODIC", "Verify the CH-2 periodic-report exemption for this grade/designator or command-senior-enlisted assignment; permanent grade and NEC/assignment details require human review."
+ If CDate(ending) >= #6/3/2026# And VRText(f, "ReportRegular") = "Yes" And (worn = "E9" Or worn = "W5" Or (worn = "O6" And Left$(VRText(f, "Designator"), 1) = "6")) Then
+  VRWarn findings, f, id, "OccasionPeriodic", "VR-PERIODIC", "NAVADMIN 132/26 removes Regular periodic reporting from 3 June 2026 for E9, CWO5 and permanent LDO O6. Confirm eligibility/permanent grade; detachment requirements remain separate. No report or history is deleted."
+  Exit Sub
+ End If
+ If CDate(ending) >= #5/26/2026# And UCase$(VRText(f, "RankRate")) = "CMDCM" Then
+  VRWarn findings, f, id, "OccasionPeriodic", "VR-PERIODIC", "Verify the CH-2 paragraph 3-4 command-master-chief exception from 26 May 2026; 8CMC NEC and flag/general-officer reporting relationship are not established by the rate label alone."
   Exit Sub
  End If
  expected = PeriodicExpectedDate(worn, CDate(ending), VRText(f, "RankRate"))

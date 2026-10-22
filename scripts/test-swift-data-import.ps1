@@ -1,14 +1,19 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[ValidateRange(1,27)][int]$MinimumSchema=1,[string]$CurrentSchemaPath)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[ValidateRange(1,27)][int]$MinimumSchema=1,[string]$CurrentSchemaPath,[switch]$CurrentFixturesOnly)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
 $fixtures=@{}
 #Retained actual distributions exercise historical schema boundaries, not files
 #whose version number has merely been edited to resemble an earlier schema.
+$paths=@()
+if($CurrentFixturesOnly){
+ if(-not $CurrentSchemaPath){throw 'CurrentFixturesOnly requires -CurrentSchemaPath'}
+}else{
 $paths=@(Get-ChildItem (Join-Path $root 'output') -Filter *.accdb | Where-Object {$_.Name -notmatch 'candidate|rc\d|tested|tools-rc' } | Sort-Object Name)
 $paths+=@(Get-ChildItem (Join-Path $root 'output/Swift_NAVFIT_0.23.0-preview'),(Join-Path $root 'output/Swift_NAVFIT_0.24.0-preview') -Filter '*DEMO.accdb')
 $paths+=Get-Item (Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb')
 $paths+=Get-Item (Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb'),(Join-Path $root 'output/ux/Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb')
+}
 if($CurrentSchemaPath){$paths+=Get-Item -LiteralPath $CurrentSchemaPath}
 foreach($file in $paths){
  $db=$dao.OpenDatabase($file.FullName,$false,$true)
@@ -45,7 +50,7 @@ try{
   Write-Output ('PASS schema '+$v+': '+$count+' reports, exact field verification and unchanged source')
  }
  #Test populated-destination rejection and rollback after rows have been copied.
- $source=$fixtures[25]
+ $source=if($CurrentFixturesOnly){$fixtures[@($fixtures.Keys)[0]]}else{$fixtures[25]}
  $target=OpenTarget 'guards'
  $bootstrap=$app.Eval('DLookup("CommandName","Workspace")')
  $bad=Join-Path $folder 'missing-report-source.accdb';Copy-Item -LiteralPath $source -Destination $bad
@@ -77,6 +82,6 @@ try{
  if(-not $rejected -or $app.Eval('DCount("*","Report")') -ne $rows){throw 'Populated target guard failed'}
  $app.CloseCurrentDatabase()
  $results|ConvertTo-Json -Depth 6|Set-Content (Join-Path $folder 'matrix.json')
- @{Status='PASS';Fixtures=$results;Rollback=$true;ChangedSourceRejected=$true;PopulatedTargetRejected=$true;UnknownTableRejected=$true;FutureSchemaRejected=$true;UIEntryPointTested=$true}|ConvertTo-Json -Depth 7|Set-Content (Join-Path $root 'build/r115-data-import-verification.json')
- Write-Output ('PASS: '+$results.Count+' historical schemas; full production import, bootstrap rollback, changed-source and populated-target guards; '+$folder)
+ @{Status='PASS';Fixtures=$results;HistoricalFixturesRetested=(-not $CurrentFixturesOnly);Rollback=$true;ChangedSourceRejected=$true;PopulatedTargetRejected=$true;UnknownTableRejected=$true;FutureSchemaRejected=$true;UIEntryPointTested=$true}|ConvertTo-Json -Depth 7|Set-Content (Join-Path $root 'build/r115-data-import-verification.json')
+ Write-Output ('PASS: '+$results.Count+' schema fixtures; historical retest: '+(-not $CurrentFixturesOnly)+'; production import, bootstrap rollback, changed-source and populated-target guards; '+$folder)
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

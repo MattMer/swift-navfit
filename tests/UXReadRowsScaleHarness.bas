@@ -33,7 +33,7 @@ Public Function TestReadRowsScale() As String
     ConfigureWorkspace "SYNTHETIC READ ROW SCALE", "Reviewer"
     p = MajorAuthor(): g = CreateSummaryGroup("Synthetic scale group", "EVAL", "E5")
     template = CreateRouteTemplate("Scale route", CStr(p), "Read")
-    output = "Reports,View,Trial,LegacyMs,PreparedMs" & vbCrLf
+    output = "Reports,View,Trial,UnpreparedMs,PreparedMs" & vbCrLf
     For Each target In Array(25, 100)
         For i = DCount("*", "Report") + 1 To CLng(target)
             id = CommitDraft(0, "EVAL", "Synthetic " & i, "MEMBER " & Format$(i, "000"), #1/1/2026#, #9/30/2026#, "")

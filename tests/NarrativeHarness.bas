@@ -1,10 +1,20 @@
 Attribute VB_Name = "NarrativeHarness"
 Option Explicit
+Private assertions As Long
 Private Sub Check(ByVal condition As Boolean, ByVal message As String)
     If Not condition Then Err.Raise vbObjectError + 500, , message
+    assertions = assertions + 1
 End Sub
+Private Function SnippetTypeRejected(ByVal snippet As Long) As Boolean
+    On Error GoTo Rejected
+    Call InsertNarrativeSnippet(snippet)
+    Exit Function
+Rejected:
+    SnippetTypeRejected = (Err.Number = vbObjectError + 1206)
+End Function
 Public Function TestNarratives() As String
     Dim kind As Variant, id As Long, first As Long, copy As Long, text As String, block As String, stage As String
+    Dim snippet As Long, wrongSnippet As Long, revision As Long
     On Error GoTo Failed
     Call ConfigureWorkspace("SYNTHETIC NARRATIVE", "Synthetic Tester")
     text = "Mixed CASE; apostrophe ' and quotes ""example""" & vbCrLf & String$(6000, "x")
@@ -40,7 +50,21 @@ Public Function TestNarratives() As String
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Separate notes")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 6, "Omitted empty narrative caused revision"
     Next
-    TestNarratives = "PASS: 39 narrative assertions across three forms"
+    stage = "snippet pending/save integrity"
+    revision = CurrentRevision(id)
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    text = "Snippet" & vbCrLf & String$(5000, "x")
+    snippet = SaveSnippet(0, "Synthetic phrase", text, "Synthetic reference", "FITREP")
+    wrongSnippet = SaveSnippet(0, "Wrong type", "Wrong type", "Synthetic reference", "EVAL")
+    Check SnippetTypeRejected(wrongSnippet), "Wrong report-type snippet accepted"
+    Check InsertNarrativeSnippet(snippet), "Snippet insert failed"
+    Check StrComp(Forms!frmEditor!txtOfficialComments, text, vbBinaryCompare) = 0, "Snippet pending text changed"
+    Check CurrentRevision(id) = revision And Len(Nz(StoredNarrative(id), "")) = 0, "Snippet committed without save"
+    Check SaveEditor(), "Snippet save failed"
+    Check StrComp(StoredNarrative(id), text, vbBinaryCompare) = 0, "Snippet save lost exact text"
+    Check CurrentRevision(id) <> revision, "Snippet save did not append history"
+    Call FixtureCloseEditor()
+    TestNarratives = "PASS: " & assertions & " narrative/snippet assertions across three forms"
     Exit Function
 Failed:
     TestNarratives = "FAIL: " & stage & " " & Err.Number & " " & Err.Description

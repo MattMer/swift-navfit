@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BlankPath,[Parameter(Mandatory=$true)][string]$DemoPath)
+param([Parameter(Mandatory=$true)][string]$BlankPath,[Parameter(Mandatory=$true)][string]$DemoPath,[switch]$CurrentFixturesOnly)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $logFolder=Join-Path $root ('build/tests/directory-release-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $logFolder)
 $results=@()
@@ -13,8 +13,12 @@ NativeCheck 'test-directory-merge' @('-BuildPath',$BlankPath)
 $fixture=(Get-Content (Join-Path $root 'build/directory-merge-verification.json') -Raw|ConvertFrom-Json).Fixture
 foreach($script in @('test-directory-history','test-directory-batch','test-ux-directory','test-context-help','test-build-cleanup','smoke-test')){NativeCheck $script @('-BuildPath',$BlankPath)}
 foreach($script in @('test-ux-demo','test-report-tools')){NativeCheck $script @('-BuildPath',$DemoPath)}
-NativeCheck 'test-workspace-upgrade' @('-TemplatePath',$BlankPath,'-SourceWorkspacePath',$DemoPath)
+if(-not $CurrentFixturesOnly){NativeCheck 'test-workspace-upgrade' @('-TemplatePath',$BlankPath,'-SourceWorkspacePath',$DemoPath)}
 NativeCheck 'test-directory-merge-transfer' @('-TemplatePath',$BlankPath,'-SourcePath',$fixture)
-NativeCheck 'test-swift-data-import' @('-BuildPath',$BlankPath,'-CurrentSchemaPath',$fixture)
+if($CurrentFixturesOnly){
+ NativeCheck 'test-swift-data-import' @('-BuildPath',$BlankPath,'-CurrentSchemaPath',$fixture,'-CurrentFixturesOnly')
+}else{
+ NativeCheck 'test-swift-data-import' @('-BuildPath',$BlankPath,'-CurrentSchemaPath',$fixture)
+}
 @{Status='PASS';Blank=$BlankPath;BlankSHA256=(Get-FileHash -LiteralPath $BlankPath).Hash;Demo=$DemoPath;DemoSHA256=(Get-FileHash -LiteralPath $DemoPath).Hash;MergeHistoryFixture=$fixture;Tests=$results}|ConvertTo-Json -Depth 7|Set-Content (Join-Path $root 'build/directory-merge-release-verification.json')
 Write-Output ('PASS: directory merge release gates; '+$logFolder)

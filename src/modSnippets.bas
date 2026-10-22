@@ -4,11 +4,12 @@ Option Explicit
 Private startersReady As Boolean
 Public Function SaveSnippet(ByVal snippetID As Long, ByVal title As String, ByVal body As String, ByVal attribution As String, ByVal kind As String) As Long
     Dim r As DAO.Recordset
+    Call ActiveContributorID
     If Len(Trim$(title)) = 0 Or Len(title) > 120 Or Len(Trim$(body)) = 0 Or Len(Trim$(attribution)) = 0 Or Len(attribution) > 255 Then Err.Raise vbObjectError + 1200, , "Provide a title (120 max), text and attribution (255 max)."
     If kind <> "ALL" And kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Err.Raise vbObjectError + 1201, , "Choose a supported report type or ALL."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM NarrativeSnippet WHERE SnippetID=" & snippetID, dbOpenDynaset)
     If snippetID = 0 Then
-        r.AddNew: r!SnippetGuid = NewIdentity(): r!CreatedBy = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
+        r.AddNew: r!SnippetGuid = NewIdentity(): r!CreatedBy = ActiveContributorID()
     Else
         If r.EOF Then Err.Raise vbObjectError + 1202, , "Snippet missing."
         r.Edit

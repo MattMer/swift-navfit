@@ -5,29 +5,27 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 8760, , message
     checks = checks + 1
 End Sub
-Private Function AverageError(ByVal g As Long, ByVal legacy As Boolean) As Long
+Private Function AverageError(ByVal g As Long) As Long
     Dim value As Variant
     On Error GoTo Failed
-    If legacy Then value = LegacyUXGroupAverage(g) Else value = UXGroupAverage(g)
+    value = UXGroupAverage(g)
     Exit Function
 Failed:
     AverageError = Err.Number
 End Function
 Private Sub Compare(ByVal g As Long)
-    Dim old As Object, fresh As Object, sharedResult As Object, key As Variant, rows As DAO.Recordset, revisions As Long, snapshots As Long, text As String
+    Dim currentAverage As Variant, fresh As Object, sharedResult As Object, key As Variant, rows As DAO.Recordset, revisions As Long, snapshots As Long, text As String
     revisions = DCount("*", "ReportRevision"): snapshots = DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet")
-    Check SameFieldValue(LegacyUXGroupAverage(g), UXGroupAverage(g)), "Group average changed"
-    Check LegacyUXGroupCalculationText(g) = UXGroupCalculationText(g), "Explanation changed"
-    Set old = LegacyRSGroupPSG(g): Set fresh = RSGroupPSG(g)
+    currentAverage = UXGroupAverage(g)
+    Set fresh = RSGroupPSG(g)
     Set rows = RSGroupRows(g)
     If Not rows.EOF Then rows.MoveLast: rows.MoveNext
     Set sharedResult = RSGroupPSG(g, rows)
-    For Each key In old.Keys
-        Check SameFieldValue(old(key), fresh(key)), "PSG result differs: " & key
-        Check SameFieldValue(old(key), sharedResult(key)), "Shared PSG result differs: " & key
+    For Each key In fresh.Keys
+        Check SameFieldValue(fresh(key), sharedResult(key)), "Shared PSG result differs: " & key
     Next
     text = UXGroupCalculationText(g, rows)
-    Check text = LegacyUXGroupCalculationText(g), "Shared context differs"
+    Check Len(text) > 0, "Current calculation context is empty"
     Check rows.EOF, "Shared input cursor moved"
     rows.Close
     Check DCount("*", "ReportRevision") = revisions, "Calculation wrote revisions"
@@ -74,8 +72,7 @@ Public Function TestGroupReads() As String
     Compare g
     rev = CurrentRevision(id)
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & rev & " AND FieldKey='Trait39'", dbFailOnError
-    Check AverageError(g, True) = vbObjectError + 4007, "Missing-field fixture not rejected"
-    Check AverageError(g, False) = AverageError(g, True), "Missing-field failure changed"
+    Check AverageError(g) = vbObjectError + 4007, "Missing-field fixture not rejected"
     CurrentDb.Execute "INSERT INTO RevisionValue (RevisionID,FieldKey,ValueText,IsNullValue) VALUES (" & rev & ",'Trait39','3.0',False)", dbFailOnError
     Compare g
     DoCmd.OpenForm "frmMajorWorkbench": Set f = Forms!frmMajorWorkbench
@@ -84,8 +81,8 @@ Public Function TestGroupReads() As String
     Check f!uxSeniorCaption.Caption = UXGroupSeniorCaption(g), "Reused footer PSG differs"
     Check RSOpenGroupCalculator(g), "Calculator open failed"
     Check RSShowGroupCalculation(), "Shared calculator refresh failed"
-    Check Forms!frmUXGroupRSCA!txtCalculationContext = LegacyUXGroupCalculationText(g), "Displayed context differs"
-    TestGroupReads = "PASS: " & checks & " group calculation equivalence, sharedResult cursor, history and UI checks": Exit Function
+    Check Forms!frmUXGroupRSCA!txtCalculationContext = UXGroupCalculationText(g), "Displayed context differs"
+    TestGroupReads = "PASS: " & checks & " current group calculation, sharedResult cursor, history and UI checks": Exit Function
 Failed:
     TestGroupReads = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function

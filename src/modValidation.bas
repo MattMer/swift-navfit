@@ -77,7 +77,8 @@ End Function
 Public Function RunRulePack(ByVal reportID As Long, ByVal packID As Long) As Long
     Dim p As DAO.Recordset, d As DAO.Recordset, r As DAO.Recordset, f As DAO.Recordset, fields As Object, id As Long, revision As Long, state As String, value As Variant
     Dim w As DAO.Workspace, failure As Long, message As String
-    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = "1610.10H CH-2 / shared-readiness-r110" Then RunRulePack = RunSharedReadiness(reportID, packID): Exit Function
+    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = SHARED_READINESS_VERSION Then RunRulePack = RunSharedReadiness(reportID, packID): Exit Function
+    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = "1610.10H CH-2 / shared-readiness-r110" Then Err.Raise vbObjectError + 8403, , "Historical r110 readiness results are preserved. Select the current pack for a new run; the r110 engine is not reproduced by this build."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     revision = CurrentRevision(reportID): Set fields = SavedFields(reportID)

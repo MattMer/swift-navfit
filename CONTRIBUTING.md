@@ -1,93 +1,80 @@
 # Contributing to Swift NAVFIT
 
-Start with README.md, planning/ROADMAP.md and the current usage guides. planning/BUILD_STATUS.md retains the development and verification history; older sections describe superseded builds.
+Start with [PROJECT_STATE.md](PROJECT_STATE.md) for current architecture and
+support, [AGENTS.md](AGENTS.md) for task/data/release constraints, and
+[Development_Workflow.md](docs/Development_Workflow.md) for environment and commands.
+[BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md) owns generator dependencies.
+Historical release notes are evidence, not additional daily task requirements.
 
-## Development environment
+## Working on a change
 
-Use Windows with desktop Microsoft Access installed. Current verification uses Access 16.0, build 20430, through Access COM and DAO. Free Access Runtime is not a supported target; x86 has not been verified. GitHub-hosted runners do not have the required Access installation, so Access integration tests run locally.
+Declare behavior, expected file scope, targeted checks and exclusions before
+implementation. Edit tracked source/catalogues/generators; use disposable native
+copies for diagnosis and bring useful edits back into source. Keep unrelated edits.
+Do not merge binary databases as source or introduce another assembly path.
 
-The editable source of truth is src/, scripts/build-manifest.json and its generator scripts. See planning/BUILD_PIPELINE.md for build ownership, ordering, input fingerprints and final verification. Do not merge binary Access databases as source. Keep test fixtures synthetic and local. TEST_DB.accdb and NAVFIT_BLANK.accdb are intentionally excluded from the repository, along with supplied Navy reference PDFs, the NAVFIT98A application bundle and third-party converter files. Arrange those fixtures with the maintainer when working on import compatibility. Missing fixtures are not a passing compatibility test.
+Use the standard development command and separate release command documented in
+the workflow guide. Select checks below for the actual change; this table is not
+an instruction to run all suites. Current native tests operate on disposable
+copies. Missing external fixtures are an unverified case, not a passing test.
 
-## Build and verify
+## Change-specific checks
 
-Run from the repository root in PowerShell. Use a fresh output name; the builder refuses overwrites:
+All scripts below live in [scripts/](scripts/). Native tests generally take
+`-BuildPath <fresh build>`; inspect parameters before running.
 
-```powershell
-powershell -NoProfile -File scripts/test-build-plan.ps1
-powershell -NoProfile -File scripts/test-vba-source-normalization.ps1
-powershell -NoProfile -File scripts/build.ps1 -OutputPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-build-cleanup.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/smoke-test.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-context-help.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-ux-organization.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-compat-pages.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-ux-workflows.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/build-ux-admin-demo.ps1 -TemplatePath output/Swift_NAVFIT_review.accdb -OutputPath output/Swift_NAVFIT_demo_review.accdb
-powershell -NoProfile -File scripts/test-ux-demo.ps1 -BuildPath output/Swift_NAVFIT_demo_review.accdb
-powershell -NoProfile -File scripts/test-report-tools.ps1 -BuildPath output/Swift_NAVFIT_demo_review.accdb
-powershell -NoProfile -File scripts/test-ux-my-work.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-trait-catalogue.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-swift-data-import.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/test-workspace-upgrade.ps1 -TemplatePath output/Swift_NAVFIT_review.accdb -SourceWorkspacePath output/Swift_NAVFIT_demo_review.accdb
-powershell -NoProfile -File scripts/test-report-message-import.ps1 -BlankPath output/Swift_NAVFIT_review.accdb -DemoPath output/Swift_NAVFIT_demo_review.accdb
-powershell -NoProfile -File scripts/test-engine-verification.ps1 -BuildPath output/Swift_NAVFIT_review.accdb -SourcePath output/Swift_NAVFIT_demo_review.accdb
-```
+| Changed behavior | Focused checks / source contract |
+| --- | --- |
+| Build graph/source import | test-build-plan.ps1; test-vba-source-normalization.ps1; final installed-source/binding verification |
+| Retired routes/folders | test-build-cleanup.ps1; retain folder batch history and undo |
+| Report navigation, pending values and lifecycle | test-ux-workflows.ps1; test-compat-pages.ps1; real Unload, failed saves, recovery and stale previews |
+| Startup contributor attribution | test-contributor-startup.ps1 |
+| Conversations/report tools | test-report-tools.ps1; test-report-message-import.ps1 for transfer; no resolve/reopen requirement |
+| My Work/help | test-ux-my-work.ps1; test-context-help.ps1 |
+| Directory merging/history | test-directory-merge.ps1; applicable directory transfer/release checks |
+| Traits | test-traits.ps1 for persistence, rollback, legacy restore and fresh-session recovery; test-trait-catalogue.ps1 for exact text/source version/hash; fixed-page/report-tools checks cover current UI |
+| Service/counseling/readiness fields | test-service-details.ps1; src/service-reference.json suggestions require source fidelity, not policy-rule claims |
+| Assignment/retention/member statement | test-decision-details.ps1; persistence, raw recovery and native bounds |
+| Report people | test-report-people.ps1; all 13 fields, revisions, restore, rollback and fresh-process recovery |
+| Structured names | test-party-names.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |
+| Viewing area/identity | test-ux-responsive-identity.ps1; control geometry, active field/caret; not physical DPI acceptance |
+| Schema/import engine | test-swift-data-import.ps1, test-workspace-upgrade.ps1, test-engine-verification.ps1 as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
+| Provenance viewer | test-provenance.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
+| NAVFIT/PDF exchange | Applicable adapter/group export/return/local-PDF suites and authorized synthetic/reference fixtures |
 
-The older focused field/provenance harnesses below retain historical fixtures and can include superseded UI or snapshot-count assumptions. They are not current release acceptance gates. For historical provenance investigation with the authorized synthetic TEST_DB.accdb at the repository root:
+The trait suite was restored and modernized: it preserves current service,
+rollback and recovery checks without retired checklist UI or a duplicated
+catalogue loop. Current report-tools/narrative/cleanup harnesses cover long
+messages, snippet pending/save behavior, failed folder batches and journal state.
+The standalone review-comment suite, historical foundations runner and old tools
+bundle are held in [PROPOSED_PURGE](PROPOSED_PURGE/README.md). Their retired UI,
+resolve/reopen and source-fixture assumptions are not current acceptance gates;
+the originals remain available as evidence. Current adapter/engine suites retain
+native import-capture coverage; this consolidation does not claim every legacy
+API/fixture assertion was rerun. The provenance viewer owns a synthetic fixture.
+Legacy benchmark fixtures may still be active test inputs; trace callers before removal.
+Normal persistence fixtures may disable Unload in their disposable session for
+abrupt-close assertions; lifecycle tests must exercise actual user exits.
 
-```powershell
-powershell -NoProfile -File scripts/test-provenance.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
-```
+For schema changes, assess persistent-data impact explicitly and update build DDL,
+version constants, metadata, migration and relevant table inventories together.
+Never test against the only copy of a workspace. Historical import support and
+the r128 old-output retest waiver are distinguished in PROJECT_STATE.md; do not
+silently narrow compatibility or recreate deleted fixtures.
 
-That last script runs the workflow suite before the provenance suite. Other focused scripts cover narratives, revision comparison, recovery and import compatibility. Run checks appropriate to the change. Test scripts use disposable copies and may enable VBA for those copies; run only trusted source. Keep human workspaces closed during automation.
+## Review and delivery
 
-For schema changes, update the build DDL, SCHEMA_VERSION, src/modMigration.bas and the upgrade script's table inventory. Verify populated old-to-new and new-to-new migrations with every original row/field compared, source hashes unchanged and successful reopen. Never test upgrades against the sole copy of a real workspace.
+Review text diffs and relevant check results. Use a focused branch/PR when requested
+by the collaboration workflow; source publication, binary delivery and formal
+GitHub releases are separate actions. An artifact receipt is not physical acceptance.
+Follow AGENTS.md for preservation, Blank/Demo inventories, Drive verification
+and normal Access cleanup.
 
-## Collaboration workflow
+Report defects with app/schema version, Access build/bitness, sanitized steps and
+expected/actual behavior. Never attach personnel data, SSNs, populated user
+databases, credentials or sensitive report text to issues.
 
-For native report lifecycle, bulk-preview or review-navigation changes, run
-`scripts/test-ux-workflows.ps1 -BuildPath <fresh blank build>`. The harness uses a
-scratch copy and scripted dialog choices to exercise the actual Unload event,
-failed saves, preview invalidation and report-specific review context. Normal
-non-lifecycle persistence fixtures deliberately disable Unload only in their
-disposable editor session to retain their original abrupt-close semantics and
-checkpoint assertions. The workflow harness exercises real user exits.
-
-Create an issue for a feature or defect, then a short feature branch. Submit a pull request describing the behavior, scope and validation. Keep one feature per pull request where practical. Review text source changes; share a fresh blank build separately if visual review is needed.
-
-Report defects with app/schema version, Access build/bitness, steps, expected/actual behavior and sanitized screenshots. Do not attach personnel data, SSNs, populated databases, credentials or sensitive report text to issues.
-
-Preserve committed revisions and audit history. Official narrative, independent report notes/replies and review assignments have distinct purposes. Historical review-comment and integrated-tools harnesses include superseded standalone UI and are not current acceptance suites; current report-tools tests cover the unified note system, and build-cleanup tests cover retained folder batch history and undo. Draft saves can be incomplete. Internal acceptance is not official approval. Do not claim Navy validation or NAVFIT compatibility without the specific verified evidence.
-
-## Releases
-
-Publish only a verified Blank distribution and a clearly marked synthetic Demo. Check all Blank user-data tables are empty and all Demo data is synthetic; record artifact hashes and verification evidence in output manifests. Preserve earlier files and publish the current pair to the configured Drive folder after migration gates pass. Never upload a human working workspace or an unverified candidate as a release. GitHub source publication and a formal GitHub release are separate actions. Keep future source changes in Git even when a release binary is available.
-
-No open-source license has been selected. The repository is private; coordinate permitted use and redistribution with the owner.
-
-The curated src/trait-catalogue.json is embedded by scripts/write-trait-catalogue.ps1. Preserve its source version/hash and exact text; test-trait-catalogue.ps1 verifies 169 catalogue values. The older combined TraitsHarness has historical snapshot-count and standalone-checklist expectations; current trait behavior is covered by fixed-page, report-tools and workflow suites. Descriptions are reference guidance; they do not implement Navy validation.
-
-## Counseling, readiness and billet checks
-
-Run scripts/test-service-details.ps1 with -BuildPath pointing to the freshly built database. src/service-reference.json contains curated suggestions from the local NAVFIT reference database; changes require source attribution and reference fidelity checks. Suggestions are not policy rules.
-
-## Assignment recommendations, retention and member statement
-
-Run scripts/test-decision-details.ps1 with -BuildPath pointing to the fresh database. It checks behavioral integration, raw recovery in a new Access process, the new editor button for overlap and both forms for control bounds. Each source checkbox preserves Yes, No or blank independently. Applicable Navy rules and signatures require separate implementation.
-
-## Reporting senior identifiers, contact and raters
-
-Run scripts/test-report-people.ps1 with -BuildPath pointing to the fresh database. It checks all 13 fields through persistence, history, duplication/restore, rollback and raw recovery in a new Access process, plus button overlap and form bounds. Source capacities are documented in planning/REPORT_PEOPLE_GUIDE.md; signatures, authority, policy and external date conversion require separate work.
-
-## Structured member, senior and counselor names
-
-Run scripts/test-party-names.ps1 with -BuildPath pointing to the fresh database. It verifies ten name parts, preservation of full names, punctuation/accents/case, rollback, raw recovery in a new Access process, button overlap and form bounds. Capacities and source fields are documented in planning/STRUCTURED_NAMES_GUIDE.md. Do not silently split, normalize or compose names.
-
-Responsive layout and report identity regressions run against a scratch copy:
-
-```powershell
-powershell.exe -NoProfile -File scripts/test-ux-responsive-identity.ps1 -BuildPath build/your-template.accdb
-```
-
-This verifies native control geometry and active-field/caret retention, not
-physical DPI or screen-reader acceptance. The preview builder includes this gate.
+Local approval is not an official signature. Draft saves may be incomplete.
+Do not claim Navy validation, interchange coverage or printing beyond verified
+evidence. The private repository has no selected open-source license; coordinate
+use and redistribution with its owner.

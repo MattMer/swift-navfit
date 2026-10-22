@@ -1,8 +1,9 @@
 # Reporting senior details
 
-> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
-> [current state](CURRENT_STATE.md). This guide retains service details and
-> earlier verification history; legacy screen instructions may differ.
+> Historical service/verification reference. Current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md); current architecture and
+> decisions are in [PROJECT_STATE.md](../PROJECT_STATE.md). Retained field/source
+> details remain evidence, but old screens and test commands may be superseded.
 
 Swift NAVFIT 0.14.0 adds Reporting senior details near the top of the editor for EVAL, CHIEFEVAL and FITREP. The panel contains name (18 characters), grade (5), designator (5), title (14) and UIC (5). These capacities match the inspected NAVFIT Reports fields ReportingSenior, RSGrade, RSDesig, RSTitle and RSUIC. Name parts, identifiers, address, phone and reporting-authority validation remain pending.
 

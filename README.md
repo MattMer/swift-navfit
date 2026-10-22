@@ -84,14 +84,14 @@ Optional source links, such as NavyWriter, open an external website only when se
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-Current verified r127 files: [Blank](https://drive.google.com/file/d/1OQu61JnjRKjZJ5zw4DeKzLz_GLC4eCNO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/1-Yh1_2Z49WBOhzd5Oz_0Ul7XJWo22YgA/view?usp=drivesdk). This release adds reviewed duplicate Sailor merging with guarded undo. PDF extraction continues to run locally without Acrobat. See [duplicate-review procedure](docs/Duplicate_Sailor_Review.md), [r127 verification](planning/DIRECTORY_MERGE_R127_2026-10-21.md), [local PDF extraction](planning/LOCAL_PDF_R126_2026-10-20.md) and [large-import verification](planning/ENGINE_IMPORT_R124_2026-10-20.md) for evidence and limitations.
+Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2ZbDG04K-qAddWQz7bEM1kjO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/10NEFdhRhJQ9xC_baxNifrRgs4SR4noUg/view?usp=drivesdk), app 0.27.1-dev / schema 27. Every initialized launch now requires an explicit contributor choice or add-and-continue. See the [startup procedure](docs/Contributor_Startup.md) and [r128 verification scope](planning/CONTRIBUTOR_STARTUP_R128_2026-10-21.md). Current-schema transfer/rollback checks pass; historical-output retesting was waived by the user for this delivery. Reviewed duplicate merging and local PDF extraction remain available.
 
 1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
-2. Keep a working copy and open it in desktop Access. Complete command and contributor setup.
+2. Keep a working copy and open it in desktop Access. Complete command and contributor setup. Current source asks you to [choose your contributor at every launch](docs/Contributor_Startup.md).
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** The repository currently develops `0.26.1-dev` / schema 26. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
+**Source and downloads can differ.** The repository currently develops `0.27.1-dev` / schema 27. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
 
 The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 
@@ -105,21 +105,20 @@ The latest local demo adds a group with **zero member-report findings** and anot
 
 ## Build and contribute
 
-Editable source lives in `src/`; Access builders and focused checks live in `scripts/` and `tests/`. Databases, supplied Navy files, and generated scratch builds stay out of Git. Build into a fresh filename on Windows with desktop Access:
+Editable source lives in `src/`; Access builders and focused checks live in `scripts/` and `tests/`. Databases, supplied Navy files, and generated scratch builds stay out of Git. On Windows with desktop Access, run the standard fresh build and focused tests (also VS Code's default Ctrl+Shift+B task):
 
 ```powershell
-powershell -NoProfile -File scripts/build.ps1 -OutputPath output/Swift_NAVFIT_review.accdb
-powershell -NoProfile -File scripts/smoke-test.ps1 -BuildPath output/Swift_NAVFIT_review.accdb
+powershell.exe -NoProfile -File scripts/develop.ps1
 ```
 
-See [contributing](CONTRIBUTING.md) for prerequisites and checks. New releases must pass the retained-schema data-transfer/rollback checks and blank/demo inventory gates. Physical scaling, accessibility, and final printed fit require their own acceptance; automated checks do not establish them.
+Start with [current architecture and support boundaries](PROJECT_STATE.md), then [development in VS Code](docs/Development_Workflow.md) for commands and [contributing](CONTRIBUTING.md) for change-specific checks. Release preservation requirements remain in [AGENTS.md](AGENTS.md); the r128 historical-test waiver and unresolved future test policy are recorded in PROJECT_STATE.md. Physical scaling, accessibility, and final printed fit require separate acceptance.
 
 ## Guides and project status
 
 - [Swift NAVFIT User Guide - PDF](docs/Swift_NAVFIT_User_Guide.pdf) and [editable online edition](docs/Swift_NAVFIT_User_Guide.md)
 
 - [Recent development and verification](planning/RECENT_DEVELOPMENT.md)
-- [Current state](planning/CURRENT_STATE.md) and [roadmap](planning/ROADMAP.md)
+- [Current project state](PROJECT_STATE.md), [release history](planning/CURRENT_STATE.md), and [priority backlog](planning/PRIORITY_BACKLOG.md)
 - [Summary groups, review routes, and workflow foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md)
 - [Workspace guide](planning/UX_WORKSPACE_GUIDE.md)
 - [Review assignments and My Work](planning/REVIEW_ROUTING_GUIDE.md)

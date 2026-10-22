@@ -19,10 +19,44 @@ Private Function MissingReceiptRejected() As Boolean
 Rejected:
     MissingReceiptRejected = True
 End Function
+Private Function SeedViewerFixture() As Long
+    Dim db As DAO.Database, table As DAO.TableDef, r As DAO.Recordset
+    Dim reportID As Long, receiptIDs(1 To 2) As Long, i As Long
+    Set db = CurrentDb
+    For Each table In db.TableDefs
+        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+            If DCount("*", "[" & table.Name & "]") > 0 Then Err.Raise vbObjectError + 1651, , "Provenance viewer fixture requires a blank test copy."
+        End If
+    Next
+    ConfigureWorkspace "SYNTHETIC PROVENANCE VIEWER", "Synthetic Reviewer"
+    reportID = CommitDraft(0, "EVAL", "Synthetic provenance", "SYNTHETIC MEMBER", Null, Null, "", "Seed viewer fixture")
+    Set r = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
+    For i = 1 To 2
+        r.AddNew: r!ReceiptGuid = NewIdentity(): r!SourceHash = String$(64, Chr$(64 + i))
+        r!SourcePath = "synthetic://viewer-fixture/" & i: r!ExternalReportID = i
+        r!ReportID = reportID: r!AuthorProfileID = MajorAuthor(): r!ImportedAt = Now()
+        r!AdapterVersion = "synthetic-viewer-test": r!ValueEncoding = "Synthetic literal text"
+        r!AppliedRevisionID = CurrentRevision(reportID)
+        r.Update: r.Bookmark = r.LastModified: receiptIDs(i) = r!ImportReceiptID
+    Next
+    r.Close
+    Set r = db.OpenRecordset("ImportRawValue", dbOpenDynaset)
+    For i = 1 To 2
+        r.AddNew: r!ImportReceiptID = receiptIDs(1): r!SourceTable = "Reports": r!SourceRow = 0
+        r!FieldOrdinal = i: r!FieldKey = "SyntheticRowZero" & i: r!DAOType = 10
+        r!RawValue = "Synthetic value " & i: r!IsNullValue = False: r.Update
+    Next
+    ' An unrelated receipt must never leak into the selected receipt's list.
+    r.AddNew: r!ImportReceiptID = receiptIDs(2): r!SourceTable = "Reports": r!SourceRow = 0
+    r!FieldOrdinal = 1: r!FieldKey = "UnrelatedReceipt": r!DAOType = 10
+    r!RawValue = "Not part of the selected receipt": r!IsNullValue = False: r.Update
+    r.Close
+    SeedViewerFixture = receiptIDs(1)
+End Function
 Public Function TestProvenance() As String
     Dim receipt As Long, r As DAO.Recordset, id As Long, before As Long, revisions As Long, count As Long, text As String
     On Error GoTo Failed
-    receipt = DMin("ImportReceiptID", "ImportReceipt")
+    receipt = SeedViewerFixture()
     Set r = CurrentDb.OpenRecordset("ImportRawValue", dbOpenDynaset)
     For count = 1 To 3
         r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 999
@@ -54,7 +88,7 @@ Public Function TestProvenance() As String
     Next
     Forms!frmProvenance!txtRow = 0: Forms!frmProvenance!txtSearch = ""
     Check LoadProvenanceFields(), "Zero row rejected"
-    Check Forms!frmProvenance!lstFields.ListCount = 128, "Zero row missing"
+    Check Forms!frmProvenance!lstFields.ListCount = 2, "Synthetic row-zero fields missing or another receipt leaked"
     Forms!frmProvenance!txtRow = -1: Check InvalidRowRejected(), "Negative row accepted"
     Forms!frmProvenance!txtRow = "1 OR 1=1": Check InvalidRowRejected(), "Invalid row accepted"
     Forms!frmProvenance!txtRow = 0.5: Check InvalidRowRejected(), "Fractional row accepted"

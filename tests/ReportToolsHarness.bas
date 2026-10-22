@@ -5,8 +5,16 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  If Not ok Then Err.Raise 5, , message
  count = count + 1
 End Sub
+Private Function MessageRejected(ByVal report As Long, ByVal body As String, Optional ByVal parent As Long = 0) As Boolean
+ On Error GoTo Rejected
+ Call AddReportMessage(report, body, parent)
+ Exit Function
+Rejected:
+ MessageRejected = (Err.Number = 5)
+End Function
 Public Function TestReportTools() As String
  Dim id As Long, rev As Long, root As Long, reply As Long, legacy As Long, before As Long, f As Access.Form, p As Access.Form, v As Variant, guid As String
+ Dim longBody As String, message As Long, other As Long, archived As Long, beforeMessages As Long
  On Error GoTo Failed
  stage = "legacy preservation"
  id = DLookup("ReportID", "Report", "WorkflowState='Approved'"): rev = CurrentRevision(id)
@@ -20,6 +28,20 @@ Public Function TestReportTools() As String
  Check DCount("*", "ReviewCommentEvent") = before, "Historical events changed"
  Check MigrateReportMessages() = 0, "Conversion duplicated legacy records"
  Check CurrentRevision(id) = rev, "Communication changed report revision"
+ stage = "current message integrity"
+ longBody = String$(9990, "Q") & vbCrLf & "Case'End"
+ message = AddReportMessage(id, longBody)
+ Check StrComp(DLookup("MessageBody", "ReportMessage", "MessageID=" & message), longBody, vbBinaryCompare) = 0, "Long message text changed"
+ Check DLookup("AuthorProfileID", "ReportMessage", "MessageID=" & message) = MajorAuthor(), "Message contributor wrong"
+ other = DLookup("ReportID", "Report", "ReportID<>" & id & " AND IsArchived=False")
+ archived = DLookup("ReportID", "Report", "IsArchived=True")
+ beforeMessages = DCount("*", "ReportMessage")
+ Check MessageRejected(id, vbCrLf & vbTab & " "), "Blank message accepted"
+ Check MessageRejected(id, String$(10001, "Q")), "Over-limit message accepted"
+ Check MessageRejected(other, "Cross-report reply", root), "Cross-report parent accepted"
+ Check MessageRejected(archived, "Archived message"), "Archived message accepted"
+ Check DCount("*", "ReportMessage") = beforeMessages, "Rejected message wrote a row"
+ Check CurrentRevision(id) = rev, "Message integrity checks changed saved revision"
  stage = "embedded notes"
  Check UXOpenReportTool(id, "Notes", 0, 0, 0, root), "Open notes failed"
  Set f = Forms!frmEditor: Set p = UXToolsForm()

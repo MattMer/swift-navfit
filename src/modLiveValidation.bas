@@ -51,19 +51,18 @@ Public Function ValidationPolicyReference(ByVal code As String) As String
     ValidationPolicyReference = "BUPERSINST 1610.10H CH-2 (26 May 2026 compilation)" & vbCrLf & "Enclosure (2), printed page " & page & "; " & locator & " (PDF page " & pdfPage & ")." & vbCrLf & "Excerpt: " & Chr$(34) & excerpt & Chr$(34) & vbCrLf & "Source SHA-256: " & NAVY_RULE_SOURCE_HASH
 End Function
 Public Sub VAdd(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal key As String, ByVal severity As String, ByVal code As String, ByVal message As String)
-    Dim item As Object
+    Dim item As Object, applicability As String
     If severity = "Policy issue" Then
-        If Not IsDate(VText(f, "PeriodEnd")) Then
-            severity = "Needs review": message = message & " Confirm the ending date and applicable instruction."
-        ElseIf CDate(f("PeriodEnd")) < #5/26/2026# Or CDate(f("PeriodEnd")) > Date Then
-            severity = "Needs review": message = message & " Verify the applicable instruction for this report date; this check uses the May 2026 compilation."
-        End If
+        applicability = ValidationApplicabilityReason(f)
+        If applicability <> "" Then severity = "Needs review": message = message & " " & applicability
     End If
     Set item = CreateObject("Scripting.Dictionary")
     item.Add "ReportID", id: item.Add "Key", key: item.Add "Code", code: item.Add "Severity", severity
     item.Add "Member", UXIdentity(VText(f, "OfficialName"), VText(f, "MemberName"))
     item.Add "Label", UXFieldCaption(key, VText(f, "FormKind"))
     item.Add "Message", message: item.Add "Reference", ValidationPolicyReference(code): findings.Add item
+    If code = "VR-PERIODIC" Then item("Reference") = PeriodicPolicyReference(f)
+    If code = "VR-APPLICABILITY" Then item("Reference") = "Policy coverage, not a report defect. " & PeriodicPolicyReference(f)
 End Sub
 Public Function IsValidPolicyUIC(ByVal value As String) As Boolean
     If Len(value) <> 5 Then Exit Function
@@ -125,6 +124,8 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
     Dim findings As New Collection, key As Variant, text As String, options As String, allowed As Boolean, opt As Variant
     Dim count As Long, recommendation As String, observed As Boolean, graded As Long, kind As String, code As String, twos As Long, title As String
     kind = VText(f, "FormKind")
+    text = ValidationApplicabilityReason(f)
+    If text <> "" Then VAdd findings, f, reportID, "PeriodEnd", "Needs review", "VR-APPLICABILITY", text
     For Each key In DraftFieldKeys()
         If Not UXFieldLegacy(CStr(key)) And UXFieldControl(CStr(key)) <> "" And UXFieldApplies(CStr(key), kind) Then
             text = VText(f, CStr(key))

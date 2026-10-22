@@ -4,7 +4,7 @@ $scratch=Join-Path $root ('build/tests/group-read-scale-'+[guid]::NewGuid()+'.ac
 $app=New-Object -ComObject Access.Application
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
- foreach($m in @('GroupReadLegacy','GroupReadScaleHarness')){$app.LoadFromText(5,$m,(Join-Path $root ('tests/'+$m+'.bas')))}
+ $app.LoadFromText(5,'GroupReadScaleHarness',(Join-Path $root 'tests/GroupReadScaleHarness.bas'))
  $app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestGroupReadScale()');if($result -notlike 'PASS:*'){throw $result}
  $result.Substring(7)|Set-Content (Join-Path $root 'build/batch3-group-scale.csv') -Encoding utf8

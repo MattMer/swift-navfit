@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BlankPath,[Parameter(Mandatory=$true)][string]$DemoPath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'test-contributor-context.ps1')
 $folder=Join-Path $root ('build/tests/message-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $folder)
 $source=Join-Path $folder 'source.accdb';$target=Join-Path $folder 'target.accdb';Copy-Item $DemoPath $source;Copy-Item $BlankPath $target
 $e=New-Object -ComObject DAO.DBEngine.120;$d=$e.OpenDatabase($source)
@@ -18,6 +19,7 @@ try {
  if($app.Eval('DLookup("ParentMessageID","ReportMessage","MessageID=800")') -ne 900){throw 'Reply relationship lost'}
  $expr='DLookup("ParentMessageID","ReportNoteDraft","DraftGuid=' + [char]39 + $draftGuid + [char]39 + '")';if($app.Eval($expr) -ne 900){throw 'Draft relationship lost'}
  if($app.Eval('MigrateReportMessages()') -ne 0){throw 'Idempotent conversion duplicated messages'}
+ SelectSyntheticContributor $app
  $next=$app.Eval('AddReportMessage('+$id+',"Next message identity")');if($next -le 900){throw 'Message AutoNumber not advanced'}
  $app.CloseCurrentDatabase()
 } finally {$app.Quit(2)}

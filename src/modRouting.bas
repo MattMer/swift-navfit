@@ -13,8 +13,7 @@ Private Function RouteValue(ByVal db As DAO.Database, ByVal sql As String) As Va
     r.Close: Set r = Nothing
 End Function
 Private Function RouteProfile() As Long
-    RouteProfile = Nz(RouteScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
-    If RouteProfile = 0 Then Err.Raise vbObjectError + 1800, , "Configure a contributor first."
+    RouteProfile = ActiveContributorID()
 End Function
 Public Function AddContributor(ByVal name As String) As Long
     Dim r As DAO.Recordset
@@ -26,11 +25,17 @@ Public Function AddContributor(ByVal name As String) As Long
     r.AddNew: r!ProfileGuid = NewIdentity(): r!DisplayName = name: r.Update: r.Bookmark = r.LastModified
     AddContributor = r!UserProfileID: r.Close: Set r = Nothing
 End Function
-Public Function SwitchContributor(ByVal profileID As Long) As Boolean
+Public Sub RequireContributorSwitch()
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4815, , "Retry or discard pending comparison cells before switching contributors."
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1803, , "Close the draft editor and review comments before switching contributors."
+    If DCount("*", "Workspace", "WorkspaceID=1") <> 1 Then Err.Raise 5, , "Complete workspace setup first."
+End Sub
+Public Function SwitchContributor(ByVal profileID As Long) As Boolean
+    RequireContributorSwitch
     If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, , "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError
+    BindActiveContributor profileID
+    UXLoadContext
     SwitchContributor = True
 End Function
 Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal assigneeID As Long, ByVal due As Variant, ByVal instructions As String) As Long

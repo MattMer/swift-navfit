@@ -129,7 +129,7 @@ NextCheck:
     If showProgress Then Application.Run "WorkspaceImportProgress", "Field verification finished in " & Format$(MigrationSeconds(verifyStarted), "0.00") & " seconds."
     If showProgress Then Application.Run "WorkspaceImportProgress", "Finalizing notes and member directory compatibility..."
     If targetVersion >= 22 Then Application.Eval "MigrateLegacyReportNotes()"
-    If targetVersion >= 23 And ver < 23 Then Call SyncDirectoryFromReports()
+    If targetVersion >= 23 And ver < 23 Then Call MigrateDirectoryCompatibility()
     If targetVersion >= 26 Then Application.Eval "MigrateReportMessages()"
     If Len(expectedHash) > 0 Then
         If showProgress Then Application.Run "WorkspaceImportProgress", "All copied fields verified. Checking source is unchanged..."
@@ -138,6 +138,8 @@ NextCheck:
     w.CommitTrans: trans = False
     RemoveMigrationQueries temporaryQuery
     s.Close: reader.Close
+    ResetActiveContributor
+    UXLoadContext
     MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to " & targetVersion
     Exit Function
 Failed:

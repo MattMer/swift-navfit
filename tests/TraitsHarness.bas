@@ -32,23 +32,19 @@ Private Function CorruptRejected(ByVal id As Long, ByVal revision As Long) As Bo
 Failed:
     CorruptRejected = InStr(Err.Description, "incomplete") > 0
 End Function
-Private Function HasFinding(ByVal key As String) As Boolean
-    Dim i As Long
-    For i = 0 To Forms!frmChecklist!lstFindings.ListCount - 1
-        If Forms!frmChecklist!lstFindings.Column(0, i) = key Then HasFinding = True
-    Next
-End Function
 Public Function TestTraits() As String
     Dim kind As Variant, id As Long, first As Long, second As Long, copy As Long, values As Variant, bad As Variant
     Dim i As Long, before As Long, task As Long, recovery As Long, r As DAO.Recordset
     On Error GoTo Failed
+    If DCount("*", "Workspace") > 0 Then Err.Raise vbObjectError + 2051, , "Trait fixture requires a blank test copy."
     Call ConfigureWorkspace("SYNTHETIC TRAITS", "Synthetic Reviewer")
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Array("NOB", "1.0", "2.0", "3.0", "4.0", "5.0", Null)
         id = SaveTraits(0, CStr(kind), values)
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "Trait33") = "NOB" And IsNull(Stored(id, "Trait39")), "NOB and blank collapsed"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Trait snapshot incomplete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = SavedFields(id).Count, "Trait snapshot incomplete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')") = 7, "Seven trait snapshot keys missing"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Notes", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "Trait34") = "1.0", "Omitted traits changed report"
         copy = DuplicateDraft(id)
@@ -66,16 +62,7 @@ Public Function TestTraits() As String
         Call RestoreDraft(id, first): Check Stored(id, "Trait34") = "1.0", "Restore lost traits"
         values(6) = "": Call SaveTraits(id, CStr(kind), values)
         Check Not IsNull(Stored(id, "Trait39")) And Len(Stored(id, "Trait39")) = 0, "Empty trait changed to null"
-        DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
-        Check Forms!frmEditor!lblTrait33.Caption = "33. " & Replace(Replace(CatalogueTraitTitle(CStr(kind), 33), vbCr, ""), vbLf, " "), "Wrong form trait title"
-        Forms!frmEditor!cboTrait39 = "4.0": Check ShowTraitGuidance(39), "Guidance failed"
-        Check InStr(Forms!frmEditor!txtTraitGuidance, CatalogueTraitDescription(CStr(kind), 39, "4.0")) > 0, "Mark description absent"
-        Check Forms!frmEditor!txtTraitGuidance.Locked, "Reference guidance editable"
-        Check SaveEditor(), "Editor trait save failed"
-        Check Stored(id, "Trait39") = "4.0", "Editor trait save lost value"
-        Check OpenDraftChecklist(id), "Trait checklist failed"
-        Check HasFinding("TRAIT_NOB") And Not HasFinding("Trait39"), "NOB review or populated mark incorrect"
-        Call CloseDraftChecklist(): Call FixtureCloseEditor()
+        ' Current fixed-page/guidance UI is covered by CompatPages/ReportTools.
     Next
     before = DCount("*", "ReportRevision")
     For Each bad In Array("4.5", "0.0", "nob", "5", "6.0", vbTab, 4)

@@ -143,6 +143,9 @@ End Function
 ' Leave contributor/report editors safely before opening the requested workspace.
 Public Function UXNavigate(ByVal target As String) As Boolean
     On Error GoTo Failed
+    If Not HasActiveContributor() Then
+        UXNavigate = ShowContributorStartup(): Exit Function
+    End If
     If target = "frmHelp" Or target = "frmUXHelp" Then
         DoCmd.OpenForm "frmUXHelp"
         UXNavigate = True: Exit Function
@@ -662,7 +665,7 @@ End Function
 ' Update workspace/contributor headers only when their text changes and resize the active workspace.
 Public Function UXLoadContext() As Boolean
     Dim f As Access.Form, active As Access.Form, context As String
-    context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace"), 0)), ""), "&", "&&")
+    context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & ActiveContributorCaption(), "&", "&&")
     For Each f In Forms
         If UXHasControl(f, "uxContext") Then
             If f!uxContext.Caption <> context Then f!uxContext.Caption = context

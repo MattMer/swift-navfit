@@ -26,17 +26,17 @@ Private Function Capture() As Collection
  rows.Close: Set Capture = result
 End Function
 Private Sub Compare(ByVal label As String, ByVal file As Integer)
- Dim expected As Collection, actual As Collection, i As Long, started As Double, oldMs As Long, newMs As Long
+ Dim actual As Collection, repeated As Collection, i As Long, started As Double, currentMs As Long, repeatMs As Long
  Dim revisions As Long, snapshots As Long
  revisions = DCount("*", "ReportRevision"): snapshots = DCount("*", "ComparisonSet")
- started = Timer: Check UXGridLoadLegacy(), "Legacy load": oldMs = CLng((Timer - started) * 1000)
- Set expected = Capture()
- started = Timer: Check UXGridLoad(), "New load": newMs = CLng((Timer - started) * 1000)
+ started = Timer: Check UXGridLoad(), "Current load": currentMs = CLng((Timer - started) * 1000)
  Set actual = Capture()
- Check expected.Count = actual.Count, label & " field count differs"
- For i = 1 To expected.Count: Check expected(i) = actual(i), label & " field differs at " & i: Next
+ started = Timer: Check UXGridLoad(), "Repeat current load": repeatMs = CLng((Timer - started) * 1000)
+ Set repeated = Capture()
+ Check actual.Count = repeated.Count, label & " field count differs on repeat"
+ For i = 1 To actual.Count: Check actual(i) = repeated(i), label & " repeated field differs at " & i: Next
  Check revisions = DCount("*", "ReportRevision") And snapshots = DCount("*", "ComparisonSet"), "Reads wrote history"
- Print #file, label & "," & oldMs & "," & newMs & "," & actual.Count
+ Print #file, label & "," & currentMs & "," & repeatMs & "," & actual.Count
 End Sub
 Public Function TestGridReads(ByVal output As String) As String
  Dim id As Long, g As Long, i As Long, m As Long, marks As Object, b As Long, prior As Long, file As Integer, meeting As Long, failure As Long, message As String
@@ -45,7 +45,7 @@ Public Function TestGridReads(ByVal output As String) As String
  Set marks = CreateObject("Scripting.Dictionary")
  For b = 33 To 39: marks.Add "Trait" & b, "4.0": Next
  g = CreateSummaryGroup("Batch grid", "EVAL", "E5")
- file = FreeFile: Open output For Output As #file: Print #file, "Case,LegacyMs,NewMs,Fields"
+ file = FreeFile: Open output For Output As #file: Print #file, "Case,CurrentMs,RepeatMs,Fields"
  For i = 1 To 100
   id = CommitDraft(0, "EVAL", "Synthetic " & i, "Member " & i, #1/1/2026#, #9/30/2026#, "", "Test", "", , Array("4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0"), Array("Observed", "Promotable"))
   m = CLng(DLookup("MemberID", "MemberReport", "ReportID=" & id))
@@ -56,7 +56,7 @@ Public Function TestGridReads(ByVal output As String) As String
    DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = g: Forms!frmMajorWorkbench!uxMode = "Members"
    Check UXOpenComparison(), "Open live"
    Compare "Live" & i, file
-   Check UXCloseComparison(), "Close live"
+   Check UXCloseComparison(False), "Close live"
    Forms!frmMajorWorkbench!uxMode = "Comparison": Check UXOpenComparison(), "Open historical"
    meeting = Forms!frmUXComparison!txtMeeting
    ProposeMeetingField meeting, id, "Trait33", "3.0"
@@ -70,8 +70,8 @@ Public Function TestGridReads(ByVal output As String) As String
     CurrentDb.Execute "INSERT INTO RevisionValue (RevisionID,FieldKey,ValueText,IsNullValue) VALUES (" & CurrentRevision(id) & ",'Trait39','4.0',False)", dbFailOnError
     Check UXGridLoad(), "Reload after failed cache failed"
    End If
-   Check UXCloseComparison(), "Close historical"
-   DoCmd.Close acForm, "frmMajorWorkbench", acSaveNo
+   Check UXCloseComparison(False), "Close historical"
+   If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.Close acForm, "frmMajorWorkbench", acSaveNo
   End If
  Next
  Close #file

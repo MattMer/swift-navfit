@@ -1,3 +1,62 @@
+# Release and verification history
+
+For current architecture and support decisions, read [PROJECT_STATE.md](../PROJECT_STATE.md).
+The dated entries below describe their release at that time; older present-tense
+statements and build limitations do not override current evidence.
+
+## 2026-10-21 - r128 startup contributor selection (C03)
+
+Current files: `output/Swift_NAVFIT_Blank_2026-10-21-r128.accdb` and
+`output/Swift_NAVFIT_Demo_2026-10-21-r128.accdb`, app 0.27.1-dev / schema 27.
+Both are uploaded to the designated Drive folder with names, sizes and parent
+membership read back. Blank user tables are empty; Demo contains 13 synthetic
+reports, five groups and 13 command members. Owned Access sessions are closed.
+
+Every initialized launch requires an existing contributor choice or explicit
+new-contributor creation. No saved name is preselected. First-time setup confirms
+its entered creator; import clears session selection and reopening uses the
+imported list. Saves, notes and review decisions require the session choice.
+New-profile creation/selection is atomic; earlier authors and pending/recovery
+ownership remain intact. Selection is attribution, not authentication.
+
+The standard source-only build completed 72 stages and verified 100 static modules
+and bindings across 67 forms. Final-file native checks passed: 61 contributor,
+264 fixed-page/buffer, 41 lifecycle plus forced-close recovery, 54 group-exit,
+16 engine exactness, startup/trust, directory/history, Demo/report-tools and
+canonical conversation/private-draft transfer. Current-schema exact transfer,
+source preservation, merge-history reopen/undo, rollback/retry and rejection
+guards pass. The user explicitly waived old-output testing for this delivery;
+older schemas and the populated schema-20 fixture were not retested. Earlier
+matrices are historical evidence. Physical acceptance remains deferred.
+
+See [implementation and scope](CONTRIBUTOR_STARTUP_R128_2026-10-21.md),
+[verification](CONTRIBUTOR_STARTUP_R128_VERIFICATION.json), and
+[startup procedure](../docs/Contributor_Startup.md). C04 remains the next critical
+feature; the user intends to simplify context/workflow requirements after C03.
+Source changes remain local. Unrelated folder/output cleanup is preserved.
+
+## 2026-10-21 - source-first VS Code development setup
+
+Access Explorer's MCP runtime is now configured in both VS Code and Codex user
+settings. A real stdio test discovered 66 tools, queried a scratch database,
+read VBA and closed Access with the source unchanged. See
+[MCP connection setup](ACCESS_MCP_SETUP_2026-10-21.md). This running chat's tool
+inventory has not hot-refreshed; server startup/new-chat discovery is separate.
+
+Application/release remains r127 / 0.27.0-dev / schema 27. VS Code now has a
+default fresh-build-and-test task, named preflight/build/test/release-check
+tasks, PowerShell/VBA editing support and documented Access Explorer use.
+`scripts/develop.ps1` and `scripts/release-check.ps1` provide standard commands
+with logs, fail-fast child processes, exact artifact/source checks and receipts.
+
+A full source-only build completed all 71 stages, compiled/reopened and verified
+99 static modules and bindings across 66 forms. The earlier r126 report-tools
+closed-object failure did not recur; no historical root cause is claimed.
+Focused native workflow/recovery checks and retained-schema transfer gates run
+against the fresh blank. See [setup and evidence](DEVELOPMENT_SETUP_2026-10-21.md).
+This is development setup, not a replacement release. C03/C04 remain next;
+physical display/accessibility/print acceptance remains deferred.
+
 ## 2026-10-21 - r127 reviewed duplicate Sailor merging
 
 Current verified files: `output/Swift_NAVFIT_Blank_2026-10-21-r127.accdb` and `output/Swift_NAVFIT_Demo_2026-10-21-r127.accdb`, app 0.27.0-dev / schema 27. Both uploaded to the designated Drive folder with name, size and parent readback verified. Blank has no user rows; Demo has 13 synthetic reports, five groups and 13 directory members. Neither distribution contains scratch merge rows. All owned Access sessions are closed.

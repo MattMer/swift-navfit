@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$TemplatePath,[Parameter(Mandatory=$true)][string]$SourcePath)
 $ErrorActionPreference='Stop'; $root=Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'test-contributor-context.ps1')
 $target=Join-Path $root ('build/tests/merge-transfer-'+[guid]::NewGuid()+'.accdb')
 $before=(Get-FileHash -LiteralPath $SourcePath).Hash
 & powershell.exe -NoProfile -File (Join-Path $root 'scripts/upgrade-workspace.ps1') -SourcePath $SourcePath -TemplatePath $TemplatePath -DestinationPath $target
@@ -7,6 +8,7 @@ if($LASTEXITCODE -ne 0){throw 'Merge-history migration failed'}
 $app=New-Object -ComObject Access.Application
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($target,$true)
+ SelectSyntheticContributor $app
  $id=[int]$app.Eval('DMax("MergeID","DirectoryMerge","MergeState=''Committed''")')
  $a=[int]$app.Eval('DLookup("FromMemberID","DirectoryMerge","MergeID='+$id+'")')
  $b=[int]$app.Eval('DLookup("ToMemberID","DirectoryMerge","MergeID='+$id+'")')

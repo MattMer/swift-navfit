@@ -3,8 +3,7 @@ Option Compare Database
 Option Explicit
 Private composingReply As Boolean
 Private Function CommentProfile() As Long
-    CommentProfile = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
-    If CommentProfile = 0 Then Err.Raise vbObjectError + 1700, , "Configure a contributor first."
+    CommentProfile = ActiveContributorID()
 End Function
 Private Sub CommentTarget(ByVal reportID As Long, ByVal revisionID As Long)
     If DCount("*", "ReportRevision", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 1701, , "Choose a saved revision belonging to this report."

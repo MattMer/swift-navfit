@@ -8,8 +8,7 @@ Public Function MajorScalar(ByVal sql As String) As Variant
     r.Close
 End Function
 Public Function MajorAuthor() As Long
-    MajorAuthor = Nz(MajorScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
-    If MajorAuthor = 0 Then Err.Raise vbObjectError + 4000, , "Configure a contributor first."
+    MajorAuthor = ActiveContributorID()
 End Function
 Public Function QuoteSQL(ByVal value As String) As String
     QuoteSQL = "'" & Replace(value, "'", "''") & "'"

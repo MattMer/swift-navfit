@@ -4,7 +4,7 @@ Option Explicit
 Public Function SaveLibraryView(ByVal preset As String) As Boolean
     Dim r As DAO.Recordset, pid As Long
     If preset <> "Drafting" And preset <> "Dates" And preset <> "History" Then Err.Raise vbObjectError + 1300, , "Unsupported library view."
-    pid = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
+    pid = ActiveContributorID()
     Set r = CurrentDb.OpenRecordset("SELECT * FROM LibraryPreference WHERE AuthorProfileID=" & pid, dbOpenDynaset)
     If r.EOF Then r.AddNew: r!AuthorProfileID = pid Else r.Edit
     r!ViewPreset = preset: r.Update: r.Close
@@ -13,7 +13,7 @@ End Function
 Public Function LibraryViewSelect() As String
     Dim preset As String
     Call UXPrepareReportRows
-    preset = Nz(DLookup("ViewPreset", "LibraryPreference", "AuthorProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)), "Drafting")
+    preset = Nz(DLookup("ViewPreset", "LibraryPreference", "AuthorProfileID=" & ActiveContributorID()), "Drafting")
     With Forms!frmLibrary!lstReports
         Select Case preset
             Case "Dates"

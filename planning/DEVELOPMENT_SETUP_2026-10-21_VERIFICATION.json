@@ -1,0 +1,418 @@
+{
+  "Date": "2026-10-21T10:24:54.1210580-07:00",
+  "Status": "PASS",
+  "Scope": "Development setup only; no application release or publication",
+  "AppVersion": "0.27.0-dev",
+  "SchemaVersion": 27,
+  "InstalledExtensions": {
+    "VBA": "serkonda7.vscode-vba@1.2.1",
+    "AccessExplorer": "luna-soft.access-explorer@1.2.0 (installed by user)",
+    "PowerShell": "ms-vscode.powershell@2025.4.0"
+  },
+  "AccessExplorerAgentMcpConnected": false,
+  "FreshBuild": {
+    "Verification": {
+      "SourceModules": 99,
+      "Forms": 66,
+      "NativeUnloadGuards": true,
+      "RetiredFormsAbsent": true,
+      "Identity": true
+    },
+    "Bytes": 17563648,
+    "Stages": 71,
+    "Path": "D:\\Development\\Swift NAVFIT\\build\\setup-fresh-r127-20261021-01.accdb",
+    "EarlierR126FailureReproduced": false,
+    "Receipt": "build/setup-fresh-r127-20261021-01.accdb.build.json",
+    "DeclaredInputsUnchanged": true,
+    "PriorBinaryTemplateUsed": false,
+    "SHA256": "20B05AD2ADBCB2B98FAD126D90153C6B7CFFF75F79A2E36A8ECA265A6D13FE31"
+  },
+  "Development": {
+    "Steps": [
+      {
+        "Script": "test-build-plan",
+        "Status": "PASS",
+        "Seconds": 2.1519505,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\00-test-build-plan.log"
+      },
+      {
+        "Script": "test-vba-source-normalization",
+        "Status": "PASS",
+        "Seconds": 0.3967814,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\01-test-vba-source-normalization.log"
+      },
+      {
+        "Script": "verify-build-artifact",
+        "Status": "PASS",
+        "Seconds": 75.73851379999999,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\02-verify-build-artifact.log"
+      },
+      {
+        "Script": "test-report-tools",
+        "Status": "PASS",
+        "Seconds": 9.992229199999999,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\03-test-report-tools.log"
+      },
+      {
+        "Script": "smoke-test",
+        "Status": "PASS",
+        "Seconds": 10.9357227,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\04-smoke-test.log"
+      },
+      {
+        "Script": "test-compat-pages",
+        "Status": "PASS",
+        "Seconds": 17.3328798,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\05-test-compat-pages.log"
+      },
+      {
+        "Script": "test-ux-workflows",
+        "Status": "PASS",
+        "Seconds": 33.3815859,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\06-test-ux-workflows.log"
+      },
+      {
+        "Script": "test-directory-merge",
+        "Status": "PASS",
+        "Seconds": 9.215304399999999,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1\\07-test-directory-merge.log"
+      }
+    ],
+    "Status": "PASS",
+    "Receipt": "build/workflow/20261021-101246-341becbb-5b75-417b-a98a-27008a67cfb1/verification.json"
+  },
+  "ReleaseCheck": {
+    "Steps": [
+      {
+        "Script": "test-build-plan",
+        "Status": "PASS",
+        "Seconds": 1.91482,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\00-test-build-plan.log"
+      },
+      {
+        "Script": "test-vba-source-normalization",
+        "Status": "PASS",
+        "Seconds": 0.353641,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\01-test-vba-source-normalization.log"
+      },
+      {
+        "Script": "verify-build-artifact",
+        "Status": "PASS",
+        "Seconds": 76.6098967,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\02-verify-build-artifact.log"
+      },
+      {
+        "Script": "verify-build-artifact",
+        "Status": "PASS",
+        "Seconds": 75.4646396,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\03-verify-build-artifact.log"
+      },
+      {
+        "Script": "test-directory-merge-release",
+        "Status": "PASS",
+        "Seconds": 263.7275892,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\04-test-directory-merge-release.log"
+      },
+      {
+        "Script": "test-compat-pages",
+        "Status": "PASS",
+        "Seconds": 24.7450518,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\05-test-compat-pages.log"
+      },
+      {
+        "Script": "test-ux-workflows",
+        "Status": "PASS",
+        "Seconds": 33.557885399999996,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\06-test-ux-workflows.log"
+      },
+      {
+        "Script": "test-group-exit",
+        "Status": "PASS",
+        "Seconds": 26.3272896,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\07-test-group-exit.log"
+      },
+      {
+        "Script": "test-engine-verification",
+        "Status": "PASS",
+        "Seconds": 6.277635999999999,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\08-test-engine-verification.log"
+      },
+      {
+        "Script": "test-report-message-import",
+        "Status": "PASS",
+        "Seconds": 6.0664443,
+        "Log": "D:\\Development\\Swift NAVFIT\\build\\workflow\\release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27\\09-test-report-message-import.log"
+      }
+    ],
+    "Fixtures": [
+      {
+        "Schema": 1,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.1.0.accdb",
+        "SourceSHA256": "3C2DD72F795CFAE177EF04301D609D91AFEDD3CB62F128A504122CF022D450F9",
+        "Reports": 0
+      },
+      {
+        "Schema": 2,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.2.2-review.accdb",
+        "SourceSHA256": "EDBEBC22F6F5A488581322E504309BAA36B864650AA49542964C5E1D67DA8C48",
+        "Reports": 0
+      },
+      {
+        "Schema": 3,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.3.0-official-narratives.accdb",
+        "SourceSHA256": "4A061659A28D27B4B1D64B783452D62109212C265852816B15645DEF5B3B9A10",
+        "Reports": 0
+      },
+      {
+        "Schema": 4,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.4.1-revision-compare.accdb",
+        "SourceSHA256": "FBFF79FB1C65538D58E3136765241A325A6240CA98BC070D8E7F68323AF2CCE4",
+        "Reports": 0
+      },
+      {
+        "Schema": 5,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.5.1-checklist.accdb",
+        "SourceSHA256": "FE922FBFD6F78C213E786185105104A9B31A626D3F4C12F8EAB1F3B258AB7254",
+        "Reports": 0
+      },
+      {
+        "Schema": 6,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.6.1-provenance.accdb",
+        "SourceSHA256": "5138FA41FD7C799AE7FA905DAD9E676B7FC6586248023085406AF237E3D65FF7",
+        "Reports": 0
+      },
+      {
+        "Schema": 7,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.7.0-review-comments.accdb",
+        "SourceSHA256": "7CA52F5565FB419CD1FC4E7CDF17D8F5264F6F2EB844DD99658CA674EA6D3A70",
+        "Reports": 0
+      },
+      {
+        "Schema": 8,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.8.0-review-routing.accdb",
+        "SourceSHA256": "BE5980723A0CD2635B3717A664A6BC0583B7DD3A2337E948BACB72F7C6E0CA69",
+        "Reports": 0
+      },
+      {
+        "Schema": 9,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.9.0-administration.accdb",
+        "SourceSHA256": "4AF1BD2C8D4E5255ECEF9B0D481B917CEB4C8A8A440B6B40F7E4CCA7367B41EB",
+        "Reports": 0
+      },
+      {
+        "Schema": 10,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.11.0-trait-summary.accdb",
+        "SourceSHA256": "E8CD1AC0C0B1E2020371A8A57049D9017042715870A91F5F50C839C570A7678D",
+        "Reports": 0
+      },
+      {
+        "Schema": 11,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.12.0-assessment.accdb",
+        "SourceSHA256": "75B1C351C8153AFF9303108ECEEA96D2454E7F7E6323CA7A03AD34D80BE48202",
+        "Reports": 0
+      },
+      {
+        "Schema": 12,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.13.0-promotion-status.accdb",
+        "SourceSHA256": "AC8306DDCBEFEA975C6062A62B6A8DF175E5AF7049F8EE8D38C0837CCE86BA95",
+        "Reports": 0
+      },
+      {
+        "Schema": 13,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.14.0-reporting-senior.accdb",
+        "SourceSHA256": "A8B71B2082525EC74905EF8CDED7F8CB949351009F066B33A568687D6C1D16F3",
+        "Reports": 0
+      },
+      {
+        "Schema": 14,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.15.0-report-context.accdb",
+        "SourceSHA256": "F8715403D365EA38C71BECDD9D4B378791EED7170D6C18BB5E767C576135914B",
+        "Reports": 0
+      },
+      {
+        "Schema": 15,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.16.0-member-details.accdb",
+        "SourceSHA256": "AA1B68D1A9FDC890EE294C4FC17F6486C1895ADFA53AD9207016FC2FDF0C03F5",
+        "Reports": 0
+      },
+      {
+        "Schema": 16,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.17.0-service-details.accdb",
+        "SourceSHA256": "5B131BB48ED280170A02D5468828902076D7ED72D0C0E6C4FCA8F7088CC58057",
+        "Reports": 0
+      },
+      {
+        "Schema": 17,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.18.0-decision-details.accdb",
+        "SourceSHA256": "CF964D41EC1D30A2A65F8EE9BDA1F513EEF49F68E467EFF1F52B0EA795F4E107",
+        "Reports": 0
+      },
+      {
+        "Schema": 18,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.19.0-report-people.accdb",
+        "SourceSHA256": "0E3F26E927EEB2081CDCE4A53D61CC926E83C12BEAF717E61FDE958E8CF37680",
+        "Reports": 0
+      },
+      {
+        "Schema": 19,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.20.0-structured-names.accdb",
+        "SourceSHA256": "27EFFE6334A6B5AB6499F25D281408CD921E6F275A9DD943DE099260EBAF1218",
+        "Reports": 0
+      },
+      {
+        "Schema": 20,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.21.0-major-foundations.accdb",
+        "SourceSHA256": "C3F914D6C13EFB1796669010F5B6F2A2CC2EB402EB3F9331805DF40FEDDEB77C",
+        "Reports": 0
+      },
+      {
+        "Schema": 21,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.23.0-preview\\Swift_NAVFIT_0.23.0-preview-DEMO.accdb",
+        "SourceSHA256": "CD1E348968BCF90634E5FA3CF92BA29CF39836C1E0C5538ECC2FB1D247A4A3C1",
+        "Reports": 9
+      },
+      {
+        "Schema": 22,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-06-r56.accdb",
+        "SourceSHA256": "98F97BC62B54F259F5DD7FB1A549CBAE35C03686F292686EAECD52A7598CC06E",
+        "Reports": 9
+      },
+      {
+        "Schema": 23,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_0.24.0-preview\\Swift_NAVFIT_0.24.0-preview-DEMO.accdb",
+        "SourceSHA256": "BBB734E1B8F13BFBDF6333BD2D2CED80127DF708128B6B418AC9A44E618E660F",
+        "Reports": 9
+      },
+      {
+        "Schema": 24,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-07-r89.accdb",
+        "SourceSHA256": "4B9CA42AC89B7A15C12BFC3499F587CACA0FEE3E2570B127B9E6489662784B84",
+        "Reports": 10
+      },
+      {
+        "Schema": 25,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\ux\\Swift_NAVFIT_UI_Demo_2026-10-16-r114.accdb",
+        "SourceSHA256": "36DA2CBA79F55664CA100ABC6AD9436CD48502F3A5E4C65BB06F84625DEC3192",
+        "Reports": 9
+      },
+      {
+        "Schema": 26,
+        "Source": "D:\\Development\\Swift NAVFIT\\output\\Swift_NAVFIT_Demo_2026-10-20-r126.accdb",
+        "SourceSHA256": "8903640F3148143976F306292F120EE671E360C5A669B73DF564A05154C1E9FC",
+        "Reports": 13
+      },
+      {
+        "Schema": 27,
+        "Source": "D:\\Development\\Swift NAVFIT\\build\\tests\\directory-merge-aac83ca3-ce8d-4ffe-bd92-021b5f825376.accdb",
+        "SourceSHA256": "AC224196B052CDA6CB143DF8C0389C5792F29FCB561D5445034C9FCD71D6EBA3",
+        "Reports": 2
+      }
+    ],
+    "Status": "PASS",
+    "Receipt": "build/workflow/release-20261021-101536-d4eb37f6-ecca-4b91-9d21-c74e4a30bd27/verification.json",
+    "MigrationGuards": {
+      "UIEntryPointTested": true,
+      "UnknownTableRejected": true,
+      "ChangedSourceRejected": true,
+      "Rollback": true,
+      "FutureSchemaRejected": true,
+      "PopulatedTargetRejected": true
+    }
+  },
+  "SetupGuards": {
+    "PopulatedBlankRejectedReadOnly": true,
+    "FailedChildProducesNoPassResult": true,
+    "ExistingOutputRefusedAndUnchanged": true
+  },
+  "PublishedArtifacts": [
+    {
+      "Name": "Swift_NAVFIT_Blank_2026-10-21-r127.accdb",
+      "Bytes": 17432576,
+      "SHA256": "8F2E099C31B2E7EA53A33C7BB58241EC3640B8CDAB7D54EFA8652B73EB5991C4",
+      "MatchesPublishedReceipt": true
+    },
+    {
+      "Name": "Swift_NAVFIT_Demo_2026-10-21-r127.accdb",
+      "Bytes": 17432576,
+      "SHA256": "0030987ED8AE692E20D6317869A64A4D5143062025CE23066078962878A4B3A7",
+      "MatchesPublishedReceipt": true
+    }
+  ],
+  "AccessProcessesAfterChecks": 0,
+  "Limits": [
+    "Older blank fixtures do not prove populated historical workflows",
+    "Physical display, accessibility and printing remain deferred",
+    "Earlier r126 closed-object error has no established root cause",
+    "C03 and C04 remain next; unrelated FORMS files were not edited"
+  ],
+  "SetupFileHashes": [
+    {
+      "Path": "AGENTS.md",
+      "SHA256": "B920E2974854F7757FC108552BEF453756F3E10D8D501D9B8387D67E8B73CD16"
+    },
+    {
+      "Path": "README.md",
+      "SHA256": "64697073145F399EE244F2F761ACDA881D1D76E642A70394C561952ABC6656AF"
+    },
+    {
+      "Path": "CONTRIBUTING.md",
+      "SHA256": "D8EE307BCEF6377FB1A9445B76BB4EE77408270C55AD847636708F6A3D232991"
+    },
+    {
+      "Path": "planning/BUILD_PIPELINE.md",
+      "SHA256": "935B98123083032D55DE7417F4A684A2F9A9E2C458FEDA6EC7A3308ADEAA0407"
+    },
+    {
+      "Path": "planning/CURRENT_STATE.md",
+      "SHA256": "C947D01F76804A1043E88CB2C37DB2E35FE76D1E77741BEDAAEE8E44245B00F5"
+    },
+    {
+      "Path": "planning/PRIORITY_BACKLOG.md",
+      "SHA256": "DAE86962E310F6D466460FCA57C7B18C554808C0A5DC1F376C4560EC8982825B"
+    },
+    {
+      "Path": ".vscode/tasks.json",
+      "SHA256": "8AF6C555CA5D6592595E1D3D1CB9AFB754A7D033A7DC8E4F225C72E53D82A1AA"
+    },
+    {
+      "Path": ".vscode/settings.json",
+      "SHA256": "A72FEFC8ABF7BC1B25709C0161BB5563066814883C6C8B7576863FA139D2E81F"
+    },
+    {
+      "Path": ".vscode/extensions.json",
+      "SHA256": "85639CC5FF7657568768D701B7BE62DF3481CE0A45C50C647A4C0DE5AEFE6740"
+    },
+    {
+      "Path": "docs/Development_Workflow.md",
+      "SHA256": "E4EBE6DFE812D6D4B968038ECF24B8C8C32C6FB8C114D40A070D12C1B03F74AA"
+    },
+    {
+      "Path": "scripts/develop.ps1",
+      "SHA256": "96F93790E26846A7B3C9F84526BDA72C787E01B1A43876986CEA27B8FF56F254"
+    },
+    {
+      "Path": "scripts/release-check.ps1",
+      "SHA256": "3033DBF9A66FDFEF9C1554C608FCDC510CD8CDB4AF247DC95B381A6BA4AF6312"
+    },
+    {
+      "Path": "scripts/workflow-common.ps1",
+      "SHA256": "FEA4A5DEB0828A4711526884341DADC122E9311503E506C701BFFA57D1E423CB"
+    },
+    {
+      "Path": "scripts/verify-build-artifact.ps1",
+      "SHA256": "8EFD660D9296D504EB45EEEAAECB84E676A919A8F4F7F4B3579E678843EB48DD"
+    },
+    {
+      "Path": "scripts/test-build-plan.ps1",
+      "SHA256": "8814B9AF9CD6783C3DFFBE5B7A2871563A9E75B154F7850A3743BA265150295F"
+    },
+    {
+      "Path": "scripts/test-report-tools.ps1",
+      "SHA256": "4866495E055745F4AC159E9D3D0EA17AD70E6E3B313F2B063278AF3D7C03177F"
+    },
+    {
+      "Path": "scripts/build-preview.ps1",
+      "SHA256": "61CB8E5370968BD7E7AC2A441C7FCD2CC1BB45E8A92ACEBE3021F35558AE814C"
+    }
+  ]
+}

@@ -207,7 +207,7 @@ Public Function UXDashboardRefresh() As Boolean
     If Not CurrentProject.AllForms("frmHome").IsLoaded Then Exit Function
     Set f = Forms!frmHome
     If Not UXHasControl(f, "uxRecentReports") Then Exit Function
-    pid = Nz(DLookup("ActiveProfileID", "Workspace"), 0)
+    pid = ActiveContributorID()
     If UXHasControl(f, "uxContributor") Then f!uxContributor = pid
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
     f!uxGroupCount.Caption = CStr(DCount("*", "SummaryGroup", "IsArchived=False"))

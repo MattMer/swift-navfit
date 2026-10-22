@@ -10,7 +10,7 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.27.0-dev"
+Public Const APP_VERSION As String = "0.27.1-dev"
 Public Const SCHEMA_VERSION As Long = 27
 
 Public Function NewIdentity() As String
@@ -38,8 +38,7 @@ Private Function ExecuteParams(ByVal statement As String, ParamArray values() As
 End Function
 
 Private Function ProfileID() As Long
-    ProfileID = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
-    If ProfileID = 0 Then Err.Raise vbObjectError + 102, , "Complete first-run command and profile setup."
+    ProfileID = ActiveContributorID()
 End Function
 
 Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayName As String) As Boolean
@@ -47,6 +46,7 @@ Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayNam
     commandName = Trim$(commandName): displayName = Trim$(displayName)
     If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, , "Enter a command name and contributor name."
     If Len(commandName) > 120 Or Len(displayName) > 120 Then Err.Raise vbObjectError + 104, , "Names must be 120 characters or fewer."
+    If DCount("*", "Workspace", "WorkspaceID=1") > 0 Then Call ActiveContributorID
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed
     w.BeginTrans
@@ -64,6 +64,7 @@ Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayNam
     End If
     r!CommandName = commandName: r!ActiveProfileID = pid: r.Update: r.Close
     w.CommitTrans
+    BindActiveContributor pid
     ConfigureWorkspace = True
     Exit Function
 Failed:
@@ -312,7 +313,10 @@ Public Function SwiftAppStartup() As Boolean
         Application.Quit acQuitSaveNone
         Exit Function
     End If
-    If DCount("*", "Workspace") = 0 Then DoCmd.OpenForm "frmSetup" Else DoCmd.OpenForm "frmHome"
+    If CurrentProject.AllForms("frmEditor").IsLoaded Or UXGridPendingCount() > 0 Then Err.Raise 5, , "Finish pending report edits before restarting contributor selection."
+    If CurrentProject.AllForms("frmHome").IsLoaded Then DoCmd.Close acForm, "frmHome", acSaveNo
+    ResetActiveContributor
+    ShowContributorStartup
     UXLoadContext
     UXHideAccessObjects
     SwiftAppStartup = True: Exit Function
@@ -323,6 +327,9 @@ End Function
 Public Function OpenScreen(ByVal formName As String) As Boolean
     On Error GoTo Failed
     If formName = "frmHelp" Then formName = "frmUXHelp"
+    If Not HasActiveContributor() Then
+        OpenScreen = ShowContributorStartup(): Exit Function
+    End If
     Select Case formName
         Case "frmHome", "frmLibrary", "frmUXGroups", "frmMyWork", "frmUXResources", "frmUXSettings", "frmBulkFolders", "frmUXHelp"
             OpenScreen = UXNavigate(formName): Exit Function

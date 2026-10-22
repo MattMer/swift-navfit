@@ -1,0 +1,60 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Swift NAVFIT: Preflight",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-File",
+				"${workspaceFolder}/scripts/develop.ps1",
+				"-Action",
+				"Preflight"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+        {
+            "label": "Swift NAVFIT: Develop (fresh build and focused tests)",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-File", "${workspaceFolder}/scripts/develop.ps1"],
+            "options": {"cwd": "${workspaceFolder}"},
+            "group": {"kind": "build", "isDefault": true},
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift NAVFIT: Fresh build only",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-File", "${workspaceFolder}/scripts/develop.ps1", "-Action", "Build"],
+            "options": {"cwd": "${workspaceFolder}"},
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift NAVFIT: Focused tests on a blank build",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-File", "${workspaceFolder}/scripts/develop.ps1", "-Action", "Test", "-BuildPath", "${input:blankPath}"],
+            "options": {"cwd": "${workspaceFolder}"},
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift NAVFIT: Release verification (no publication)",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-File", "${workspaceFolder}/scripts/release-check.ps1", "-BlankPath", "${input:blankPath}", "-DemoPath", "${input:demoPath}"],
+            "options": {"cwd": "${workspaceFolder}"},
+            "group": "test",
+            "problemMatcher": []
+        }
+	],
+    "inputs": [
+        {"id": "blankPath", "type": "promptString", "description": "Absolute path to the verified blank .accdb build"},
+        {"id": "demoPath", "type": "promptString", "description": "Absolute path to the synthetic Demo .accdb"}
+    ]
+}

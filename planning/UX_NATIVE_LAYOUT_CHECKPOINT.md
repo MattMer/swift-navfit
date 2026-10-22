@@ -1,3 +1,8 @@
+> Historical checkpoint and evidence. Current architecture/decisions are in
+> [PROJECT_STATE.md](../PROJECT_STATE.md); current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md). Old versions, preview builders
+> and pending findings below describe that checkpoint, not current instructions.
+
 # Native layout checkpoint - 2026-10-04
 
 ## Latest checkpoint: denser sections and visible group counts

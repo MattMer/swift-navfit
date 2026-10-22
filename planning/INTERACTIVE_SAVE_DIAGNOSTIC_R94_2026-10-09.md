@@ -1,3 +1,8 @@
+> Historical checkpoint and evidence. Current architecture/decisions are in
+> [PROJECT_STATE.md](../PROJECT_STATE.md); current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md). Old versions, preview builders
+> and pending findings below describe that checkpoint, not current instructions.
+
 # Interactive recording / r94 diagnostic — 9 October 2026
 
 Read the supplied seven-second recording locally using a workspace-only PyAV decoder. The title bar identifies r93 TestWorkspace. Multiple trait dropdown choices revert; the same 3420 Save report revision message remains. This contradicts any inference that automated passes establish the user's journey fixed. No computer use or media upload was used.

@@ -1,8 +1,9 @@
 # Promotion status
 
-> Current native navigation: use the [workspace guide](UX_WORKSPACE_GUIDE.md) and
-> [current state](CURRENT_STATE.md). This guide retains service details and
-> earlier verification history; legacy screen instructions may differ.
+> Historical service/verification reference. Current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md); current architecture and
+> decisions are in [PROJECT_STATE.md](../PROJECT_STATE.md). Retained field/source
+> details remain evidence, but old screens and test commands may be superseded.
 
 Swift NAVFIT 0.13.0 adds manual promotion status near the top of the editor for EVAL, CHIEFEVAL and FITREP. Choose REGULAR, FROCKED, SELECTED or SPOT, or leave it blank. These four labels were read from PromotionStatus in the supplied NAVFIT98A 2.2.0.332 lookup database. Local storage is text with an eight-character capacity matching the inspected Reports.PromotionStatus field.
 

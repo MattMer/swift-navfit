@@ -1,3 +1,8 @@
+> Historical checkpoint and evidence. Current architecture/decisions are in
+> [PROJECT_STATE.md](../PROJECT_STATE.md); current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md). Old versions, preview builders
+> and pending findings below describe that checkpoint, not current instructions.
+
 # Swift NAVFIT redesign — prototype review
 
 The distributed Access application remains version 0.21.0, schema 20. Native redesign development is version 0.22.0-ux-preview, schema 21. The clickable design prototype remains a separate artifact containing synthetic data. It does not connect to Access, read source files, certify Navy policy, or implement a replacement web application. Native user-review builds now include their own synthetic examples through `scripts/build-preview.ps1`; they do not share browser storage.

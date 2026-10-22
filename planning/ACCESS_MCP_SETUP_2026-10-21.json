@@ -1,0 +1,45 @@
+{
+  "ToolCount": 66,
+  "CodeExecutionEnabled": false,
+  "ModuleDiscovery": true,
+  "Metadata": {
+    "rows": [
+      {
+        "AppVersion": "0.27.0-dev",
+        "SchemaVersion": 27
+      }
+    ],
+    "count": 1
+  },
+  "ReportInventory": {
+    "rows": [
+      {
+        "ReportCount": 0
+      }
+    ],
+    "count": 1
+  },
+  "ModuleRead": true,
+  "Close": "Access session closed successfully.",
+  "Status": "PASS",
+  "Source": "D:\\Development\\Swift NAVFIT\\build\\setup-fresh-r127-20261021-01.accdb",
+  "SourceSHA256": "20B05AD2ADBCB2B98FAD126D90153C6B7CFFF75F79A2E36A8ECA265A6D13FE31",
+  "SourceUnchanged": true,
+  "Scratch": "D:\\Development\\Swift NAVFIT\\build\\tests\\access-mcp-d3ea729852ab482c97dd6521c8eb0d4a\\scratch.accdb",
+  "Server": "C:\\Users\\Matt\\AppData\\Roaming\\Code\\User\\globalStorage\\luna-soft.access-explorer\\runtime\\mcp-access\\MCP-Access\\access_mcp_server.py",
+  "Configuration": {
+    "VSCodeUserSettings": "C:/Users/Matt/AppData/Roaming/Code/User/settings.json",
+    "VSCodeUserMCP": "C:/Users/Matt/AppData/Roaming/Code/User/mcp.json",
+    "VSCodeServer": "access-explorer-local",
+    "CodexUserConfig": "C:/Users/Matt/.codex/config.toml",
+    "CodexServer": "access_explorer",
+    "Interpreter": "C:/Users/Matt/AppData/Roaming/Code/User/globalStorage/luna-soft.access-explorer/runtime/mcp-access/.venv/Scripts/python.exe",
+    "BackendCommit": "a53753d62c04a703d5ee0c586a62dbebcbe1028a",
+    "BackendVersion": "0.7.64",
+    "SettingsBackup": "C:/Users/Matt/AppData/Roaming/Code/User/settings.json.before-access-mcp-20261021-103112.bak",
+    "CodexBackup": "C:/Users/Matt/.codex/config.toml.before-access-mcp-20261021-103112.bak",
+    "CurrentChatToolsDiscovered": false
+  },
+  "Date": "2026-10-21T10:34:01.1825417-07:00",
+  "AccessProcessesAfterCheck": 0
+}

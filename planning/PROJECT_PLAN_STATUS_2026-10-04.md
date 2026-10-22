@@ -1,3 +1,8 @@
+> Historical checkpoint and evidence. Current architecture/decisions are in
+> [PROJECT_STATE.md](../PROJECT_STATE.md); current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md). Old versions, preview builders
+> and pending findings below describe that checkpoint, not current instructions.
+
 # Swift NAVFIT project-plan status — 4 October 2026, r23
 
 ## r28 group export follow-up — 5 October 2026

@@ -1,3 +1,8 @@
+> Historical checkpoint and evidence. Current architecture/decisions are in
+> [PROJECT_STATE.md](../PROJECT_STATE.md); current procedures are in the
+> [user guide](../docs/Swift_NAVFIT_User_Guide.md). Old versions, preview builders
+> and pending findings below describe that checkpoint, not current instructions.
+
 # Swift NAVFIT native workspace guide
 
 Current development release: **r116, 0.25.0-dev, schema 25**. Earlier versioned

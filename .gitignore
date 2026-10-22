@@ -12,6 +12,9 @@
 /output/*
 !/output/MANIFEST.json
 /planning/evidence/
+
+# Supplied Navy forms, local test workspaces, and reference packages.
+/FORMS_REFERENCES_TEMPLATES/
 /NAVFIT98A_v33p2_Upgrade_Tool/
 /NAVFIT98A/
 
@@ -34,3 +37,14 @@ Thumbs.db
 /implement_page_switch.py
 /implement_width.py
 /measure_page_stats.py
+
+# Review-held historical payloads are not active source and are not Git inputs.
+# Keep the inventories tracked so the original paths and hashes remain auditable.
+/PROPOSED_PURGE/build/
+/PROPOSED_PURGE/prototype/
+/PROPOSED_PURGE/scripts/
+/PROPOSED_PURGE/tests/
+/PROPOSED_PURGE/implement_demo_groups.py
+/PROPOSED_PURGE/implement_page_switch.py
+/PROPOSED_PURGE/implement_width.py
+/PROPOSED_PURGE/measure_page_stats.py

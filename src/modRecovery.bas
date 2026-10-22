@@ -109,14 +109,14 @@ Public Function CheckpointEditor() As Boolean
         Forms!frmEditor!lblRecovery.Caption = "Recovery: no unsaved edits to checkpoint."
         CheckpointEditor = True: Exit Function
     End If
-    signature = sessionKey & "|" & baseRevision & "|" & Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) & "|" & signature
+    signature = sessionKey & "|" & baseRevision & "|" & ActiveContributorID() & "|" & signature
     If signature = checkpointSignature Then
         If DCount("*", "RecoveryDraft", "SessionGuid='" & sessionKey & "'") > 0 Then CheckpointEditor = True: Exit Function
     End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RecoveryDraft WHERE SessionGuid='" & sessionKey & "'", dbOpenDynaset)
     If r.EOF Then r.AddNew: r!SessionGuid = sessionKey Else r.Edit
-    r!AuthorProfileID = DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1")
+    r!AuthorProfileID = ActiveContributorID()
     If Nz(Forms!frmEditor!txtReportID, 0) > 0 Then r!ReportID = Forms!frmEditor!txtReportID Else r!ReportID = Null
     If baseRevision > 0 Then r!BaseRevisionID = baseRevision Else r!BaseRevisionID = Null
     For i = 0 To 78: r.Fields(fields(i)) = current(i): Next
@@ -134,7 +134,7 @@ End Function
 ' List checkpoints owned by the active contributor, newest first.
 Public Function LoadRecoveries() As Boolean
     Dim pid As Long
-    pid = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+    pid = ActiveContributorID()
     Forms!frmRecovery!lstRecoveries.RowSource = "SELECT RecoveryDraftID, DraftTitle, FormKind, CheckpointAt FROM RecoveryDraft WHERE AuthorProfileID=" & pid & " ORDER BY CheckpointAt DESC"
     Forms!frmRecovery!lstRecoveries.Requery
     LoadRecoveries = True
@@ -146,7 +146,7 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 901, , "Close the current editor before recovering another draft."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RecoveryDraft WHERE RecoveryDraftID=" & recoveryID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 902, , "Checkpoint no longer exists."
-    If r!AuthorProfileID <> Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) Then Err.Raise vbObjectError + 903, , "This checkpoint belongs to another contributor profile."
+    If r!AuthorProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 903, , "This checkpoint belongs to another contributor profile."
     id = Nz(r!ReportID, 0)
     If Not asNewDraft And id > 0 Then
         If DCount("*", "Report", "ReportID=" & id) = 0 Or Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> Nz(r!BaseRevisionID, 0) Then Err.Raise vbObjectError + 904, , "The saved report has changed. Use Recover as new draft."
@@ -183,6 +183,6 @@ Public Function DeleteRecoveryUI() As Boolean
     If id = 0 Then Exit Function
     If CurrentProject.AllForms("frmEditor").IsLoaded Then MsgBox "Close the editor first.", vbInformation: Exit Function
     If MsgBox("Discard this recovery checkpoint permanently?", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
-    CurrentDb.Execute "DELETE FROM RecoveryDraft WHERE RecoveryDraftID=" & id & " AND AuthorProfileID=" & Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0), dbFailOnError
+    CurrentDb.Execute "DELETE FROM RecoveryDraft WHERE RecoveryDraftID=" & id & " AND AuthorProfileID=" & ActiveContributorID(), dbFailOnError
     Call LoadRecoveries(): DeleteRecoveryUI = True
 End Function

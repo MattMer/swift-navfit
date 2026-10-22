@@ -4,8 +4,7 @@ $scratch=Join-Path $root ('build/tests/grid-reads-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $module=Join-Path $root 'build/grid-reads-test-module.bas'
 $source=Get-Content (Join-Path $root 'src/modUXTraitGrid.bas') -Raw
-$legacy=Get-Content (Join-Path $root 'tests/UXGridLoadLegacy.txt') -Raw
-[IO.File]::WriteAllText($module,$source+"`r`n"+$legacy)
+[IO.File]::WriteAllText($module,$source)
 $app=New-Object -ComObject Access.Application
 try {
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$false)
