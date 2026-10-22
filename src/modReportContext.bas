@@ -39,7 +39,7 @@ Public Function ValidateReportContext(ByVal values As Variant) As Variant
                 Next
                 If Not allowed Then Err.Raise vbObjectError + 2503, , "Choose Yes, No or blank for each report-context flag."
             ElseIf i = 7 Then
-                If Len(values(i)) > 14 Or InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2504, , "Primary duty must be at most 14 characters, single-line without tabs."
+                If Len(values(i)) > UXFieldLimit("PrimaryDuty") Or InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2504, , "Primary duty exceeds its field limit or contains line breaks/tabs."
             End If
         End If
     Next

@@ -45,7 +45,7 @@ Public Function MoveFolder(ByVal folderID As Long, ByVal parentID As Long) As Bo
     MoveFolder = True
 End Function
 
-Public Function AssignFolder(ByVal reportID As Long, ByVal folderID As Long) As Boolean
+Public Function AssignFolder(ByVal reportID As Long, ByVal folderID As Long, Optional ByVal auditOperationID As Long = 0) As Boolean
     Dim w As DAO.Workspace, db As DAO.Database, q As DAO.QueryDef, r As DAO.Recordset
     Dim oldFolder As Variant, pid As Long, failure As Long, message As String
     pid = ActiveContributorID()
@@ -65,7 +65,8 @@ Public Function AssignFolder(ByVal reportID As Long, ByVal folderID As Long) As 
     Set r = db.OpenRecordset("FolderMove", dbOpenDynaset)
     r.AddNew: r!ReportID = reportID: r!OldFolderID = oldFolder
     If folderID <> 0 Then r!NewFolderID = folderID
-    r!AuthorProfileID = pid: r!MovedAt = Now(): r.Update: r.Close
+    r!AuthorProfileID = pid: r!MovedAt = Now(): r.Update: r.Bookmark = r.LastModified
+    AuditRecord "Folder move", CLng(r!FolderMoveID), auditOperationID: r.Close
     w.CommitTrans: AssignFolder = True: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description: w.Rollback

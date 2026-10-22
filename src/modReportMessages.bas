@@ -24,27 +24,40 @@ Private Function CopyLegacyMessage(ByVal rows As DAO.Recordset, ByVal note As Bo
  target.Update: target.Bookmark = target.LastModified: CopyLegacyMessage = target!MessageID: target.Close
 End Function
 Public Function MigrateReportMessages(Optional ByVal report As Long = 0) As Long
- Dim rows As DAO.Recordset, parents As DAO.Recordset, filter As String, parent As Long, value As Long, w As DAO.Workspace, trans As Boolean, failure As Long, message As String
+ Dim rows As DAO.Recordset, parents As DAO.Recordset, filter As String, parent As Long, value As Long, w As DAO.Workspace, trans As Boolean, failure As Long, message As String, created As Object, mapped As Long
  On Error GoTo Failed
  Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+ Set created = CreateObject("Scripting.Dictionary")
  If report > 0 Then filter = " AND ReportID=" & report
- Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportNote WHERE NoteID NOT IN (SELECT LegacyNoteID FROM ReportMessage WHERE LegacyNoteID Is Not Null)" & filter, dbOpenSnapshot)
+ Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportNote WHERE NoteID NOT IN (SELECT LegacyNoteID FROM ReportMessage WHERE LegacyNoteID Is Not Null)" & filter & " ORDER BY NoteID", dbOpenSnapshot)
  Do While Not rows.EOF
   value = CopyLegacyMessage(rows, True, 0): MigrateReportMessages = MigrateReportMessages + 1: rows.MoveNext
  Loop
  rows.Close
- Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE ThreadID Is Null AND CommentID NOT IN (SELECT LegacyCommentID FROM ReportMessage WHERE LegacyCommentID Is Not Null)" & filter, dbOpenSnapshot)
+ 'Allocate every identity before linking any parents, including nested/later IDs.
+ Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE CommentID NOT IN (SELECT LegacyCommentID FROM ReportMessage WHERE LegacyCommentID Is Not Null)" & filter & " ORDER BY CommentID", dbOpenSnapshot)
  Do While Not rows.EOF
-  value = CopyLegacyMessage(rows, False, 0): MigrateReportMessages = MigrateReportMessages + 1: rows.MoveNext
+  value = CopyLegacyMessage(rows, False, 0): created(CStr(value)) = True: MigrateReportMessages = MigrateReportMessages + 1: rows.MoveNext
  Loop
  rows.Close
- Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE ThreadID Is Not Null AND CommentID NOT IN (SELECT LegacyCommentID FROM ReportMessage WHERE LegacyCommentID Is Not Null)" & filter, dbOpenSnapshot)
+ Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE ThreadID Is Not Null" & filter, dbOpenSnapshot)
  Do While Not rows.EOF
-  Set parents = CurrentDb.OpenRecordset("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & rows!ThreadID & " AND ReportID=" & rows!ReportID, dbOpenSnapshot)
-  parent = 0: If Not parents.EOF Then parent = parents!MessageID
-  parents.Close
-  If parent = 0 Then Err.Raise vbObjectError + 8710, , "Legacy comment parent is missing; conversation conversion stopped."
-  value = CopyLegacyMessage(rows, False, parent): MigrateReportMessages = MigrateReportMessages + 1: rows.MoveNext
+  parent = Nz(MajorScalar("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & rows!ThreadID & " AND ReportID=" & rows!ReportID), 0)
+  mapped = Nz(MajorScalar("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & rows!CommentID & " AND ReportID=" & rows!ReportID), 0)
+  If parent = 0 Or mapped = 0 Then Err.Raise vbObjectError + 8710, , "Legacy parent is missing or belongs to another report. Conversion rolled back."
+  If created.Exists(CStr(mapped)) Then
+   CurrentDb.Execute "UPDATE ReportMessage SET ParentMessageID=" & parent & " WHERE MessageID=" & mapped, dbFailOnError
+  ElseIf Nz(MajorScalar("SELECT ParentMessageID FROM ReportMessage WHERE MessageID=" & mapped), 0) <> parent Then
+   Err.Raise vbObjectError + 8710, , "Existing legacy conversation mapping differs. Original history was preserved."
+  End If
+  rows.MoveNext
+ Loop
+ rows.Close
+ Set rows = CurrentDb.OpenRecordset("SELECT MessageID,ReportID FROM ReportMessage WHERE (LegacyNoteID Is Not Null OR LegacyCommentID Is Not Null)" & filter, dbOpenSnapshot)
+ Do While Not rows.EOF
+  value = ReportMessageRoot(CLng(rows!MessageID), CLng(rows!ReportID))
+  If SCHEMA_VERSION >= 29 Then AuditRecord "Message", CLng(rows!MessageID), 0, True
+  rows.MoveNext
  Loop
  rows.Close: w.CommitTrans: trans = False: Exit Function
 Failed:
@@ -56,28 +69,72 @@ Cleanup:
  If trans Then w.Rollback
  On Error GoTo 0: Err.Raise failure, "MigrateReportMessages", message
 End Function
-Public Function AddReportMessage(ByVal report As Long, ByVal body As String, Optional ByVal parent As Long = 0) As Long
- Dim rows As DAO.Recordset, author As Long
+
+Public Function ReportMessageRoot(ByVal id As Long, ByVal report As Long) As Long
+ Dim seen As Object, r As DAO.Recordset, parent As Long
+ Set seen = CreateObject("Scripting.Dictionary")
+ Do While id > 0
+  If seen.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, , "Conversation has a parent cycle. Original history was preserved."
+  seen(CStr(id)) = True
+  Set r = CurrentDb.OpenRecordset("SELECT ParentMessageID FROM ReportMessage WHERE MessageID=" & id & " AND ReportID=" & report, dbOpenSnapshot)
+  If r.EOF Then Err.Raise vbObjectError + 8711, , "Conversation parent is missing or belongs to another report."
+  parent = Nz(r!ParentMessageID, 0): r.Close
+  If parent = 0 Then ReportMessageRoot = id: Exit Function
+  id = parent
+ Loop
+End Function
+
+Public Function ReportMessageParents(ByVal report As Long) As Object
+ Dim map As Object, rows As DAO.Recordset
+ Set map = CreateObject("Scripting.Dictionary")
+ Set rows = CurrentDb.OpenRecordset("SELECT MessageID,ParentMessageID FROM ReportMessage WHERE ReportID=" & report, dbOpenSnapshot)
+ Do While Not rows.EOF: map(CStr(rows!MessageID)) = Nz(rows!ParentMessageID, 0): rows.MoveNext: Loop
+ rows.Close: Set ReportMessageParents = map
+End Function
+Public Function ReportMessageMapRoot(ByVal id As Long, ByVal parents As Object) As Long
+ Dim seen As Object, parent As Long
+ Set seen = CreateObject("Scripting.Dictionary")
+ Do While id > 0
+  If seen.Exists(CStr(id)) Or Not parents.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, , "Conversation parent is cyclic, missing or belongs to another report."
+  seen(CStr(id)) = True: parent = CLng(parents(CStr(id)))
+  If parent = 0 Then ReportMessageMapRoot = id: Exit Function
+  id = parent
+ Loop
+End Function
+Public Function AddReportMessage(ByVal report As Long, ByVal body As String, Optional ByVal parent As Long = 0, Optional ByVal contextRevision As Long = 0) As Long
+ Dim rows As DAO.Recordset, author As Long, w As DAO.Workspace, failure As Long, explanation As String
  author = MajorAuthor()
- If DCount("*", "Report", "ReportID=" & report) <> 1 Then Err.Raise 5, , "Save the report before posting a note."
- If Nz(DLookup("IsArchived", "Report", "ReportID=" & report), True) Then Err.Raise 5, , "Recover the archived report before posting notes."
+ If PersistenceCount("Report", "ReportID=" & report) <> 1 Then Err.Raise 5, , "Save the report before posting a note."
+ If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & report), True) Then Err.Raise 5, , "Recover the archived report before posting notes."
  If Len(Trim$(Replace(Replace(Replace(body, vbCr, ""), vbLf, ""), vbTab, ""))) = 0 Or Len(body) > 10000 Then Err.Raise 5, , "Enter a note of 1 to 10,000 characters."
  If parent > 0 Then
-  If DCount("*", "ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "Choose a conversation belonging to this report."
+  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "Choose a conversation belonging to this report."
  End If
+ If contextRevision > 0 Then
+  If PersistenceCount("ReportRevision", "RevisionID=" & contextRevision & " AND ReportID=" & report) <> 1 Then Err.Raise 5, , "Revision context belongs to another report."
+ End If
+ Set w = DBEngine.Workspaces(0): w.BeginTrans
+ On Error GoTo Failed
  Set rows = CurrentDb.OpenRecordset("ReportMessage", dbOpenDynaset)
  rows.AddNew: rows!MessageGuid = NewIdentity(): rows!ReportID = report
- rows!AuthorProfileID = author: rows!ContributorName = DLookup("DisplayName", "UserProfile", "UserProfileID=" & author)
+ rows!AuthorProfileID = author: rows!ContributorName = MajorScalar("SELECT DisplayName FROM UserProfile WHERE UserProfileID=" & author)
  rows!CreatedAt = Now(): rows!MessageBody = body
  If parent > 0 Then rows!ParentMessageID = parent
+ If contextRevision > 0 Then rows!ContextRevisionID = contextRevision
  rows.Update: rows.Bookmark = rows.LastModified: AddReportMessage = rows!MessageID: rows.Close
+ AuditRecord "Message", AddReportMessage
+ w.CommitTrans: Exit Function
+Failed:
+ failure = Err.Number: explanation = Err.Description
+ On Error Resume Next: w.Rollback: On Error GoTo 0
+ Err.Raise failure, "AddReportMessage", explanation
 End Function
 Public Function SaveReportMessageDraft(ByVal identity As String, ByVal report As Long, ByVal expected As Long, ByVal body As String, ByVal parent As Long) As Long
  Dim w As DAO.Workspace, failure As Long, message As String
  Set w = DBEngine.Workspaces(0): w.BeginTrans
  On Error GoTo Failed
  If parent > 0 Then
-  If DCount("*", "ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "The reply conversation belongs to another report."
+  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "The reply conversation belongs to another report."
  End If
  SaveReportMessageDraft = SaveReportNoteDraft(identity, report, expected, body)
  If parent > 0 Then

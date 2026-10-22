@@ -120,7 +120,8 @@ Public Sub SetFieldDefault(ByVal scopeKind As String, ByVal scopeID As Long, ByV
         detail = detail & "; previous version " & r!VersionCounter & "; previous is null=" & CStr(r!IsNullValue) & "; previous value=" & Nz(r!ValueText, "")
         r.Edit: r!VersionCounter = r!VersionCounter + 1
     End If
-    r!ValueText = value: r!IsNullValue = IsNull(value): r.Update: r.Close
+    r!ValueText = value: r!IsNullValue = IsNull(value): r.Update: r.Bookmark = r.LastModified
+    LinkFieldDefault CLng(r!DefaultID): r.Close
     operation = BeginOperation("Scoped default change", detail)
     FinishOperation operation, "Completed", "New is null=" & CStr(IsNull(value)) & "; new value=" & Nz(value, "") & "; committed reports unchanged."
     w.CommitTrans: Exit Sub
@@ -136,6 +137,7 @@ Private Function DefaultAt(ByVal scopeKind As String, ByVal scopeID As Long, ByV
     Dim r As DAO.Recordset
     Set r = CurrentDb.OpenRecordset("SELECT * FROM FieldDefault WHERE ScopeKind=" & QuoteSQL(scopeKind) & " AND ScopeID=" & scopeID & " AND FieldKey=" & QuoteSQL(fieldKey), dbOpenSnapshot)
     If Not r.EOF Then
+        AssertDefaultLink CLng(r!DefaultID)
         If r!IsNullValue Then result("Value") = Null Else result("Value") = r!ValueText.Value
         result("Source") = scopeKind & " " & scopeID & " version " & r!VersionCounter: DefaultAt = True
     End If

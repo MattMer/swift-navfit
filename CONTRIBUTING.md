@@ -30,6 +30,8 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Report navigation, pending values and lifecycle | test-ux-workflows.ps1; test-compat-pages.ps1; real Unload, failed saves, recovery and stale previews |
 | Startup contributor attribution | test-contributor-startup.ps1 |
 | Conversations/report tools | test-report-tools.ps1; test-report-message-import.ps1 for transfer; no resolve/reopen requirement |
+| Audit/conversation consolidation and routes | [test-audit-conversations-navigation.ps1](scripts/test-audit-conversations-navigation.ps1): identity/correlation, outcome actor, undo/history, canonical adapters, private ownership, ancestry rejection, rollback, routes and full native form/macro binding inventory |
+| Retained-schema audit/conversation import | [test-audit-message-transfer.ps1](scripts/test-audit-message-transfer.ps1) -BuildPath <fresh blank> -FixtureMapPath <JSON schema-to-path map>; actual retained schema files on disposable copies, Settings import, exact original fields, late rollback, private/reply preservation, source hashes and reopen. Do not relabel fixtures or execute historical source VBA. |
 | My Work/help | test-ux-my-work.ps1; test-context-help.ps1 |
 | Directory merging/history | test-directory-merge.ps1; applicable directory transfer/release checks |
 | Traits | test-traits.ps1 for persistence, rollback, legacy restore and fresh-session recovery; test-trait-catalogue.ps1 for exact text/source version/hash; fixed-page/report-tools checks cover current UI |
@@ -39,6 +41,8 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Structured names | test-party-names.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |
 | Viewing area/identity | test-ux-responsive-identity.ps1; control geometry, active field/caret; not physical DPI acceptance |
 | Schema/import engine | test-swift-data-import.ps1, test-workspace-upgrade.ps1, test-engine-verification.ps1 as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
+| Canonical report definitions/revisions and typed persistence | test-field-definitions.ps1 (also with -BuildPath); test-persistence.ps1; test-persistence-transfer.ps1 -BuildPath <fresh blank> -LegacyTemplate <real schema-27 blank>; exact raw/null/status/choice preservation, catalogue field extension, revision/cache ownership, constraints and rollback |
+| Summary-group completion/RSCA | test-rs-completion.ps1 -AccountingOnly; reconciliation, correction, duplicate/deletion/senior guards, cancelled legacy state and idempotent XML backfill. The default full suite also retains historical UI assertions; report any separate preexisting UI failure explicitly |
 | Provenance viewer | test-provenance.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
 | NAVFIT/PDF exchange | Applicable adapter/group export/return/local-PDF suites and authorized synthetic/reference fixtures |
 
@@ -55,6 +59,11 @@ API/fixture assertion was rerun. The provenance viewer owns a synthetic fixture.
 Legacy benchmark fixtures may still be active test inputs; trace callers before removal.
 Normal persistence fixtures may disable Unload in their disposable session for
 abrupt-close assertions; lifecycle tests must exercise actual user exits.
+Snapshot completeness uses the canonical field list. New Access test sessions
+must explicitly select their synthetic contributor using the existing test
+context helper. The decision/report-people/party-name runners offer an explicit
+`-PersistenceOnly` mode for data and recovery checks without their retained legacy
+button-layout assertions; current fixed-page acceptance remains a separate gate.
 
 For schema changes, assess persistent-data impact explicitly and update build DDL,
 version constants, metadata, migration and relevant table inventories together.

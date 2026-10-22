@@ -86,7 +86,6 @@ End Function
 Public Function UXMessageRefresh() As Boolean
  Dim f As Access.Form, id As Long, old As Variant, editable As Boolean
  Set f = UXToolsForm(): id = Nz(f!txtReportID, 0): old = f!lstMessages
- If id > 0 Then MigrateReportMessages id
  f!lstMessages.RowSource = "SELECT MessageID,Left(MessageBody,110) AS [Conversation],ContributorName AS Contributor,CreatedAt AS Posted FROM ReportMessage WHERE ReportID=" & id & " AND ParentMessageID Is Null ORDER BY CreatedAt DESC,MessageID DESC"
  f!lstMessages.Requery
  If Not IsNull(old) Then f!lstMessages = old
@@ -102,11 +101,15 @@ Public Function UXMessageRefresh() As Boolean
  UXMessageRead: UXMessageRefresh = True
 End Function
 Public Function UXMessageRead() As Boolean
- Dim f As Access.Form, rows As DAO.Recordset, id As Long, text As String
+ Dim f As Access.Form, rows As DAO.Recordset, id As Long, text As String, parents As Object
  Set f = UXToolsForm(): id = Nz(f!lstMessages, 0)
- Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportMessage WHERE ReportID=" & Nz(f!txtReportID, 0) & " AND (MessageID=" & id & " OR ParentMessageID=" & id & ") ORDER BY CreatedAt,MessageID", dbOpenSnapshot)
+ Set parents = ReportMessageParents(Nz(f!txtReportID, 0))
+ Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportMessage WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY CreatedAt,MessageID", dbOpenSnapshot)
  Do While Not rows.EOF
-  text = text & rows!ContributorName & " / " & Nz(Format(rows!CreatedAt, "yyyy-mm-dd hh:nn"), "") & vbCrLf & Nz(rows!MessageBody, "") & vbCrLf & vbCrLf: rows.MoveNext
+  If id > 0 Then
+   If ReportMessageMapRoot(CLng(rows!MessageID), parents) = id Then text = text & rows!ContributorName & " / " & Nz(Format(rows!CreatedAt, "yyyy-mm-dd hh:nn"), "") & vbCrLf & Nz(rows!MessageBody, "") & vbCrLf & vbCrLf
+  End If
+  rows.MoveNext
  Loop
  rows.Close: f!txtConversation = text: UXMessageRead = True
 End Function
@@ -260,7 +263,6 @@ End Function
 Public Function UXMyWorkNotes() As Boolean
  Dim f As Access.Form
  Set f = Forms!frmMyWork
- MigrateReportMessages
  f!lstReportNotes.RowSource = "SELECT m.MessageID,m.ReportID,UXWorkReport(m.ReportID) AS Report,m.ContributorName AS Contributor,Left(m.MessageBody,120) AS Note,m.CreatedAt AS Posted FROM ReportMessage AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.ParentMessageID Is Null AND r.IsArchived=False ORDER BY m.CreatedAt DESC,m.MessageID DESC"
  f!lstReportNotes.Requery: UXMyWorkNotes = True
 End Function

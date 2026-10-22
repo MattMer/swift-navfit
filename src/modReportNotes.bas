@@ -26,29 +26,8 @@ Failed:
     On Error GoTo 0: Err.Raise failure, "SaveReportNoteDraft", message
 End Function
 Public Function PostReportNote(ByVal draftGuid As String, ByVal expectedVersion As Long) As Long
-    Dim r As DAO.Recordset, note As DAO.Recordset, w As DAO.Workspace, author As Long, op As Long, failure As Long, message As String, id As Long
-    author = MajorAuthor(): Set w = DBEngine.Workspaces(0): w.BeginTrans
-    On Error GoTo Failed
-    Set r = CurrentDb.OpenRecordset("SELECT * FROM ReportNoteDraft WHERE DraftGuid=" & QuoteSQL(draftGuid), dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 6951, , "Checkpoint the note before posting."
-    If r!AuthorProfileID <> author Or r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6951, , "Contributor or note checkpoint changed. Recover before posting."
-    id = r!ReportID
-    If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & id), True) Then Err.Raise vbObjectError + 6951, , "Recover the archived report before posting a note."
-    If Len(Trim$(Nz(r!NoteText, ""))) = 0 Then Err.Raise vbObjectError + 6951, , "Enter a note before posting."
-    Set note = CurrentDb.OpenRecordset("ReportNote", dbOpenDynaset)
-    note.AddNew: note!NoteGuid = NewIdentity(): note!ReportID = id: note!AuthorProfileID = author
-    note!ContributorName = MajorScalar("SELECT DisplayName FROM UserProfile WHERE UserProfileID=" & author)
-    note!NoteText = r!NoteText: note!CreatedAt = Now(): note!SourceKind = "Contributor"
-    note.Update: note.Bookmark = note.LastModified: PostReportNote = note!NoteID: note.Close: r.Close
-    CurrentDb.Execute "DELETE FROM ReportNoteDraft WHERE DraftGuid=" & QuoteSQL(draftGuid), dbFailOnError
-    op = BeginOperation("Post local report note", "Report " & id & "; note " & PostReportNote)
-    FinishOperation op, "Completed", "Contributor attribution recorded. Official content and saved revisions unchanged."
-    w.CommitTrans: Exit Function
-Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    If Not note Is Nothing Then note.Close
-    On Error GoTo 0: Err.Raise failure, "PostReportNote", message
+    'Compatibility result is a negative canonical message token, never a NoteID.
+    PostReportNote = -PostReportMessageDraft(draftGuid, expectedVersion)
 End Function
 Public Sub DiscardReportNoteDraft(ByVal draftGuid As String, ByVal expectedVersion As Long)
     Dim q As DAO.QueryDef

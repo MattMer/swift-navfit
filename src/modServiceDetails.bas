@@ -21,7 +21,7 @@ Public Function ValidateServiceDetails(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 2700, , "Service details require six text or null entries."
     If LBound(values) <> 0 Or UBound(values) <> 5 Then Err.Raise vbObjectError + 2700, , "Service details require six text or null entries."
-    keys = ServiceDetailsKeys(): limits = Array(10, 20, 4, 15, 10, 10)
+    keys = ServiceDetailsKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 5
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2701, , ServiceDetailsLabel(keys(i)) & " must be text or null."

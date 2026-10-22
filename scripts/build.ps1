@@ -14,12 +14,13 @@ try {
     $app = New-Object -ComObject Access.Application
     $app.NewCurrentDatabase($OutputPath, 12)
     $swiftBaseDatabase = $app.CurrentDb()
+    $canonicalFields=@((Get-Content (Join-Path $root 'src/field-definitions.json') -Raw -Encoding UTF8|ConvertFrom-Json).fields|Sort-Object ordinal)
     $definitions = @(
         'CREATE TABLE AppMetadata (MetadataID LONG CONSTRAINT PK_AppMetadata PRIMARY KEY, AppVersion TEXT(40), SchemaVersion LONG, CompatibilityStatus TEXT(120))',
         'CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)',
         'CREATE TABLE Workspace (WorkspaceID LONG CONSTRAINT PK_Workspace PRIMARY KEY, WorkspaceGuid TEXT(38) NOT NULL, CommandName TEXT(120) NOT NULL, ActiveProfileID LONG NOT NULL)',
         'CREATE TABLE Folder (FolderID COUNTER CONSTRAINT PK_Folder PRIMARY KEY, FolderGuid TEXT(38) NOT NULL, FolderName TEXT(80) NOT NULL, ParentFolderID LONG)',
-        'CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, OfficialComments LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG, OfficialName TEXT(27), RankRate TEXT(5), Designator TEXT(12), UnitUIC TEXT(5), ShipStation TEXT(18), Trait33 TEXT(3), Trait34 TEXT(3), Trait35 TEXT(3), Trait36 TEXT(3), Trait37 TEXT(3), Trait38 TEXT(3), Trait39 TEXT(3), ObservationStatus TEXT(8), PromotionRecommendation TEXT(20), PromotionStatus TEXT(8), ReportingSeniorName TEXT(18), ReportingSeniorGrade TEXT(5), ReportingSeniorDesignator TEXT(5), ReportingSeniorTitle TEXT(14), ReportingSeniorUIC TEXT(5), OccasionPeriodic TEXT(3), OccasionDetachment TEXT(3), OccasionFrocking TEXT(3), OccasionSpecial TEXT(3), ReportRegular TEXT(3), ReportConcurrent TEXT(3), ReportOperationalCommander TEXT(3), PrimaryDuty TEXT(14), DutyDescription LONGTEXT, MemberSSN TEXT(9), MemberDoDID TEXT(10), ComponentActive TEXT(3), ComponentTAR TEXT(3), ComponentInactive TEXT(3), ComponentATADSW TEXT(3), DateReported TEXT(10), CounselingDate TEXT(10), CounselorName TEXT(20), ReadinessSummary TEXT(4), ReadinessDetail TEXT(15), ReadinessDate TEXT(10), BilletSubcategory TEXT(10), AssignmentRecommendationA TEXT(20), AssignmentRecommendationB TEXT(20), RetentionYes TEXT(3), RetentionNo TEXT(3), StatementYes TEXT(3), StatementNo TEXT(3), ReportingSeniorSSN TEXT(9), ReportingSeniorDoDID TEXT(10), ReportingSeniorAddress1 TEXT(30), ReportingSeniorAddress2 TEXT(30), ReportingSeniorCity TEXT(15), ReportingSeniorState TEXT(2), ReportingSeniorZip TEXT(9), ReportingSeniorPhone TEXT(10), ReportingSeniorDSN TEXT(7), RaterName TEXT(28), RaterDate TEXT(10), SeniorRaterName TEXT(28), SeniorRaterDate TEXT(10), MemberFirstName TEXT(27), MemberMiddleInitial TEXT(3), MemberLastName TEXT(27), MemberSuffix TEXT(10), ReportingSeniorLastName TEXT(18), ReportingSeniorFirstInitial TEXT(1), ReportingSeniorMiddleInitial TEXT(3), CounselorLastName TEXT(20), CounselorFirstInitial TEXT(1), CounselorMiddleInitial TEXT(3), CommandEmployment LONGTEXT)',
+        ('CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG, FolderID LONG,' + (($canonicalFields | ForEach-Object { '['+$_.key+'] '+$_.storageType+$(if($_.key -eq 'FormKind'){' NOT NULL'}) }) -join ',') + ')'),
         'CREATE TABLE FolderMove (FolderMoveID COUNTER CONSTRAINT PK_FolderMove PRIMARY KEY, ReportID LONG NOT NULL, OldFolderID LONG, NewFolderID LONG, AuthorProfileID LONG NOT NULL, MovedAt DATETIME)',
         'CREATE TABLE ReportRevision (RevisionID COUNTER CONSTRAINT PK_ReportRevision PRIMARY KEY, ReportID LONG NOT NULL, RevisionNumber LONG NOT NULL, ParentRevisionID LONG, AuthorProfileID LONG NOT NULL, CommittedAt DATETIME, Reason TEXT(255), SnapshotSchema LONG)',
         'CREATE TABLE RevisionValue (RevisionValueID COUNTER CONSTRAINT PK_RevisionValue PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText LONGTEXT, IsNullValue BIT)',
@@ -57,7 +58,7 @@ try {
         'CREATE TABLE ReviewTaskEvent (TaskEventID COUNTER CONSTRAINT PK_ReviewTaskEvent PRIMARY KEY, TaskID LONG NOT NULL, AuthorProfileID LONG NOT NULL, EventAt DATETIME, EventKind TEXT(20), Notes LONGTEXT)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventTask FOREIGN KEY (TaskID) REFERENCES ReviewTask (TaskID)',
         'ALTER TABLE ReviewTaskEvent ADD CONSTRAINT FK_TaskEventAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
-        'CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME, FormKind TEXT(12), DraftTitle LONGTEXT, MemberDisplay LONGTEXT, StartEntry LONGTEXT, EndEntry LONGTEXT, DraftNotes LONGTEXT, OfficialComments LONGTEXT, OfficialName LONGTEXT, RankRate LONGTEXT, Designator LONGTEXT, UnitUIC LONGTEXT, ShipStation LONGTEXT, Trait33 LONGTEXT, Trait34 LONGTEXT, Trait35 LONGTEXT, Trait36 LONGTEXT, Trait37 LONGTEXT, Trait38 LONGTEXT, Trait39 LONGTEXT, ObservationStatus LONGTEXT, PromotionRecommendation LONGTEXT, PromotionStatus LONGTEXT, ReportingSeniorName LONGTEXT, ReportingSeniorGrade LONGTEXT, ReportingSeniorDesignator LONGTEXT, ReportingSeniorTitle LONGTEXT, ReportingSeniorUIC LONGTEXT, OccasionPeriodic LONGTEXT, OccasionDetachment LONGTEXT, OccasionFrocking LONGTEXT, OccasionSpecial LONGTEXT, ReportRegular LONGTEXT, ReportConcurrent LONGTEXT, ReportOperationalCommander LONGTEXT, PrimaryDuty LONGTEXT, DutyDescription LONGTEXT, MemberSSN LONGTEXT, MemberDoDID LONGTEXT, ComponentActive LONGTEXT, ComponentTAR LONGTEXT, ComponentInactive LONGTEXT, ComponentATADSW LONGTEXT, DateReported LONGTEXT, CounselingDate LONGTEXT, CounselorName LONGTEXT, ReadinessSummary LONGTEXT, ReadinessDetail LONGTEXT, ReadinessDate LONGTEXT, BilletSubcategory LONGTEXT, AssignmentRecommendationA LONGTEXT, AssignmentRecommendationB LONGTEXT, RetentionYes LONGTEXT, RetentionNo LONGTEXT, StatementYes LONGTEXT, StatementNo LONGTEXT, ReportingSeniorSSN LONGTEXT, ReportingSeniorDoDID LONGTEXT, ReportingSeniorAddress1 LONGTEXT, ReportingSeniorAddress2 LONGTEXT, ReportingSeniorCity LONGTEXT, ReportingSeniorState LONGTEXT, ReportingSeniorZip LONGTEXT, ReportingSeniorPhone LONGTEXT, ReportingSeniorDSN LONGTEXT, RaterName LONGTEXT, RaterDate LONGTEXT, SeniorRaterName LONGTEXT, SeniorRaterDate LONGTEXT, MemberFirstName LONGTEXT, MemberMiddleInitial LONGTEXT, MemberLastName LONGTEXT, MemberSuffix LONGTEXT, ReportingSeniorLastName LONGTEXT, ReportingSeniorFirstInitial LONGTEXT, ReportingSeniorMiddleInitial LONGTEXT, CounselorLastName LONGTEXT, CounselorFirstInitial LONGTEXT, CounselorMiddleInitial LONGTEXT, CommandEmployment LONGTEXT)',
+        ('CREATE TABLE RecoveryDraft (RecoveryDraftID COUNTER CONSTRAINT PK_RecoveryDraft PRIMARY KEY, SessionGuid TEXT(38) NOT NULL, AuthorProfileID LONG NOT NULL, ReportID LONG, BaseRevisionID LONG, CheckpointAt DATETIME,' + (($canonicalFields | ForEach-Object { '['+$_.recoveryKey+'] '+$(if($_.key -eq 'FormKind'){'TEXT(12)'}else{'LONGTEXT'}) }) -join ',') + ')'),
         'CREATE UNIQUE INDEX UX_RecoverySession ON RecoveryDraft (SessionGuid)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE RecoveryDraft ADD CONSTRAINT FK_RecoveryReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
@@ -79,7 +80,6 @@ try {
         'ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
         'ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)',
         'ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionParent FOREIGN KEY (ParentRevisionID) REFERENCES ReportRevision (RevisionID)',
-        'ALTER TABLE Report ADD CONSTRAINT FK_ReportCurrentRevision FOREIGN KEY (CurrentRevisionID) REFERENCES ReportRevision (RevisionID)',
         'ALTER TABLE RevisionValue ADD CONSTRAINT FK_ValueRevision FOREIGN KEY (RevisionID) REFERENCES ReportRevision (RevisionID)',
         'ALTER TABLE RevisionChange ADD CONSTRAINT FK_ChangeRevision FOREIGN KEY (RevisionID) REFERENCES ReportRevision (RevisionID)',
         'ALTER TABLE ReportEvent ADD CONSTRAINT FK_EventReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)',
@@ -96,6 +96,18 @@ try {
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
     foreach ($sql in $definitions) { try { $swiftBaseDatabase.Execute($sql,128) } catch { throw ($sql + "`n" + $_.Exception.Message) } }
+    $swiftBaseDatabase.TableDefs('RevisionDate').ValidationRule = "[FieldKey] In ('DateReported','CounselingDate','RaterDate','SeniorRaterDate','ReadinessDate') And (([DateState]='Date' And [DateValue] Is Not Null) Or ([DateState] In ('Missing','Blank','Unknown') And [DateValue] Is Null) Or ([FieldKey]='CounselingDate' And [DateState] In ('NOT REQ','NOT PERF') And [DateValue] Is Null))"
+    $swiftBaseDatabase.TableDefs('RevisionChoice').ValidationRule = "[ChoiceKind] In ('Retention','Statement') And [ChoiceValue] In ('Yes','No','Unspecified','Conflict','Unknown')"
+    $auditPointers=@('RevisionSourceID','ReportEventSourceID','FolderMoveSourceID','CommentEventSourceID','TaskEventSourceID','JournalSourceID','MessageSourceID')
+    $auditKinds=@('Revision','Report event','Folder move','Comment event','Review event','Operation','Message')
+    $auditCases=for($ai=0;$ai -lt $auditPointers.Count;$ai++){"([SourceKind]='"+$auditKinds[$ai]+"' And ["+$auditPointers[$ai]+'] Is Not Null)'}
+    $auditCount=($auditPointers|ForEach-Object {'IIf(['+$_+'] Is Null,0,1)'}) -join '+'
+    $swiftBaseDatabase.TableDefs('AuditEvent').ValidationRule='[SourceVersion]>=0 And ('+$auditCount+')=1 And ('+($auditCases -join ' Or ')+')'
+    $swiftBaseDatabase.TableDefs('Report').ValidationRule = "([FormKind] In ('EVAL','CHIEFEVAL','FITREP') Or ([LegacyFormKind] Is Not Null And [FormKind]=[LegacyFormKind])) And IIf([WorkflowState] Is Null,[LegacyWorkflowNull]=True,([WorkflowState] In ('Draft','Approved') Or ([LegacyWorkflowState] Is Not Null And [WorkflowState]=[LegacyWorkflowState])))"
+    $swiftBaseDatabase.TableDefs('FieldDefaultLink').ValidationRule = "([LinkState]='Unresolved' And [CommandWorkspaceID] Is Null And [FolderID] Is Null And [GroupID] Is Null And [ReportID] Is Null) Or ([LinkState]='Verified' And (IIf([CommandWorkspaceID] Is Null,0,1)+IIf([FolderID] Is Null,0,1)+IIf([GroupID] Is Null,0,1)+IIf([ReportID] Is Null,0,1))=1)"
+    $swiftBaseDatabase.TableDefs('GroupCompletion').ValidationRule = '[TraitCount]>=0 And [TraitSum]>=0'
+    $swiftBaseDatabase.TableDefs('GroupLifecycle').ValidationRule = "[WorkflowState] In ('Initialized','In-Work','Ready for Signature','Completed') Or ([LegacyState] Is Not Null And [WorkflowState]=[LegacyState])"
+    $swiftBaseDatabase.TableDefs('GroupCompletionReport').ValidationRule = '([RevisionID] Is Null And [RevisionOwnerReportID] Is Null And [TraitCount] Is Null And [TraitSum] Is Null) Or ([RevisionID] Is Not Null And [RevisionOwnerReportID]=[ReportID] And [TraitCount]>=0 And [TraitSum]>=[TraitCount] And [TraitSum]<=5*[TraitCount])'
     for($ti=0;$ti -lt $swiftBaseDatabase.TableDefs.Count;$ti++) {
         $table=$swiftBaseDatabase.TableDefs.Item($ti)
         if($table.Name.StartsWith('MSys')) {continue}
@@ -427,11 +439,6 @@ try {
     Control $f 109 'txtDiagnostics' 400 1100 12600 4500; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     [void](Control $f 104 'cmdHome' 400 6150 2800 550 'Home' '=OpenScreen("frmHome")')
     $f.OnLoad='=LoadSupport()'; SaveScreen $f 'frmSupport'
-    NewScreen 'frmHelp' 'Contextual help' 6300; $f=$script:swiftForm
-    [void](Control $f 100 'lblTopic' 400 1050 12400 450 '')
-    Control $f 109 'txtHelp' 400 1700 12400 3200; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
-    [void](Control $f 104 'cmdClose' 400 5300 2800 550 'Return to work' '=CloseHelp()')
-    SaveScreen $f 'frmHelp'
     NewScreen 'frmImportReview' 'NAVFIT source review' 12500; $f=$script:swiftForm
     [void](Control $f 100 'lblScope' 400 950 12600 700 'Partial narrative import only. Create a new draft, or compare with a saved draft before accepting changes. Other official fields remain unmapped.')
     Control $f 109 'txtSource' 400 1750 12600 450; $c=$script:swiftControl; $c.Locked=$true
@@ -475,16 +482,6 @@ try {
     [void](Control $f 104 'cmdDiscard' 8200 5900 3600 600 'Discard checkpoint' '=DeleteRecoveryUI()')
     [void](Control $f 104 'cmdHome' 400 6800 3000 500 'Home' '=OpenScreen("frmHome")')
     $f.OnLoad='=LoadRecoveries()'; $f.OnActivate='=LoadRecoveries()'; SaveScreen $f 'frmRecovery'
-    NewScreen 'frmChecklist' 'Saved draft completeness checklist' 9900; $f=$script:swiftForm
-    [void](Control $f 100 'lblContext' 400 1000 12600 450 '')
-    [void](Control $f 100 'lblSummary' 400 1550 12600 650 '')
-    Control $f 109 'txtReportID' 10 10 100 100; $script:swiftControl.Visible=$false
-    Control $f 110 'lstFindings' 400 2400 12600 3300; $c=$script:swiftControl
-    $c.ColumnCount=3; $c.ColumnWidths='0;2200;10000'; $c.BoundColumn=1; $c.AfterUpdate='=ChecklistGuidance()'
-    Control $f 109 'txtGuidance' 400 6100 12600 2200; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
-    [void](Control $f 104 'cmdRefresh' 400 8850 3500 550 'Refresh saved values' '=RefreshDraftChecklist()')
-    [void](Control $f 104 'cmdClose' 4300 8850 3500 550 'Return to workspace' '=CloseDraftChecklist()')
-    SaveScreen $f 'frmChecklist'
     NewScreen 'frmReconcile' 'Review incoming official narrative' 10100; $f=$script:swiftForm
     [void](Control $f 100 'lblContext' 400 1000 12600 450 '')
     [void](Control $f 100 'lblScope' 400 1600 12600 700 'Two-way narrative comparison only. Accept replaces this one saved field. Other fields stay unchanged. Close the editor before accepting.')
@@ -547,22 +544,6 @@ try {
     Control $f 109 'txtValue' 400 8750 12600 3100; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
     [void](Control $f 104 'cmdReturn' 400 12200 12600 550 'Return to operations' '=OpenScreen("frmOperations")')
     SaveScreen $f 'frmProvenance'
-    NewScreen 'frmReviewComments' 'Saved draft review comments' 13900; $f=$script:swiftForm
-    [void](Control $f 100 'lblScope' 400 950 12600 700 'Review comments stay separate from official narratives. Threads reference saved revisions; replies preserve that reference. Local contributor profiles identify activity without authentication.')
-    Control $f 109 'txtReportID' 10 10 100 100; $script:swiftControl.Visible=$false
-    [void](Control $f 100 'lblContext' 400 1800 12600 600 '')
-    Control $f 110 'lstThreads' 400 2600 12600 2000; $c=$script:swiftControl
-    $c.ColumnCount=4; $c.ColumnWidths='0;2000;5600;5000'; $c.BoundColumn=1; $c.AfterUpdate='=ShowReviewThread()'
-    [void](Control $f 100 'lblHistory' 400 4800 12600 350 'Selected thread - comments and resolution history')
-    Control $f 109 'txtHistory' 400 5300 12600 3800; $c=$script:swiftControl; $c.Locked=$true; $c.ScrollBars=2
-    [void](Control $f 100 'lblCompose' 400 9300 12600 400 'Write a new thread or reply to the selected thread')
-    Control $f 109 'txtCompose' 400 9800 12600 1700; $c=$script:swiftControl; $c.ScrollBars=2; $c.EnterKeyBehavior=$true
-    [void](Control $f 104 'cmdPost' 400 11800 3800 550 'Post new thread' '=PostReviewUI()')
-    [void](Control $f 104 'cmdReply' 4500 11800 3800 550 'Post reply' '=PostReviewUI(True)')
-    [void](Control $f 104 'cmdResolve' 8600 11800 4400 550 'Resolve thread' '=ReviewStateUI(True)')
-    [void](Control $f 104 'cmdReopen' 400 12600 3800 550 'Reopen thread' '=ReviewStateUI(False)')
-    [void](Control $f 104 'cmdEditor' 4500 12600 8500 550 'Return to open editor' '=ReturnFromReviewComments()')
-    SaveScreen $f 'frmReviewComments'
     NewScreen 'frmMyWork' 'My Work - local review assignments' 17500; $f=$script:swiftForm
     [void](Control $f 100 'lblProfile' 400 950 12600 650 '')
     [void](Control $f 100 'lblScope' 400 1700 12600 650 'Review outcomes apply to a saved revision. Drafts remain editable; later saves make older reviews stale. Accepted is an internal review outcome, not official approval or export readiness.')
@@ -660,6 +641,11 @@ try {
     [void](Control $f 104 'cmdHome' 400 9700 12600 450 'Return home' '=OpenScreen("frmHome")')
     SaveScreen $f 'frmBackup'
     . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'presentation'
+    # Historical standalone stages stamp their own schema. The fresh build already
+    # created the complete canonical schema; restore its identity before any reopen.
+    $identityDB=$app.CurrentDb()
+    $identityDB.Execute("UPDATE AppMetadata SET SchemaVersion=$($swiftBuildPlan.SchemaVersion),AppVersion='$($swiftBuildPlan.AppVersion)'",128)
+    $identityDB.Close()
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
@@ -667,6 +653,9 @@ try {
     # Reopen before persisting native event modules; the named final phase owns it.
     $app.OpenCurrentDatabase($OutputPath,$true)
     . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'finalize'
+    $identityDB=$app.CurrentDb()
+    $identityDB.Execute("UPDATE AppMetadata SET SchemaVersion=$($swiftBuildPlan.SchemaVersion),AppVersion='$($swiftBuildPlan.AppVersion)'",128)
+    $identityDB.Close()
     $app.DoCmd.RunCommand(126)
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)

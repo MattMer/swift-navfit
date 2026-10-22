@@ -1,6 +1,6 @@
 # Focused saved-revision review and native Reports viewport return.
 if(-not $script:swiftManagedBuild){foreach($module in @('modUXReviewLayout','modRouteTemplates','modUXReview','modUXReportReturn','modUX','modSwift','modMajorUI','modUXDashboard')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
-NewScreen 'frmUXReview' 'Report review' 11200;$f=$script:swiftForm;$f.ScrollBars=2;$f.OnLoad='=UXLoadReview()'
+NewScreen 'frmReportReviewPanel' 'Report review' 11200;$f=$script:swiftForm;$f.ScrollBars=2;$f.OnLoad='=UXLoadReview()'
 foreach($name in @('txtReportID','txtGroupID','txtExpectedRevision','txtExpectedStamp')){[void](Control $f 109 $name 0 0 100 100);$script:swiftControl.Visible=$false}
 [void](Control $f 100 'lblSaved' 400 1050 12600 650 '')
 [void](Control $f 100 'lblTemplate' 400 1850 5900 300 'Review route template')
@@ -18,12 +18,12 @@ foreach($pair in @(@('Accept','Accept step'),@('Return','Return report'),@('Rest
 [void](Control $f 104 ('cmd'+$pair[0]) (400+($i%3)*4300) (8350+[math]::Floor($i/3)*550) 4000 450 $pair[1] ('=UXReviewAction("'+$pair[0]+'")'));$i++
 }
 [void](Control $f 100 'lblUnavailable' 400 9500 12600 850 '')
-[void](Control $f 104 'cmdBack' 400 10500 6000 450 'Back to workspace' '=UXCloseScreen("frmUXReview")')
+[void](Control $f 104 'cmdBack' 400 10500 6000 450 'Back to workspace' '=UXCloseScreen("frmReportReviewPanel")')
 [void](Control $f 104 'cmdRefresh' 6800 10500 6000 450 'Refresh saved review state' '=UXLoadReview()')
 $i=0;foreach($name in @('cboTemplate','cmdStart','cboRun','lstSteps','txtStep','txtNote','cmdAccept','cmdReturn','cmdRestart','cmdCancel','cmdApprove','cmdReopen','cmdBack','cmdRefresh')){$f.Controls($name).TabIndex=$i;$i++}
 foreach($c in $f.Controls){if($c.Visible){$c.Tag='RV:'+$c.Left+':'+$c.Width+':'+$c.Top+':'+$c.Height}}
 $f.OnResize='=UXReviewLayout()'
-SaveScreen $f 'frmUXReview'
+SaveScreen $f 'frmReportReviewPanel'
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor');$f.OnClose='=UXQueueReportReturn()';SaveScreen $f 'frmEditor'
 $app.DoCmd.OpenForm('frmMajorWorkbench',1);$f=$app.Forms.Item('frmMajorWorkbench')
 [void](Control $f 104 'uxFocusedReview' 2850 6300 10450 500 'Review selected member - saved revision' '=UXGroupReview()');$script:swiftControl.Tag='WBX:Review'

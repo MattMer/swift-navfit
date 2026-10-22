@@ -49,7 +49,7 @@ End Function
 Public Function MigrateDirectoryCompatibility() As Long
  Dim failure As Long, message As String
  On Error GoTo Failed
- compatibilityContributor = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+ compatibilityContributor = Nz(MajorScalar("SELECT ActiveProfileID FROM Workspace WHERE WorkspaceID=1"), 0)
  MigrateDirectoryCompatibility = SyncDirectoryFromReports()
  compatibilityContributor = 0
  Exit Function

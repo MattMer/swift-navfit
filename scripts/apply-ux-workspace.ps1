@@ -23,6 +23,12 @@ for($i=0;$i -lt $uxFields.Count;$i++){
 [void](Control $f 104 'cmdSnippets' 200 11500 3000 450 'Insert narrative snippet' '=OpenScreen("frmSnippets")')
 SaveScreen $f 'frmUXEditorFields'
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
+foreach($field in $uxFields){
+    if(@($f.Controls|ForEach-Object {$_.Name}) -notcontains $field.control){
+        [void](Control $f 109 $field.control 0 0 100 100)
+        $script:swiftControl.Visible=$false
+    }
+}
 foreach($c in $f.Controls){if($c.Tag -like 'UX:*'){$c.Visible=$false;$c.Tag='BUFFER'} }
 foreach($name in $uxNames){$f.Controls($name).Visible=$false}
 $f.Controls('cboKind').Visible=$true;$f.Controls('cboKind').AfterUpdate='=UXEditorKindChanged()'
@@ -153,7 +159,7 @@ if(-not $script:swiftManagedBuild){$app.LoadFromText(5,'modUXViewport',(Join-Pat
 foreach($screenName in $uxPages){
     $app.DoCmd.OpenForm($screenName,1);$f=$app.Forms.Item($screenName)
     [void](Control $f 111 'uxCompactNav' 250 150 2500 400);$c=$script:swiftControl
-    $c.Visible=$false;$c.RowSourceType='Value List';$c.RowSource='frmHome;Overview;frmLibrary;Reports;frmUXGroups;Summary groups;frmMyWork;My Work;frmUXResources;Resources;frmUXSettings;Settings & Help'
+    $c.Visible=$false;$c.RowSourceType='Value List';$c.RowSource=([string]$app.Eval('UXWorkspaceRowSource()'))
     $c.ColumnCount=2;$c.ColumnWidths='0;2500';$c.LimitToList=$true;$c.TabIndex=0;$c.ControlTipText='Workspace navigation';$c.AfterUpdate='=UXCompactNavigate("'+$screenName+'")'
     if($screenName -eq 'frmEditor'){
         [void](Control $f 111 'uxCompactSection' 250 2650 5000 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List'

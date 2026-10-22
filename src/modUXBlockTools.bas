@@ -96,6 +96,9 @@ Public Function UXBlockValidated(ByVal changes As Object, ByVal kind As String) 
     Set UXBlockValidated = result
 End Function
 Public Function UXGroupDefaultValue(ByVal groupID As Long, ByVal key As String) As Variant
+    Dim id As Long
+    id = Nz(DLookup("DefaultID", "FieldDefault", UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key)), 0)
+    If id > 0 Then AssertDefaultLink id
     UXGroupDefaultValue = DLookup("ValueText", "FieldDefault", UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key))
 End Function
 Public Function UXBlockPendingValue(ByVal key As String) As Variant

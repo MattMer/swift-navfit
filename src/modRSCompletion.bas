@@ -13,9 +13,8 @@ Public Function RSBaselineIncludes(ByVal baselineID As Long, ByVal ancestor As L
  Dim note As String, parent As Long
  Do While baselineID > 0 And ancestor > 0
   If baselineID = ancestor Then RSBaselineIncludes = True: Exit Function
-  note = Nz(DLookup("SourceNote", "RSCABaseline", "BaselineID=" & baselineID), "")
-  If Left$(note, Len(LocalPrefix)) <> LocalPrefix Then Exit Function
-  parent = Val(Mid$(note, Len(LocalPrefix) + 1))
+  parent = Nz(DLookup("ParentBaselineID", "RSCABaseline", "BaselineID=" & baselineID), 0)
+  If parent = 0 Then Exit Function
   If parent >= baselineID Then Err.Raise vbObjectError + 4850, , "RSCA baseline ancestry is invalid. Inspect history before continuing."
   baselineID = parent
  Loop
@@ -38,12 +37,6 @@ Public Sub RSExcludePostedGroup(ByVal groupID As Long, ByVal baselineID As Long,
  count = count - CLng(GroupPolicyValue(groupID, "RSCAGroupCount"))
  If count < 0 Or total < 0 Then Err.Raise vbObjectError + 4852, , "Recorded completion exceeds historical totals. Inspect RSCA history."
 End Sub
-Private Sub RSCompletionPolicyPut(ByVal d As Object, ByVal key As String, ByVal value As String)
- Dim n As Object
- Set n = d.selectSingleNode("/SwiftGroupPolicy/" & key)
- If n Is Nothing Then Set n = d.createElement(key): d.documentElement.appendChild n
- n.Text = value
-End Sub
 'Called inside SetGroupWorkflow's transaction: errors roll back status, baseline,
 'operation history and markers together. No report revision is changed.
 Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
@@ -60,7 +53,7 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  grade = CStr(DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID))
  latest = RSLatestBaseline(CLng(p("SeniorID")), grade)
  If latest <> CLng(p("BaselineID")) Then Err.Raise vbObjectError + 4855, , "Select the latest matching paygrade baseline before completing this group. Earlier observations remain in history."
- Set r = RSGroupRows(groupID): ids = "|"
+ Set r = CurrentDb.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " ORDER BY r.ReportID", dbOpenSnapshot): ids = "|"
  Do While Not r.EOF
   If Nz(r!ObservationStatus, "") <> "NOB" Then
    If Nz(r!ObservationStatus, "") <> "Observed" Then Err.Raise vbObjectError + 4856, , "Choose Observed or whole-report NOB for every member."
@@ -75,21 +68,14 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
   r.MoveNext
  Loop
  r.Close
- Set groups = CurrentDb.OpenRecordset("SELECT GroupID,KeySpec FROM SummaryGroup WHERE GroupID<>" & groupID, dbOpenSnapshot)
- Do While Not groups.EOF
-  If InStr(Nz(groups!KeySpec, ""), "<RSCAPostedBaseline>") > 0 Then
-   For Each id In Split(Mid$(ids, 2), "|")
-    If Len(id) > 0 Then
-     If InStr(GroupPolicyValue(CLng(groups!GroupID), "RSCAReportIDs"), "|" & id & "|") > 0 Then Err.Raise vbObjectError + 4857, , "A member report is already counted through another completed group. Resolve the duplicate group membership before completion."
-    End If
-   Next
+ For Each id In Split(Mid$(ids, 2), "|")
+  If Len(id) > 0 Then
+   If MajorScalar("SELECT Count(*) FROM RSCountedReport AS c INNER JOIN GroupCompletion AS p ON c.CompletionID=p.CompletionID WHERE c.ReportID=" & CLng(id) & " AND p.GroupID<>" & groupID) > 0 Then Err.Raise vbObjectError + 4857, , "A report is already counted through another group. Reconcile its accounting before completion."
   End If
-  groups.MoveNext
- Loop
- groups.Close
+ Next
  posted = Val(GroupPolicyValue(groupID, "RSCAPostedBaseline"))
  If posted > 0 Then
-  If GroupPolicyValue(groupID, "RSCAReportIDs") = ids And CDbl(GroupPolicyValue(groupID, "RSCAGroupSum")) = CDbl(p("GroupSum")) And CLng(GroupPolicyValue(groupID, "RSCAGroupCount")) = CLng(p("GroupCount")) Then Exit Sub
+  If GroupPolicyValue(groupID, "RSCAReportIDs") = ids And CDbl(GroupPolicyValue(groupID, "RSCAGroupSum")) = CDbl(p("GroupSum")) And CLng(GroupPolicyValue(groupID, "RSCAGroupCount")) = CLng(p("GroupCount")) And RSPostingRevisionsMatch(groupID) Then Exit Sub
  End If
  total = CDbl(p("HistoricalSum")) + CDbl(p("GroupSum"))
  count = CLng(p("HistoricalCount")) + CLng(p("GroupCount"))
@@ -100,7 +86,8 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  average = Null
  If count > 0 Then average = total / count
  baseline = RSAddBaseline(CLng(p("SeniorID")), grade, asOf, average, count, exact, LocalPrefix & latest & "; group=" & groupID & "; local completion, not BOL verification")
- RSCompletionPolicyPut policy, "RSCAPostedBaseline", CStr(baseline)
- RSCompletionPolicyPut policy, "RSCAGroupSum", CStr(p("GroupSum")): RSCompletionPolicyPut policy, "RSCAGroupCount", CStr(p("GroupCount"))
- RSCompletionPolicyPut policy, "RSCAReportIDs", ids: RSCompletionPolicyPut policy, "RSCACompletedAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
+ CurrentDb.Execute "UPDATE RSCABaseline SET ParentBaselineID=" & latest & " WHERE BaselineID=" & baseline, dbFailOnError
+ Set r = RSGroupRows(groupID)
+ RSWritePosting groupID, CLng(p("SeniorID")), latest, baseline, CDbl(p("GroupSum")), CLng(p("GroupCount")), r
+ r.Close
 End Sub

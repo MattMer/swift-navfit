@@ -1,7 +1,7 @@
 param([string]$BuildPath='D:\Development\Swift NAVFIT\build\ux-r26-final.accdb')
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $dir=Join-Path $root ('build/tests/navfit-adapter-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $dir)
-$original=Join-Path $root 'TEST_DB.accdb';$hash=(Get-FileHash -LiteralPath $original).Hash
+$original=Join-Path $root 'FORMS_REFERENCES_TEMPLATES/TEST_DB.accdb';$hash=(Get-FileHash -LiteralPath $original).Hash
 $source=Join-Path $dir 'synthetic.accdb'; & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source
 $scratch=Join-Path $dir 'test.accdb';Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=New-Object -ComObject Access.Application
@@ -14,10 +14,10 @@ try{
  $app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestNAVFITAdapter("'+$source+'","'+(Join-Path $dir 'roundtrip.accdb')+'")')
  if($result -notlike 'PASS:*'){throw $result}
- $exchange=$app.Eval('TestNAVFITExchange("'+$dir+'","'+(Join-Path $root 'NAVFIT_BLANK.accdb')+'")')
+ $exchange=$app.Eval('TestNAVFITExchange("'+$dir+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")')
  if($exchange -notlike 'PASS:*'){throw $exchange}
  Write-Output $exchange
- $guards=$app.Eval('TestNAVFITGuards("'+$dir+'","'+(Join-Path $root 'NAVFIT_BLANK.accdb')+'")')
+ $guards=$app.Eval('TestNAVFITGuards("'+$dir+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")')
  if($guards -notlike 'PASS:*'){throw $guards}
  Write-Output $guards
  $app.CloseCurrentDatabase()

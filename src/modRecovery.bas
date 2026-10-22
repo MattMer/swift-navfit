@@ -4,16 +4,10 @@ Option Explicit
 Private sessionKey As String
 Private baseRevision As Long
 Private checkpointSignature As String
-Private baseline(0 To 78) As Variant
+Private baseline() As Variant
 ' Keep the editor control order aligned with DraftFieldKeys and recovery storage fields.
 Private Function ControlsList() As Variant
-    ControlsList = Array("cboKind", "txtTitle", "txtMember", "txtStart", "txtEnd", "txtNotes", "txtOfficialComments", "txtOfficialName", "txtRankRate", "txtDesignator", "txtUnitUIC", "txtShipStation", "cboTrait33", "cboTrait34", "cboTrait35", "cboTrait36", "cboTrait37", "cboTrait38", "cboTrait39", "cboObservationStatus", "cboPromotionRecommendation", "cboPromotionStatus", "txtReportingSeniorName", "txtReportingSeniorGrade", "txtReportingSeniorDesignator", "txtReportingSeniorTitle", "txtReportingSeniorUIC", _
-        "txtOccasionPeriodic", "txtOccasionDetachment", "txtOccasionFrocking", "txtOccasionSpecial", "txtReportRegular", "txtReportConcurrent", "txtReportOperationalCommander", "txtPrimaryDuty", "txtDutyDescription", _
-        "txtMemberSSN", "txtMemberDoDID", "txtComponentActive", "txtComponentTAR", "txtComponentInactive", "txtComponentATADSW", "txtDateReported", _
-        "txtCounselingDate", "txtCounselorName", "txtReadinessSummary", "txtReadinessDetail", "txtReadinessDate", "txtBilletSubcategory", _
-        "txtAssignmentRecommendationA", "txtAssignmentRecommendationB", "txtRetentionYes", "txtRetentionNo", "txtStatementYes", "txtStatementNo", _
-        "txtReportingSeniorSSN", "txtReportingSeniorDoDID", "txtReportingSeniorAddress1", "txtReportingSeniorAddress2", "txtReportingSeniorCity", "txtReportingSeniorState", "txtReportingSeniorZip", "txtReportingSeniorPhone", "txtReportingSeniorDSN", "txtRaterName", "txtRaterDate", "txtSeniorRaterName", "txtSeniorRaterDate", _
-        "txtMemberFirstName", "txtMemberMiddleInitial", "txtMemberLastName", "txtMemberSuffix", "txtReportingSeniorLastName", "txtReportingSeniorFirstInitial", "txtReportingSeniorMiddleInitial", "txtCounselorLastName", "txtCounselorFirstInitial", "txtCounselorMiddleInitial", "txtCommandEmployment")
+    ControlsList = CatalogueControls()
 End Function
 ' Return all 79 pending fields, including active text and the visible surface buffer.
 ' This reads the draft; it does not create a saved revision.
@@ -21,7 +15,7 @@ Public Function EditorPendingFields() As Object
     Dim fields As Object, names As Variant, keys As Variant, i As Long
     Set fields = CreateObject("Scripting.Dictionary")
     names = ControlsList(): keys = DraftFieldKeys()
-    For i = 0 To 78
+    For i = 0 To UBound(names)
         fields.Add CStr(keys(i)), PendingValue(Forms!frmEditor.Controls(names(i)))
     Next
     Set EditorPendingFields = fields
@@ -51,7 +45,8 @@ End Function
 Public Function ResetEditorBaseline() As Boolean
     Dim names As Variant, i As Long
     names = ControlsList()
-    For i = 0 To 78: baseline(i) = PendingValue(Forms!frmEditor.Controls(names(i))): Next
+    ReDim baseline(0 To UBound(names))
+    For i = 0 To UBound(names): baseline(i) = PendingValue(Forms!frmEditor.Controls(names(i))): Next
     baseRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)), 0)
     ResetEditorBaseline = True
 End Function
@@ -71,7 +66,7 @@ Public Function EditorHasPending() As Boolean
     Dim names As Variant, i As Long, value As Variant
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
     names = ControlsList()
-    For i = 0 To 78
+    For i = 0 To UBound(names)
         value = PendingValue(Forms!frmEditor.Controls(names(i)))
         If IsNull(value) <> IsNull(baseline(i)) Or StrComp(Nz(value, ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then EditorHasPending = True: Exit Function
     Next
@@ -85,18 +80,13 @@ End Function
 ' unchanged successful checkpoint, recreate missing rows, and retain the prior checkpoint
 ' on failure; update the signature only after commit.
 Public Function CheckpointEditor() As Boolean
-    Dim names As Variant, fields As Variant, current(0 To 78) As Variant, i As Long, changed As Boolean
+    Dim names As Variant, fields As Variant, current() As Variant, i As Long, changed As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, trans As Boolean, signature As String
     On Error GoTo Failed
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Or Len(sessionKey) = 0 Then Exit Function
-    names = ControlsList(): fields = Array("FormKind", "DraftTitle", "MemberDisplay", "StartEntry", "EndEntry", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation", "PromotionStatus", "ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", _
-        "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "PrimaryDuty", "DutyDescription", _
-        "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported", _
-        "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
-        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
-        "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate", _
-        "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
-    For i = 0 To 78
+    names = ControlsList(): fields = CatalogueRecoveryKeys()
+    ReDim current(0 To UBound(names))
+    For i = 0 To UBound(names)
         current(i) = PendingValue(Forms!frmEditor.Controls(names(i)))
         signature = signature & IIf(IsNull(current(i)), "N", "V") & Len(Nz(current(i), "")) & ":" & Nz(current(i), "")
         If IsNull(current(i)) <> IsNull(baseline(i)) Or StrComp(Nz(current(i), ""), Nz(baseline(i), ""), vbBinaryCompare) <> 0 Then changed = True
@@ -119,7 +109,7 @@ Public Function CheckpointEditor() As Boolean
     r!AuthorProfileID = ActiveContributorID()
     If Nz(Forms!frmEditor!txtReportID, 0) > 0 Then r!ReportID = Forms!frmEditor!txtReportID Else r!ReportID = Null
     If baseRevision > 0 Then r!BaseRevisionID = baseRevision Else r!BaseRevisionID = Null
-    For i = 0 To 78: r.Fields(fields(i)) = current(i): Next
+    For i = 0 To UBound(names): r.Fields(fields(i)) = current(i): Next
     r!CheckpointAt = Now(): r.Update: r.Close
     w.CommitTrans: trans = False: checkpointSignature = signature
     Forms!frmEditor!lblRecovery.Caption = "Recovery checkpoint: " & Format$(Now(), "h:nn:ss AM/PM") & " - edits are still unsaved. Use Save draft."
@@ -155,14 +145,8 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
     If asNewDraft Then id = 0
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     sessionKey = r!SessionGuid
-    names = ControlsList(): fields = Array("FormKind", "DraftTitle", "MemberDisplay", "StartEntry", "EndEntry", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation", "PromotionStatus", "ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", _
-        "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "PrimaryDuty", "DutyDescription", _
-        "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported", _
-        "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
-        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
-        "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate", _
-        "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
-    For i = 0 To 78: Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
+    names = ControlsList(): fields = CatalogueRecoveryKeys()
+    For i = 0 To UBound(names): Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
     Forms!frmEditor!lblSaved.Caption = "Recovered pending edits. Use Save draft to commit."
     Forms!frmEditor!lblRecovery.Caption = "Recovered checkpoint " & r!CheckpointAt & " - pending edits, not a saved revision."
     r.Close: Call InitializeTraitEditor(): Call RefreshNarrativeLabel(): Call UXRefreshEditor()

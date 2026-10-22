@@ -33,7 +33,7 @@ Public Function ValidateReportPeople(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 2900, , "Reporting contact and rater details require thirteen text or null entries."
     If LBound(values) <> 0 Or UBound(values) <> 12 Then Err.Raise vbObjectError + 2900, , "Reporting contact and rater details require thirteen text or null entries."
-    keys = ReportPeopleKeys(): limits = Array(9, 10, 30, 30, 15, 2, 9, 10, 7, 28, 10, 28, 10)
+    keys = ReportPeopleKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 12
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2901, , ReportPeopleLabel(keys(i)) & " must be text or null."

@@ -109,6 +109,7 @@ Failed:
 End Function
 Public Sub RSSetGroupBaseline(ByVal groupID As Long, ByVal seniorID As Long, ByVal baselineID As Long, ByVal excludesGroup As Boolean)
     Dim r As DAO.Recordset, w As DAO.Workspace, operation As Long, failure As Long, message As String
+    RSGuardPostedSenior groupID, seniorID
     If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4813, , "Choose an active summary group."
     If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, , "Choose a reporting senior."
     If baselineID > 0 Then
@@ -129,9 +130,14 @@ Failed:
     On Error GoTo 0: Err.Raise failure, "RSSetGroupBaseline", message
 End Sub
 Public Function RSGroupRows(ByVal groupID As Long) As DAO.Recordset
-    Dim db As DAO.Database
+    Dim db As DAO.Database, rows As DAO.Recordset
     Set db = CurrentDb
-    Set RSGroupRows = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
+    Set rows = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
+    Do While Not rows.EOF
+        AssertReportCache CLng(rows!ReportID): rows.MoveNext
+    Loop
+    If Not rows.BOF Or Not rows.EOF Then rows.MoveFirst
+    Set RSGroupRows = rows
 End Function
 Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.Recordset = Nothing) As Object
     Dim baselineID As Long, result As Object, r As DAO.Recordset, members As DAO.Recordset, senior As Object, values As Object, key As Variant, count As Long, total As Double, previousCount As Long, previousSum As Double, memberCount As Long

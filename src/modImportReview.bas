@@ -242,6 +242,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     Next
     values.Close
     If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 415, , "Source changed during import. Review it again."
+    If IsNull(beforeRevision) Or Nz(beforeRevision, 0) <> CurrentRevision(id) Then AuditCorrelateRevision CurrentRevision(id), operationID
     Call FinishOperation(operationID, "Completed", ReviewUpgradeMessage() & "Applied narrative to Swift report " & id)
     w.CommitTrans: trans = False
     ImportReviewedNarrative = id

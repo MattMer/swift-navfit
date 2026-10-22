@@ -14,12 +14,17 @@ Rejected:
 End Function
 Public Function TestReportTools() As String
  Dim id As Long, rev As Long, root As Long, reply As Long, legacy As Long, before As Long, f As Access.Form, p As Access.Form, v As Variant, guid As String
- Dim longBody As String, message As Long, other As Long, archived As Long, beforeMessages As Long
+ Dim longBody As String, message As Long, other As Long, archived As Long, beforeMessages As Long, historical As DAO.Recordset
  On Error GoTo Failed
  stage = "legacy preservation"
  id = DLookup("ReportID", "Report", "WorkflowState='Approved'"): rev = CurrentRevision(id)
- legacy = AddReviewComment(id, rev, "Historical conversation")
- SetReviewThreadState legacy, True
+ 'Historical fixtures use retained tables; current APIs intentionally cannot create them.
+ Set historical = CurrentDb.OpenRecordset("ReviewComment", dbOpenDynaset)
+ historical.AddNew: historical!CommentGuid = NewIdentity(): historical!ReportID = id: historical!RevisionID = rev
+ historical!AuthorProfileID = MajorAuthor(): historical!CommentAt = Now(): historical!CommentBody = "Historical conversation"
+ historical.Update: historical.Bookmark = historical.LastModified: legacy = historical!CommentID: historical.Close
+ Set historical = CurrentDb.OpenRecordset("ReviewCommentEvent", dbOpenDynaset)
+ historical.AddNew: historical!ThreadID = legacy: historical!AuthorProfileID = MajorAuthor(): historical!EventAt = Now(): historical!EventKind = "Resolved": historical.Update: historical.Close
  before = DCount("*", "ReviewCommentEvent")
  MigrateReportMessages
  root = DLookup("MessageID", "ReportMessage", "LegacyCommentID=" & legacy)

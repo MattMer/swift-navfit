@@ -5,13 +5,7 @@ Public Function AdministrationKeys() As Variant
     AdministrationKeys = Array("OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation")
 End Function
 Public Function DraftFieldKeys() As Variant
-    DraftFieldKeys = Array("FormKind", "Title", "MemberName", "PeriodStart", "PeriodEnd", "DraftNotes", "OfficialComments", "OfficialName", "RankRate", "Designator", "UnitUIC", "ShipStation", "Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "ObservationStatus", "PromotionRecommendation", "PromotionStatus", "ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", _
-        "OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "PrimaryDuty", "DutyDescription", _
-        "MemberSSN", "MemberDoDID", "ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW", "DateReported", _
-        "CounselingDate", "CounselorName", "ReadinessSummary", "ReadinessDetail", "ReadinessDate", "BilletSubcategory", _
-        "AssignmentRecommendationA", "AssignmentRecommendationB", "RetentionYes", "RetentionNo", "StatementYes", "StatementNo", _
-        "ReportingSeniorSSN", "ReportingSeniorDoDID", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "RaterName", "RaterDate", "SeniorRaterName", "SeniorRaterDate", _
-        "MemberFirstName", "MemberMiddleInitial", "MemberLastName", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial", "CommandEmployment")
+    DraftFieldKeys = CatalogueFieldKeys()
 End Function
 Public Function AdministrationLabel(ByVal key As String) As String
     Select Case key
@@ -26,7 +20,7 @@ Public Function ValidateAdministration(ByVal values As Variant) As Variant
     Dim i As Long, limits As Variant, keys As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 1900, , "Administration must contain five text or null values."
     If LBound(values) <> 0 Or UBound(values) <> 4 Then Err.Raise vbObjectError + 1900, , "Administration must contain five text or null values."
-    limits = Array(27, 5, 12, 5, 18): keys = AdministrationKeys()
+    keys = AdministrationKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 4
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 1901, , AdministrationLabel(keys(i)) & " must be text or null."

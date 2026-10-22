@@ -40,7 +40,7 @@ Public Function ValidateMemberDetails(ByVal values As Variant) As Variant
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2601, , "Member details must be text or null."
             If i < 2 Then
-                If i = 0 Then limit = 9 Else limit = 10
+                If i = 0 Then limit = UXFieldLimit("MemberSSN") Else limit = UXFieldLimit("MemberDoDID")
                 If Len(values(i)) > limit Or Not DigitsOnly(CStr(values(i))) Then Err.Raise vbObjectError + 2602, , "Identifiers accept digits only, up to their storage capacity. Leading zeros remain intact; no formatting or truncation is performed."
             ElseIf i < 6 Then
                 allowed = False

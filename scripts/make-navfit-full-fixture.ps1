@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$DestinationPath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-$source=Join-Path $root 'TEST_DB.accdb';$hash=(Get-FileHash -LiteralPath $source).Hash
+$source=Join-Path $root 'FORMS_REFERENCES_TEMPLATES/TEST_DB.accdb';$hash=(Get-FileHash -LiteralPath $source).Hash
 if(Test-Path -LiteralPath $DestinationPath){throw 'Refusing to overwrite fixture'}
 Copy-Item -LiteralPath $source -Destination $DestinationPath
 $map=Get-Content -Raw (Join-Path $root 'src/navfit-field-map.json')|ConvertFrom-Json

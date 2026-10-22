@@ -18,7 +18,7 @@ Public Function ValidateDecisionDetails(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 2800, , "Recommendation and statement details require six text or null entries."
     If LBound(values) <> 0 Or UBound(values) <> 5 Then Err.Raise vbObjectError + 2800, , "Recommendation and statement details require six text or null entries."
-    keys = DecisionDetailsKeys(): limits = Array(20, 20, 3, 3, 3, 3)
+    keys = DecisionDetailsKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 5
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2801, , DecisionDetailsLabel(keys(i)) & " must be text or null."

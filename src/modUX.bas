@@ -23,6 +23,42 @@ Private bulkMixed As Object
 Private bulkDefaults As Boolean
 Private bulkDefaultStamp As String
 Private bulkDefaultResets As Object
+
+'One workspace destination list for native dispatch and generated navigation rails.
+Public Function UXWorkspaceRoutes() As Variant
+    UXWorkspaceRoutes = Array("Overview|frmHome", "Reports|frmLibrary", "Summary groups|frmUXGroups", "My Work|frmMyWork", "Resources|frmUXResources", "Settings & Help|frmUXSettings")
+End Function
+Public Function UXWorkspaceRouteList() As String
+    UXWorkspaceRouteList = Join(UXWorkspaceRoutes(), ";")
+End Function
+Public Function UXWorkspaceRowSource() As String
+    Dim row As Variant, parts As Variant
+    For Each row In UXWorkspaceRoutes()
+        parts = Split(CStr(row), "|")
+        If Len(UXWorkspaceRowSource) > 0 Then UXWorkspaceRowSource = UXWorkspaceRowSource & ";"
+        UXWorkspaceRowSource = UXWorkspaceRowSource & parts(1) & ";" & parts(0)
+    Next
+End Function
+Public Function UXIsWorkspace(ByVal target As String) As Boolean
+    Dim row As Variant
+    For Each row In UXWorkspaceRoutes()
+        If Split(CStr(row), "|")(1) = target Then UXIsWorkspace = True: Exit Function
+    Next
+End Function
+Public Function UXLegacyTool(ByVal target As String) As String
+    Select Case target
+        Case "frmReviewComments", "frmUXNoteComposer": UXLegacyTool = "Notes"
+        Case "frmUXReview": UXLegacyTool = "Review"
+        Case "frmChecklist": UXLegacyTool = "Validation"
+    End Select
+End Function
+Public Function UXLegacyToolOpen(ByVal view As String) As Boolean
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        UXLegacyToolOpen = UXToolsChoose(view)
+    Else
+        UXLegacyToolOpen = UXNavigate("frmLibrary")
+    End If
+End Function
 ' Invalidate cached membership and saved group-average data after a local mutation;
 ' read it on the next editor refresh rather than polling on every field edit.
 Public Function UXEditorContextChanged() As Boolean
@@ -146,6 +182,7 @@ Public Function UXNavigate(ByVal target As String) As Boolean
     If Not HasActiveContributor() Then
         UXNavigate = ShowContributorStartup(): Exit Function
     End If
+    If UXLegacyTool(target) <> "" Then UXNavigate = UXLegacyToolOpen(UXLegacyTool(target)): Exit Function
     If target = "frmHelp" Or target = "frmUXHelp" Then
         DoCmd.OpenForm "frmUXHelp"
         UXNavigate = True: Exit Function

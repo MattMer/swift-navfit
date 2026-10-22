@@ -104,6 +104,15 @@ Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     Dim f As Access.Form, name As String, hadError As Boolean
     Set f = Surface(): name = UXFieldControl(key)
     Forms!frmEditor.Controls(name) = UXSurfaceCanonical(key, f.Controls(name).Value)
+    'The printed Yes/No boxes edit one response. Preserve an imported conflict until
+    'the contributor deliberately selects a box, then clear its opposite atomically.
+    If key = "RetentionYes" Or key = "RetentionNo" Or key = "StatementYes" Or key = "StatementNo" Then
+        If Nz(Forms!frmEditor.Controls(name).Value, "") = "Yes" Then
+            Dim opposite As String
+            If Right$(key, 3) = "Yes" Then opposite = Left$(key, Len(key) - 3) & "No" Else opposite = Left$(key, Len(key) - 2) & "Yes"
+            Forms!frmEditor.Controls(UXFieldControl(opposite)) = "No"
+        End If
+    End If
     hadError = Len(f.Controls("err" & key).Caption) > 0
     Call UXSurfaceValidate(key)
     If hadError <> (Len(f.Controls("err" & key).Caption) > 0) Then

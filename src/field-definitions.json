@@ -1,0 +1,7277 @@
+{
+  "catalogueVersion": 1,
+  "fields": [
+    {
+      "key": "FormKind",
+      "label": "Report type",
+      "section": 0,
+      "block": "",
+      "limit": 12,
+      "date": false,
+      "digits": null,
+      "options": [
+        "EVAL",
+        "CHIEFEVAL",
+        "FITREP"
+      ],
+      "multiline": false,
+      "ordinal": 0,
+      "control": "cboKind",
+      "storageType": "TEXT(12)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "FormKind"
+    },
+    {
+      "key": "Title",
+      "label": "Local draft title",
+      "section": 7,
+      "block": "",
+      "limit": 160,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 1,
+      "control": "txtTitle",
+      "storageType": "TEXT(160)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "DraftTitle"
+    },
+    {
+      "key": "MemberName",
+      "label": "Local display name",
+      "section": 7,
+      "block": "",
+      "limit": 120,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 2,
+      "control": "txtMember",
+      "storageType": "TEXT(120)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberDisplay"
+    },
+    {
+      "key": "PeriodStart",
+      "label": "From",
+      "section": 0,
+      "block": "14",
+      "limit": null,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 3,
+      "control": "txtStart",
+      "storageType": "DATETIME",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "k",
+              "ordinal": 20
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "FromDate",
+              "ordinal": 8
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 14,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "FromDate",
+              "ordinal": 26
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "FromDate",
+              "ordinal": 8
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 14,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "k",
+              "ordinal": 20
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "FromDate",
+              "ordinal": 8
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 14,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "StartEntry"
+    },
+    {
+      "key": "PeriodEnd",
+      "label": "To",
+      "section": 0,
+      "block": "15",
+      "limit": null,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 4,
+      "control": "txtEnd",
+      "storageType": "DATETIME",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "l",
+              "ordinal": 21
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "ToDate",
+              "ordinal": 9
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 15,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "ToDate",
+              "ordinal": 27
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "ToDate",
+              "ordinal": 9
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 15,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "date",
+              "source": "l",
+              "ordinal": 21
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "ToDate",
+              "ordinal": 9
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 15,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "EndEntry"
+    },
+    {
+      "key": "DraftNotes",
+      "label": "Private draft notes",
+      "section": 7,
+      "block": "",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "ordinal": 5,
+      "control": "txtNotes",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "DraftNotes"
+    },
+    {
+      "key": "OfficialComments",
+      "label": "Comments on Performance",
+      "section": 5,
+      "block": "",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "blocks": {
+        "EVAL": "43",
+        "FITREP": "41",
+        "CHIEFEVAL": "40"
+      },
+      "ordinal": 6,
+      "control": "txtOfficialComments",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "H",
+              "ordinal": 18
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Comments",
+              "ordinal": 42
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 43,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "REPORTINGSENIORCOMMENTS",
+              "ordinal": 16
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Comments",
+              "ordinal": 42
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 40,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "H",
+              "ordinal": 18
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Comments",
+              "ordinal": 42
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 41,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "OfficialComments"
+    },
+    {
+      "key": "OfficialName",
+      "label": "Name (Last, First MI Suffix)",
+      "section": 0,
+      "block": "1",
+      "limit": 27,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 7,
+      "control": "txtOfficialName",
+      "storageType": "TEXT(27)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "a",
+              "ordinal": 0
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FullName",
+              "ordinal": 0
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 1,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "NAMEmaster",
+              "ordinal": 0
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FullName",
+              "ordinal": 0
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 1,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "a",
+              "ordinal": 0
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FullName",
+              "ordinal": 0
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 1,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "OfficialName"
+    },
+    {
+      "key": "RankRate",
+      "label": "Grade/Rate",
+      "section": 0,
+      "block": "2",
+      "limit": 5,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 8,
+      "control": "txtRankRate",
+      "storageType": "TEXT(5)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "b",
+              "ordinal": 1
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rate",
+              "ordinal": 1
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 2,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "RATINGmaster",
+              "ordinal": 1
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rate",
+              "ordinal": 1
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 2,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "b",
+              "ordinal": 1
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rate",
+              "ordinal": 1
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 2,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "RankRate"
+    },
+    {
+      "key": "Designator",
+      "label": "Desig",
+      "section": 0,
+      "block": "",
+      "limit": 12,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 9,
+      "control": "txtDesignator",
+      "storageType": "TEXT(12)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "c",
+              "ordinal": 2
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Desig",
+              "ordinal": 2
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 3,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "DESIGNATIONmaster",
+              "ordinal": 2
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Desig",
+              "ordinal": 2
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 3,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "c",
+              "ordinal": 2
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Desig",
+              "ordinal": 2
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 3,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "Designator"
+    },
+    {
+      "key": "UnitUIC",
+      "label": "Unit ID Code (UIC)",
+      "section": 0,
+      "block": "6",
+      "limit": 5,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 10,
+      "control": "txtUnitUIC",
+      "storageType": "TEXT(5)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "f",
+              "ordinal": 4
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "UIC",
+              "ordinal": 5
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 6,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "UIC",
+              "ordinal": 4
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "UIC",
+              "ordinal": 5
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 6,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "f",
+              "ordinal": 4
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "UIC",
+              "ordinal": 5
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 6,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "UnitUIC"
+    },
+    {
+      "key": "ShipStation",
+      "label": "Ship/Station",
+      "section": 0,
+      "block": "7",
+      "limit": 18,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 11,
+      "control": "txtShipStation",
+      "storageType": "TEXT(18)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "g",
+              "ordinal": 5
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ShipStation",
+              "ordinal": 6
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 7,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "SHIPSTATION",
+              "ordinal": 5
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ShipStation",
+              "ordinal": 6
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 7,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "g",
+              "ordinal": 5
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ShipStation",
+              "ordinal": 6
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 7,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ShipStation"
+    },
+    {
+      "key": "Trait33",
+      "label": "Trait33",
+      "section": 4,
+      "block": "33",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 12,
+      "control": "cboTrait33",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_5",
+              "ordinal": 24
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "PROF",
+              "ordinal": 68
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "TECHDROPDOWN",
+              "ordinal": 45
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "LEAD",
+              "ordinal": 68
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_5",
+              "ordinal": 24
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "PROF",
+              "ordinal": 68
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait33"
+    },
+    {
+      "key": "Trait34",
+      "label": "Trait34",
+      "section": 4,
+      "block": "34",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 13,
+      "control": "cboTrait34",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_6",
+              "ordinal": 25
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "QUAL",
+              "ordinal": 69
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "INSTITUTEDROPDOWN",
+              "ordinal": 46
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "TAC",
+              "ordinal": 69
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_6",
+              "ordinal": 25
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "EO",
+              "ordinal": 69
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait34"
+    },
+    {
+      "key": "Trait35",
+      "label": "Trait35",
+      "section": 4,
+      "block": "35",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 14,
+      "control": "cboTrait35",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_7",
+              "ordinal": 26
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "EO",
+              "ordinal": 70
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "PROFFDROPDOWN",
+              "ordinal": 47
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "PROF",
+              "ordinal": 70
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_7",
+              "ordinal": 26
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "MIL",
+              "ordinal": 70
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait35"
+    },
+    {
+      "key": "Trait36",
+      "label": "Trait36",
+      "section": 4,
+      "block": "36",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 15,
+      "control": "cboTrait36",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_8",
+              "ordinal": 27
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "MIL",
+              "ordinal": 71
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "INTEGDROPDOWN",
+              "ordinal": 48
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "MIS",
+              "ordinal": 71
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_8",
+              "ordinal": 27
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "TEAM",
+              "ordinal": 71
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait36"
+    },
+    {
+      "key": "Trait37",
+      "label": "Trait37",
+      "section": 4,
+      "block": "37",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 16,
+      "control": "cboTrait37",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_9",
+              "ordinal": 28
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "PA",
+              "ordinal": 72
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 37,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "ACCOUNTDROPDOWN",
+              "ordinal": 49
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "EO",
+              "ordinal": 72
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 37,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "_9",
+              "ordinal": 28
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "MIS",
+              "ordinal": 72
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 37,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait37"
+    },
+    {
+      "key": "Trait38",
+      "label": "Trait38",
+      "section": 4,
+      "block": "38",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 17,
+      "control": "cboTrait38",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "D",
+              "ordinal": 29
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "TEAM",
+              "ordinal": 73
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 38,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "DECKPLATEDROPDOWN",
+              "ordinal": 50
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "TEAM",
+              "ordinal": 73
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 38,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "D",
+              "ordinal": 29
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "LEAD",
+              "ordinal": 73
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 38,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait38"
+    },
+    {
+      "key": "Trait39",
+      "label": "Trait39",
+      "section": 4,
+      "block": "39",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ],
+      "multiline": false,
+      "ordinal": 18,
+      "control": "cboTrait39",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "E",
+              "ordinal": 30
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "LEAD",
+              "ordinal": 74
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 39,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "chief-trait",
+              "source": "TEAMDROPDOWN",
+              "ordinal": 51
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "MIL",
+              "ordinal": 74
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 39,
+            "basis": "Front Page editing group requested by user"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "trait",
+              "source": "E",
+              "ordinal": 30
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "trait",
+              "source": "TAC",
+              "ordinal": 74
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 39,
+            "basis": "Front Page editing group requested by user"
+          }
+        }
+      },
+      "recoveryKey": "Trait39"
+    },
+    {
+      "key": "ObservationStatus",
+      "label": "Not Observed Report (NOB)",
+      "section": 0,
+      "block": "16",
+      "limit": 8,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Observed",
+        "NOB"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 19,
+      "control": "cboObservationStatus",
+      "storageType": "TEXT(8)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "observation",
+              "source": "NOB",
+              "ordinal": 22
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 16,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "observation",
+              "source": "NOBCHECK",
+              "ordinal": 44
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "observation",
+              "source": "NOB",
+              "ordinal": 22
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 16,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "observation",
+              "source": "NOB",
+              "ordinal": 22
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 16,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ObservationStatus"
+    },
+    {
+      "key": "PromotionRecommendation",
+      "label": "Individual (Promotion Recommendation)",
+      "section": 5,
+      "block": "45",
+      "limit": 20,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "NOB",
+        "Significant Problems",
+        "Progressing",
+        "Promotable",
+        "Must Promote",
+        "Early Promote"
+      ],
+      "multiline": false,
+      "blocks": {
+        "EVAL": "45",
+        "FITREP": "42",
+        "CHIEFEVAL": "41"
+      },
+      "ordinal": 20,
+      "control": "cboPromotionRecommendation",
+      "storageType": "TEXT(20)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "recommendation",
+              "source": "I",
+              "ordinal": 31
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "promotion",
+              "source": "PromotionRecom",
+              "ordinal": 23
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 45,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "PROMOTIONDROPDOWN",
+              "ordinal": 18
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "promotion",
+              "source": "PromotionRecom",
+              "ordinal": 23
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 41,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "recommendation",
+              "source": "I",
+              "ordinal": 31
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "promotion",
+              "source": "PromotionRecom",
+              "ordinal": 23
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "PromotionRecommendation"
+    },
+    {
+      "key": "PromotionStatus",
+      "label": "Promotion Status",
+      "section": 0,
+      "block": "8",
+      "limit": 8,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "REGULAR",
+        "FROCKED",
+        "SELECTED",
+        "SPOT"
+      ],
+      "multiline": false,
+      "ordinal": 21,
+      "control": "cboPromotionStatus",
+      "storageType": "TEXT(8)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "promotion-status",
+              "source": "_8_Promotion_Status",
+              "ordinal": 36
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PromotionStatus",
+              "ordinal": 7
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 8,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "PROMOTIONSTATUS",
+              "ordinal": 17
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PromotionStatus",
+              "ordinal": 7
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 8,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "h",
+              "ordinal": 36
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PromotionStatus",
+              "ordinal": 7
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 8,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "PromotionStatus"
+    },
+    {
+      "key": "ReportingSeniorName",
+      "label": "Reporting Senior (Last, FI MI)",
+      "section": 0,
+      "block": "22",
+      "limit": 18,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 22,
+      "control": "txtReportingSeniorName",
+      "storageType": "TEXT(18)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "q",
+              "ordinal": 6
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ReportingSenior",
+              "ordinal": 24
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 22,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "REPORTINGSENIOR",
+              "ordinal": 6
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ReportingSenior",
+              "ordinal": 24
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 22,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "q",
+              "ordinal": 6
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "ReportingSenior",
+              "ordinal": 24
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 22,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorName"
+    },
+    {
+      "key": "ReportingSeniorGrade",
+      "label": "Grade",
+      "section": 0,
+      "block": "23",
+      "limit": 5,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 23,
+      "control": "txtReportingSeniorGrade",
+      "storageType": "TEXT(5)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "r",
+              "ordinal": 7
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSGrade",
+              "ordinal": 25
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 23,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "GRADE",
+              "ordinal": 7
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSGrade",
+              "ordinal": 25
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 23,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "r",
+              "ordinal": 7
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSGrade",
+              "ordinal": 25
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 23,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorGrade"
+    },
+    {
+      "key": "ReportingSeniorDesignator",
+      "label": "Desig",
+      "section": 0,
+      "block": "24",
+      "limit": 5,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 24,
+      "control": "txtReportingSeniorDesignator",
+      "storageType": "TEXT(5)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "s",
+              "ordinal": 8
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDesig",
+              "ordinal": 26
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 24,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "DESIGNATION",
+              "ordinal": 8
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDesig",
+              "ordinal": 26
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 24,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "s",
+              "ordinal": 8
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDesig",
+              "ordinal": 26
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 24,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorDesignator"
+    },
+    {
+      "key": "ReportingSeniorTitle",
+      "label": "Title",
+      "section": 0,
+      "block": "25",
+      "limit": 14,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 25,
+      "control": "txtReportingSeniorTitle",
+      "storageType": "TEXT(14)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "t",
+              "ordinal": 9
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSTitle",
+              "ordinal": 27
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 25,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "TITLE",
+              "ordinal": 9
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSTitle",
+              "ordinal": 27
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 25,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "t",
+              "ordinal": 9
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSTitle",
+              "ordinal": 27
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 25,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorTitle"
+    },
+    {
+      "key": "ReportingSeniorUIC",
+      "label": "UIC",
+      "section": 0,
+      "block": "26",
+      "limit": 5,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 26,
+      "control": "txtReportingSeniorUIC",
+      "storageType": "TEXT(5)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "v",
+              "ordinal": 10
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSUIC",
+              "ordinal": 28
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 26,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "REPORTINGUIC",
+              "ordinal": 10
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSUIC",
+              "ordinal": 28
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 26,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "v",
+              "ordinal": 10
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSUIC",
+              "ordinal": 28
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 26,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorUIC"
+    },
+    {
+      "key": "OccasionPeriodic",
+      "label": "Periodic",
+      "section": 0,
+      "block": "10",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 27,
+      "control": "txtOccasionPeriodic",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Periodic",
+              "ordinal": 11
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 10,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "PERIODICCHECK",
+              "ordinal": 35
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Periodic",
+              "ordinal": 11
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 10,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Periodic",
+              "ordinal": 11
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 10,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "OccasionPeriodic"
+    },
+    {
+      "key": "OccasionDetachment",
+      "label": "Detachment of Individual",
+      "section": 0,
+      "block": "11",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 28,
+      "control": "txtOccasionDetachment",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "DetInd",
+              "ordinal": 12
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 11,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "DETACHINDCHECK",
+              "ordinal": 36
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "DetInd",
+              "ordinal": 12
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 11,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "DetInd",
+              "ordinal": 12
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 11,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "OccasionDetachment"
+    },
+    {
+      "key": "OccasionFrocking",
+      "label": "Detachment of Reporting Senior",
+      "section": 0,
+      "block": "12",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 29,
+      "control": "txtOccasionFrocking",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Frocking",
+              "ordinal": 13
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 12,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "DETACHRSCHECK",
+              "ordinal": 37
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Frocking",
+              "ordinal": 13
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 12,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Frocking",
+              "ordinal": 13
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 12,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "OccasionFrocking"
+    },
+    {
+      "key": "OccasionSpecial",
+      "label": "Special",
+      "section": 0,
+      "block": "13",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 30,
+      "control": "txtOccasionSpecial",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Special",
+              "ordinal": 14
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 13,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "SPECIALCHECK",
+              "ordinal": 38
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Special",
+              "ordinal": 14
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 13,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Special",
+              "ordinal": 14
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 13,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "OccasionSpecial"
+    },
+    {
+      "key": "ReportRegular",
+      "label": "Regular",
+      "section": 0,
+      "block": "17",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 31,
+      "control": "txtReportRegular",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Regular",
+              "ordinal": 15
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 17,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "REGULARCHECK",
+              "ordinal": 39
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Regular",
+              "ordinal": 15
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 17,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Regular",
+              "ordinal": 15
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 17,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportRegular"
+    },
+    {
+      "key": "ReportConcurrent",
+      "label": "Concurrent",
+      "section": 0,
+      "block": "18",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 32,
+      "control": "txtReportConcurrent",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Concurrent",
+              "ordinal": 16
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 18,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "CONCURRENTCHECK",
+              "ordinal": 40
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Concurrent",
+              "ordinal": 16
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 18,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Concurrent",
+              "ordinal": 16
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 18,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportConcurrent"
+    },
+    {
+      "key": "ReportOperationalCommander",
+      "label": "Ops Cdr",
+      "section": 0,
+      "block": "19",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 33,
+      "control": "txtReportOperationalCommander",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "OpsCdr",
+              "ordinal": 17
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 19,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "OPSCDRCHECK",
+              "ordinal": 41
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "OpsCdr",
+              "ordinal": 17
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 19,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "OpsCdr",
+              "ordinal": 17
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 19,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportOperationalCommander"
+    },
+    {
+      "key": "PrimaryDuty",
+      "label": "Primary duty abbreviation",
+      "section": 2,
+      "block": "29",
+      "limit": 14,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 34,
+      "control": "txtPrimaryDuty",
+      "storageType": "TEXT(14)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "y",
+              "ordinal": 13
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PrimaryDuty",
+              "ordinal": 32
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "WATCHSTANDING",
+              "ordinal": 13
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PrimaryDuty",
+              "ordinal": 32
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "y",
+              "ordinal": 13
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PrimaryDuty",
+              "ordinal": 32
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "PrimaryDuty"
+    },
+    {
+      "key": "DutyDescription",
+      "label": "Primary/Collateral/Watchstanding Duties/PFA",
+      "section": 2,
+      "block": "29",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "ordinal": 35,
+      "control": "txtDutyDescription",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "z",
+              "ordinal": 14
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Duties",
+              "ordinal": 33
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "PRIMARYSTATEMENT",
+              "ordinal": 15
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Duties",
+              "ordinal": 33
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "z",
+              "ordinal": 14
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Duties",
+              "ordinal": 33
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 29,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "DutyDescription"
+    },
+    {
+      "key": "MemberSSN",
+      "label": "SSN",
+      "section": 0,
+      "block": "4",
+      "limit": 9,
+      "date": false,
+      "digits": 9,
+      "options": null,
+      "multiline": false,
+      "ordinal": 36,
+      "control": "txtMemberSSN",
+      "storageType": "TEXT(9)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "d",
+              "ordinal": 3
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SSN",
+              "ordinal": 3
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 4,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "SSNDODIDmaster",
+              "ordinal": 3
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SSN",
+              "ordinal": 3
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 4,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "d",
+              "ordinal": 3
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SSN",
+              "ordinal": 3
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 4,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "MemberSSN"
+    },
+    {
+      "key": "MemberDoDID",
+      "label": "Member DoD ID",
+      "section": 0,
+      "block": "4",
+      "limit": 10,
+      "date": false,
+      "digits": 10,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 37,
+      "control": "txtMemberDoDID",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "DoDID",
+              "ordinal": 4
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "DoDID",
+              "ordinal": 4
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "DoDID",
+              "ordinal": 4
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberDoDID"
+    },
+    {
+      "key": "ComponentActive",
+      "label": "ACT",
+      "section": 0,
+      "block": "5",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 38,
+      "control": "txtComponentActive",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 32
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Active",
+              "ordinal": 18
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "ACTCHECK",
+              "ordinal": 31
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Active",
+              "ordinal": 18
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 32
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Active",
+              "ordinal": 18
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ComponentActive"
+    },
+    {
+      "key": "ComponentTAR",
+      "label": "TAR",
+      "section": 0,
+      "block": "5",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 39,
+      "control": "txtComponentTAR",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 33
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "TAR",
+              "ordinal": 19
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "TARCHECK",
+              "ordinal": 32
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "TAR",
+              "ordinal": 19
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 33
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "TAR",
+              "ordinal": 19
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ComponentTAR"
+    },
+    {
+      "key": "ComponentInactive",
+      "label": "INACT",
+      "section": 0,
+      "block": "5",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 40,
+      "control": "txtComponentInactive",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 34
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Inactive",
+              "ordinal": 20
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "INACTCHECK",
+              "ordinal": 33
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Inactive",
+              "ordinal": 20
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 34
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "Inactive",
+              "ordinal": 20
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ComponentInactive"
+    },
+    {
+      "key": "ComponentATADSW",
+      "label": "AT/ADOS",
+      "section": 0,
+      "block": "5",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "ordinal": 41,
+      "control": "txtComponentATADSW",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 35
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "ATADSW",
+              "ordinal": 21
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "ATADSW265CHECK",
+              "ordinal": 34
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "ATADSW",
+              "ordinal": 21
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "component",
+              "source": "e",
+              "ordinal": 35
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "ATADSW",
+              "ordinal": 21
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 5,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ComponentATADSW"
+    },
+    {
+      "key": "DateReported",
+      "label": "Date Reported",
+      "section": 0,
+      "block": "9",
+      "limit": 10,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 42,
+      "control": "txtDateReported",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "i",
+              "ordinal": 22
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "DateReported",
+              "ordinal": 10
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 9,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "DATEREPORTED",
+              "ordinal": 28
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "DateReported",
+              "ordinal": 10
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 9,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "i",
+              "ordinal": 22
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "DateReported",
+              "ordinal": 10
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 9,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "DateReported"
+    },
+    {
+      "key": "CounselingDate",
+      "label": "Date Counseled",
+      "section": 3,
+      "block": "30",
+      "limit": 10,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 43,
+      "control": "txtCounselingDate",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "_1",
+              "ordinal": 23
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "counseling",
+              "source": "DateCounseled",
+              "ordinal": 34
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 30,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "COUNSELDATE",
+              "ordinal": 29
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "counseling",
+              "source": "DateCounseled",
+              "ordinal": 34
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 30,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "_1",
+              "ordinal": 23
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "counseling",
+              "source": "DateCounseled",
+              "ordinal": 34
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 30,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "CounselingDate"
+    },
+    {
+      "key": "CounselorName",
+      "label": "Counselor",
+      "section": 3,
+      "block": "31",
+      "limit": 20,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 44,
+      "control": "txtCounselorName",
+      "storageType": "TEXT(20)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "_2",
+              "ordinal": 15
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Counseler",
+              "ordinal": 35
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 31,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "COUSELOR",
+              "ordinal": 12
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Counseler",
+              "ordinal": 35
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 31,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "_2",
+              "ordinal": 15
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Counseler",
+              "ordinal": 35
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 31,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "CounselorName"
+    },
+    {
+      "key": "ReadinessSummary",
+      "label": "Physical Readiness",
+      "section": 0,
+      "block": "20",
+      "limit": 4,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 45,
+      "control": "txtReadinessSummary",
+      "storageType": "TEXT(4)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness",
+              "ordinal": 36
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness",
+              "ordinal": 36
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness",
+              "ordinal": 36
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReadinessSummary"
+    },
+    {
+      "key": "ReadinessDetail",
+      "label": "Physical Readiness — result",
+      "section": 0,
+      "block": "20",
+      "limit": 15,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 46,
+      "control": "txtReadinessDetail",
+      "storageType": "TEXT(15)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness2",
+              "ordinal": 37
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness2",
+              "ordinal": 37
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "PhysicalReadiness2",
+              "ordinal": 37
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "ReadinessDetail"
+    },
+    {
+      "key": "ReadinessDate",
+      "label": "Physical Readiness — date",
+      "section": 0,
+      "block": "20",
+      "limit": 10,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 47,
+      "control": "txtReadinessDate",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "PhysicalReadinessDt",
+              "ordinal": 38
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "PRTDate",
+              "ordinal": 30
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "PhysicalReadinessDt",
+              "ordinal": 38
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "PhysicalReadinessDt",
+              "ordinal": 38
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReadinessDate"
+    },
+    {
+      "key": "BilletSubcategory",
+      "label": "Billet Subcategory (if any)",
+      "section": 0,
+      "block": "21",
+      "limit": 10,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "ordinal": 48,
+      "control": "txtBilletSubcategory",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "_21_Billet",
+              "ordinal": 19
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "BilletSubcat",
+              "ordinal": 39
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 21,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "BILLETSUB",
+              "ordinal": 19
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "BilletSubcat",
+              "ordinal": 39
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 21,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "_21_Billet",
+              "ordinal": 19
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "BilletSubcat",
+              "ordinal": 39
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 21,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "BilletSubcategory"
+    },
+    {
+      "key": "AssignmentRecommendationA",
+      "label": "Career Recommendations — first",
+      "section": 5,
+      "block": "41",
+      "limit": 20,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "41",
+        "FITREP": "40",
+        "CHIEFEVAL": ""
+      },
+      "ordinal": 49,
+      "control": "txtAssignmentRecommendationA",
+      "storageType": "TEXT(20)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "F",
+              "ordinal": 16
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendA",
+              "ordinal": 40
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 41,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "RECOMMENDATIONS1",
+              "ordinal": 20
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendA",
+              "ordinal": 40
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 999,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "F",
+              "ordinal": 16
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendA",
+              "ordinal": 40
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 40,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "AssignmentRecommendationA"
+    },
+    {
+      "key": "AssignmentRecommendationB",
+      "label": "Career Recommendations — second",
+      "section": 5,
+      "block": "41",
+      "limit": 20,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "41",
+        "FITREP": "40",
+        "CHIEFEVAL": ""
+      },
+      "ordinal": 50,
+      "control": "txtAssignmentRecommendationB",
+      "storageType": "TEXT(20)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "G",
+              "ordinal": 17
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendB",
+              "ordinal": 41
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 41,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "RECOMMENDATIONS2",
+              "ordinal": 21
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendB",
+              "ordinal": 41
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 999,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "G",
+              "ordinal": 17
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RecommendB",
+              "ordinal": 41
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 40,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "AssignmentRecommendationB"
+    },
+    {
+      "key": "RetentionYes",
+      "label": "Recommended",
+      "section": 5,
+      "block": "47",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 51,
+      "control": "txtRetentionYes",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionYes",
+              "ordinal": 43
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionYes",
+              "ordinal": 43
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionYes",
+              "ordinal": 43
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "RetentionYes"
+    },
+    {
+      "key": "RetentionNo",
+      "label": "Not Recommended",
+      "section": 5,
+      "block": "47",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 52,
+      "control": "txtRetentionNo",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionNo",
+              "ordinal": 44
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionNo",
+              "ordinal": 44
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "RetentionNo",
+              "ordinal": 44
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 47,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "RetentionNo"
+    },
+    {
+      "key": "StatementYes",
+      "label": "I intend to submit a statement",
+      "section": 6,
+      "block": "51",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "blocks": {
+        "EVAL": "51",
+        "FITREP": "46",
+        "CHIEFEVAL": "49"
+      },
+      "ordinal": 53,
+      "control": "txtStatementYes",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementYes",
+              "ordinal": 45
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "INTEND",
+              "ordinal": 42
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementYes",
+              "ordinal": 45
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementYes",
+              "ordinal": 45
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 46,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "StatementYes"
+    },
+    {
+      "key": "StatementNo",
+      "label": "I do not intend to submit a statement",
+      "section": 6,
+      "block": "51",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": [
+        "",
+        "Yes",
+        "No"
+      ],
+      "multiline": false,
+      "checkbox": true,
+      "blocks": {
+        "EVAL": "51",
+        "FITREP": "46",
+        "CHIEFEVAL": "49"
+      },
+      "ordinal": 54,
+      "control": "txtStatementNo",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementNo",
+              "ordinal": 46
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "flag",
+              "source": "NOTINTEND",
+              "ordinal": 43
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementNo",
+              "ordinal": 46
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "flag",
+              "source": "StatementNo",
+              "ordinal": 46
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 46,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "StatementNo"
+    },
+    {
+      "key": "ReportingSeniorSSN",
+      "label": "SSN",
+      "section": 0,
+      "block": "27",
+      "limit": 9,
+      "date": false,
+      "digits": 9,
+      "options": null,
+      "multiline": false,
+      "ordinal": 55,
+      "control": "txtReportingSeniorSSN",
+      "storageType": "TEXT(9)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "w",
+              "ordinal": 11
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSSSN",
+              "ordinal": 29
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 27,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "SSN",
+              "ordinal": 11
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSSSN",
+              "ordinal": 29
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 27,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "w",
+              "ordinal": 11
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSSSN",
+              "ordinal": 29
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 27,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorSSN"
+    },
+    {
+      "key": "ReportingSeniorDoDID",
+      "label": "Reporting senior DoD ID",
+      "section": 0,
+      "block": "",
+      "limit": 10,
+      "date": false,
+      "digits": 10,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 56,
+      "control": "txtReportingSeniorDoDID",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDoDID",
+              "ordinal": 30
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDoDID",
+              "ordinal": 30
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDoDID",
+              "ordinal": 30
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "ReportingSeniorDoDID"
+    },
+    {
+      "key": "ReportingSeniorAddress1",
+      "label": "Address line 1",
+      "section": 6,
+      "block": "48",
+      "limit": 30,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 57,
+      "control": "txtReportingSeniorAddress1",
+      "storageType": "TEXT(30)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress1",
+              "ordinal": 47
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "Addressline1",
+              "ordinal": 22
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress1",
+              "ordinal": 47
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress1",
+              "ordinal": 47
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorAddress1"
+    },
+    {
+      "key": "ReportingSeniorAddress2",
+      "label": "Address line 2",
+      "section": 6,
+      "block": "48",
+      "limit": 30,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 58,
+      "control": "txtReportingSeniorAddress2",
+      "storageType": "TEXT(30)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress2",
+              "ordinal": 48
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "Addressline2",
+              "ordinal": 23
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress2",
+              "ordinal": 48
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSAddress2",
+              "ordinal": 48
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorAddress2"
+    },
+    {
+      "key": "ReportingSeniorCity",
+      "label": "City",
+      "section": 6,
+      "block": "48",
+      "limit": 15,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 59,
+      "control": "txtReportingSeniorCity",
+      "storageType": "TEXT(15)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSCity",
+              "ordinal": 49
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSCity",
+              "ordinal": 49
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSCity",
+              "ordinal": 49
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorCity"
+    },
+    {
+      "key": "ReportingSeniorState",
+      "label": "State / region",
+      "section": 6,
+      "block": "48",
+      "limit": 2,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 60,
+      "control": "txtReportingSeniorState",
+      "storageType": "TEXT(2)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSState",
+              "ordinal": 50
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSState",
+              "ordinal": 50
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSState",
+              "ordinal": 50
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorState"
+    },
+    {
+      "key": "ReportingSeniorZip",
+      "label": "ZIP / postal code",
+      "section": 6,
+      "block": "48",
+      "limit": 9,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 61,
+      "control": "txtReportingSeniorZip",
+      "storageType": "TEXT(9)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSZipCd",
+              "ordinal": 51
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSZipCd",
+              "ordinal": 51
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSZipCd",
+              "ordinal": 51
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorZip"
+    },
+    {
+      "key": "ReportingSeniorPhone",
+      "label": "Phone",
+      "section": 6,
+      "block": "48",
+      "limit": 10,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 62,
+      "control": "txtReportingSeniorPhone",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSPhone",
+              "ordinal": 52
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "CommandPhoneCommercial",
+              "ordinal": 24
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSPhone",
+              "ordinal": 52
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSPhone",
+              "ordinal": 52
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorPhone"
+    },
+    {
+      "key": "ReportingSeniorDSN",
+      "label": "DSN",
+      "section": 6,
+      "block": "48",
+      "limit": 7,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "blocks": {
+        "EVAL": "48",
+        "FITREP": "44",
+        "CHIEFEVAL": "51"
+      },
+      "ordinal": 63,
+      "control": "txtReportingSeniorDSN",
+      "storageType": "TEXT(7)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDSN",
+              "ordinal": 53
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 48,
+            "basis": "Official block order"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "CommandPhoneDSN",
+              "ordinal": 25
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDSN",
+              "ordinal": 53
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 51,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSDSN",
+              "ordinal": 53
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "ReportingSeniorDSN"
+    },
+    {
+      "key": "RaterName",
+      "label": "Signature of Rater — typed name & grade/rate",
+      "section": 6,
+      "block": "42",
+      "limit": 28,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 64,
+      "control": "txtRaterName",
+      "storageType": "TEXT(28)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "T",
+              "ordinal": 37
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rater",
+              "ordinal": 54
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rater",
+              "ordinal": 54
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Rater",
+              "ordinal": 54
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "RaterName"
+    },
+    {
+      "key": "RaterDate",
+      "label": "Signature of Rater — date",
+      "section": 6,
+      "block": "42",
+      "limit": 10,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 65,
+      "control": "txtRaterDate",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "U",
+              "ordinal": 39
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "RaterDate",
+              "ordinal": 55
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "RaterDate",
+              "ordinal": 55
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "RaterDate",
+              "ordinal": 55
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 42,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "RaterDate"
+    },
+    {
+      "key": "SeniorRaterName",
+      "label": "Signature of Senior Rater — typed name & grade/rate",
+      "section": 6,
+      "block": "49",
+      "limit": 28,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 66,
+      "control": "txtSeniorRaterName",
+      "storageType": "TEXT(28)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "O",
+              "ordinal": 38
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SeniorRater",
+              "ordinal": 56
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SeniorRater",
+              "ordinal": 56
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "SeniorRater",
+              "ordinal": 56
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "SeniorRaterName"
+    },
+    {
+      "key": "SeniorRaterDate",
+      "label": "Signature of Senior Rater — date",
+      "section": 6,
+      "block": "49",
+      "limit": 10,
+      "date": true,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 67,
+      "control": "txtSeniorRaterDate",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "date-text",
+              "source": "P",
+              "ordinal": 40
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "SeniorRaterDate",
+              "ordinal": 57
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "SeniorRaterDate",
+              "ordinal": 57
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Official block order"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "date",
+              "source": "SeniorRaterDate",
+              "ordinal": 57
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 49,
+            "basis": "Official block order"
+          }
+        }
+      },
+      "recoveryKey": "SeniorRaterDate"
+    },
+    {
+      "key": "MemberFirstName",
+      "label": "Member first name",
+      "section": 0,
+      "block": "1",
+      "limit": 27,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 68,
+      "control": "txtMemberFirstName",
+      "storageType": "TEXT(27)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FirstName",
+              "ordinal": 58
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FirstName",
+              "ordinal": 58
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "FirstName",
+              "ordinal": 58
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberFirstName"
+    },
+    {
+      "key": "MemberMiddleInitial",
+      "label": "Member middle initial(s)",
+      "section": 0,
+      "block": "1",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 69,
+      "control": "txtMemberMiddleInitial",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "MI",
+              "ordinal": 59
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "MI",
+              "ordinal": 59
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "MI",
+              "ordinal": 59
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberMiddleInitial"
+    },
+    {
+      "key": "MemberLastName",
+      "label": "Member last name",
+      "section": 0,
+      "block": "1",
+      "limit": 27,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 70,
+      "control": "txtMemberLastName",
+      "storageType": "TEXT(27)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "LastName",
+              "ordinal": 60
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "LastName",
+              "ordinal": 60
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "LastName",
+              "ordinal": 60
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberLastName"
+    },
+    {
+      "key": "MemberSuffix",
+      "label": "Member suffix",
+      "section": 0,
+      "block": "1",
+      "limit": 10,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 71,
+      "control": "txtMemberSuffix",
+      "storageType": "TEXT(10)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Suffix",
+              "ordinal": 61
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Suffix",
+              "ordinal": 61
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Suffix",
+              "ordinal": 61
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "MemberSuffix"
+    },
+    {
+      "key": "ReportingSeniorLastName",
+      "label": "Reporting senior last name",
+      "section": 0,
+      "block": "22",
+      "limit": 18,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 72,
+      "control": "txtReportingSeniorLastName",
+      "storageType": "TEXT(18)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSLastName",
+              "ordinal": 62
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSLastName",
+              "ordinal": 62
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSLastName",
+              "ordinal": 62
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "ReportingSeniorLastName"
+    },
+    {
+      "key": "ReportingSeniorFirstInitial",
+      "label": "Reporting senior first initial",
+      "section": 0,
+      "block": "22",
+      "limit": 1,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 73,
+      "control": "txtReportingSeniorFirstInitial",
+      "storageType": "TEXT(1)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSFI",
+              "ordinal": 63
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSFI",
+              "ordinal": 63
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSFI",
+              "ordinal": 63
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "ReportingSeniorFirstInitial"
+    },
+    {
+      "key": "ReportingSeniorMiddleInitial",
+      "label": "Reporting senior middle initial(s)",
+      "section": 0,
+      "block": "22",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 74,
+      "control": "txtReportingSeniorMiddleInitial",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSMI",
+              "ordinal": 64
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSMI",
+              "ordinal": 64
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "RSMI",
+              "ordinal": 64
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "ReportingSeniorMiddleInitial"
+    },
+    {
+      "key": "CounselorLastName",
+      "label": "Counselor last name",
+      "section": 3,
+      "block": "31",
+      "limit": 20,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 75,
+      "control": "txtCounselorLastName",
+      "storageType": "TEXT(20)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerLN",
+              "ordinal": 65
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerLN",
+              "ordinal": 65
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerLN",
+              "ordinal": 65
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "CounselorLastName"
+    },
+    {
+      "key": "CounselorFirstInitial",
+      "label": "Counselor first initial",
+      "section": 3,
+      "block": "31",
+      "limit": 1,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 76,
+      "control": "txtCounselorFirstInitial",
+      "storageType": "TEXT(1)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerFI",
+              "ordinal": 66
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerFI",
+              "ordinal": 66
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerFI",
+              "ordinal": 66
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "CounselorFirstInitial"
+    },
+    {
+      "key": "CounselorMiddleInitial",
+      "label": "Counselor middle initial(s)",
+      "section": 3,
+      "block": "31",
+      "limit": 3,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": false,
+      "legacyHidden": true,
+      "ordinal": 77,
+      "control": "txtCounselorMiddleInitial",
+      "storageType": "TEXT(3)",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerMI",
+              "ordinal": 67
+            }
+          ],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerMI",
+              "ordinal": 67
+            }
+          ],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "CounselerMI",
+              "ordinal": 67
+            }
+          ],
+          "page": null
+        }
+      },
+      "recoveryKey": "CounselorMiddleInitial"
+    },
+    {
+      "key": "CommandEmployment",
+      "label": "Command employment and command achievements",
+      "section": 0,
+      "block": "28",
+      "limit": 0,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "ordinal": 78,
+      "control": "txtCommandEmployment",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 1,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "x",
+              "ordinal": 12
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Achievements",
+              "ordinal": 31
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 28,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "COMMANDEMPLOY",
+              "ordinal": 14
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Achievements",
+              "ordinal": 31
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 28,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "FITREP": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "x",
+              "ordinal": 12
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Achievements",
+              "ordinal": 31
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 28,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        }
+      },
+      "recoveryKey": "CommandEmployment"
+    }
+  ],
+  "fixedLayout": {
+    "EVAL:0": {
+      "height": 15120,
+      "fields": [
+        {
+          "key": "OfficialName",
+          "x": 180,
+          "y": 180,
+          "w": 5400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RankRate",
+          "x": 5740,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Designator",
+          "x": 7550,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "MemberSSN",
+          "x": 9360,
+          "y": 180,
+          "w": 2420,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentActive",
+          "x": 180,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentTAR",
+          "x": 2532,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentInactive",
+          "x": 4884,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentATADSW",
+          "x": 7236,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "UnitUIC",
+          "x": 9588,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ShipStation",
+          "x": 180,
+          "y": 2040,
+          "w": 6100,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PromotionStatus",
+          "x": 6440,
+          "y": 2040,
+          "w": 2500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DateReported",
+          "x": 9100,
+          "y": 2040,
+          "w": 2680,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionPeriodic",
+          "x": 180,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionDetachment",
+          "x": 3120,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionFrocking",
+          "x": 6060,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionSpecial",
+          "x": 9000,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodStart",
+          "x": 180,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodEnd",
+          "x": 2240,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ObservationStatus",
+          "x": 4300,
+          "y": 3620,
+          "w": 2400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportRegular",
+          "x": 6860,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportConcurrent",
+          "x": 8520,
+          "y": 3620,
+          "w": 1600,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportOperationalCommander",
+          "x": 10280,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessSummary",
+          "x": 180,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessDate",
+          "x": 4100,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "BilletSubcategory",
+          "x": 8020,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorName",
+          "x": 180,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorGrade",
+          "x": 2140,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDesignator",
+          "x": 4100,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorTitle",
+          "x": 6060,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorUIC",
+          "x": 8020,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorSSN",
+          "x": 9980,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CommandEmployment",
+          "x": 180,
+          "y": 6410,
+          "w": 11600,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "PrimaryDuty",
+          "x": 180,
+          "y": 7930,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DutyDescription",
+          "x": 6060,
+          "y": 7930,
+          "w": 5720,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "CounselingDate",
+          "x": 180,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CounselorName",
+          "x": 6060,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait33",
+          "x": 180,
+          "y": 10380,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait34",
+          "x": 180,
+          "y": 11000,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait35",
+          "x": 180,
+          "y": 11620,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait36",
+          "x": 180,
+          "y": 12240,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait37",
+          "x": 180,
+          "y": 12860,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait38",
+          "x": 180,
+          "y": 13480,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait39",
+          "x": 180,
+          "y": 14100,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "@guidance",
+          "x": 5550,
+          "y": 10380,
+          "w": 6000,
+          "h": 4260
+        }
+      ]
+    },
+    "EVAL:1": {
+      "height": 12084,
+      "fields": [
+        {
+          "key": "AssignmentRecommendationA",
+          "x": 180,
+          "y": 180,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "AssignmentRecommendationB",
+          "x": 4100,
+          "y": 180,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterName",
+          "x": 8020,
+          "y": 180,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterDate",
+          "x": 180,
+          "y": 1110,
+          "w": 11600,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OfficialComments",
+          "x": 180,
+          "y": 2040,
+          "w": 11600,
+          "h": 3924,
+          "trait": false
+        },
+        {
+          "key": "PromotionRecommendation",
+          "x": 180,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionYes",
+          "x": 4100,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionNo",
+          "x": 8020,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress1",
+          "x": 180,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress2",
+          "x": 4100,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorCity",
+          "x": 8020,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorState",
+          "x": 180,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorZip",
+          "x": 4100,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorPhone",
+          "x": 8020,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDSN",
+          "x": 180,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterName",
+          "x": 4100,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterDate",
+          "x": 8020,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementYes",
+          "x": 180,
+          "y": 11234,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementNo",
+          "x": 6060,
+          "y": 11234,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        }
+      ]
+    },
+    "CHIEFEVAL:0": {
+      "height": 15120,
+      "fields": [
+        {
+          "key": "OfficialName",
+          "x": 180,
+          "y": 180,
+          "w": 5400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RankRate",
+          "x": 5740,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Designator",
+          "x": 7550,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "MemberSSN",
+          "x": 9360,
+          "y": 180,
+          "w": 2420,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentActive",
+          "x": 180,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentTAR",
+          "x": 2532,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentInactive",
+          "x": 4884,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentATADSW",
+          "x": 7236,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "UnitUIC",
+          "x": 9588,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ShipStation",
+          "x": 180,
+          "y": 2040,
+          "w": 6100,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PromotionStatus",
+          "x": 6440,
+          "y": 2040,
+          "w": 2500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DateReported",
+          "x": 9100,
+          "y": 2040,
+          "w": 2680,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionPeriodic",
+          "x": 180,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionDetachment",
+          "x": 3120,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionFrocking",
+          "x": 6060,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionSpecial",
+          "x": 9000,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodStart",
+          "x": 180,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodEnd",
+          "x": 2240,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ObservationStatus",
+          "x": 4300,
+          "y": 3620,
+          "w": 2400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportRegular",
+          "x": 6860,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportConcurrent",
+          "x": 8520,
+          "y": 3620,
+          "w": 1600,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportOperationalCommander",
+          "x": 10280,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessSummary",
+          "x": 180,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessDate",
+          "x": 4100,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "BilletSubcategory",
+          "x": 8020,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorName",
+          "x": 180,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorGrade",
+          "x": 2140,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDesignator",
+          "x": 4100,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorTitle",
+          "x": 6060,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorUIC",
+          "x": 8020,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorSSN",
+          "x": 9980,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CommandEmployment",
+          "x": 180,
+          "y": 6410,
+          "w": 11600,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "PrimaryDuty",
+          "x": 180,
+          "y": 7930,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DutyDescription",
+          "x": 6060,
+          "y": 7930,
+          "w": 5720,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "CounselingDate",
+          "x": 180,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CounselorName",
+          "x": 6060,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait33",
+          "x": 180,
+          "y": 10380,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait34",
+          "x": 180,
+          "y": 11000,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait35",
+          "x": 180,
+          "y": 11620,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait36",
+          "x": 180,
+          "y": 12240,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait37",
+          "x": 180,
+          "y": 12860,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait38",
+          "x": 180,
+          "y": 13480,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait39",
+          "x": 180,
+          "y": 14100,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "@guidance",
+          "x": 5550,
+          "y": 10380,
+          "w": 6000,
+          "h": 4260
+        }
+      ]
+    },
+    "CHIEFEVAL:1": {
+      "height": 9066,
+      "fields": [
+        {
+          "key": "OfficialComments",
+          "x": 180,
+          "y": 180,
+          "w": 11600,
+          "h": 1836,
+          "trait": false
+        },
+        {
+          "key": "PromotionRecommendation",
+          "x": 180,
+          "y": 3566,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterName",
+          "x": 4100,
+          "y": 3566,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterDate",
+          "x": 8020,
+          "y": 3566,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionYes",
+          "x": 180,
+          "y": 4496,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionNo",
+          "x": 4100,
+          "y": 4496,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementYes",
+          "x": 8020,
+          "y": 4496,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementNo",
+          "x": 180,
+          "y": 5146,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterName",
+          "x": 4100,
+          "y": 5146,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterDate",
+          "x": 8020,
+          "y": 5146,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress1",
+          "x": 180,
+          "y": 6076,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress2",
+          "x": 4100,
+          "y": 6076,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorCity",
+          "x": 8020,
+          "y": 6076,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorState",
+          "x": 180,
+          "y": 7006,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorZip",
+          "x": 4100,
+          "y": 7006,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorPhone",
+          "x": 8020,
+          "y": 7006,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDSN",
+          "x": 180,
+          "y": 7936,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "AssignmentRecommendationA",
+          "x": 4100,
+          "y": 7936,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "AssignmentRecommendationB",
+          "x": 8020,
+          "y": 7936,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        }
+      ]
+    },
+    "FITREP:0": {
+      "height": 15120,
+      "fields": [
+        {
+          "key": "OfficialName",
+          "x": 180,
+          "y": 180,
+          "w": 5400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RankRate",
+          "x": 5740,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Designator",
+          "x": 7550,
+          "y": 180,
+          "w": 1650,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "MemberSSN",
+          "x": 9360,
+          "y": 180,
+          "w": 2420,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentActive",
+          "x": 180,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentTAR",
+          "x": 2532,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentInactive",
+          "x": 4884,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ComponentATADSW",
+          "x": 7236,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "UnitUIC",
+          "x": 9588,
+          "y": 1110,
+          "w": 2192,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ShipStation",
+          "x": 180,
+          "y": 2040,
+          "w": 6100,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PromotionStatus",
+          "x": 6440,
+          "y": 2040,
+          "w": 2500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DateReported",
+          "x": 9100,
+          "y": 2040,
+          "w": 2680,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionPeriodic",
+          "x": 180,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionDetachment",
+          "x": 3120,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionFrocking",
+          "x": 6060,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OccasionSpecial",
+          "x": 9000,
+          "y": 2970,
+          "w": 2780,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodStart",
+          "x": 180,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "PeriodEnd",
+          "x": 2240,
+          "y": 3620,
+          "w": 1900,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ObservationStatus",
+          "x": 4300,
+          "y": 3620,
+          "w": 2400,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportRegular",
+          "x": 6860,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportConcurrent",
+          "x": 8520,
+          "y": 3620,
+          "w": 1600,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportOperationalCommander",
+          "x": 10280,
+          "y": 3620,
+          "w": 1500,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessSummary",
+          "x": 180,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessDate",
+          "x": 4100,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "BilletSubcategory",
+          "x": 8020,
+          "y": 4550,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorName",
+          "x": 180,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorGrade",
+          "x": 2140,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDesignator",
+          "x": 4100,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorTitle",
+          "x": 6060,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorUIC",
+          "x": 8020,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorSSN",
+          "x": 9980,
+          "y": 5480,
+          "w": 1800,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CommandEmployment",
+          "x": 180,
+          "y": 6410,
+          "w": 11600,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "PrimaryDuty",
+          "x": 180,
+          "y": 7930,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "DutyDescription",
+          "x": 6060,
+          "y": 7930,
+          "w": 5720,
+          "h": 950,
+          "trait": false
+        },
+        {
+          "key": "CounselingDate",
+          "x": 180,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "CounselorName",
+          "x": 6060,
+          "y": 9450,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait33",
+          "x": 180,
+          "y": 10380,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait34",
+          "x": 180,
+          "y": 11000,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait35",
+          "x": 180,
+          "y": 11620,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait36",
+          "x": 180,
+          "y": 12240,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait37",
+          "x": 180,
+          "y": 12860,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait38",
+          "x": 180,
+          "y": 13480,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "Trait39",
+          "x": 180,
+          "y": 14100,
+          "w": 5000,
+          "h": 360,
+          "trait": true
+        },
+        {
+          "key": "@guidance",
+          "x": 5550,
+          "y": 10380,
+          "w": 6000,
+          "h": 4260
+        }
+      ]
+    },
+    "FITREP:1": {
+      "height": 12364,
+      "fields": [
+        {
+          "key": "AssignmentRecommendationA",
+          "x": 180,
+          "y": 180,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "AssignmentRecommendationB",
+          "x": 6060,
+          "y": 180,
+          "w": 5720,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "OfficialComments",
+          "x": 180,
+          "y": 1110,
+          "w": 11600,
+          "h": 3924,
+          "trait": false
+        },
+        {
+          "key": "PromotionRecommendation",
+          "x": 180,
+          "y": 6584,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterName",
+          "x": 4100,
+          "y": 6584,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RaterDate",
+          "x": 8020,
+          "y": 6584,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress1",
+          "x": 180,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorAddress2",
+          "x": 4100,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorCity",
+          "x": 8020,
+          "y": 7514,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorState",
+          "x": 180,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorZip",
+          "x": 4100,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorPhone",
+          "x": 8020,
+          "y": 8444,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReportingSeniorDSN",
+          "x": 180,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementYes",
+          "x": 4100,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "StatementNo",
+          "x": 8020,
+          "y": 9374,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionYes",
+          "x": 180,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "RetentionNo",
+          "x": 4100,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterName",
+          "x": 8020,
+          "y": 10304,
+          "w": 3760,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "SeniorRaterDate",
+          "x": 180,
+          "y": 11234,
+          "w": 11600,
+          "h": 360,
+          "trait": false
+        }
+      ]
+    }
+  }
+}

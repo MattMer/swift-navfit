@@ -149,7 +149,83 @@ consumers. Legacy mappings, contributor/version ownership and separate domain
 histories have distinct uses. Similar names do not establish redundant new writes
 or authorize deleting retained history. Production migration and upgrade tools
 still use canonical src/modMigration, not the quarantined schema-25 copy.
-Further C05–C10 redesigns require separate impact/verification scope.
+The separately authorized C05–C10 implementation follows the boundaries below.
+
+## C08–C10 producer, consumer and navigation audit
+
+Schema 29 adds a timeline index; it does not collapse histories that have
+different retention, restoration or undo semantics. The current writer audit
+includes SQL, DAO AddNew calls, generated events, macros and dispatcher aliases.
+
+| Evidence | Active producers | Consumers and retention decision |
+| --- | --- | --- |
+| ReportRevision / RevisionValue / RevisionChange | CommitDraft and restore/import facades in modSwift | SavedFields, comparison, restore, review staleness and transfer verification. Retain snapshots, field changes and revision identity. One audit envelope per revision, not per field. |
+| ReportEvent | ArchiveDraft; local approval/reopen in modRouteTemplates | Report state/review history and audit timeline. Retain distinct approval/archive evidence. |
+| OperationJournal | BeginOperation / FinishOperation, called by import, batch, route, merge and undo services | Operations UI and guarded domain undo. Keep original operation author/start and mutable summary interface. Timeline records start and each outcome separately, including the actual completing actor. |
+| FolderMove / FolderBatchChange | AssignFolder; bulk move/undo | Folder history, membership, batch undo and optimistic guards. Retain both individual move evidence and batch membership. |
+| ReviewComment / ReviewCommentEvent | Import only; explicit compatibility conversion reads retained rows | Legacy mappings and resolution history remain importable. Current conversation posting does not write these tables or require resolution. |
+| ReviewTask / ReviewTaskEvent | modRouting / modRouteTemplates | Assigned review steps, decisions, stale-revision checks and reopen. Retain these workflow histories independently of conversations. |
+| ReportMessage | Unified tools; AddReviewComment and PostReportNote compatibility adapters; import conversion | Unified Notes and My Work conversation readers. Preserve author/time, legacy IDs, revision context and parent links. No duplicate ReportNote/ReviewComment posting. |
+| ReportNoteDraft | SaveReportMessageDraft / retained private checkpoint facade | Contributor-owned mutable recovery with version guards. Retain the established storage name; posting creates ReportMessage and removes only the matching checkpoint transactionally. |
+| ReportNote | Historical import backfill from pre-29 DraftNotes only | Original rows and legacy mapping remain. Normal UI reads no longer trigger conversion or write legacy notes. |
+
+[modAudit](../src/modAudit.bas) supplies stable AuditGuid, source kind/version,
+source foreign key, original actor/time, affected report/revision/task/folder and
+explicit operation correlation. AuditActor retains the original profile ID/GUID;
+its registration name/time are not presented as a historical event caption/time.
+Historical nonmessage event captions remain unknown. Converted conversations
+retain legacy note captions or the source profile's display label; that label
+does not prove the person's name at the original event time. Timestamps
+retain the application's existing local Access date semantics; no invented UTC
+conversion occurs. Known operation GUIDs correlate batch/import/undo evidence;
+otherwise events have independent correlation identities. Backfill infers links
+only from unambiguous receipts or batch membership, not timestamp proximity.
+Legacy operation outcomes remain in OperationJournal; backfill does not invent
+their completing actor. Audit envelopes and domain changes commit/roll back
+together. Existing domain undo creates new evidence; it never erases envelopes.
+
+Conversation conversion allocates all legacy identities before linking parents,
+checks missing/cross-report/cyclic ancestry and rolls back derived rows on failure.
+Existing mappings are verified rather than silently repaired. New legacy API
+results use negative canonical message tokens; positive IDs still identify
+retained legacy comments. New callers should use AddReportMessage and positive
+MessageID directly. Retired SetReviewThreadState rejects new resolution writes.
+Approval and conversation posting remain independent. Modern schema-29 imports
+retain DraftNotes without implicitly publishing it into the shared conversation.
+
+### Generation and dispatch ownership
+
+The six workspace destinations come from UXWorkspaceRoutes in
+[modUX](../src/modUX.bas): Overview/frmHome, Reports/frmLibrary,
+Summary groups/frmUXGroups, My Work/frmMyWork, Resources/frmUXResources and
+Settings & Help/frmUXSettings. Rail generators and compact selectors consume
+that list through scalar COM-safe facades. OpenScreen and UXNavigate share the
+legacy tool dispatcher; report/group/senior pending-edit guards remain in place.
+
+| Surface or route | Current owner / decision |
+| --- | --- |
+| frmHome / frmLibrary | Active overview and report collection; retained. |
+| frmMajorWorkbench / frmBulkFolders | Required group context host and organizational folder tools; retained with distinct purposes. |
+| frmReportTools / frmReportReviewPanel | Unified Notes/Review/Validation tools and current review panel. apply-ux-review-return creates the panel directly; apply-ux-my-work and apply-report-tools decorate it. |
+| frmUXHelp / validation popout | Contextual help and validation remain modeless context-preserving tools. |
+| frmHelp / frmChecklist / frmReviewComments | Removed duplicate base construction. Their public aliases route to current help or report tools. |
+| frmUXReview | Removed temporary generation/copy on the managed fresh build. The standalone compatibility copier remains guarded for old disposable inputs. Alias opens current Review. |
+| frmUXNoteComposer | Removed duplicate generation/decorations from note-entries/comments-ita. Alias opens unified Notes; private note recovery form remains. |
+| AutoExec and generated callbacks | AutoExec invokes SwiftAppStartup. Form/control event expressions, source bindings and public dispatchers remain native verification inputs, not evidence of dead code. |
+
+The existing finalizer still rejects unresolved retired bindings before deletion;
+the fresh path no longer creates those five retired forms in earlier stages.
+Other repeated passes remain distinct geometry, styling, context and unload
+owners; no blanket stage deletion was justified. Fixed Front/Back pages, seven
+Front Page traits and rail coordinates are unchanged.
+
+[test-audit-conversations-navigation](../scripts/test-audit-conversations-navigation.ps1)
+exports every actual form/macro as native text plus an inventory of destinations,
+capturing control expressions, events and source bindings. Focused navigation,
+context-help, My Work, group-exit, cleanup and fixed-page suites exercise the
+supported entry/return paths and pending guards. The source/binding verifier
+checks callbacks after compile/reopen. Physical/accessibility/printing acceptance
+remains separate. Exact tested artifacts and schema gaps are in PROJECT_STATE.
 
 ## Final validation and evidence
 

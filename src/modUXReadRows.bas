@@ -32,15 +32,6 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
     Set r = db.OpenRecordset(sql, dbOpenSnapshot)
     Do While Not r.EOF: participants(CStr(r!ReportID)) = True: r.MoveNext: Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT CommentID,ThreadID FROM ReviewComment WHERE AuthorProfileID=" & pid, dbOpenSnapshot)
-    Do While Not r.EOF
-        If IsNull(r!ThreadID) Then token = CStr(r!CommentID) Else token = CStr(r!ThreadID)
-        authors(token) = True: r.MoveNext
-    Loop
-    r.Close
-    Set r = db.OpenRecordset("SELECT ThreadID,EventKind FROM ReviewCommentEvent ORDER BY CommentEventID", dbOpenSnapshot)
-    Do While Not r.EOF: threads(CStr(r!ThreadID)) = (r!EventKind <> "Resolved"): r.MoveNext: Loop
-    r.Close
     Set r = db.OpenRecordset("SELECT RunID,StepOrdinal,AssigneeID FROM RouteRunStep", dbOpenSnapshot)
     Do While Not r.EOF: steps(r!RunID & ":" & r!StepOrdinal) = Nz(r!AssigneeID, 0): r.MoveNext: Loop
     r.Close
@@ -91,19 +82,12 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
         counts(key) = counts(key) + 1: r.MoveNext
     Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT ThreadID,EventKind FROM ReviewCommentEvent ORDER BY CommentEventID", dbOpenSnapshot)
-    Do While Not r.EOF
-        threads(CStr(r!ThreadID)) = (r!EventKind <> "Resolved"): r.MoveNext
-    Loop
-    r.Close
     For Each kind In Array("Assignment", "Route")
         Select Case kind
             Case "Assignment": table = "ReviewTask": key = "TaskID"
             Case "Route": table = "RouteRun": key = "RunID"
-            Case "Comment": table = "ReviewComment": key = "CommentID"
         End Select
         sql = "SELECT w.*,p.OfficialName,p.MemberName,p.FormKind,p.PeriodStart,p.PeriodEnd,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived,p.WorkflowState AS ReportWorkflow FROM " & table & " AS w LEFT JOIN Report AS p ON w.ReportID=p.ReportID"
-        If kind = "Comment" Then sql = sql & " WHERE w.ThreadID Is Null"
         Set r = db.OpenRecordset(sql, dbOpenSnapshot)
         Do While Not r.EOF
             id = r.Fields(key): owner = 0: label = "": status = "": action = "": due = "Not set"
@@ -140,11 +124,6 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
                         Else
                             action = "View route history"
                         End If
-                    Case "Comment"
-                        label = "Comment thread": owner = r!AuthorProfileID: openThread = True
-                        If threads.Exists(CStr(id)) Then openThread = threads(CStr(id))
-                        If openThread Then status = "Unresolved": action = "Read, reply or resolve" Else status = "Resolved": action = "View thread history"
-                        If r!RevisionID <> Nz(r!SavedRevision, 0) Then status = status & " / earlier revision"
                 End Select
                 If Nz(r!ReportArchived, True) Then
                     status = status & " / archived": action = "Recover report before review activity"

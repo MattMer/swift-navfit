@@ -19,7 +19,12 @@ Private Function WorkRecord(ByVal kind As String, ByVal id As Long) As DAO.Recor
     Select Case kind
         Case "Assignment": Set WorkRecord = CurrentDb.OpenRecordset("SELECT * FROM ReviewTask WHERE TaskID=" & id, dbOpenSnapshot)
         Case "Route": Set WorkRecord = CurrentDb.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & id, dbOpenSnapshot)
-        Case "Comment": Set WorkRecord = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE CommentID=" & id & " AND ThreadID Is Null", dbOpenSnapshot)
+        Case "Comment"
+            If id < 0 Then
+                Set WorkRecord = CurrentDb.OpenRecordset("SELECT ReportID,ContextRevisionID AS RevisionID,AuthorProfileID FROM ReportMessage WHERE MessageID=" & -id & " AND ParentMessageID Is Null", dbOpenSnapshot)
+            Else
+                Set WorkRecord = CurrentDb.OpenRecordset("SELECT * FROM ReviewComment WHERE CommentID=" & id & " AND ThreadID Is Null", dbOpenSnapshot)
+            End If
     End Select
 End Function
 Public Function UXWorkVisible(ByVal kind As String, ByVal id As Long, ByVal pid As Long) As Boolean
@@ -77,7 +82,7 @@ Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As
             If part = "Due" Then UXWorkText = "Not set"
         Case "Comment"
             label = "Comment thread": owner = r!AuthorProfileID
-            If UXThreadOpen(id) Then status = "Unresolved": action = "Read, reply or resolve" Else status = "Resolved": action = "View thread history"
+            status = "Retained history": action = "Open the report conversation in Notes"
             If r!RevisionID <> CurrentRevision(report) Then status = status & " / earlier revision"
             If part = "Due" Then UXWorkText = "Not set"
     End Select

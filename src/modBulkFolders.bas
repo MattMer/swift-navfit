@@ -32,7 +32,7 @@ Public Function ApplyFolderBatch(ByVal selection As String, ByVal destination As
     For Each id In IDs(selection)
         before = DLookup("FolderID", "Report", "ReportID=" & id)
         If Nz(before, 0) <> destination Then
-            Call AssignFolder(CLng(id), destination)
+            Call AssignFolder(CLng(id), destination, operationID)
             Set moved = CurrentDb.OpenRecordset("SELECT Max(FolderMoveID) AS Latest FROM FolderMove WHERE ReportID=" & id, dbOpenSnapshot)
             afterMove = moved!Latest: moved.Close
             Set r = CurrentDb.OpenRecordset("FolderBatchChange", dbOpenDynaset)
@@ -71,7 +71,7 @@ Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     Set r = CurrentDb.OpenRecordset("SELECT * FROM FolderBatchChange WHERE OperationID=" & operationID, dbOpenDynaset)
     Do While Not r.EOF
-        Call AssignFolder(CLng(r!ReportID), CLng(Nz(r!OldFolderID, 0)))
+        Call AssignFolder(CLng(r!ReportID), CLng(Nz(r!OldFolderID, 0)), undoID)
         r.Edit: r!IsUndone = True: r.Update: r.MoveNext
     Loop
     r.Close: Call FinishOperation(undoID, "Completed", "Compensating folder moves recorded for operation " & operationID)

@@ -1,6 +1,6 @@
 # Final presentation pass. All controls retain their service-facing identities.
 # Coordinates are twips; the 920-point workspace fits a laptop at 100% scaling.
-$uxDestinations=@(@('Overview','frmHome'),@('Reports','frmLibrary'),@('Summary groups','frmUXGroups'),@('My Work','frmMyWork'),@('Resources','frmUXResources'),@('Settings & Help','frmUXSettings'))
+$uxDestinations=@(@(([string]$app.Eval('UXWorkspaceRouteList()')).Split(';')) | ForEach-Object { ,($_.Split('|')) })
 $uxPages=@('frmHome','frmLibrary','frmEditor','frmUXGroups','frmMyWork','frmUXResources','frmUXSettings','frmMajorWorkbench','frmUXBulk','frmUXComparison','frmUXSeniors','frmUXSeniorEditor','frmUXGroupRSCA')
 foreach($screenName in $uxPages){
     $app.DoCmd.OpenForm($screenName,1);$f=$app.Forms.Item($screenName)

@@ -91,7 +91,15 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** The repository currently develops `0.27.1-dev` / schema 27. Older release downloads may not include every feature or recent refinement described here. New source commits do not automatically publish a new Access binary.
+**Source and downloads can differ.** Current development is **0.29.0-dev / schema 29**, tagged `v0.29.0-dev`. The published r128 downloads above remain app 0.27.1-dev / schema 27. A source tag does not publish a new Access binary.
+
+Current development implements backlog C05–C10:
+
+- Relational summary-group completion and RSCA accounting, authoritative saved revisions, and a versioned field catalogue with typed dates and explicit unknown/conflicting legacy states.
+- A consistent audit timeline with stable event identities and operation correlation, while retaining domain histories and guarded undo. Current notes/replies use one conversation service; legacy history and private drafts remain preserved.
+- One workspace navigation list and direct generation of current report tools, preserving pending edits, contextual help, required context hosts and fixed Front/Back geometry.
+
+The fresh development build passes compile/reopen, installed-source/binding verification, blank-data checks and the standard development suite. Another 1,988 focused assertions and actual schema-21–29 imports pass, including exact original-field verification, source hashes, late rollback/retry and reopen. Schemas 1–20 were not retested; existing UI verification gaps and physical/accessibility/printing acceptance remain separate. See [current implementation and verification scope](PROJECT_STATE.md#c08c10-audit-conversations-and-navigation) and the [producer/consumer and navigation audit](planning/CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit).
 
 The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 
@@ -108,8 +116,25 @@ The latest local demo adds a group with **zero member-report findings** and anot
 Editable source lives in `src/`; Access builders and focused checks live in `scripts/` and `tests/`. Databases, supplied Navy files, and generated scratch builds stay out of Git. On Windows with desktop Access, run the standard fresh build and focused tests (also VS Code's default Ctrl+Shift+B task):
 
 ```powershell
-powershell.exe -NoProfile -File scripts/develop.ps1
+powershell.exe -NoProfile -File scripts/develop.ps1 -Action BuildAndTest
 ```
+
+This is the routine development command: it invokes the manifest-driven builder,
+creates a new blank database under `build/dev/`, and runs the standard development
+checks. Use a copy for manual testing and import existing workspace data through
+Settings & Help. Authorized release preparation uses the separate
+`scripts/release-check.ps1` gates; building or tagging source does not publish
+Blank/Demo files or upload them to Drive.
+
+The `v0.29.0-dev` annotated tag identifies the verified source and records this
+local development artifact:
+
+- File: `Swift_NAVFIT_0.29.0-dev_20261022-081737_3ffe14f2.accdb`
+- SHA-256: `F8B6883CCFE9DEABF9DE2C811DD19DFEACDD2C6F54B91C5B92B946C5E93994B9`
+
+Generated databases and local verification receipts are not committed. Rebuild
+from the tag using the command above; a newly generated Access file can have a
+different byte hash.
 
 Start with [current architecture and support boundaries](PROJECT_STATE.md), then [development in VS Code](docs/Development_Workflow.md) for commands and [contributing](CONTRIBUTING.md) for change-specific checks. Release preservation requirements remain in [AGENTS.md](AGENTS.md); the r128 historical-test waiver and unresolved future test policy are recorded in PROJECT_STATE.md. Physical scaling, accessibility, and final printed fit require separate acceptance.
 

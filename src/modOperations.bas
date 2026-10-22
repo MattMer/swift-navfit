@@ -4,20 +4,36 @@ Option Explicit
 Public Function BeginOperation(ByVal kind As String, ByVal source As String) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
-    Dim r As DAO.Recordset, pid As Long
+    Dim r As DAO.Recordset, pid As Long, w As DAO.Workspace, failure As Long, message As String
     pid = ActiveContributorID()
+    Set w = DBEngine.Workspaces(0): w.BeginTrans
+    On Error GoTo Failed
     Set r = ownedDB.OpenRecordset("OperationJournal", dbOpenDynaset)
     r.AddNew: r!OperationGuid = NewIdentity(): r!OperationKind = kind: r!AuthorProfileID = pid
     r!SourceDescription = source: r!StartedAt = Now(): r!OperationState = "Started"
     r.Update: r.Bookmark = r.LastModified: BeginOperation = r!OperationID: r.Close
+    AuditRecord "Operation", BeginOperation
+    w.CommitTrans: Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next: w.Rollback: On Error GoTo 0
+    Err.Raise failure, "BeginOperation", message
 End Function
 Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByVal message As String)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
-    Dim r As DAO.Recordset
+    Dim r As DAO.Recordset, w As DAO.Workspace, failure As Long, explanation As String
+    Set w = DBEngine.Workspaces(0): w.BeginTrans
+    On Error GoTo Failed
     Set r = ownedDB.OpenRecordset("SELECT * FROM OperationJournal WHERE OperationID=" & operationID, dbOpenDynaset)
     If r.EOF Then Err.Raise vbObjectError + 1101, , "Operation entry missing."
     r.Edit: r!OperationState = state: r!Outcome = message: r!FinishedAt = Now(): r.Update: r.Close
+    AuditRecord "Operation", operationID, operationID, False, True
+    w.CommitTrans: Exit Sub
+Failed:
+    failure = Err.Number: explanation = Err.Description
+    On Error Resume Next: w.Rollback: On Error GoTo 0
+    Err.Raise failure, "FinishOperation", explanation
 End Sub
 Public Function UndoNarrativeImport(ByVal receiptID As Long) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, id As Long, operationID As Long, trans As Boolean
@@ -37,7 +53,7 @@ Public Function UndoNarrativeImport(ByVal receiptID As Long) As Boolean
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     If IsNull(beforeRevision) Then
         stage = "Archive imported draft"
-        Call ArchiveDraft(id, True)
+        Call ArchiveDraft(id, True, operationID)
     Else
         stage = "Restore preceding revision"
         Call RestoreDraft(id, CLng(beforeRevision))
@@ -61,6 +77,8 @@ Public Function LoadOperations() As Boolean
     Forms!frmOperations!lstOperations.Requery
     Forms!frmOperations!lstReceipts.RowSource = "SELECT ImportReceiptID,ReportID,ExternalReportID,ImportedAt,IsUndone FROM ImportReceipt ORDER BY ImportReceiptID DESC"
     Forms!frmOperations!lstReceipts.Requery
+    Forms!frmOperations!lstAudit.RowSource = "SELECT AuditID,EventAt,EventKind,ActorCaption,ReportID,CorrelationGuid FROM AuditEvent ORDER BY AuditID DESC"
+    Forms!frmOperations!lstAudit.Requery
     LoadOperations = True
 End Function
 Public Function OperationDetails() As Boolean

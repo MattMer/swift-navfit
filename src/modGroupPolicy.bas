@@ -20,6 +20,12 @@ Private Sub PolicyPut(ByVal d As Object, ByVal key As String, ByVal value As Str
 End Sub
 Public Function GroupPolicyValue(ByVal groupID As Long, ByVal key As String) As String
     Dim d As Object, n As Object
+    Select Case key
+        Case "Workflow"
+            GroupPolicyValue = Nz(DLookup("WorkflowState", "GroupLifecycle", "GroupID=" & groupID), ""): Exit Function
+        Case "RSCAPostedBaseline", "RSCAGroupSum", "RSCAGroupCount", "RSCAReportIDs", "RSCACompletedAt"
+            GroupPolicyValue = RSPostingValue(groupID, key): Exit Function
+    End Select
     Set d = PolicyDocument(groupID): Set n = d.selectSingleNode("/SwiftGroupPolicy/" & key)
     If Not n Is Nothing Then GroupPolicyValue = n.Text
 End Function
@@ -40,8 +46,9 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     If old = state And state <> "Completed" Then w.CommitTrans: Exit Sub
     Set d = PolicyDocument(groupID)
     If state = "Completed" Then RSPostGroupCompletion groupID, d
-    PolicyPut d, "Workflow", state: PolicyPut d, "WorkflowBy", CStr(author): PolicyPut d, "WorkflowAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
-    db.Execute "UPDATE SummaryGroup SET KeySpec=" & QuoteSQL(d.XML) & ",VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
+    db.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & groupID, dbFailOnError
+    db.Execute "INSERT INTO GroupLifecycle (GroupID,WorkflowState,ChangedBy,ChangedAt) VALUES (" & groupID & "," & QuoteSQL(state) & "," & author & ",Now())", dbFailOnError
+    db.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     op = BeginOperation("Change group workflow", "Group " & groupID & "; BEFORE: " & old & "; AFTER: " & state)
     FinishOperation op, "Completed", "Local group status changed; member report states unchanged."
     w.CommitTrans: Exit Sub

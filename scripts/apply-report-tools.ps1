@@ -30,7 +30,7 @@ function ToolForm([string]$name,[int]$height){
 }
 # Proven route controls become a subform, not an independently opened window.
 $all=@($app.CurrentProject.AllForms|ForEach-Object {$_.Name})
-if($all -contains 'frmUXReview'){$app.DoCmd.CopyObject('','frmReportReviewPanel',2,'frmUXReview')}
+if(-not $script:swiftManagedBuild -and $all -contains 'frmUXReview'){$app.DoCmd.CopyObject('','frmReportReviewPanel',2,'frmUXReview')}
 $app.DoCmd.OpenForm('frmReportReviewPanel',1);$f=$app.Forms.Item('frmReportReviewPanel')
 $keep=@('txtReportID','txtGroupID','txtExpectedRevision','txtExpectedStamp','lblHeading','lblSaved','lblTemplate','cboTemplate','cmdStart','lblRun','cboRun','lblStatus','lstSteps','txtStep','lblNote','txtNote','cmdAccept','cmdReturn','cmdRestart','cmdCancel','cmdApprove','cmdReopen','lblUnavailable','cmdBack','cmdRefresh')
 foreach($name in @($f.Controls|ForEach-Object {$_.Name})){if($keep -notcontains $name){$app.DeleteControl($f.Name,$name)}}

@@ -32,13 +32,21 @@ Public Function MajorIDs(ByVal csv As String) As Object
 End Function
 Public Function SavedFields(ByVal reportID As Long) As Object
     Dim r As DAO.Recordset, values As Object, key As Variant, db As DAO.Database
+    AssertReportCache reportID
     Set db = CurrentDb
-    Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 4002, , "Report does not exist."
     Set values = CreateObject("Scripting.Dictionary")
-    For Each key In DraftFieldKeys(): values.Add CStr(key), r.Fields(key).Value: Next
+    Dim head As Long, value As Variant
+    head = ReportHeadRevision(reportID)
+    For Each key In DraftFieldKeys(): values.Add CStr(key), Null: Next
+    Set r = db.OpenRecordset("SELECT FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & head, dbOpenSnapshot)
+    Do While Not r.EOF
+        key = CStr(r!FieldKey): value = Null
+        If Not r!IsNullValue Then value = r!ValueText.Value
+        If (key = "PeriodStart" Or key = "PeriodEnd") And Not IsNull(value) Then value = DateSerial(CLng(Left$(value, 4)), CLng(Mid$(value, 6, 2)), CLng(Right$(value, 2)))
+        If values.Exists(CStr(key)) Then values(CStr(key)) = value
+        r.MoveNext
+    Loop
     r.Close
-    values("CommandEmployment") = StoredBlock28(reportID)
     Set SavedFields = values
 End Function
 Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As Variant
@@ -75,7 +83,7 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
     stage = "Normal draft commit"
     CommitSavedFields = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"))
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values)
     w.CommitTrans: Exit Function
 Failed:
     failure = Err.Number: message = stage & ": " & Err.Description
@@ -89,7 +97,7 @@ Public Function SameFieldValue(ByVal a As Variant, ByVal b As Variant) As Boolea
     SameFieldValue = (IsNull(a) = IsNull(b) And StrComp(Nz(a, ""), Nz(b, ""), vbBinaryCompare) = 0)
 End Function
 Public Function CurrentRevision(ByVal reportID As Long) As Long
-    CurrentRevision = Nz(MajorScalar("SELECT CurrentRevisionID FROM Report WHERE ReportID=" & reportID), 0)
+    CurrentRevision = ReportHeadRevision(reportID)
     If CurrentRevision = 0 Then Err.Raise vbObjectError + 4002, , "Select a saved report."
 End Function
 Public Function NumericTraitAverage(ByVal revisionID As Long) As Variant

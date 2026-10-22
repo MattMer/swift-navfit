@@ -5,6 +5,13 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 5960, , message
     checks = checks + 1
 End Sub
+Private Function RetiredResolutionRejected(ByVal id As Long) As Boolean
+    On Error GoTo Rejected
+    SetReviewThreadState id, True
+    Exit Function
+Rejected:
+    RetiredResolutionRejected = True
+End Function
 Private Sub CompareRows(ByVal pid As Long, ByVal history As Boolean)
     Dim before As DAO.Recordset, after As DAO.Recordset, i As Long, ignored As Long, visible As Object, rowCount As Long
     Call UXPrepareWorkRows(pid, history)
@@ -99,7 +106,7 @@ Public Function TestUXMyWork() As String
     Call ApproveSavedRoute(run, "Synthetic approval")
     Check Not UXWorkVisible("Route", run, other), "Approved route remains actionable"
     Check Not UXWorkVisible("Comment", thread, other), "Approved report notes became approval tasks"
-    SetReviewThreadState thread, True
+    Check RetiredResolutionRejected(thread), "Retired resolution API accepted a write"
     Call CheckCount
     Call LoadMyWork
     Check f!lstWork.ListCount <= 1 And InStr(f!uxWorkStatus.Caption, "No work") > 0, "Empty inbox guidance"

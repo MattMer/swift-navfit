@@ -171,6 +171,7 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     End If
     stage = "Commit PDF fields"
     Call CommitSavedFields(id, expected, changes, "Reviewed structured PDF import")
+    If CurrentRevision(id) <> expected Then AuditCorrelateRevision CurrentRevision(id), operationID
     stage = "Retain receipt": Set db = CurrentDb
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = pdfHash: receipt!SourcePath = pdfPath: receipt!ExternalReportID = 0: receipt!ReportID = id

@@ -41,13 +41,13 @@ SaveScreen $f 'frmEditor'
 $app.DoCmd.OpenForm('frmMajorWorkbench',1);$f=$app.Forms.Item('frmMajorWorkbench');$f.Controls('lstReports').ColumnHeads=$true;SaveScreen $f 'frmMajorWorkbench'
 $app.DoCmd.OpenForm('frmHome',1);$f=$app.Forms.Item('frmHome');$f.OnActivate='=UXDashboardRefresh()';SaveScreen $f 'frmHome'
 $app.DoCmd.OpenForm('frmUXSettings',1);$f=$app.Forms.Item('frmUXSettings');$f.Controls('lblHeading').Caption='Settings && Help';SaveScreen $f 'frmUXSettings'
-$app.DoCmd.OpenForm('frmUXReview',1);$f=$app.Forms.Item('frmUXReview')
+$app.DoCmd.OpenForm('frmReportReviewPanel',1);$f=$app.Forms.Item('frmReportReviewPanel')
 [void](Control $f 104 'cmdMyWork' 400 11100 12600 450 'Back to My Work' '=UXWorkBack()');$script:swiftControl.Tag='RV:400:12600:11100:450';$f.Section(0).Height=12000;$f.OnClose='=UXWorkChanged()'
-SaveScreen $f 'frmUXReview'
+SaveScreen $f 'frmReportReviewPanel'
 
 # Bring high-frequency supporting screens into the same workspace shell.
-$destinations=@(@('Overview','frmHome'),@('Reports','frmLibrary'),@('Summary groups','frmUXGroups'),@('My Work','frmMyWork'),@('Resources','frmUXResources'),@('Settings & Help','frmUXSettings'))
-foreach($screenName in @('frmReviewComments','frmSnippets','frmRecovery','frmUXImportChoose')){
+$destinations=@(@(([string]$app.Eval('UXWorkspaceRouteList()')).Split(';')) | ForEach-Object { ,($_.Split('|')) })
+foreach($screenName in @('frmSnippets','frmRecovery','frmUXImportChoose')){
     $app.DoCmd.OpenForm($screenName,1);$f=$app.Forms.Item($screenName)
     foreach($c in $f.Controls){
         if($c.Visible){$c.Left=[int](2850+($c.Left-400)*0.84);$c.Width=[int]([Math]::Max(200,$c.Width*0.84));$c.Top=[int]($c.Top+600)}
@@ -59,12 +59,8 @@ foreach($screenName in @('frmReviewComments','frmSnippets','frmRecovery','frmUXI
     [void](Control $f 100 'uxNavCaption' 220 1000 2100 300 'WORKSPACE')
     for($i=0;$i -lt 6;$i++){[void](Control $f 104 ('uxNav'+$i) 180 (1450+$i*650) 2100 550 $destinations[$i][0].Replace('&','&&') ('=UXNavigate("'+$destinations[$i][1]+'")'));$script:swiftControl.UseTheme=$false;$script:swiftControl.ForeColor=5916729}
     [void](Control $f 100 'uxContext' 2850 200 10300 400 'Swift NAVFIT | Local workspace')
-    [void](Control $f 111 'uxCompactNav' 250 150 2500 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List';$c.RowSource='frmHome;Overview;frmLibrary;Reports;frmUXGroups;Summary groups;frmMyWork;My Work;frmUXResources;Resources;frmUXSettings;Settings & Help';$c.ColumnCount=2;$c.ColumnWidths='0;2500';$c.LimitToList=$true;$c.AfterUpdate='=UXCompactNavigate("'+$screenName+'")'
+    [void](Control $f 111 'uxCompactNav' 250 150 2500 400);$c=$script:swiftControl;$c.Visible=$false;$c.RowSourceType='Value List';$c.RowSource=([string]$app.Eval('UXWorkspaceRowSource()'));$c.ColumnCount=2;$c.ColumnWidths='0;2500';$c.LimitToList=$true;$c.AfterUpdate='=UXCompactNavigate("'+$screenName+'")'
     $f.Width=13800;$f.Section(0).BackColor=16381429;$f.OnResize='=UXResizeWorkspace("'+$screenName+'")';$f.OnActivate='=UXLoadContext()'
-    if($screenName -eq 'frmReviewComments'){
-        $f.Controls('lstThreads').ColumnHeads=$true
-        [void](Control $f 104 'cmdMyWork' 2850 14500 10450 500 'Back to My Work' '=UXWorkBack()');$f.OnClose='=UXWorkChanged()'
-    }
     if($screenName -eq 'frmSnippets'){$f.Controls('cmdClose').OnClick='=UXCloseResource("frmSnippets")'}
     SaveScreen $f $screenName
 }

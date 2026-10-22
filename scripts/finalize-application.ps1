@@ -1,5 +1,12 @@
 # Final form ownership: route cleanup runs after presentation/event decorators.
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
+# Canonical history shares the existing operations/undo destination.
+$app.DoCmd.OpenForm('frmOperations',1);$f=$app.Forms.Item('frmOperations')
+$bottom=[int](($f.Controls|ForEach-Object {$_.Top+$_.Height}|Measure-Object -Maximum).Maximum)+300
+$c=$app.CreateControl($f.Name,100,0,'','',400,$bottom,12600,350);$c.Name='lblAudit';$c.Caption='Report activity - domain evidence and operation correlation'
+$c=$app.CreateControl($f.Name,110,0,'','',400,($bottom+500),12600,2500);$c.Name='lstAudit';$c.ColumnCount=6;$c.ColumnWidths='0;2000;2700;2200;900;4400';$c.ColumnHeads=$true;$c.AfterUpdate='=AuditDetails()'
+$f.Section(0).Height=$bottom+3300;$f.ScrollBars=2
+$app.DoCmd.Close(2,$f.Name,1)
 $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
 foreach($name in @('cmdAddFolder','cmdMoveFolder','cmdFolderHelp','cboDestination')){
  if(@($f.Controls|ForEach-Object {$_.Name}) -contains $name){$app.DeleteControl($f.Name,$name)}

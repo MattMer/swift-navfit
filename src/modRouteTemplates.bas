@@ -141,7 +141,7 @@ Public Sub ApproveSavedRoute(ByVal runID As Long, ByVal note As String)
     operation = BeginOperation("Local approval", "Route " & runID & ": " & note)
     ownedDB.Execute "UPDATE Report SET WorkflowState='Approved' WHERE ReportID=" & r!ReportID, dbFailOnError
     Set e = ownedDB.OpenRecordset("ReportEvent", dbOpenDynaset)
-    e.AddNew: e!ReportID = r!ReportID: e!AuthorProfileID = MajorAuthor(): e!EventAt = Now(): e!EventKind = "Local approval": e.Update: e.Close
+    e.AddNew: e!ReportID = r!ReportID: e!AuthorProfileID = MajorAuthor(): e!EventAt = Now(): e!EventKind = "Local approval": e.Update: e.Bookmark = e.LastModified: AuditRecord "Report event", CLng(e!ReportEventID), operation: e.Close
     r.Edit: r!RunState = "Approved": r!ApprovedAt = Now(): r.Update: r.Close
     FinishOperation operation, "Completed", "Saved revision locally approved and editing locked; no official signature or submission."
     w.CommitTrans: Exit Sub
@@ -167,7 +167,7 @@ Public Sub ReopenApprovedReport(ByVal reportID As Long, ByVal note As String)
     ownedDB.Execute "UPDATE RouteRun SET RunState='Reopened' WHERE ReportID=" & reportID & " AND RunState='Approved'", dbFailOnError
     ownedDB.Execute "UPDATE Report SET WorkflowState='Draft' WHERE ReportID=" & reportID, dbFailOnError
     Set e = ownedDB.OpenRecordset("ReportEvent", dbOpenDynaset)
-    e.AddNew: e!ReportID = reportID: e!AuthorProfileID = MajorAuthor(): e!EventAt = Now(): e!EventKind = "Approval reopened": e.Update: e.Close
+    e.AddNew: e!ReportID = reportID: e!AuthorProfileID = MajorAuthor(): e!EventAt = Now(): e!EventKind = "Approval reopened": e.Update: e.Bookmark = e.LastModified: AuditRecord "Report event", CLng(e!ReportEventID), operation: e.Close
     FinishOperation operation, "Completed", "Editing reopened; previous local approval retained as history."
     w.CommitTrans: Exit Sub
 Failed:

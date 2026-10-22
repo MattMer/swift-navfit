@@ -18,6 +18,7 @@ $logFolder=Join-Path $root ('build/workflow/'+(Get-Date -Format 'yyyyMMdd-HHmmss
 $script:workflowResults=[Collections.Generic.List[object]]::new()
 InvokeSwiftWorkflowStep 'test-build-plan' @() $logFolder
 InvokeSwiftWorkflowStep 'test-vba-source-normalization' @() $logFolder
+InvokeSwiftWorkflowStep 'test-field-definitions' @() $logFolder
 if($Action -in @('Build','BuildAndTest')){InvokeSwiftWorkflowStep 'build' @('-OutputPath',$BuildPath) $logFolder}
 if($Action -in @('Test','BuildAndTest')){
     $before=GetSwiftWorkflowArtifact $BuildPath

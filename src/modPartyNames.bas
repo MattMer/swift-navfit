@@ -22,7 +22,7 @@ Public Function ValidatePartyNames(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 3100, , "Structured names require ten text or null entries."
     If LBound(values) <> 0 Or UBound(values) <> 9 Then Err.Raise vbObjectError + 3100, , "Structured names require ten text or null entries."
-    keys = PartyNamesKeys(): limits = Array(27, 3, 27, 10, 18, 1, 3, 20, 1, 3)
+    keys = PartyNamesKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 9
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 3101, , PartyNamesLabel(keys(i)) & " must be text or null."

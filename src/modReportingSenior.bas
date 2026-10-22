@@ -17,7 +17,7 @@ Public Function ValidateReportingSenior(ByVal values As Variant) As Variant
     Dim i As Long, limits As Variant, keys As Variant
     If Not IsArray(values) Then Err.Raise vbObjectError + 2400, , "Reporting senior requires five text or null values."
     If LBound(values) <> 0 Or UBound(values) <> 4 Then Err.Raise vbObjectError + 2400, , "Reporting senior requires five text or null values."
-    limits = Array(18, 5, 5, 14, 5): keys = ReportingSeniorKeys()
+    keys = ReportingSeniorKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 4
         If Not IsNull(values(i)) Then
             If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2401, , ReportingSeniorLabel(keys(i)) & " must be text or null."

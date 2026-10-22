@@ -26,9 +26,18 @@ Public Function UXEffectiveDefault(ByVal groupID As Long, ByVal key As String) A
     If groupID > 0 And DCount("*", "FieldDefault", UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key)) = 0 Then UXEffectiveDefault = UXGroupDefaultValue(0, key) Else UXEffectiveDefault = UXGroupDefaultValue(groupID, key)
 End Function
 Public Sub UXRemoveDefault(ByVal groupID As Long, ByVal key As String)
-    Dim op As Long, old As Variant
+    Dim op As Long, old As Variant, w As DAO.Workspace, db As DAO.Database, failure As Long, message As String
     old = UXGroupDefaultValue(groupID, key)
+    Set w = DBEngine.Workspaces(0): Set db = CurrentDb
+    On Error GoTo Failed
+    w.BeginTrans
     op = BeginOperation("Reset default override", UXDefaultScopeWhere(groupID) & "; field " & key & "; before=" & Nz(old, "(null or absent)"))
+    db.Execute "DELETE FROM FieldDefaultLink WHERE DefaultID IN (SELECT DefaultID FROM FieldDefault WHERE " & UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key) & ")", dbFailOnError
     CurrentDb.Execute "DELETE FROM FieldDefault WHERE " & UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key), dbFailOnError
     FinishOperation op, "Completed", "Explicit override removed; inherit parent starting value. Saved reports unchanged."
+    w.CommitTrans: Exit Sub
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next: w.Rollback: On Error GoTo 0
+    Err.Raise failure, "UXRemoveDefault", message
 End Sub

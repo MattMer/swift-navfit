@@ -5,6 +5,7 @@
   "sourceModules": [
     "src/modAdministration.bas",
     "src/modAssessment.bas",
+    "src/modAudit.bas",
     "src/modBackupUI.bas",
     "src/modBulkFolders.bas",
     "src/modChecklist.bas",
@@ -39,6 +40,7 @@
     "src/modPartyNames.bas",
     "src/modPromotionStatus.bas",
     "src/modProvenance.bas",
+    "src/modRSAccounting.bas",
     "src/modRSCompletion.bas",
     "src/modRSDirectory.bas",
     "src/modRSDirectoryUI.bas",
@@ -51,6 +53,7 @@
     "src/modReportPageMap.bas",
     "src/modReportPages.bas",
     "src/modReportPeople.bas",
+    "src/modReportState.bas",
     "src/modReportTools.bas",
     "src/modReportingSenior.bas",
     "src/modReviewComments.bas",
@@ -112,6 +115,7 @@
   ],
   "inputs": [
     "src/major-schema.json",
+    "src/field-definitions.json",
     "src/navfit-field-map.json",
     "src/navywriter-catalog.json",
     "src/pdf-field-map.json",

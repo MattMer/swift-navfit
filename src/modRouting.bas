@@ -72,7 +72,8 @@ End Function
 Private Sub RouteEvent(ByVal db As DAO.Database, ByVal taskID As Long, ByVal authorID As Long, ByVal kind As String, ByVal notes As String)
     Dim r As DAO.Recordset
     Set r = db.OpenRecordset("ReviewTaskEvent", dbOpenDynaset)
-    r.AddNew: r!TaskID = taskID: r!AuthorProfileID = authorID: r!EventAt = Now(): r!EventKind = kind: r!Notes = notes: r.Update: r.Close: Set r = Nothing
+    r.AddNew: r!TaskID = taskID: r!AuthorProfileID = authorID: r!EventAt = Now(): r!EventKind = kind: r!Notes = notes: r.Update: r.Bookmark = r.LastModified
+    AuditRecord "Review event", CLng(r!TaskEventID): r.Close: Set r = Nothing
 End Sub
 Public Function FinishReview(ByVal taskID As Long, ByVal outcome As String, ByVal notes As String) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, db As DAO.Database, pid As Long, trans As Boolean, failure As Long, message As String

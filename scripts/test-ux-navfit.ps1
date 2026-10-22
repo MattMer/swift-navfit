@@ -7,7 +7,7 @@ $app=New-Object -ComObject Access.Application
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($test,$true)
  $app.LoadFromText(5,'UXNAVFITHarness',(Join-Path $root 'tests/UXNAVFITHarness.bas'));$app.DoCmd.RunCommand(126)
- $result=$app.Eval('TestUXNAVFIT("'+$source+'","'+(Join-Path $root 'NAVFIT_BLANK.accdb')+'")');if($result -notlike 'PASS:*'){throw $result}
+ $result=$app.Eval('TestUXNAVFIT("'+$source+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")');if($result -notlike 'PASS:*'){throw $result}
  $app.CloseCurrentDatabase()
  @{Status=$result;TestPath=$test;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash}|ConvertTo-Json|Set-Content (Join-Path $dir 'verification.json')
  Write-Output $result

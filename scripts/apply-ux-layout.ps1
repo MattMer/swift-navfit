@@ -4,7 +4,7 @@ if(-not $script:swiftManagedBuild){
 }
 function UXChrome($f){
     $f.Width=[int](13800);$f.Section(0).BackColor=16316664;$f.OnActivate="=UXLoadContext()"
-    $nav=@(@('Overview','frmHome'),@('Reports','frmLibrary'),@('Summary groups','frmUXGroups'),@('My Work','frmMyWork'),@('Resources','frmUXResources'),@('Settings & Help','frmUXSettings'))
+    $nav=@(@(([string]$app.Eval('UXWorkspaceRouteList()')).Split(';')) | ForEach-Object { ,($_.Split('|')) })
     for($i=0;$i -lt $nav.Count;$i++){[void](Control $f 104 ('uxNav'+$i) (300+$i*2210) 200 2100 450 $nav[$i][0] ('=UXNavigate("'+$nav[$i][1]+'")'))}
     [void](Control $f 100 'uxContext' 350 720 13000 300 'Swift NAVFIT | Local workspace')
 }
@@ -67,7 +67,7 @@ $f.Controls('lblHeading').Top=[int](1200)
 $f.OnLoad='=UXLoadGroups()';$f.OnActivate='=UXLoadGroups()';SaveScreen $f 'frmUXGroups'
 foreach($screen in @('frmUXResources','frmUXSettings')){
     NewScreen $screen $(if($screen -eq 'frmUXResources'){'Resources'}else{'Settings & Help'}) 7600;$f=$script:swiftForm;UXChrome $f;$f.Controls('lblHeading').Top=[int](1300)
-    $items=if($screen -eq 'frmUXResources'){@(@('Narrative snippets','frmSnippets'),@('Review route templates','frmMajorWorkbench'),@('Reference guidance','frmHelp'))}else{@(@('Contributors and My Work','frmMyWork'),@('Backup and restore','frmBackup'),@('Operation history and import undo','frmOperations'),@('Recover pending edits','frmRecovery'),@('Support and limitations','frmSupport'))}
+    $items=if($screen -eq 'frmUXResources'){@(@('Narrative snippets','frmSnippets'),@('Review route templates','frmMajorWorkbench'),@('Reference guidance','frmUXHelp'))}else{@(@('Contributors and My Work','frmMyWork'),@('Backup and restore','frmBackup'),@('Operation history and import undo','frmOperations'),@('Recover pending edits','frmRecovery'),@('Support and limitations','frmSupport'))}
     for($i=0;$i -lt $items.Count;$i++){[void](Control $f 104 ('cmdTool'+$i) 400 (2300+$i*850) 12600 600 $items[$i][0] ('=OpenScreen("'+$items[$i][1]+'")'))}
     SaveScreen $f $screen
 }
