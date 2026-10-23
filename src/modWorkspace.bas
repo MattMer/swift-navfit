@@ -27,6 +27,33 @@ Public Function FolderPath(ByVal folderID As Long) As String
     Loop
 End Function
 
+'Presentation scope only. A refresh owns this map; writers keep FolderPath/live
+'validation. Resolve lazily so an unrelated malformed folder is not newly read.
+Public Function FolderPathSnapshot() As Object
+    Dim result As Object, folders As Object, r As DAO.Recordset
+    Set result = CreateObject("Scripting.Dictionary"): Set folders = CreateObject("Scripting.Dictionary")
+    Set r = CurrentDb.OpenRecordset("SELECT FolderID,FolderName,ParentFolderID FROM Folder", dbOpenSnapshot)
+    Do While Not r.EOF
+        folders.Add CStr(r!FolderID), Array(r!FolderName.Value, Nz(r!ParentFolderID, 0)): r.MoveNext
+    Loop
+    r.Close: result.Add "Folders", folders: result.Add "Paths", CreateObject("Scripting.Dictionary")
+    Set FolderPathSnapshot = result
+End Function
+Public Function FolderPathFromSnapshot(ByVal folderID As Long, ByVal snapshot As Object) As String
+    Dim original As String, depth As Long, row As Variant, part As String
+    original = CStr(folderID)
+    If snapshot("Paths").Exists(original) Then FolderPathFromSnapshot = snapshot("Paths")(original): Exit Function
+    Do While folderID > 0
+        If depth > 40 Then Err.Raise vbObjectError + 202, , "Folder nesting exceeds supported depth."
+        If Not snapshot("Folders").Exists(CStr(folderID)) Then Err.Raise vbObjectError + 203, , "Folder path is incomplete."
+        row = snapshot("Folders")(CStr(folderID)): part = Nz(row(0), "")
+        If Len(part) = 0 Then Err.Raise vbObjectError + 203, , "Folder path is incomplete."
+        If Len(FolderPathFromSnapshot) > 0 Then FolderPathFromSnapshot = part & " / " & FolderPathFromSnapshot Else FolderPathFromSnapshot = part
+        folderID = CLng(row(1)): depth = depth + 1
+    Loop
+    snapshot("Paths")(original) = FolderPathFromSnapshot
+End Function
+
 Public Function MoveFolder(ByVal folderID As Long, ByVal parentID As Long) As Boolean
     Dim cursor As Long, depth As Long, q As DAO.QueryDef
     Call ActiveContributorID

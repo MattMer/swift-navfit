@@ -7,6 +7,9 @@ $c=$app.CreateControl($f.Name,109,0,'','',350,4750,12200,2400);$c.Name='txtProgr
 $f.HasModule=$true
 $code=$f.Module;$code.AddFromString("Private Sub Form_Unload(Cancel As Integer)`r`n Cancel = UXWorkspaceImportBusy()`r`nEnd Sub")
 $f.OnUnload='[Event Procedure]'
+$f.OnLoad='=UXWorkspacePreviewStart()'
+$c=$app.CreateControl($f.Name,104,0,'','',350,8050,5950,450);$c.Name='cmdResume';$c.Caption='Resume saved preview';$c.OnClick='=UXResumeSwiftWorkspace()';$c.FontName='Segoe UI';$c.FontSize=10
+$c=$app.CreateControl($f.Name,104,0,'','',6600,8050,5950,450);$c.Name='cmdCancelPreview';$c.Caption='Cancel saved preview';$c.OnClick='=UXCancelSwiftWorkspacePreview()';$c.FontName='Segoe UI';$c.FontSize=10
 $app.DoCmd.Close(2,$f.Name,1)
 $app.DoCmd.OpenForm('frmUXNativeGroups',1);$f=$app.Forms.Item('frmUXNativeGroups')
 SetAccessProperty ($f.Controls.Item('lstGroups')) 'Height' 1450

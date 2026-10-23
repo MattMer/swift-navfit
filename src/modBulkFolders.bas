@@ -1,6 +1,7 @@
 Attribute VB_Name = "modBulkFolders"
 Option Compare Database
 Option Explicit
+Private displayFolders As Object
 Private Function IDs(ByVal text As String) As Collection
     Dim list As New Collection, part As Variant, id As Long
     If Len(text) = 0 Then Err.Raise vbObjectError + 1400, , "Select reports first."
@@ -12,14 +13,41 @@ Private Function IDs(ByVal text As String) As Collection
     Set IDs = list
 End Function
 Public Function FolderBatchStamp(ByVal selection As String) As String
-    Dim id As Variant, r As DAO.Recordset
-    For Each id In IDs(selection)
-        Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
-        If r.EOF Then Err.Raise vbObjectError + 1402, , "Selected report missing."
-        If r!IsArchived Or r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 1403, , "Selected report is archived or locked."
-        FolderBatchStamp = FolderBatchStamp & id & ":" & Nz(r!FolderID, 0) & ":" & Nz(r!CurrentRevisionID, 0) & ":" & Nz(DMax("FolderMoveID", "FolderMove", "ReportID=" & id), 0) & ";"
+    Dim selected As Collection, rows As Object
+    Set selected = IDs(selection): Set rows = FolderReadRows(selected)
+    FolderBatchStamp = FolderRowsStamp(selected, rows)
+End Function
+Private Function FolderRowsStamp(ByVal selected As Collection, ByVal rows As Object) As String
+    Dim id As Variant, row As Variant
+    For Each id In selected
+        row = rows(CStr(id))
+        If Not row(0) Then Err.Raise vbObjectError + 1402, , "Selected report missing."
+        If row(4) Or row(5) <> "Draft" Then Err.Raise vbObjectError + 1403, , "Selected report is archived or locked."
+        FolderRowsStamp = FolderRowsStamp & id & ":" & Nz(row(2), 0) & ":" & Nz(row(3), 0) & ":" & row(6) & ";"
+    Next
+End Function
+Private Function FolderReadRows(ByVal selected As Collection) As Object
+    Dim result As Object, db As DAO.Database, r As DAO.Recordset, i As Long, last As Long, csv As String, j As Long, row As Variant
+    Set result = CreateObject("Scripting.Dictionary"): Set db = CurrentDb
+    For i = 1 To selected.Count Step 200
+        csv = "": last = i + 199: If last > selected.Count Then last = selected.Count
+        For j = i To last
+            If csv <> "" Then csv = csv & ","
+            csv = csv & CLng(selected(j))
+            result.Add CStr(selected(j)), Array(False, Null, Null, Null, Null, Null, 0)
+        Next
+        Set r = db.OpenRecordset("SELECT ReportID,Title,FolderID,CurrentRevisionID,IsArchived,WorkflowState FROM Report WHERE ReportID In (" & csv & ")", dbOpenSnapshot)
+        Do While Not r.EOF
+            result(CStr(r!ReportID)) = Array(True, r!Title.Value, r!FolderID.Value, r!CurrentRevisionID.Value, r!IsArchived.Value, r!WorkflowState.Value, 0): r.MoveNext
+        Loop
+        r.Close
+        Set r = db.OpenRecordset("SELECT ReportID,Max(FolderMoveID) AS LastMove FROM FolderMove WHERE ReportID In (" & csv & ") GROUP BY ReportID", dbOpenSnapshot)
+        Do While Not r.EOF
+            row = result(CStr(r!ReportID)): row(6) = Nz(r!LastMove, 0): result(CStr(r!ReportID)) = row: r.MoveNext
+        Loop
         r.Close
     Next
+    Set FolderReadRows = result
 End Function
 Public Function ApplyFolderBatch(ByVal selection As String, ByVal destination As Long, ByVal expected As String) As Long
     Dim operationID As Long, id As Variant, before As Variant, afterMove As Long
@@ -55,16 +83,23 @@ Failed:
 End Function
 Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, undoID As Long, trans As Boolean, id As Long
-    Dim failure As Long, message As String
+    Dim failure As Long, message As String, selected As New Collection, seen As Object, rows As Object, row As Variant
     On Error GoTo Failed
     undoID = BeginOperation("Undo folder batch", "Operation " & operationID)
     Set r = CurrentDb.OpenRecordset("SELECT * FROM FolderBatchChange WHERE OperationID=" & operationID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 1406, , "No folder changes for this operation."
+    Set seen = CreateObject("Scripting.Dictionary")
+    Do While Not r.EOF
+        If Not seen.Exists(CStr(r!ReportID)) Then seen.Add CStr(r!ReportID), True: selected.Add CLng(r!ReportID)
+        r.MoveNext
+    Loop
+    Set rows = FolderReadRows(selected): r.MoveFirst
     Do While Not r.EOF
         id = r!ReportID
         If r!IsUndone Then Err.Raise vbObjectError + 1407, , "Batch already undone."
-        If Nz(DMax("FolderMoveID", "FolderMove", "ReportID=" & id), 0) <> r!AppliedMoveID Or Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> r!BaseRevisionID Then Err.Raise vbObjectError + 1408, , "Later changes exist. Entire batch undo stopped."
-        If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), False) Or Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 1409, , "Archived or locked report blocks batch undo."
+        row = rows(CStr(id))
+        If row(6) <> r!AppliedMoveID Or Nz(row(3), 0) <> r!BaseRevisionID Then Err.Raise vbObjectError + 1408, , "Later changes exist. Entire batch undo stopped."
+        If Nz(row(4), False) Or Nz(row(5), "") <> "Draft" Then Err.Raise vbObjectError + 1409, , "Archived or locked report blocks batch undo."
         r.MoveNext
     Loop
     r.Close
@@ -86,9 +121,14 @@ Failed:
     Err.Raise failure, "UndoFolderBatch", message
 End Function
 Public Function LoadBulkFolders() As Boolean
-    Forms!frmBulkFolders!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,IIf(FolderID Is Null,'Unassigned',FolderPath(Nz(FolderID,0))) AS CurrentFolder FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY Title"
-    Forms!frmBulkFolders!cboDestination.RowSource = "SELECT 0 AS ID,'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID,FolderPath(FolderID) FROM Folder"
+    Set displayFolders = FolderPathSnapshot()
+    Forms!frmBulkFolders!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,IIf(FolderID Is Null,'Unassigned',BulkFolderPath(Nz(FolderID,0))) AS CurrentFolder FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY Title"
+    Forms!frmBulkFolders!cboDestination.RowSource = "SELECT 0 AS ID,'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID,BulkFolderPath(FolderID) FROM Folder"
     Forms!frmBulkFolders!txtStamp = "": LoadBulkFolders = True
+End Function
+Public Function BulkFolderPath(ByVal folderID As Long) As String
+    If displayFolders Is Nothing Then Set displayFolders = FolderPathSnapshot()
+    BulkFolderPath = FolderPathFromSnapshot(folderID, displayFolders)
 End Function
 Private Function SelectedReports() As String
     Dim item As Variant
@@ -98,14 +138,16 @@ Private Function SelectedReports() As String
     Next
 End Function
 Public Function PreviewFolderBatchUI() As Boolean
-    Dim selection As String, id As Variant, text As String
+    Dim selection As String, id As Variant, text As String, selected As Collection, rows As Object, folders As Object, row As Variant
     On Error GoTo Failed
     selection = SelectedReports()
-    Forms!frmBulkFolders!txtStamp = FolderBatchStamp(selection)
+    Set selected = IDs(selection): Set rows = FolderReadRows(selected): Set folders = FolderPathSnapshot()
+    Forms!frmBulkFolders!txtStamp = FolderRowsStamp(selected, rows)
     Forms!frmBulkFolders!txtSelection = selection: Forms!frmBulkFolders!txtDestination = Nz(Forms!frmBulkFolders!cboDestination, 0)
-    text = "Destination: " & IIf(Nz(Forms!frmBulkFolders!cboDestination, 0) = 0, "Unassigned", FolderPath(Nz(Forms!frmBulkFolders!cboDestination, 0))) & vbCrLf
-    For Each id In IDs(selection)
-        text = text & "Report " & id & ": " & Nz(DLookup("Title", "Report", "ReportID=" & id), "") & " | " & IIf(Nz(DLookup("FolderID", "Report", "ReportID=" & id), 0) = 0, "Unassigned", FolderPath(Nz(DLookup("FolderID", "Report", "ReportID=" & id), 0))) & vbCrLf
+    text = "Destination: " & IIf(Nz(Forms!frmBulkFolders!cboDestination, 0) = 0, "Unassigned", FolderPathFromSnapshot(Nz(Forms!frmBulkFolders!cboDestination, 0), folders)) & vbCrLf
+    For Each id In selected
+        row = rows(CStr(id))
+        text = text & "Report " & id & ": " & Nz(row(1), "") & " | " & IIf(Nz(row(2), 0) = 0, "Unassigned", FolderPathFromSnapshot(Nz(row(2), 0), folders)) & vbCrLf
     Next
     Forms!frmBulkFolders!txtPreview = text & vbCrLf & "Only organizational folder assignments change. Official revisions and groups stay unchanged."
     PreviewFolderBatchUI = True: Exit Function

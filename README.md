@@ -91,7 +91,29 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** Current development is **0.29.0-dev / schema 29**, tagged `v0.29.0-dev`. The published r128 downloads above remain app 0.27.1-dev / schema 27. A source tag does not publish a new Access binary.
+**Source and downloads can differ.** Current development source is **0.32.0-dev / schema 30**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
+
+H01 development adds **Create PDF** in a report and **Preview / create PDFs** in
+a summary group. Choose saved values or captured current drafts, a protected export
+folder, and combined, individual or Both output. **Preview printed pages** opens
+Access print preview before generation. Group packets put the summary first, then
+reports alphabetically by last name, with each report's additional pages together.
+Findings, incomplete values and report status do not block output. Overflow continues
+on labelled pages; a single-line value that cannot fit is marked `*`, with its full
+value on an additional page. Export creates a new dated folder and preserves pending edits;
+it does not sign or approve reports. Fields without stored source values remain
+blank. Physical print acceptance and Acrobat-absent workstation testing are pending;
+the existing published downloads do not yet contain this feature.
+
+M02 adds **Resume saved preview** and **Cancel saved preview** to returned-report,
+structured-PDF and workspace imports. Reviewed choices survive resets/restarts;
+Resume rechecks the source and target before showing them again. Apply remains
+explicit, and stale inputs require a fresh preview. Closing retains the saved
+preview; Cancel removes it without changing report data.
+
+M03 batches folder, directory-history and group/RSCA reads while retaining live
+write checks and the same displayed values. This is a development performance
+change; the published downloads remain unchanged.
 
 Current development implements backlog C05–C10:
 

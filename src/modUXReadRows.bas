@@ -8,6 +8,52 @@ Private reportRows As Object
 Private Function ReadMap() As Object
     Set ReadMap = CreateObject("Scripting.Dictionary")
 End Function
+Public Function UXHistoryITARows(ByVal memberID As Long) As Object
+    Dim rows As Object, traits As Object, r As DAO.Recordset, values As Object, id As Variant, key As Variant, row As Variant, mark As Variant, total As Double, count As Long, complete As Boolean, fields As String
+    Set rows = ReadMap(): Set traits = ReadMap()
+    Set r = CurrentDb.OpenRecordset("SELECT p.ReportID,p.ObservationStatus,h.RevisionID FROM (Report AS p INNER JOIN MemberReport AS m ON p.ReportID=m.ReportID) LEFT JOIN ReportHead AS h ON p.ReportID=h.ReportID WHERE m.MemberID=" & memberID, dbOpenSnapshot)
+    Do While Not r.EOF
+        rows.Add CStr(r!ReportID), Array(r!ObservationStatus.Value, Nz(r!RevisionID, 0))
+        r.MoveNext
+    Loop
+    r.Close
+    For Each key In TraitKeys()
+        If fields <> "" Then fields = fields & ","
+        fields = fields & QuoteSQL(CStr(key))
+    Next
+    Set r = CurrentDb.OpenRecordset("SELECT h.ReportID,v.FieldKey,v.ValueText,v.IsNullValue FROM (MemberReport AS m INNER JOIN ReportHead AS h ON m.ReportID=h.ReportID) INNER JOIN RevisionValue AS v ON h.RevisionID=v.RevisionID WHERE m.MemberID=" & memberID & " AND v.FieldKey In (" & fields & ")", dbOpenSnapshot)
+    Do While Not r.EOF
+        id = CStr(r!ReportID)
+        If Not traits.Exists(id) Then traits.Add id, ReadMap()
+        Set values = traits(id)
+        If r!IsNullValue Then mark = Null Else mark = r!ValueText.Value
+        values(CStr(r!FieldKey)) = mark: r.MoveNext
+    Loop
+    r.Close
+    For Each id In rows.Keys
+        row = rows(id): total = 0: count = 0: complete = False
+        If Nz(row(0), "") = "NOB" Then
+            rows(id) = "NOB"
+        Else
+            If row(1) = 0 Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+            If traits.Exists(id) Then
+                complete = True: Set values = traits(id)
+                For Each key In TraitKeys()
+                    If Not values.Exists(CStr(key)) Then
+                        complete = False
+                    Else
+                        mark = values(CStr(key))
+                        If Not IsNull(mark) Then
+                            If mark <> "" And mark <> "NOB" Then total = total + Val(mark): count = count + 1
+                        End If
+                    End If
+                Next
+            End If
+            If complete And count > 0 Then rows(id) = Format$(total / count, "0.00") Else rows(id) = "Unavailable"
+        End If
+    Next
+    Set UXHistoryITARows = rows
+End Function
 Private Function ReadRouteCurrent(ByVal r As DAO.Recordset, ByVal stamps As Object) As Boolean
     Dim key As String
     ReadRouteCurrent = (r!RevisionID = Nz(r!SavedRevision, 0)) And Not Nz(r!ReportArchived, True)

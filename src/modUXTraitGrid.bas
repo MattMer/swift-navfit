@@ -15,6 +15,43 @@ Private rowStates As Object
 Public Function UXGridPendingCount() As Long
     If Not queuedCells Is Nothing Then UXGridPendingCount = queuedCells.Count
 End Function
+
+'Read a PDF snapshot without draining, discarding or changing the bound cache.
+Public Function UXGridPDFSnapshot(ByVal reportID As Long, ByVal fields As Object) As Boolean
+    Dim pending As Variant, key As Variant, names As Variant, i As Long, f As Access.Form, value As Variant, active As Access.Control
+    If cacheDB Is Nothing Then Exit Function
+    If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
+    names = Array("Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39", "PromotionRecommendation", "AssignmentRecommendationA", "AssignmentRecommendationB")
+    If Not queuedCells Is Nothing Then
+        For Each key In queuedCells.Keys
+            pending = queuedCells(key)
+            If CLng(pending(0)) = reportID Then
+                fields(CStr(pending(1))) = pending(2): UXGridPDFSnapshot = True
+            End If
+        Next
+    End If
+    Set f = Forms!frmUXComparison!uxTraitGrid.Form
+    If f.Recordset.EOF Then Exit Function
+    If Nz(f!ReportID, 0) <> reportID Then Exit Function
+    If Not f.Dirty Then Exit Function
+    'Only the active unfinished cell supplements the queue; unchanged cached
+    'columns must not overwrite another pending editor field.
+    On Error Resume Next
+    Set active = Screen.ActiveControl
+    On Error GoTo 0
+    If active Is Nothing Then Exit Function
+    If Not active.Parent Is f Then Exit Function
+    For i = 0 To UBound(names)
+        If active.Name = names(i) Then
+            value = active.Value
+            On Error Resume Next
+            value = active.Text
+            On Error GoTo 0
+            fields(CStr(names(i))) = value: UXGridPDFSnapshot = True
+            Exit For
+        End If
+    Next
+End Function
 ' Show retry/discard only while pending cells exist; move focus before hiding a focused button.
 Private Sub UXGridPendingActions()
     Dim activeName As String
@@ -141,7 +178,11 @@ Public Function UXGridLoad() As Boolean
     Set cacheRows = cacheDB.OpenRecordset("SELECT * FROM PendingTraits ORDER BY SortOrdinal", dbOpenDynaset)
     If Not cacheRows.EOF Then cacheRows.MoveLast: cacheRows.MoveFirst
     Set f.Recordset = cacheRows
-    kind = Nz(DLookup("FormKind", "Report", "ReportID=" & Nz(f!ReportID, 0)), "EVAL")
+    If f.Recordset.EOF Then
+        kind = Nz(MajorScalar("SELECT FormKind FROM SummaryGroup WHERE GroupID=" & Nz(Forms!frmUXComparison!uxGroupContext, 0)), "EVAL")
+    Else
+        kind = Nz(DLookup("FormKind", "Report", "ReportID=" & Nz(f!ReportID, 0)), "EVAL")
+    End If
     For block = 33 To 39
         f.Controls("heading" & block).Caption = UXFieldCaption("Trait" & block, kind)
         f.Controls("Trait" & block).ControlTipText = UXFieldCaption("Trait" & block, kind)
@@ -205,6 +246,7 @@ Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) A
     If loading Or saving Or cacheRows Is Nothing Then Exit Function
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
+    If UXHasControl(Forms!frmUXComparison, "uxOpenGroupReport") Then Forms!frmUXComparison!uxOpenGroupReport.Enabled = Not f.Recordset.EOF
     If f.Recordset.EOF Then Exit Function
     f!PriorITA.ControlTipText = Nz(f!PriorPeriod, "") & " - " & Nz(f!PriorSource, "")
     f!PriorPromotion.ControlTipText = f!PriorITA.ControlTipText

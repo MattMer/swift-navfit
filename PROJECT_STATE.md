@@ -22,15 +22,23 @@ Windows Microsoft Access application for drafting EVAL, CHIEFEVAL and FITREP
 reports; command/member and prior-evaluation history; summary groups and RSCA;
 revision comparison/restoration; pending-edit recovery; local routes/approvals;
 shared report conversations; NAVFIT98A exchange and supported structured PDF import.
-Local approvals are not official signatures. NAVFIT98A remains the native final
-validation/printing destination. Official-template PDF output is a backlog item.
+Local approvals are not official signatures. NAVFIT98A remains supported for native
+exchange and final validation. H01 development adds static official-template PDFs,
+native page preview and combined summary-group packets; physical print acceptance
+and a workstation test with Acrobat absent remain separate gates.
 
 Current delivery is r128 / **0.27.1-dev / schema 27**. C03 contributor selection
 is implemented: initialized launches require an explicit session contributor;
 selection provides attribution, not authentication. C04 historical/effective-date
 validation is implemented in development source. C05–C07 introduce
 **0.28.0-dev / schema 28** persistence changes. C08–C10 extend development to
-**0.29.0-dev / schema 29**; no new release is published.
+**0.29.0-dev / schema 29**. H01 advances application source to **0.30.0-dev**,
+retaining schema 29; no new release is published.
+M02 advances development to **0.31.0-dev / schema 30**, adding recoverable wizard
+descriptors and explicit preview ownership. The earlier ACCDE candidate remains
+unsigned 0.30.0-dev/schema 29 development evidence, not a current release.
+M03 advances application source to **0.32.0-dev**, retaining schema 30. It batches
+read work without changing storage, report geometry or the release contract.
 
 ## Architecture and authoritative sources
 
@@ -38,8 +46,8 @@ validation is implemented in development source. C05–C07 introduce
   live in [modSwift.bas](src/modSwift.bas); major schema metadata lives in
   [major-schema.json](src/major-schema.json). Schema DDL also exists in the base
   builder and additive stages; there is not yet one complete schema authority.
-- [build-manifest.json](scripts/build-manifest.json): 103 static modules, four
-  generated modules, inputs and 72 ordered stages. [build.ps1](scripts/build.ps1)
+- [build-manifest.json](scripts/build-manifest.json): 105 static modules, five
+  generated modules, inputs and 74 ordered stages. [build.ps1](scripts/build.ps1)
   creates a fresh database, builds schema/forms, applies stages, compiles,
   reopens and verifies installed source and bindings.
 - [AutoExec.txt](src/AutoExec.txt) invokes `SwiftAppStartup`: trust/setup/session
@@ -63,8 +71,76 @@ validation is implemented in development source. C05–C07 introduce
 - `frmMajorWorkbench` remains a summary-group context host; `frmBulkFolders`
   remains organizational-folder tooling. Their retention is explicit in the
   manifest. Old names alone do not establish redundant functionality.
+- Summary-group Members now has one presentation for newly created, empty and
+  populated groups: the editable comparison grid in `frmUXComparison`, with
+  member selection, shared-block changes, selected-report opening, validation,
+  policy/roster review, reporting-senior/PSG RSCA, export and return actions below
+  the table. `frmMajorWorkbench` retains Review/History and hidden legacy-tool
+  context; its Members entry point forwards to the same live grid. Membership
+  changes and report creation return to that grid, including removal of the last
+  member. Empty grids derive trait captions from the group report type and
+  disable opening a nonexistent selected report. Actions pass the displayed
+  group explicitly and drain pending cells before opening another tool.
+  The older group-read harness's deliberate `Report.Trait35` cache divergence
+  fails the schema-29 persistence guard after 153 checks, identically on the
+  tagged pre-change build and the unified-Members build. Its old expectation
+  that this divergent cache remains readable was not weakened. Lifecycle,
+  correctness and the focused Members/exit checks are verified separately.
+  The [Members verification receipt](build/workflow/unified-members-85a9f12d-ef8d-4c07-aa44-8f4191310679/verification.json)
+  records the [final fresh build](build/workflow/20261022-092532-83f31e78-a40f-4c0d-9713-70c0bb660fb9/verification.json),
+  compile/reopen/source/binding and blank checks, and 118 final Members/exit
+  assertions. The preceding complete feature build passed the standard suite,
+  plus 42 lifecycle, 39 correctness and 57 contextual-help assertions. Its only
+  subsequent source change was corrected empty-roster guidance, covered by the
+  final focused suite. Empty and populated native previews confirm the combined
+  table/action layout. One initial build lost its Access COM connection during
+  theming; subsequent sequential fresh builds passed. No schema or dependency
+  change, release or publication is included.
 - Unified report conversations retain legacy note/comment mappings and import
   history. Those tables and migration branches are not approved for removal.
+- [modPDFOutput.bas](src/modPDFOutput.bas) captures saved revisions or pending
+  editor/grid values without applying them. [modPDFOutputUI.bas](src/modPDFOutputUI.bas)
+  provides the export inventory, informational findings and native page preview.
+  Pending group cells take precedence for the same field; unchanged grid-cache
+  columns do not replace unrelated editor drafts, and both pending buffers survive.
+  All listed group reports are sorted by last/first/middle name and stable identity;
+  the summary and packet use that same order. Combined, individual and Both modes
+  use one Access report, without a user-operated merger or Acrobat automation.
+  Fixed Courier New values overlay embedded, reviewed 300-dpi blank templates.
+  [pdf-print-layout.json](src/pdf-print-layout.json) records source/image hashes,
+  print geometry and exclusions; it does not replace the canonical field catalogue.
+  Unrecognized choice values and text beyond a printed box continue on labelled
+  additional pages. A single-line value that cannot fit is marked `*` in its box,
+  with its full value on an additional page. Private draft notes are excluded. Signatures and unrecorded
+  qualifications/ranking/official RSCA/submission fields stay blank; computed PSG
+  RSCA is not substituted for a report-scoped RSCA value. Individual exports use
+  group naming/statistics only when membership identifies one group unambiguously.
+  Folder preference is local to the Windows user and workspace identity. A chosen
+  protected root receives a sanitized group folder and a unique dated run; staging
+  remains `.partial` until every file and hash manifest succeeds. Failures retain
+  their stage/error and protected partial output. Native preview stores only page
+  ordinals in its disposable cache; captured personnel text stays in memory until
+  PDF generation. Closing the flow removes its owned preview cache. A VBA reset
+  invalidates the in-memory capture; refresh is required and an abandoned preview
+  folder may require deliberate removal. Export does not change report revisions,
+  status, approvals, recovery or signature dates. Operation outcomes use the existing
+  journal. Runtime remains Access-only; PDF.js/pikepdf were development proof tools.
+  Focused checks cover saved-field capture through the normal save service,
+  coexisting pending editor/grid drafts, failed destinations, all three report types,
+  native preview and a fully populated 144-member summary/290-page packet.
+  Independent PDF text, page geometry, hash and image review are required alongside
+  native assertions: text extraction alone cannot detect a white overlay masking
+  data. CHIEFEVAL's narrow readiness-date and reporting-senior UIC slots use fixed
+  7- and 9-point sizes; values are never automatically shrunk to fit. Native popup
+  event tests pass, but popup visual acceptance remains unverified: Access Explorer
+  captures the main Access window rather than that popup. Physical printed fit and
+  operation on a workstation with Acrobat absent also remain unverified.
+  The [final development receipt](build/workflow/20261022-134928-83b33732-1226-4436-a4b5-a9f611f325c3/verification.json)
+  records a passing fresh BuildAndTest for 0.30.0-dev/schema 29. The unchanged
+  artifact passed all 58 PDF assertions without replacement application imports;
+  [independent structural checks](build/tests/pdf-output-e865466c-66c1-43a3-a84e-42b605e56b81/pdf-structure-qa.json)
+  verified 15 PDFs/337 pages and all 11 file-hash manifests. These ignored local
+  receipts are development evidence, not published release artifacts.
 - [modAudit.bas](src/modAudit.bas) indexes retained domain evidence using stable
   event identities, immutable actor registrations, explicit correlation and
   affected-object foreign keys. Domain histories and undo remain authoritative.
@@ -74,12 +150,137 @@ validation is implemented in development source. C05–C07 introduce
 
 ## Environment, build, verification and delivery
 
+### M02 preview ownership and recovery
+
+`WizardPreview` is an additive schema-30 table. It stores the source/baseline
+paths and SHA-256, owning contributor/workspace, target report/revision, reviewed
+choice XML, a changing ownership token and save time. Values are rebuilt from
+fingerprint-checked originals on deliberate **Resume saved preview**; they are
+never applied automatically after a VBA reset or restart. XML parsing prohibits
+DTDs/external resolution. Staged identifiers remain under the accepted C01 folder
+permissions. No password, encryption or external dependency is introduced.
+
+| Preview | Ownership and recovery policy |
+| --- | --- |
+| NAVFIT return | One named live context. Reviewed choices persist after each successful choice. Resume rechecks source, sealed baseline, contributor, mapping and target revision. Apply removes the exact owned stage in the normal import/revision transaction. |
+| Structured PDF import | One named context owns extracted XML and the target snapshot. Reviewed century/identifier/merge mode and target persist. Resume re-extracts the original PDF and rebuilds the mapping. Apply remains explicit. |
+| Whole-workspace import | An explicit descriptor owns path/hash and bootstrap workspace/profile stamp. Changed setup/source rejects Apply. Only the current import descriptor may occupy an otherwise blank target; its removal rolls back with failed import. Source preview rows are copied and verified with all other data. |
+| Full/narrative NAVFIT import | Named bounded contexts bind source/hash, display name/century and contributor to the review form. Reset/restart requires a new preview. Existing source-reader cleanup remains in `CloseReviewFile`; a reset may leave an owned v33 conversion copy for deliberate cleanup. No temporary-file sweep is introduced. |
+| Directory creation, membership/defaults, reviewed duplicate merge and bulk actions | Existing form selections and revision/member/group/default tokens reject missing or stale previews. Derived previews intentionally require re-preview after reset; domain history/undo/recovery remains authoritative. |
+| PDF output, validation and parser caches | H01 retains its explicit captured job and invalidates it on reset. Captured pending report values are not staged by M02. Validation/parser caches are recomputed; the editor's durable recovery buffers remain unchanged. |
+
+Closing a recoverable wizard retains its descriptor. Reopened screens require
+Preview or Resume before enabling Apply; no source reader is retained by staging.
+**Cancel saved preview** removes only the current contributor's preview of that
+kind. Stale/damaged previews remain available for deliberate cancellation or
+replacement. These ownership checks are attribution/staleness guards, not a new
+authentication boundary. After a reset, close/reopen the wizard if former busy
+controls remain disabled, confirm the contributor, then Resume.
+
+The staging table references its target report/revision through foreign keys.
+Ownership is checked by the service rather than adding a foreign key to
+`UserProfile`, whose indexes already reach Access's limit; no existing relationship
+or index was removed. Schema 1–29 import remains implemented. Focused development
+proof covers actual VBE Reset, an intentional unhandled VBA failure, new-session
+restart, changed source/target/contributor, cancel, late rollback/retry and retained
+stage transfer. Schema-29/30 proof does not imply historical release acceptance.
+The [fresh integrated development receipt](build/workflow/20261022-205637-f9035e36-ec54-4ab7-848c-cdcac94aa600/verification.json)
+passes for 0.31.0-dev/schema 30. The [exact-artifact wizard receipt](build/tests/wizard-state-746e4b77-66ca-47ff-ac20-f1a155ad0382/verification.json)
+records **63 passing assertions**, actual reset/unhandled-failure/restart proof,
+filled-PDF Resume/Apply, and real schema-29 import with unchanged source hashes.
+No replacement application source was imported during that final test. Static
+native review covered all three Resume/Cancel rows; accessibility and physical
+acceptance remain separate. The receipts are ignored local development evidence,
+not release artifacts. No release, signing, publication or manifest change is included.
+
+### M03 joined/batched read paths
+
+| Path and inventory finding | Current contract |
+| --- | --- |
+| Reports / My Work | Existing `modUXReadRows` prepared presentation records remain in use. Route/group stamps are memoized within a refresh; write decisions still use their domain services. No competing display cache or persisted cache table was added. |
+| Group/RSCA reads | `RSGroupRows` previously reopened head/cache/value/date/choice data per report. `AssertReportCacheRows` reads bounded 200-report chunks and shares projection, missing-field and typed-fact rules with the live scalar validator. A 500-report snapshot needs one report query plus 12 fact queries instead of roughly 2,501 validation/report reads, excluding constant RSCA context reads. No validation is skipped. |
+| Bulk-folder tools | Selection stamps and Undo prechecks load selected report/move facts in 200-ID chunks. Folder labels use one refresh-owned folder map with lazy path resolution and the same missing-parent/depth errors. Input order, Null folder/revision markers and move IDs remain part of the stamp. `ApplyFolderBatch` and `AssignFolder` retain their existing live write checks, transactions, audit and guarded undo. |
+| Directory history | Active prior traits and authoritative `ReportHead` revision traits are fetched in batches. Whole-report NOB, per-trait NOB, Null/blank/missing slots and incomplete prior records keep scalar semantics. The history list receives one completed value-list assignment instead of a native redraw per `AddItem`; the old query ordering and cell text remain unchanged. |
+| Selected prior history / identity repair | Existing candidate/identity batching and per-refresh selected-source memoization remain. Identity matching/repair is a mutating domain boundary, not a presentation cache to bypass. Fresh save/permission/revision checks remain scalar where required. |
+
+The folder-path map is replaced on `LoadBulkFolders`; VBA reset discards it and
+the next display access rebuilds it. Nothing is reused for authorization or saved
+state decisions. `FolderPath` and scalar cache validation remain available for
+live writers. No framework, runtime dependency, schema change or manifest change
+is part of M03.
+
+The focused benchmark uses copies of the actual baseline/candidate artifacts,
+the same 500-report/500-prior synthetic workspace, production import with original
+field verification, complete output/order comparisons, five timed samples per
+path, source hashes and no-read-history-write checks. Separate fault tests cover
+541 assertions including typed facts, legacy missing values, nullable flags,
+recovery, rollback and stale Undo. Timings are workstation measurements, not a
+performance guarantee.
+The [fresh integrated receipt](build/workflow/20261022-224259-661502dd-c337-4e14-bad2-e857db961fe3/verification.json)
+and [exact-artifact benchmark/guard receipt](build/tests/batched-reads-c49c6563-bf32-4aef-8dca-e409e27482ba/verification.json)
+pass for 0.32.0-dev/schema 30 without replacement source imports. At 500 reports
+and 500 prior records, five-sample median milliseconds were:
+
+| Read path | 0.31.0 baseline | 0.32.0 candidate |
+| --- | ---: | ---: |
+| Folder stamp | 903.75 | 16.77 |
+| Folder display | 436.93 | 24.39 |
+| Directory history | 22,357.69 | 7,616.27 |
+| Group/RSCA | 2,210.68 | 677.01 |
+
+The existing focused suites also pass: 34 persistence/typed-fact, 39 reporting
+senior/RSCA, 72 directory/history, 21 directory UI, 31 cleanup/folder-history and
+16 baseline/recovery assertions. Supplied artifacts and synthetic source hashes
+remain unchanged. The receipts are local development evidence, not release or
+publication records; no historical-output retesting was added by M03.
+
+**Preexisting check gap:** on the untouched 0.31.0-dev baseline,
+`UXReadRowsHarness` fails after assertion 77 when its deliberately diverged report
+cache reaches guarded membership code (`Read saved member ... Trait33`). M03 does
+not weaken that rejection or alter the old assertions. Its own scalar/batch tests
+require identical cache/fact rejection codes. Historical-fixture, physical and
+release acceptance remain separate.
+
+### Workstation and compiled candidate support
+
 Desktop Windows, Microsoft Access, Windows PowerShell 5.1 and Git are the current
 development environment. No free Access Runtime, macOS/WSL application runtime,
-ACCDE distribution or signing support is established. Python/Node are tooling
+production ACCDE distribution or signing acceptance is established. Python/Node are tooling
 dependencies for particular helpers, not requirements of native PDF extraction.
 Access Explorer and `swift_files` are already available; no new tooling is needed
 for the consolidation. Use disposable copies for native investigation.
+
+M01 adds an optional `Compile` action to [develop.ps1](scripts/develop.ps1),
+converting a disposable copy of a verified current blank ACCDB into an unsigned
+ACCDE development candidate. It leaves authoritative generation and the ACCDB
+build contract intact. [test-compiled-distribution.ps1](scripts/test-compiled-distribution.ps1)
+checks the actual compiled binary on disposable copies without injected VBA:
+compiled status/source-export protection, all three report editors, save/reopen,
+Settings import from ACCDB and populated ACCDE, retained raw import evidence,
+history/provenance and unchanged source hashes. Receipts identify compiler version,
+architecture, source/output hashes and checker fingerprints. Conversion uses the
+undocumented Access SysCmd 603 action and requires exact-host verification; it is
+not a portable supported API claim. The tested host is desktop Access
+16.0.20430.20182, x64. No other architecture/version or Access Runtime is certified.
+
+**M01 remains incomplete for production:** normal Office security on this host
+displayed an unsigned-file security notice. After the probe cancelled that notice,
+Access reported "Security settings restrict access to the file because it is not
+digitally signed." This establishes an unresolved normal-policy launch gate, not
+proof that every trusted location or explicit user trust decision would fail.
+The owned dialogs were closed and the test owner quit; Trust Center policy was not changed. The current
+user certificate store had no code-signing certificate. Trusted development
+automation is not normal-policy launch acceptance. Compiled PDF generation also
+remains unverified: external COM access to the compiled popup/control interface
+failed, and that check was not counted as passed. H01's ACCDB checks remain valid.
+The workspace picker still filters to ACCDB pending approval for the additional
+application-source edit; direct production handlers successfully import ACCDE
+data. Existing ACCDB Blank/Demo publication, historical import and release gates
+remain required. [The workflow](docs/Development_Workflow.md#compiled-desktop-candidate-m01)
+records compilation, signing/package integrity and remaining acceptance steps.
+The [compiled development receipt](build/workflow/20261022-170507-27d28ca5-1cff-419a-ada3-49047c5dd297/verification.json)
+records 34 passing trusted native assertions and the accepted candidate hash.
+The overwrite guard also passed; the supplied ACCDB hash remained unchanged.
 
 [develop.ps1](scripts/develop.ps1) is the standard fresh build/test entry point;
 [tasks.json](.vscode/tasks.json) makes it the default build task. It also supports

@@ -39,7 +39,8 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  UXNavigationLayout f, False, f.Width
  Place f, "uxContext", 250, 100, 8500, 300
  Place f, "uxReport", 250, 550, 8700, 650
- Place f, "uxTypeCaption", 9500, 500, 2500, 300
+ Place f, "uxTypeCaption", 9500, 500, 1200, 300
+ If UXHasControl(f, "uxCreatePDF") Then Place f, "uxCreatePDF", 10800, 450, 1200, 400
  Place f, "cboKind", 9500, 850, 2500, 350
  Place f, "uxITA", 250, 1250, 5500, 350
  Place f, "uxSGA", 5800, 1250, 6200, 350

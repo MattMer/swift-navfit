@@ -78,6 +78,18 @@ foreach($screen in @('frmUXComparison','frmUXBulk','frmMajorWorkbench')){
  $tabs=@(0,1,2,4);$lefts=@(2850,4900,9100,11200);$widths=@(1900,4050,1950,2100)
  for($i=0;$i -lt 4;$i++){$c=$f.Controls('uxGroupTab'+$tabs[$i]);$c.Left=$lefts[$i];$c.Width=$widths[$i]}
  SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,[int]($bottom+1100)))
+ if($screen -eq 'frmUXComparison'){
+  AddResourceControl $f 100 'uxGroupMeta' 2850 1500 6800 350 ''
+  $f.Caption='Summary group';$f.Controls('uxTraitGrid').Top=3000;$f.Controls('uxTraitGrid').Height=2900
+  $f.Controls('uxGridAverage').Top=6050;$f.Controls('uxGridAverage').Height=350
+  $actions=@(@('uxMembers',2850,6500,3300,'Choose group members','Members'),@('uxBulk',6350,6500,3300,'Change blocks on existing reports','Blocks'),@('uxPolicyReview',9850,6500,3450,'Grouping policy and roster review','Policy'),@('uxOpenGroupReport',6350,7150,3300,'Open selected report','Open'),@('uxValidation',9850,7150,3450,'All summary-group validation issues','Validation'))
+  foreach($a in $actions){AddResourceControl $f 104 $a[0] $a[1] $a[2] $a[3] 500 $a[4] ('=UXMemberAction("'+$a[5]+'")');$script:resourceControl.Tag='GroupMemberAction'}
+  $f.Controls('cmdBack').Left=2850;$f.Controls('cmdBack').Top=7150;$f.Controls('cmdBack').Width=3300
+  $f.Controls('lblStatus').Top=7850;$f.Controls('lblStatus').Height=500
+  $f.Controls('cmdRetryCells').Top=8450;$f.Controls('cmdDiscardCells').Top=8450
+  $f.Controls('uxSeniorCaption').Top=9100;$f.Controls('uxCurrentSenior').Top=9450;$f.Controls('uxCurrentExport').Top=9450
+  $f.Section(0).Height=10200
+ }
  $app.DoCmd.Close(2,$f.Name,1)
 }
 

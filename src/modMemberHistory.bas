@@ -41,6 +41,36 @@ Failed:
     If Not q Is Nothing Then q.Close
     On Error GoTo 0: Err.Raise failure, "SavePriorEvaluation", message
 End Function
+Public Function PriorEvaluationITARows(ByVal memberID As Long) As Object
+    Dim result As Object, facts As Object, r As DAO.Recordset, id As Variant, row As Variant, mark As String
+    Set result = CreateObject("Scripting.Dictionary"): Set facts = CreateObject("Scripting.Dictionary")
+    Set r = CurrentDb.OpenRecordset("SELECT PriorID,ObservationStatus FROM PriorEvaluation WHERE MemberID=" & memberID & " AND IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        facts.Add CStr(r!PriorID), Array(Nz(r!ObservationStatus, ""), 0&, 0&, 0#): r.MoveNext
+    Loop
+    r.Close
+    Set r = CurrentDb.OpenRecordset("SELECT t.PriorID,t.MarkValue FROM PriorEvaluationTrait AS t INNER JOIN PriorEvaluation AS p ON t.PriorID=p.PriorID WHERE p.MemberID=" & memberID & " AND p.IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        id = CStr(r!PriorID): row = facts(id): mark = Nz(r!MarkValue, "")
+        If mark <> "" Then row(1) = row(1) + 1
+        If mark <> "NOB" And mark <> "" Then row(2) = row(2) + 1: row(3) = row(3) + Val(mark)
+        facts(id) = row: r.MoveNext
+    Loop
+    r.Close
+    For Each id In facts.Keys
+        row = facts(id)
+        If row(0) = "NOB" Then
+            result.Add CStr(id), "NOB"
+        ElseIf row(1) < 7 Then
+            result.Add CStr(id), "Incomplete"
+        ElseIf row(2) = 0 Then
+            result.Add CStr(id), "NOB"
+        Else
+            result.Add CStr(id), Format$(row(3) / row(2), "0.00")
+        End If
+    Next
+    Set PriorEvaluationITARows = result
+End Function
 Public Function PriorEvaluationITA(ByVal priorID As Long) As String
     Dim r As DAO.Recordset, count As Long, nob As Long, total As Double, mark As String, filled As Long
     If Nz(MajorScalar("SELECT ObservationStatus FROM PriorEvaluation WHERE PriorID=" & priorID), "") = "NOB" Then PriorEvaluationITA = "NOB": Exit Function

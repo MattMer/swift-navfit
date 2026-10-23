@@ -14,9 +14,9 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 29 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If ver < 1 Or ver > 30 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion < 21 Or targetVersion > 29 Then Err.Raise vbObjectError + 302, , "Target schema must be 21 through 29."
+    If targetVersion < 21 Or targetVersion > 30 Then Err.Raise vbObjectError + 302, , "Target schema must be 21 through 30."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, , "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
@@ -26,6 +26,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     If targetVersion >= 27 Then tables = Split(Join(tables, "|") & "|DirectoryMerge|DirectoryMergeReport|DirectoryMergePrior", "|")
     If targetVersion >= 28 Then tables = Split(Join(tables, "|") & "|GroupCompletion|GroupCompletionReport|GroupCompletionCurrent|RSCountedReport|ReportHead|RevisionDate|RevisionChoice|FieldDefaultLink|GroupLifecycle", "|")
     If targetVersion >= 29 Then tables = Split(Join(tables, "|") & "|AuditActor|AuditEvent", "|")
+    If targetVersion >= 30 Then tables = Split(Join(tables, "|") & "|WizardPreview", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             known = (table.Name = "AppMetadata")
@@ -38,7 +39,9 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     'One inexpensive guard; TOP 1 never counts all records in a populated table.
     For Each table In t.TableDefs
         If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
-            If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) Then
+            known = False
+            If replaceSetup And targetVersion >= 30 And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
+            If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) And Not known Then
                 Set r = t.OpenRecordset("SELECT TOP 1 * FROM [" & table.Name & "]", dbOpenSnapshot)
                 If Not r.EOF Then r.Close: Err.Raise vbObjectError + 303, , "Target must be blank."
                 r.Close
@@ -61,12 +64,16 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
         End If
     Next
     w.BeginTrans: trans = True
+    'Only the current import descriptor may occupy an otherwise blank target.
+    'Its removal rolls back with the import; all source preview rows are copied.
+    If replaceSetup And targetVersion >= 30 Then t.Execute "DELETE FROM WizardPreview", dbFailOnError
     If replaceSetup Then
         t.Execute "DELETE FROM Workspace", dbFailOnError
         t.Execute "DELETE FROM UserProfile", dbFailOnError
     End If
     copyStarted = Timer
     For Each n In tables
+        If ver < 30 And n = "WizardPreview" Then GoTo NextTable
         If ver < 29 And (n = "AuditActor" Or n = "AuditEvent") Then GoTo NextTable
         If ver < 28 And IsPersistenceTable(CStr(n)) Then GoTo NextTable
         If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextTable
@@ -116,6 +123,7 @@ NextTable:
     If showProgress Then Application.Run "WorkspaceImportProgress", "Bulk copying finished in " & Format$(MigrationSeconds(copyStarted), "0.00") & " seconds. Verifying copied values..."
     verifyStarted = Timer
     For Each n In tables
+        If ver < 30 And n = "WizardPreview" Then GoTo NextCheck
         If ver < 29 And (n = "AuditActor" Or n = "AuditEvent") Then GoTo NextCheck
         If ver < 28 And IsPersistenceTable(CStr(n)) Then GoTo NextCheck
         If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextCheck

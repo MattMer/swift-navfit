@@ -43,18 +43,22 @@ Public Function UXDirectoryHistory() As Boolean
     DoCmd.OpenForm "frmUXMemberHistory": UXHistoryLoad: UXDirectoryHistory = True
 End Function
 Public Function UXHistoryLoad() As Boolean
-    Dim f As Access.Form, r As DAO.Recordset, id As Long
+    Dim f As Access.Form, r As DAO.Recordset, id As Long, priorITAs As Object, swiftITAs As Object, historyText As String
     Set f = Forms!frmUXMemberHistory
     f!lblMember.Caption = Nz(MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & historyMember), "")
     f!lstHistory.RowSourceType = "Value List": f!lstHistory.RowSource = ""
+    Set priorITAs = PriorEvaluationITARows(historyMember): Set swiftITAs = UXHistoryITARows(historyMember)
     Set r = CurrentDb.OpenRecordset("SELECT PriorID,FormKind,PeriodStart,PeriodEnd,PromotionRecommendation FROM PriorEvaluation WHERE MemberID=" & historyMember & " AND IsArchived=False ORDER BY PeriodEnd DESC", dbOpenSnapshot)
     Do While Not r.EOF
-        id = r!PriorID: f!lstHistory.AddItem CStr(id) & ";Manual prior;" & r!FormKind & ";" & Format$(r!PeriodStart, "yyyy-mm-dd") & " to " & Format$(r!PeriodEnd, "yyyy-mm-dd") & ";" & PriorEvaluationITA(id) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
+        If historyText <> "" Then historyText = historyText & ";"
+        id = r!PriorID: historyText = historyText & CStr(id) & ";Manual prior;" & r!FormKind & ";" & Format$(r!PeriodStart, "yyyy-mm-dd") & " to " & Format$(r!PeriodEnd, "yyyy-mm-dd") & ";" & priorITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
     Loop: r.Close
     Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.FormKind,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,m.MatchState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & historyMember & " ORDER BY r.PeriodEnd DESC", dbOpenSnapshot)
     Do While Not r.EOF
-        id = r!ReportID: f!lstHistory.AddItem CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & UXTableITA(id) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
-    Loop: r.Close: UXHistoryLoad = True
+        If historyText <> "" Then historyText = historyText & ";"
+        id = r!ReportID: historyText = historyText & CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
+    Loop: r.Close
+    f!lstHistory.RowSource = historyText: UXHistoryLoad = True
 End Function
 Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boolean
     Dim f As Access.Form, r As DAO.Recordset

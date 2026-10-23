@@ -10,7 +10,21 @@ The source of truth is `src/`, the ordered `scripts/build-manifest.json`, and th
 
 ## Ownership and order
 
-The manifest currently lists 103 static VBA modules, four generated modules and 72 ordered stages across base resources, presentation and finalization. Full builds centrally load static source before generating forms and suppress the old repeated stage imports. The field catalogue retains one compatibility refresh of modUX alongside its generated metadata. Named field and surface catalogue generators replace execution of sliced script text. Incremental scripts retain their standalone imports and dependency behavior for disposable development copies.
+The manifest currently lists 105 static VBA modules, five generated modules and 74 ordered stages across base resources, presentation and finalization. Full builds centrally load static source before generating forms and suppress the old repeated stage imports. The field catalogue retains one compatibility refresh of modUX alongside its generated metadata. Named field and surface catalogue generators replace execution of sliced script text. Incremental scripts retain their standalone imports and dependency behavior for disposable development copies.
+
+H01's [print catalogue stage](../scripts/apply-pdf-print-catalogue.ps1) runs in
+base resources before the first presentation evaluation. It checks embedded-image
+hashes and generates renderer-specific geometry bindings. The final
+[PDF output stage](../scripts/apply-pdf-output.ps1) embeds the eight blank template
+images, creates the native report/preview and adds report/group entry buttons.
+Neither stage invokes PDF.js, Python or Acrobat. The print metadata owns template
+geometry and exclusions, while canonical field definitions retain field authority.
+
+M02 keeps the same source-module inventory and stage order. The already
+fingerprinted [schema definition](../src/major-schema.json) adds `WizardPreview`
+for schema 30; the existing importer copies/verifies it only from schema-30 sources.
+The three existing wizard generators add Resume/Cancel controls. No manifest
+replacement, additional assembly path or source-specific build stage is introduced.
 
 ### Canonical report fields
 

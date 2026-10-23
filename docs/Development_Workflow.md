@@ -148,8 +148,9 @@ Safety boundaries:
   visible defects, accessibility compliance, or printed fit; interpret them
   against actual page/visibility state and fixed report geometry.
 - **Verification and sessions:** Explorer imports/transfers do not replace
-  production migration, recovery, reproducible builds, or release gates. Close
-  only owned sessions normally after preserving edits. The backend close path
+  production migration, recovery, reproducible builds, or release gates. Apply
+  the [Access-session ownership and handoff rule](../AGENTS.md#development-and-release-procedures)
+  before switching between Explorer and another controller. The backend close path
   has a force-kill fallback; do not use it on a session with unsaved user work
   or use restart-processes on user sessions.
 
@@ -186,6 +187,167 @@ powershell.exe -NoProfile -File scripts/develop.ps1 -Action Test -BuildPath "D:\
 refused. The lower-level [build.ps1](../scripts/build.ps1) and focused suites
 remain available for diagnosis. A fresh build must not use a retained binary
 as its source. Preflight follows canonical version/schema sources.
+
+### Preview ownership and recovery (M02)
+
+For M02 preview changes, use the focused native runner before the final integrated
+build, then repeat against the unchanged final artifact:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-wizard-state.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema29-blank.accdb" -PDFPath "D:\path\synthetic-filled-eval.pdf"
+```
+
+`-InstallSource` installs only the changed services and additive staging table on
+the disposable copy for early checks; it does not verify generated form layouts.
+The final run omits it. The runner invokes an actual VBE Reset and an intentional
+unhandled VBA error, starts a separate Access session, and tests source/target/
+contributor changes, cancel, staged-state migration, late rollback/retry and source
+hashes. The classic VBE error dialog has no UI Automation Invoke pattern; a bounded
+supervisor recognizes only the literal synthetic error on the owned PID/start time
+and sends one End shortcut. No arbitrary dialogs, user sessions, C#/Win32 helper,
+new framework or persistent background service is used. Missing/unexpected UI
+must not be counted as unhandled-error coverage. The optional legacy proof uses
+an actual schema-29 source and the production Settings import; it does not imply
+that all historical schemas were retested. Inspect Resume/Cancel placement and
+binding on all three wizard forms. Saved staging lives inside the protected
+workspace; Cancel targets only the current contributor's preview, not source files.
+The optional `-PDFPath` is a supported synthetic filled EVAL input (such as an
+existing PDF fixture-generator output); it adds positive PDF Resume-callback and
+resumed-Apply checks. Without it, PDF source/choice recovery uses the supplied blank
+template and positive filled-PDF UI/apply coverage is not claimed. The ignored local
+`verification.json` records which optional proofs ran, assertion counts and hashes.
+
+### Batched read verification (M03)
+
+Use [test-batched-reads.ps1](../scripts/test-batched-reads.ps1) for native output,
+guard and performance proof before the final fresh build, then repeat without
+`-InstallSource` against the exact final artifact:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-batched-reads.ps1 -BuildPath "D:\path\candidate-blank.accdb" -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
+```
+
+It owns sequential disposable copies, seeds synthetic data, copies it through the
+production read-only-source importer, compares complete cell values/order, and
+measures medians with `Stopwatch`. Guard/fault tests run on a separate disposable
+copy after measurements. CSV timings survive a later assertion failure; only a
+fully passing run gets `verification.json`. Both supplied artifacts remain hashed
+and unchanged. `-InstallSource` is only for focused development on disposable
+copies; it cannot establish a fresh integrated artifact. Optional `-DataSourcePath`
+reuses an unchanged synthetic benchmark fixture through production import, avoiding
+repeated seeding; its command marker/row counts and source hash are checked. Do
+not use a populated operational workspace as benchmark data.
+
+Also run the existing persistence, reporting-senior/RSCA, directory/history,
+folder cleanup/rollback/undo and performance/recovery suites for changes to the
+shared readers. A preexisting fixture that intentionally corrupts a C06 projection
+must not justify disabling that persistence guard. Profile before widening scope;
+keep display snapshots separate from live write-time validation.
+
+### Compiled desktop candidate (M01)
+
+After a fresh ACCDB build and its applicable focused/integrated tests pass, use
+the same entry point to create a local, unsigned ACCDE candidate:
+
+```powershell
+powershell.exe -NoProfile -File scripts/develop.ps1 -Action Compile -BuildPath "D:\path\verified-blank.accdb"
+```
+
+Optional `-CompiledPath "D:\path\new-name.accde"` chooses a new destination;
+existing files are refused. The default is a unique versioned, architecture-labelled
+file under `build/dev`. Compile checks the source identity/source bindings and
+blank inventory, converts a disposable copy, then runs
+[test-compiled-distribution.ps1](../scripts/test-compiled-distribution.ps1) on
+copies of the actual ACCDE before accepting it. No VBA test harness or replacement
+application source is imported into the compiled binary. Source/candidate hashes
+must remain unchanged. The receipt records compiler file version, executable
+architecture, source and output SHA-256, build inputs and checker fingerprints.
+These are trusted development checks (`AutomationSecurity=1` on owned copies),
+not evidence of normal-policy launch or signing acceptance. The observed host's
+normal Office policy displayed an unsigned-file security prompt; cancelling it
+produced a security/signature refusal. This does not establish what an explicit
+user trust decision or an approved trusted location would permit.
+`-CheckNormalSecurity` on the focused runner is a separate **attended**
+acceptance option: security prompts require user interaction and must not be
+bypassed. Compiled PDF generation is still unverified because the external COM
+compiled-form/control interface failed during the attempted test. Do not infer
+compiled PDF support from the passing ACCDB PDF suite. The import picker currently
+lists ACCDB only; its additional ACCDE filter awaits application-source scope
+approval even though the production data-import handlers accept ACCDE sources.
+Keep the source ACCDB and its receipt: compiled VBA source cannot be edited or
+recovered through the ordinary Access development workflow.
+
+The conversion uses Access's **undocumented SysCmd 603** action, isolated in
+[develop.ps1](../scripts/develop.ps1). Access Explorer has no conversion operation;
+its compile-VBA tool does not create an ACCDE. This route is accepted only with
+the native behavioral proof on the recorded desktop host, not assumed reliable
+on another Access version or architecture. If it fails, preserve the primary
+error and candidate, close the owned controller, and stop. Do not cycle through
+UI/Win32 conversion techniques. Microsoft's documented manual route is
+**File > Save As > Make ACCDE** on a disposable verified source; manually created
+candidates still require the focused compiled tests and separate release gates.
+
+ACCDE support is limited to the tested desktop Access version and bitness;
+32-bit and 64-bit binaries are separate distributions. Other workstation versions
+need their own compilation and acceptance. Free Access Runtime remains out of
+scope. ACCDE compilation is code/design hardening, not encryption or access
+control. Keep publishing the existing Blank and synthetic Demo ACCDBs when a
+release is explicitly authorized. Compile does not publish or replace either.
+
+**Signing and integrity:** candidates are explicitly unsigned. Do not generate
+a self-signed production identity, choose a certificate automatically, change
+Trust Center policy or publish an unsigned candidate as signed. When an approved
+certificate is available, use Access **Package and Sign** for a final ACCDC package
+containing the verified ACCDE. Record the approved publisher, thumbprint, expiry,
+package hash and contained-file hash; independently verify the signature/publisher,
+extract and compare the binary hash, and test normal startup/import on the target
+desktop before publication. Retain the editable source and final verification
+receipts. Repackage/reverify whenever distributed bytes change. A package signature
+attests the delivered package; it does not promise ongoing integrity of a mutable
+workspace. Prefer this package route over assuming an embedded VBA signature
+survives migrations that create queries. Do not apply PowerShell Authenticode
+signing to an Access binary. Certificate availability and actual signing remain
+separate acceptance gates.
+
+Microsoft documents [ACCDE creation and restrictions](https://support.microsoft.com/en-us/access/hide-vba-code-from-users),
+[deployment/version considerations](https://support.microsoft.com/en-us/access/deploy-an-access-application)
+and [Access signing/package behavior](https://support.microsoft.com/en-us/access/show-trust-by-adding-a-digital-signature-to-an-access-database).
+Retain all existing compatibility, migration, rollback, release and physical
+acceptance gates; current-schema compiled tests do not prove historical coverage.
+
+For H01 PDF changes, run the [focused PDF suite](../scripts/test-pdf-output.ps1)
+against a fresh blank. It owns a disposable database and synthetic output root:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-pdf-output.ps1 -BuildPath "D:\path\new-blank.accdb"
+```
+
+During refinement, `-InstallSource` applies the tracked PDF catalogue, service,
+forms/report and affected layout modules on the disposable copy. Add
+`-ReusePresentation` for service/asset iterations against an already installed
+PDF fixture; it refreshes embedded backgrounds while retaining form/report controls,
+and does not verify structural generator changes. These modes do not replace
+the final fresh build. The suite checks draft/grid preservation, nonblocking invalid
+data, ordering, output inventory, repeat runs, failure state, all report types and
+native page preview. Also reopen the produced PDFs with an independent renderer:
+check every mapped block, all seven traits, exact long-text readback, absence of
+`#Error`/blank pages, combined order, summary continuation and Letter page size.
+Review actual filled pages before the final integrated build; a native export
+return value or file length alone is insufficient.
+
+The [print catalogue](../src/pdf-print-layout.json) records public Navy source and
+300-dpi image hashes. Development asset preparation used approved temporary
+PDF.js 6.4.299 and pikepdf 10.17.0; neither is an application dependency. For XFA
+blank assets, render the print layer at 300 dpi, hide widget chrome/values, retain
+official text/geometry, and top-align static draw content to avoid PDF.js vertically
+centering tall single-line containers into subsequent lines (EVAL/FITREP only).
+CHIEFEVAL retains original static alignment and explicit centered 10-point checkbox
+outlines, matching the check-button regions in the print metadata. Inspect both pages of
+each template and update reviewed asset hashes together. CGTimes fallback and actual
+printer margins/fit require physical acceptance; do not infer it from screenshots.
+Keep synthetic readback evidence under `build/tests`. Never send personnel PDFs to
+external services. Verification on a machine with Acrobat absent remains distinct
+from proving that this Access-only path makes no Acrobat calls.
 
 ## Release verification command (explicit release work only)
 
@@ -267,18 +429,18 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 
 1. **Search once, inspect selectively.** Start with targeted source searches and read only the relevant ranges. Avoid repeatedly reading unchanged files or reopening previously inspected source without a specific reason.
 
-2. **Reuse established test runners.** Before constructing an ad hoc Access COM harness, inspect whether an existing focused test runner supports the required validation. Prefer extending or parameterizing an established runner over repeatedly recreating equivalent automation.
+2. **Reuse established test runners.** Use existing focused runners as the preferred mechanism for stateful Access behavior testing, including context setup, pending edits, saves, recovery and return paths. Select the relevant suite from [CONTRIBUTING.md](../CONTRIBUTING.md), such as [group-exit](../scripts/test-group-exit.ps1) or [group lifecycle](../scripts/test-ux-group-lifecycle.ps1). Prefer a narrowly scoped extension or parameter of that runner when coverage is missing, rather than recreating LoadFromText/compile/Eval/Quit wrappers or adding a parallel harness.
 
-3. **Use MCP where it provides native value.** Prefer Access Explorer for installed-object inspection, VBA references, control properties, native callback discovery, and other operations that would otherwise require custom Access automation. Do not use MCP merely to replace efficient source searches.
+3. **Use MCP where it provides native value.** Prefer Access Explorer for suitable installed-object inspection, VBA references, control properties and native callback discovery when the operation fits its verified scope. Retain COM and existing runners where they provide capabilities or reliability that the enabled MCP does not. An advertised schema is not verification, static syntax checks are not compilation, and SQL must not be assumed to invoke Swift VBA or establish UI context. Do not use MCP merely to replace efficient source searches or enable additional execution permissions to bypass a capability gap.
 
-4. **Avoid excessive process polling.** Prefer execution mechanisms that report completion. For long-running builds, use appropriately spaced status checks and inspect logs when execution completes, fails, stalls, or reaches a meaningful milestone. Do not repeatedly inspect unchanged logs without a diagnostic reason.
+4. **Monitor meaningful progress.** Wait on the running execution or task's completion channel, normally using 30–60 second intervals for long builds; provide concise user updates independently. Inspect logs on completion, failure, a meaningful milestone or a suspected stall. Additional log tails or process/CPU checks need a specific diagnostic question; do not repeatedly combine short polls with unchanged logs and process listings. Adjust intervals when evidence warrants closer diagnosis; no separate polling helper is needed.
 
-5. **Avoid redundant validation.** Test targeted changes before integration, then run the required fresh-build verification. Repeating equivalent tests is justified when the artifact, environment, or validation purpose differs; otherwise avoid duplicate runs.
+5. **Sequence focused and integrated verification.** Settle focused behavior tests and, for UI changes, visual review of relevant states such as empty/populated rosters and pending-edit failures on disposable copies before freezing tracked inputs for the final authoritative integrated build. Run the required fresh build and affected integration checks on those final inputs. If later refinements change source, perform the necessary final verification; an earlier build or stale fingerprint receipt cannot cover changed inputs. There is no arbitrary build-count cap. Repeat equivalent tests only when a changed artifact, environment, failure or validation purpose justifies it; retain the separate release gates.
 
-6. **Diagnose failures before retrying.** When native automation or a test command fails, capture the actual error and determine its cause before rerunning or modifying the command. Do not repeatedly change test code merely to satisfy an unexplained failure.
+6. **Preserve errors and recover the owner safely.** Capture the primary error, stage, target database and controller identity before cleanup; record its owned PID when available and always before process recovery. Preserve pending edits and recovery evidence, and record cleanup errors separately so they do not replace the original failure. Establish ownership and database state before releasing a stale controller or handing off the file. After diagnosis, permit one justified retry on a fresh disposable copy; repeated failure requires further diagnosis rather than blind retries or controller switching. If an existing runner has already masked the primary exception, preserve its logs and report the uncertainty: documentation cannot recover that exception, and a runner fix requires separate scoped work. Do not alter tests merely to satisfy an unexplained failure.
 
 7. **Preserve useful evidence.** Record meaningful test outcomes, baseline comparisons, and unresolved failures without generating unnecessary permanent logs, reports, or documentation.
 
-8. **Prefer minimal orchestration.** A single well-scoped tool call is generally preferable to a multi-stage custom automation procedure when both offer equivalent correctness, safety, and diagnostics.
+8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#change-boundaries) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
 
-These are efficiency preferences, not restrictions that prevent necessary debugging, native testing, or broader validation when justified.
+These working defaults allow justified debugging, native testing and broader validation. They do not relax mandatory session ownership, data protection, source/artifact verification or release requirements.

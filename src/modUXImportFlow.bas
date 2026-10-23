@@ -1,12 +1,20 @@
 Attribute VB_Name = "modUXImportFlow"
 Option Compare Binary
 Option Explicit
+Private Type NarrativePreviewContext
+    SourceID As Long
+    Hash As String
+    Member As String
+    Created As Long
+    OwnerProfileID As Long
+End Type
+Private narrativePreview As NarrativePreviewContext
 Private pdfSignature As String
 Private pdfCreated As Long
-Private narrativeSource As Long
-Private narrativeHash As String
-Private narrativeMember As String
-Private narrativeCreated As Long
+
+
+
+
 Private Function ImportValue(ByVal value As Variant) As String
     If IsNull(value) Or Len(Nz(value, "")) = 0 Then
         ImportValue = "[blank]"
@@ -29,7 +37,7 @@ Public Function UXOpenImportChooser() As Boolean
     UXOpenImportChooser = True
 End Function
 Public Function UXPDFStart() As Boolean
-    Call PDFClearPreview
+    Call PDFClearPreview(False)
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdImport.Enabled = False: Forms!frmPDFImport!cmdOpenResult.Enabled = False
     Forms!frmPDFImport!uxState.Caption = "1. Choose - select a supported structured PDF."
@@ -96,11 +104,32 @@ Public Function UXPreviewPDFImport() As Boolean
     Next
     If changes.Count = 0 Then Err.Raise vbObjectError + 4904, , "No changed values to apply. Choose another merge mode or target."
     Forms!frmPDFImport!txtPreview = text
+    PDFCheckpointChoices "20", Nz(Forms!frmPDFImport!cboIdentifier, ""), target, mode
     pdfSignature = UXPDFSignature()
     Call ImportState("frmPDFImport", "3. Apply", CStr(changes.Count) & " values ready. Review full before/after values; Apply retains source provenance.", True)
     UXPreviewPDFImport = True: Exit Function
 Failed:
     Call ImportState("frmPDFImport", "2. Preview", Err.Description, False)
+End Function
+Public Function UXResumePDFImport() As Boolean
+    Dim saved As Object
+    On Error GoTo Failed
+    pdfSignature = "": Forms!frmPDFImport!cmdImport.Enabled = False
+    Set saved = PDFResumePreview()
+    With Forms!frmPDFImport
+        !chkLegacy = (saved("Choices")("Identifier") = "DoDID")
+        Call UXPDFLegacyChanged
+        !cboIdentifier = saved("Choices")("Identifier"): !cboMergeMode = saved("Choices")("Mode")
+        !cboTarget = saved("TargetReportID")
+    End With
+    UXResumePDFImport = UXPreviewPDFImport(): Exit Function
+Failed:
+    Call ImportState("frmPDFImport", "Resume unavailable", Err.Description & " Saved choices are retained.", False)
+End Function
+Public Function UXCancelPDFImport() As Boolean
+    UXCancelPDFImport = PDFClearPreview()
+    pdfSignature = "": Forms!frmPDFImport!txtPreview = ""
+    Call ImportState("frmPDFImport", "Cancelled", "Saved preview removed. No report values changed.", False)
 End Function
 Public Function UXApplyPDFImport() As Boolean
     On Error GoTo Failed
@@ -125,7 +154,7 @@ Public Function UXPDFDependencyCheck() As Boolean
     UXPDFDependencyCheck = True
 End Function
 Public Function UXNarrativeInputChanged() As Boolean
-    narrativeSource = 0: narrativeHash = "": narrativeCreated = 0
+    narrativePreview.SourceID = 0: narrativePreview.Hash = "": narrativePreview.Created = 0
     If CurrentProject.AllForms("frmImportReview").IsLoaded Then
         Forms!frmImportReview!cmdOpenResult.Enabled = False
         Call ImportState("frmImportReview", "2. Preview", "Select a source member and preview narrative mapping. No import performed.", False)
@@ -135,21 +164,22 @@ End Function
 Public Function UXPreviewNarrativeImport() As Boolean
     Dim values As Object, id As Long, text As String
     On Error GoTo Failed
-    narrativeSource = 0: narrativeCreated = 0
+    narrativePreview.SourceID = 0: narrativePreview.Created = 0
     Forms!frmImportReview!cmdPreview.SetFocus
     Forms!frmImportReview!cmdOpenResult.Enabled = False
     id = Nz(Forms!frmImportReview!lstImportReports, 0)
     Set values = NarrativeImportValues(id)
-    narrativeMember = Nz(Forms!frmImportReview!txtImportMember, "")
-    If Len(narrativeMember) > 120 Then Err.Raise vbObjectError + 411, , "Local member display name exceeds 120 characters."
-    text = "NEW " & values("FormKind") & " DRAFT - source member " & ImportValue(values("SourceName")) & vbCrLf & "Narrative-only mapping. Official name, dates, traits, duties, senior blocks and folder links are unmapped. Full source values are retained in provenance." & vbCrLf & vbCrLf & UXFieldCaption("OfficialComments", values("FormKind")) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(values("OfficialComments")) & vbCrLf & vbCrLf & "Local member display name (separate from official name)" & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(narrativeMember)
+    narrativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
+    If Len(narrativePreview.Member) > 120 Then Err.Raise vbObjectError + 411, , "Local member display name exceeds 120 characters."
+    text = "NEW " & values("FormKind") & " DRAFT - source member " & ImportValue(values("SourceName")) & vbCrLf & "Narrative-only mapping. Official name, dates, traits, duties, senior blocks and folder links are unmapped. Full source values are retained in provenance." & vbCrLf & vbCrLf & UXFieldCaption("OfficialComments", values("FormKind")) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(values("OfficialComments")) & vbCrLf & vbCrLf & "Local member display name (separate from official name)" & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(narrativePreview.Member)
     Forms!frmImportReview!cmdPreview.SetFocus
     Forms!frmImportReview!uxPreview.Visible = True
     Forms!frmImportReview!lstImportFields.Visible = False
     Forms!frmImportReview!txtFieldValue.Visible = False
     Forms!frmImportReview!lblFieldColumns.Visible = False
     Forms!frmImportReview!uxPreview = text
-    narrativeSource = id: narrativeHash = values("SourceHash")
+    narrativePreview.SourceID = id: narrativePreview.Hash = values("SourceHash")
+    narrativePreview.OwnerProfileID = ActiveContributorID()
     Call ImportState("frmImportReview", "3. Apply", "Preview ready. Apply creates a partial draft; existing reports are untouched.", True)
     UXPreviewNarrativeImport = True: Exit Function
 Failed:
@@ -157,21 +187,22 @@ Failed:
 End Function
 Public Function UXApplyNarrativeImport() As Boolean
     On Error GoTo Failed
-    If narrativeSource = 0 Or narrativeSource <> Nz(Forms!frmImportReview!lstImportReports, 0) Or narrativeMember <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 4902, , "Preview the selected source member and current display name before Apply."
-    narrativeCreated = ImportReviewedNarrative(narrativeSource, narrativeMember, 0, 0, narrativeHash)
-    narrativeSource = 0: narrativeHash = ""
-    Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativeCreated) & ". Narrative-only import; source provenance retained. Open the draft to complete its official fields.", False)
+    If narrativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, , "Preview this import as the current contributor before Apply."
+    If narrativePreview.SourceID = 0 Or narrativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Or narrativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 4902, , "Preview the selected source member and current display name before Apply."
+    narrativePreview.Created = ImportReviewedNarrative(narrativePreview.SourceID, narrativePreview.Member, 0, 0, narrativePreview.Hash)
+    narrativePreview.SourceID = 0: narrativePreview.Hash = ""
+    Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativePreview.Created) & ". Narrative-only import; source provenance retained. Open the draft to complete its official fields.", False)
     Forms!frmImportReview!cmdOpenResult.Enabled = True
     Forms!frmImportReview!lblImportResult.Caption = "Import complete. Apply is disabled; preview a different source report for another import."
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary
     UXApplyNarrativeImport = True: Exit Function
 Failed:
-    narrativeSource = 0: narrativeHash = ""
+    narrativePreview.SourceID = 0: narrativePreview.Hash = ""
     Call ImportState("frmImportReview", "2. Preview", Err.Description & " Preview again before retrying.", False)
 End Function
 Public Function UXOpenImportedReport(ByVal sourceKind As String) As Boolean
     Dim id As Long
-    If sourceKind = "PDF" Then id = pdfCreated Else id = narrativeCreated
+    If sourceKind = "PDF" Then id = pdfCreated Else id = narrativePreview.Created
     If id = 0 Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)

@@ -60,11 +60,11 @@ Public Sub ValidateCatalogueField(ByVal key As String, ByVal value As Variant)
 End Sub
 
 Public Sub AssertReportCache(ByVal reportID As Long)
-    Dim db As DAO.Database, r As DAO.Recordset, v As DAO.Recordset, head As Long, key As Variant, values As Object
+    Dim db As DAO.Database, r As DAO.Recordset, v As DAO.Recordset, head As Long, key As Variant, values As Object, cache As Object
     Set db = CurrentDb: head = ReportHeadRevision(reportID)
     Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 8901, , "Report does not exist."
-    If Nz(r!CurrentRevisionID, 0) <> head Then Err.Raise vbObjectError + 8902, , "Derived revision pointer differs from saved state. No values were changed."
+    Set cache = CacheRecord(r)
     Set values = CreateObject("Scripting.Dictionary")
     Set v = db.OpenRecordset("SELECT FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & head, dbOpenSnapshot)
     Do While Not v.EOF
@@ -72,49 +72,124 @@ Public Sub AssertReportCache(ByVal reportID As Long)
         v.MoveNext
     Loop
     v.Close
-    For Each key In DraftFieldKeys()
-        If values.Exists(CStr(key)) Then
-            If Not SameFieldValue(StateText(r.Fields(CStr(key)).Value), values(CStr(key))) Then Err.Raise vbObjectError + 8903, , "Derived report cache differs from revision " & head & " at " & key & ". Preserve both values and review persistence diagnostics."
-        ElseIf Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & head), 0) >= CatalogueFieldVersion(CStr(key)) Or Not IsNull(r.Fields(CStr(key)).Value) Then
-            Err.Raise vbObjectError + 8904, , "Saved revision is missing " & key & ". No values were inferred."
-        End If
-    Next
+    CheckCacheValues cache, head, -1, values
     r.Close
     AssertRevisionFacts head, values
 End Sub
-
+Private Function CacheRecord(ByVal rows As DAO.Recordset) As Object
+    Dim result As Object, field As DAO.Field
+    Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbTextCompare
+    For Each field In rows.Fields: result.Add field.Name, field.Value: Next
+    Set CacheRecord = result
+End Function
+Private Sub CheckCacheValues(ByVal cache As Object, ByVal head As Long, ByVal version As Long, ByVal values As Object)
+    Dim key As Variant
+    If Nz(cache("CurrentRevisionID"), 0) <> head Then Err.Raise vbObjectError + 8902, , "Derived revision pointer differs from saved state. No values were changed."
+    For Each key In DraftFieldKeys()
+        If values.Exists(CStr(key)) Then
+            If Not SameFieldValue(StateText(cache(CStr(key))), values(CStr(key))) Then Err.Raise vbObjectError + 8903, , "Derived report cache differs from revision " & head & " at " & key & ". Preserve both values and review persistence diagnostics."
+        Else
+            If version < 0 Then version = Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & head), 0)
+            If version >= CatalogueFieldVersion(CStr(key)) Or Not IsNull(cache(CStr(key))) Then Err.Raise vbObjectError + 8904, , "Saved revision is missing " & key & ". No values were inferred."
+        End If
+    Next
+End Sub
 Public Sub AssertRevisionFacts(ByVal revisionID As Long, ByVal values As Object)
-    Dim r As DAO.Recordset, expected As Long, actual As Long, key As Variant, state As String, family As String
+    Dim r As DAO.Recordset, dates As New Collection, choices As New Collection
+    Set r = CurrentDb.OpenRecordset("SELECT FieldKey,DateState,DateValue FROM RevisionDate WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    Do While Not r.EOF: dates.Add Array(r!FieldKey.Value, r!DateState.Value, r!DateValue.Value): r.MoveNext: Loop
+    r.Close
+    Set r = CurrentDb.OpenRecordset("SELECT ChoiceKind,ChoiceValue FROM RevisionChoice WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    Do While Not r.EOF: choices.Add Array(r!ChoiceKind.Value, r!ChoiceValue.Value): r.MoveNext: Loop
+    r.Close
+    CheckRevisionFacts values, dates, choices
+End Sub
+Private Sub CheckRevisionFacts(ByVal values As Object, ByVal dates As Collection, ByVal choices As Collection)
+    Dim expected As Long, actual As Long, key As Variant, state As String, family As String, row As Variant
     For Each key In Array("DateReported", "CounselingDate", "RaterDate", "SeniorRaterDate", "ReadinessDate")
         If values.Exists(CStr(key)) Then expected = expected + 1
     Next
-    Set r = CurrentDb.OpenRecordset("SELECT * FROM RevisionDate WHERE RevisionID=" & revisionID, dbOpenSnapshot)
-    Do While Not r.EOF
-        key = CStr(r!FieldKey)
+    For Each row In dates
+        key = CStr(row(0))
         If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 8911, , "Typed date has no original snapshot field."
         state = DateFactState(values(key), CStr(key))
-        If state <> CStr(r!DateState) Then Err.Raise vbObjectError + 8911, , "Typed date state differs from its original snapshot."
+        If state <> CStr(row(1)) Then Err.Raise vbObjectError + 8911, , "Typed date state differs from its original snapshot."
         If state = "Date" Then
-            If IsNull(r!DateValue) Then Err.Raise vbObjectError + 8911, , "Typed date is missing."
-            If Format$(r!DateValue, "yyyy-mm-dd") <> CStr(values(key)) Then Err.Raise vbObjectError + 8911, , "Typed date differs from its original snapshot."
+            If IsNull(row(2)) Then Err.Raise vbObjectError + 8911, , "Typed date is missing."
+            If Format$(row(2), "yyyy-mm-dd") <> CStr(values(key)) Then Err.Raise vbObjectError + 8911, , "Typed date differs from its original snapshot."
         End If
-        actual = actual + 1: r.MoveNext
-    Loop
-    r.Close
+        actual = actual + 1
+    Next
     If actual <> expected Then Err.Raise vbObjectError + 8911, , "Typed date projection is incomplete."
     expected = 0: actual = 0
     For Each key In Array("Retention", "Statement")
         If values.Exists(CStr(key) & "Yes") And values.Exists(CStr(key) & "No") Then expected = expected + 1
     Next
-    Set r = CurrentDb.OpenRecordset("SELECT * FROM RevisionChoice WHERE RevisionID=" & revisionID, dbOpenSnapshot)
-    Do While Not r.EOF
-        family = CStr(r!ChoiceKind)
+    For Each row In choices
+        family = CStr(row(0))
         If Not values.Exists(family & "Yes") Or Not values.Exists(family & "No") Then Err.Raise vbObjectError + 8912, , "Typed choice has no original snapshot pair."
-        If CStr(r!ChoiceValue) <> PairChoice(values(family & "Yes"), values(family & "No")) Then Err.Raise vbObjectError + 8912, , "Typed choice differs from its original snapshot."
-        actual = actual + 1: r.MoveNext
+        If CStr(row(1)) <> PairChoice(values(family & "Yes"), values(family & "No")) Then Err.Raise vbObjectError + 8912, , "Typed choice differs from its original snapshot."
+        actual = actual + 1
+    Next
+    If actual <> expected Then Err.Raise vbObjectError + 8912, , "Typed choice projection is incomplete."
+End Sub
+
+'Fresh bounded snapshots, never a write-time cache. The scalar writer/service
+'entry points above still read live facts and share these exact validation rules.
+Public Sub AssertReportCacheRows(ByVal loaded As DAO.Recordset)
+    Dim rows As DAO.Recordset, chunk As Object, csv As String, count As Long
+    Set rows = loaded.Clone
+    If Not (rows.BOF And rows.EOF) Then rows.MoveFirst
+    Do While Not rows.EOF
+        Set chunk = CreateObject("Scripting.Dictionary"): csv = "": count = 0
+        Do While Not rows.EOF And count < 200
+            If csv <> "" Then csv = csv & ","
+            csv = csv & CLng(rows!ReportID)
+            chunk.Add CStr(rows!ReportID), CacheRecord(rows)
+            count = count + 1: rows.MoveNext
+        Loop
+        CheckCacheChunk chunk, csv
+    Loop
+    rows.Close
+End Sub
+Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
+    Dim heads As Object, snapshots As Object, dates As Object, choices As Object, db As DAO.Database, r As DAO.Recordset
+    Dim key As Variant, head As Variant, values As Object, dateRows As Collection, choiceRows As Collection, filter As String, value As Variant
+    Set db = CurrentDb: Set heads = CreateObject("Scripting.Dictionary"): Set snapshots = CreateObject("Scripting.Dictionary")
+    Set dates = CreateObject("Scripting.Dictionary"): Set choices = CreateObject("Scripting.Dictionary")
+    Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
+    Do While Not r.EOF
+        If Nz(r!RevisionID, 0) = 0 Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+        heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0))
+        snapshots.Add CStr(r!RevisionID), CreateObject("Scripting.Dictionary")
+        dates.Add CStr(r!RevisionID), New Collection: choices.Add CStr(r!RevisionID), New Collection
+        r.MoveNext
     Loop
     r.Close
-    If actual <> expected Then Err.Raise vbObjectError + 8912, , "Typed choice projection is incomplete."
+    filter = "RevisionID In (SELECT RevisionID FROM ReportHead WHERE ReportID In (" & csv & "))"
+    Set r = db.OpenRecordset("SELECT RevisionID,FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE " & filter, dbOpenSnapshot)
+    Do While Not r.EOF
+        Set values = snapshots(CStr(r!RevisionID))
+        If r!IsNullValue Then value = Null Else value = r!ValueText.Value
+        values(CStr(r!FieldKey)) = value: r.MoveNext
+    Loop
+    r.Close
+    Set r = db.OpenRecordset("SELECT RevisionID,FieldKey,DateState,DateValue FROM RevisionDate WHERE " & filter, dbOpenSnapshot)
+    Do While Not r.EOF
+        Set dateRows = dates(CStr(r!RevisionID)): dateRows.Add Array(r!FieldKey.Value, r!DateState.Value, r!DateValue.Value): r.MoveNext
+    Loop
+    r.Close
+    Set r = db.OpenRecordset("SELECT RevisionID,ChoiceKind,ChoiceValue FROM RevisionChoice WHERE " & filter, dbOpenSnapshot)
+    Do While Not r.EOF
+        Set choiceRows = choices(CStr(r!RevisionID)): choiceRows.Add Array(r!ChoiceKind.Value, r!ChoiceValue.Value): r.MoveNext
+    Loop
+    r.Close
+    For Each key In caches.Keys
+        If Not heads.Exists(CStr(key)) Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+        head = heads(key): Set values = snapshots(CStr(head(0)))
+        CheckCacheValues caches(key), CLng(head(0)), CLng(head(1)), values
+        CheckRevisionFacts values, dates(CStr(head(0))), choices(CStr(head(0)))
+    Next
 End Sub
 
 Public Function CommitReportChoice(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal family As String, ByVal choice As String) As Long

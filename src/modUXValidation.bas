@@ -104,9 +104,14 @@ Public Function UXLiveTimer() As Boolean
     UXLiveTimer = True
 End Function
 ' Open report or group findings using an explicit context; reset paging and selection.
-Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False) As Boolean
+Public Function UXOpenValidation(Optional ByVal groupMode As Boolean = False, Optional ByVal groupID As Long = 0) As Boolean
     Dim context As String
-    If groupMode Then context = "G:" & Nz(Forms!frmMajorWorkbench!cboGroup, 0) Else context = "R:" & Nz(Forms!frmEditor!txtReportID, 0)
+    If groupMode Then
+        If groupID = 0 Then groupID = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
+        context = "G:" & groupID
+    Else
+        context = "R:" & Nz(Forms!frmEditor!txtReportID, 0)
+    End If
     If CurrentProject.AllForms("frmUXValidation").IsLoaded Then DoCmd.Close acForm, "frmUXValidation", acSaveNo
     priorSignature = "": pageIndex = 0: Set issues = Nothing
     DoCmd.OpenForm "frmUXValidation", , , , , , context

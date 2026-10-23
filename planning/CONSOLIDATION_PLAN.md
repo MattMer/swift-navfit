@@ -219,6 +219,19 @@ Other repeated passes remain distinct geometry, styling, context and unload
 owners; no blanket stage deletion was justified. Fixed Front/Back pages, seven
 Front Page traits and rail coordinates are unchanged.
 
+The subsequent user-directed Members consolidation removes the roster-count
+branch between frmMajorWorkbench and frmUXComparison. UXShowGroupMembers owns
+new, empty, populated and last-member-removed presentation using the existing
+comparison cache/grid and one toolbar in apply-ux-resource-tools. Legacy
+workbench Members entry points forward to it; Review/History still use the
+retained workbench. The canonical toolbar passes explicit group context into
+shared-block and validation tools and seeds a hidden adapter only for legacy
+member-selection/policy callers. Pending cells are drained first. Existing
+domain services, private cache, revision writes and unload guards are reused.
+The group-exit harness now checks creation, first/last membership transitions,
+all retained actions, stale hidden context, policy/validation targeting and
+report/review return paths; lifecycle checks target the canonical Members page.
+
 [test-audit-conversations-navigation](../scripts/test-audit-conversations-navigation.ps1)
 exports every actual form/macro as native text plus an inventory of destinations,
 capturing control expressions, events and source bindings. Focused navigation,

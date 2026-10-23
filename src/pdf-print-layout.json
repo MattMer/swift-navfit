@@ -1,0 +1,4481 @@
+{
+  "version": 1,
+  "developerRenderer": "pdfjs-dist 6.4.299",
+  "assetDpi": 300,
+  "runtime": "Microsoft Access PDF export; no PDF.js/Python/Acrobat runtime",
+  "templates": [
+    {
+      "kind": "EVAL",
+      "source": "E1-E6 EVAL BLANK NAVPERS 1616-26 05-2025_Final.pdf",
+      "sourceSHA256": "735dd0f348f7e83aae21c76184b864d8d35596bb2d777c4c212fbb0a7cae4389",
+      "pages": [
+        {
+          "page": 1,
+          "image": "EVAL-1.png",
+          "imageSHA256": "ed934dfde333383dfa33e364e88bba87f8414adbd68943f7f4acb18719c36815",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "a",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                39.5,
+                44.875,
+                265.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "b",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                314.5,
+                44.875,
+                56.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "c",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                380.0,
+                44.875,
+                87.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "d",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                475.5,
+                44.875,
+                102.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentActive",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                48,
+                68.234,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentTAR",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                76.5,
+                68.234,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentInactive",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                105,
+                68.234,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentATADSW",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                134.5,
+                68.234,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "f",
+              "target": "UnitUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                179.0,
+                69.375,
+                55.0,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "g",
+              "target": "ShipStation",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                238.0,
+                69.375,
+                189.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "i",
+              "target": "DateReported",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                510,
+                69.375,
+                68.0,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionPeriodic",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                91.5,
+                92.5,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionDetachment",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                170.0,
+                92.5,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionFrocking",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                257.0,
+                92.5,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionSpecial",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                336.5,
+                92.5,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "k",
+              "target": "PeriodStart",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                407.5,
+                92.875,
+                71.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "l",
+              "target": "PeriodEnd",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                506.0,
+                92.875,
+                72,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ObservationStatus",
+              "rule": "observation",
+              "selector": "",
+              "box": [
+                91.5,
+                117,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ReportRegular",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                170.0,
+                117,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ReportConcurrent",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                257.0,
+                117,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "o",
+              "target": "ReadinessSummary",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                381.5,
+                115.5,
+                86.0,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "q",
+              "target": "ReportingSeniorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                39,
+                141.375,
+                143.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "r",
+              "target": "ReportingSeniorGrade",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                184.906,
+                141.391,
+                45.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "s",
+              "target": "ReportingSeniorDesignator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                231.906,
+                141.375,
+                48.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "t",
+              "target": "ReportingSeniorTitle",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                283.406,
+                141.375,
+                128.0,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "v",
+              "target": "ReportingSeniorUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                415.0,
+                141.375,
+                53.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "w",
+              "target": "ReportingSeniorSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                476.5,
+                141.375,
+                101.5,
+                14.391
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "x",
+              "target": "CommandEmployment",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                39,
+                168.5,
+                539,
+                36.453
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "y",
+              "target": "PrimaryDuty",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                36.078,
+                214.094,
+                114,
+                15.828
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "z",
+              "target": "DutyDescription",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                36.5,
+                231,
+                540,
+                32.9
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "_1",
+              "target": "CounselingDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                218.5,
+                272.0,
+                68.5,
+                17.109
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "_2",
+              "target": "CounselorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                294,
+                272.0,
+                131.5,
+                17.109
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.0,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.0,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                405.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                82.5,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.0,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.0,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                490.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.0,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.0,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                574.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.0,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.0,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                658.0,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.0,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.0,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                742.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_21_Billet",
+              "target": "BilletSubcategory",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                475.047,
+                120.203,
+                100.25,
+                11.469
+              ],
+              "font": "Courier New",
+              "size": 9,
+              "check": false
+            },
+            {
+              "source": "_8_Promotion_Status",
+              "target": "PromotionStatus",
+              "rule": "promotion-status",
+              "selector": "",
+              "box": [
+                432.516,
+                70.188,
+                71.406,
+                15.766
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "image": "EVAL-2.png",
+          "imageSHA256": "df23c2d16981f23ecd434f1fe23c6ab17de1ccb265e3bf0c572c07808182a21f",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "a",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                37.5,
+                42.5,
+                265.5,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "b",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                312.5,
+                42.5,
+                55.0,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "c",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                378,
+                42.5,
+                85.5,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "d",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                475.0,
+                42.5,
+                100.5,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                384.5,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                420.5,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                126.5,
+                19.0,
+                19.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.0,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                212.5,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                248.5,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                384.5,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                420.5,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                557.5,
+                245.5,
+                19.5,
+                19.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Q",
+              "target": "@ITA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                57.5,
+                304.0,
+                37.5,
+                22.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "F",
+              "target": "AssignmentRecommendationA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                125.328,
+                289.328,
+                98.656,
+                39.328
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "G",
+              "target": "AssignmentRecommendationB",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                224.656,
+                289.328,
+                104.0,
+                39.328
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "T",
+              "target": "RaterName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                331.0,
+                303.5,
+                154.5,
+                22.0
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "U",
+              "target": "RaterDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                507,
+                303.5,
+                71.0,
+                22.0
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "H",
+              "target": "OfficialComments",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                38.0,
+                338.5,
+                539.5,
+                201.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "NOB",
+              "box": [
+                109.5,
+                601.5,
+                20.5,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "sp",
+              "box": [
+                155.5,
+                601.5,
+                21,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "pg",
+              "box": [
+                202.0,
+                601.5,
+                20.0,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "pm",
+              "box": [
+                248.5,
+                601.5,
+                21,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "mp",
+              "box": [
+                294,
+                601.5,
+                21,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "ep",
+              "box": [
+                341.5,
+                601.5,
+                20.0,
+                21
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "J",
+              "target": "@Count0",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                143.5,
+                625.0,
+                45,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "K",
+              "target": "@Count1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                189.5,
+                625.0,
+                45.5,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "L",
+              "target": "@Count2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                235.5,
+                625.0,
+                45,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "M",
+              "target": "@Count3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                281.5,
+                625.0,
+                45.5,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "N",
+              "target": "@Count4",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                328.5,
+                625.0,
+                45,
+                21.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "RetentionNo",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                450,
+                581.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "RetentionYes",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                543.5,
+                581.5,
+                18.5,
+                18.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "W",
+              "target": "@SeniorAddress",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                379,
+                609.5,
+                195,
+                42
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "O",
+              "target": "SeniorRaterName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                37.5,
+                672,
+                180,
+                22.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "P",
+              "target": "SeniorRaterDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                239.0,
+                672,
+                71.0,
+                22.5
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "StatementYes",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                117.5,
+                714.5,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "StatementNo",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                245.5,
+                714.5,
+                17.5,
+                17.5
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "PrintedSummaryAverage",
+              "target": "@GroupAverage",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                400,
+                682,
+                60,
+                11
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "FITREP",
+      "source": "W2-O6 FITREP NAVPERS 1610-2 05-2025_Final.pdf",
+      "sourceSHA256": "7284fc0ffba0b22c2497286dd7c1b66b957c986826c5544133d49d5afcc5b443",
+      "pages": [
+        {
+          "page": 1,
+          "image": "FITREP-1.png",
+          "imageSHA256": "3a9e0b254dcb8efa8a7efb21ef442634fc7252b153dae003aeaa34dd6037818f",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "a",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                39.188,
+                44.563,
+                265.594,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "b",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                313.594,
+                44.563,
+                56.797,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "c",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                379.188,
+                44.563,
+                87.187,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "d",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                475.187,
+                44.563,
+                102.391,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentActive",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                48,
+                67.906,
+                17.0,
+                16.734
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentTAR",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                76.656,
+                67.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentInactive",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                105.656,
+                67.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "e:anonymous",
+              "target": "ComponentATADSW",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                134.328,
+                67.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "f",
+              "target": "UnitUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                187.187,
+                68.375,
+                45.594,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "g",
+              "target": "ShipStation",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                243,
+                68.375,
+                183.328,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "h",
+              "target": "PromotionStatus",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                431.844,
+                68.984,
+                70.469,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "i",
+              "target": "DateReported",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                512.797,
+                68.375,
+                64.797,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionSpecial",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                336,
+                92.656,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionFrocking",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                256.656,
+                92.656,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionDetachment",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                170.328,
+                92.656,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "OccasionPeriodic",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                91.328,
+                92.656,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "k",
+              "target": "PeriodStart",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                405.328,
+                92.797,
+                72,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "l",
+              "target": "PeriodEnd",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                505.594,
+                92.172,
+                72,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ObservationStatus",
+              "rule": "observation",
+              "selector": "",
+              "box": [
+                91.328,
+                116.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ReportRegular",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                170.328,
+                116.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ReportConcurrent",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                256.656,
+                116.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page1:anonymous",
+              "target": "ReportOperationalCommander",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                336,
+                116.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "o",
+              "target": "ReadinessSummary",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                380.984,
+                117.906,
+                86.0,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "q",
+              "target": "ReportingSeniorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                38.391,
+                142.766,
+                143.188,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "r",
+              "target": "ReportingSeniorGrade",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                186.391,
+                142.766,
+                41.594,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "s",
+              "target": "ReportingSeniorDesignator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                233.656,
+                142.766,
+                45.656,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "t",
+              "target": "ReportingSeniorTitle",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                286.391,
+                142.766,
+                124.797,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "v",
+              "target": "ReportingSeniorUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                414.984,
+                142.766,
+                52.328,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "w",
+              "target": "ReportingSeniorSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                476.0,
+                142.766,
+                101.594,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "x",
+              "target": "CommandEmployment",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                38.391,
+                167.609,
+                539.188,
+                38.75
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "y",
+              "target": "PrimaryDuty",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                36.328,
+                212.0,
+                114.328,
+                12.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "z",
+              "target": "DutyDescription",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                36.328,
+                225.422,
+                540,
+                41.484
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "_1",
+              "target": "CounselingDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                222,
+                273.594,
+                64.5,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "_2",
+              "target": "CounselorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                296.797,
+                273.594,
+                129.594,
+                14.391
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.656,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.656,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.328,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.328,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_5:anonymous",
+              "target": "Trait33",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.328,
+                406.328,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.656,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.656,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.328,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.328,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_6:anonymous",
+              "target": "Trait34",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.328,
+                490.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84.328,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.656,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.656,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.328,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.328,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_7:anonymous",
+              "target": "Trait35",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.656,
+                575.328,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.656,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.656,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.0,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.0,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_8:anonymous",
+              "target": "Trait36",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.328,
+                658.984,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.328,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.328,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.0,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.0,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_9:anonymous",
+              "target": "Trait37",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.328,
+                743.641,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "_21_Billet",
+              "target": "BilletSubcategory",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                476.656,
+                120.328,
+                92.641,
+                9.672
+              ],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "image": "FITREP-2.png",
+          "imageSHA256": "c65b45e0e015e890c19bc0c135d733b37fba89fec5e492aa2e65cd82135aac46",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "a",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                39.188,
+                42.391,
+                265.594,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "b",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                314.391,
+                42.391,
+                55.188,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "c",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                380.0,
+                42.391,
+                85.594,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "d",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                476.797,
+                42.391,
+                100.797,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                83.656,
+                212.656,
+                16.328,
+                16.328
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.312,
+                212.656,
+                16.328,
+                16.328
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.312,
+                212.656,
+                16.328,
+                16.328
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                385.984,
+                212.656,
+                16.328,
+                16.328
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                421.984,
+                212.656,
+                16.328,
+                16.328
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "D:anonymous",
+              "target": "Trait38",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.312,
+                212.656,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "nob",
+              "box": [
+                84,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "1",
+              "box": [
+                213.656,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "2",
+              "box": [
+                249.656,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "3",
+              "box": [
+                386.328,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "4",
+              "box": [
+                422.328,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "E:anonymous",
+              "target": "Trait39",
+              "rule": "trait",
+              "selector": "5",
+              "box": [
+                559.328,
+                306.656,
+                17.0,
+                17.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "F",
+              "target": "AssignmentRecommendationA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                323.328,
+                340.0,
+                124.0,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "G",
+              "target": "AssignmentRecommendationB",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                450,
+                340.0,
+                127.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "H",
+              "target": "OfficialComments",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                40.0,
+                376.688,
+                536.0,
+                225.297
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "NOB",
+              "box": [
+                111.469,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "sp",
+              "box": [
+                158.188,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "pg",
+              "box": [
+                204.094,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "pm",
+              "box": [
+                250.812,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "mp",
+              "box": [
+                296.719,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "I:anonymous",
+              "target": "PromotionRecommendation",
+              "rule": "recommendation",
+              "selector": "ep",
+              "box": [
+                343.437,
+                623.766,
+                20.484,
+                21.297
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "J",
+              "target": "@Count0",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                145.328,
+                647.328,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "K",
+              "target": "@Count1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                192,
+                647.328,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "L",
+              "target": "@Count2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                238.656,
+                647.328,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "M",
+              "target": "@Count3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                284.656,
+                647.328,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "N",
+              "target": "@Count4",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                331.328,
+                647.328,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "W",
+              "target": "@SeniorAddress",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                381.328,
+                603.328,
+                194.0,
+                70.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Q",
+              "target": "@ITA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                111.328,
+                700.0,
+                45.328,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "R",
+              "target": "@GroupAverage",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.656,
+                700.656,
+                64.0,
+                22.0
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "StatementYes",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                408.656,
+                686.0,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Page2:anonymous",
+              "target": "StatementNo",
+              "rule": "flag",
+              "selector": "",
+              "box": [
+                538.656,
+                686.0,
+                16.656,
+                16.656
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "CHIEFEVAL",
+      "source": "CHIEF EVAL BLANK 1616-27 05-2025_Final.pdf",
+      "sourceSHA256": "70dbfeaf80443e2144894c5aa038fc84dd94ca9681bc4ed26f1b6f5aad841c57",
+      "pages": [
+        {
+          "page": 1,
+          "image": "CHIEFEVAL-1.png",
+          "imageSHA256": "9b9c141f56fba917f6efe7f3e4c7912097e6357164a95c8c1f7f44cf8c693809",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "NAMEmaster",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                39.828,
+                336.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "RATINGmaster",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                362.828,
+                39.828,
+                48.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DESIGNATIONmaster",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                416.828,
+                39.828,
+                93.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "SSNDODIDmaster",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                515.828,
+                39.828,
+                75.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ACTCHECK",
+              "target": "ComponentActive",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                31.625,
+                66.484,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "TARCHECK",
+              "target": "ComponentTAR",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                56.828,
+                66.484,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "INACTCHECK",
+              "target": "ComponentInactive",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                83.828,
+                66.484,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "ATADSW265CHECK",
+              "target": "ComponentATADSW",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                125.219,
+                66.484,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "UIC",
+              "target": "UnitUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                164.828,
+                67.828,
+                48.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "SHIPSTATION",
+              "target": "ShipStation",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                218.828,
+                66.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROMOTIONSTATUS",
+              "target": "PromotionStatus",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                443.828,
+                66.828,
+                75.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DATEREPORTED",
+              "target": "DateReported",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                524.828,
+                66.828,
+                66.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PERIODICCHECK",
+              "target": "OccasionPeriodic",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                117.0,
+                84.5,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "DETACHINDCHECK",
+              "target": "OccasionDetachment",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                189.0,
+                84.5,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "DETACHRSCHECK",
+              "target": "OccasionFrocking",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                279.0,
+                84.5,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "SPECIALCHECK",
+              "target": "OccasionSpecial",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                333.0,
+                84.5,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "FromDate",
+              "target": "PeriodStart",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                416.828,
+                83.828,
+                62.734,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ToDate",
+              "target": "PeriodEnd",
+              "rule": "date",
+              "selector": "",
+              "box": [
+                524.828,
+                83.828,
+                66.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "NOBCHECK",
+              "target": "ObservationStatus",
+              "rule": "observation",
+              "selector": "1",
+              "box": [
+                63.0,
+                111.5,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "REGULARCHECK",
+              "target": "ReportRegular",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                153.0,
+                107.0,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "CONCURRENTCHECK",
+              "target": "ReportConcurrent",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                243.0,
+                107.0,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "OPSCDRCHECK",
+              "target": "ReportOperationalCommander",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                333.0,
+                107.0,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "PRTDate",
+              "target": "ReadinessDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                353.828,
+                110.828,
+                48.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false
+            },
+            {
+              "source": "PHYSICALREADINESSDROP",
+              "target": "ReadinessSummary",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                407.828,
+                110.828,
+                75.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "BILLETSUB",
+              "target": "BilletSubcategory",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                488.828,
+                111.828,
+                102.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "REPORTINGSENIOR",
+              "target": "ReportingSeniorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                138.828,
+                237.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "GRADE",
+              "target": "ReportingSeniorGrade",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                263.828,
+                138.828,
+                30.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DESIGNATION",
+              "target": "ReportingSeniorDesignator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                299.828,
+                138.828,
+                30.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TITLE",
+              "target": "ReportingSeniorTitle",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                335.828,
+                138.828,
+                156.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "REPORTINGUIC",
+              "target": "ReportingSeniorUIC",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                497.828,
+                138.828,
+                30.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 9,
+              "check": false
+            },
+            {
+              "source": "SSN",
+              "target": "ReportingSeniorSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                533.828,
+                138.828,
+                57.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "COMMANDEMPLOY",
+              "target": "CommandEmployment",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                165.828,
+                570.344,
+                28.328
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "WATCHSTANDING",
+              "target": "PrimaryDuty",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                29.828,
+                209.828,
+                75.344,
+                16.656
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PRIMARYSTATEMENT",
+              "target": "DutyDescription",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                227.828,
+                570.344,
+                48.344
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "COUNSELDATE",
+              "target": "CounselingDate",
+              "rule": "date-text",
+              "selector": "",
+              "box": [
+                218.828,
+                291.828,
+                66.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "COUSELOR",
+              "target": "CounselorName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                290.828,
+                291.828,
+                156.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TECHDROPDOWN",
+              "target": "Trait33",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.828,
+                335.828,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TECHFONTB1",
+              "target": "@Trait33Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                338.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TECHFONTB2",
+              "target": "@Trait33Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                374.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TECHFONTB3",
+              "target": "@Trait33Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                410.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INSTITUTEDROPDOWN",
+              "target": "Trait34",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.828,
+                443.828,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INSTITUTEFONTB1",
+              "target": "@Trait34Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                446.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INSTITUTEFONTB2",
+              "target": "@Trait34Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                482.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INSTITUTEFONTB3",
+              "target": "@Trait34Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                518.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROFFDROPDOWN",
+              "target": "Trait35",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.734,
+                551.938,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROFFFONTB1",
+              "target": "@Trait35Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                554.859,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROFFFONTB2",
+              "target": "@Trait35Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                590.859,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROFFFONTB3",
+              "target": "@Trait35Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                626.859,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INTEGDROPDOWN",
+              "target": "Trait36",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.812,
+                659.828,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INTEGFONTB1",
+              "target": "@Trait36Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                662.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INTEGFONTB2",
+              "target": "@Trait36Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                698.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INTEGFONTB3",
+              "target": "@Trait36Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                734.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "image": "CHIEFEVAL-2.png",
+          "imageSHA256": "5cb38b64636f6415789a757a666c7b02aac20f404bd7c33733e1d9195c8e2ac3",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": [
+            {
+              "source": "NAMEmaster",
+              "target": "OfficialName",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                39.828,
+                336.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "RATINGmaster",
+              "target": "RankRate",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                362.828,
+                39.828,
+                48.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DESIGNATIONmaster",
+              "target": "Designator",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                416.828,
+                39.828,
+                93.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "SSNDODIDmaster",
+              "target": "MemberSSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                515.828,
+                39.828,
+                75.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ACCOUNTDROPDOWN",
+              "target": "Trait37",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.766,
+                83.672,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ACCFONTB1",
+              "target": "@Trait37Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                86.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ACCFONTB2",
+              "target": "@Trait37Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                122.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "ACCFONTB3",
+              "target": "@Trait37Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                158.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DECKPLATEDROPDOWN",
+              "target": "Trait38",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.828,
+                191.828,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DECKFONTB1",
+              "target": "@Trait38Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                194.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DECKFONTB2",
+              "target": "@Trait38Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                230.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "DECKFONTB3",
+              "target": "@Trait38Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                266.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TEAMDROPDOWN",
+              "target": "Trait39",
+              "rule": "chief-trait",
+              "selector": "",
+              "box": [
+                128.828,
+                299.828,
+                111.344,
+                30
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TEAMFONTB1",
+              "target": "@Trait39Description1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                302.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TEAMFONTB2",
+              "target": "@Trait39Description2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                338.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "TEAMFONTB3",
+              "target": "@Trait39Description3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                246.594,
+                374.75,
+                343.812,
+                27.375
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "REPORTINGSENIORCOMMENTS",
+              "target": "OfficialComments",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                20.828,
+                428.828,
+                570.344,
+                71.328
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "PROMOTIONDROPDOWN",
+              "target": "PromotionRecommendation",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                101.828,
+                533.828,
+                102.344,
+                15.938
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false
+            },
+            {
+              "source": "MemberTraitAverage",
+              "target": "@ITA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                226.797,
+                549,
+                37.797,
+                18
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Summaryinput",
+              "target": "@GroupAverage",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                361.437,
+                556.187,
+                29.156,
+                15.125
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "RECOMMENDATIONS1",
+              "target": "AssignmentRecommendationA",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                454.828,
+                531,
+                139.172,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "RECOMMENDATIONS2",
+              "target": "AssignmentRecommendationB",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                454.828,
+                552.953,
+                139.172,
+                21.594
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "INTEND",
+              "target": "StatementYes",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                239.172,
+                626.438,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "NOTINTEND",
+              "target": "StatementNo",
+              "rule": "flag",
+              "selector": "1",
+              "box": [
+                302.172,
+                626.438,
+                10.0,
+                10.0
+              ],
+              "font": "Arial",
+              "size": 10,
+              "check": true
+            },
+            {
+              "source": "Addressline1",
+              "target": "ReportingSeniorAddress1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                371.828,
+                677.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "Addressline2",
+              "target": "ReportingSeniorAddress2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                371.828,
+                695.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "AddressCityStateZip",
+              "target": "@SeniorCity",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                371.828,
+                713.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "CommandPhoneCommercial",
+              "target": "ReportingSeniorPhone",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                371.828,
+                731.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "CommandPhoneDSN",
+              "target": "ReportingSeniorDSN",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                371.828,
+                749.828,
+                219.344,
+                12.5
+              ],
+              "font": "Times New Roman",
+              "size": 10,
+              "check": false
+            },
+            {
+              "source": "GroupSigProbinput",
+              "target": "@Count0",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                148.60937118530273,
+                587.7500610351562,
+                18,
+                18
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            },
+            {
+              "source": "GroupProginput",
+              "target": "@Count1",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                207.10938262939453,
+                587.5156860351562,
+                18,
+                18
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            },
+            {
+              "source": "GroupProminput",
+              "target": "@Count2",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                256.5,
+                587.5156860351562,
+                18,
+                18
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            },
+            {
+              "source": "GroupMPinput",
+              "target": "@Count3",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                305.87500762939453,
+                587.5156860351562,
+                18,
+                18
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            },
+            {
+              "source": "GroupEPinput",
+              "target": "@Count4",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                355.265625,
+                587.5156860351562,
+                18,
+                18
+              ],
+              "font": "Courier New",
+              "size": 8,
+              "check": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "SUMMARY",
+      "source": "NAVFIT98A Blank Summary Letter - NAVPERS_1610-1_Rev_09-2024 Final.pdf",
+      "sourceSHA256": "3f862effcadccf863d26d6f21eb0a0873ae333d40a7d57d7e17514dd8251b397",
+      "pages": [
+        {
+          "page": 1,
+          "image": "SUMMARY-1.png",
+          "imageSHA256": "6d417d2255c3400d5ef819e8cdecf6d2c367453c061cb76448db15b15a47f818",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": []
+        },
+        {
+          "page": 2,
+          "image": "SUMMARY-2.png",
+          "imageSHA256": "4187d54e818ce76b074ee82a1c756c603e70eb28f448415b03d9d1b02aaac9af",
+          "widthPt": 612,
+          "heightPt": 792,
+          "fields": []
+        }
+      ]
+    }
+  ],
+  "exclusions": {
+    "Title": "Export naming only",
+    "MemberName": "Fallback for OfficialName",
+    "DraftNotes": "Private local notes, never printed",
+    "MemberDoDID": "Identifier fallback when MemberSSN is blank",
+    "structuredNames": "Represented by their formatted public name fields; raw components are not repeated",
+    "signatureFields": "No graphic signatures or inferred signature dates are created",
+    "unrecordedOfficialFields": "Blank: EVAL qualifications, CHIEF ranking position/total and block 44 RSCA (no report-scoped saved value; computed PSG RSCA is not substituted), submission timeliness/acceptance, ISIC details and signature-only name/date fields."
+  },
+  "staticTextPolicy": "PDF.js XFA print layer at 300 dpi. EVAL/FITREP static draws top-aligned to prevent tall single-line containers overlapping subsequent draws. CHIEFEVAL retains its original vertical alignment and explicit 10-point checkbox squares centered in the XFA check-button layout. Widget values/buttons are hidden; no user data/signatures are baked into assets."
+}

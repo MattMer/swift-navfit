@@ -1,27 +1,40 @@
 Attribute VB_Name = "modPDFImport"
 Option Compare Binary
 Option Explicit
-Private pdfPreview As Object
-Private pdfXML As String
-Private pdfPath As String
-Private pdfHash As String
-Private pdfChanges As Object
-Private pdfTarget As Long
-Private pdfRevision As Long
-Private pdfChoice As String
+Private Type PDFPreviewContext
+    Preview As Object
+    XML As String
+    Path As String
+    Hash As String
+    Changes As Object
+    Target As Long
+    Revision As Long
+    Choice As String
+    StageGuid As String
+    OwnerProfileID As Long
+End Type
+Private pdfContext As PDFPreviewContext
+
+
+
+
+
+
+
+
 Public Function PreviewStructuredPDF(ByVal path As String) As Object
     Dim packets As Object, packet() As Byte, dom As Object, nodes As Object, result As Object, key As Variant, templateHash As String, kind As String, value As Variant
     Dim failure As Long, message As String, row As Variant, parts As Variant
     On Error GoTo Failed
-    Call PDFClearPreview
+    Call PDFClearPreview(False)
     Set packets = PDFLocalPackets(path)
-    pdfHash = packets("sourceHash")
+    pdfContext.Hash = packets("sourceHash")
     packet = packets("template"): templateHash = PDFBytesHash(packet)
     kind = PDFTemplateKind(templateHash)
-    packet = packets("datasets"): pdfXML = PDFPacketText(packet)
-    If Len(pdfXML) > 4000000 Then Err.Raise vbObjectError + 4703, , "PDF data exceeds the import size limit."
+    packet = packets("datasets"): pdfContext.XML = PDFPacketText(packet)
+    If Len(pdfContext.XML) > 4000000 Then Err.Raise vbObjectError + 4703, , "PDF data exceeds the import size limit."
     Set dom = CreateObject("MSXML2.DOMDocument.6.0"): dom.async = False: dom.resolveExternals = False: dom.preserveWhiteSpace = True: dom.setProperty "ProhibitDTD", True
-    If Not dom.LoadXML(pdfXML) Then Err.Raise vbObjectError + 4704, , "Invalid structured PDF data."
+    If Not dom.LoadXML(pdfContext.XML) Then Err.Raise vbObjectError + 4704, , "Invalid structured PDF data."
     Set result = CreateObject("Scripting.Dictionary"): result.Add "FormKind", kind: result.Add "TemplateHash", templateHash
     For Each row In PDFMapRows(kind)
         parts = Split(CStr(row), "|"): key = parts(1)
@@ -32,12 +45,12 @@ Public Function PreviewStructuredPDF(ByVal path As String) As Object
         result.Add CStr(key), value
         End If
     Next
-    If SourceFileHash(path) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed during preview."
-    pdfPath = path: Set pdfPreview = result: Set PreviewStructuredPDF = result: Exit Function
+    If SourceFileHash(path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, , "PDF changed during preview."
+    pdfContext.Path = path: pdfContext.OwnerProfileID = WizardPreviewOwner(): Set pdfContext.Preview = result: Set PreviewStructuredPDF = result: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next
-    Set pdfPreview = Nothing: pdfXML = "": pdfPath = "": pdfHash = ""
+    Set pdfContext.Preview = Nothing: pdfContext.XML = "": pdfContext.Path = "": pdfContext.Hash = ""
     On Error GoTo 0
     Err.Raise failure, "PreviewStructuredPDF", message
 End Function
@@ -55,13 +68,14 @@ Private Function PDFDate(ByVal value As Variant, ByVal century As String) As Var
     PDFDate = DateSerial(CLng(Left$(text, 4)), CLng(Mid$(text, 6, 2)), CLng(Right$(text, 2)))
 End Function
 Public Function PDFMappedValues(ByVal century As String, ByVal identifierKind As String) As Object
+    PDFRequireOwner
     Dim changes As Object, row As Variant, parts As Variant, key As String, value As Variant
-    If pdfPreview Is Nothing Then Err.Raise vbObjectError + 4712, , "Choose a supported PDF first."
-    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview. Choose it again."
+    If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, , "Choose a supported PDF first."
+    If SourceFileHash(pdfContext.Path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview. Choose it again."
     If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, , "Choose how to interpret the identifier."
     Set changes = CreateObject("Scripting.Dictionary")
-    For Each row In PDFMapRows(pdfPreview("FormKind"))
-        parts = Split(CStr(row), "|"): key = parts(0): value = pdfPreview(parts(1))
+    For Each row In PDFMapRows(pdfContext.Preview("FormKind"))
+        parts = Split(CStr(row), "|"): key = parts(0): value = pdfContext.Preview(parts(1))
         ' Missing and empty source fields never erase a saved draft value.
         If Not IsNull(value) Then
             If Len(Trim$(CStr(value))) > 0 Then
@@ -121,39 +135,44 @@ Private Function PDFConvertValue(ByVal value As String, ByVal conversion As Stri
         Case Else: Err.Raise vbObjectError + 4721, , "Unknown PDF conversion."
     End Select
 End Function
-Public Function PDFClearPreview() As Boolean
-    Set pdfPreview = Nothing: pdfXML = "": pdfPath = "": pdfHash = ""
-    Set pdfChanges = Nothing: pdfTarget = 0: pdfRevision = 0: pdfChoice = ""
+Public Function PDFClearPreview(Optional ByVal cancelSaved As Boolean = True) As Boolean
+    If cancelSaved Then Call WizardPreviewCancel("PDFImport")
+    Set pdfContext.Preview = Nothing: pdfContext.XML = "": pdfContext.Path = "": pdfContext.Hash = ""
+    Set pdfContext.Changes = Nothing: pdfContext.Target = 0: pdfContext.Revision = 0: pdfContext.Choice = ""
+    pdfContext.StageGuid = ""
+    pdfContext.OwnerProfileID = 0
     PDFClearPreview = True
 End Function
 Public Function PDFImportKind() As String
-    If Not pdfPreview Is Nothing Then PDFImportKind = pdfPreview("FormKind")
+    If Not pdfContext.Preview Is Nothing Then PDFImportKind = pdfContext.Preview("FormKind")
 End Function
 Public Function PDFImportPath() As String
-    PDFImportPath = pdfPath
+    PDFImportPath = pdfContext.Path
 End Function
 Public Function PDFImportStamp() As String
-    PDFImportStamp = pdfHash & "|" & pdfPath
+    PDFImportStamp = pdfContext.Hash & "|" & pdfContext.Path
 End Function
 Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String, Optional ByVal targetID As Long = 0, Optional ByVal mode As String = "Fill empty fields") As Long
     Dim id As Long, changes As Object, receipt As DAO.Recordset, raw As DAO.Recordset, receiptID As Long, w As DAO.Workspace, failure As Long, message As String, db As DAO.Database, stage As String, expected As Long, operationID As Long
-    If pdfPreview Is Nothing Then Err.Raise vbObjectError + 4712, , "Preview a supported PDF first."
-    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview."
-    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfHash) & " AND AdapterVersion Like 'pdf-xfa-v*'") > 0 Then Err.Raise vbObjectError + 4713, , "This exact PDF has already been imported."
+    If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, , "Preview a supported PDF first."
+    PDFRequireOwner
+    If pdfContext.StageGuid <> "" Then WizardPreviewCheck "PDFImport", pdfContext.StageGuid
+    If SourceFileHash(pdfContext.Path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, , "PDF changed after preview."
+    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfContext.Hash) & " AND AdapterVersion Like 'pdf-xfa-v*'") > 0 Then Err.Raise vbObjectError + 4713, , "This exact PDF has already been imported."
     If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, , "Choose how to interpret the combined identifier field."
     If targetID > 0 Then
-        If pdfChanges Is Nothing Then Err.Raise vbObjectError + 4722, , "Preview the merge before Apply."
-        If pdfTarget <> targetID Or pdfChoice <> century & "|" & identifierKind & "|" & mode Then Err.Raise vbObjectError + 4722, , "Merge choices changed. Preview again."
+        If pdfContext.Changes Is Nothing Then Err.Raise vbObjectError + 4722, , "Preview the merge before Apply."
+        If pdfContext.Target <> targetID Or pdfContext.Choice <> century & "|" & identifierKind & "|" & mode Then Err.Raise vbObjectError + 4722, , "Merge choices changed. Preview again."
         Call PDFCheckTarget(targetID)
-        If CurrentRevision(targetID) <> pdfRevision Then Err.Raise vbObjectError + 4722, , "Target draft changed after preview. Preview again."
-        Set changes = pdfChanges: expected = pdfRevision
+        If CurrentRevision(targetID) <> pdfContext.Revision Then Err.Raise vbObjectError + 4722, , "Target draft changed after preview. Preview again."
+        Set changes = pdfContext.Changes: expected = pdfContext.Revision
     Else
         Set changes = PDFMappedValues(century, identifierKind)
     End If
     If changes.Count = 0 Then Err.Raise vbObjectError + 4722, , "No applicable nonblank PDF values to apply."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
-    operationID = BeginOperation("PDF import", pdfPath)
+    operationID = BeginOperation("PDF import", pdfContext.Path)
     stage = "Create draft"
     If targetID = 0 Then
         'Create the directory link from extracted identity, never a placeholder.
@@ -163,7 +182,7 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
             identity.Add CStr(identityKey), Null
             If changes.Exists(CStr(identityKey)) Then identity(identityKey) = changes(identityKey)
         Next
-        id = CommitDraft(0, pdfPreview("FormKind"), "Imported PDF draft", Nz(identity("OfficialName"), "Unnamed member"), Null, Null, "Unmapped PDF fields are retained as source XML and require review.", "PDF import", administration:=FieldsSubset(identity, AdministrationKeys()), memberDetails:=FieldsSubset(identity, MemberDetailsKeys()))
+        id = CommitDraft(0, pdfContext.Preview("FormKind"), "Imported PDF draft", Nz(identity("OfficialName"), "Unnamed member"), Null, Null, "Unmapped PDF fields are retained as source XML and require review.", "PDF import", administration:=FieldsSubset(identity, AdministrationKeys()), memberDetails:=FieldsSubset(identity, MemberDetailsKeys()))
         expected = CurrentRevision(id)
         If changes.Exists("OfficialName") Then changes.Add "MemberName", Left$(CStr(changes("OfficialName")), 120)
     Else
@@ -174,18 +193,19 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     If CurrentRevision(id) <> expected Then AuditCorrelateRevision CurrentRevision(id), operationID
     stage = "Retain receipt": Set db = CurrentDb
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
-    receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = pdfHash: receipt!SourcePath = pdfPath: receipt!ExternalReportID = 0: receipt!ReportID = id
+    receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = pdfContext.Hash: receipt!SourcePath = pdfContext.Path: receipt!ExternalReportID = 0: receipt!ReportID = id
     receipt!AuthorProfileID = MajorAuthor(): receipt!ImportedAt = Now(): receipt!AdapterVersion = "pdf-xfa-v3-local": receipt!ValueEncoding = "XFA XML; " & IIf(targetID = 0, "new draft", mode) & "; baseline " & expected: receipt!AppliedRevisionID = CurrentRevision(id): receipt!IsUndone = False
     If targetID > 0 Then receipt!BeforeRevisionID = expected
     receipt!OperationID = operationID
     receipt.Update: receipt.Bookmark = receipt.LastModified: receiptID = receipt!ImportReceiptID: receipt.Close
     stage = "Retain XML"
     Set raw = db.OpenRecordset("ImportRawValue", dbOpenDynaset)
-    raw.AddNew: raw!ImportReceiptID = receiptID: raw!SourceTable = "PDF-XFA": raw!SourceRow = 0: raw!FieldOrdinal = 0: raw!FieldKey = "datasets": raw!DAOType = dbMemo: raw!RawValue = pdfXML: raw!IsNullValue = False: raw.Update
-    raw.AddNew: raw!ImportReceiptID = receiptID: raw!SourceTable = "PDF-XFA": raw!SourceRow = 0: raw!FieldOrdinal = 1: raw!FieldKey = "template-hash": raw!DAOType = dbText: raw!RawValue = pdfPreview("TemplateHash"): raw!IsNullValue = False: raw.Update: raw.Close
-    If SourceFileHash(pdfPath) <> pdfHash Then Err.Raise vbObjectError + 4706, , "PDF changed during import."
+    raw.AddNew: raw!ImportReceiptID = receiptID: raw!SourceTable = "PDF-XFA": raw!SourceRow = 0: raw!FieldOrdinal = 0: raw!FieldKey = "datasets": raw!DAOType = dbMemo: raw!RawValue = pdfContext.XML: raw!IsNullValue = False: raw.Update
+    raw.AddNew: raw!ImportReceiptID = receiptID: raw!SourceTable = "PDF-XFA": raw!SourceRow = 0: raw!FieldOrdinal = 1: raw!FieldKey = "template-hash": raw!DAOType = dbText: raw!RawValue = pdfContext.Preview("TemplateHash"): raw!IsNullValue = False: raw.Update: raw.Close
+    If SourceFileHash(pdfContext.Path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, , "PDF changed during import."
     Call FinishOperation(operationID, "Completed", "PDF values applied to report " & id & "; source XML retained.")
-    w.CommitTrans: ImportPDFPreview = id: Call PDFClearPreview: Exit Function
+    If pdfContext.StageGuid <> "" Then Call WizardPreviewCancel("PDFImport", pdfContext.StageGuid)
+    w.CommitTrans: ImportPDFPreview = id: Call PDFClearPreview(False): Exit Function
 Failed:
     failure = Err.Number: message = stage & ": " & Err.Description
     On Error Resume Next
@@ -194,6 +214,30 @@ Failed:
     If Not raw Is Nothing Then raw.Close
     On Error GoTo 0
     Err.Raise failure, "ImportPDFPreview", message
+End Function
+Public Sub PDFCheckpointChoices(ByVal century As String, ByVal identifierKind As String, ByVal target As Long, ByVal mode As String)
+    Dim choices As Object, revision As Long
+    If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, , "Choose a PDF before previewing."
+    PDFRequireOwner
+    Set choices = CreateObject("Scripting.Dictionary")
+    choices.Add "Century", century: choices.Add "Identifier", identifierKind: choices.Add "Mode", mode
+    If target > 0 Then revision = pdfContext.Revision
+    pdfContext.StageGuid = WizardPreviewSave("PDFImport", pdfContext.Path, pdfContext.Hash, "", "", target, revision, choices, pdfContext.StageGuid)
+End Sub
+Private Sub PDFRequireOwner()
+    If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, , "Preview ownership was reset. Resume the saved PDF preview first."
+    If pdfContext.OwnerProfileID <> WizardPreviewOwner() Then Err.Raise vbObjectError + 9203, , "This PDF preview belongs to another contributor. Resume or preview again."
+End Sub
+Public Function PDFResumePreview() As Object
+    Dim saved As Object, preview As Object, changes As Object
+    Set saved = WizardPreviewLoad("PDFImport")
+    WizardPreviewCheck "PDFImport", saved("StageGuid")
+    Set preview = PreviewStructuredPDF(saved("SourcePath"))
+    If Not IsNull(saved("TargetReportID")) Then
+        Set changes = PDFPrepareMerge(saved("Choices")("Century"), saved("Choices")("Identifier"), saved("TargetReportID"), saved("Choices")("Mode"))
+    End If
+    pdfContext.StageGuid = saved("StageGuid")
+    Set PDFResumePreview = saved
 End Function
 Private Sub PDFCheckTarget(ByVal id As Long)
     Dim r As DAO.Recordset
@@ -208,18 +252,18 @@ Private Sub PDFCheckTarget(ByVal id As Long)
 End Sub
 Public Function PDFPrepareMerge(ByVal century As String, ByVal identifierKind As String, ByVal id As Long, ByVal mode As String) As Object
     Dim incoming As Object, before As Object, result As Object, key As Variant
-    Set pdfChanges = Nothing: pdfTarget = 0: pdfRevision = 0
+    Set pdfContext.Changes = Nothing: pdfContext.Target = 0: pdfContext.Revision = 0
     If mode <> "Fill empty fields" And mode <> "Replace mapped values" Then Err.Raise vbObjectError + 4723, , "Choose a merge mode."
     Call PDFCheckTarget(id)
-    pdfRevision = CurrentRevision(id)
+    pdfContext.Revision = CurrentRevision(id)
     Set incoming = PDFMappedValues(century, identifierKind): Set before = SavedFields(id)
-    If CurrentRevision(id) <> pdfRevision Then Err.Raise vbObjectError + 4722, , "Target draft changed during preview. Preview again."
+    If CurrentRevision(id) <> pdfContext.Revision Then Err.Raise vbObjectError + 4722, , "Target draft changed during preview. Preview again."
     Set result = CreateObject("Scripting.Dictionary")
     For Each key In incoming.Keys
         If (mode = "Replace mapped values" Or Len(Nz(before(key), "")) = 0) And Not SameFieldValue(before(key), incoming(key)) Then result.Add CStr(key), incoming(key)
     Next
-    pdfTarget = id: pdfChoice = century & "|" & identifierKind & "|" & mode
-    Set pdfChanges = result: Set PDFPrepareMerge = result
+    pdfContext.Target = id: pdfContext.Choice = century & "|" & identifierKind & "|" & mode
+    Set pdfContext.Changes = result: Set PDFPrepareMerge = result
 End Function
 Private Function PDFTemplateKind(ByVal templateHash As String) As String
     Select Case templateHash

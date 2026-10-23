@@ -123,6 +123,12 @@ Failed:
     Forms!frmUXRenameGroup!lblStatus.Caption = Err.Description
 End Function
 Public Sub UXRefreshGroupWorkspace(ByVal id As Long)
+    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+        If Nz(Forms!frmUXComparison!uxGroupContext, 0) = id And Nz(Forms!frmUXComparison!txtMeeting, 0) = 0 Then
+            UXShowGroupMembers id, True
+            Exit Sub
+        End If
+    End If
     If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then
         If Nz(Forms!frmMajorWorkbench!cboGroup, 0) = id Then UXFocusedGroupMode Nz(Forms!frmMajorWorkbench!uxMode, "Members")
     End If
@@ -130,7 +136,7 @@ End Sub
 Public Sub UXGroupLocks(ByVal f As Access.Form, ByVal id As Long)
     Dim name As Variant, archived As Boolean
     archived = Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & id), True)
-    For Each name In Array("uxMode1", "uxMode3", "uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
+    For Each name In Array("uxMode1", "uxMode3", "uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxPolicyReview", "uxAddGroupReport", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
         If UXHasControl(f, CStr(name)) Then f.Controls(name).Enabled = Not archived
     Next
     If archived Then f!lblStatus.Caption = "Archived group: inspection only. Recover it from Summary groups to manage it. Reports retain their own status."

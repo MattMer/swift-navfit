@@ -2,11 +2,52 @@ Attribute VB_Name = "modUXGroupPages"
 Option Explicit
 Private createGroup As Long, createGroupStamp As String, createDefaultStamp As String
 Private createdReport As Long, createdReportGroup As Long
-' Route group tabs with one resolved context and member count. Keep Members/Comparison
-' in the live view and preserve pending-cell/bulk guards. Defaults use the resolved
-' group directly; only Review/History/empty Members need the workbench adapter.
+'One live Members surface for new, empty and populated groups.
+Public Function UXShowGroupMembers(ByVal id As Long, Optional ByVal refresh As Boolean = False) As Boolean
+    If id <= 0 Then Exit Function
+    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+        If Not UXGridDrain() Then Exit Function
+        If Nz(Forms!frmUXComparison!uxGroupContext, 0) = id And Nz(Forms!frmUXComparison!txtMeeting, 0) = 0 Then
+            If refresh Then UXGridLoad
+        Else
+            If Not UXCloseComparison(False) Then Exit Function
+        End If
+    End If
+    If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then Forms!frmMajorWorkbench.Visible = False
+    If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id
+    Forms!frmUXComparison.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & id), "Summary group")
+    Forms!frmUXComparison!lblHeading.Caption = Forms!frmUXComparison.Caption
+    If UXHasControl(Forms!frmUXComparison, "uxGroupMeta") Then Forms!frmUXComparison!uxGroupMeta.Caption = Nz(MajorScalar("SELECT FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE GroupID=" & id), "") & " | " & PersistenceCount("GroupMember", "GroupID=" & id) & " members"
+    If Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF Then Forms!frmUXComparison!lblStatus.Caption = "No reports in this summary group. Choose group members or add a report."
+    UXGroupTabState "frmUXComparison", 0
+    UXGroupLocks Forms!frmUXComparison, id
+    Forms!frmUXComparison.SetFocus
+    UXShowGroupMembers = True
+End Function
+
+'The Members toolbar resolves its own group; legacy tools receive an explicit
+'hidden context only when needed, never a visible alternate Members page.
+Public Function UXMemberAction(ByVal action As String) As Boolean
+    Dim id As Long
+    On Error GoTo Failed
+    If Not UXGridDrain() Then Exit Function
+    id = UXResolvedGroupContext("frmUXComparison"): If id = 0 Then Exit Function
+    If action = "Open" Then UXMemberAction = UXGridOpenReport(): Exit Function
+    If action = "Validation" Then UXMemberAction = UXOpenValidation(True, id): Exit Function
+    If action = "Blocks" Then UXMemberAction = UXStartGroupBulk(False, False, id): Exit Function
+    If action <> "Members" And action <> "Policy" Then Err.Raise 5, , "Unknown member action."
+    If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
+    Forms!frmMajorWorkbench.Visible = False
+    Forms!frmMajorWorkbench!cboGroup = id: Forms!frmMajorWorkbench!uxGroupContext = id
+    If action = "Members" Then UXMemberAction = UXChooseMembers() Else UXMemberAction = UXOpenGroupPolicy()
+    Exit Function
+Failed:
+    Forms!frmUXComparison!lblStatus.Caption = Err.Description
+End Function
+' Route group tabs with one resolved context. Members always uses the live grid;
+' only Review/History need the retained workbench adapter. Preserve pending guards.
 Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As Boolean
-    Dim id As Long, modes As Variant, members As Long
+    Dim id As Long, modes As Variant
     On Error GoTo Failed
     If page = 3 Then page = 0 'Legacy Comparison links now resolve to Members.
     If page < 0 Or page > 4 Then Exit Function
@@ -32,10 +73,8 @@ Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As B
     End If
     If (page = 0 Or page = 1 Or page = 3) And CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then Forms!frmMajorWorkbench.Visible = False
     DoCmd.Echo False
-    members = DCount("*", "GroupMember", "GroupID=" & id)
-    If (page = 0 Or page = 3) And members > 0 Then
-        DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id
-        UXGroupTabState "frmUXComparison", page
+    If page = 0 Or page = 3 Then
+        If Not UXShowGroupMembers(id) Then DoCmd.Echo True: Exit Function
     ElseIf page = 1 Then
         If Not UXOpenGroupDefaults(id) Then DoCmd.Echo True: Exit Function
     Else
@@ -85,6 +124,7 @@ Public Sub UXPositionGroupFooter(ByVal f As Access.Form)
     Next
     f!uxSeniorCaption.Top = bottom + 150
     f!uxCurrentSenior.Top = bottom + 500: f!uxCurrentExport.Top = bottom + 500
+    If UXHasControl(f, "uxCurrentPDF") Then f!uxCurrentPDF.Top = bottom + 500
     If f.Section(acDetail).Height < bottom + 1100 Then f.Section(acDetail).Height = bottom + 1100
 End Sub
 ' Open report creation from a saved group/default baseline, refusing pending cells,
@@ -189,7 +229,7 @@ Public Function UXGroupReportCreate() As Boolean
     DoCmd.Close acForm, f.Name, acSaveNo
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXCloseComparison
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then UXCloseBlocks
-    UXWorkbenchMode "Members"
+    If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then Forms!frmMajorWorkbench.Visible = False
     createdReport = id: createdReportGroup = createGroup
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!cmdClose.Caption = "Back to group members"
@@ -209,9 +249,7 @@ Public Function UXGroupCreatedReportClose() As Boolean
     id = Nz(Forms!frmEditor!txtReportID, 0): groupID = createdReportGroup
     If Not UXLeaveEditor() Then Exit Function
     If id = createdReport And groupID > 0 Then
-        If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then OpenScreen "frmMajorWorkbench"
-        Forms!frmMajorWorkbench!cboGroup = groupID: UXWorkbenchMode "Members"
-        If Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then UXGroupNavigate "frmMajorWorkbench", 0
+        UXShowGroupMembers groupID, True
     End If
     createdReport = 0: createdReportGroup = 0: UXGroupCreatedReportClose = True: Exit Function
 Failed:

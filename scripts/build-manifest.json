@@ -37,6 +37,8 @@
     "src/modPDFInflate.bas",
     "src/modPDFLocal.bas",
     "src/modPDFMapping.bas",
+    "src/modPDFOutput.bas",
+    "src/modPDFOutputUI.bas",
     "src/modPartyNames.bas",
     "src/modPromotionStatus.bas",
     "src/modProvenance.bas",
@@ -108,6 +110,7 @@
     "src/modWorkspaceImport.bas"
   ],
   "generatedModules": [
+    "modPDFPrintCatalogue",
     "modBackupWorker",
     "modTraitCatalogue",
     "modUXFields",
@@ -119,6 +122,15 @@
     "src/navfit-field-map.json",
     "src/navywriter-catalog.json",
     "src/pdf-field-map.json",
+    "src/pdf-print-layout.json",
+    "src/pdf-templates/EVAL-1.png",
+    "src/pdf-templates/EVAL-2.png",
+    "src/pdf-templates/CHIEFEVAL-1.png",
+    "src/pdf-templates/CHIEFEVAL-2.png",
+    "src/pdf-templates/FITREP-1.png",
+    "src/pdf-templates/FITREP-2.png",
+    "src/pdf-templates/SUMMARY-1.png",
+    "src/pdf-templates/SUMMARY-2.png",
     "src/report-page-layout.json",
     "src/report-page-map.json",
     "src/ruad-profile-fields.json",
@@ -157,11 +169,17 @@
       "requires": []
     },
     {
+      "id": "apply-pdf-print-catalogue",
+      "phase": "base-resources",
+      "file": "scripts/apply-pdf-print-catalogue.ps1",
+      "requires": ["apply-ux-snippet-rates"]
+    },
+    {
       "id": "apply-ux-block28-schema",
       "phase": "presentation",
       "file": "scripts/apply-ux-block28-schema.ps1",
       "requires": [
-        "apply-ux-snippet-rates"
+        "apply-pdf-print-catalogue"
       ]
     },
     {
@@ -721,6 +739,12 @@
       "requires": [
         "apply-contributor-startup"
       ]
+    },
+    {
+      "id": "apply-pdf-output",
+      "phase": "finalize",
+      "file": "scripts/apply-pdf-output.ps1",
+      "requires": ["finalize-application"]
     }
   ]
 }

@@ -133,9 +133,7 @@ Public Function RSGroupRows(ByVal groupID As Long) As DAO.Recordset
     Dim db As DAO.Database, rows As DAO.Recordset
     Set db = CurrentDb
     Set rows = db.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID, dbOpenSnapshot)
-    Do While Not rows.EOF
-        AssertReportCache CLng(rows!ReportID): rows.MoveNext
-    Loop
+    AssertReportCacheRows rows
     If Not rows.BOF Or Not rows.EOF Then rows.MoveFirst
     Set RSGroupRows = rows
 End Function

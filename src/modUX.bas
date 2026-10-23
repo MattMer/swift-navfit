@@ -366,34 +366,20 @@ End Function
 Public Function UXLoadGroups() As Boolean
     UXLoadGroups = UXGroupList()
 End Function
-' Open populated Members directly from the directory without creating a legacy
-' context host. prepareOnly and empty groups retain the existing group-management path.
+' All group rosters use the same Members surface. prepareOnly retains a hidden
+' adapter for legacy Review/History callers, never an alternate empty roster.
 Public Function UXOpenGroup(Optional ByVal prepareOnly As Boolean = False) As Boolean
     On Error GoTo Failed
     groupContext = Nz(Forms!frmUXGroups!lstGroups, 0)
     If groupContext = 0 Then MsgBox "Choose a summary group.", vbInformation: Exit Function
     If Not UXLeaveEditor() Then Exit Function
     If Not UXLeaveGroup() Then Exit Function
-    If Not prepareOnly And DCount("*", "GroupMember", "GroupID=" & groupContext) > 0 Then
-        DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & groupContext
-        UXGroupTabState "frmUXComparison", 0
-        UXOpenGroup = True: Exit Function
-    End If
+    If Not prepareOnly Then UXOpenGroup = UXShowGroupMembers(groupContext): Exit Function
     DoCmd.Echo False
-    If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , , "ContextOnly"
+    If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
     Forms!frmMajorWorkbench!cboRun = Null
     Forms!frmMajorWorkbench!cboGroup = groupContext
-    If Not prepareOnly Then
-        If DCount("*", "GroupMember", "GroupID=" & groupContext) > 0 Then
-            Forms!frmMajorWorkbench!uxMode = "Members"
-            UXOpenGroup = UXOpenComparison()
-            Forms!frmMajorWorkbench.Visible = False
-            DoCmd.Echo True: Exit Function
-        End If
-        UXWorkbenchMode "Members"
-        Forms!frmMajorWorkbench.Visible = True
-        Forms!frmMajorWorkbench.SetFocus
-    End If
+    Forms!frmMajorWorkbench.Visible = False
     DoCmd.Echo True
     UXOpenGroup = True: Exit Function
 Failed:
@@ -404,16 +390,14 @@ End Function
 Public Function UXWorkbenchMode(ByVal mode As String) As Boolean
     Dim f As Access.Form, c As Access.Control, tags As Variant
     Set f = Forms!frmMajorWorkbench
+    If mode = "Members" And Nz(f!cboGroup, 0) > 0 Then
+        UXWorkbenchMode = UXShowGroupMembers(CLng(f!cboGroup)): Exit Function
+    End If
     f!uxMode = mode
     For Each c In f.Controls
         If Left$(c.Tag, 4) = "WBX:" Then c.Visible = (InStr(1, ":" & Mid$(c.Tag, 5) & ":", ":" & mode & ":", vbBinaryCompare) > 0)
     Next
     If mode = "Members" Or mode = "Comparison" Or mode = "Defaults" Then f.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & Nz(f!cboGroup, 0)), "Summary group")
-    If mode = "Members" And Nz(f!cboGroup, 0) > 0 Then
-        f!lstReports.RowSource = "SELECT r.ReportID,r.Title,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind,UXTableITA(r.ReportID) AS ITA,r.PromotionRecommendation AS [Promotion recommendation] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & f!cboGroup & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
-        f!lstReports.ColumnCount = 6: f!lstReports.ColumnWidths = "0;1700;2700;1000;900;2100"
-        f!lstReports.Requery
-    End If
     UXFocusedGroupMode mode
     UXWorkbenchMode = True
 End Function
@@ -448,7 +432,7 @@ Public Function UXSaveMembers() As Boolean
         End If
     Next
     w.CommitTrans: started = False: DoCmd.Close acForm, "frmUXMembers", acSaveNo
-    Call UXWorkbenchMode("Members"): UXSaveMembers = True: Exit Function
+    UXSaveMembers = UXShowGroupMembers(groupContext, True): Exit Function
 Failed:
     If started Then w.Rollback
     Forms!frmUXMembers!lblStatus.Caption = Err.Description

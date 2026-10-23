@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 29,
+  "SchemaVersion": 30,
   "Tables": [
     "SummaryGroup",
     "GroupMember",
@@ -43,7 +43,8 @@
     "FieldDefaultLink",
     "GroupLifecycle",
     "AuditActor",
-    "AuditEvent"
+    "AuditEvent",
+    "WizardPreview"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -236,6 +237,10 @@
     "CREATE UNIQUE INDEX UX_Audit_CommentEventSourceID ON AuditEvent (CommentEventSourceID,SourceVersion) WITH IGNORE NULL",
     "CREATE UNIQUE INDEX UX_Audit_TaskEventSourceID ON AuditEvent (TaskEventSourceID,SourceVersion) WITH IGNORE NULL",
     "CREATE UNIQUE INDEX UX_Audit_JournalSourceID ON AuditEvent (JournalSourceID,SourceVersion) WITH IGNORE NULL",
-    "CREATE UNIQUE INDEX UX_Audit_MessageSourceID ON AuditEvent (MessageSourceID,SourceVersion) WITH IGNORE NULL"
+    "CREATE UNIQUE INDEX UX_Audit_MessageSourceID ON AuditEvent (MessageSourceID,SourceVersion) WITH IGNORE NULL",
+    "CREATE TABLE WizardPreview (StageGuid TEXT(38) CONSTRAINT PK_WizardPreview PRIMARY KEY, WizardKind TEXT(20) NOT NULL, OwnerProfileID LONG, WorkspaceGuid TEXT(38), SourcePath LONGTEXT, SourceHash TEXT(64) NOT NULL, BaselinePath LONGTEXT, BaselineHash TEXT(64), TargetReportID LONG, ExpectedRevisionID LONG, ChoiceXML LONGTEXT, SavedAt DATETIME)",
+    "ALTER TABLE WizardPreview ADD CONSTRAINT FK_WizardPreview_Report FOREIGN KEY (TargetReportID) REFERENCES Report (ReportID)",
+    "ALTER TABLE WizardPreview ADD CONSTRAINT FK_WizardPreview_Revision FOREIGN KEY (ExpectedRevisionID) REFERENCES ReportRevision (RevisionID)",
+    "CREATE UNIQUE INDEX UX_WizardPreview_OwnerKind ON WizardPreview (WizardKind,OwnerProfileID)"
   ]
 }

@@ -68,9 +68,7 @@ Public Function UXCreateGroupUI() As Boolean
         id = CreateSummaryGroup(Nz(!txtTitle, ""), Nz(!cboKind, ""), Nz(!cboPaygrade, ""))
     End With
     DoCmd.Close acForm, "frmUXNewGroup", acSaveNo
-    DoCmd.OpenForm "frmMajorWorkbench"
-    Forms!frmMajorWorkbench!cboGroup = id
-    UXWorkbenchMode "Members"
+    UXShowGroupMembers id
     If CurrentProject.AllForms("frmUXGroups").IsLoaded Then UXLoadGroups
     UXCreateGroupUI = True: Exit Function
 Failed:
@@ -97,6 +95,7 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     UXRestoreViewport f
     If Not UXHasControl(f, "uxGroupTitle") Then Exit Function
     id = Nz(f!cboGroup, 0)
+    If mode = "Members" And id > 0 Then UXFocusedGroupMode = UXShowGroupMembers(id, True): Exit Function
     If id = 0 Then f.ScrollBars = 2: f.Section(acDetail).Height = 12500: Exit Function
     f.ScrollBars = 0: f.Section(acDetail).Height = 8600
     f!uxGroupTitle.Caption = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & id), "Summary group")
@@ -112,13 +111,12 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
         Case "Review": f!lblStatus.Caption = "Select a member to review its saved revision. Open the report to see its full content."
         Case "History": f!lblStatus.Caption = "Inspect saved batch values and preview undo before applying it."
     End Select
-    If mode = "Members" Or mode = "Review" Then
+    If mode = "Review" Then
         GroupPosition "lstReports", 2850, 3000, 10450, 2900
         f!lstReports.RowSource = "SELECT r.ReportID,UXIdentity(r.OfficialName,r.MemberName) AS Member,r.FormKind AS [Report type],r.PeriodEnd AS [Period to],UXReportState(r.ReportID) AS [Local status],UXTableITA(r.ReportID) AS ITA,r.PromotionRecommendation AS [Promotion recommendation] FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & id & " ORDER BY UXIdentity(r.OfficialName,r.MemberName)"
         f!lstReports.ColumnCount = 7: f!lstReports.ColumnWidths = "0;2400;1000;1700;2000;800;2400": f!lstReports.Requery
         f!uxOpenGroupReport.Visible = True
         If mode = "Review" And UXHasControl(f, "uxFocusedReview") Then f!uxFocusedReview.Visible = True
-        If mode = "Members" Then f!uxMembers.Visible = True: f!uxBulk.Visible = True: f!uxRSCA.Visible = True
     ElseIf mode = "Comparison" Then
         f!uxComparison.Visible = True
         f!lblStatus.Caption = "Compare saved trait marks and stage proposed edits. A comparison baseline is captured automatically."
@@ -154,6 +152,9 @@ Public Function UXComparisonPage(ByVal page As String) As Boolean
         If c.Name Like "cboTrait##" Or c.Name Like "lblTrait##" Or c.Name = "lstTraits" Or c.Name = "uxMember" Or c.Name = "uxITA" Or c.Name = "cboPromotion" Or c.Name = "cmdStage" Then c.Visible = False
     Next
     f!lstProposals.Visible = preview: f!cmdApply.Visible = preview
+    For Each c In f.Controls
+        If c.Tag = "GroupMemberAction" Then c.Visible = (Not preview And Nz(f!txtMeeting, 0) = 0)
+    Next
     f!uxMarksPage.FontBold = Not preview: f!uxPreviewPage.FontBold = preview
     UXGridViewport
     UXComparisonPage = True

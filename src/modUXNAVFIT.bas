@@ -1,13 +1,21 @@
 Attribute VB_Name = "modUXNAVFIT"
 Option Compare Binary
 Option Explicit
-Private fullSource As Long
-Private fullHash As String
-Private fullCentury As Long
-Private fullCreated As Long
-Private fullMember As String
+Private Type NativeImportPreviewContext
+    SourceID As Long
+    Hash As String
+    Century As Long
+    Created As Long
+    Member As String
+    OwnerProfileID As Long
+End Type
+Private nativePreview As NativeImportPreviewContext
+
+
+
+
+
 Private groupExportToken As String
-Private returnChoices As Collection
 Public Function UXOpenNAVFITGroupExport(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
     If Not UXLeaveEditor() Then Exit Function
@@ -45,13 +53,13 @@ End Function
 Public Function UXPreviewFullNAVFIT() As Boolean
     Dim values As Object, key As Variant, text As String, century As Long, id As Long
     On Error GoTo Failed
-    fullSource = 0: fullHash = "": fullCreated = 0
+    nativePreview.SourceID = 0: nativePreview.Hash = "": nativePreview.Created = 0
     century = 2000: id = Nz(Forms!frmImportReview!lstImportReports, 0)
-    fullMember = Nz(Forms!frmImportReview!txtImportMember, "")
+    nativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
     Set values = FullNAVFITImportValues(id, century)
     text = "NEW " & values("FormKind") & " REPORT" & vbCrLf & "74 saved official fields are mapped. All 128 native report columns, folder defaults and summary values are retained in provenance. Native-only values are preserved for export; they are not editable in Swift's current editor. Native validation is not a local approval." & vbCrLf
     text = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance." & vbCrLf
-    text = text & vbCrLf & "Local display name: " & IIf(fullMember = "", NAVFITDisplay(values("OfficialName")), fullMember) & vbCrLf
+    text = text & vbCrLf & "Local display name: " & IIf(nativePreview.Member = "", NAVFITDisplay(values("OfficialName")), nativePreview.Member) & vbCrLf
     For Each key In values.Keys
         If key <> "SourceHash" And key <> "FormKind" Then text = text & vbCrLf & UXFieldCaption(CStr(key), values("FormKind")) & vbCrLf & "Before: [new report]" & vbCrLf & "After: " & NAVFITDisplay(values(key)) & vbCrLf
     Next
@@ -60,29 +68,31 @@ Public Function UXPreviewFullNAVFIT() As Boolean
         !lstImportFields.Visible = False: !txtFieldValue.Visible = False: !lblFieldColumns.Visible = False
         !cmdImport.Enabled = True: !uxState.Caption = "3. Apply - review all mapped values before creating a report."
     End With
-    fullSource = id: fullHash = values("SourceHash"): fullCentury = century
+    nativePreview.SourceID = id: nativePreview.Hash = values("SourceHash"): nativePreview.Century = century
+    nativePreview.OwnerProfileID = ActiveContributorID()
     UXPreviewFullNAVFIT = True: Exit Function
 Failed:
     Forms!frmImportReview!cmdImport.Enabled = False: Forms!frmImportReview!uxState.Caption = "2. Preview - " & Err.Description
 End Function
 Public Function UXApplyFullNAVFIT() As Boolean
     On Error GoTo Failed
-    If fullMember <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 5500, , "Display name changed. Preview again."
-    If fullSource = 0 Or fullSource <> Nz(Forms!frmImportReview!lstImportReports, 0) Then Err.Raise vbObjectError + 5500, , "Preview the current source before Apply."
-    fullCreated = ImportReviewedReport(fullSource, fullHash, fullCentury, fullMember): fullSource = 0: fullHash = ""
+    If nativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, , "Preview this import as the current contributor before Apply."
+    If nativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 5500, , "Display name changed. Preview again."
+    If nativePreview.SourceID = 0 Or nativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Then Err.Raise vbObjectError + 5500, , "Preview the current source before Apply."
+    nativePreview.Created = ImportReviewedReport(nativePreview.SourceID, nativePreview.Hash, nativePreview.Century, nativePreview.Member): nativePreview.SourceID = 0: nativePreview.Hash = ""
     With Forms!frmImportReview
         !cmdPreview.SetFocus: !cmdImport.Enabled = False: !cmdOpenResult.Enabled = True
-        !uxState.Caption = "4. Results - created " & UXMemberLabel(fullCreated) & ". Native source values retained."
+        !uxState.Caption = "4. Results - created " & UXMemberLabel(nativePreview.Created) & ". Native source values retained."
     End With
     UXApplyFullNAVFIT = True: Exit Function
 Failed:
-    fullSource = 0: fullHash = "": Forms!frmImportReview!cmdImport.Enabled = False
+    nativePreview.SourceID = 0: nativePreview.Hash = "": Forms!frmImportReview!cmdImport.Enabled = False
     Forms!frmImportReview!uxState.Caption = Err.Description & " Preview again before retrying."
 End Function
 Public Function UXOpenFullNAVFITResult() As Boolean
-    If fullCreated = 0 Then Exit Function
+    If nativePreview.Created = 0 Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
-    DoCmd.OpenForm "frmEditor", , , , , , CStr(fullCreated)
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(nativePreview.Created)
     UXOpenFullNAVFITResult = True
 End Function
 Public Function UXOpenNAVFITExchange() As Boolean
@@ -117,7 +127,7 @@ Failed:
     Forms!frmNAVFITExchange!txtStatus = "Export failed: " & Err.Description
 End Function
 Public Function UXPreviewNAVFITReturn() As Boolean
-    Dim row As Variant, parts As Variant
+    Dim row As Variant, parts As Variant, returnChoices As Collection
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
         !cmdApply.Enabled = False
@@ -142,10 +152,11 @@ Public Function UXNAVFITReturnDetail() As Boolean
     UXNAVFITReturnDetail = True
 End Function
 Public Function UXResolveNAVFITReturn(ByVal choice As String) As Boolean
-    Dim selected As String, row As Variant, parts As Variant
+    Dim selected As String, row As Variant, parts As Variant, returnChoices As Collection
     On Error GoTo Failed
     selected = Nz(Forms!frmNAVFITExchange!lstChoices, "")
     NAVFITResolveReturned selected, choice
+    Set returnChoices = NAVFITReturnedRows()
     With Forms!frmNAVFITExchange!lstChoices
         .RowSource = ""
         For Each row In returnChoices
@@ -172,10 +183,37 @@ End Function
 
 Public Function UXNAVFITInputChanged() As Boolean
     groupExportToken = "": Forms!frmNAVFITExchange!cmdExportGroup.Enabled = False
-    NAVFITClearReturned
+    NAVFITClearReturned False
     Forms!frmNAVFITExchange!cmdApply.Enabled = False
     Forms!frmNAVFITExchange!lstChoices.RowSource = ""
     Forms!frmNAVFITExchange!txtDetail = ""
     Forms!frmNAVFITExchange!txtStatus = "Choices changed. Preview again before applying a returned file."
     UXNAVFITInputChanged = True
+End Function
+Public Function UXResumeNAVFITReturn() As Boolean
+    Dim rows As Collection, row As Variant, parts As Variant, saved As Object
+    On Error GoTo Failed
+    Forms!frmNAVFITExchange!cmdApply.Enabled = False
+    Set saved = WizardPreviewLoad("NAVFITReturn")
+    Set rows = NAVFITResumeReturned()
+    With Forms!frmNAVFITExchange
+        !txtReturned = saved("SourcePath"): !txtBaseline = saved("BaselinePath")
+        !lstChoices.RowSourceType = "Value List"
+        !lstChoices.RowSource = ""
+        For Each row In rows
+            parts = Split(row, "|")
+            !lstChoices.AddItem parts(0) & ";" & Replace(NAVFITReturnedCaption(CStr(parts(0))), ";", ",") & ";" & parts(1)
+        Next
+        !txtStatus = "Saved choices resumed after source, baseline, contributor and target checks. Review before Apply. Nothing applied automatically."
+        !cmdApply.Enabled = True
+    End With
+    UXResumeNAVFITReturn = True: Exit Function
+Failed:
+    Forms!frmNAVFITExchange!txtStatus = "Resume unavailable: " & Err.Description
+End Function
+Public Function UXCancelNAVFITReturn() As Boolean
+    UXCancelNAVFITReturn = NAVFITClearReturned()
+    Forms!frmNAVFITExchange!lstChoices.RowSource = ""
+    Forms!frmNAVFITExchange!txtDetail = "": Forms!frmNAVFITExchange!cmdApply.Enabled = False
+    Forms!frmNAVFITExchange!txtStatus = "Saved return preview cancelled. No report values changed."
 End Function

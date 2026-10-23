@@ -27,7 +27,45 @@ C08–C10 implementation and the producer/consumer/navigation audit are document
 | --- | --- | --- |
 | H01 | Official-template PDF report output and summary letter | Build local print-to-PDF/export using the supported fillable EVAL, CHIEFEVAL and FITREP templates as the foundation, and obtain/version/map the NAVPERS 1610/1 Summary Letter template for group summaries. Use summary-group title and Sailor name in unique, sanitized filenames; prevent collisions and overwrites and omit SSNs from filenames. Produce visibly filled, printable appearances, not merely changed XFA datasets. Verify saved-field readback, every mapped block, all seven traits, narrative capacity, continuation/overflow handling, summary roster/totals, paper geometry and actual printed fit. Keep NAVFIT98A export. Do not imply generated output constitutes official signature/submission. Decide required versus deliberately excluded fields explicitly. |
 
-Local PDF extraction in r126 is an input feature only; it does not satisfy H01. Current authoritative templates, output-field coverage and rendering/printing must be established before claiming official-form output.
+H01 is implemented in development source (0.30.0-dev/schema 29), with static
+template output, native preview, combined/individual/Both exports and nonblocking
+draft capture. [Current project state](../PROJECT_STATE.md) records the mapping,
+intentional blank fields and runtime contract. Physical printed-fit acceptance and
+verification on a workstation with Acrobat absent remain open; H01 is not marked
+fully accepted or released. Local PDF extraction in r126 remains an input feature.
+
+**H01 output decision, 22 October:** the user selected print-ready PDF as the
+primary output, including partial drafts and incomplete reports with issues.
+An editable official form is not the first delivery target.
+Preserve saved revisions and official template geometry; generated output does
+not create signatures or change local approval/submission state. Establish a
+verified filling/rendering route before implementing the export UI around it.
+
+**Nonblocking preview/export:** show validation findings, missing values, report
+status and overflow information in the preview, but none may disable generation,
+exclude a selected report or require corrective edits, approval, completion or a
+status transition. No additional warning acknowledgement is required solely
+because findings exist. Identify the report values being exported and preserve
+pending editor/recovery values; do not force a save or discard to clear findings.
+Keep missing values blank and preserve overflow text on clearly identified
+continuation/additional pages without silently truncating it or changing the
+official form geometry. Actual generation failures, such as an unavailable
+renderer or unwritable destination, must be reported separately from report
+readiness findings and must never produce a false success result.
+
+**Combined group packet:** support one print-ready PDF containing the summary
+letter/sheet first, followed by the selected reports sorted alphabetically by
+Sailor last name. Use the same order for summary-sheet entries, export-preview
+rows and report pages. Do not ask users to reorder reports or provide manual
+reordering controls; do not infer packet order from database IDs. Resolve equal
+last names consistently using first name, middle name/initial and a stable
+report identity as the final tie-breaker. Keep each report's Front/Back pages and any
+continuation/additional pages together. Offer the combined packet and individual
+PDFs as selectable outputs, including generating both in one export run. The
+application must assemble the packet itself without requiring Acrobat Pro or a
+separate user-operated PDF merge tool. The chosen generation/assembly route must
+be verified on the supported workstation environment without Acrobat installed;
+developer-only tools must not become undeclared end-user dependencies.
 
 ## Medium
 
@@ -40,6 +78,30 @@ Local PDF extraction in r126 is an input feature only; it does not satisfy H01. 
 | M05 | Reduce brittle form/control string coupling | Define explicit form/view contracts, centralized identifiers or typed adapters, and validate required controls/events at build/startup boundaries. Fail clearly on missing/renamed controls rather than silently skipping behavior. Audit generators, macros and expression callbacks as well as VBA. Prove rename/missing-control detection and navigation/save/recovery behavior; form-module line count alone is not an acceptance measure. |
 | M06 | Store the trait catalogue as versioned runtime data | Move runtime lookup to `TraitDefinition` (form kind, block, mark, version/source), with uniqueness/relationships and exact official wording. Retain the existing JSON catalogue as a reviewed seed/generation source or consolidate it into the agreed canonical field/catalogue process. Remove redundant generated `Select Case` text and concatenation noise after equivalence is proven. Normalize display title styling deliberately without changing authoritative text. Compare every trait/mark/source reference before retiring the current generator. |
 | M07 | Establish accessibility acceptance | Create and execute keyboard, focus/tab-order, screen-reader labels/announcements, contrast/high-contrast, display/DPI and scaling acceptance for the actual supported workflows/artifacts. Research applicable Section 508 requirements and document traceable results, defects and remediation; the present absence of acceptance is a risk, not a completed compliance determination. Include startup contributor selection, dialogs/popouts, report tools, grids, findings and output. Automated geometry/binding checks do not establish accessibility. Physical review remains deferred until the user can participate. |
+
+M01 has development tooling and native compiled-candidate proof on desktop Access
+16.0.20430.20182 x64, via the existing development entry point. It is **not complete
+for production**: normal-policy launch remains unresolved after cancelling an
+unsigned-file security prompt, no approved
+signing certificate is available, compiled PDF output remains unverified, and the
+ACCDE import-picker filter change awaits scope approval. See
+[current scope and limitations](../PROJECT_STATE.md#environment-build-verification-and-delivery)
+and the [compiled-candidate procedure](../docs/Development_Workflow.md#compiled-desktop-candidate-m01).
+No release/publication or security-policy change is included.
+
+M02 is implemented in **0.31.0-dev/schema 30** development source: contributor-owned
+durable descriptors, deliberate Resume/Cancel, source/target guards, atomic stage
+consumption and preserved preview rows during workspace import. The inventory and
+ephemeral-versus-durable policy are in [current project state](../PROJECT_STATE.md#m02-preview-ownership-and-recovery).
+Development/reset/migration checks remain separate from release acceptance.
+
+M03 is implemented in **0.32.0-dev/schema 30** development source: chunked folder
+reads and Undo prechecks, refresh-owned paths, batched directory-history averages
+and shared scalar/batch group persistence validation. Existing prepared Reports/
+My Work readers and live write guards remain. The [inventory and verification
+scope](../PROJECT_STATE.md#m03-joinedbatched-read-paths) records measured native
+equivalence/performance and the separately reproduced preexisting read-row test
+fixture failure. No schema or release change is included.
 
 ## Low
 

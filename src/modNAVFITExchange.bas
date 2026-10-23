@@ -1,21 +1,40 @@
 Attribute VB_Name = "modNAVFITExchange"
 Option Compare Binary
 Option Explicit
-Private returnedPath As String
-Private returnedHash As String
-Private returnedBaseline As String
-Private returnedBaselineHash As String
-Private returnedReport As Long
-Private returnedRevision As Long
-Private returnedExternal As Long
-Private returnedCentury As Long
-Private returnedValues As Object
-Private returnedDecisions As Object
-Private returnedBefore As Object
-Private returnedFrozen As Object
-Private returnedNativeText As String
-Private returnedNativeBase As Object
-Private returnedNativeIncoming As Object
+Private Type ReturnedPreviewContext
+    Path As String
+    Hash As String
+    Baseline As String
+    BaselineHash As String
+    Report As Long
+    Revision As Long
+    External As Long
+    Century As Long
+    Values As Object
+    Decisions As Object
+    Before As Object
+    Frozen As Object
+    NativeText As String
+    NativeBase As Object
+    NativeIncoming As Object
+    StageGuid As String
+End Type
+Private returnContext As ReturnedPreviewContext
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Private reportReadiness As Collection
 Private groupReadiness As Collection
 Public Function NAVFITLastGroupReadiness() As Collection
@@ -259,29 +278,29 @@ Public Sub NAVFITCheckTarget(ByVal reportID As Long, Optional ByVal writing As B
     If r!IsArchived Or (writing And r!WorkflowState <> "Draft") Then r.Close: Err.Raise vbObjectError + 5304, , "Recover archived reports or reopen local approval before applying exchange changes."
     r.Close
 End Sub
-Public Function NAVFITPreviewReturned(ByVal path As String, ByVal baselinePath As String, Optional ByVal counselingCentury As Long = 0) As Collection
+Public Function NAVFITPreviewReturned(ByVal path As String, ByVal baselinePath As String, Optional ByVal counselingCentury As Long = 0, Optional ByVal resumeToken As String = "", Optional ByVal restoredChoices As Object = Nothing) As Collection
     Dim native As DAO.Database, baseline As DAO.Database, meta As DAO.Recordset, fields As DAO.Recordset, source As DAO.Recordset, baseValues As Object, row As Variant, parts As Variant, key As String, result As New Collection, operation As Long, outcome As String, value As Variant, receipt As Variant, nativeField As DAO.Field, mappedNames As Object, frozenNative As DAO.Recordset
     Dim failure As Long, message As String, stage As String
     On Error GoTo Failed
-    stage = "Reset preview": NAVFITClearReturned
-    returnedHash = SourceFileHash(path): returnedBaselineHash = SourceFileHash(baselinePath)
+    stage = "Reset live preview": NAVFITClearReturned False
+    returnContext.Hash = SourceFileHash(path): returnContext.BaselineHash = SourceFileHash(baselinePath)
     stage = "Read sealed baseline": Set baseline = DBEngine.OpenDatabase(baselinePath, False, True)
     If NAVFITHasTable(baseline, "SwiftGroupExport") Then Err.Raise vbObjectError + 5310, , "This is a group export baseline. Group returns are not supported by the single-report return screen."
     Set meta = baseline.OpenRecordset("SwiftExport", dbOpenSnapshot)
     If meta.EOF Then Err.Raise vbObjectError + 5310, , "Choose the export's Swift baseline file."
-    returnedReport = meta!SwiftReportID: returnedExternal = meta!ExternalReportID: returnedCentury = meta!CounselingCentury
+    returnContext.Report = meta!SwiftReportID: returnContext.External = meta!ExternalReportID: returnContext.Century = meta!CounselingCentury
     If counselingCentury <> 0 Then
         If counselingCentury <> 1900 And counselingCentury <> 2000 Then Err.Raise vbObjectError + 5319, , "Choose 1900 or 2000 for the returned counseling year."
-        returnedCentury = counselingCentury
+        returnContext.Century = counselingCentury
     End If
     operation = meta!OperationID
-    If meta!WorkspaceGuid <> MajorScalar("SELECT WorkspaceGuid FROM Workspace WHERE WorkspaceID=1") Or meta!ReportGuid <> MajorScalar("SELECT ReportGuid FROM Report WHERE ReportID=" & returnedReport) Then Err.Raise vbObjectError + 5311, , "Export baseline belongs to another workspace or report."
+    If meta!WorkspaceGuid <> MajorScalar("SELECT WorkspaceGuid FROM Workspace WHERE WorkspaceID=1") Or meta!ReportGuid <> MajorScalar("SELECT ReportGuid FROM Report WHERE ReportID=" & returnContext.Report) Then Err.Raise vbObjectError + 5311, , "Export baseline belongs to another workspace or report."
     outcome = Nz(MajorScalar("SELECT Outcome FROM OperationJournal WHERE OperationID=" & operation & " AND OperationKind='NAVFIT export' AND OperationState='Completed'"), "")
-    If outcome <> "Baseline SHA256 " & returnedBaselineHash Then Err.Raise vbObjectError + 5312, , "Baseline is modified or its export did not complete."
-    receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & returnedReport & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
+    If outcome <> "Baseline SHA256 " & returnContext.BaselineHash Then Err.Raise vbObjectError + 5312, , "Baseline is modified or its export did not complete."
+    receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & returnContext.Report & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
     If Not SameFieldValue(receipt, meta!SourceReceiptID) Then Err.Raise vbObjectError + 5318, , "A newer native import replaced the preserved source values. Export a fresh baseline before reconciling this return."
-    stage = "Check current Swift target": NAVFITCheckTarget returnedReport: returnedRevision = CurrentRevision(returnedReport)
-    Set returnedBefore = SavedFields(returnedReport): Set baseValues = CreateObject("Scripting.Dictionary")
+    stage = "Check current Swift target": NAVFITCheckTarget returnContext.Report: returnContext.Revision = CurrentRevision(returnContext.Report)
+    Set returnContext.Before = SavedFields(returnContext.Report): Set baseValues = CreateObject("Scripting.Dictionary")
     Set fields = baseline.OpenRecordset("SwiftValue", dbOpenSnapshot)
     Do While Not fields.EOF
         value = Null
@@ -296,47 +315,57 @@ Public Function NAVFITPreviewReturned(ByVal path As String, ByVal baselinePath A
     Set source = native.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
     stage = "Check native report identity"
     If source.EOF Then Err.Raise vbObjectError + 5313, , "Returned report is missing; deletion is never applied automatically."
-    If source!ReportID <> returnedExternal Then Err.Raise vbObjectError + 5313, , "Returned native identity differs. Import as a new report or supply the original exported file."
-    Set returnedValues = NAVFITReadFields(source, returnedCentury)
-    Set returnedNativeBase = CreateObject("Scripting.Dictionary"): Set returnedNativeIncoming = CreateObject("Scripting.Dictionary")
+    If source!ReportID <> returnContext.External Then Err.Raise vbObjectError + 5313, , "Returned native identity differs. Import as a new report or supply the original exported file."
+    Set returnContext.Values = NAVFITReadFields(source, returnContext.Century)
+    Set returnContext.NativeBase = CreateObject("Scripting.Dictionary"): Set returnContext.NativeIncoming = CreateObject("Scripting.Dictionary")
     Set mappedNames = CreateObject("Scripting.Dictionary"): mappedNames.CompareMode = vbTextCompare
-    For Each row In NAVFITMapRows(returnedValues("FormKind"))
+    For Each row In NAVFITMapRows(returnContext.Values("FormKind"))
         parts = Split(row, "|"): mappedNames.Add CStr(parts(1)), True
     Next
-    Set frozenNative = baseline.OpenRecordset("SELECT * FROM Reports WHERE ReportID=" & returnedExternal, dbOpenSnapshot)
+    Set frozenNative = baseline.OpenRecordset("SELECT * FROM Reports WHERE ReportID=" & returnContext.External, dbOpenSnapshot)
     If frozenNative.EOF Then Err.Raise vbObjectError + 5313, , "Frozen native report is missing."
     For Each nativeField In source.Fields
         If Not mappedNames.Exists(nativeField.Name) Then
-            returnedNativeBase.Add nativeField.Name, frozenNative.Fields(nativeField.Name).Value
-            returnedNativeIncoming.Add nativeField.Name, nativeField.Value
+            returnContext.NativeBase.Add nativeField.Name, frozenNative.Fields(nativeField.Name).Value
+            returnContext.NativeIncoming.Add nativeField.Name, nativeField.Value
         End If
     Next
     frozenNative.Close: Set frozenNative = Nothing
-    If returnedValues("FormKind") <> baseValues("FormKind") Then Err.Raise vbObjectError + 5313, , "Returned report type changed."
+    If returnContext.Values("FormKind") <> baseValues("FormKind") Then Err.Raise vbObjectError + 5313, , "Returned report type changed."
     source.MoveNext
     If Not source.EOF Then Err.Raise vbObjectError + 5313, , "Single-report return contains additional reports. Import those separately; identity is not inferred from SSN."
     source.Close: Set source = Nothing: native.Close: Set native = Nothing: baseline.Close: Set baseline = Nothing
-    Set returnedFrozen = baseValues
-    Set returnedDecisions = CreateObject("Scripting.Dictionary")
+    Set returnContext.Frozen = baseValues
+    Set returnContext.Decisions = CreateObject("Scripting.Dictionary")
     For Each row In NAVFITMapRows(baseValues("FormKind"))
         parts = Split(row, "|"): key = parts(0)
-        outcome = NAVFITMergeDecision(baseValues(key), returnedBefore(key), returnedValues(key))
-        returnedDecisions.Add key, outcome
+        outcome = NAVFITMergeDecision(baseValues(key), returnContext.Before(key), returnContext.Values(key))
+        returnContext.Decisions.Add key, outcome
         Set fields = Nothing
         result.Add key & "|" & outcome
     Next
-    For Each row In returnedNativeBase.Keys
+    For Each row In returnContext.NativeBase.Keys
         outcome = "Unchanged native value"
-        If Not SameFieldValue(returnedNativeBase(row), returnedNativeIncoming(row)) Then outcome = "Accept native change"
+        If Not SameFieldValue(returnContext.NativeBase(row), returnContext.NativeIncoming(row)) Then outcome = "Accept native change"
         result.Add "Native:" & row & "|" & outcome
     Next
-    If SourceFileHash(path) <> returnedHash Or SourceFileHash(baselinePath) <> returnedBaselineHash Then Err.Raise vbObjectError + 5314, , "File changed during preview."
-    returnedPath = path: returnedBaseline = baselinePath
+    If SourceFileHash(path) <> returnContext.Hash Or SourceFileHash(baselinePath) <> returnContext.BaselineHash Then Err.Raise vbObjectError + 5314, , "File changed during preview."
+    returnContext.Path = path: returnContext.Baseline = baselinePath: returnContext.StageGuid = resumeToken
+    If Not restoredChoices Is Nothing Then
+        If restoredChoices.Count <> returnContext.Decisions.Count + 1 Then Err.Raise vbObjectError + 9202, , "Saved return choices are incomplete. Cancel or preview again."
+        For Each row In returnContext.Decisions.Keys
+            If Not restoredChoices.Exists(CStr(row)) Then Err.Raise vbObjectError + 9202, , "Saved return choices no longer match this mapping."
+            outcome = CStr(restoredChoices(row))
+            If outcome <> returnContext.Decisions(row) And outcome <> "Keep current" And outcome <> "Accept returned" Then Err.Raise vbObjectError + 9202, , "Saved return choice is invalid."
+            returnContext.Decisions(row) = outcome
+        Next
+    End If
+    NAVFITCheckpointReturned
     Set NAVFITPreviewReturned = result: Exit Function
 Failed:
     failure = Err.Number: message = stage & ": " & Err.Description
     On Error Resume Next
-    NAVFITClearReturned
+    NAVFITClearReturned False
     If Not frozenNative Is Nothing Then frozenNative.Close
     If Not source Is Nothing Then source.Close
     If Not fields Is Nothing Then fields.Close
@@ -347,11 +376,45 @@ Failed:
     Err.Raise failure, "NAVFITPreviewReturned", message
 End Function
 Public Sub NAVFITResolveReturned(ByVal key As String, ByVal choice As String)
-    If returnedDecisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview a returned report first."
-    If Not returnedDecisions.Exists(key) Then Err.Raise vbObjectError + 5315, , "Unknown returned field."
+    Dim before As String, failure As Long, message As String
+    RequireReturnedContext
+    If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview a returned report first."
+    If Not returnContext.Decisions.Exists(key) Then Err.Raise vbObjectError + 5315, , "Unknown returned field."
     If choice <> "Keep current" And choice <> "Accept returned" Then Err.Raise vbObjectError + 5315, , "Choose Keep current or Accept returned."
-    returnedDecisions(key) = choice
+    before = returnContext.Decisions(key)
+    On Error GoTo Failed
+    returnContext.Decisions(key) = choice
+    NAVFITCheckpointReturned
+    Exit Sub
+Failed:
+    failure = Err.Number: message = Err.Description: returnContext.Decisions(key) = before
+    Err.Raise failure, "NAVFITResolveReturned", message
 End Sub
+Private Sub RequireReturnedContext()
+    If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview ownership was reset. Resume the saved preview before continuing."
+    WizardPreviewCheck "NAVFITReturn", returnContext.StageGuid
+End Sub
+Private Sub NAVFITCheckpointReturned()
+    Dim choices As Object, key As Variant
+    Set choices = CreateObject("Scripting.Dictionary")
+    For Each key In returnContext.Decisions.Keys: choices.Add CStr(key), returnContext.Decisions(key): Next
+    choices.Add "__Century", CStr(returnContext.Century)
+    returnContext.StageGuid = WizardPreviewSave("NAVFITReturn", returnContext.Path, returnContext.Hash, returnContext.Baseline, returnContext.BaselineHash, returnContext.Report, returnContext.Revision, choices, returnContext.StageGuid)
+End Sub
+Public Function NAVFITResumeReturned() As Collection
+    Dim saved As Object, rows As Collection, key As Variant
+    Set saved = WizardPreviewLoad("NAVFITReturn")
+    WizardPreviewCheck "NAVFITReturn", saved("StageGuid")
+    Set rows = NAVFITPreviewReturned(saved("SourcePath"), saved("BaselinePath"), CLng(saved("Choices")("__Century")), saved("StageGuid"), saved("Choices"))
+    Set NAVFITResumeReturned = NAVFITReturnedRows()
+End Function
+Public Function NAVFITReturnedRows() As Collection
+    Dim rows As New Collection, key As Variant
+    RequireReturnedContext
+    For Each key In returnContext.Decisions.Keys: rows.Add CStr(key) & "|" & returnContext.Decisions(key): Next
+    For Each key In returnContext.NativeBase.Keys: rows.Add "Native:" & CStr(key) & "|" & NAVFITReturnedDecision("Native:" & CStr(key)): Next
+    Set NAVFITReturnedRows = rows
+End Function
 Private Function NAVFITHasTable(ByVal db As DAO.Database, ByVal name As String) As Boolean
     Dim table As DAO.TableDef
     For Each table In db.TableDefs
@@ -359,46 +422,62 @@ Private Function NAVFITHasTable(ByVal db As DAO.Database, ByVal name As String) 
     Next
 End Function
 Public Function NAVFITReturnedDecision(ByVal key As String) As String
-    If returnedDecisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview first."
+    RequireReturnedContext
+    If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview first."
     If Left$(key, 7) = "Native:" Then
         key = Mid$(key, 8)
         NAVFITReturnedDecision = "Unchanged native value"
-        If Not SameFieldValue(returnedNativeBase(key), returnedNativeIncoming(key)) Then NAVFITReturnedDecision = "Accept native change"
+        If Not SameFieldValue(returnContext.NativeBase(key), returnContext.NativeIncoming(key)) Then NAVFITReturnedDecision = "Accept native change"
     Else
-        NAVFITReturnedDecision = returnedDecisions(key)
+        NAVFITReturnedDecision = returnContext.Decisions(key)
     End If
 End Function
 Public Function NAVFITApplyReturned() As Long
-    Dim changes As Object, key As Variant, id As Long
-    If returnedDecisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview a returned report first."
-    NAVFITCheckTarget returnedReport
-    If CurrentRevision(returnedReport) <> returnedRevision Then Err.Raise vbObjectError + 5316, , "Swift report changed after preview; preview again."
-    If SourceFileHash(returnedPath) <> returnedHash Or SourceFileHash(returnedBaseline) <> returnedBaselineHash Then Err.Raise vbObjectError + 5314, , "Exchange file changed after preview."
+    Dim changes As Object, key As Variant, id As Long, w As DAO.Workspace, trans As Boolean, failure As Long, message As String
+    RequireReturnedContext
+    If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview a returned report first."
+    NAVFITCheckTarget returnContext.Report
+    If CurrentRevision(returnContext.Report) <> returnContext.Revision Then Err.Raise vbObjectError + 5316, , "Swift report changed after preview; preview again."
+    If SourceFileHash(returnContext.Path) <> returnContext.Hash Or SourceFileHash(returnContext.Baseline) <> returnContext.BaselineHash Then Err.Raise vbObjectError + 5314, , "Exchange file changed after preview."
     Set changes = CreateObject("Scripting.Dictionary")
-    For Each key In returnedDecisions.Keys
-        If returnedDecisions(key) = "Conflict" Then Err.Raise vbObjectError + 5317, , "Resolve every conflicting field before Apply."
-        If returnedDecisions(key) = "Accept returned" Then changes.Add key, returnedValues(key)
+    For Each key In returnContext.Decisions.Keys
+        If returnContext.Decisions(key) = "Conflict" Then Err.Raise vbObjectError + 5317, , "Resolve every conflicting field before Apply."
+        If returnContext.Decisions(key) = "Accept returned" Then changes.Add key, returnContext.Values(key)
     Next
-    Call OpenReviewFile(returnedPath, False)
-    id = ImportReviewedNarrative(returnedExternal, "", returnedReport, returnedRevision, returnedHash, True, returnedCentury, changes)
+    On Error GoTo Failed
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    Call OpenReviewFile(returnContext.Path, False)
+    id = ImportReviewedNarrative(returnContext.External, "", returnContext.Report, returnContext.Revision, returnContext.Hash, True, returnContext.Century, changes)
     Call CloseReviewFile
-    NAVFITClearReturned: NAVFITApplyReturned = id
+    Call WizardPreviewCancel("NAVFITReturn", returnContext.StageGuid)
+    w.CommitTrans: trans = False
+    NAVFITClearReturned False: NAVFITApplyReturned = id: Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next
+    Call CloseReviewFile
+    If trans Then w.Rollback
+    On Error GoTo 0
+    Err.Raise failure, "NAVFITApplyReturned", message
 End Function
-Public Function NAVFITClearReturned() As Boolean
-    returnedPath = "": returnedHash = "": returnedBaseline = "": returnedBaselineHash = "": returnedReport = 0: returnedRevision = 0: returnedExternal = 0: returnedCentury = 0
-    Set returnedValues = Nothing: Set returnedDecisions = Nothing: Set returnedBefore = Nothing: Set returnedFrozen = Nothing: returnedNativeText = ""
-    Set returnedNativeBase = Nothing: Set returnedNativeIncoming = Nothing
+Public Function NAVFITClearReturned(Optional ByVal cancelSaved As Boolean = True) As Boolean
+    If cancelSaved Then Call WizardPreviewCancel("NAVFITReturn")
+    returnContext.Path = "": returnContext.Hash = "": returnContext.Baseline = "": returnContext.BaselineHash = "": returnContext.Report = 0: returnContext.Revision = 0: returnContext.External = 0: returnContext.Century = 0
+    Set returnContext.Values = Nothing: Set returnContext.Decisions = Nothing: Set returnContext.Before = Nothing: Set returnContext.Frozen = Nothing: returnContext.NativeText = ""
+    Set returnContext.NativeBase = Nothing: Set returnContext.NativeIncoming = Nothing
+    returnContext.StageGuid = ""
     NAVFITClearReturned = True
 End Function
 
 Public Function NAVFITReturnedDetails(ByVal key As String) As String
-    If returnedDecisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview first."
+    RequireReturnedContext
+    If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, , "Preview first."
     If Left$(key, 7) = "Native:" Then
         key = Mid$(key, 8)
-        NAVFITReturnedDetails = "Native-only column: " & key & vbCrLf & "Exported/current native value: " & NAVFITDisplay(returnedNativeBase(key)) & vbCrLf & "Returned native value: " & NAVFITDisplay(returnedNativeIncoming(key)) & vbCrLf & "Retained as native source content when Apply is chosen. It is not a Swift editor field or local approval. Cancel this return if these source changes are unwanted."
+        NAVFITReturnedDetails = "Native-only column: " & key & vbCrLf & "Exported/current native value: " & NAVFITDisplay(returnContext.NativeBase(key)) & vbCrLf & "Returned native value: " & NAVFITDisplay(returnContext.NativeIncoming(key)) & vbCrLf & "Retained as native source content when Apply is chosen. It is not a Swift editor field or local approval. Cancel this return if these source changes are unwanted."
         Exit Function
     End If
-    NAVFITReturnedDetails = UXFieldCaption(key, returnedBefore("FormKind")) & vbCrLf & "Exported baseline: " & NAVFITDisplay(returnedFrozen(key)) & vbCrLf & "Current Swift: " & NAVFITDisplay(returnedBefore(key)) & vbCrLf & "Returned NAVFIT: " & NAVFITDisplay(returnedValues(key)) & vbCrLf & "Decision: " & returnedDecisions(key)
+    NAVFITReturnedDetails = UXFieldCaption(key, returnContext.Before("FormKind")) & vbCrLf & "Exported baseline: " & NAVFITDisplay(returnContext.Frozen(key)) & vbCrLf & "Current Swift: " & NAVFITDisplay(returnContext.Before(key)) & vbCrLf & "Returned NAVFIT: " & NAVFITDisplay(returnContext.Values(key)) & vbCrLf & "Decision: " & returnContext.Decisions(key)
 End Function
 Public Function NAVFITDisplay(ByVal value As Variant) As String
     If IsNull(value) Then
@@ -508,6 +587,6 @@ Public Function NAVFITReturnedCaption(ByVal key As String) As String
     If Left$(key, 7) = "Native:" Then
         NAVFITReturnedCaption = "Native-only: " & Mid$(key, 8)
     Else
-        NAVFITReturnedCaption = UXFieldCaption(key, returnedBefore("FormKind"))
+        NAVFITReturnedCaption = UXFieldCaption(key, returnContext.Before("FormKind"))
     End If
 End Function

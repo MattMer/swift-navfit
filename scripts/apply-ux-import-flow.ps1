@@ -29,8 +29,10 @@ NewScreen 'frmPDFImport' 'Import structured PDF' 11200;$f=$script:swiftForm;$f.S
 [void](Control $f 104 'cmdOpenResult' 6900 9500 6100 500 'Open imported report' '=UXOpenImportedReport("PDF")');$script:swiftControl.Enabled=$false
 [void](Control $f 100 'lblStatus' 400 10150 12600 650 '')
 [void](Control $f 104 'cmdHome' 10400 10850 2600 350 'Back to Reports' '=UXNavigate("frmLibrary")')
-$f.OnLoad='=UXPDFStart()';$f.OnUnload='=PDFClearPreview()'
-$i=0;foreach($name in @('cmdChoose','cboCentury','cboIdentifier','chkLegacy','cboTarget','cboMergeMode','cmdPreview','cmdDependency','txtPreview','cmdImport','cmdOpenResult','cmdHome')){$f.Controls($name).TabIndex=$i;$i++}
+$f.OnLoad='=UXPDFStart()';$f.OnUnload='=PDFClearPreview(False)'
+[void](Control $f 104 'cmdResume' 400 10850 4600 350 'Resume saved preview' '=UXResumePDFImport()')
+[void](Control $f 104 'cmdCancelPreview' 5200 10850 4600 350 'Cancel saved preview' '=UXCancelPDFImport()')
+$i=0;foreach($name in @('cmdChoose','cboCentury','cboIdentifier','chkLegacy','cboTarget','cboMergeMode','cmdPreview','cmdDependency','txtPreview','cmdImport','cmdOpenResult','cmdResume','cmdCancelPreview','cmdHome')){$f.Controls($name).TabIndex=$i;$i++}
 SaveScreen $f 'frmPDFImport'
 $app.DoCmd.OpenForm('frmImportReview',1);$f=$app.Forms.Item('frmImportReview');$f.ScrollBars=2
 $f.Controls('lstImportReports').ColumnCount=4;$f.Controls('lstImportReports').ColumnWidths='0;1100;1500;2000'

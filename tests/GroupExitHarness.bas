@@ -49,9 +49,9 @@ Public Function TestGroupExit() As String
  Check UXNavigate("frmLibrary"), "Review menu leave failed"
  Check Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded, "Review host retained"
  OpenGroup emptyGroup
- Check CurrentProject.AllForms("frmMajorWorkbench").IsLoaded, "Empty group missing"
+ Check CurrentProject.AllForms("frmUXComparison").IsLoaded And Forms!frmUXComparison!uxGroupContext = emptyGroup, "Empty group did not use canonical Members page"
  Check UXBackToGroups(), "Empty group Back failed"
- Check Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded, "Empty group retained"
+ Check Not CurrentProject.AllForms("frmUXComparison").IsLoaded And Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded, "Empty group retained"
  OpenGroup b: Check Forms!frmUXComparison!uxGroupContext = b, "Final group context wrong"
  Check UXGridOpenReport(), "Member editor open failed"
  Forms!frmEditor!txtOfficialComments = "Pending report edit"
@@ -61,4 +61,88 @@ Public Function TestGroupExit() As String
  TestGroupExit = "PASS: " & n & " group replacement, Back, menu exit and pending edit assertions": Exit Function
 Failed:
  TestGroupExit = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
+End Function
+
+Public Function TestUnifiedMembers() As String
+ Dim g As Long, id As Long, other As Long, before As Long, snapshots As Long, i As Long, name As Variant
+ On Error GoTo Failed
+ Check UXNavigate("frmUXGroups"), "Unified setup navigation failed"
+ DoCmd.OpenForm "frmUXNewGroup"
+ Forms!frmUXNewGroup!txtTitle = "Unified empty Members"
+ Forms!frmUXNewGroup!cboKind = "EVAL": Forms!frmUXNewGroup!cboPaygrade = "E5"
+ Check UXCreateGroupUI(), "Create group UI failed"
+ g = Forms!frmUXComparison!uxGroupContext
+ Check g > 0 And Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF, "New group does not have empty comparison table"
+ Check Not Forms!frmUXComparison!uxOpenGroupReport.Enabled, "Empty roster allows opening a nonexistent selection"
+ Check InStr(Forms!frmUXComparison!lblStatus.Caption, "No reports") > 0, "Empty Members guidance missing"
+ Check Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded, "New group opened alternate workbench Members"
+ For Each name In Array("uxMembers", "uxBulk", "uxPolicyReview", "uxOpenGroupReport", "uxValidation", "cmdBack", "uxCurrentSenior", "uxCurrentExport")
+  Check Forms!frmUXComparison.Controls(name).Visible, "Missing unified member action: " & name
+  Check Forms!frmUXComparison.Controls(name).Top >= Forms!frmUXComparison!uxTraitGrid.Top + Forms!frmUXComparison!uxTraitGrid.Height, "Action overlaps table: " & name
+ Next
+ before = DCount("*", "ReportRevision"): snapshots = DCount("*", "ComparisonSet")
+ Check UXShowGroupMembers(g, True), "Empty refresh failed"
+ Check DCount("*", "ReportRevision") = before And DCount("*", "ComparisonSet") = snapshots, "Empty open/refresh wrote history"
+ id = CommitDraft(0, "EVAL", "Unified member", "Synthetic member", Null, Null, "")
+ other = CreateSummaryGroup("Unrelated context", "EVAL", "E5")
+ Check UXMemberAction("Members"), "Choose members failed"
+ Check Not Forms!frmMajorWorkbench.Visible And Forms!frmMajorWorkbench!cboGroup = g, "Legacy adapter context is visible or incorrect"
+ Forms!frmMajorWorkbench!cboGroup = other
+ DoCmd.Close acForm, "frmUXMembers", acSaveNo
+ Check UXMemberAction("Members"), "Reopening membership failed"
+ Check Forms!frmMajorWorkbench!cboGroup = g, "Toolbar used stale hidden group"
+ With Forms!frmUXMembers!lstReports
+  For i = 0 To .ListCount - 1: .Selected(i) = (.ItemData(i) = id): Next
+ End With
+ Check UXPreviewGroupMembers(), "Membership preview failed"
+ Check UXApplyGroupMembers(), "Membership apply failed"
+ Check Forms!frmUXComparison!uxGroupContext = g And Not Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF, "First member switched Members implementation"
+ Check Not Forms!frmMajorWorkbench.Visible, "First member exposed workbench"
+ before = CurrentRevision(id)
+ Forms!frmUXComparison!uxTraitGrid.Form!AssignmentRecommendationA = String$(21, "X")
+ Check UXGridQueue("AssignmentRecommendationA"), "Unified pending edit queue failed"
+ Check Not UXMemberAction("Members"), "Toolbar abandoned invalid pending cell"
+ Check UXGridPendingCount() = 1 And CurrentRevision(id) = before, "Blocked toolbar lost pending value or saved invalid revision"
+ Check UXGridDiscardPending(), "Unified pending discard failed"
+ Check UXMemberAction("Blocks"), "Unified shared-block editor failed"
+ Check Forms!frmUXBulk!uxGroupContext = g, "Shared-block editor targeted wrong group"
+ Check UXCloseBlocks(), "Shared-block return failed"
+ Check UXCurrentGroupTool("frmUXComparison", "Senior"), "Unified reporting-senior action failed"
+ Check Forms!frmUXGroupRSCA!txtGroupID = g, "Reporting-senior action targeted wrong group"
+ DoCmd.Close acForm, "frmUXGroupRSCA", acSaveNo
+ Check UXCurrentGroupTool("frmUXComparison", "Export"), "Unified export action failed"
+ Check Forms!frmNAVFITExchange!cboGroup = g, "Export targeted wrong group"
+ DoCmd.Close acForm, "frmNAVFITExchange", acSaveNo
+ Check UXMemberAction("Validation"), "Unified group validation failed"
+ Check Forms!frmUXValidation.OpenArgs = "G:" & g, "Validation targeted wrong group"
+ DoCmd.Close acForm, "frmUXValidation", acSaveNo
+ Check UXMemberAction("Policy"), "Unified policy review failed"
+ Check Forms!frmUXGroupPolicy!groupID = g, "Policy targeted wrong group"
+ DoCmd.Close acForm, "frmUXGroupPolicy", acSaveNo
+ Check UXMemberAction("Open"), "Unified selected report failed"
+ Check Forms!frmEditor!txtReportID = id, "Wrong selected report opened"
+ Check UXFeedbackCloseEditor(), "Member return failed"
+ Check UXGroupNavigate("frmUXComparison", 2), "Review tab failed"
+ Check Forms!frmMajorWorkbench.Visible And Forms!frmMajorWorkbench!uxMode = "Review", "Review context lost"
+ Check UXGroupNavigate("frmMajorWorkbench", 0), "Review return to Members failed"
+ Check Not Forms!frmMajorWorkbench.Visible, "Review return exposed alternate Members"
+ Check UXMemberAction("Members"), "Remove-last membership dialog failed"
+ With Forms!frmUXMembers!lstReports
+  For i = 0 To .ListCount - 1: .Selected(i) = False: Next
+ End With
+ Check UXPreviewGroupMembers() And UXApplyGroupMembers(), "Remove-last membership failed"
+ Check Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF, "Empty-after-removal changed view or retained row"
+ Check Forms!frmUXComparison!uxMembers.Visible And Not Forms!frmMajorWorkbench.Visible, "Empty-after-removal lost actions"
+ Check UXGroupAddReport("frmUXComparison"), "Empty-roster Add report failed"
+ Forms!frmUXGroupReport!txtName = "Synthetic newly created member"
+ Forms!frmUXGroupReport!txtOfficial = "SYNTHETIC, NEW": Forms!frmUXGroupReport!txtRank = "IT2"
+ Check UXGroupReportCreate(), "Create report from empty Members failed"
+ id = Forms!frmEditor!txtReportID
+ Check PersistenceCount("GroupMember", "GroupID=" & g & " AND ReportID=" & id) = 1, "Created report lost group link"
+ Check UXGroupCreatedReportClose(), "New report return failed"
+ Check Forms!frmUXComparison!uxGroupContext = g And Not Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF, "New report did not return to unified Members"
+ Check UXBackToGroups(), "Unified empty exit failed"
+ TestUnifiedMembers = "PASS: " & n & " total group exit and unified Members assertions": Exit Function
+Failed:
+ TestUnifiedMembers = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
 End Function
