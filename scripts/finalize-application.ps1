@@ -8,17 +8,28 @@ $c=$app.CreateControl($f.Name,110,0,'','',400,($bottom+500),12600,2500);$c.Name=
 $f.Section(0).Height=$bottom+3300;$f.ScrollBars=2
 $app.DoCmd.Close(2,$f.Name,1)
 $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
-foreach($name in @('cmdAddFolder','cmdMoveFolder','cmdFolderHelp','cboDestination')){
+foreach($name in @('cmdAddFolder','cmdMoveFolder','cmdFolderHelp','cboDestination','cmdBulkFolders')){
  if(@($f.Controls|ForEach-Object {$_.Name}) -contains $name){$app.DeleteControl($f.Name,$name)}
 }
-$f.Controls.Item('cmdBulkFolders').Caption='Folder tools'
-$f.Controls.Item('cmdBulkFolders').ControlTipText='Organizational folder moves; summary-group membership and official report content stay separate.'
 $app.DoCmd.Close(2,$f.Name,1)
-$app.DoCmd.OpenForm('frmBulkFolders',1);$f=$app.Forms.Item('frmBulkFolders')
-$f.Caption='Organizational folder tools'
-$f.Controls.Item('lblScope').Caption='Select active drafts and preview their organizational folder moves. These moves do not change summary-group membership or saved report content.'
-$f.Controls.Item('cmdLibrary').Caption='Back to reports'
+# Retain nonvisual compatibility controls for protected return services; the
+# supported user flow is exclusively selected-group export.
+$app.DoCmd.OpenForm('frmNAVFITExchange',1);$f=$app.Forms.Item('frmNAVFITExchange')
+foreach($c in $f.Controls){$c.Visible=$false;$c.Left=0;$c.Top=0;$c.Width=500;$c.Height=350;if($c.ControlType -in @(104,106,109,110,111)){$c.TabStop=$false}}
+$f.Caption='Export summary group to NAVFIT98A';$f.Width=13400;$f.Section(0).Height=5800;$f.ScrollBars=0;$f.PopUp=$false;$f.Modal=$false;$f.CloseButton=$true
+foreach($spec in @(@('lblHeading',400,250,12600,600),@('lblScope',400,1000,12600,650),@('lblGroup',400,1750,12600,450),@('lbltxtExportPath',400,2350,2900,350),@('txtExportPath',3500,2300,7300,450),@('cmdtxtExportPath',11100,2300,1900,450),@('cmdExportGroup',400,3000,12600,550),@('txtStatus',400,3800,12600,1000),@('cmdBack',400,5100,12600,450),@('cmdWindowHelp',12500,250,500,450))){
+ $c=$f.Controls.Item($spec[0]);$c.Visible=$true;$c.Left=$spec[1];$c.Top=$spec[2];$c.Width=$spec[3];$c.Height=$spec[4];if($c.ControlType -eq 104){$c.TabStop=$true}
+}
+$f.Controls('lblHeading').Caption='Export summary group to NAVFIT98A'
+$f.Controls('lblScope').Caption='Export all saved reports in this summary group. Validation findings and report status do not block export. Pending edits are kept separately; this does not approve or submit reports.'
+$f.Controls('lblGroup').Caption='Summary group';$f.Controls('lbltxtExportPath').Caption='Export directory'
+$f.Controls('txtExportPath').Locked=$false;$f.Controls('txtExportPath').TabStop=$true;$f.Controls('txtExportPath').AfterUpdate='=UXPreviewNAVFITGroup()'
+$f.Controls('cmdtxtExportPath').Caption='Choose folder';$f.Controls('cmdtxtExportPath').OnClick='=UXChooseNAVFITGroupFolder()'
+$f.Controls('cmdExportGroup').Caption='Export summary group to NAVFIT98A'
+$f.Controls('cmdBack').Caption='Close';$f.Controls('cmdBack').OnClick='=UXCloseScreen("frmNAVFITExchange")'
+$f.OnUnload='=UXCloseNAVFITExport()'
 $app.DoCmd.Close(2,$f.Name,1)
+# End summary-group export surface.
 $formEvents=@('OnOpen','OnLoad','OnClose','OnActivate','OnResize','OnTimer','OnUnload')
 $controlEvents=@('OnClick','OnDblClick','AfterUpdate','BeforeUpdate','OnEnter','OnExit','OnChange','OnMouseDown')
 $retired=@($swiftBuildPlan.Manifest.retiredForms.PSObject.Properties.Name)

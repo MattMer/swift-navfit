@@ -15,6 +15,12 @@ PageControl $f 104 'cmdApply' 350 7400 6000 500 'Import all workspace data' '=UX
 PageControl $f 104 'cmdClose' 6600 7400 5950 500 'Close' '=UXCloseScreen("frmUXWorkspaceImport")'
 PageControl $f 100 'lblStatus' 350 8150 12200 1100 ''
 $app.DoCmd.Save(2,$f.Name);$app.DoCmd.Close(2,$f.Name,2)
+$app.DoCmd.OpenForm('frmUXEditorFields',1);$f=$app.Forms.Item('frmUXEditorFields')
+foreach($block in 33..39){
+ $name='uxChiefGuidance'+$block
+ if(@($f.Controls|ForEach-Object {$_.Name}) -notcontains $name){$c=$app.CreateControl($f.Name,100,0,'','',180,100,4400,1900);$c.Name=$name;$c.FontName='Times New Roman';$c.FontSize=8;$c.Visible=$false;$c.OnClick=''}
+}
+$app.DoCmd.Close(2,$f.Name,1)
 foreach($screen in @('frmUXSettings','frmSetup')){
  $app.DoCmd.OpenForm($screen,1);$f=$app.Forms.Item($screen);$bottom=0
  foreach($c in $f.Controls){if($c.Visible -and ($screen -eq 'frmSetup' -or $c.Left -ge 2450)){$bottom=[math]::Max($bottom,$c.Top+$c.Height)}}
@@ -25,6 +31,9 @@ foreach($screen in @('frmUXSettings','frmSetup')){
  $app.DoCmd.Save(2,$f.Name);$app.DoCmd.Close(2,$f.Name,2)
 }
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
+foreach($name in @('uxRecoverySession','uxRecoveryRevision','uxReturnGroup')){
+ if(@($f.Controls|ForEach-Object {$_.Name}) -notcontains $name){$c=$app.CreateControl($f.Name,109,0,'','',0,0,100,100);$c.Name=$name;$c.Visible=$false;$c.TabStop=$false}
+}
 #Hide old section/navigation chrome; canonical buffers and backend identities stay.
 foreach($c in $f.Controls){if($c.Name -like 'uxSection?' -or $c.Name -in @('uxCompactSection','uxPage','uxPrevious','uxNext','lblHeading','lblImportOrigin')){$c.Visible=$false}}
 foreach($item in @(@('uxFrontPage','Front Page','=UXSelectSection(0)'),@('uxBackPage','Back Page','=UXSelectSection(5)'),@('uxPageNotes','Draft notes','=UXSelectSection(7)'),@('uxPageReview','Review','=UXSelectSection(8)'),@('uxPageHistory','History','=UXSelectSection(9)'),@('uxPageValidation','Validation issues','=UXOpenValidation(False)'))){

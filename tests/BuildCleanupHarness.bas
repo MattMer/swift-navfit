@@ -22,7 +22,9 @@ Public Function TestBuildCleanup() As String
  Forms!frmLibrary!lstFolders = group
  before = DCount("*", "Folder")
  Check AddFolderUI(), "Legacy add-folder adapter failed"
- Check Screen.ActiveForm.Name = "frmBulkFolders", "Legacy folder callback did not open supported folder tools"
+ Check Screen.ActiveForm.Name = "frmLibrary", "Retired folder callback did not return to Reports"
+ Check Not UXHasControl(Forms!frmLibrary, "cmdBulkFolders"), "Reports still offers retired Folder tools"
+ Check PreviewFolderBatchUI() And ApplyFolderBatchUI() And Screen.ActiveForm.Name = "frmLibrary", "Retired folder actions did not return safely to Reports"
  Check DCount("*", "Folder") = before And DCount("*", "FolderMove") = moves, "Group ID was misinterpreted as a folder mutation"
  Check CurrentRevision(id) = revision, "Folder adapter changed report revision"
  Check OpenScreen("frmLibrary"), "Return to Reports failed"
@@ -38,10 +40,9 @@ Public Function TestBuildCleanup() As String
  Check CurrentProject.AllForms("frmUXMoveGroup").IsLoaded, "Report move did not use group preview"
  DoCmd.Close acForm, "frmUXMoveGroup", acSaveNo
  For Each item In CurrentProject.AllForms
-  If item.Name = "frmHelp" Or item.Name = "frmUXReview" Or item.Name = "frmReviewComments" Or item.Name = "frmChecklist" Or item.Name = "frmUXNoteComposer" Then hasLegacy = True
+  If item.Name = "frmHelp" Or item.Name = "frmUXReview" Or item.Name = "frmReviewComments" Or item.Name = "frmChecklist" Or item.Name = "frmUXNoteComposer" Or item.Name = "frmBulkFolders" Then hasLegacy = True
  Next
  Check Not hasLegacy, "Retired standalone form still installed"
- Check CurrentProject.AllForms("frmBulkFolders").Name = "frmBulkFolders", "Active folder tools were removed"
  DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
  Forms!frmEditor!txtOfficialName = "SAVED THROUGH LEGACY NAV"
  Check OpenScreen("frmLibrary"), "Legacy main-menu entry did not leave report safely"

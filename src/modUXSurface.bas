@@ -126,6 +126,10 @@ End Function
 Public Function UXSurfaceTrait(ByVal block As Long) As Boolean
     If Not UXSurfaceAvailable() Then Exit Function
     Call ShowTraitGuidance(block)
+    If Nz(Forms!frmEditor!cboKind, "") = "CHIEFEVAL" And UXFixedEnabled() Then
+        Surface().Controls("uxChiefGuidance" & block).Caption = CatalogueTraitDescription("CHIEFEVAL", block, Nz(Forms!frmEditor.Controls("cboTrait" & block), ""))
+        UXSurfaceTrait = True: Exit Function
+    End If
     Surface()!uxTraitGuidance = Forms!frmEditor!txtTraitGuidance
     If UXFixedEnabled() Then UXSurfaceTrait = True: Exit Function
     With Surface()!uxTraitGuidance

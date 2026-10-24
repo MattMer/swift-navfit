@@ -28,6 +28,12 @@ foreach($grade in $grades){
 }
 $f.Section(0).Height=10000;$f.OnResize='=RSTableResize()'
 $app.DoCmd.Close(2,$f.Name,1)
+$app.DoCmd.OpenForm('frmUXGroups',1);$f=$app.Forms.Item('frmUXGroups')
+foreach($name in @('uxExportSelected','uxPDFSelected')){if(@($f.Controls|ForEach-Object {$_.Name}) -contains $name){$app.DeleteControl($f.Name,$name)}}
+AddResourceControl $f 104 'uxExportSelected' 2850 9800 5050 450 'Export selected group to NAVFIT98A' '=UXExportSelectedGroup()'
+AddResourceControl $f 104 'uxPDFSelected' 8150 9800 5150 450 'Preview / create selected group PDFs' '=PDFOutputOpenGroup("frmUXGroups")'
+SetAccessProperty ($f.Section(0)) 'Height' ([Math]::Max([int]$f.Section(0).Height,10450))
+$app.DoCmd.Close(2,$f.Name,1)
 $app.DoCmd.OpenForm('frmUXSeniorEditor',1);$f=$app.Forms.Item('frmUXSeniorEditor')
 foreach($name in @('uxRSCATable','cmdSaveRSTable','cmdRSHistory')){try{$app.DeleteControl($f.Name,$name)}catch{}}
 # Keep old single-observation buffers hidden for backend compatibility only.

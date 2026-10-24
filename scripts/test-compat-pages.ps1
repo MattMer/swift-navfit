@@ -1,7 +1,8 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$EntryLabelsOnly,[switch]$InstallSource)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$EntryLabelsOnly,[switch]$InstallSource,[switch]$EditorReset)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $scratch=Join-Path $root ('build/tests/compat-pages-'+[guid]::NewGuid()+'.accdb');Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=New-Object -ComObject Access.Application
+$primary=$null;$cleanup=@()
 try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  if($InstallSource){
   $app.DoCmd.OpenForm('frmSetup',1);$f=$app.Forms.Item('frmSetup')
@@ -17,4 +18,14 @@ try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  $result=$app.Eval('TestCompatPages()');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
  }
  $result=$app.Eval('TestEntryLabels()');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
-}finally{try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{};$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+ if($EditorReset){
+  $result=$app.Eval('PrepareEditorResetFeedback()');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
+  $app.VBE.CommandBars.FindControl(1,228).Execute()
+  $result=$app.Eval('VerifyEditorResetFeedback()');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
+ }
+}catch{$primary=$_;throw}finally{
+ try{[void]$app.Eval('UXLeaveEditor("Discard")')}catch{}
+ try{$app.Quit(2)}catch{$cleanup+=$_.Exception.Message}
+ try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}catch{$cleanup+=$_.Exception.Message}
+ if($cleanup){if($primary){Write-Warning ($cleanup -join '; ')}else{throw ($cleanup -join '; ')}}
+}

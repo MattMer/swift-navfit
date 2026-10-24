@@ -152,8 +152,10 @@ End Function
 Public Function PDFImportStamp() As String
     PDFImportStamp = pdfContext.Hash & "|" & pdfContext.Path
 End Function
-Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String, Optional ByVal targetID As Long = 0, Optional ByVal mode As String = "Fill empty fields") As Long
+Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String, Optional ByVal targetID As Long = 0, Optional ByVal mode As String = "Fill empty fields", Optional ByRef outcome As String = "") As Long
     Dim id As Long, changes As Object, receipt As DAO.Recordset, raw As DAO.Recordset, receiptID As Long, w As DAO.Workspace, failure As Long, message As String, db As DAO.Database, stage As String, expected As Long, operationID As Long
+    Dim trans As Boolean
+    outcome = "Not started"
     If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, "modPDFImport.ImportPDFPreview", "Preview a supported PDF first."
     PDFRequireOwner
     If pdfContext.StageGuid <> "" Then WizardPreviewCheck "PDFImport", pdfContext.StageGuid
@@ -170,8 +172,9 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
         Set changes = PDFMappedValues(century, identifierKind)
     End If
     If changes.Count = 0 Then Err.Raise vbObjectError + 4722, "modPDFImport.ImportPDFPreview", "No applicable nonblank PDF values to apply."
-    Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
+    stage = "Begin import transaction"
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True: outcome = "Active"
     operationID = BeginOperation("PDF import", pdfContext.Path)
     stage = "Create draft"
     If targetID = 0 Then
@@ -205,12 +208,14 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     If SourceFileHash(pdfContext.Path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, "modPDFImport.ImportPDFPreview", "PDF changed during import."
     Call FinishOperation(operationID, "Completed", "PDF values applied to report " & id & "; source XML retained.")
     If pdfContext.StageGuid <> "" Then Call WizardPreviewCancel("PDFImport", pdfContext.StageGuid)
-    w.CommitTrans: ImportPDFPreview = id: Call PDFClearPreview(False): Exit Function
+    w.CommitTrans: trans = False: outcome = "Committed"
+    ImportPDFPreview = id: Call PDFClearPreview(False): Exit Function
 Failed:
     Dim swiftPrimary As Object
-    Set swiftPrimary = SwiftFailure("modPDFImport", "ImportPDFPreview", stage, Err.Number, Err.Description, Err.Source, "Unknown")
+    Set swiftPrimary = SwiftFailure("modPDFImport", "ImportPDFPreview", stage, Err.Number, Err.Description, Err.Source, outcome)
     failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
-    SwiftRollback w, swiftPrimary
+    If trans Then SwiftRollback w, swiftPrimary
+    outcome = CStr(swiftPrimary("Transaction"))
     If Not receipt Is Nothing Then SwiftClose receipt, swiftPrimary, "receipt"
     If Not raw Is Nothing Then SwiftClose raw, swiftPrimary, "raw"
     On Error GoTo 0

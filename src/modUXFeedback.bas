@@ -88,13 +88,17 @@ Public Function UXGridOpenReport() As Boolean
     gridReport = id
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!cmdClose.Caption = "Back to group members"
+    Forms!frmEditor!uxReturnGroup = Nz(Forms!frmUXComparison!uxGroupContext, 0)
     UXGridOpenReport = True
 End Function
 Public Function UXFeedbackCloseEditor() As Boolean
-    Dim id As Long
+    Dim id As Long, returnGroup As Long
     id = Nz(Forms!frmEditor!txtReportID, 0)
+    returnGroup = Nz(Forms!frmEditor!uxReturnGroup, 0)
     If Not UXLeaveEditor() Then Exit Function
-    If id = gridReport And CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+    If returnGroup > 0 Then
+        UXShowGroupMembers returnGroup, True
+    ElseIf id = gridReport And CurrentProject.AllForms("frmUXComparison").IsLoaded Then
         Forms!frmUXComparison.SetFocus
         UXGridCurrent True
     End If

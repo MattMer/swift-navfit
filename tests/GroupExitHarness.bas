@@ -20,7 +20,7 @@ Public Function TestGroupExit() As String
  AddGroupMember a, report, "E5": AddGroupMember b, other, "E6"
  DoCmd.OpenForm "frmUXGroups"
  OpenGroup a: Check Forms!frmUXComparison!uxGroupContext = a, "First group context wrong"
- Check Forms!frmUXComparison!uxBackToGroups.OnClick = "=UXBackToGroups()", "Back binding missing"
+ Check Not UXHasControl(Forms!frmUXComparison, "uxBackToGroups") And Forms!frmUXComparison!cmdBack.OnClick = "=UXBackToGroups()", "Duplicate header Back remains or bottom Back binding is missing"
  OpenGroup b: Check Forms!frmUXComparison!uxGroupContext = b And Forms!frmUXComparison!uxTraitGrid.Form!ReportID = other, "Second open retained first group"
  Check UXBackToGroups(), "Back failed"
  Check Not CurrentProject.AllForms("frmUXComparison").IsLoaded And Screen.ActiveForm.Name = "frmUXGroups", "Back left group tab open"

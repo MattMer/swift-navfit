@@ -2019,27 +2019,6 @@
       "after": 1755
     },
     {
-      "form": "frmUXImportChoose",
-      "control": "cmdNAVFITExchange",
-      "property": "Left",
-      "before": 400,
-      "after": 2880
-    },
-    {
-      "form": "frmUXImportChoose",
-      "control": "cmdNAVFITExchange",
-      "property": "Top",
-      "before": 4200,
-      "after": 4560
-    },
-    {
-      "form": "frmUXImportChoose",
-      "control": "cmdNAVFITExchange",
-      "property": "Width",
-      "before": 12600,
-      "after": 10560
-    },
-    {
       "form": "frmUXMemberHistory",
       "control": "lblMember",
       "property": "FontBold",

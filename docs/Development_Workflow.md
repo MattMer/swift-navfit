@@ -228,6 +228,19 @@ contributor/superseded cancellation and close/reopen without automatic Apply.
 All three cancel adapters must return explicit failure guidance and preserve choices
 when a live token is stale, rather than exposing an unhandled event-expression error.
 
+Use the existing wizard runner with `-ApplyFaultsOnly -PDFPath <synthetic-filled-eval.pdf>`
+for PDF/return application outcomes. It owns a separate disposable database for each
+case: native precommit rejection and retry, an explicitly instrumented postcommit
+fault, a display fault after successful service return, and a simulated uncertain
+outcome. Check saved rows/revisions/receipts, consumed versus retained descriptors,
+disabled Apply, honest recovery feedback and source hashes. This mode does not run
+or claim VBA reset/restart. `-InstallSource` is for early focused copies; omit it on
+the final fresh artifact. Fault injection remains local to disposable modules.
+`-SkipUnhandledFailure` omits only the intentional visible VBA-error dialog from
+the full wizard run while retaining real VBA reset, restart and migration checks.
+Use it when another attended Access session is open; its receipt explicitly records
+the skipped unhandled-error proof. The default still requires the supervised error.
+
 ### Batched read verification (M03)
 
 Use [test-batched-reads.ps1](../scripts/test-batched-reads.ps1) for native output,
@@ -308,6 +321,13 @@ that test orchestration was corrected without adding a production workaround.
 
 ### NAVFIT98A export (H02)
 
+The supported export screen is summary-group scoped: select a group from Summary
+groups or open its Members page, choose **Export group to NAVFIT98A**, and choose
+an output directory. The build embeds the tracked, hash-reviewed native blank;
+users do not supply a template or baseline. Readiness findings remain informative.
+Legacy returned-report services and provenance remain tested backend behavior,
+but their compatibility controls are hidden from this export screen.
+
 Run the existing native suites sequentially on disposable copies before the final
 integrated build, then repeat against the exact final blank:
 
@@ -319,7 +339,9 @@ powershell.exe -NoProfile -File scripts/test-navfit-adapter.ps1 -BuildPath "D:\p
 
 These runners default to installed application code. Use `-InstallSource` only for
 early focused changes on their disposable copies; that is not a fresh integrated
-build. They check source-build hashes and preserve primary errors during owned
+build. Source-only installers require compatible generated forms and resource
+modules; use a fresh candidate when those inputs changed. They check source-build
+hashes and preserve primary errors during owned
 session cleanup. The adapter suite retains mapped/native field and return/undo
 checks; group/UI suites cover incomplete/mixed/archived/approved exports, every
 selected member, informational findings, exact/unavailable PSG, pending buffers,
@@ -327,6 +349,13 @@ recovery, source/history preservation, stale previews and operational failures.
 These are Access/DAO format and workflow checks, not a new NAVFIT98A desktop
 acceptance or printed-fit claim. Actual serialization/capacity limits still fail
 without truncation/coercion; readiness findings do not require acknowledgement.
+
+For editor navigation/trait changes after a VBA reset, run the existing focused
+runner with `scripts/test-compat-pages.ps1 -BuildPath <blank> -EditorReset`.
+It resets the real VBA project between preparation and verification, then checks
+authored Chief comments, original revision guards, raw invalid-value recovery,
+and return to the same summary group. A successful recovery checkpoint permits
+navigation after a save failure; a failed checkpoint must retain the open buffer.
 
 The adapter guard suite also injects a missing template together with a rejected
 failure-journal write, and separately rejects completion-journal writes after files

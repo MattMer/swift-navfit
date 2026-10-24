@@ -50,6 +50,10 @@ values into tracked fixtures or alter user workspaces.
 **Correction implementation in development:** 0.36.0-dev/schema 33 adds the 21
 authored comment fields, complete persistence/native/structured-PDF mappings,
 legacy-provenance/baseline preservation and corrected grade/comment rendering.
+The 0.42 UI correction sizes each Chief authored comment like the printed
+comment box and places read-only selected-grade wording under its trait title.
+Summary-list actions open PDF preview/output for the selected group. These
+editing/navigation changes do not establish printed-fit acceptance.
 Font-aware measurement replaces the uniform Courier estimate. See
 [current implementation and verification](../PROJECT_STATE.md#h01-chief-comments-and-print-fidelity-corrections).
 H01 is **not fully accepted**: physical fit and an Acrobat-absent workstation remain
@@ -133,6 +137,11 @@ developer-only tools must not become undeclared end-user dependencies.
 Implemented in **0.34.0-dev/schema 31** development source. See
 [behavior and verification scope](../PROJECT_STATE.md#h02-nonblocking-navfit98a-export).
 No release or publication is included. H01's print-fidelity corrections remain open.
+
+The 0.42 user flow exports the selected entire summary group from its Members
+page or the summary list, with an internal verified native template and one
+export-directory choice. Returned-file/template/report selectors are not shown.
+Existing native provenance, baseline and reconciliation services remain retained.
 
 **23 October user decision:** allow NAVFIT98A export of reports and summary groups
 regardless of existing validation findings, missing/incomplete values, readiness
@@ -245,6 +254,14 @@ snapshots, source protection and wizard-control/binding corruption. No schema,
 report geometry, release, signing or accessibility acceptance change is included.
 
 ## Initial source checks and partial delivery
+
+**M04/M05 follow-ups, 0.41.0-dev/schema 33:** PDF import and NAVFIT return now
+preserve typed commit/rollback outcomes through UI finalization. Committed/uncertain
+states disable re-Apply with recovery guidance; confirmed rollback retains choices
+for deliberate retry. Existing runners test transaction and display faults plus a
+simulated uncertain outcome. Members/My Work contracts require critical controls
+and exact action bindings, with native missing-control/wrong-binding checks. Report
+geometry, schema and separate physical/security/accessibility acceptance remain unchanged.
 
 - `modCommandDirectory.DirectoryIdentityMatch` explicitly treats SSN as authoritative, then uses a unique normalized full-name fallback that excludes conflicting SSNs. C02 now adds deliberate surname candidates and reviewed merging; automatic name matching was not broadened.
 - C04 replaces the pre-2026 calendar cutoff and O5/O6 year branches with verified calendar versions; CMDCS cannot bypass coverage selection. Missing/unsupported general coverage now emits an explicit Needs review finding even on otherwise clean reports.

@@ -28,7 +28,7 @@ Failed:
 End Function
 Private Sub CheckWizardViewContracts()
     Dim item As Variant, view As String, c As Access.Control, original As String, binding As String
-    For Each item In Array(Array("frmUXWorkspaceImport", "txtProgress", "cmdApply"), Array("frmPDFImport", "uxState", "cmdImport"), Array("frmNAVFITExchange", "txtStatus", "cmdExportGroup"), Array("frmPDFOutput", "lblStatus", "cmdClose"))
+    For Each item In Array(Array("frmUXWorkspaceImport", "txtProgress", "cmdApply"), Array("frmPDFImport", "uxState", "cmdImport"), Array("frmNAVFITExchange", "txtStatus", "cmdExportGroup"), Array("frmPDFOutput", "lblStatus", "cmdClose"), Array("frmUXComparison", "lblStatus", "cmdDiscardCells"), Array("frmMyWork", "uxWorkStatus", "cmdOpenWork"))
         view = CStr(item(0)): DoCmd.OpenForm view, acDesign
         Check UXAssertView(view), "Generated wizard contract rejected: " & view
         Set c = Forms(view).Controls(CStr(item(1))): original = c.Name: c.Name = "SyntheticMissingStatus"

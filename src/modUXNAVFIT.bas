@@ -10,26 +10,69 @@ Private Type NativeImportPreviewContext
     OwnerProfileID As Long
 End Type
 Private nativePreview As NativeImportPreviewContext
-
-
-
-
-
+Private exportTemplate As String
 Private groupExportToken As String
+Private Function NativeExportTemplate() As String
+    Dim dom As Object, node As Object, stream As Object
+    On Error GoTo Failed
+    exportTemplate = Environ$("TEMP") & "\SwiftNAVFIT-template-" & NewIdentity() & ".accdb"
+    Set dom = CreateObject("MSXML2.DOMDocument.6.0"): Set node = dom.createElement("template")
+    node.DataType = "bin.base64": node.Text = NAVFITTemplateData()
+    Set stream = CreateObject("ADODB.Stream"): stream.Type = 1: stream.Open
+    stream.Write node.nodeTypedValue: stream.SaveToFile exportTemplate, 1: stream.Close
+    If SourceFileHash(exportTemplate) <> NAVFITTemplateHash() Then Err.Raise 5, "NativeExportTemplate", "The internal NAVFIT template could not be verified."
+    NativeExportTemplate = exportTemplate: Exit Function
+Failed:
+    Dim primary As Object
+    Set primary = SwiftFailure("modUXNAVFIT", "NativeExportTemplate", "Prepare internal template", Err.Number, Err.Description, Err.Source)
+    If Not stream Is Nothing Then SwiftClose stream, primary, "template stream"
+    On Error GoTo 0
+    SwiftRaise primary
+End Function
+Public Function UXCloseNAVFITExport() As Boolean
+    On Error GoTo Finished
+    groupExportToken = ""
+    NAVFITClearReturned False
+    If Len(exportTemplate) > 0 Then If Len(Dir$(exportTemplate)) > 0 Then Kill exportTemplate
+Finished:
+    exportTemplate = "": UXCloseNAVFITExport = True
+End Function
+Public Function UXChooseNAVFITGroupFolder() As Boolean
+    With Application.FileDialog(4)
+        .Title = "Choose the NAVFIT98A export directory"
+        If .Show <> -1 Then Exit Function
+        Forms!frmNAVFITExchange!txtExportPath = .SelectedItems(1)
+    End With
+    UXChooseNAVFITGroupFolder = UXPreviewNAVFITGroup()
+End Function
+Public Function UXExportSelectedGroup() As Boolean
+    Dim id As Long
+    id = Nz(Forms!frmUXGroups!lstGroups, 0)
+    If id = 0 Then Forms!frmUXGroups!lblInfo.Caption = "Select a summary group to export.": Exit Function
+    UXExportSelectedGroup = UXOpenNAVFITGroupExport(id)
+End Function
+
+
+
+
+
 Public Function UXOpenNAVFITGroupExport(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
     id = groupID: If id = 0 Then id = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
     If id = 0 Then Exit Function
     Call UXOpenNAVFITExchange
     Forms!frmNAVFITExchange!cboGroup = id
-    UXOpenNAVFITGroupExport = True
+    Forms!frmNAVFITExchange!lblGroup.Caption = "Summary group: " & Nz(DLookup("Title", "SummaryGroup", "GroupID=" & id), "")
+    Forms!frmNAVFITExchange!chkPSG = True
+    UXOpenNAVFITGroupExport = UXPreviewNAVFITGroup()
 End Function
 Public Function UXPreviewNAVFITGroup() As Boolean
     Dim preview As Object
     On Error GoTo Failed
     groupExportToken = "": Forms!frmNAVFITExchange!cmdExportGroup.Enabled = False
     Set preview = NAVFITGroupPreview(Nz(Forms!frmNAVFITExchange!cboGroup, 0), Nz(Forms!frmNAVFITExchange!chkPSG, False))
-    groupExportToken = preview("Token"): Forms!frmNAVFITExchange!txtStatus = preview("Text")
+    groupExportToken = preview("Token")
+    Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Findings do not block export. Choose the export directory, then Export."
     Forms!frmNAVFITExchange!cmdExportGroup.Enabled = True: UXPreviewNAVFITGroup = True: Exit Function
 Failed:
     Forms!frmNAVFITExchange!txtStatus = "Group preview failed: " & Err.Description
@@ -37,11 +80,12 @@ End Function
 Public Function UXExportNAVFITGroup() As Boolean
     Dim findings As Collection
     On Error GoTo Failed
+    If Not UXPreviewNAVFITGroup() Then Exit Function
     With Forms!frmNAVFITExchange
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), Nz(!cboGroup, 0), 0)
         Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False))
         Set findings = NAVFITLastGroupReadiness()
-        !txtStatus = "Group export complete: " & !txtExportPath & vbCrLf & "Open this file in NAVFIT98A, select the group folder, validate its reports and use NAVFIT's Print Folder/Print Summary actions. Keep the group baseline locally. Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Open All summary-group validation issues to inspect findings. If exact PSG RSCA was unavailable, native RSCA values were preserved as shown in the preview. Group-return reconciliation is pending."
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Open the .accdb file in NAVFIT98A. All saved group members are included. Pending edits remain in Swift."
         !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
         !cmdExportGroup.Enabled = False
     End With
@@ -96,7 +140,9 @@ Public Function UXOpenFullNAVFITResult() As Boolean
 End Function
 Public Function UXOpenNAVFITExchange() As Boolean
     'The exchange dialog exports saved values and must not save/discard an editor.
+    If CurrentProject.AllForms("frmNAVFITExchange").IsLoaded Then DoCmd.Close acForm, "frmNAVFITExchange", acSaveNo
     DoCmd.OpenForm "frmNAVFITExchange"
+    Forms!frmNAVFITExchange!txtTemplate = NativeExportTemplate()
     Forms!frmNAVFITExchange!cboReport.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') & IIf(IsArchived,' | Archived','') FROM Report ORDER BY MemberName"
     Forms!frmNAVFITExchange!cboGroup.RowSource = "SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade & IIf(IsArchived,' | Archived','') FROM SummaryGroup ORDER BY Title"
     UXOpenNAVFITExchange = True
@@ -169,14 +215,28 @@ Failed:
     Forms!frmNAVFITExchange!txtStatus = Err.Description
 End Function
 Public Function UXApplyNAVFITReturn() As Boolean
-    Dim id As Long
+    Dim id As Long, outcome As String, message As String
+    outcome = "Not started"
     On Error GoTo Failed
-    id = NAVFITApplyReturned()
+    id = NAVFITApplyReturned(outcome)
     Forms!frmNAVFITExchange!cmdApply.Enabled = False
     Forms!frmNAVFITExchange!txtStatus = "Return applied to " & UXMemberLabel(id) & ". Provenance and normal revision history retained."
     UXApplyNAVFITReturn = True: Exit Function
 Failed:
-    Forms!frmNAVFITExchange!txtStatus = "Nothing applied: " & Err.Description
+    message = Err.Description
+    Select Case outcome
+    Case "Committed"
+        Forms!frmNAVFITExchange!cmdApply.Enabled = False
+        NAVFITClearReturned False
+        Forms!frmNAVFITExchange!txtStatus = "Return data was committed; finalization failed. Do not re-apply. Close and reopen this workspace. " & message
+    Case "Not started", "Rolled back"
+        If outcome = "Rolled back" Then Forms!frmNAVFITExchange!cmdApply.Enabled = False
+        Forms!frmNAVFITExchange!txtStatus = "Return " & LCase$(outcome) & ": " & message & " Preview again before retrying."
+    Case Else
+        Forms!frmNAVFITExchange!cmdApply.Enabled = False
+        NAVFITClearReturned False
+        Forms!frmNAVFITExchange!txtStatus = "Return outcome could not be confirmed. Close and reopen; inspect saved data before retrying. " & message
+    End Select
 End Function
 
 

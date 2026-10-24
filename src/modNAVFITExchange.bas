@@ -455,8 +455,9 @@ Public Function NAVFITReturnedDecision(ByVal key As String) As String
         NAVFITReturnedDecision = returnContext.Decisions(key)
     End If
 End Function
-Public Function NAVFITApplyReturned() As Long
+Public Function NAVFITApplyReturned(Optional ByRef outcome As String = "") As Long
     Dim changes As Object, key As Variant, id As Long, w As DAO.Workspace, trans As Boolean, failure As Long, message As String
+    outcome = "Not started"
     RequireReturnedContext
     If returnContext.Decisions Is Nothing Then Err.Raise vbObjectError + 5315, "modNAVFITExchange.NAVFITApplyReturned", "Preview a returned report first."
     NAVFITCheckTarget returnContext.Report
@@ -468,20 +469,21 @@ Public Function NAVFITApplyReturned() As Long
         If returnContext.Decisions(key) = "Accept returned" Then changes.Add key, returnContext.Values(key)
     Next
     On Error GoTo Failed
-    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True: outcome = "Active"
     Call OpenReviewFile(returnContext.Path, False)
     id = ImportReviewedNarrative(returnContext.External, "", returnContext.Report, returnContext.Revision, returnContext.Hash, True, returnContext.Century, changes)
     Call CloseReviewFile
     Call WizardPreviewCancel("NAVFITReturn", returnContext.StageGuid)
-    w.CommitTrans: trans = False
+    w.CommitTrans: trans = False: outcome = "Committed"
     NAVFITClearReturned False: NAVFITApplyReturned = id: Exit Function
 Failed:
     Dim swiftPrimary As Object
-    Set swiftPrimary = SwiftFailure("modNAVFITExchange", "NAVFITApplyReturned", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    Set swiftPrimary = SwiftFailure("modNAVFITExchange", "NAVFITApplyReturned", "Execute", Err.Number, Err.Description, Err.Source, outcome)
     failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
     On Error Resume Next
     Call CloseReviewFile
     If trans Then SwiftRollback w, swiftPrimary
+    outcome = CStr(swiftPrimary("Transaction"))
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function

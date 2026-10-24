@@ -1,8 +1,10 @@
 # Swift NAVFIT User Guide
 
-Version 1.1 | 20 October 2026
+Version 1.2 | 24 October 2026
 
-For Swift NAVFIT r126 | 0.26.1-dev | schema 26
+For Swift NAVFIT development source | 0.42.0-dev | schema 33
+
+The accompanying previously published PDF guide predates these development updates.
 
 ## Draft. Coordinate. Review. Preserve.
 
@@ -48,7 +50,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 1. Open a **copy of the Demo** for practice, or a **Blank** for a new operational workspace.
 2. Complete setup and confirm the active contributor's name.
 3. Open **Reports** and create or open a report. Work through **Front Page** and **Back Page**, then **Save draft**.
-4. Use **Notes** for communication and **Report tools** for review steps, validation checks, and trait calculations.
+4. Use **Report tools > Notes and replies** for communication; its other views provide review steps, validation checks, and trait calculations.
 5. Put the report in the correct summary group. Check its saved traits, reporting senior, and group findings.
 6. Run the command's local review process. Export for the separately authorized final validation, printing, signatures, and submission process.
 
@@ -144,11 +146,11 @@ The top-right **?** opens help for the current window. Use the application's nav
 | Layer | Controls and purpose |
 | --- | --- |
 | Report header | Member, report type, period, ITA, saved group average, and local review context. |
-| Report pages | Front Page, Back Page, Notes, Report tools, History. |
+| Report pages | Front Page, Back Page, Report tools, History. |
 | Report tools views | Notes and replies, Review steps, Validation checks, Trait calculations. |
 | Action area | Back to reports, Undo pending changes, Validation issues, Save draft, and save/issue status. |
 
-Notes opens the same shared communication system as **Report tools > Notes and replies**. The four Report tools buttons switch content inside the editor. Validation can also open in a separate popout.
+The four Report tools buttons switch content inside the editor. **Notes and replies** contains report conversations. Validation can also open in a separate popout.
 
 ## 3.3 Color and availability cues
 
@@ -182,6 +184,12 @@ All seven performance traits are grouped on Front Page for editing. This does no
 
 Incomplete drafts can be saved when their entered values meet storage requirements. A saved draft is not a certification that every policy check is satisfied.
 
+Leaving the editor attempts a save. If raw entries cannot be saved, Swift keeps
+them in a recovery checkpoint and allows navigation once that checkpoint succeeds.
+Use **Settings & Help > Recover pending edits** to resume them. If the saved
+report changed meanwhile, recover as a new draft. A failed checkpoint keeps the
+editor open so pending work is not lost.
+
 ## 4.3 Move between pages or leave
 
 Page changes preserve pending report values without creating revisions. Leaving a changed report normally saves through the application workflow. If a save fails, correct the values or deliberately undo pending changes; do not assume the failed save committed. Use **Undo pending changes** only when you intend to abandon those unsaved report edits.
@@ -205,7 +213,7 @@ Report notes are shared communication among people working in the same authorita
 
 ## 5.2 Post a new note
 
-1. Open the saved report and choose **Notes**, or **Report tools > Notes and replies**.
+1. Open the saved report and choose **Report tools > Notes and replies**.
 2. Read existing conversations to avoid duplicating the discussion.
 3. Choose **Write a new note** and enter your message.
 4. Check the active contributor name, then choose **Post note / reply**.
@@ -530,25 +538,19 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 
 Imported native provenance is retained. Unsupported or unknown encodings still need review. The supported mapping does not make every possible native database or policy case equivalent to a fully verified report.
 
-## 15.2 Export a saved report or group
+## 15.2 Export a summary group
 
-1. Save pending report edits and resolve relevant readiness findings.
-2. Choose the report export action, or the group's **Export group to NAVFIT98A** action.
-3. Review the selected report or roster, promotion totals, readiness, and output choices.
-4. Export and retain the accompanying Swift baseline locally with the native output.
+1. Select the summary group in **Summary groups**, or open its Members page.
+2. Choose **Export selected group to NAVFIT98A** or **Export group to NAVFIT98A**.
+3. Confirm the displayed group and choose an export directory. Swift supplies its internal native template automatically.
+4. Choose **Export summary group to NAVFIT98A**. All saved group members are included. Validation findings, incomplete content and report status do not prevent export. Pending edits remain separate; save them first if they belong in the export.
 5. Open the native output in NAVFIT98A, validate it, and use its appropriate report/folder/summary printing actions.
 
-Imported native-only values are retained. For new reports, writing exact PSG RSCA requires the explicit export option, complete traits, and an exact historical sum. A rounded-average estimate is not an exact historical basis.
+Imported native-only values are retained. Exact PSG RSCA is written when complete traits and an exact historical sum support it; otherwise existing native values are preserved. A rounded-average estimate is not an exact historical basis. Export does not approve, sign or submit reports. Keep accompanying Swift baseline/provenance files locally; send the native report database.
 
-## 15.3 Bring back a changed single report
+## 15.3 Retained exchange history
 
-1. Keep the original export baseline; it identifies what was sent out.
-2. Select that baseline and the returned NAVFIT file in the report-return reconciliation workflow.
-3. Compare exported baseline, current Swift values, and returned values.
-4. Resolve every editable-field conflict deliberately and review retained native-only changes before applying.
-5. Inspect the saved report and its history afterward.
-
-Changed sources, later revisions, pending recovery, archive, or approval locks can require a fresh preview or prevent Apply. Returned-group reconciliation and arbitrary-source matching are outside the supported workflow. Do not substitute a different group's baseline to bypass these checks.
+The export screen is dedicated to creating a summary-group NAVFIT database. It does not present returned-file reconciliation or saved-return actions. Existing provenance, baselines, saved previews and historical records are preserved. Returned-group reconciliation and arbitrary-source matching remain unsupported.
 
 ---
 

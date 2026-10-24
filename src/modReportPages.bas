@@ -49,8 +49,8 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  Place f, "uxGroup", 9200, 1750, 2800, 400
  names = Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2350, 2850, 400: Next
- names = Array("uxFrontPage", "uxBackPage", "uxPageNotes", "uxPageReview", "uxPageHistory")
- For i = 0 To 4: Place f, CStr(names(i)), 250 + i * 2400, 2850, 2250, 400: Next
+ names = Array("uxFrontPage", "uxBackPage", "uxPageReview", "uxPageHistory")
+ For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2850, 2850, 400: Next
  Place f, "uxSection", 250, 3320, 11800, 350
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
@@ -190,11 +190,21 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    If trait Then
     f.Controls("label" & key).Width = 4000
     c.Left = 4400: c.Top = y: c.Width = 1000
+    If kind = "CHIEFEVAL" Then
+     f.Controls("label" & key).Width = 3300
+     c.Left = 3600
+     Place f, "uxChiefGuidance" & Mid$(key, 6), 180, y + 430, 4400, 1900
+     f.Controls("uxChiefGuidance" & Mid$(key, 6)).Caption = CatalogueTraitDescription(kind, CLng(Mid$(key, 6)), Nz(Forms!frmEditor.Controls("cbo" & key), ""))
+     f.Controls("uxChiefGuidance" & Mid$(key, 6)).FontName = "Times New Roman"
+     f.Controls("uxChiefGuidance" & Mid$(key, 6)).FontSize = 8
+    End If
    End If
    If key Like "Trait##Comment#" Then
     f.Controls("label" & key).Caption = "Comment " & Right$(key, 1)
     f.Controls("label" & key).Height = 190
-    c.Top = y + 200: c.FontSize = 9
+    c.Top = y + 200: c.FontName = "Times New Roman": c.FontSize = 12
+    c.LeftMargin = 0: c.RightMargin = 0: c.TopMargin = 0: c.BottomMargin = 0
+    c.EnterKeyBehavior = True: c.ScrollBars = 2
     c.ControlTipText = UXFieldCaption("Trait" & Mid$(key, 6, 2), kind) & " / authored performance comment " & Right$(key, 1)
    End If
    If key = "OfficialComments" Then

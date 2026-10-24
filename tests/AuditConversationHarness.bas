@@ -146,8 +146,10 @@ Public Function TestNavigation() As String
  Check Forms!frmEditor!txtTitle = "Pending alias value", "Help changed report buffer"
  DoCmd.Close acForm, "frmUXHelp", acSaveNo
  Forms!frmEditor!txtStart = "Invalid pending date"
- Check Not UXNavigate("frmLibrary"), "Navigation accepted an invalid save"
- Check Forms!frmEditor!txtStart = "Invalid pending date" And CurrentRevision(report) = rev, "Rejected navigation lost pending edits"
+ Check UXNavigate("frmLibrary"), "Checkpointed invalid draft could not navigate"
+ Check Not CurrentProject.AllForms("frmEditor").IsLoaded And CurrentRevision(report) = rev, "Invalid navigation committed a revision or kept editor open"
+ Check DLookup("StartEntry", "RecoveryDraft", "ReportID=" & report) = "Invalid pending date", "Navigation lost invalid raw date"
+ Check RestoreRecoveryDraft(DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & report)), "Navigation checkpoint could not recover"
  Forms!frmEditor!txtStart = Null
  Check UXNavigate("frmLibrary"), "Valid navigation failed"
  Check DLookup("Title", "Report", "ReportID=" & report) = "Pending alias value", "Navigation omitted valid save"

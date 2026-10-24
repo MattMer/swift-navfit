@@ -30,11 +30,12 @@ Public Const UX_MEMBERS_VIEW As String = "frmUXComparison"
 Public Const UX_TRAIT_ROWS_VIEW As String = "frmUXTraitRows"
 Public Function UXViewContracts(ByVal view As String) As Variant
     Select Case view
-        Case UX_EDITOR_VIEW: UXViewContracts = Array("cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface")
-        Case UX_MEMBERS_VIEW: UXViewContracts = Array("uxTraitGrid|SourceObject|Form.frmUXTraitRows", "uxGroupContext", "txtMeeting", "lblStatus", "cmdRetryCells", "cmdDiscardCells", "uxCurrentExport", "uxCurrentPDF")
+        Case UX_EDITOR_VIEW: UXViewContracts = Array("cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface", "uxRecoverySession", "uxRecoveryRevision", "uxReturnGroup")
+        Case UX_MEMBERS_VIEW: UXViewContracts = Array("uxTraitGrid|SourceObject|Form.frmUXTraitRows", "uxGroupContext", "txtMeeting", "lblStatus", "cmdRetryCells|OnClick|=UXGridDrain()", "cmdDiscardCells|OnClick|=UXGridDiscardPending()", "uxCurrentExport|OnClick|=UXCurrentGroupTool(""frmUXComparison"",""Export"")", "uxCurrentPDF|OnClick|=PDFOutputOpenGroup(""frmUXComparison"")")
+        Case "frmMyWork": UXViewContracts = Array("lstWork|AfterUpdate|=UXWorkSelection()", "lstWork|OnDblClick|=UXWorkOpen()", "cmdOpenWork|OnClick|=UXWorkOpen()", "cmdDraft|OnClick|=UXWorkOpen(True)", "cmdRefresh|OnClick|=LoadMyWork()", "uxContributor", "chkAll", "txtHistory", "txtNotes", "uxWorkStatus", "cmdAccept|OnClick|=FinishReviewUI(""Accepted"")", "cmdReturn|OnClick|=FinishReviewUI(""Returned"")", "cmdCancel|OnClick|=FinishReviewUI(""Cancelled"")")
         Case UX_TRAIT_ROWS_VIEW: UXViewContracts = Array("ReportID", "RevisionID", "Member", "RowStatus", "PromotionRecommendation", "AssignmentRecommendationA", "AssignmentRecommendationB")
         Case "frmPDFImport": UXViewContracts = Array("cmdResume|OnClick|=UXResumePDFImport()", "cmdCancelPreview|OnClick|=UXCancelPDFImport()", "cmdImport|OnClick|=ImportPDFUI()", "cmdPreview|OnClick|=UXPreviewPDFImport()", "txtPreview", "cboIdentifier", "cboTarget", "cboMergeMode", "chkLegacy", "cmdOpenResult", "uxState", "lblStatus")
-        Case "frmNAVFITExchange": UXViewContracts = Array("cmdResumeReturn|OnClick|=UXResumeNAVFITReturn()", "cmdCancelReturn|OnClick|=UXCancelNAVFITReturn()", "cmdApply|OnClick|=UXApplyNAVFITReturn()", "cmdExportGroup|OnClick|=UXExportNAVFITGroup()", "cmdPreviewGroup|OnClick|=UXPreviewNAVFITGroup()", "cmdPreview|OnClick|=UXPreviewNAVFITReturn()", "cmdExport|OnClick|=UXExportNAVFIT()", "cboGroup", "lstChoices", "txtDetail", "txtStatus")
+        Case "frmNAVFITExchange": UXViewContracts = Array("cmdExportGroup|OnClick|=UXExportNAVFITGroup()", "cmdtxtExportPath|OnClick|=UXChooseNAVFITGroupFolder()", "cmdBack|OnClick|=UXCloseScreen(""frmNAVFITExchange"")", "cboGroup", "lblGroup", "txtExportPath", "txtStatus", "txtTemplate")
         Case "frmUXWorkspaceImport": UXViewContracts = Array("cmdResume|OnClick|=UXResumeSwiftWorkspace()", "cmdCancelPreview|OnClick|=UXCancelSwiftWorkspacePreview()", "cmdApply|OnClick|=UXApplySwiftWorkspace()", "cmdClose|OnClick|=UXCloseScreen(""frmUXWorkspaceImport"")", "txtPreview", "txtProgress", "lblStatus")
         Case "frmPDFOutput": UXViewContracts = Array("cmdGenerate|OnClick|=PDFOutputCreate()", "cmdPagePreview|OnClick|=PDFOutputPagePreview()", "cmdBrowse|OnClick|=PDFOutputBrowseFolder()", "cmdRefresh|OnClick|=PDFOutputRefreshPreview()", "cmdClose|OnClick|=PDFOutputClose()", "cmdOpenPDF|OnClick|=PDFOutputOpenResult(False)", "cmdOpenFolder|OnClick|=PDFOutputOpenResult(True)", "lstReports|AfterUpdate|=PDFOutputSelectRow()", "txtFolder", "txtFindings", "cboSource", "cboFormat", "lblStatus")
         Case Else: UXViewContracts = Array()
@@ -190,7 +191,13 @@ Public Function UXPrepareEditorClose(Optional ByVal decision As String = "") As 
     If EditorHasPending() Then
         If Len(decision) = 0 Then decision = "Save"
         Select Case decision
-            Case "Save": If Not UXSaveEditor() Then GoTo Finished
+            Case "Save"
+                If Not UXSaveEditor() Then
+                    'Invalid raw values cannot enter typed saved fields, but must not
+                    'trap navigation. Retain them in contributor-owned recovery.
+                    If Not CheckpointEditor() Then GoTo Finished
+                    UXPrepareEditorClose = True: GoTo Finished
+                End If
             Case "Discard"
             Case Else: GoTo Finished
         End Select
@@ -241,6 +248,7 @@ End Function
 ' Leave contributor/report editors safely before opening the requested workspace.
 Public Function UXNavigate(ByVal target As String) As Boolean
     On Error GoTo Failed
+    If target = "frmBulkFolders" Then target = "frmLibrary"
     If Not HasActiveContributor() Then
         UXNavigate = ShowContributorStartup(): Exit Function
     End If

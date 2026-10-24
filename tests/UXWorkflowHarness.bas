@@ -22,7 +22,7 @@ Private Sub NativeClose(ByVal decision As String)
 End Sub
 Public Function TestUXWorkflows() As String
     Dim id As Long, otherID As Long, thirdID As Long, groupID As Long, revision As Long, f As Access.Form, s As Access.Form
-    Dim beforePrompts As Long, stage As String, template As Long, route As Long, otherRoute As Long
+    Dim beforePrompts As Long, stage As String, template As Long, route As Long, otherRoute As Long, recovery As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC WORKFLOW TEST", "Workflow tester"
     ' Script only the dialog choice in this scratch fixture; exercise the real Unload event.
@@ -47,8 +47,17 @@ Public Function TestUXWorkflows() As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Set f = Forms!frmEditor
     f!cmdClose.SetFocus: f!txtMemberSSN = "123": UXSurfaceRefresh
     revision = CurrentRevision(id): NativeClose "Save"
-    Check CurrentProject.AllForms("frmEditor").IsLoaded, "Failed save closed report"
-    Check CurrentRevision(id) = revision And f!txtMemberSSN = "123", "Failed save lost value or changed revision"
+    Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Successful checkpoint trapped invalid draft on native close"
+    recovery = DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)
+    Check CurrentRevision(id) = revision And DLookup("MemberSSN", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "123", "Native close lost raw value or changed saved revision"
+    Check RestoreRecoveryDraft(recovery), "Checkpointed invalid draft could not recover"
+    Set f = Forms!frmEditor
+    f!txtTitle = "Rejected checkpoint": UXSurfaceRefresh
+    CurrentDb.TableDefs("RecoveryDraft").Fields("DraftTitle").ValidationRule = "<> 'Rejected checkpoint'"
+    NativeClose "Save"
+    Check CurrentProject.AllForms("frmEditor").IsLoaded And f!txtTitle = "Rejected checkpoint", "Failed checkpoint closed or lost the pending buffer"
+    CurrentDb.TableDefs("RecoveryDraft").Fields("DraftTitle").ValidationRule = ""
+    f!txtTitle = "Close test": UXSurfaceRefresh
     Check EditorHasPending(), "Failed save cleared dirty state"
     Check Not UXLeaveEditor("Cancel") And CurrentProject.AllForms("frmEditor").IsLoaded, "Explicit keep editing did not cancel"
     stage = "save and close"

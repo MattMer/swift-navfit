@@ -235,6 +235,7 @@ Public Function UXGroupReportCreate() As Boolean
     createdReport = id: createdReportGroup = createGroup
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!cmdClose.Caption = "Back to group members"
+    Forms!frmEditor!uxReturnGroup = createGroup
     Forms!frmEditor!cmdClose.OnClick = "=UXGroupCreatedReportClose()"
     UXGroupReportCreate = True: Exit Function
 Failed:
@@ -248,9 +249,9 @@ End Function
 Public Function UXGroupCreatedReportClose() As Boolean
     Dim id As Long, groupID As Long
     On Error GoTo Failed
-    id = Nz(Forms!frmEditor!txtReportID, 0): groupID = createdReportGroup
+    id = Nz(Forms!frmEditor!txtReportID, 0): groupID = Nz(Forms!frmEditor!uxReturnGroup, createdReportGroup)
     If Not UXLeaveEditor() Then Exit Function
-    If id = createdReport And groupID > 0 Then
+    If groupID > 0 Then
         UXShowGroupMembers groupID, True
     End If
     createdReport = 0: createdReportGroup = 0: UXGroupCreatedReportClose = True: Exit Function
@@ -263,6 +264,7 @@ End Function
 Public Function UXResolvedGroupContext(ByVal screen As String) As Long
     Dim f As Access.Form
     Set f = Forms(screen)
+    If screen = "frmUXGroups" Then UXResolvedGroupContext = Nz(f!lstGroups, 0)
     If UXHasControl(f, "uxGroupContext") Then UXResolvedGroupContext = Nz(f!uxGroupContext, 0)
     If UXResolvedGroupContext = 0 And screen = "frmMajorWorkbench" Then UXResolvedGroupContext = Nz(f!cboGroup, 0)
 End Function

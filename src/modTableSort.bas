@@ -8,6 +8,10 @@ Private Declare PtrSafe Function GetDpiForWindow Lib "user32" (ByVal hwnd As Lon
 Private Function SortForm(ByVal name As String) As Access.Form
  If name = "frmUXEditorFields" Then
   Set SortForm = Forms!frmEditor!uxFieldSurface.Form
+ ElseIf name = "frmReportTools" Then
+  Set SortForm = UXToolsForm()
+ ElseIf name = "frmReportReviewPanel" Then
+  Set SortForm = UXReviewForm()
  Else
   Set SortForm = Forms(name)
  End If

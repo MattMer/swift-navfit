@@ -37,7 +37,13 @@ foreach($kind in @('EVAL','CHIEFEVAL','FITREP')){
 $oldLayouts=Get-Content (Join-Path $root 'src/report-page-layout.json') -Raw|ConvertFrom-Json
 foreach($layout in $oldLayouts.PSObject.Properties){
     $actual=$catalogue.fixedLayout.($layout.Name)
-    Check (($actual|ConvertTo-Json -Depth 10 -Compress) -ceq ($layout.Value|ConvertTo-Json -Depth 10 -Compress)) ('Fixed geometry changed: '+$layout.Name)
+    if($layout.Name -eq 'CHIEFEVAL:0'){
+        foreach($row in $layout.Value.fields|Where-Object {$_.key -notmatch '^Trait3[3-9](Comment[123])?$' -and $_.key -ne '@guidance'}){
+            $current=@($actual.fields|Where-Object key -eq $row.key)
+            Check ($current.Count -eq 1 -and ($current[0]|ConvertTo-Json -Compress) -ceq ($row|ConvertTo-Json -Compress)) ('Unrelated Chief field moved: '+$row.key)
+        }
+        Check ($actual.height -eq 30500 -and @($actual.fields|Where-Object key -eq '@guidance').Count -eq 0) 'Chief trait groups require the fixed tall canvas and per-trait guidance'
+    }else{Check (($actual|ConvertTo-Json -Depth 10 -Compress) -ceq ($layout.Value|ConvertTo-Json -Depth 10 -Compress)) ('Fixed geometry changed: '+$layout.Name)}
 }
 $manifest=Get-Content (Join-Path $root 'scripts/build-manifest.json') -Raw|ConvertFrom-Json
 Check ($manifest.inputs -contains 'src/field-definitions.json') 'Canonical catalogue is not fingerprinted'
@@ -50,7 +56,7 @@ foreach($field in $chief){
     Check ($field.bindings.CHIEFEVAL.navfit[0].source -ceq ($prefixes[$block-33]+'DN'+$entry)) ('Chief native comment order differs: '+$field.key)
     Check ($field.bindings.EVAL.navfit.Count -eq 0 -and $field.bindings.FITREP.navfit.Count -eq 0) ('Chief comments leaked into another native kind: '+$field.key)
     $row=$catalogue.fixedLayout.'CHIEFEVAL:0'.fields|Where-Object key -eq $field.key
-    Check ($row.y -eq 10380+($block-33)*620 -and $row.x -eq 5550+($entry-1)*2070) ('Chief comment group moved: '+$field.key)
+    Check ($row.y -eq 10380+($block-33)*2800+250+($entry-1)*720 -and $row.x -eq 4932 -and $row.w -eq 6876 -and $row.h -eq 580) ('Chief comment must match the printed width/height in its trait group: '+$field.key)
 }
 Write-Output ('PASS: '+$checks+' canonical definitions, exact adapter bindings and fixed-geometry checks')
 if($BuildPath){

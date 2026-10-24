@@ -135,12 +135,10 @@ End Function
 Public Function UXLoadWorkQueue() As Boolean
     Dim f As Access.Form, selected As String, i As Long
     If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
+    Call UXAssertView("frmMyWork")
     Set f = Forms!frmMyWork
-    If Not UXHasControl(f, "lstWork") Then Exit Function
-    If UXHasControl(f, "uxContributor") Then
-        f!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
-        f!uxContributor = MajorAuthor()
-    End If
+    f!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+    f!uxContributor = MajorAuthor()
     selected = Nz(f!lstWork, "")
     Call UXPrepareWorkRows(MajorAuthor(), Nz(f!chkAll, False))
     f!lstWork.RowSource = UXWorkSQL(MajorAuthor(), Nz(f!chkAll, False), True)

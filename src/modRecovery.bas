@@ -5,6 +5,27 @@ Private sessionKey As String
 Private baseRevision As Long
 Private checkpointSignature As String
 Private baseline() As Variant
+Private baselineReady As Boolean
+'Unbound form state survives a VBA reset. Rebuild the comparison from the original
+'saved revision, never from current pending values or a newer saved head.
+Private Sub EnsureEditorSession()
+    Dim keys As Variant, names As Variant, saved As Object, i As Long, id As Long
+    If baselineReady And Len(sessionKey) > 0 And sessionKey = Nz(Forms!frmEditor!uxRecoverySession, "") Then Exit Sub
+    sessionKey = Nz(Forms!frmEditor!uxRecoverySession, "")
+    baseRevision = Nz(Forms!frmEditor!uxRecoveryRevision, 0)
+    If sessionKey = "" Then Err.Raise vbObjectError + 906, "modRecovery.EnsureEditorSession", "The editor recovery identity is missing. Keep this report open and restore a verified application copy."
+    id = Nz(Forms!frmEditor!txtReportID, 0)
+    If baseRevision > 0 Then
+        If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & baseRevision), 0) <> id Then Err.Raise vbObjectError + 906, "modRecovery.EnsureEditorSession", "The editor baseline belongs to another report. Pending values were retained."
+        Set saved = RevisionFields(baseRevision)
+    End If
+    names = ControlsList(): keys = DraftFieldKeys(): ReDim baseline(0 To UBound(names))
+    For i = 0 To UBound(names)
+        baseline(i) = Null
+        If Not saved Is Nothing Then baseline(i) = saved(CStr(keys(i)))
+    Next
+    baselineReady = True: checkpointSignature = ""
+End Sub
 ' Keep the editor control order aligned with DraftFieldKeys and recovery storage fields.
 Private Function ControlsList() As Variant
     ControlsList = CatalogueControls()
@@ -48,12 +69,16 @@ Public Function ResetEditorBaseline() As Boolean
     ReDim baseline(0 To UBound(names))
     For i = 0 To UBound(names): baseline(i) = PendingValue(Forms!frmEditor.Controls(names(i))): Next
     baseRevision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)), 0)
+    Forms!frmEditor!uxRecoverySession = sessionKey
+    Forms!frmEditor!uxRecoveryRevision = baseRevision
+    baselineReady = True
     ResetEditorBaseline = True
 End Function
 ' Reject a save against a newer revision. One user can still change a report through
 ' another form or import while this editor holds pending values.
 Public Function GuardEditorBaseline() As Boolean
     Dim id As Long
+    EnsureEditorSession
     id = Nz(Forms!frmEditor!txtReportID, 0)
     If id > 0 Then
         If Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> baseRevision Then Err.Raise vbObjectError + 900, "modRecovery.GuardEditorBaseline", "A newer revision exists. Checkpoint these edits, then recover them as a new draft to avoid overwriting it."
@@ -65,6 +90,7 @@ End Function
 Public Function EditorHasPending() As Boolean
     Dim names As Variant, i As Long, value As Variant
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
+    EnsureEditorSession
     names = ControlsList()
     For i = 0 To UBound(names)
         value = PendingValue(Forms!frmEditor.Controls(names(i)))
@@ -83,7 +109,8 @@ Public Function CheckpointEditor() As Boolean
     Dim names As Variant, fields As Variant, current() As Variant, i As Long, changed As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, trans As Boolean, signature As String
     On Error GoTo Failed
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Or Len(sessionKey) = 0 Then Exit Function
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
+    EnsureEditorSession
     names = ControlsList(): fields = CatalogueRecoveryKeys()
     ReDim current(0 To UBound(names))
     For i = 0 To UBound(names)
@@ -148,6 +175,7 @@ Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal as
     If asNewDraft Then id = 0
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     sessionKey = r!SessionGuid
+    Forms!frmEditor!uxRecoverySession = sessionKey
     names = ControlsList(): fields = CatalogueRecoveryKeys()
     For i = 0 To UBound(names): Forms!frmEditor.Controls(names(i)) = r.Fields(fields(i)).Value: Next
     Forms!frmEditor!lblSaved.Caption = "Recovered pending edits. Use Save draft to commit."

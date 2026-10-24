@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$PDFPath,[switch]$CrossWorkflowOnly)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$PDFPath,[switch]$CrossWorkflowOnly,[switch]$ApplyFaultsOnly,[switch]$SkipUnhandledFailure)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/wizard-state-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
@@ -26,7 +26,38 @@ try {
  $app.LoadFromText(5,'WizardStateHarness',(Join-Path $root 'tests/WizardStateHarness.bas'))
  Write-Output 'Compile wizard source'
  $app.DoCmd.RunCommand(126)
- if($CrossWorkflowOnly){
+ if($ApplyFaultsOnly){
+  if(-not $pdfInput -or $CrossWorkflowOnly){throw 'Apply fault mode requires a synthetic PDF and cannot be combined with cross-workflow mode'}
+  foreach($kind in @('PDFImport','NAVFITReturn')){foreach($fault in @('Rollback','Commit','Display','Uncertain')){
+   $app.CloseCurrentDatabase()
+   $caseFolder=Join-Path $folder ($kind+'-'+$fault);[void](New-Item -ItemType Directory -Path $caseFolder)
+   $caseDatabase=Join-Path $caseFolder 'fixture.accdb';Copy-Item -LiteralPath $BuildPath -Destination $caseDatabase
+   $app.OpenCurrentDatabase($caseDatabase,$true)
+   Write-Output ('Controller: wizard apply-outcome runner; database: '+$caseDatabase)
+   if($InstallSource){foreach($module in @('modPDFImport','modNAVFITExchange','modUXImportFlow','modUXNAVFIT')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}}
+   if($fault -ne 'Rollback'){
+    $module=if($kind -eq 'PDFImport'){'modPDFImport'}else{'modNAVFITExchange'}
+    if($fault -in @('Display','Uncertain')){$module=if($kind -eq 'PDFImport'){'modUXImportFlow'}else{'modUXNAVFIT'}}
+    $code=[IO.File]::ReadAllText((Join-Path $root ('src/'+$module+'.bas')))
+    $anchor='w.CommitTrans: trans = False: outcome = "Committed"'
+    if($fault -in @('Display','Uncertain')){$anchor=if($kind -eq 'PDFImport'){[regex]::Match($code,'(?m)^    pdfCreated = ImportPDFPreview[^\r\n]+').Value}else{'    id = NAVFITApplyReturned(outcome)'}}
+    if(-not $anchor -or ([regex]::Matches($code,[regex]::Escape($anchor))).Count -ne 1){throw 'Expected apply fault boundary was not found exactly once'}
+    $injection='    Err.Raise vbObjectError + 9602, "Synthetic apply fault", "SYNTHETIC apply finalization failed"'
+    if($fault -eq 'Uncertain'){$code=$code.Replace($anchor,'    outcome = "Rollback could not be confirmed"'+"`r`n"+$injection)}else{$code=$code.Replace($anchor,$anchor+"`r`n"+$injection)}
+    $instrumented=Join-Path $caseFolder ($module+'.bas');[IO.File]::WriteAllText($instrumented,$code)
+    $app.LoadFromText(5,$module,$instrumented)
+   }
+   $app.LoadFromText(5,'WizardStateHarness',(Join-Path $root 'tests/WizardStateHarness.bas'));$app.DoCmd.RunCommand(126)
+   $result=$app.Eval('TestApplyOutcomeFault("'+$caseFolder+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'","'+$pdfInput+'","'+$kind+'","'+$fault+'")')
+   Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal+=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)
+   $app.CloseCurrentDatabase();$app.OpenCurrentDatabase($caseDatabase,$true)
+   $expectedReports=if($kind -eq 'PDFImport' -and $fault -ne 'Uncertain'){2}else{1}
+   $expectedRevisions=if($fault -eq 'Uncertain'){1}elseif($kind -eq 'PDFImport'){3}else{2}
+   $expectedReceipts=if($fault -eq 'Uncertain'){0}else{1}
+   if($app.Eval('DCount("*","Report")') -ne $expectedReports -or $app.Eval('DCount("*","ReportRevision")') -ne $expectedRevisions -or $app.Eval('DCount("*","ImportReceipt")') -ne $expectedReceipts){throw 'Apply outcome data did not persist exactly across reopen'}
+   $assertionTotal+=3;$phases.Add('PASS: '+$kind+' '+$fault+' report/revision/receipt counts persisted across reopen')
+  }}
+ }elseif($CrossWorkflowOnly){
   if(-not $pdfInput){throw '-CrossWorkflowOnly requires a synthetic -PDFPath'}
   $result=$app.Eval('TestWizardTaskOrders("'+$folder+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'","'+$pdfInput+'","'+$workspaceSource+'")')
   Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)
@@ -36,6 +67,7 @@ try {
  $app.OpenCurrentDatabase($scratch,$true)
  $result=$app.Eval('PrepareWizardState("'+$folder+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'","'+$pdfInput+'")')
  Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal+=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)
+ if(-not $SkipUnhandledFailure){
  $app.Visible=$true
  $accessHandle=[int64]$app.hWndAccessApp()
  $ownedProcess=@(Get-Process MSACCESS|Where-Object {$_.MainWindowHandle.ToInt64() -eq $accessHandle})
@@ -67,6 +99,7 @@ try {
  try{[void]$app.Eval('WizardUnhandledFailure()')}catch{$failureObserved=$true;Write-Output ('Expected unhandled VBA failure: '+$_.Exception.Message)}
  $supervision=Receive-Job -Job $supervisor -Wait -AutoRemoveJob -ErrorAction Stop
  if(-not $failureObserved -or $supervision -ne 'Ended verified synthetic VBA failure'){throw 'Unhandled failure fixture was not verified'}
+ }
  # A real VBA project reset, not a helper clearing selected module variables.
  $reset=@($app.VBE.CommandBars.Item('Run').Controls|Where-Object {$_.Caption.Replace('&','') -eq 'Reset'})
  if($reset.Count -ne 1){throw 'Native VBA Reset command is not available; reset coverage cannot be claimed'}
@@ -113,5 +146,5 @@ if($cleanupFailure){throw ('Owned test cleanup failed: '+$cleanupFailure)}
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash){throw 'Wizard tests changed their supplied artifact'}
 if((Get-FileHash -LiteralPath $workspaceSource).Hash -ne $hash){throw 'Workspace preview changed its read-only source'}
 if($PDFPath -and (Get-FileHash -LiteralPath $PDFPath).Hash -ne $pdfOriginalHash){throw 'Wizard tests changed supplied PDF bytes'}
-[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=(-not $CrossWorkflowOnly);UnhandledFailure=$failureObserved;NewAccessSessionRestart=(-not $CrossWorkflowOnly);CrossWorkflowOnly=[bool]$CrossWorkflowOnly;Schema29Import=([bool]$LegacyPath -and -not $CrossWorkflowOnly);PDFResumeUIAndApply=([bool]$PDFPath -and -not $CrossWorkflowOnly);SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof on the supplied artifact; selected native reset/restart or deterministic cross-workflow cases are recorded explicitly; no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
+[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);UnhandledFailure=$failureObserved;UnhandledFailureSkipped=[bool]$SkipUnhandledFailure;NewAccessSessionRestart=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);CrossWorkflowOnly=[bool]$CrossWorkflowOnly;ApplyFaultsOnly=[bool]$ApplyFaultsOnly;Schema29Import=([bool]$LegacyPath -and -not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);PDFResumeUIAndApply=([bool]$PDFPath -and -not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof on the supplied artifact; selected native reset/restart or deterministic cross-workflow cases are recorded explicitly; no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
 Write-Output ('PASS: selected wizard phases and source isolation; evidence: '+$folder)

@@ -28,7 +28,10 @@ Public Function TestUXFeedback() As String
     Check CurrentRevision(id) = rev, "Snippet navigation saved a revision"
     f!cmdClose.SetFocus: f!txtMemberSSN = "123": UXSurfaceRefresh
     Check Not UXSaveEditor(), "Invalid SSN saved"
-    Check Not UXLeaveEditor(), "Invalid report bypassed leave guard"
+    Check UXLeaveEditor(), "Checkpointed invalid report could not leave"
+    Check Not CurrentProject.AllForms("frmEditor").IsLoaded And CurrentRevision(id) = rev, "Invalid navigation saved or retained the editor"
+    Check DLookup("MemberSSN", "RecoveryDraft", "ReportID=" & id) = "123", "Invalid navigation lost raw SSN"
+    Check RestoreRecoveryDraft(DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)), "Navigation checkpoint could not recover"
     Check UXUndoPending(), "Undo failed to escape failed-save state"
     Check CurrentRevision(id) = rev, "Undo changed committed revision"
     Check Forms!frmEditor!txtOfficialComments = "Saved narrative", "Undo did not restore saved narrative"

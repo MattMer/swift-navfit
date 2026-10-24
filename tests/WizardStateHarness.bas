@@ -234,6 +234,62 @@ Public Function TestPDFWizardApply(ByVal path As String) As String
 Failed:
  TestPDFWizardApply = "FAIL: " & Err.Number & ": " & Err.Description
 End Function
+Public Function TestApplyOutcomeFault(ByVal folder As String, ByVal template As String, ByVal pdfPath As String, ByVal kind As String, ByVal fault As String) As String
+ Dim result As String, reports As Long, revisions As Long, ok As Boolean, status As String, db As DAO.Database
+ On Error GoTo Failed
+ checks = 0
+ result = PrepareWizardState(folder, template, pdfPath): Check Left$(result, 5) = "PASS:", result
+ If kind = "PDFImport" Then
+  DoCmd.OpenForm "frmPDFImport": Check UXResumePDFImport(), "PDF UI resume failed"
+ Else
+  Check UXOpenNAVFITExchange() And UXResumeNAVFITReturn(), "Return UI resume failed"
+  NAVFITResolveReturned "OfficialComments", "Accept returned"
+ End If
+ reports = DCount("*", "Report"): revisions = DCount("*", "ReportRevision")
+ Set db = CurrentDb
+ If fault = "Rollback" Then db.TableDefs("ImportReceipt").Fields("AdapterVersion").ValidationRule = "='SYNTHETIC REJECT'"
+ If kind = "PDFImport" Then ok = UXApplyPDFImport() Else ok = UXApplyNAVFITReturn()
+ Check Not ok, "Fault was reported as success"
+ If kind = "PDFImport" Then
+  status = Forms!frmPDFImport!uxState.Caption
+  Check Not Forms!frmPDFImport!cmdImport.Enabled, "Failed PDF Apply remained enabled"
+ Else
+  status = Forms!frmNAVFITExchange!txtStatus
+  Check Not Forms!frmNAVFITExchange!cmdApply.Enabled, "Failed return Apply remained enabled"
+ End If
+ If fault = "Rollback" Then
+  db.TableDefs("ImportReceipt").Fields("AdapterVersion").ValidationRule = ""
+  Check InStr(status, "rolled back") > 0, "Confirmed rollback was not disclosed"
+  Check DCount("*", "Report") = reports And DCount("*", "ReportRevision") = revisions, "Rollback retained imported data"
+  Check DCount("*", "WizardPreview", "WizardKind='" & kind & "'") = 1, "Rollback lost reviewed choices"
+  If kind = "PDFImport" Then
+   Check UXResumePDFImport() And UXApplyPDFImport(), "PDF rollback retry failed"
+  Else
+   Check UXResumeNAVFITReturn(), "Return rollback resume failed"
+   NAVFITResolveReturned "OfficialComments", "Accept returned"
+   Check UXApplyNAVFITReturn(), "Return rollback retry failed"
+  End If
+ ElseIf fault = "Uncertain" Then
+  Check InStr(status, "could not be confirmed") > 0, "Uncertain outcome was reported as a confirmed rollback"
+  Check InStr(status, "Close and reopen") > 0, "Uncertain outcome omitted recovery guidance"
+  Check DCount("*", "Report") = reports And DCount("*", "ReportRevision") = revisions, "Simulated uncertain outcome wrote data"
+  Check DCount("*", "WizardPreview", "WizardKind='" & kind & "'") = 1, "Uncertain outcome deleted saved choices"
+  TestApplyOutcomeFault = "PASS: " & checks & " " & kind & " " & fault & " outcome/recovery assertions": Exit Function
+ Else
+  Check InStr(status, "data was committed") > 0, "Committed data was described as unapplied"
+  Check InStr(status, "rolled back") = 0 And InStr(status, "Nothing applied") = 0, "False rollback feedback after commit"
+  Check InStr(status, "Close and reopen") > 0, "Committed failure omitted recovery guidance"
+  Check DCount("*", "WizardPreview", "WizardKind='" & kind & "'") = 0, "Committed import left an applicable preview"
+  If kind = "PDFImport" Then ok = UXApplyPDFImport() Else ok = UXApplyNAVFITReturn()
+  Check Not ok, "Repeated Apply succeeded after committed failure"
+ End If
+ Check DCount("*", "ReportRevision") = revisions + IIf(kind = "PDFImport", 2, 1), "Apply/retry duplicated or lost its normal revision sequence"
+ Check DCount("*", "ImportReceipt") = 1, "Apply/retry did not retain exactly one import receipt"
+ Check DCount("*", "Report") = reports + IIf(kind = "PDFImport", 1, 0), "Apply/retry duplicated a report"
+ TestApplyOutcomeFault = "PASS: " & checks & " " & kind & " " & fault & " outcome/exactly-once assertions": Exit Function
+Failed:
+ TestApplyOutcomeFault = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Public Function WizardUnhandledFailure() As Boolean
  Err.Raise vbObjectError + 9251, "WizardUnhandledFailure", "SYNTHETIC unhandled wizard failure"
 End Function

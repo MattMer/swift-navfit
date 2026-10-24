@@ -13,6 +13,7 @@ Public Function TestCompatPages() As String
   id = CommitDraft(0, CStr(kind), "Synthetic fixed page", "SYNTHETIC, MEMBER", #1/1/2026#, #9/30/2026#, "", administration:=Array("SYNTHETIC, MEMBER", "", "", "", ""))
   DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
   Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
+  Check Not UXHasControl(f, "uxPageNotes") And f!uxPageReview.Caption = "Report tools", "Redundant Notes button remains or Report tools is missing"
   Check UXFixedEnabled(), "Fixed report pages unavailable"
   Check f!uxSection.Caption = "Front Page", "Front page failed: " & f!uxError.Caption
   For page = 0 To 1
@@ -34,11 +35,17 @@ Public Function TestCompatPages() As String
      Check s.Controls("txt" & key).TabIndex > previous, "Chief comment tab order does not follow its trait: " & key
      previous = s.Controls("txt" & key).TabIndex
      Check s.Controls("txt" & key).Controls("label" & key).Caption = "Comment " & entry, "Chief comment lacks its attached label"
+     Check s.Controls("txt" & key).Width = 6876 And s.Controls("txt" & key).Height = 580, "Chief comment does not match the printed comment area"
+     Check s.Controls("txt" & key).FontName = "Times New Roman" And s.Controls("txt" & key).FontSize = 12, "Chief comment font differs from the report"
      f!uxFieldSurface.SetFocus: s.Controls("txt" & key).SetFocus
      Check s.ActiveControl.Name = "txt" & key, "Chief comment cannot receive keyboard focus: " & s.ActiveControl.Name
     Next
     If block < 39 Then Check previous < s.Controls("cboTrait" & block + 1).TabIndex, "Chief comments follow a later trait in tab order"
    Next
+   For block = 33 To 39
+    Check s.Controls("uxChiefGuidance" & block).ControlType = acLabel And s.Controls("uxChiefGuidance" & block).OnClick = "", "Chief guidance is interactive"
+   Next
+   Check Not s!uxTraitGuidance.Visible, "Chief still displays the detached bottom guidance panel"
   End If
   s!txtOfficialName = "PENDING, MEMBER": UXSurfaceEdited "OfficialName"
   before = DCount("*", "ReportRevision")
@@ -74,6 +81,56 @@ Failed:
 End Function
 
 'Inspect native label associations, not proximity or a static caption heuristic.
+Public Function PrepareEditorResetFeedback() As String
+ Dim id As Long, group As Long, s As Access.Form
+ On Error GoTo Failed
+ id = CommitDraft(0, "CHIEFEVAL", "SYNTHETIC RESET", "SYNTHETIC CHIEF", #1/1/2026#, #9/30/2026#, "")
+ group = CreateSummaryGroup("SYNTHETIC RESET GROUP", "CHIEFEVAL", "E7"): AddGroupMember group, id, "E7"
+ Check UXShowGroupMembers(group, True), "Reset group did not open"
+ Check UXGridOpenReport(), "Reset report did not open from Members"
+ Set s = Forms!frmEditor!uxFieldSurface.Form
+ s!txtTrait33Comment1 = "Pending authored Chief text": Check UXSurfaceEdited("Trait33Comment1"), "Comment edit failed"
+ s!txtStart = "raw invalid date": Check UXSurfaceEdited("PeriodStart"), "Raw date edit failed"
+ Check CheckpointEditor(), "Reset preparation checkpoint failed"
+ PrepareEditorResetFeedback = "PASS: editor reset preparation": Exit Function
+Failed:
+ PrepareEditorResetFeedback = "FAIL: " & Err.Number & " " & Err.Description
+End Function
+Private Function RejectResetBaseline() As Boolean
+ On Error GoTo Rejected
+ GuardEditorBaseline
+ Exit Function
+Rejected:
+ RejectResetBaseline = (Err.Number = vbObjectError + 900)
+End Function
+Public Function VerifyEditorResetFeedback() As String
+ Dim id As Long, expected As Long, saved As Long, recovery As Long, changes As Object, s As Access.Form, group As Long
+ On Error GoTo Failed
+ n = 0: id = Forms!frmEditor!txtReportID: expected = Forms!frmEditor!uxRecoveryRevision: group = Forms!frmEditor!uxReturnGroup
+ Set s = Forms!frmEditor!uxFieldSurface.Form
+ Check EditorHasPending(), "Reset discarded the pending baseline"
+ s!cboTrait34 = "5.0": Check UXSurfaceEdited("Trait34"), "Trait change after reset failed"
+ Check s!uxChiefGuidance34.Caption = CatalogueTraitDescription("CHIEFEVAL", 34, "5.0"), "Per-trait guidance did not update"
+ Check s!txtTrait33Comment1 = "Pending authored Chief text", "Trait change overwrote authored comments"
+ Set changes = CreateObject("Scripting.Dictionary"): changes.Add "Title", "SYNTHETIC EXTERNAL UPDATE"
+ CommitSavedFields id, CurrentRevision(id), changes, "Synthetic stale baseline check"
+ saved = CurrentRevision(id)
+ Check saved <> expected And RejectResetBaseline(), "Reset accepted a newer baseline"
+ Check UXFeedbackCloseEditor(), "Back to Members trapped invalid raw edits"
+ Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Checkpointed editor stayed open"
+ Check CurrentProject.AllForms("frmUXComparison").IsLoaded And Forms!frmUXComparison!uxGroupContext = group, "Reset lost the return group"
+ Check CurrentRevision(id) = saved And SavedFields(id)("Title") = "SYNTHETIC EXTERNAL UPDATE", "Navigation overwrote the newer saved revision"
+ recovery = CLng(DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id))
+ Check DLookup("BaseRevisionID", "RecoveryDraft", "RecoveryDraftID=" & recovery) = expected, "Checkpoint adopted a newer revision after reset"
+ Check DLookup("StartEntry", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "raw invalid date", "Navigation lost the invalid raw date"
+ Check DLookup("Trait33Comment1", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "Pending authored Chief text", "Navigation lost the authored comment"
+ Check RestoreRecoveryDraft(recovery, True), "Reset checkpoint could not be recovered as a new draft"
+ Check Forms!frmEditor!txtTrait33Comment1 = "Pending authored Chief text" And Forms!frmEditor!txtStart = "raw invalid date", "Recovered raw values differ"
+ Check UXLeaveEditor("Discard"), "Explicit synthetic recovery discard failed"
+ VerifyEditorResetFeedback = "PASS: " & n & " real-reset trait/navigation/recovery and stale-baseline assertions": Exit Function
+Failed:
+ VerifyEditorResetFeedback = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Public Function TestEntryLabels() As String
  Dim spec As Variant, f As Access.Form, c As Access.Control, checked As Long
  On Error GoTo Failed

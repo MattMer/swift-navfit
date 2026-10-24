@@ -7,7 +7,7 @@ Private Sub Check(ByVal result As Boolean, ByVal message As String)
     If Not result Then Err.Raise vbObjectError + 5600, , message
 End Sub
 Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) As String
-    Dim before As Long, id As Long, file As String, changes As Object, db As DAO.Database, groupID As Long, phase As String, revision As Long, recovery As Long
+    Dim before As Long, id As Long, file As String, changes As Object, db As DAO.Database, groupID As Long, phase As String, revision As Long, recovery As Long, c As Access.Control
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC NAVFIT UI", "Synthetic tester"
     Call OpenReviewFile(source)
@@ -44,7 +44,15 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Check UXOpenNAVFITExchange(), "Exchange workspace cannot open"
     Check Not Forms!frmNAVFITExchange!cmdApply.Enabled, "Return Apply enabled without preview"
     Check Forms!frmNAVFITExchange!txtReturned.AfterUpdate = "=UXNAVFITInputChanged()", "Changed returned path retains stale preview"
-    Check Forms!frmNAVFITExchange.OnUnload = "=NAVFITClearReturned(False)", "Preview state survives closing"
+    Check Forms!frmNAVFITExchange.OnUnload = "=UXCloseNAVFITExport()", "Export resources survive closing"
+    Check SourceFileHash(Forms!frmNAVFITExchange!txtTemplate) = NAVFITTemplateHash(), "Internal native template differs from the reviewed blank"
+    Check Not Forms!frmNAVFITExchange!txtTemplate.Visible And Not Forms!frmNAVFITExchange!cboReport.Visible, "Export exposes template or single-report picker"
+    Check Not Forms!frmNAVFITExchange!txtReturned.Visible And Not Forms!frmNAVFITExchange!txtBaseline.Visible, "Export exposes returned-file workflow"
+    Check Not Forms!frmNAVFITExchange!cmdResumeReturn.Visible And Not Forms!frmNAVFITExchange!cmdCancelReturn.Visible, "Export exposes saved-return actions"
+    Check Not Forms!frmNAVFITExchange!txtExportPath.Locked And Forms!frmNAVFITExchange!txtExportPath.TabStop And Forms!frmNAVFITExchange!txtExportPath.AfterUpdate = "=UXPreviewNAVFITGroup()", "Export directory cannot be entered by keyboard with a refreshed preview"
+    For Each c In Forms!frmNAVFITExchange.Controls
+        If c.Visible Then Check InStr("|lblHeading|lblScope|lblGroup|lbltxtExportPath|txtExportPath|cmdtxtExportPath|cmdExportGroup|txtStatus|cmdBack|cmdWindowHelp|", "|" & c.Name & "|") > 0, "Export exposes an unrelated control: " & c.Name
+    Next
     file = source & ".ui-export.accdb"
     Call NAVFITExportReport(id, file, template)
     Set db = DBEngine.OpenDatabase(file)
@@ -84,12 +92,27 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Forms!frmNAVFITExchange!chkPSG = True
     Check UXPreviewNAVFITGroup(), "Group UI preview failed"
     Check Forms!frmNAVFITExchange!cmdExportGroup.Enabled, "Reviewed group export unavailable"
-    Check InStr(Forms!frmNAVFITExchange!txtStatus, "Saved members:") > 0, "Group roster preview missing"
-    Check InStr(Forms!frmNAVFITExchange!txtStatus, "No promotion selected: 1") > 0 And InStr(Forms!frmNAVFITExchange!txtStatus, "PSG RSCA unavailable") > 0, "Incomplete preview/fallback missing"
+    Check InStr(Forms!frmNAVFITExchange!txtStatus, "1 saved reports") > 0 And InStr(Forms!frmNAVFITExchange!txtStatus, "Findings do not block export") > 0, "Saved-group scope and nonblocking notice missing"
     Check UXNAVFITInputChanged() And Not Forms!frmNAVFITExchange!cmdExportGroup.Enabled, "Group preview not invalidated"
-    Check Not UXExportNAVFITGroup(), "Unpreviewed group exported"
-    Check UXPreviewNAVFITGroup() And UXExportNAVFITGroup(), "Reviewed group cannot export"
+    Check UXExportNAVFITGroup(), "Group export did not refresh its preview automatically"
     Check Len(Dir$(Forms!frmNAVFITExchange!txtExportPath & ".swift-baseline.accdb")) > 0, "Group baseline absent at the actual generated export path"
+    Set db = DBEngine.OpenDatabase(Forms!frmNAVFITExchange!txtExportPath, False, True)
+    Check db.OpenRecordset("SELECT Count(*) FROM Reports WHERE ReportType Is Not Null")(0) = 1, "Native group output has the wrong saved roster"
+    db.Close
+    CurrentDb.Execute "UPDATE SummaryGroup SET IsArchived=False WHERE GroupID=" & groupID, dbFailOnError
+    Check UXNavigate("frmUXGroups"), "Summary list cannot open"
+    Forms!frmUXGroups!lstGroups = groupID
+    Check UXGroupSelection(), "Summary list selection failed"
+    Check Forms!frmUXGroups!uxExportSelected.OnClick = "=UXExportSelectedGroup()", "Selected-group export button not wired"
+    Check Forms!frmUXGroups!uxPDFSelected.OnClick = "=PDFOutputOpenGroup(""frmUXGroups"")", "Selected-group PDF button not wired"
+    Check UXExportSelectedGroup(), "Selected-group export cannot open"
+    Check CLng(Forms!frmNAVFITExchange!cboGroup) = groupID, "Export opened a different summary group"
+    Check InStr(Forms!frmNAVFITExchange!lblGroup.Caption, "Synthetic UI export group") > 0, "Export omitted selected group title"
+    Check PDFOutputOpenGroup("frmUXGroups"), "Selected-group PDF preview cannot open"
+    Set changes = PDFOutputJob()
+    Check CLng(changes("GroupID")) = groupID And changes("Reports").Count = 1, "PDF preview captured a different group or roster"
+    Check Forms!frmPDFOutput!cboFormat = "Combined packet" And Forms!frmPDFOutput!chkSummary, "Group PDF preview omitted the combined packet/summary defaults"
+    Check PDFOutputClose(), "Selected-group PDF preview could not close"
     TestUXNAVFIT = "PASS: " & checks & " NAVFIT UI assertions": Exit Function
 Failed:
     TestUXNAVFIT = "FAIL after " & checks & " checks (" & phase & "): " & Err.Number & " " & Err.Source & " " & Err.Description

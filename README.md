@@ -47,7 +47,7 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 
 ### Bring existing data forward
 
-- **NAVFIT98A exchange:** import supported report/group data and export saved reports or all summary-group members while retaining native provenance. Incomplete drafts, validation findings and archived/approved status do not block export. Findings remain visible; export does not imply approval or submission.
+- **NAVFIT98A exchange:** import supported report/group data and export all saved summary-group members using the internal native template. Select a group, choose an export directory, and export. Incomplete drafts, validation findings and archived/approved status do not block export. Pending edits remain separate; export does not imply approval or submission.
 - **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
 - **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Extraction runs locally without Acrobat or an internet connection.
 - **Previous-Swift workspace transfer:** bulk-copy supported older workspace data/history into a separate blank build, with exact database-engine verification and responsive progress between batches. Source and rollback protections remain.
@@ -91,7 +91,7 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** Current development source is **0.40.0-dev / schema 33**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
+**Source and downloads can differ.** Current development source is **0.42.0-dev / schema 33**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
 
 Development backup/restore now supports the current schema and retains ACCDB/ACCDE
 extensions, saved values and recovery checkpoints. Existing destinations and
@@ -100,6 +100,9 @@ stale live token instead of deleting another contributor's or a newer saved prev
 Workspace-import previews require Resume after reopening. My Work avoids a redundant
 return refresh, and native export failures retain the original error, separate
 cleanup details and whether files were already published.
+PDF imports and NAVFIT returns also distinguish committed data from rollback or
+an uncertain outcome. Finalization errors preserve saved data and prevent accidental
+re-Apply. Members/My Work checks require the critical controls and action bindings.
 Workspace import distinguishes a confirmed rollback from a failure after data was
 committed. A committed import with a finalization error requires closing/reopening
 the workspace and disables re-Apply. Import/return/PDF screens also have stronger

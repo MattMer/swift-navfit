@@ -53,6 +53,10 @@ Public Function TestReportTools() As String
  Check p!txtView = "Notes" And p!txtMessage.Visible, "Notes view not embedded"
  Check Len(Nz(f!uxError.Caption, "")) = 0, "Notes error: " & f!uxError.Caption
  Check InStr(p!txtConversation, "Reply after approval") > 0, "Conversation missing reply"
+ Check Not UXSortNativeHeader("frmReportTools", "lstMessages", 100, 1000), "Conversation body click was treated as a sort header"
+ Check UXMessageRead(), "Embedded conversation selection failed"
+ Check UXSortList("frmReportTools", "lstMessages", 1), "Embedded conversation sort failed"
+ Check InStr(p!txtConversation, "Reply after approval") > 0, "Conversation sort lost selected thread"
  Check UXMessageBegin(True), "Begin reply failed"
  p!txtMessage = "Private reply checkpoint": Check UXMessageKeep(), "Save private reply failed"
  guid = p!txtDraftGuid

@@ -85,7 +85,7 @@ $c=$app.CreateControl($f.Name,112,0,'','',0,0,12200,8200);$c.Name='uxReviewPanel
 $app.DoCmd.Close(2,$f.Name,1)
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
 $c=$app.CreateControl($f.Name,112,0,'','',2850,4800,12600,7000);$c.Name='uxToolsSurface';$c.SourceObject='Form.frmReportTools';$c.LinkMasterFields='';$c.LinkChildFields='';$c.Visible=$false;$c.BorderStyle=0
-$f.Controls.Item('uxPageNotes').Caption='Notes';$f.Controls.Item('uxPageNotes').OnClick='=UXToolsChoose("Notes")'
+$app.DeleteControl($f.Name,'uxPageNotes')
 $f.Controls.Item('uxPageReview').Caption='Report tools';$f.Controls.Item('uxPageReview').OnClick='=UXSelectSection(8)'
 foreach($v in @(@('cmdComments','Notes and replies','Notes'),@('cmdRoute','Review steps','Review'),@('cmdChecklist','Validation checks','Validation'),@('cmdCalculations','Trait calculations','Calculations'))){$f.Controls.Item($v[0]).Caption=$v[1];$f.Controls.Item($v[0]).OnClick='=UXToolsChoose("'+$v[2]+'")'}
 $f.Controls.Item('uxReviewCommentGuide').Visible=$false;$f.Controls.Item('uxReviewCommentGuide').Tag=''

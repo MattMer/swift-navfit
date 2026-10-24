@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 23 October 2026. Current implementation, not a historical release log.
+Updated 24 October 2026. Current implementation, not a historical release log.
 Consolidation removed three superseded release assemblers and consolidated
 developer instructions, structural verification and Demo creation. Application
 behavior was unchanged by consolidation. The persistence changes below are separate.
@@ -62,6 +62,24 @@ primary export diagnostics with truthful file-publication outcomes.
 M04/M05 follow-ups advance source to **0.40.0-dev / schema 33**, distinguishing
 committed workspace imports from confirmed rollback and strengthening required
 wizard controls/action bindings. No storage or report-layout change is added.
+Further M04/M05 work advances source to **0.41.0-dev / schema 33**, with typed
+PDF/return Apply outcomes and stronger Members/My Work view contracts.
+User-reported UI corrections advance source to **0.42.0-dev / schema 33**.
+Embedded conversation sorting resolves subforms through their actual hosts.
+Report tools replaces the redundant Notes button. Chief trait comments use the
+official comment-box dimensions and typography, with read-only selected-grade
+wording beneath each trait title. All seven traits remain on the editing Front
+Page; printed page associations are unchanged. Editor recovery identity, original
+revision and return-group context survive VBA reset. When an automatic save
+fails, navigation may proceed only after a successful raw-edit checkpoint;
+stale saves remain rejected and recovery failure keeps the editor open.
+The summary list offers selected-group NAVFIT98A export and PDF preview/output.
+The NAVFIT export screen requires only the selected group and output directory;
+the reviewed native blank is embedded as a generated resource and hash-verified
+before use. Legacy return services, baseline/provenance and saved recovery data
+remain intact, without visible return/template/report pickers. The duplicate
+Members header Back button and Reports Folder tools screen are retired; folder
+records, history, migration and backend services remain supported.
 
 ## Architecture and authoritative sources
 
@@ -69,7 +87,7 @@ wizard controls/action bindings. No storage or report-layout change is added.
   live in [modSwift.bas](src/modSwift.bas); major schema metadata lives in
   [major-schema.json](src/major-schema.json). Schema DDL also exists in the base
   builder and additive stages; there is not yet one complete schema authority.
-- [build-manifest.json](scripts/build-manifest.json): 105 static modules, five
+- [build-manifest.json](scripts/build-manifest.json): 105 static modules, six
   generated modules, inputs and 74 ordered stages. [build.ps1](scripts/build.ps1)
   creates a fresh database, builds schema/forms, applies stages, compiles,
   reopens and verifies installed source and bindings.
@@ -170,7 +188,8 @@ wizard controls/action bindings. No storage or report-layout change is added.
   affected-object foreign keys. Domain histories and undo remain authoritative.
 - Six workspace routes in [modUX.bas](src/modUX.bas) feed rails and compact
   selectors. Retired tool aliases preserve editor context; required overview,
-  report collection, group host and organizational folder tools remain.
+  report collection and group host remain. The obsolete Folder tools screen is
+  retired; its legacy navigation alias returns to Reports without changing data.
 
 ## Environment, build, verification and delivery
 
@@ -223,7 +242,7 @@ not release artifacts. No release, signing, publication or manifest change is in
 | --- | --- |
 | Reports / My Work | Existing `modUXReadRows` prepared presentation records remain in use. Route/group stamps are memoized within a refresh; write decisions still use their domain services. No competing display cache or persisted cache table was added. |
 | Group/RSCA reads | `RSGroupRows` previously reopened head/cache/value/date/choice data per report. `AssertReportCacheRows` reads bounded 200-report chunks and shares projection, missing-field and typed-fact rules with the live scalar validator. A 500-report snapshot needs one report query plus 12 fact queries instead of roughly 2,501 validation/report reads, excluding constant RSCA context reads. No validation is skipped. |
-| Bulk-folder tools | Selection stamps and Undo prechecks load selected report/move facts in 200-ID chunks. Folder labels use one refresh-owned folder map with lazy path resolution and the same missing-parent/depth errors. Input order, Null folder/revision markers and move IDs remain part of the stamp. `ApplyFolderBatch` and `AssignFolder` retain their existing live write checks, transactions, audit and guarded undo. |
+| Retained folder services | Selection stamps and Undo prechecks load selected report/move facts in 200-ID chunks. Input order, Null folder/revision markers and move IDs remain part of the stamp. `ApplyFolderBatch` and `AssignFolder` retain live write checks, transactions, audit and guarded undo. The former folder-screen display benchmark is historical; its screen and mutation UI callbacks are retired in 0.42. |
 | Directory history | Active prior traits and authoritative `ReportHead` revision traits are fetched in batches. Whole-report NOB, per-trait NOB, Null/blank/missing slots and incomplete prior records keep scalar semantics. The history list receives one completed value-list assignment instead of a native redraw per `AddItem`; the old query ordering and cell text remain unchanged. |
 | Selected prior history / identity repair | Existing candidate/identity batching and per-refresh selected-source memoization remain. Identity matching/repair is a mutating domain boundary, not a presentation cache to bypass. Fresh save/permission/revision checks remain scalar where required. |
 
@@ -354,6 +373,20 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
 
 ### Remote regression and accessibility preparation
 
+- In 0.41/schema 33, structured-PDF import and NAVFIT return services expose an
+  optional typed outcome without changing existing callers. Their UI adapters
+  distinguish Not started, confirmed rollback, Committed and uncertain outcomes.
+  A post-commit/final-display failure preserves saved data, disables Apply, clears
+  live ownership and gives close/reopen guidance; it never claims nothing applied.
+  A precommit rollback retains reviewed choices and permits deliberate Resume/retry.
+  A correctable return precondition retains the existing conflict-resolution flow.
+- Members contracts require exact pending-cell retry/discard and export/PDF actions.
+  My Work requires selection/open/draft/refresh and accept/return/cancel bindings,
+  contributor and history/status controls. Queue loading asserts the contract before
+  accessing controls, replacing obsolete silent probes for now-required controls.
+  Build verification consumes the same literal contract data. No layout, schema,
+  catalogue or runtime dependency is changed.
+
 - In 0.40, workspace-import feedback uses a scalar snapshot of the diagnostic
   context instead of parsing display text. The service preserves the primary
   migration error number/source and passes its transaction outcome to the UI.
@@ -446,6 +479,64 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
   assistive-technology, normal-security and signing acceptance remain open.
 
 Verified development artifacts and scope:
+
+- [Fresh 0.42 ACCDB](build/dev/Swift_NAVFIT_0.42.0-dev_20261024-105339_4e40404e.accdb),
+  SHA256 `0DD14857BBEAC6201F9FD76AC271CCF5066F814FE512B83C6430A2CE1C1EE2C8`.
+  [BuildAndTest](build/workflow/20261024-105339-86f26ada-3e25-4931-8451-3f98297c5b13/verification.json)
+  passes fresh generation, native compile/reopen, exact installed source and
+  bindings, blank verification and all standard native suites. Schema 33 and
+  catalogue 2 remain unchanged. The prior 0.41 artifact and tracked native blank
+  retain their original hashes. This is a development artifact, not a release.
+  The [exact-artifact focused receipt](build/workflow/ui-feedback-final-69f4e3fa-79df-4b59-8a9b-7d92b4a23fb5/verification.json)
+  passes 73 NAVFIT UI assertions, including internal-template verification,
+  restricted visible controls, nonblocking export and summary-list PDF capture
+  of the selected roster with combined-packet/summary defaults. It also repeats
+  fixed pages/labels, real-reset recovery, group navigation/task orders and
+  preserved folder-history/guarded-undo checks without installing application
+  source. The final artifact hash is unchanged after testing.
+- The [0.42 focused candidate receipt](build/workflow/ui-feedback-focused-9e013edb-f460-457a-8170-dae13d9f24c5/verification.json)
+  passes ten native runners: 407 fixed-page assertions, ten label/tab checks,
+  15 real-reset trait/recovery/stale-baseline assertions, group/exit task orders,
+  feedback navigation, preserved folder history/undo, nonblocking native group
+  export, live Members, close/reopen recovery, audit/conversation navigation,
+  and required-view diagnostics. The
+  [conversation/close receipt](build/workflow/ui-feedback-close-f8fb463c-5579-41c3-a517-ad0a3ba39480/verification.json)
+  adds 47 report-tools assertions, 43 native-close/workflow assertions and
+  forced-close/reopen preservation of all 21 Chief comments with invalid raw data.
+  These checks used disposable candidates, not a published release.
+  After visual review exposed late presentation decorators, the final export
+  layout passed 69 native UI assertions on a focused layout copy. Access Explorer
+  screenshots confirmed its static layout; that Explorer session had code
+  disabled, so its screenshots do not establish interactive or Chief runtime
+  visual acceptance. Native geometry/behavior checks are separate from physical
+  display/DPI and printed-fit acceptance. No security settings were changed.
+- [Fresh 0.41 ACCDB](build/dev/Swift_NAVFIT_0.41.0-dev_20261024-005848_6426d8fa.accdb),
+  SHA256 `9727B09EF26DD9D10952AB25B6991BDA9951B45A388EF820B4C4AD5ABEA1D00F`.
+  [BuildAndTest](build/workflow/20261024-005848-9fd9b88c-f27c-461c-8d36-57ce76fcc355/verification.json)
+  passes all 74 stages, compile/reopen, installed source/bindings/stronger contracts,
+  blank verification and standard native suites. Schema 33/catalogue 2 remain.
+  The [apply-fault receipt](build/tests/wizard-state-dc09054a-de74-44f7-af0d-6c4ba2b7badf/verification.json)
+  passes 151 outcome/retry/persistence assertions across eight isolated PDF/return
+  cases, including normal saved revision sequences, one receipt and stable counts
+  after close/reopen. Uncertain outcomes are simulated; no actual failed DAO
+  rollback is claimed. Postcommit and display faults are explicit local test-copy
+  instrumentation, not shipped hooks.
+- The [0.41 reset/restart receipt](build/tests/wizard-state-bded9715-c6e8-4008-a104-3280f7633ab8/verification.json)
+  passes 63 assertions and a real schema-29 import, with source hashes intact.
+  Its intentional visible unhandled-error injection is explicitly skipped. The
+  earlier focused default run required assisted End of the verified synthetic error,
+  then completed reset/restart successfully; this is not unattended UI-error proof.
+  Separate user Access workspaces were neither closed nor modified.
+- The [final 0.41 focused receipt](build/workflow/apply-contracts-final-db21289f-9ea7-42ca-84f0-9e7372873539/verification.json)
+  passes all ten selected runners on this exact artifact without application source
+  installation. It includes the 151 apply-fault and 63 reset/restart assertions,
+  43 diagnostics/contracts plus both installed view faults, 1,748 My Work, seven
+  refresh-owner, 73 live Members, 118 unified Members/exit and 162 reordered-task
+  assertions, 549 adapter/410 exchange/147 guard checks, 48 NAVFIT UI checks and
+  1,045 cumulative group/nonblocking export checks. The explicit test-copy fault
+  instrumentation and refresh counter are recorded separately from production code.
+  Source hashes remained unchanged. No dependencies, release, binary publication,
+  physical print, signing/security or attended accessibility acceptance are added.
 
 - [Fresh 0.40 ACCDB](build/dev/Swift_NAVFIT_0.40.0-dev_20261023-233901_08795eef.accdb),
   SHA256 `9DB8F7B4C549BEFD6EC66C12F99A25DD6323E43920815FCBC942736E47932DE5`.

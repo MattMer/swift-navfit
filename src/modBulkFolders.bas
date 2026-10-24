@@ -123,50 +123,18 @@ Failed:
     SwiftRaise swiftPrimary
 End Function
 Public Function LoadBulkFolders() As Boolean
-    Set displayFolders = FolderPathSnapshot()
-    Forms!frmBulkFolders!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,IIf(FolderID Is Null,'Unassigned',BulkFolderPath(Nz(FolderID,0))) AS CurrentFolder FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY Title"
-    Forms!frmBulkFolders!cboDestination.RowSource = "SELECT 0 AS ID,'Unassigned' AS Label FROM AppMetadata UNION ALL SELECT FolderID,BulkFolderPath(FolderID) FROM Folder"
-    Forms!frmBulkFolders!txtStamp = "": LoadBulkFolders = True
+    'Retired UI callbacks preserve safe navigation without changing folder data.
+    LoadBulkFolders = UXNavigate("frmLibrary")
 End Function
 Public Function BulkFolderPath(ByVal folderID As Long) As String
     If displayFolders Is Nothing Then Set displayFolders = FolderPathSnapshot()
     BulkFolderPath = FolderPathFromSnapshot(folderID, displayFolders)
 End Function
-Private Function SelectedReports() As String
-    Dim item As Variant
-    For Each item In Forms!frmBulkFolders!lstReports.ItemsSelected
-        If Len(SelectedReports) > 0 Then SelectedReports = SelectedReports & ","
-        SelectedReports = SelectedReports & Forms!frmBulkFolders!lstReports.ItemData(item)
-    Next
-End Function
 Public Function PreviewFolderBatchUI() As Boolean
-    Dim selection As String, id As Variant, text As String, selected As Collection, rows As Object, folders As Object, row As Variant
-    On Error GoTo Failed
-    selection = SelectedReports()
-    Set selected = IDs(selection): Set rows = FolderReadRows(selected): Set folders = FolderPathSnapshot()
-    Forms!frmBulkFolders!txtStamp = FolderRowsStamp(selected, rows)
-    Forms!frmBulkFolders!txtSelection = selection: Forms!frmBulkFolders!txtDestination = Nz(Forms!frmBulkFolders!cboDestination, 0)
-    text = "Destination: " & IIf(Nz(Forms!frmBulkFolders!cboDestination, 0) = 0, "Unassigned", FolderPathFromSnapshot(Nz(Forms!frmBulkFolders!cboDestination, 0), folders)) & vbCrLf
-    For Each id In selected
-        row = rows(CStr(id))
-        text = text & "Report " & id & ": " & Nz(row(1), "") & " | " & IIf(Nz(row(2), 0) = 0, "Unassigned", FolderPathFromSnapshot(Nz(row(2), 0), folders)) & vbCrLf
-    Next
-    Forms!frmBulkFolders!txtPreview = text & vbCrLf & "Only organizational folder assignments change. Official revisions and groups stay unchanged."
-    PreviewFolderBatchUI = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation, "Preview folder moves"
+    PreviewFolderBatchUI = UXNavigate("frmLibrary")
 End Function
 Public Function ApplyFolderBatchUI() As Boolean
-    On Error GoTo Failed
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1410, "modBulkFolders.ApplyFolderBatchUI", "Close the editor first."
-    If Nz(Forms!frmBulkFolders!txtSelection, "") <> SelectedReports() Or Nz(Forms!frmBulkFolders!txtDestination, -1) <> Nz(Forms!frmBulkFolders!cboDestination, 0) Then Err.Raise vbObjectError + 1411, "modBulkFolders.ApplyFolderBatchUI", "Selection changed. Preview again."
-    If MsgBox("Apply the previewed folder moves as one batch?", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
-    Call ApplyFolderBatch(SelectedReports(), CLng(Nz(Forms!frmBulkFolders!cboDestination, 0)), Nz(Forms!frmBulkFolders!txtStamp, ""))
-    Call LoadBulkFolders(): Forms!frmBulkFolders!txtPreview = "Batch completed. Operations screen provides guarded undo."
-    If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary()
-    ApplyFolderBatchUI = True: Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation, "Apply folder moves"
+    ApplyFolderBatchUI = UXNavigate("frmLibrary")
 End Function
 Public Function UndoFolderBatchUI() As Boolean
     On Error GoTo Failed

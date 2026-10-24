@@ -111,6 +111,7 @@
   ],
   "generatedModules": [
     "modPDFPrintCatalogue",
+    "modNAVFITTemplate",
     "modBackupWorker",
     "modTraitCatalogue",
     "modUXFields",
@@ -118,6 +119,7 @@
   ],
   "inputs": [
     "src/major-schema.json",
+    "FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb",
     "src/field-definitions.json",
     "src/navfit-field-map.json",
     "src/navywriter-catalog.json",
@@ -155,11 +157,11 @@
     "frmReviewComments": "frmEditor",
     "frmUXReview": "frmEditor",
     "frmChecklist": "frmEditor",
-    "frmUXNoteComposer": "frmEditor"
+    "frmUXNoteComposer": "frmEditor",
+    "frmBulkFolders": "frmLibrary"
   },
   "retainedAdapters": {
-    "frmMajorWorkbench": "Summary-group defaults/review context host",
-    "frmBulkFolders": "Active organizational-folder batch tools; independent of summary groups"
+    "frmMajorWorkbench": "Summary-group defaults/review context host"
   },
   "stages": [
     {

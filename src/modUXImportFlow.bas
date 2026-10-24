@@ -137,17 +137,29 @@ Failed:
     Call ImportState("frmPDFImport", "Cancel unavailable", Err.Description & " Saved choices are retained. Resume before cancelling.", False)
 End Function
 Public Function UXApplyPDFImport() As Boolean
+    Dim outcome As String, message As String
+    outcome = "Not started"
     On Error GoTo Failed
     If Len(pdfSignature) = 0 Or pdfSignature <> UXPDFSignature() Then Err.Raise vbObjectError + 4901, "modUXImportFlow.UXApplyPDFImport", "Preview the current mapping before Apply."
-    pdfCreated = ImportPDFPreview("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"))
+    pdfCreated = ImportPDFPreview("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"), outcome)
     pdfSignature = ""
     Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
     Forms!frmPDFImport!cmdOpenResult.Enabled = True
     Forms!frmPDFImport!lblStatus.Caption = "Import complete. Apply is disabled; choose another source for a new import."
     UXApplyPDFImport = True: Exit Function
 Failed:
+    message = Err.Description
     pdfSignature = ""
-    Call ImportState("frmPDFImport", "2. Preview", Err.Description & " Preview again before retrying.", False)
+    Select Case outcome
+    Case "Committed"
+        Call PDFClearPreview(False)
+        Call ImportState("frmPDFImport", "4. Results", "Import data was committed; finalization failed. Do not re-import. Close and reopen this workspace. " & message, False)
+    Case "Not started", "Rolled back"
+        Call ImportState("frmPDFImport", "2. Preview", "Import " & LCase$(outcome) & ". " & message & " Preview again before retrying.", False)
+    Case Else
+        Call PDFClearPreview(False)
+        Call ImportState("frmPDFImport", "Inspect saved data", "Import outcome could not be confirmed. Close and reopen; inspect saved data before retrying. " & message, False)
+    End Select
 End Function
 Private Function UXPDFSignature() As String
     With Forms!frmPDFImport

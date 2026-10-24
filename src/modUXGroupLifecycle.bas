@@ -69,6 +69,8 @@ End Function
 Public Function UXGroupSelection() As Boolean
     Dim f As Access.Form, id As Long, archived As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0)
+    If UXHasControl(f, "uxExportSelected") Then f!uxExportSelected.Enabled = (id > 0)
+    If UXHasControl(f, "uxPDFSelected") Then f!uxPDFSelected.Enabled = (id > 0)
     If UXHasControl(f, "uxGroupState") Then
         If id > 0 Then f!uxGroupState = GroupWorkflow(id): f!uxStateStamp = GroupStamp(id) Else f!uxGroupState = Null: f!uxStateStamp = ""
     End If
