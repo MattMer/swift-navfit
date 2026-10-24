@@ -36,7 +36,7 @@ Public Function UXGroupList() As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0): filter = Nz(f!uxArchiveFilter, "Active")
     If filter = "Active" Then where = "WHERE g.IsArchived=False "
     If filter = "Archived" Then where = "WHERE g.IsArchived=True "
-    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(GroupWorkflow(g.GroupID)) AS [Group status],GroupCloseout(g.GroupID,Count(r.ReportID),Count(r.PeriodEnd),Min(r.PeriodEnd),Max(r.PeriodEnd)) AS [Closeout date] FROM (SummaryGroup AS g LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID) LEFT JOIN Report AS r ON m.ReportID=r.ReportID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
+    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title,g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(IIf(Len(Nz(l.WorkflowState,''))=0,'Initialized',l.WorkflowState)) AS [Group status],GroupCloseout(g.GroupID,Count(r.ReportID),Count(r.PeriodEnd),Min(r.PeriodEnd),Max(r.PeriodEnd)) AS [Closeout date] FROM ((SummaryGroup AS g LEFT JOIN GroupLifecycle AS l ON g.GroupID=l.GroupID) LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID) LEFT JOIN Report AS r ON m.ReportID=r.ReportID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
     If id > 0 Then
         If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then
             id = 0

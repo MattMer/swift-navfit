@@ -1,10 +1,74 @@
 Attribute VB_Name = "UXGroupLifecycleHarness"
 Option Explicit
 Private n As Long
+Private workflowLookups As Long
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 5600, , message
     n = n + 1
 End Sub
+Public Sub SummaryListCountWorkflowLookup()
+    workflowLookups = workflowLookups + 1
+End Sub
+Public Function SummaryListLookupCount() As Long
+    SummaryListLookupCount = workflowLookups
+End Function
+Public Function SeedSummaryListBenchmark(ByVal groups As Long, ByVal members As Long) As String
+    Dim i As Long, j As Long, group As Long, report As Long, finish As Variant, states As Variant
+    On Error GoTo Failed
+    ConfigureWorkspace "SYNTHETIC SUMMARY LIST", "Synthetic list tester"
+    states = Array("Initialized", "In-Work", "Ready for Signature")
+    For i = 1 To groups
+        group = CreateSummaryGroup("SYNTHETIC " & Format$(i, "0000"), "EVAL", "E5")
+        For j = 1 To members
+            finish = #9/30/2026#
+            If i Mod 3 = 1 And j = members Then finish = Null
+            If i Mod 3 = 2 And j = members Then finish = #8/31/2026#
+            report = CommitDraft(0, "EVAL", "SYNTHETIC " & i & "/" & j, "SYNTHETIC MEMBER " & i & "/" & j, #1/1/2026#, finish, "")
+            AddGroupMember group, report, "E5"
+        Next
+        If i Mod 3 > 0 Then SetGroupWorkflow group, GroupStamp(group), CStr(states(i Mod 3))
+        If i Mod 5 = 0 Then ChangeSummaryGroup group, GroupStamp(group), "Archive"
+    Next
+    SetFieldDefault "Command", 1, "PeriodEnd", "2026-09-30"
+    group = CreateSummaryGroup("SYNTHETIC empty inherited", "EVAL", "E5")
+    group = CreateSummaryGroup("SYNTHETIC empty override", "EVAL", "E5"): SetFieldDefault "Group", group, "PeriodEnd", "2026-08-31"
+    group = CreateSummaryGroup("SYNTHETIC empty blank", "EVAL", "E5"): SetFieldDefault "Group", group, "PeriodEnd", ""
+    group = CreateSummaryGroup("SYNTHETIC empty null", "EVAL", "E5"): SetFieldDefault "Group", group, "PeriodEnd", Null
+    group = CreateSummaryGroup("SYNTHETIC missing lifecycle", "EVAL", "E5")
+    CurrentDb.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & group, dbFailOnError
+    'Read-only legacy-state equivalence, not an RSCA completion/posting fixture.
+    group = CreateSummaryGroup("SYNTHETIC retained completed", "EVAL", "E5")
+    CurrentDb.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & group, dbFailOnError
+    CurrentDb.Execute "INSERT INTO GroupLifecycle (GroupID,WorkflowState) VALUES (" & group & ",'Completed')", dbFailOnError
+    group = CreateSummaryGroup("SYNTHETIC same title", "EVAL", "E5")
+    group = CreateSummaryGroup("SYNTHETIC same title", "EVAL", "E5")
+    SeedSummaryListBenchmark = "PASS: " & groups & " populated groups / " & groups * members & " reports plus eight read-boundary groups": Exit Function
+Failed:
+    Dim message As String
+    message = Err.Number & " " & Err.Description
+    SeedSummaryListBenchmark = "FAIL: summary-list fixture: " & message
+End Function
+Public Function SummaryListRead(ByVal filter As String) As String
+    Dim row As Long, col As Long, value As Variant, text As String, f As Access.Form
+    If Not CurrentProject.AllForms("frmUXGroups").IsLoaded Then DoCmd.OpenForm "frmUXGroups"
+    Set f = Forms!frmUXGroups: f!uxArchiveFilter = filter
+    workflowLookups = 0
+    If Not UXGroupList() Then Err.Raise 5, , "Summary list did not refresh"
+    For row = 0 To f!lstGroups.ListCount - 1
+        For col = 0 To 7
+            value = f!lstGroups.Column(col, row)
+            If IsNull(value) Then text = text & "N;" Else text = text & Len(CStr(value)) & ":" & CStr(value) & ";"
+        Next
+        text = text & vbLf
+    Next
+    SummaryListRead = text
+End Function
+Public Function SummaryListDataCounts() As String
+    Dim table As Variant
+    For Each table In Array("Report", "ReportRevision", "RevisionValue", "SummaryGroup", "GroupMember", "GroupLifecycle", "FieldDefault", "OperationJournal", "GroupSnapshot", "ComparisonSet")
+        SummaryListDataCounts = SummaryListDataCounts & table & "=" & DCount("*", CStr(table)) & ";"
+    Next
+End Function
 Private Function Rejected(ByVal id As Long, ByVal stamp As String, ByVal action As String, Optional ByVal title As String = "") As Boolean
     On Error GoTo Failed
     ChangeSummaryGroup id, stamp, action, title: Exit Function

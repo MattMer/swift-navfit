@@ -366,6 +366,29 @@ permission to overwrite them; a retry must preserve their bytes and saved revisi
 
 ### Diagnostics, view contracts and trait data (M04–M06)
 
+Directory-batch preview/failure checks use the existing
+`scripts/test-directory-batch.ps1 -BuildPath <blank>` and its
+`-AdversarialPreviews` mode. The latter isolates each case in a new owned Access
+controller, injects postcommit/display faults only into disposable copies, tests
+an explicitly simulated uncertain outcome, and executes a real VBE reset. Require
+truthful feedback, disabled/stamp-free repeat Apply and persisted report/link
+counts after reopening. No fault hooks are shipped in application source.
+
+For the summary-list M03 read optimization, use the existing lifecycle runner:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-ux-group-lifecycle.ps1 -BuildPath "D:\path\candidate.accdb" -BaselinePath "D:\path\baseline.accdb" -GroupListBenchmark -Groups 40 -Members 10 -Trials 5
+```
+
+It compares all eight displayed cells and order for All/Active/Archived, covers
+eight empty/default/missing-lifecycle/duplicate-title boundaries, checks no data/
+history row changes, and alternates five samples per artifact. A lookup counter
+is installed only in test copies. `-InstallSource` is an early compatible-copy
+option, not integrated build proof. `-DataSourcePath <synthetic-summary-list.accdb>`
+reuses the matching fixture through production migration with row/field verification
+and source hashes. The retained Completed row is a read-only legacy-state case,
+not an RSCA completion or release fixture. Timings are local measurements.
+
 For M02/M04/M05 preview ownership and group-import outcomes, use the existing
 native runners sequentially on disposable copies:
 

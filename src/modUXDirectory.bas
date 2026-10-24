@@ -35,6 +35,7 @@ Failed:
     f!lblStatus.Caption = Err.Description
 End Function
 Public Function UXDirectoryClose(ByVal screen As String) As Boolean
+    If screen = "frmUXDirectoryBatch" Then ClearDirectoryReportPreview
     DoCmd.Close acForm, screen: UXDirectoryClose = True
 End Function
 Public Function UXDirectoryHistory() As Boolean
@@ -97,7 +98,9 @@ Failed:
     f!lblStatus.Caption = Err.Description
 End Function
 Public Function UXDirectoryBatchOpen() As Boolean
+    ClearDirectoryReportPreview
     DoCmd.OpenForm "frmUXDirectoryBatch"
+    Forms!frmUXDirectoryBatch!cmdApply.Enabled = False: Forms!frmUXDirectoryBatch!txtStamp = Null
     UXMemberRankChoices Forms!frmUXDirectoryBatch
     UXDirectoryRankFilter
     Forms!frmUXDirectoryBatch!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
@@ -127,6 +130,7 @@ Public Function UXMemberRankWhere(ByVal rank As String) As String
     UXMemberRankWhere = " AND (RankRate=" & QuoteSQL(rank) & " OR ValidationWornPaygrade(Nz(RankRate,''))=" & QuoteSQL(rank) & ")"
 End Function
 Public Function UXDirectoryRankFilter() As Boolean
+    ClearDirectoryReportPreview
     With Forms!frmUXDirectoryBatch
         !lstMembers.RowSource = "SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False" & UXMemberRankWhere(Nz(!cboRankFilter, "All ranks/rates")) & " ORDER BY FullName"
         !lstMembers.Requery: !cmdApply.Enabled = False: !txtStamp = Null: !txtPreview = Null
@@ -143,8 +147,9 @@ Private Function UXDirectoryBatchSelection() As String
 End Function
 Public Function UXDirectoryBatchPreview() As Boolean
     Dim f As Access.Form
+    ClearDirectoryReportPreview
     On Error GoTo Failed
-    Set f = Forms!frmUXDirectoryBatch: f!cmdApply.Enabled = False
+    Set f = Forms!frmUXDirectoryBatch: f!cmdApply.Enabled = False: f!txtStamp = Null
     If IsNull(f!cboGroup) Or Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchPreview", "Choose the group and both report dates."
     f!txtPreview = PreviewDirectoryReports(CLng(f!cboGroup), UXDirectoryBatchSelection(), CDate(f!txtFrom), CDate(f!txtTo))
     f!txtStamp = CStr(f!cboGroup) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
@@ -153,15 +158,24 @@ Failed:
     f!lblStatus.Caption = Err.Description
 End Function
 Public Function UXDirectoryBatchApply() As Boolean
-    Dim f As Access.Form, stamp As String, count As Long
+    Dim f As Access.Form, stamp As String, count As Long, outcome As String, message As String
+    outcome = "Not started"
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryBatch
     stamp = CStr(Nz(f!cboGroup, 0)) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
     If stamp <> Nz(f!txtStamp, "") Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchApply", "Selection or dates changed. Preview again."
-    count = ApplyDirectoryReports(): f!cmdApply.Enabled = False
+    count = ApplyDirectoryReports(outcome): f!cmdApply.Enabled = False: f!txtStamp = Null
     f!lblStatus.Caption = "Created " & count & " new drafts. Open the summary group to edit them.": UXDirectoryBatchApply = True: Exit Function
 Failed:
-    f!cmdApply.Enabled = False: f!lblStatus.Caption = Err.Description & " Nothing from this batch was committed."
+    message = Err.Description: ClearDirectoryReportPreview
+    f!cmdApply.Enabled = False: f!txtStamp = Null
+    Select Case outcome
+        Case "Committed": message = "Batch committed; the display update failed. Do not create it again. Reopen the summary group to inspect the saved drafts. " & message
+        Case "Rolled back": message = "Batch rolled back. Preview again before retrying. " & message
+        Case "Not started": message = "Batch did not start. Preview again before Apply. " & message
+        Case Else: message = "Batch outcome could not be confirmed. Inspect saved drafts and history before retrying. " & message
+    End Select
+    f!lblStatus.Caption = message
 End Function
 Public Function UXHistoryConfirmIdentity() As Boolean
     Dim id As Long, f As Access.Form

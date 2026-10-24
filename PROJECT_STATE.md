@@ -88,6 +88,14 @@ committed/display-failure and uncertain outcomes cannot claim rollback or retain
 an actionable preview. Completed moves/merges remain explicit after display
 failure. All three screens have required control/action contracts. No schema,
 report geometry, external dependency or release change is included.
+M02/M03 follow-ups advance source to **0.44.0-dev / schema 33**. Directory-batch
+report creation binds the reviewing contributor, invalidates stale state before
+every preview and on failed Apply/close/reopen/filter changes, and exposes explicit
+transaction outcomes to its UI. Invalid dates cannot leave an older batch
+actionable; committed/display-failure feedback cannot claim nothing was saved.
+The summary-group list joins the unique lifecycle row for displayed workflow
+status instead of repeated scalar lookups. Counts, closeout/default semantics,
+filters, ordering and live write guards remain unchanged.
 
 ## Architecture and authoritative sources
 
@@ -225,6 +233,12 @@ Move-to-group and duplicate-merge UI previews additionally bind the reviewing
 contributor in 0.43. Reopening the screen clears the token; failed or cross-owner
 Apply clears the token and disables Apply. Live domain revision, identity,
 membership, archive, approval, atomicity and guarded-undo checks remain unchanged.
+In 0.44, directory-batch creation applies the same contributor boundary in its
+domain service. Failed preview clears the old context before validating new
+inputs. UI opening/closing/filter changes and failed Apply invalidate the context.
+Failed validation leaves visible member/date inputs available for correction;
+reopening the screen requires choosing and previewing its inputs again.
+The context is derived/in-session; no new staging table or automatic replay exists.
 
 Closing a recoverable wizard retains its descriptor. Reopened screens require
 Preview or Resume before enabling Apply; no source reader is retained by staging.
@@ -255,16 +269,17 @@ not release artifacts. No release, signing, publication or manifest change is in
 | Path and inventory finding | Current contract |
 | --- | --- |
 | Reports / My Work | Existing `modUXReadRows` prepared presentation records remain in use. Route/group stamps are memoized within a refresh; write decisions still use their domain services. No competing display cache or persisted cache table was added. |
+| Summary-group list | In 0.44, the existing aggregate query directly joins the primary-key lifecycle row for workflow display. Missing/blank workflow still displays Initialized; member counts, archived filters, empty-group default dates and mixed/incomplete closeout text remain unchanged. `GroupWorkflow` remains available for live domain guards and other callers. |
 | Group/RSCA reads | `RSGroupRows` previously reopened head/cache/value/date/choice data per report. `AssertReportCacheRows` reads bounded 200-report chunks and shares projection, missing-field and typed-fact rules with the live scalar validator. A 500-report snapshot needs one report query plus 12 fact queries instead of roughly 2,501 validation/report reads, excluding constant RSCA context reads. No validation is skipped. |
 | Retained folder services | Selection stamps and Undo prechecks load selected report/move facts in 200-ID chunks. Input order, Null folder/revision markers and move IDs remain part of the stamp. `ApplyFolderBatch` and `AssignFolder` retain live write checks, transactions, audit and guarded undo. The former folder-screen display benchmark is historical; its screen and mutation UI callbacks are retired in 0.42. |
 | Directory history | Active prior traits and authoritative `ReportHead` revision traits are fetched in batches. Whole-report NOB, per-trait NOB, Null/blank/missing slots and incomplete prior records keep scalar semantics. The history list receives one completed value-list assignment instead of a native redraw per `AddItem`; the old query ordering and cell text remain unchanged. |
 | Selected prior history / identity repair | Existing candidate/identity batching and per-refresh selected-source memoization remain. Identity matching/repair is a mutating domain boundary, not a presentation cache to bypass. Fresh save/permission/revision checks remain scalar where required. |
 
-The folder-path map is replaced on `LoadBulkFolders`; VBA reset discards it and
-the next display access rebuilds it. Nothing is reused for authorization or saved
-state decisions. `FolderPath` and scalar cache validation remain available for
-live writers. No framework, runtime dependency, schema change or manifest change
-is part of M03.
+The former folder display map/benchmark is historical after the 0.42 screen
+retirement; retained folder batch/history services remain supported. Nothing is
+reused for authorization or saved-state decisions. `FolderPath` and scalar cache
+validation remain available for live writers. No framework, runtime dependency,
+schema change or manifest change is part of M03.
 
 The focused benchmark uses copies of the actual baseline/candidate artifacts,
 the same 500-report/500-prior synthetic workspace, production import with original
@@ -494,6 +509,38 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
 
 Verified development artifacts and scope:
 
+- [Fresh 0.44 ACCDB](build/dev/Swift_NAVFIT_0.44.0-dev_20261024-121339_7f68a813.accdb),
+  SHA256 `6E4FD9A69229EFE70084F86AB60ADE4A039E75B68D3ED2F6E1A898E6606EAFFB`.
+  [BuildAndTest](build/workflow/20261024-121339-8462f942-de34-4b86-8a0f-cc33ca379620/verification.json)
+  passes fresh generation, compile/reopen, exact source/bindings, blank verification
+  and all standard native suites. Schema 33/catalogue 2 and report geometry remain.
+  The [final directory/list receipt](build/workflow/directory-list-final-81ce79d7-826c-476f-9f61-1659209d1299/verification.json)
+  passes 29 normal directory-batch assertions, isolated rollback/postcommit/display/
+  simulated-uncertain/reset cases and reopen counts, 42 lifecycle assertions,
+  28 group move/status assertions and all six reordered group-task scenarios.
+  The [exact-artifact benchmark](build/tests/summary-list-bd1b6131-d816-488c-a728-b3fbc87ced86/verification.json)
+  uses production-verified fixture reuse and five alternating samples. All/Active/
+  Archived medians were 347.72/88.00/50.02 ms on 0.43 versus 294.53/64.84/47.31 ms
+  on 0.44. Workflow calls were 96/80/16 versus zero; displayed cells/order match
+  and reads add no data/history rows. Parent artifact and fixture hashes remain
+  unchanged. Counter/fault instrumentation exists only in labelled test copies.
+- The 0.44 focused summary-list
+  [five-trial receipt](build/tests/summary-list-f89c9b22-d2d8-4e08-b4f5-a7c7dc5eec3a/verification.json)
+  compares 400 reports/40 populated groups plus eight boundary groups. Every
+  displayed cell/order matches for All/Active/Archived and data/history counts
+  remain unchanged. All-filter workflow lookups fall from 96 to zero; five-sample
+  median All/Active refreshes were 309.48/73.62 ms versus 271.72/59.62 ms.
+  The [fixture-reuse receipt](build/tests/summary-list-80cb5e2d-d2af-4503-866b-2688802e1acd/verification.json)
+  additionally verifies complete production migration/readback and unchanged
+  fixture hashes. These are local measurements on refreshed copies, not a
+  performance guarantee or final-artifact acceptance.
+  The [directory fault/reset receipt](build/tests/group-correctness-5ae429bd-e49f-4925-87c4-fd599a53abc2.accdb.cases/verification.json)
+  covers real rollback, postcommit/display failure, simulated uncertainty, a real
+  reset, duplicate-Apply rejection and close/reopen report/link counts. Normal
+  directory tests pass 29 assertions and lifecycle tests pass 42. One earlier
+  reused-controller fault run crashed Access with native exception `0xc0000005`
+  in ntdll; its primary RPC and separate cleanup failure remain recorded. A new
+  owned controller per isolated case passed all cases. Root cause is not claimed.
 - [Fresh 0.43 ACCDB](build/dev/Swift_NAVFIT_0.43.0-dev_20261024-112635_4ce59eed.accdb),
   SHA256 `C1DCB575F48DD0431D1A03FC1159E9E22DFA1391F939B43F74983BA078582089`.
   [BuildAndTest](build/workflow/20261024-112635-e94c5237-87a6-47d5-a9df-a707c8e2d635/verification.json)

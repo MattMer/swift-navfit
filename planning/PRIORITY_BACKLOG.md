@@ -255,6 +255,17 @@ report geometry, release, signing or accessibility acceptance change is included
 
 ## Initial source checks and partial delivery
 
+**M02/M03 follow-ups, 0.44.0-dev/schema 33:** directory-batch report creation
+invalidates earlier state before a failed new preview and requires the reviewing
+contributor at Apply. Close/reopen, filter changes, failed Apply and VBA reset
+require fresh review. Explicit transaction outcomes prevent false rollback claims
+after a committed/display failure. The summary-group list replaces workflow UDF
+lookups with a unique lifecycle join; full cell/order/filter equivalence, no-read
+writes and alternating baseline/candidate measurements cover populated/empty,
+missing lifecycle and inherited/blank/null closeout cases. Existing scalar write
+guards and schema remain unchanged; these are bounded follow-ups, not release
+or physical acceptance.
+
 **M02/M04/M05 follow-ups, 0.43.0-dev/schema 33:** native-group import,
 move-to-group and reviewed duplicate-merge previews require the same contributor
 at Preview and Apply, and fresh review after failure/reopen/reset. Native group
