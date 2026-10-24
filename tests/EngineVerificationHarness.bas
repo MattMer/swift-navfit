@@ -5,6 +5,33 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  If Not ok Then Err.Raise 5, , message
  checks = checks + 1
 End Sub
+Public Function TestCommittedImportUI(ByVal path As String) As String
+ Dim beforeHash As String, reports As Long, text As String, context As Object
+ On Error GoTo Failed
+ checks = 0: beforeHash = SourceFileHash(path)
+ ConfigureWorkspace "SYNTHETIC COMMIT OUTCOME", "Outcome tester"
+ Check UXPreviewSwiftWorkspace(path), "Committed-outcome preview failed"
+ Check Not UXApplySwiftWorkspace(), "Injected finalization error was accepted as complete success"
+ Set context = SwiftLastFailureContext()
+ Check context("Number") = vbObjectError + 9601 And context("Source") = "Synthetic post-commit failure", "Import wrapper replaced the primary number or source"
+ Check context("Transaction") = "Committed", "Typed committed outcome was lost"
+ context("Transaction") = "Synthetic changed snapshot"
+ Check SwiftLastFailureContext()("Transaction") = "Committed", "Failure snapshot changed the owned diagnostic context"
+ reports = DCount("*", "Report")
+ Check reports > 0, "Post-commit fault lost imported reports"
+ text = Forms!frmUXWorkspaceImport!lblStatus.Caption & vbCrLf & Nz(Forms!frmUXWorkspaceImport!txtProgress, "")
+ Check InStr(1, text, "Target changes rolled back", vbTextCompare) = 0, "Committed import was falsely reported as rolled back"
+ Check InStr(1, text, "committed", vbTextCompare) > 0, "Committed data outcome was omitted"
+ Check Not Forms!frmUXWorkspaceImport!cmdApply.Enabled, "Committed import offered an unsafe automatic retry"
+ Check Not UXWorkspaceImportBusy() And Not Forms!frmUXWorkspaceImport.Modal And Forms!frmUXWorkspaceImport!cmdClose.Enabled, "Committed-outcome UI remained locked"
+ Check Not UXApplySwiftWorkspace() And DCount("*", "Report") = reports, "Repeated Apply changed committed reports"
+ Check InStr(Forms!frmUXWorkspaceImport!lblStatus.Caption, "Import was not started.") = 1, "Stale committed diagnostics were reused for a new validation failure"
+ Check Not Forms!frmUXWorkspaceImport!cmdApply.Enabled, "Repeated Apply re-enabled committed import"
+ Check SourceFileHash(path) = beforeHash, "Post-commit fault changed source bytes"
+ TestCommittedImportUI = "PASS: " & checks & " committed-import outcome, disabled retry, UI recovery and source protection checks": Exit Function
+Failed:
+ TestCommittedImportUI = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Private Function Rejected(ByVal db As DAO.Database, ByVal table As DAO.TableDef) As Boolean
  Dim ignored As Long
  On Error GoTo Failed

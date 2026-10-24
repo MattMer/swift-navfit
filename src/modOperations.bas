@@ -36,6 +36,14 @@ End Function
 Public Function SwiftLastFailure() As String
     If Not lastFailure Is Nothing Then SwiftLastFailure = SwiftFailureText(lastFailure)
 End Function
+Public Function SwiftLastFailureContext() As Object
+    'Return scalar diagnostic facts without exposing the owned mutable context.
+    Dim result As Object, key As Variant
+    If lastFailure Is Nothing Then Exit Function
+    Set result = CreateObject("Scripting.Dictionary")
+    For Each key In lastFailure.Keys: result.Add CStr(key), lastFailure(key): Next
+    Set SwiftLastFailureContext = result
+End Function
 
 Public Sub SwiftCleanupError(ByVal context As Object, ByVal step As String, ByVal number As Long)
     If Len(context("Cleanup")) > 0 Then context("Cleanup") = context("Cleanup") & "; "

@@ -18,7 +18,7 @@ try {
    $installedSchema=[int]$app.DLookup('SchemaVersion','AppMetadata')
    if($installedSchema -lt 30){throw 'Source installation requires an existing schema 30 or newer fixture; use the production migration runner for older sources'}
   }finally{$db.Close()}
-  foreach($module in @('modSwift','modMigration','modWorkspaceImport','modNAVFITExchange','modUXNAVFIT','modPDFImport','modUXImportFlow')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
+  foreach($module in @('modSwift','modOperations','modMigration','modWorkspaceImport','modNAVFITExchange','modUXNAVFIT','modPDFImport','modUXImportFlow')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
   foreach($binding in @(@('frmNAVFITExchange','OnUnload','=NAVFITClearReturned(False)'),@('frmPDFImport','OnUnload','=PDFClearPreview(False)'),@('frmUXWorkspaceImport','OnLoad','=UXWorkspacePreviewStart()'))){
    $app.DoCmd.OpenForm($binding[0],1);$form=$app.Forms.Item($binding[0]);$form.Properties.Item($binding[1]).Value=$binding[2];$app.DoCmd.Close(2,$binding[0],1)
   }

@@ -59,6 +59,9 @@ current-schema ACCDB/ACCDE backup/restore and stale-preview cancellation protect
 M02/M03/M04 follow-ups advance source to **0.39.0-dev / schema 33**: workspace
 preview reopen/cancellation ownership, guarded My Work refresh ownership and
 primary export diagnostics with truthful file-publication outcomes.
+M04/M05 follow-ups advance source to **0.40.0-dev / schema 33**, distinguishing
+committed workspace imports from confirmed rollback and strengthening required
+wizard controls/action bindings. No storage or report-layout change is added.
 
 ## Architecture and authoritative sources
 
@@ -351,6 +354,20 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
 
 ### Remote regression and accessibility preparation
 
+- In 0.40, workspace-import feedback uses a scalar snapshot of the diagnostic
+  context instead of parsing display text. The service preserves the primary
+  migration error number/source and passes its transaction outcome to the UI.
+  Only confirmed rollback is reported as rolled back. A committed import with
+  failed finalization retains data, clears live Apply ownership, disables retry
+  and instructs close/reopen; unknown rollback outcomes also disable Apply.
+  A new validation failure starts with its own outcome rather than inheriting
+  stale committed diagnostics. Source reads remain read-only and verified.
+- Four wizard contracts now require progress/status controls and exact critical
+  actions: workspace import, structured-PDF import, NAVFIT return/group export
+  and PDF output. Existing native/build verifiers consume the same literal
+  contract data. Missing progress/status and misbound actions fail explicitly;
+  form geometry, output serialization and schema remain unchanged.
+
 - Reliability follow-up fixes the backup worker's obsolete schema-25 ceiling:
   embedded workers receive the application's supported ceiling; the standalone
   worker reads the canonical schema. ACCDB/ACCDE copies retain their extensions,
@@ -429,6 +446,30 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
   assistive-technology, normal-security and signing acceptance remain open.
 
 Verified development artifacts and scope:
+
+- [Fresh 0.40 ACCDB](build/dev/Swift_NAVFIT_0.40.0-dev_20261023-233901_08795eef.accdb),
+  SHA256 `9DB8F7B4C549BEFD6EC66C12F99A25DD6323E43920815FCBC942736E47932DE5`.
+  [BuildAndTest](build/workflow/20261023-233901-94949ce1-e0df-475b-8297-f56a3478994f/verification.json)
+  passes all 74 stages, native compile/reopen, installed source and stronger view
+  contracts, blank identity and standard native suites. Source remains schema
+  33/catalogue 2. The focused wizard source installer now includes the diagnostic
+  module with the updated importer, avoiding an undefined helper on partial test
+  copies. Fresh generation installs and verifies the complete module set.
+- The [final 0.40 receipt](build/workflow/import-contracts-final-1a1cc3cc-57a8-4730-8670-9185a173c6be/verification.json)
+  passes eight focused runners against that artifact without the partial-source
+  install switches. The engine suite passes 16 adversarial comparisons, real
+  precommit mismatch rollback/retry and 14 committed-outcome/primary-error/UI/
+  source-protection assertions. Its post-commit fault is explicitly injected at
+  the real production commit boundary on a separate disposable copy, not an app
+  hook or a replacement migration implementation. The contract suite passes
+  35 assertions plus both installed rename/wrong-callback faults; wizard tests
+  pass 57 task-order and 63 reset/error/restart assertions. The
+  [transfer matrix](build/tests/audit-message-transfer-d72a45bc-a2f3-4376-ad12-996a4d9b8d78/verification.json)
+  passes actual retained schemas 28-33 with original rows/fields, histories and
+  source hashes intact. Native adapter/exchange/guards pass 549/410/147,
+  group/nonblocking export 1,045 cumulative, and recovery 12+26 assertions.
+  Existing historical-fixture waivers and physical/security/accessibility gaps
+  remain; no new dependency, maintained script, release or binary upload is added.
 
 - [Fresh 0.39 ACCDB](build/dev/Swift_NAVFIT_0.39.0-dev_20261023-220519_90c5185e.accdb),
   SHA256 `BE47C13FEAEDC4C37CAFF233C1F461170149A2D65DCFC3276287BD7FD80494CC`.

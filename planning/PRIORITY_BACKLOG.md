@@ -235,6 +235,15 @@ redact diagnostic identifiers and disclose file-publication state. Existing focu
 runners cover failure/retry and post-publication journal faults; no schema change,
 new dependency, release or attended acceptance is implied.
 
+**M04/M05 follow-ups, 0.40.0-dev/schema 33:** workspace import now preserves typed
+transaction outcomes and primary migration errors. Committed data is not reported
+as rolled back, and committed/uncertain outcomes disable re-Apply with recovery
+guidance. Four import/return/PDF view contracts require progress/status controls
+and exact critical action bindings. Existing focused native tests cover confirmed
+rollback/retry, an explicitly instrumented post-commit fault, immutable diagnostic
+snapshots, source protection and wizard-control/binding corruption. No schema,
+report geometry, release, signing or accessibility acceptance change is included.
+
 ## Initial source checks and partial delivery
 
 - `modCommandDirectory.DirectoryIdentityMatch` explicitly treats SSN as authoritative, then uses a unique normalized full-name fallback that excludes conflicting SSNs. C02 now adds deliberate surname candidates and reviewed merging; automatic name matching was not broadened.

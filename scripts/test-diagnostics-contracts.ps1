@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[switch]$PrepareOnly,[switch]$VerifyViews)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[switch]$PrepareOnly,[switch]$VerifyViews,[switch]$InstallViewContracts)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/diagnostics-contracts-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
@@ -22,6 +22,7 @@ try{
   foreach($module in Get-ChildItem (Join-Path $root 'src') -Filter '*.bas'){$app.LoadFromText(5,$module.BaseName,$module.FullName)}
   $db.Execute("UPDATE AppMetadata SET AppVersion='0.33.0-dev',SchemaVersion=31",128);$db.Close();$db=$null
  }
+ if($InstallViewContracts){$app.LoadFromText(5,'modUX',(Join-Path $root 'src/modUX.bas'))}
  $app.LoadFromText(5,'DiagnosticsContractsHarness',(Join-Path $root 'tests/DiagnosticsContractsHarness.bas'))
  $app.DoCmd.RunCommand(126)
  if($VerifyViews){
@@ -67,7 +68,7 @@ try{
  }
  $inventory|Export-Csv (Join-Path $folder 'suppression-inventory.csv') -NoTypeInformation
  $codes|Export-Csv (Join-Path $folder 'error-identities.csv') -NoTypeInformation
- $receipt=[ordered]@{Status='PASS';Assertions=$result;SourceSHA256=$hash;TestDatabase=$scratch;InstalledSource=[bool]$InstallSource;PreparedOnly=[bool]$PrepareOnly;NativeViewFaults=$nativeViewFaults;CheckerSHA256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;HarnessSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'tests/DiagnosticsContractsHarness.bas')).Hash;SuppressionSites=$inventory.Count;ErrorSites=$codes.Count;ReusedCodes=@($codes|Where-Object Kind -eq 'Literal'|Group-Object Code|Where-Object Count -gt 1|Select-Object Name,Count);Scope='Native primary/cleanup failures, rollback/retry and required view bindings; source inventories include literal codes and forwarded expressions; no release acceptance'}
+ $receipt=[ordered]@{Status='PASS';Assertions=$result;SourceSHA256=$hash;TestDatabase=$scratch;InstalledSource=[bool]$InstallSource;InstalledViewContracts=[bool]$InstallViewContracts;PreparedOnly=[bool]$PrepareOnly;NativeViewFaults=$nativeViewFaults;CheckerSHA256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;HarnessSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'tests/DiagnosticsContractsHarness.bas')).Hash;SuppressionSites=$inventory.Count;ErrorSites=$codes.Count;ReusedCodes=@($codes|Where-Object Kind -eq 'Literal'|Group-Object Code|Where-Object Count -gt 1|Select-Object Name,Count);Scope='Native primary/cleanup failures, rollback/retry and required view bindings; source inventories include literal codes and forwarded expressions; no release acceptance'}
 }catch{$primary=$_}finally{
  if($app){try{$app.Quit(2)}catch{$cleanup+=$_.Exception.Message};try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}catch{$cleanup+=$_.Exception.Message}}
  if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash){$cleanup+='Source artifact hash changed'}

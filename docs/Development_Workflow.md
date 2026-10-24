@@ -337,6 +337,24 @@ permission to overwrite them; a retry must preserve their bytes and saved revisi
 
 ### Diagnostics, view contracts and trait data (M04–M06)
 
+For workspace-import outcomes, run the existing
+[test-engine-verification.ps1](../scripts/test-engine-verification.ps1) with
+`-BuildPath <blank.accdb> -SourcePath <retained-synthetic-workspace.accdb> -CommitFaults`.
+It verifies adversarial field comparisons, a precommit mismatch with confirmed
+rollback/retry, and a fault injected immediately after the real production commit
+on a separate disposable copy. The injection is explicit test instrumentation,
+not an application hook. Require retained committed data, the original error,
+disabled re-Apply, usable close/unlocked UI and unchanged source hashes. Use only
+synthetic source workspaces. `-InstallSource` loads changed diagnostic/import/view
+services for early focused checks; final runs omit it. A dispatched import or an
+error message alone does not prove whether the transaction committed.
+
+The diagnostics/contracts runner also corrupts status/progress controls and action
+bindings on all four import/return/PDF screens. `-InstallViewContracts` loads only
+the changed view-contract module on a disposable current-schema copy, preserving
+metadata and schema. Final checks omit it. The existing installed verifier reads
+the same literal contracts; no second contract registry is introduced.
+
 Run the focused checks before the final integrated build, then repeat without
 source installation against the exact final blank:
 

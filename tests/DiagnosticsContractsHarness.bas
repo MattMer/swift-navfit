@@ -26,6 +26,21 @@ Private Function FailedSave() As Boolean
 Failed:
     FailedSave = InStr(SwiftLastFailure(), "CommitDraft") > 0 And InStr(SwiftLastFailure(), "Rolled back") > 0
 End Function
+Private Sub CheckWizardViewContracts()
+    Dim item As Variant, view As String, c As Access.Control, original As String, binding As String
+    For Each item In Array(Array("frmUXWorkspaceImport", "txtProgress", "cmdApply"), Array("frmPDFImport", "uxState", "cmdImport"), Array("frmNAVFITExchange", "txtStatus", "cmdExportGroup"), Array("frmPDFOutput", "lblStatus", "cmdClose"))
+        view = CStr(item(0)): DoCmd.OpenForm view, acDesign
+        Check UXAssertView(view), "Generated wizard contract rejected: " & view
+        Set c = Forms(view).Controls(CStr(item(1))): original = c.Name: c.Name = "SyntheticMissingStatus"
+        Check ContractRejected(view, 9400), "Missing required progress/status accepted: " & view
+        c.Name = original
+        Set c = Forms(view).Controls(CStr(item(2))): binding = c.OnClick: c.OnClick = "=CloseEditor()"
+        Check ContractRejected(view, 9401), "Wrong wizard action accepted: " & view
+        c.OnClick = binding
+        Check UXAssertView(view), "Restored wizard contract rejected: " & view
+        DoCmd.Close acForm, view, acSaveNo
+    Next
+End Sub
 Public Function TestDiagnosticsContracts() As String
     Dim context As Object, workspace As DAO.Workspace, db As DAO.Database, r As DAO.Recordset
     Dim saved As Long, before As Long, c As Access.Control, binding As String, operation As Long
@@ -80,6 +95,7 @@ Public Function TestDiagnosticsContracts() As String
     Call UXShowSaveError("Synthetic write failure")
     Check InStr(Forms!frmEditor!uxError.Caption, "Not saved:") = 1, "Failed write keeps explicit unsaved feedback"
     DoCmd.Close acForm, "frmEditor", acSaveNo
+    CheckWizardViewContracts
     TestDiagnosticsContracts = "PASS: " & checks & " primary/cleanup diagnostics, rollback/retry and missing/renamed/binding contracts"
     Exit Function
 Failed:

@@ -91,7 +91,7 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** Current development source is **0.39.0-dev / schema 33**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
+**Source and downloads can differ.** Current development source is **0.40.0-dev / schema 33**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
 
 Development backup/restore now supports the current schema and retains ACCDB/ACCDE
 extensions, saved values and recovery checkpoints. Existing destinations and
@@ -100,6 +100,10 @@ stale live token instead of deleting another contributor's or a newer saved prev
 Workspace-import previews require Resume after reopening. My Work avoids a redundant
 return refresh, and native export failures retain the original error, separate
 cleanup details and whether files were already published.
+Workspace import distinguishes a confirmed rollback from a failure after data was
+committed. A committed import with a finalization error requires closing/reopening
+the workspace and disables re-Apply. Import/return/PDF screens also have stronger
+required-control and action-binding checks.
 
 H01 development adds **Create PDF** in a report and **Preview / create PDFs** in
 a summary group. Choose saved values or captured current drafts, a protected export

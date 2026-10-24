@@ -157,18 +157,27 @@ Failed:
  If Not reader Is Nothing Then reader.Close
  MsgBox "Unable to preview: " & message, vbExclamation, "Import Swift NAVFIT data"
 End Function
-Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As String) As String
- Dim result As String, failure As Long, message As String
+Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As String, Optional ByRef transactionOutcome As String = "") As String
+ Dim result As String, failure As Long, message As String, source As String, cause As Object
  On Error GoTo Failed
+ transactionOutcome = "Not started"
  If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Cannot import this file into itself."
  WorkspaceImportProgress "Checking source fingerprint and destination..."
  If SourceFileHash(path) <> hash Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Source changed. Choose and preview it again."
  result = MigrateWorkspace(path, importing, True, hash)
- If Left$(result, 5) <> "PASS:" Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", result
+ If Left$(result, 5) <> "PASS:" Then
+  Set cause = SwiftLastFailureContext()
+  If Not cause Is Nothing Then
+   transactionOutcome = CStr(cause("Transaction"))
+   SwiftRaise cause
+  End If
+  Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", result
+ End If
+ transactionOutcome = "Committed"
  ImportSwiftWorkspaceData = result: Exit Function
 Failed:
- failure = Err.Number: message = Err.Description
- Err.Raise failure, "ImportSwiftWorkspaceData", message
+ failure = Err.Number: message = Err.Description: source = Err.Source
+ Err.Raise failure, source, message
 End Function
 Public Sub WorkspaceImportProgress(ByVal message As String, Optional ByVal forcePaint As Boolean = False)
  'Keep every log entry, but bound expensive control updates to four per second.
@@ -232,8 +241,9 @@ Private Sub FinishImportDisplay()
  Forms!frmUXWorkspaceImport.Repaint
 End Sub
 Public Function UXApplySwiftWorkspace() As Boolean
- Dim result As String, message As String
+ Dim result As String, message As String, outcome As String, status As String, safeRetry As Boolean
  If importing Then Exit Function
+ outcome = "Not started"
  On Error GoTo Failed
  If workspacePreview Is Nothing Then Err.Raise 5, "modWorkspaceImport.UXApplySwiftWorkspace", "Preview ownership was reset. Use Resume saved preview before Apply."
  WizardPreviewCheck "WorkspaceImport", workspacePreview("StageGuid")
@@ -243,7 +253,7 @@ Public Function UXApplySwiftWorkspace() As Boolean
  LockImportDisplay
  DoCmd.Hourglass True
  WorkspaceImportProgress "Import started. Copying workspace data, then verifying every original field in database-engine batches.", True
- result = ImportSwiftWorkspaceData(importPath, importHash)
+ result = ImportSwiftWorkspaceData(importPath, importHash, outcome)
  WorkspaceImportProgress "Import committed successfully.", True
  Forms!frmUXWorkspaceImport!lblStatus.Caption = result & ". Close and reopen this app to load the imported workspace."
  importPath = "": importHash = "": Set workspacePreview = Nothing: UXApplySwiftWorkspace = True
@@ -252,10 +262,23 @@ Public Function UXApplySwiftWorkspace() As Boolean
  Exit Function
 Failed:
  message = Err.Description
- WorkspaceImportProgress "Import stopped: " & message & ". Target changes rolled back.", True
- Forms!frmUXWorkspaceImport!lblStatus.Caption = message & " Source data is unchanged."
+ Select Case outcome
+ Case "Committed"
+  status = "Import data was committed; finalization failed. Close and reopen this workspace before continuing. " & message
+  importPath = "": importHash = "": Set workspacePreview = Nothing
+ Case "Rolled back"
+  status = "Import stopped: " & message & ". Target changes rolled back."
+  safeRetry = True
+ Case "Not started"
+  status = "Import was not started. " & message
+  safeRetry = True
+ Case Else
+  status = "Import stopped; rollback could not be confirmed. Inspect saved data before retrying. " & message
+ End Select
+ WorkspaceImportProgress status, True
+ Forms!frmUXWorkspaceImport!lblStatus.Caption = status & " Source data is unchanged."
  FinishImportDisplay
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = (importPath <> "")
+ Forms!frmUXWorkspaceImport!cmdApply.Enabled = (safeRetry And importPath <> "")
 End Function
 Public Function UXResumeSwiftWorkspace() As Boolean
  Dim saved As Object
