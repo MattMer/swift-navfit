@@ -445,9 +445,10 @@ Public Function NativeImportGradeMatches(ByVal kind As String, ByVal grade As St
         Case "FITREP": NativeImportGradeMatches = ((prefix = "O" And number >= 1 And number <= 10) Or (prefix = "W" And number >= 1 And number <= 5))
     End Select
 End Function
-Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expectedHash As String, ByVal century As Long, Optional ByVal gradeOverrides As Object) As Collection
+Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expectedHash As String, ByVal century As Long, Optional ByVal gradeOverrides As Object, Optional ByRef outcome As String = "") As Collection
     Dim groups As Object, item As Object, result As New Collection, selected As Variant, ids As Variant, nativeID As Variant, key As Variant, values As Object, defaults As Object
-    Dim w As DAO.Workspace, id As Long, g As Long, failure As Long, message As String, trans As Boolean, title As String
+    Dim w As DAO.Workspace, id As Long, g As Long, failure As Long, message As String, trans As Boolean, title As String, stage As String
+    outcome = "Not started": stage = "Validate selected groups"
     On Error GoTo Failed
     Set groups = NAVFITReviewGroupChoices(century, gradeOverrides)
     If selections.Count = 0 Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Select at least one source group."
@@ -461,24 +462,28 @@ Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expecte
             If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(expectedHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "A selected report was already imported. Use returned-file reconciliation for existing drafts."
         Next
     Next
-    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    stage = "Begin group import": Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True: outcome = "Active"
     For Each selected In selections
         Set item = groups(CStr(selected)): title = item("Title") & " - " & item("Kind") & " " & item("Paygrade")
+        stage = "Create group and defaults"
         g = CreateSummaryGroup(title, item("Kind"), item("Paygrade")): Set defaults = item("Defaults")
         For Each key In defaults.Keys: SetFieldDefault "Group", g, CStr(key), defaults(key): Next
         For Each nativeID In Split(item("Reports"), ",")
-            id = ImportReviewedReport(CLng(nativeID), expectedHash, century)
+            stage = "Import group member": id = ImportReviewedReport(CLng(nativeID), expectedHash, century)
             AddGroupMember g, id, item("Paygrade")
         Next
         result.Add g
     Next
-    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Source changed during group import. No selected group was committed."
-    w.CommitTrans: trans = False: Set ImportNAVFITGroups = result: Exit Function
+    stage = "Verify source before commit"
+    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Source changed during group import."
+    stage = "Commit group import"
+    w.CommitTrans: trans = False: outcome = "Committed": Set ImportNAVFITGroups = result: Exit Function
 Failed:
     Dim swiftPrimary As Object
-    Set swiftPrimary = SwiftFailure("modImportReview", "ImportNAVFITGroups", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    Set swiftPrimary = SwiftFailure("modImportReview", "ImportNAVFITGroups", stage, Err.Number, Err.Description, Err.Source, outcome)
     failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
     If trans Then SwiftRollback w, swiftPrimary
+    outcome = CStr(swiftPrimary("Transaction"))
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function

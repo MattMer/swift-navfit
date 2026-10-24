@@ -1,12 +1,14 @@
 Attribute VB_Name = "modUXDirectoryMerge"
 Option Explicit
 Private reviewedStamp As String
+Private reviewedOwner As Long
 Public Function UXDirectoryMergeOpen() As Boolean
     DoCmd.OpenForm "frmUXDirectoryMerge"
     UXDirectoryMergeOpen = True
 End Function
 Public Function UXDirectoryMergeLoad() As Boolean
     Dim f As Access.Form, sql As String
+    Call UXAssertView("frmUXDirectoryMerge")
     Set f = Forms!frmUXDirectoryMerge
     sql = "SELECT MemberID,FullName & ' [ID ' & MemberID & ']' FROM CommandMember WHERE IsArchived=False ORDER BY FullName,MemberID"
     f!cboSource.RowSource = sql: f!cboTarget.RowSource = sql
@@ -16,7 +18,7 @@ Public Function UXDirectoryMergeLoad() As Boolean
 End Function
 Public Function UXDirectoryMergeChanged() As Boolean
     Dim f As Access.Form, id As Long, surname As String
-    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": f!cmdApply.Enabled = False
+    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": reviewedOwner = 0: f!cmdApply.Enabled = False
     f!txtPreview = "Choose the original member and the surviving member, then preview. Matching surnames suggest candidates only. For a changed name, choose any active member in the survivor list."
     id = Nz(f!cboSource, 0)
     surname = DirectorySurname(DLookup("FullName", "CommandMember", "MemberID=" & id), DLookup("ReportName", "CommandMember", "MemberID=" & id))
@@ -48,26 +50,35 @@ Private Function MergeMemberSummary(ByVal id As Long, ByVal heading As String) A
 End Function
 Public Function UXDirectoryMergePreview() As Boolean
     Dim f As Access.Form, a As Long, b As Long
+    Call UXAssertView("frmUXDirectoryMerge")
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": f!cmdApply.Enabled = False
-    a = Nz(f!cboSource, 0): b = Nz(f!cboTarget, 0)
+    reviewedOwner = 0: a = Nz(f!cboSource, 0): b = Nz(f!cboTarget, 0)
     reviewedStamp = PreviewDirectoryMerge(a, b)
+    reviewedOwner = ActiveContributorID()
     f!txtPreview = MergeMemberSummary(a, "ORIGINAL - will be archived") & vbCrLf & MergeMemberSummary(b, "SURVIVOR - keeps profile") & vbCrLf & "All original report and prior links move to the survivor. Profiles are retained; profile fields are not combined. Report values, revisions, notes, review history and prior traits stay unchanged. Provisional/unconfirmed link states stay unchanged. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
     f!cmdApply.Enabled = True: UXDirectoryMergePreview = True: Exit Function
 Failed:
     reviewedStamp = "": f!txtPreview = Err.Description
 End Function
 Public Function UXDirectoryMergeApply() As Boolean
-    Dim f As Access.Form, id As Long
+    Dim f As Access.Form, id As Long, message As String
+    Call UXAssertView("frmUXDirectoryMerge")
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryMerge
+    If reviewedOwner = 0 Or reviewedStamp = "" Then Err.Raise 5, "modUXDirectoryMerge.UXDirectoryMergeApply", "Preview the selected members first."
+    If reviewedOwner <> ActiveContributorID() Then Err.Raise 5, "modUXDirectoryMerge.UXDirectoryMergeApply", "Preview the selected members as the current contributor before Apply."
     id = ApplyDirectoryMerge(Nz(f!cboSource, 0), Nz(f!cboTarget, 0), reviewedStamp, Nz(f!txtReason, ""))
+    reviewedStamp = "": reviewedOwner = 0
     f!cboSource = Null: f!cboTarget = Null: f!txtReason = Null: UXDirectoryMergeLoad
     f!txtPreview = "Merge " & id & " completed. Select it in merge history to undo, provided no later changes affect these members."
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad
     UXDirectoryMergeApply = True: Exit Function
 Failed:
-    reviewedStamp = "": f!cmdApply.Enabled = False: f!txtPreview = Err.Description
+    message = Err.Description: reviewedStamp = "": reviewedOwner = 0
+    f!cmdApply.Enabled = False
+    If id > 0 Then message = "Merge " & id & " committed; the display update failed. Reopen the directory and inspect merge history before making further changes. " & message
+    f!txtPreview = message
 End Function
 Public Function UXDirectoryMergeUndo() As Boolean
     Dim f As Access.Form

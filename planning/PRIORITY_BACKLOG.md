@@ -255,6 +255,16 @@ report geometry, release, signing or accessibility acceptance change is included
 
 ## Initial source checks and partial delivery
 
+**M02/M04/M05 follow-ups, 0.43.0-dev/schema 33:** native-group import,
+move-to-group and reviewed duplicate-merge previews require the same contributor
+at Preview and Apply, and fresh review after failure/reopen/reset. Native group
+import returns an explicit transaction outcome; postcommit display failures and
+uncertain outcomes retain truthful feedback and disable duplicate Apply. Completed
+moves/merges remain committed after display errors. Required control/action
+contracts cover these three screens. Native tests reproduce the old cross-owner
+behavior, then verify rejection, rollback, postcommit/display faults, a real VBA
+reset and retained counts after reopening. No schema or release change is added.
+
 **M04/M05 follow-ups, 0.41.0-dev/schema 33:** PDF import and NAVFIT return now
 preserve typed commit/rollback outcomes through UI finalization. Committed/uncertain
 states disable re-Apply with recovery guidance; confirmed rollback retains choices

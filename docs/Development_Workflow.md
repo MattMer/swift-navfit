@@ -366,6 +366,29 @@ permission to overwrite them; a retry must preserve their bytes and saved revisi
 
 ### Diagnostics, view contracts and trait data (M04–M06)
 
+For M02/M04/M05 preview ownership and group-import outcomes, use the existing
+native runners sequentially on disposable copies:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb" -AdversarialPreviews
+powershell.exe -NoProfile -File scripts/test-ux-organization.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-ux-organization.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
+powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
+```
+
+These check actual contributor switching, fresh review after failure/reopen,
+atomic native group import and retained history. Adversarial cases inject faults
+only into owned test copies at the real commit/display boundaries; the uncertain
+outcome is explicitly simulated. The reset case executes native VBE Reset with
+all three previews open and verifies that Apply writes nothing. Reopen checks
+verify report/group/receipt counts. Display-fault merge tests retain guarded Undo.
+The normal installed application contains none of this fault instrumentation.
+After a reset, return to import choices and reselect the native group source
+before previewing; its source reader is in-session. Move/merge selections remain
+visible for a fresh preview. No automatic Resume is added to these bounded flows.
+
 For workspace-import outcomes, run the existing
 [test-engine-verification.ps1](../scripts/test-engine-verification.ps1) with
 `-BuildPath <blank.accdb> -SourcePath <retained-synthetic-workspace.accdb> -CommitFaults`.

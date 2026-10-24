@@ -6,6 +6,7 @@ Private selectedPreview As Collection
 Private previewHash As String
 Private previewCentury As Long
 Private gradeOverrides As Object
+Private previewOwner As Long
 Private Function SelectedGroups() As Collection
     Dim result As New Collection, i As Long, f As Access.Form
     Set f = Forms!frmUXNativeGroups
@@ -39,8 +40,9 @@ Public Function UXChooseNativeGroupFile(ByVal path As String) As Boolean
 End Function
 Public Function UXLoadNativeGroups() As Boolean
     Dim f As Access.Form, key As Variant, item As Object
+    Call UXAssertView("frmUXNativeGroups")
     On Error GoTo Failed
-    Set f = Forms!frmUXNativeGroups: Set selectedPreview = Nothing: previewHash = "": f!cmdApply.Enabled = False
+    Set f = Forms!frmUXNativeGroups: UXNativeGroupSelectionChanged
     f!txtSource = sourcePath
     Set choices = NAVFITReviewGroupChoices(2000, gradeOverrides, True)
     f!lstGroups.RowSourceType = "Value List": f!lstGroups.RowSource = ""
@@ -81,13 +83,15 @@ Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
 End Function
 Public Function UXNativeGroupSelectionChanged() As Boolean
-    Set selectedPreview = Nothing: previewHash = "": Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    Set selectedPreview = Nothing: previewHash = "": previewOwner = 0: Forms!frmUXNativeGroups!cmdApply.Enabled = False
     UXNativeGroupSelectionChanged = True
 End Function
 Public Function UXPreviewNativeGroups() As Boolean
     Dim key As Variant, item As Object, nativeID As Variant, values As Object, field As Variant, text As String, picks As Collection
+    Call UXAssertView("frmUXNativeGroups")
     On Error GoTo Failed
     UXNativeGroupSelectionChanged
+    previewOwner = ActiveContributorID()
     Set picks = SelectedGroups(): If picks.Count = 0 Then Err.Raise 5, "modUXNativeGroups.UXPreviewNativeGroups", "Select at least one source group."
     previewCentury = 2000
     Set choices = NAVFITReviewGroupChoices(previewCentury, gradeOverrides)
@@ -114,22 +118,35 @@ Public Function UXPreviewNativeGroups() As Boolean
     Forms!frmUXNativeGroups!cmdApply.Enabled = True
     UXPreviewNativeGroups = True: Exit Function
 Failed:
+    previewOwner = 0: Set selectedPreview = Nothing: previewHash = ""
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description: Forms!frmUXNativeGroups!cmdApply.Enabled = False
 End Function
 Public Function UXApplyNativeGroups() As Boolean
-    Dim result As Collection, picks As Collection
+    Dim result As Collection, picks As Collection, outcome As String, message As String
+    Call UXAssertView("frmUXNativeGroups")
+    outcome = "Not started"
     On Error GoTo Failed
     If selectedPreview Is Nothing Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Preview the selected groups first."
+    If previewOwner <> ActiveContributorID() Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Preview the selected groups as the current contributor before Apply."
     Set picks = SelectedGroups()
     If SelectionKey(picks) <> SelectionKey(selectedPreview) Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Selection changed. Preview again."
-    Set result = ImportNAVFITGroups(picks, previewHash, previewCentury, gradeOverrides)
+    Set result = ImportNAVFITGroups(picks, previewHash, previewCentury, gradeOverrides, outcome)
+    Set selectedPreview = Nothing: previewOwner = 0: previewHash = ""
     Forms!frmUXNativeGroups!cmdPreview.SetFocus: Forms!frmUXNativeGroups!cmdApply.Enabled = False
     Set selectedPreview = Nothing
     Forms!frmUXNativeGroups!lblStatus.Caption = "Results: " & result.Count & " groups imported with all their selected reports. Open Summary groups to inspect members and validation."
     UXApplyNativeGroups = True: Exit Function
 Failed:
-    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description & " No partial selected-group batch was committed."
+    message = Err.Description
+    Set selectedPreview = Nothing: previewOwner = 0: previewHash = ""
     Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    Select Case outcome
+        Case "Committed": message = "Import committed; the display update failed. Do not import again. Reopen Summary groups to inspect the saved results. " & message
+        Case "Rolled back": message = "Import rolled back; no selected-group batch was committed. Preview again before retrying. " & message
+        Case "Not started": message = "Import did not start. Preview again before Apply. " & message
+        Case Else: message = "Import outcome could not be confirmed. Inspect saved groups and history before retrying. " & message
+    End Select
+    Forms!frmUXNativeGroups!lblStatus.Caption = message
 End Function
 Public Function UXCloseNativeGroups() As Boolean
     CloseReviewFile: DoCmd.Close acForm, "frmUXNativeGroups", acSaveNo

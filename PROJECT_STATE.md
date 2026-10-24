@@ -80,6 +80,14 @@ before use. Legacy return services, baseline/provenance and saved recovery data
 remain intact, without visible return/template/report pickers. The duplicate
 Members header Back button and Reports Folder tools screen are retired; folder
 records, history, migration and backend services remain supported.
+M02/M04/M05 follow-ups advance source to **0.43.0-dev / schema 33**: native-group
+import, move-to-group and duplicate-member merge previews belong to the reviewing
+contributor. Contributor changes, failed Apply, reopen and VBA reset require a
+fresh preview. Native group import exposes its transaction outcome to the UI;
+committed/display-failure and uncertain outcomes cannot claim rollback or retain
+an actionable preview. Completed moves/merges remain explicit after display
+failure. All three screens have required control/action contracts. No schema,
+report geometry, external dependency or release change is included.
 
 ## Architecture and authoritative sources
 
@@ -209,8 +217,14 @@ permissions. No password, encryption or external dependency is introduced.
 | Structured PDF import | One named context owns extracted XML and the target snapshot. Reviewed century/identifier/merge mode and target persist. Resume re-extracts the original PDF and rebuilds the mapping. Apply remains explicit. |
 | Whole-workspace import | An explicit descriptor owns path/hash and bootstrap workspace/profile stamp. Changed setup/source rejects Apply. Only the current import descriptor may occupy an otherwise blank target; its removal rolls back with failed import. Source preview rows are copied and verified with all other data. |
 | Full/narrative NAVFIT import | Named bounded contexts bind source/hash, display name/century and contributor to the review form. Reset/restart requires a new preview. Existing source-reader cleanup remains in `CloseReviewFile`; a reset may leave an owned v33 conversion copy for deliberate cleanup. No temporary-file sweep is introduced. |
+| Selected NAVFIT group import | Source hash, roster selection and reviewing contributor bind the in-session preview. Failed Apply clears live ownership; a fresh preview is required. The UI distinguishes confirmed rollback, committed/display failure and uncertain outcomes. No new recovery table or automatic replay is introduced. |
 | Directory creation, membership/defaults, reviewed duplicate merge and bulk actions | Existing form selections and revision/member/group/default tokens reject missing or stale previews. Derived previews intentionally require re-preview after reset; domain history/undo/recovery remains authoritative. |
 | PDF output, validation and parser caches | H01 retains its explicit captured job and invalidates it on reset. Captured pending report values are not staged by M02. Validation/parser caches are recomputed; the editor's durable recovery buffers remain unchanged. |
+
+Move-to-group and duplicate-merge UI previews additionally bind the reviewing
+contributor in 0.43. Reopening the screen clears the token; failed or cross-owner
+Apply clears the token and disables Apply. Live domain revision, identity,
+membership, archive, approval, atomicity and guarded-undo checks remain unchanged.
 
 Closing a recoverable wizard retains its descriptor. Reopened screens require
 Preview or Resume before enabling Apply; no source reader is retained by staging.
@@ -480,6 +494,31 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
 
 Verified development artifacts and scope:
 
+- [Fresh 0.43 ACCDB](build/dev/Swift_NAVFIT_0.43.0-dev_20261024-112635_4ce59eed.accdb),
+  SHA256 `C1DCB575F48DD0431D1A03FC1159E9E22DFA1391F939B43F74983BA078582089`.
+  [BuildAndTest](build/workflow/20261024-112635-e94c5237-87a6-47d5-a9df-a707c8e2d635/verification.json)
+  passes fresh generation, compilation/reopen, exact source/bindings, blank
+  verification and all standard suites, including the expanded 53-check
+  directory-merge suite. Schema 33/catalogue 2 and report geometry are unchanged.
+  No release, signing or physical acceptance is claimed.
+  The [final preview receipt](build/workflow/owned-preview-final-16236959-61e5-46b1-b7b1-9f290ed152e0/verification.json)
+  repeats native group import, four outcome-fault variants, real three-preview
+  reset/reopen checks, move ownership/reopen, committed move/merge display faults
+  and all 55 diagnostic/view-contract assertions against this exact artifact.
+  Normal cases use installed source; explicitly labelled fault copies receive
+  synthetic instrumentation. The parent artifact hash remains unchanged.
+- The [0.43 focused preview receipt](build/workflow/owned-preview-focused-8ffa518a-d770-4a7a-94fb-5fd4d9d05e5b/verification.json)
+  passes 274 native group selection/atomic-import/readback assertions, four
+  import outcome-fault cases, a real reset with all three previews open,
+  close/reopen report/group/receipt counts, 28 move/filter/status assertions,
+  53 duplicate-merge/history assertions and 55 diagnostic/view-contract assertions
+  plus installed rename/wrong-callback rejection. Cross-contributor Apply was
+  reproduced on unchanged 0.42 before the fixes. Uncertain outcome is simulated;
+  no actual failed DAO rollback is claimed. These are refreshed disposable-copy
+  checks, separate from the final fresh integrated artifact.
+  The [display-fault receipt](build/workflow/preview-display-faults-537338ec-4f3f-451f-9751-3f4a84216798/verification.json)
+  adds seven committed-move and eight committed-merge/display/Undo assertions.
+  Faults exist only in the owned test copies, not maintained application code.
 - [Fresh 0.42 ACCDB](build/dev/Swift_NAVFIT_0.42.0-dev_20261024-105339_4e40404e.accdb),
   SHA256 `0DD14857BBEAC6201F9FD76AC271CCF5066F814FE512B83C6430A2CE1C1EE2C8`.
   [BuildAndTest](build/workflow/20261024-105339-86f26ada-3e25-4931-8451-3f98297c5b13/verification.json)

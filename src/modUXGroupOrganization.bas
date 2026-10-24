@@ -1,6 +1,7 @@
 Attribute VB_Name = "modUXGroupOrganization"
 Option Explicit
 Private moveToken As String
+Private moveOwner As Long
 Public Function UXRefreshGroupFilter() As Boolean
     Dim f As Access.Form, sql As String
     Set f = Forms!frmLibrary
@@ -64,7 +65,10 @@ Public Function UXChooseReportGroup() As Boolean
     UXChooseReportGroup = True
 End Function
 Public Function UXLoadMoveGroup() As Boolean
+    Call UXAssertView("frmUXMoveGroup")
+    moveToken = "": moveOwner = 0
     With Forms!frmUXMoveGroup
+        !cmdApply.Enabled = False: !txtPreview = Null
         !reportID = Val(Nz(.OpenArgs, "0"))
         !cboGroup.RowSource = "SELECT 0 AS ID,'Ungrouped' AS Label FROM AppMetadata UNION ALL SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Label"
         !cboGroup = 0
@@ -74,6 +78,8 @@ Public Function UXLoadMoveGroup() As Boolean
 End Function
 Public Function UXPreviewMoveGroup() As Boolean
     Dim id As Long, destination As Long, csv As String, db As DAO.Database, r As DAO.Recordset
+    Call UXAssertView("frmUXMoveGroup")
+    moveToken = "": moveOwner = 0: Forms!frmUXMoveGroup!cmdApply.Enabled = False
     On Error GoTo Failed
     id = Forms!frmUXMoveGroup!reportID: destination = Nz(Forms!frmUXMoveGroup!cboGroup, 0)
     CheckMove id, destination
@@ -85,20 +91,27 @@ Public Function UXPreviewMoveGroup() As Boolean
         r.Close
         Forms!frmUXMoveGroup!txtPreview = Forms!frmUXMoveGroup!txtPreview & vbCrLf & GroupImpactText(destination, , csv)
     End If
-    moveToken = MoveStamp(id, destination): Forms!frmUXMoveGroup!cmdApply.Enabled = True: UXPreviewMoveGroup = True: Exit Function
+    moveOwner = ActiveContributorID(): moveToken = MoveStamp(id, destination): Forms!frmUXMoveGroup!cmdApply.Enabled = True: UXPreviewMoveGroup = True: Exit Function
 Failed:
     moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = Err.Description
 End Function
 Public Function UXApplyMoveGroup() As Boolean
+    Dim committed As Boolean, message As String
+    Call UXAssertView("frmUXMoveGroup")
     On Error GoTo Failed
     If Len(moveToken) = 0 Then Err.Raise vbObjectError + 6805, "modUXGroupOrganization.UXApplyMoveGroup", "Preview this move first."
+    If moveOwner <> ActiveContributorID() Then Err.Raise vbObjectError + 6805, "modUXGroupOrganization.UXApplyMoveGroup", "Preview this move as the current contributor before Apply."
     MoveReportGroup CLng(Forms!frmUXMoveGroup!reportID), CLng(Nz(Forms!frmUXMoveGroup!cboGroup, 0)), moveToken
+    committed = True
     moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = "Moved successfully. Saved report values unchanged."
     Forms!frmUXMoveGroup!cmdApply.Enabled = False
     RefreshLibrary
     UXApplyMoveGroup = True: Exit Function
 Failed:
-    Forms!frmUXMoveGroup!lblStatus.Caption = Err.Description
+    message = Err.Description: moveToken = "": moveOwner = 0
+    Forms!frmUXMoveGroup!cmdApply.Enabled = False
+    If committed Then message = "Move completed; the display update failed. Reopen Reports to inspect the saved membership. " & message
+    Forms!frmUXMoveGroup!lblStatus.Caption = message
 End Function
 Public Function UXSetGroupWorkflow() As Boolean
     On Error GoTo Failed

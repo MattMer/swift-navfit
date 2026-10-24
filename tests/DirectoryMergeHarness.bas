@@ -5,6 +5,28 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 9190, "DirectoryMergeHarness", message
     checks = checks + 1
 End Sub
+Public Function TestMergeDisplayFailure() As String
+    Dim first As Long, second As Long, merged As Long
+    On Error GoTo Failed
+    checks = 0: ConfigureWorkspace "SYNTHETIC MERGE DISPLAY FAILURE", "Synthetic merger"
+    first = SaveDirectoryMember(0, 0, "Synthetic Original", "ORIGINAL, SYNTHETIC", "IT2", "")
+    second = SaveDirectoryMember(0, 0, "Synthetic Survivor", "SURVIVOR, SYNTHETIC", "IT2", "")
+    DoCmd.OpenForm "frmUXDirectoryMerge"
+    Forms!frmUXDirectoryMerge!cboSource = first: Forms!frmUXDirectoryMerge!cboTarget = second
+    Forms!frmUXDirectoryMerge!txtReason = "Synthetic duplicate reviewed"
+    Check UXDirectoryMergePreview(), "Display-fault merge preview failed"
+    Check Not UXDirectoryMergeApply(), "Injected merge display failure was accepted"
+    Check DCount("*", "DirectoryMerge") = 1 And DLookup("IsArchived", "CommandMember", "MemberID=" & first), "Display failure lost the committed merge"
+    Check InStr(Forms!frmUXDirectoryMerge!txtPreview, "committed") > 0 And InStr(Forms!frmUXDirectoryMerge!txtPreview, "SYNTHETIC") > 0, "Committed merge/display failure not disclosed"
+    Check Not Forms!frmUXDirectoryMerge!cmdApply.Enabled And Not UXDirectoryMergeApply(), "Display failure retained an actionable merge"
+    Check DCount("*", "DirectoryMerge") = 1, "Repeated Apply duplicated merge history"
+    merged = DMax("MergeID", "DirectoryMerge")
+    Check UndoDirectoryMerge(merged), "Display failure broke guarded undo"
+    Check Not DLookup("IsArchived", "CommandMember", "MemberID=" & first) And DLookup("MergeState", "DirectoryMerge", "MergeID=" & merged) = "Undone", "Undo lost member availability or merge history"
+    TestMergeDisplayFailure = "PASS: " & checks & " committed-merge/display-failure/undo assertions": Exit Function
+Failed:
+    TestMergeDisplayFailure = "FAIL: merge display fault: " & Err.Number & " " & Err.Description
+End Function
 Private Function RejectPreview(ByVal a As Long, ByVal b As Long) As Boolean
     On Error GoTo Rejected
     Dim stamp As String: stamp = PreviewDirectoryMerge(a, b): Exit Function
@@ -133,6 +155,21 @@ Public Function TestDirectoryMerge() As String
     DoCmd.OpenForm "frmUXDirectoryMerge"
     Forms!frmUXDirectoryMerge!cboSource = x: Forms!frmUXDirectoryMerge!cboTarget = y
     Check UXDirectoryMergePreview(), "Embedded preview route failed"
+    Dim owner As Long, second As Long
+    owner = ActiveContributorID(): second = AddContributor("Second synthetic merger")
+    Forms!frmUXDirectoryMerge!txtReason = "Synthetic same member review"
+    SwitchContributor second
+    Check Not UXDirectoryMergeApply(), "Another contributor applied the reviewed directory merge"
+    Check Not Nz(DLookup("IsArchived", "CommandMember", "MemberID=" & x), False), "Rejected merge ownership changed member availability"
+    SwitchContributor owner
+    Check Not UXDirectoryMergeApply(), "Rejected merge ownership retained actionable preview"
+    Check UXDirectoryMergePreview(), "Original contributor could not preview again"
+    DoCmd.Close acForm, "frmUXDirectoryMerge", acSaveNo
+    DoCmd.OpenForm "frmUXDirectoryMerge"
+    Forms!frmUXDirectoryMerge!cboSource = x: Forms!frmUXDirectoryMerge!cboTarget = y
+    Forms!frmUXDirectoryMerge!txtReason = "Synthetic reviewed duplicate"
+    Check Not UXDirectoryMergeApply() And Not Forms!frmUXDirectoryMerge!cmdApply.Enabled, "Reopened directory merge reused a previous preview"
+    Check UXDirectoryMergePreview(), "Reopened directory merge could not preview again"
     Check InStr(Forms!frmUXDirectoryMerge!txtPreview, "000000005") = 0, "Unmasked identifier in preview"
     Check UXWindowHelp("frmUXDirectoryMerge"), "Context help failed"
     Check InStr(Forms!frmUXHelp!txtGuide, "Duplicate Sailor review") > 0 And CurrentProject.AllForms("frmUXDirectoryMerge").IsLoaded, "Help did not retain the review window"
