@@ -25,6 +25,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 
 | Changed behavior | Focused checks / source contract |
 | --- | --- |
+| Any VBA module (`src/`, `tests/`) | check-vba-source.ps1 (a few seconds; no Access). It checks the module name, Option Explicit, ASCII-only text, the 1023-character line limit, the 24-continuation limit and duplicate procedures |
 | Build graph/source import | test-build-plan.ps1; test-vba-source-normalization.ps1; final installed-source/binding verification |
 | Retired routes/folders | test-build-cleanup.ps1; retain folder batch history and undo |
 | Report navigation, pending values and lifecycle | test-ux-workflows.ps1; test-compat-pages.ps1; real Unload, failed saves, recovery and stale previews |

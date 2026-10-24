@@ -22,6 +22,7 @@
 /*.pdf
 
 # Local configuration and credentials.
+.claude/settings.local.json
 .env
 .env.*
 !.env.example
