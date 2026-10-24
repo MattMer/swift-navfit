@@ -188,3 +188,71 @@ not current active files. Git history retains those tracked originals. They are
 not counted among the files still held here. Current tests preserve trait
 persistence/rollback/legacy restore/recovery without retired checklist UI or
 a duplicate catalogue loop.
+
+## Batch of 24 October 2026 (Claude takeover review)
+
+Moved at the user's request after a reference sweep: none of these is reached from
+the build manifest, `develop.ps1`, `release-check.ps1`, `.vscode/tasks.json`,
+`src/`, or current docs (README, AGENTS, PROJECT_STATE, CONTRIBUTING,
+Development_Workflow, BUILD_PIPELINE). Only dated `planning/` notes mention some
+of them. Afterwards `develop.ps1 -Action Preflight` passed (28 build-plan, 8
+normalization and 837 field-definition checks).
+
+### Tracked files
+
+These now live at `PROPOSED_PURGE/<original path>` and are untracked; git history
+still holds every one of them. Hashes were verified after each move.
+
+| Original path | Bytes | SHA-256 | Reason |
+| --- | ---: | --- | --- |
+| scripts/apply-ux-narrative-rates.ps1 | 844 | f2496efc97158b30f857f0253b0ffe243944a7835a44a91f38b7f59e864c1bff | Generator stage not in build-manifest.json; never runs. |
+| scripts/apply-ux-prior-tooltips.ps1 | 234 | 2c27d309533274c5cb01b519c189636579a5691300e9ca0cd9effc4b21f695dd | Generator stage not in build-manifest.json; never runs. |
+| scripts/package-baseline-r98.ps1 | 5462 | 4508373cc7b5de85ac1940b3e0fbd3228ec56f5f28aedfc47f961637da872b7e | r98 one-off baseline packager. |
+| scripts/verify-baseline-r98.ps1 | 2685 | b3f4b0b84adcc54ef500ed578c1b2cbdc126e2c05c77c168cf578927a2fbb3b7 | r98 one-off baseline verifier. |
+| scripts/write-directory-merge-release-evidence.ps1 | 4699 | fd1968c62c7f8d2174f3ba51f0f9e2461ce151aa22f4f77d5c5700d7189333d0 | r127 one-off release-evidence writer. |
+| scripts/measure-report-open.ps1 | 1840 | 02370009ec3eb7a5fc52b61113fa85f054755508dc3df649b510c56bc02c9ea1 | r114/r115 one-off timing comparison. |
+| scripts/create-scale-fixture.ps1 | 1849 | 55b4f42aecb783e41e73ab4dab67deb0c623023e60675dea33dfc80636e0d08f | r102 scale fixture; superseded by measure-ux-read-rows.ps1/test-batched-reads.ps1 seeding. |
+| scripts/profile-scale-load.ps1 | 1832 | 1c1ff86cd0cc9f6fa77223a6e7d7a71aa85312d628bb1fa65ca44494f227c890 | r102-era profiling one-off; superseded by batched-read benchmarks. |
+| scripts/measure-scale-groups.ps1 | 4291 | c7beebe2c64b91c2073a70be403ee5d1e1049f9e83bdd29cef673adb180d38e9 | Earlier group-scale benchmark; superseded by test-batched-reads.ps1 and test-ux-group-lifecycle.ps1 -GroupListBenchmark. |
+| scripts/measure-ux-group-reads.ps1 | 811 | e454dc1b74c23fdc1e1821455f8f0345dde28da76e24eef93e0f66a909eeaf12 | Earlier group-read benchmark; superseded as above. |
+| scripts/seed-directory-history-demo.ps1 | 707 | 7b67d962afa6da88cb9fab3dea7c5ac470b47deb94a8c99d9c22b30b0048aab8 | Ad hoc demo seeder; build-ux-admin-demo.ps1 is the single supported Demo builder. |
+| scripts/seed-ruad-profile-demo.ps1 | 866 | f872cd67cbc3d2b48200d7c3ab1b01428c10266eb253a2d0f55fa0c69eaf3c5b | Ad hoc demo seeder; build-ux-admin-demo.ps1 is the single supported Demo builder. |
+| tests/UXRUADSeed.bas | 3022 | a63aa7ecf6bf23ac183bb8108a1e984774cf4143c43e6536a32da21a543d2f68 | Only loaded by seed-ruad-profile-demo.ps1 (moved). |
+| scripts/pdf-structured-preview.py | 4409 | 5a2a53860b5e36b677e4e13d6528d7708c532834df3b74de583720eedf7cc2d3 | Pre-native Python XFA preview; superseded by native modPDFLocal/modPDFImport. |
+| scripts/test-access-mcp.py | 3727 | 30b2eb2efb1f2615e3e33eb8ae1f150e166d8d3493f900103ddae93ffd6c7013 | Codex-era Access Explorer MCP setup smoke test. |
+| scripts/verify-installed-source.py | 839 | 58cc73e629c46e9b350e8d6cfe67b3cf3a6b6394b811b65c978850f144529331 | Superseded by verify-built-application.ps1 installed-source verification in every build. |
+| scripts/inspect-navfit.ps1 | 3852 | 599fbefbc9ced51ead25dac3a97b17c0252646c2a372ad8ed6986965b892f33d | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/inspect-navfit-bindings.ps1 | 3297 | 398fc042d914a697414f0fa697eab5509d115960730b3d3d3fb9a3f2117ceb6f | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/inspect-navfit-narrative-layout.ps1 | 3389 | 8163f71a8f2427e41b03928369563f0fc07a07da7dae8108d4929c69fece5cd7 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/inspect-navfit-print-export.ps1 | 3150 | 06410e08bb8311e3c5869a38c7f29b2c650cecd74e2824d0a5351c65b8e53541 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/inspect-navfit-print-rea.ps1 | 1887 | ac163b25fcfe55d389cdc1a3beb66be1f2165bd71d5eda9a5c3973743b7df27f | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/make-navfit-fields-probe.ps1 | 4577 | 957396d491aa531c7fb9b868d792c9c952a02dd74642fb34cfa58a546af770d1 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/make-navfit-mapping-probe.ps1 | 3706 | 015ac5f0e8bdca9073e886f55cd0ac86ca270eda5f821313cd5f9ed88d8e8050 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/prove-navfit-drawing.ps1 | 3515 | 3b03038c70d87b3b5633cfc6b8a77e90f76db1d9f2b90da1ce0aaa1549e1cf00 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/prove-navfit-runtime.ps1 | 5107 | 256630d54d4e9db06a932da3839913b5e53018e5d11257fe1e78c4fa0dd2386f | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/stage-navfit-proof.ps1 | 6107 | b7669ba98c40371d5983aa8ddf2cecc21a3a696ba8699305de5421569b453c7c | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/summarize-navfit-print-rea.cjs | 3135 | d16a0edf248fdab2d6eed20c0ea155d9c2a6df6382dab6a938dadccb37d81f59 | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+| scripts/summarize-navfit-validation-rea.cjs | 1983 | 11a6301120f5dfca086e2b4b2374033680ec3f637e12429a1efa695c3ea021ea | Completed NAVFIT98A reverse-engineering/proof tool; evidence retained in planning/. Restore if the native format changes. |
+
+### Untracked scratch (68.7 GB)
+
+These moved to `PROPOSED_PURGE/build-2026-10-24/<original path>`. The per-item
+inventory (paths, sizes, reasons, and SHA-256 for single files under 200 MB) is
+in `PROPOSED_PURGE/build-2026-10-24/INVENTORY.json`. Large directories were not
+hashed. They are disposable outputs, not inputs.
+
+| Original location | Items | Files | MB | Reason |
+| --- | ---: | ---: | ---: | --- |
+| build/tests/* | 3781 | 12144 | 66636 | Per-run disposable database copies and receipts written by test runners. The two fixture inputs `pdf-counseling-status-v2` and `pdf-local-expanded` were kept. |
+| build/* loose files | 863 | 863 | 3177 | Logs, probes, one-off helpers, PR/release drafts and 0.1.0/r122 scratch databases from earlier sessions. |
+| build/dev/* | 14 | 14 | 186 | Dev builds without a build receipt (intermediate or diagnostic) and the superseded 0.30/0.37 unsigned ACCDE candidates. Receipted builds, which serve as per-schema legacy fixtures, and the 0.38 ACCDE were kept. |
+| build/source-check-*, source-update-* | 65 | 7058 | 91 | Source-comparison scratch directories. |
+| build/ui-review-2026-10-07, tools, research, ux-reference, deployment-0.23.0, rea-navfit-*, navfit-proof, navfit-staging* | 14 | 761 | 216 | Research and review scratch; no active script reads them. |
+| build/test-dependencies | 1 | 687 | 37 | Duplicate of `build/dev-pdf-libs` with an older Pillow. |
+| .venv | 1 | 894 | 12 | Empty Python 3.15 virtual environment (pip only). |
+| scripts/\_\_pycache\_\_ | 1 | 1 | 0 | Python bytecode cache. |
+
+Still in place: `build/dev` receipted builds, `build/workflow` receipts,
+`build/dev-pdf-libs`, the two PDF fixture folders, all of `output/`, and the
+supplied reference folders. Deleting `PROPOSED_PURGE/build-2026-10-24/` frees
+about 69 GB once the review is finished.
