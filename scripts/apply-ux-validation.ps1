@@ -3,14 +3,16 @@ if(-not $script:swiftManagedBuild){foreach($module in @('modLiveValidation','mod
 NewScreen 'frmUXValidation' 'Validation issues' 10000;$f=$script:swiftForm
 $f.OnLoad='=UXLoadValidation()';$f.OnResize='=UXValidationLayout()';$f.OnTimer='=UXLoadValidation()';$f.TimerInterval=1000
 [void](Control $f 100 'lblBasis' 400 950 12600 750 '')
-[void](Control $f 100 'lblCount' 400 1750 12600 550 '')
+[void](Control $f 100 'lblCount' 400 1750 12600 300 '')
 [void](Control $f 104 'cmdPrevious' 10300 1800 1200 450 'Previous' '=UXValidationPage(-1)')
 [void](Control $f 104 'cmdNext' 11700 1800 1200 450 'Next' '=UXValidationPage(1)')
 [void](Control $f 110 'lstIssues' 400 2400 12600 2700);$c=$script:swiftControl;$c.ColumnCount=5;$c.ColumnHeads=$true;$c.ColumnWidths='0;2400;3000;1900;4900';$c.AfterUpdate='=UXValidationSelection()';$c.OnDblClick='=UXValidationOpenField()'
-[void](Control $f 109 'txtEvidence' 400 5250 12600 3100);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+$label=$app.CreateControl($f.Name,100,0,'lstIssues','',400,2200,12600,180);$label.Name='lblIssues';$label.Caption='&Findings';$label.FontName='Segoe UI';$label.FontSize=9
+[void](Control $f 109 'txtEvidence' 400 5450 12600 2900);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
+$label=$app.CreateControl($f.Name,100,0,'txtEvidence','',400,5200,12600,200);$label.Name='lblEvidence';$label.Caption='&Evidence and source';$label.FontName='Segoe UI';$label.FontSize=9
 [void](Control $f 104 'cmdOpen' 400 8850 6000 500 'Open affected report block' '=UXValidationOpenField()')
 [void](Control $f 104 'cmdBack' 6800 8850 6000 500 'Back to workspace' '=UXValidationClose()')
-$i=0;foreach($name in @('cmdPrevious','cmdNext','lstIssues','txtEvidence','cmdOpen','cmdBack')){$f.Controls($name).TabIndex=$i;$i++}
+$i=0;foreach($name in @('lstIssues','txtEvidence','cmdOpen','cmdPrevious','cmdNext','cmdBack')){$f.Controls($name).TabIndex=$i;$i++}
 SaveScreen $f 'frmUXValidation'
 $app.DoCmd.OpenForm('frmEditor',1);$f=$app.Forms.Item('frmEditor')
 # Keep the existing responsive action-area identity and geometry; make status keyboard actionable.

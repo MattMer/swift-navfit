@@ -166,7 +166,16 @@ Public Function UXGridLoad() As Boolean
         If proposals.Exists(CStr(id)) Then
             Set entries = proposals(CStr(id))
             For Each entry In entries
-                If entry(2) Then cacheRows.Fields(entry(0)) = Null Else cacheRows.Fields(entry(0)) = entry(1)
+                'The proposal list supports every canonical field; this cache
+                'projects only the visible trait/career columns. Other proposals
+                'remain available in the list/detail and normal Apply path.
+                Dim projected As DAO.Field
+                For Each projected In cacheRows.Fields
+                    If projected.Name = CStr(entry(0)) Then
+                        If entry(2) Then projected.Value = Null Else projected.Value = entry(1)
+                        Exit For
+                    End If
+                Next
             Next
         End If
         cacheRows!RowStatus = UXGridLockReason(id, r!RevisionID)

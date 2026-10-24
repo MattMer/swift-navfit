@@ -6,8 +6,8 @@ $f.Caption='Choose your contributor';$f.Width=8600;$f.Section(0).Height=6300
 $f.PopUp=$true;$f.Modal=$true;$f.BorderStyle=3;$f.AutoCenter=$true
 $f.CloseButton=$false;$f.RecordSelectors=$false;$f.NavigationButtons=$false;$f.ScrollBars=0
 $f.OnLoad='=LoadContributorStartup()';$f.OnResize=''
-function StartupControl([int]$type,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h,[string]$caption='',[string]$event=''){
- $control=$app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
+function StartupControl([int]$type,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h,[string]$caption='',[string]$event='',[string]$parent=''){
+ $control=$app.CreateControl($f.Name,$type,0,$parent,'',$x,$y,$w,$h)
  $control.Name=$name;$control.FontName='Segoe UI';$control.FontSize=11
  if($type -in @(100,104)){$control.Caption=$caption}
  if($event){$control.OnClick=$event}
@@ -15,11 +15,11 @@ function StartupControl([int]$type,[string]$name,[int]$x,[int]$y,[int]$w,[int]$h
 }
 $c=StartupControl 100 'lblHeading' 400 300 7800 600 'Who is contributing today?';$c.FontSize=20
 [void](StartupControl 100 'lblInfo' 400 1050 7800 850 'Choose a contributor for this launch. This name records local authorship; it is not sign-in or proof of identity.')
-[void](StartupControl 100 'lblExisting' 400 2050 7800 350 'Existing contributor')
 $c=StartupControl 111 'cboContributor' 400 2450 7800 450;$c.ColumnCount=2;$c.ColumnWidths='0;7400';$c.BoundColumn=1;$c.LimitToList=$true;$c.AutoExpand=$true
+[void](StartupControl 100 'lblExisting' 400 2050 7800 350 'Existing contributor' '' 'cboContributor')
 [void](StartupControl 104 'cmdContinue' 400 3100 7800 500 'Continue as selected contributor' '=AcceptContributorStartup(False)')
-[void](StartupControl 100 'lblNew' 400 3900 7800 350 'Or add your name as a new contributor')
 [void](StartupControl 109 'txtNewContributor' 400 4300 5100 450)
+[void](StartupControl 100 'lblNew' 400 3900 7800 350 'Or add your name as a new contributor' '' 'txtNewContributor')
 [void](StartupControl 104 'cmdAdd' 5700 4300 2500 450 'Add and continue' '=AcceptContributorStartup(True)')
 [void](StartupControl 100 'lblStatus' 400 5050 7800 650 '')
 [void](StartupControl 104 'cmdCancel' 400 5800 7800 400 'Exit Swift NAVFIT' '=CancelContributorStartup()')

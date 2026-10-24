@@ -127,9 +127,14 @@ Failed:
     Call ImportState("frmPDFImport", "Resume unavailable", Err.Description & " Saved choices are retained.", False)
 End Function
 Public Function UXCancelPDFImport() As Boolean
+    On Error GoTo Failed
     UXCancelPDFImport = PDFClearPreview()
+    On Error GoTo 0
     pdfSignature = "": Forms!frmPDFImport!txtPreview = ""
     Call ImportState("frmPDFImport", "Cancelled", "Saved preview removed. No report values changed.", False)
+    Exit Function
+Failed:
+    Call ImportState("frmPDFImport", "Cancel unavailable", Err.Description & " Saved choices are retained. Resume before cancelling.", False)
 End Function
 Public Function UXApplyPDFImport() As Boolean
     On Error GoTo Failed

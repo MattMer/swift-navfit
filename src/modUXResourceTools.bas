@@ -1,11 +1,11 @@
 Attribute VB_Name = "modUXResourceTools"
 Option Explicit
-' Live group tools pass explicit IDs and flush queued comparison edits first.
+' Editing tools flush queued cells; saved-value export preserves pending buffers.
 Public Function UXCurrentGroupTool(ByVal screen As String, ByVal action As String) As Boolean
  Dim id As Long
  On Error GoTo Failed
  id = Nz(Forms(screen)!uxGroupContext, 0): If id = 0 Then Exit Function
- If Not UXGridDrain() Then Exit Function
+ If action <> "Export" Then If Not UXGridDrain() Then Exit Function
  Select Case action
   Case "Export": UXCurrentGroupTool = UXOpenNAVFITGroupExport(id)
   Case "Senior": UXCurrentGroupTool = RSOpenGroupCalculator(id)

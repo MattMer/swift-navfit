@@ -104,6 +104,10 @@ Public Function VerifyRecovery() As String
     Check DCount("*", "RecoveryDraft") = 2, "Checkpoints lost on reopen"
     id = DLookup("ReportID", "RecoveryDraft", "ReportID Is Not Null")
     recoveryID = DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)
+    Check Not HasActiveContributor(), "Reopened recovery silently selected a contributor"
+    Check CurrentProject.AllForms("frmContributorStart").IsLoaded, "Reopened recovery omitted contributor selection"
+    Forms!frmContributorStart!cboContributor = CLng(DMin("UserProfileID", "UserProfile"))
+    Check AcceptContributorStartup(False), "Recovery contributor confirmation failed"
     Check RestoreRecoveryDraft(recoveryID), "Existing recovery failed"
     Set f = Forms!frmEditor
     Check Screen.ActiveForm.Name = "frmEditor", "Recovered editor not active"

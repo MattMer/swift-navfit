@@ -50,6 +50,15 @@ relationship names and writable revision-ID compatibility queries. Original
 stored column names and revision IDs remain intact for historical import.
 H01 corrections advance development to **0.36.0-dev / schema 33**, with field
 catalogue version 2 and 21 independent authored Chief trait comments.
+Remote regression and accessibility preparation advances development to
+**0.37.0-dev / schema 33**. Saved-value export entry points preserve pending
+buffers, comparison projections tolerate other canonical proposals, and entry/
+validation controls have explicit label associations. No storage change is added.
+Reliability follow-up advances development to **0.38.0-dev / schema 33**:
+current-schema ACCDB/ACCDE backup/restore and stale-preview cancellation protection.
+M02/M03/M04 follow-ups advance source to **0.39.0-dev / schema 33**: workspace
+preview reopen/cancellation ownership, guarded My Work refresh ownership and
+primary export diagnostics with truthful file-publication outcomes.
 
 ## Architecture and authoritative sources
 
@@ -246,11 +255,13 @@ senior/RSCA, 72 directory/history, 21 directory UI, 31 cleanup/folder-history an
 remain unchanged. The receipts are local development evidence, not release or
 publication records; no historical-output retesting was added by M03.
 
-**Preexisting check gap:** on the untouched 0.31.0-dev baseline,
+**Earlier check gap, repaired in 0.38:** on the untouched 0.31.0-dev baseline,
 `UXReadRowsHarness` fails after assertion 77 when its deliberately diverged report
 cache reaches guarded membership code (`Read saved member ... Trait33`). M03 does
-not weaken that rejection or alter the old assertions. Its own scalar/batch tests
-require identical cache/fact rejection codes. Historical-fixture, physical and
+not weaken that rejection or alter the old assertions. The repaired fixture
+explicitly verifies rejection and no membership write, restores its exact synthetic
+values, then continues the remaining review/filter/sort assertions. Scalar/batch tests
+still require identical cache/fact rejection codes. Historical-fixture, physical and
 release acceptance remain separate.
 
 ### Workstation and compiled candidate support
@@ -338,6 +349,175 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
   Supplied build hashes remained unchanged. No runtime dependency, new runner,
   manifest stage, release publication or user-workspace migration was introduced.
 
+### Remote regression and accessibility preparation
+
+- Reliability follow-up fixes the backup worker's obsolete schema-25 ceiling:
+  embedded workers receive the application's supported ceiling; the standalone
+  worker reads the canonical schema. ACCDB/ACCDE copies retain their extensions,
+  verify hashes and all local table counts through read-only DAO, and reject
+  linked tables, unsupported schemas and existing destinations/evidence. Primary
+  failures survive cleanup; failure reporting never replaces existing evidence.
+- PDF/native-return cancellation passes the live preview token to the existing
+  contributor-owned deletion guard. Stale contributor and superseded same-owner
+  contexts reject cancellation without deleting saved choices. Explicit Resume
+  followed by Cancel still works. No schema, UI geometry or dependency changes.
+- Recovery tests now make the mandatory fresh-session contributor choice through
+  its actual callback. Read-row tests preserve deliberate corrupt-cache probes,
+  assert membership rejection before any write, and restore their synthetic
+  values before unrelated group mutations. No production integrity guard is relaxed.
+- The existing Reports/My Work scale fixture likewise seeds traits through normal
+  saves instead of diverging the revision/cache pair. Its optional maximum is
+  100-1000 reports, retaining 25/100-row cases and five alternating-order samples.
+  Per-run timings and verification evidence are unique; historical CSV files remain.
+- An earlier refresh-ownership check failed on both unchanged 0.37 and 0.38:
+  `UXWorkBack` returning to a closed My Work window produces three queue refreshes
+  where the retained test expects two. In 0.39, a newly opened window uses its
+  existing initialization/activation refreshes; an already-open window retains
+  its explicit refresh. All seven ownership assertions remain intact. The 0.38
+  receipt retains its historical failure; it must not be relabelled as passing.
+- Workspace-import cancellation now passes its live token to the contributor
+  guard. Reopening clears only live ownership and disables Apply until deliberate
+  Resume. Fresh preview opens the form before staging its context, so initial
+  OnLoad cannot clear that newly reviewed context. All three cancel adapters give
+  safe retry/Resume feedback while preserving rejected stale choices.
+- Native report/group export and retained-source rebuild use existing primary/
+  cleanup diagnostics. Error number/source, redacted stages and owned pending
+  paths survive journal/reader cleanup failures. File-publication state is explicit,
+  including failure after files were published; retained output is never labelled
+  absent or overwritten by retry. Report revisions are unchanged. Native fault
+  tests combine missing templates with rejected failure journals and separately
+  reject completion journals after publication, for both report and group output.
+
+- The validation runner now establishes a native client size before asserting
+  layout; this host can initially report zero width. The production pane also
+  fixes an actual 200-twip overlap between evidence and its action buttons, sizes
+  Help with the heading, and retains findings/evidence/action tab order. Findings
+  and evidence have attached labels and access keys. Native resize/focus checks
+  cover repeated narrow/wide sizes, selection and paging without data writes.
+- Setup, contributor selection and PDF preview associate ten controls with their
+  labels, including a new read-only PDF findings label. Report geometry remains
+  unchanged. All 21 Chief comment controls retain their existing ordered tabs,
+  attached labels and native focus behavior; no unnecessary tab-order rewrite
+  was made. These are structural/focus checks, not screen-reader certification.
+- Six permutations of PDF preview, saved NAVFIT export and findings reproduced
+  an export-entry failure with invalid queued cells. Export now bypasses the
+  editing tools' drain/leave-editor steps, preserving queued cells, raw editor
+  values and recovery while opening the explicitly selected saved group. Senior/
+  editing-page navigation still rejects invalid pending cells. Backend integrity,
+  serialization, history, source and destination guards remain unchanged.
+- A canonical Title proposal previously caused DAO 3265 when the trait cache
+  tried to materialize a nonexistent Title column. Only matching cache columns
+  are now projected. All proposals remain in the proposal list/detail and normal
+  Apply path; preview does not commit them. Live/historical tests cover all three
+  report kinds and stale-proposal rejection.
+- Stale tests now use canonical Members navigation and an explicitly hidden
+  workbench adapter. List headings are excluded from data-row counts, a Draft
+  row is chosen after the earlier approval scenarios, and bounds are evaluated
+  inside native VBA rather than through nullable external COM control properties.
+  Ordered reviewers, the full 5,000-character staged memo, guards and original
+  workflow assertions remain covered.
+- The Settings workspace picker offers ACCDB and ACCDE. Both continue through
+  the same read-only DAO preview/import handlers; source code is never executed.
+  Compiled PDF automation remains unverified: bounded popup-control, COM argument
+  and expression-engine attempts on the retained compiled fixture failed. The
+  experimental driver was removed; no unreliable check, injected compiled VBA,
+  automation framework or security-policy change was retained.
+- Access Explorer inspected installed controls/tab metadata and contrast on a
+  disposable copy. Its normal-view screenshot operation explicitly refused the
+  validation PopUp before opening it; the owner closed normally. No alternate
+  capture mechanism was attempted. Runtime visual, physical display/DPI,
+  assistive-technology, normal-security and signing acceptance remain open.
+
+Verified development artifacts and scope:
+
+- [Fresh 0.39 ACCDB](build/dev/Swift_NAVFIT_0.39.0-dev_20261023-220519_90c5185e.accdb),
+  SHA256 `BE47C13FEAEDC4C37CAFF233C1F461170149A2D65DCFC3276287BD7FD80494CC`.
+  [BuildAndTest](build/workflow/20261023-220519-8c7a47ff-64b1-4420-ade9-d08154894af9/verification.json)
+  passes all 74 stages, native compile/reopen, exact source/bindings, blank identity
+  and standard native suites, including fixed-page/pending/workflow checks.
+  Source remains schema 33/catalogue 2, with no new runtime dependency or manifest
+  stage. This is development evidence; printed fit, normal-security/signing,
+  compiled-PDF and attended accessibility acceptance remain open.
+- The [final 0.39 reliability receipt](build/workflow/m02-m04-final-bb3f1e35-17fe-4454-865e-d6a74eb89add/verification.json)
+  passes all 11 selected runners against this exact artifact: seven refresh-owner,
+  1,748 My Work, 198 Reports, 12+26 recovery, 57 task-order, 63 reset/error/restart,
+  549 adapter, 410 exchange, 147 export/fault guards, 1,045 cumulative group/export
+  assertions, and 19 diagnostics/contract assertions plus both installed view faults.
+  Existing harnesses and the explicit refresh-counter instrumentation were used;
+  final checks did not replace application services. Native diagnostic tests prove
+  primary/cleanup separation, late rollback/retry and post-publication recovery.
+  The [transfer matrix](build/tests/audit-message-transfer-606bb906-2c93-4467-82ae-b6d8e19534ea/verification.json)
+  passes six actual retained schemas 28-33, with original fields, replies/private
+  drafts, actor/event identities, idempotency, reopen and unchanged source hashes.
+  The [backup receipt](build/tests/backup-18d8376c-583b-4439-a727-16316d0fbe99/verification.json)
+  passes 14 fault/round-trip cases and all 21 Chief recovery comments. Its compiled
+  format fixture is the retained 0.38 ACCDE; this is not compiled 0.39 acceptance.
+  No historical fixtures 1-27 were recreated. No owned Access session remained.
+
+- [Fresh 0.38 ACCDB](build/dev/Swift_NAVFIT_0.38.0-dev_20261023-202007_dd3b552e.accdb),
+  SHA256 `7A1338659C05D62FF246B4EA22AF965617FEEBBE751942EF9AE12D88FA95D58C`.
+  [BuildAndTest](build/workflow/20261023-202007-a9c6b4d7-5499-4930-ae09-07c1a0dddb0c/verification.json)
+  passed all 74 stages, compile/reopen, exact installed source/bindings, blank
+  verification and the standard native suites. No build inputs changed afterward.
+- The [0.38 reliability receipt](build/workflow/reliability-final-7a4a1349-6323-4167-9743-a95d3a2b2187/verification.json)
+  retains recovery 12+26, Reports 198, My Work 1,748, state/performance invariants
+  16, task-order 36 and full wizard reset/error/restart 63 passing assertions.
+  Application source was not installed over the final artifact. The separately
+  reproduced refresh-ownership failure above is explicitly retained, not a PASS.
+- The [1,000-report scale receipt](build/tests/read-scale-c516b461-e2d4-4860-9851-233604285165.accdb.verification.json)
+  records exact prepared/unprepared values and ordering and no read-history writes
+  at 25, 100 and 1,000 reports. Five-sample medians at 1,000 were Reports
+  546.9 ms prepared / 23,351.6 ms unprepared, and My Work 335.9 / 25,179.7 ms.
+  These compare existing read paths on this workstation, not new optimization
+  gains, screen-paint timings or tail-latency guarantees.
+- The [populated major transfer receipt](build/tests/major-cecd12d2-5967-40ce-b659-11d1255fd1e8/verification.json)
+  passes current/schema-31 source workflows, Chief comments/native provenance,
+  exact original fields, complete relationship signatures, late rollback, reopen,
+  populated-target/future-schema/unknown-table rejection and source hashes.
+  The [audit/message matrix](build/tests/audit-message-transfer-ffa6f99f-1f66-4544-9287-71c27d8cb757/verification.json)
+  passes actual retained schemas 28-33 with reply/private-draft/actor/event
+  identities and idempotent reopen; historical outputs 1-27 were not recreated
+  or claimed retested. No release or attended acceptance is implied.
+- The [0.38 backup receipt](build/tests/backup-74db632c-3d9f-411c-8618-fc439e0f0d6f/verification.json)
+  passes 14 close/copy/restore/fault cases against the final artifact without
+  source installation, including all 21 Chief recovery comments, raw dates,
+  literal paths, linked/corrupt/future-schema rejection, protected existing data/
+  evidence and byte-identical ACCDB/ACCDE round trips. Original hashes remain intact.
+- [Unsigned 0.38 x64 ACCDE](build/dev/Swift_NAVFIT_0.38.0-dev_x64_20261023-204851_6adab3dc.accde),
+  SHA256 `664F2EE31EA00DD8A0A1F8CB85E35B5757541AE3D123511E71B6A1810A813359`.
+  The [Compile receipt](build/workflow/20261023-204811-6c9774a4-b992-4874-aea2-7a4298f169dd/verification.json)
+  and [compiled checks](build/tests/compiled-f14b593f-263f-421e-943b-0ada1617396d/verification.json)
+  pass 34 trusted desktop-native assertions on Access 16.0.20430.20182 x64.
+  Signing, normal-security and compiled-PDF acceptance remain open, as do existing
+  physical/accessibility gates. No new script, framework, runtime dependency,
+  manifest stage or release publication is included in that batch. A later GitHub
+  source checkpoint does not publish these local binaries.
+
+- [Fresh 0.37 ACCDB](build/dev/Swift_NAVFIT_0.37.0-dev_20261023-182934_03afa372.accdb),
+  SHA256 `068ED131B3B01AC9CAE598FD6691FC9182DBD4802845CBF5E4CE26F34E8AC048`.
+  [BuildAndTest](build/workflow/20261023-182934-e8dc60a9-c0bd-4475-83a7-e9c74e206536/verification.json)
+  passed compile/reopen, exact source/bindings, blank identity and standard native
+  suites, including 354 fixed-page/focus checks and ten entry-label associations.
+- [Final regression receipt](build/workflow/remote-regression-final-c7a1d845-aed9-45ab-be6b-4d10ebe15272/verification.json)
+  checks that artifact without source installation: validation 141; retained
+  adapter six plus 92 native bounds; live/historical Members 73; unified Members
+  118 cumulative plus 162 six-order checks; approved-trait retry 26; NAVFIT UI 48;
+  native group/nonblocking export 1,045 cumulative; PDF 58 existing and 225 Chief
+  assertions plus the print matrix. Independent extraction checked 28 PDFs/390
+  Letter pages, expected Chief page counts and all 10,500 overflow characters.
+- [Unsigned 0.37 x64 ACCDE](build/dev/Swift_NAVFIT_0.37.0-dev_x64_20261023-184717_142f8627.accde),
+  SHA256 `306ED2D901E2EB27B18CE0532791C2029E41A8070CC9BE5C28E9CC9FEE432328`.
+  The [Compile receipt](build/workflow/20261023-184637-efe996a2-6ed6-40de-be14-f4c964471675/verification.json)
+  and [compiled checks](build/tests/compiled-2d597ba5-fbf2-4068-a52e-a0c8efed9dc7/verification.json)
+  record 34 trusted native assertions on desktop Access 16.0.20430.20182 x64,
+  including ACCDB/ACCDE import, save/reopen, source protection and provenance.
+  They explicitly record normal-security and compiled-PDF testing as false.
+- [Final installed-object audit](build/tests/m07-final-37db6ff2-8381-4481-a682-cc210178266c.accdb.audit.json)
+  reports no static heuristic contrast/truncation findings on setup, contributor
+  selection, PDF preview or validation. This is not runtime visual acceptance.
+  Existing schema/physical-test waivers remain; no release, signature, upload,
+  framework, dependency or new persistent runner is introduced.
+
 ### L01–L02 relationship names and revision-ID aliases
 
 - Schema 32 replaces the 34 opaque major relationship names with
@@ -366,20 +546,20 @@ SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
   rollback, populated-target rejection, reopen, future-version/unknown-table
   rejection and input hashes. Old-output testing waivers remain unchanged.
 - The current comparison preview/detail and retained hidden workbench adapter are
-  exercised directly. The old visible-workbench UI fixture fails identically on
-  the unchanged 0.34 baseline at its existing report-selector assertion;
-  its unrelated fixture modernization is not part of this change. An initial
+  exercised directly. The old visible-workbench UI fixture failed identically on
+  the unchanged 0.34 baseline at its report-selector assertion; 0.37 subsequently
+  repairs its hidden-context/header assumptions while retaining its assertions.
+  An initial
   alias harness sequence triggered native DAO 3246; owned DAO readback and
   rollback-before-cursor-close retain all alias/rollback assertions without a
   production workaround. Only identified synthetic test sessions were recovered.
-  The older live-members fixture also fails with the same missing-workbench
-  error 2450 on both the candidate and unchanged 0.34 baseline. Current comparison/
-  adapter checks and the approved-trait retry suite remain the relevant passing
-  UI checks; neither obsolete fixture is represented as passing or weakened.
-  Comparison UI proof uses a supported Trait33 proposal. An exploratory generic
-  Title proposal hit error 3265 because the existing trait-cache column set does
-  not contain Title; that general-proposal display limitation is outside L01–L02
-  and was not repaired or represented as passing.
+  The older live-members fixture also failed with missing-workbench error 2450
+  on both the candidate and unchanged 0.34 baseline. Its 0.37 replacement uses
+  canonical Members navigation and retains all live/historical/guard checks.
+  Earlier comparison proof used Trait33; a generic Title proposal hit error 3265
+  because the trait-cache column set does
+  not contain Title. It was outside L01–L02 and was not counted as passing at
+  that checkpoint; 0.37 repairs it as described above.
 
 The [fresh 0.35.0-dev/schema-32 blank](build/dev/Swift_NAVFIT_0.35.0-dev_20261023-100937_1dafb477.accdb)
 has SHA256 `2B2D41919E6DA99937BE9EC739DDDE69031CD5B138369A7391172545D89BC21A`.
@@ -545,9 +725,8 @@ user certificate store had no code-signing certificate. Trusted development
 automation is not normal-policy launch acceptance. Compiled PDF generation also
 remains unverified: external COM access to the compiled popup/control interface
 failed, and that check was not counted as passed. H01's ACCDB checks remain valid.
-The workspace picker still filters to ACCDB pending approval for the additional
-application-source edit; direct production handlers successfully import ACCDE
-data. Existing ACCDB Blank/Demo publication, historical import and release gates
+The workspace picker now lists ACCDB and ACCDE in 0.37; direct production handlers
+continue to import ACCDE data. Existing ACCDB Blank/Demo publication, historical import and release gates
 remain required. [The workflow](docs/Development_Workflow.md#compiled-desktop-candidate-m01)
 records compilation, signing/package integrity and remaining acceptance steps.
 The [compiled development receipt](build/workflow/20261022-170507-27d28ca5-1cff-419a-ada3-49047c5dd297/verification.json)

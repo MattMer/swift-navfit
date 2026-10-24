@@ -2,6 +2,7 @@ Attribute VB_Name = "NAVFITGuardHarness"
 Option Compare Binary
 Option Explicit
 Private checks As Long
+Private lastExportFailureNumber As Long
 Private Sub Check(ByVal condition As Boolean, ByVal message As String)
     checks = checks + 1
     If Not condition Then Err.Raise vbObjectError + 5800, , message
@@ -25,8 +26,56 @@ Private Function ExportFailure(ByVal id As Long, ByVal file As String, ByVal tem
     Call NAVFITExportReport(id, file, template)
     ExportFailure = "ACCEPTED": Exit Function
 Failed:
+    lastExportFailureNumber = Err.Number
     ExportFailure = Err.Description
 End Function
+Private Function GroupExportFailure(ByVal group As Long, ByVal file As String, ByVal template As String) As String
+    Dim preview As Object
+    On Error GoTo Failed
+    Set preview = NAVFITGroupPreview(group, False)
+    Call NAVFITExportGroup(group, file, template, preview("Token"), False)
+    GroupExportFailure = "ACCEPTED": Exit Function
+Failed:
+    lastExportFailureNumber = Err.Number
+    GroupExportFailure = Err.Description
+End Function
+Private Sub CheckExportDiagnostics(ByVal id As Long, ByVal directory As String, ByVal template As String)
+    Dim db As DAO.Database, mode As Variant, destination As String, missing As String, failure As String, group As Long, preview As Object, revisions As Long, publishedHash As String
+    Set db = CurrentDb: revisions = DCount("*", "ReportRevision")
+    group = CreateSummaryGroup("SYNTHETIC DIAGNOSTIC GROUP", SavedFields(id)("FormKind"), "E7")
+    AddGroupMember group, id, "E7"
+    missing = directory & "\missing-123456789.accdb"
+    For Each mode In Array("Report", "Group")
+        destination = directory & "\diagnostic-" & mode & ".accdb"
+        db.TableDefs("OperationJournal").Fields("OperationState").ValidationRule = "<> 'Failed'"
+        If mode = "Report" Then failure = ExportFailure(id, destination, missing) Else failure = GroupExportFailure(group, destination, missing)
+        db.TableDefs("OperationJournal").Fields("OperationState").ValidationRule = ""
+        Check failure <> "ACCEPTED" And lastExportFailureNumber = 53, mode & " cleanup replaced the primary missing-template error: " & lastExportFailureNumber & " " & failure
+        Check InStr(SwiftLastFailure(), "modNAVFITExchange.NAVFITExport" & mode & ":53") > 0, mode & " lost its primary diagnostic identity"
+        Check InStr(SwiftLastFailure(), "record failed operation") > 0, mode & " omitted the separate journal cleanup failure"
+        Check InStr(failure & SwiftLastFailure(), "123456789") = 0, mode & " diagnostics exposed an identifier"
+        Check Len(Dir$(destination)) = 0 And Len(Dir$(destination & ".swift-baseline.accdb")) = 0, mode & " failure published output"
+        Check DCount("*", "ReportRevision") = revisions, mode & " failed export changed saved revisions"
+        If mode = "Report" Then
+            Check NAVFITExportReport(id, destination, template) = destination, "Report retry failed"
+        Else
+            Set preview = NAVFITGroupPreview(group, False)
+            Check NAVFITExportGroup(group, destination, template, preview("Token"), False) = destination, "Group retry failed"
+        End If
+        destination = directory & "\published-diagnostic-" & mode & ".accdb"
+        db.TableDefs("OperationJournal").Fields("OperationState").ValidationRule = "<> 'Completed'"
+        If mode = "Report" Then failure = ExportFailure(id, destination, template) Else failure = GroupExportFailure(group, destination, template)
+        db.TableDefs("OperationJournal").Fields("OperationState").ValidationRule = ""
+        Check failure <> "ACCEPTED" And lastExportFailureNumber = 3317, mode & " completion-journal failure changed its native error"
+        Check InStr(SwiftLastFailure(), "files published") > 0, mode & " diagnostic falsely claimed output was not published"
+        Check Len(Dir$(destination)) > 0 And Len(Dir$(destination & ".swift-baseline.accdb")) > 0, mode & " journal failure lost published files"
+        publishedHash = SourceFileHash(destination) & SourceFileHash(destination & ".swift-baseline.accdb")
+        If mode = "Report" Then failure = ExportFailure(id, destination, template) Else failure = GroupExportFailure(group, destination, template)
+        Check InStr(failure, "not overwritten") > 0, mode & " retry replaced published files"
+        Check publishedHash = SourceFileHash(destination) & SourceFileHash(destination & ".swift-baseline.accdb"), mode & " retry changed published bytes"
+        Check DCount("*", "ReportRevision") = revisions, mode & " completion-journal failure changed revisions"
+    Next
+End Sub
 Private Function EncodeFailure(ByVal value As Variant, ByVal conversion As String) As String
     On Error GoTo Failed
     Call NAVFITEncode(value, conversion)
@@ -110,7 +159,8 @@ Public Function TestNAVFITGuards(ByVal directory As String, ByVal template As St
     record.Close: db.Close
     Set rows = NAVFITPreviewReturned(file, file & ".swift-baseline.accdb")
     Check NAVFITApplyReturned() = id, "New draft baseline return failed"
-    TestNAVFITGuards = "PASS: " & checks & " NAVFIT stale/hash/identity/lock/undo guards": Exit Function
+    CheckExportDiagnostics id, directory, template
+    TestNAVFITGuards = "PASS: " & checks & " NAVFIT stale/hash/identity/lock/undo and export diagnostic guards": Exit Function
 Failed:
     TestNAVFITGuards = "FAIL: " & Err.Number & " " & Err.Description
 End Function

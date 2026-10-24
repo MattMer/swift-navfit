@@ -89,7 +89,9 @@ End Function
 Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As String, ByVal blankTemplate As String, ByVal expectedToken As String, Optional ByVal usePSG As Boolean = False) As String
     Dim preview As Object, native As DAO.Database, source As DAO.Database, baseline As DAO.Database, members As DAO.Recordset, report As DAO.Recordset, meta As DAO.Recordset, fields As DAO.Recordset, f As DAO.Field, values As Object, key As Variant, value As Variant
     Dim pending As String, manifest As String, pendingManifest As String, staging As String, operation As Long, id As Long, external As Long, receipt As Variant, names As String, selection As String, newID As Long, century As Long, index As Long, countFields As Variant, failure As Long, message As String
+    Dim stage As String, publication As String
     On Error GoTo Failed
+    publication = "No report transaction; output not published": stage = "Validate group and destination"
     Set preview = NAVFITGroupPreview(groupID, usePSG)
     If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group, saved reports or RSCA changed. Preview again."
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Export filename must end in .accdb."
@@ -97,6 +99,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     If Len(Dir$(destination)) > 0 Or Len(Dir$(manifest)) > 0 Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Choose a new export filename; existing files are not overwritten."
     operation = BeginOperation("NAVFIT group export", destination)
     pending = destination & "." & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".pending.accdb": pendingManifest = pending & ".baseline.accdb"
+    stage = "Clone and validate native template"
     FileCopy blankTemplate, pending: Set native = DBEngine.OpenDatabase(pending): ValidateNAVFITDatabase native
     native.Execute "DELETE FROM Reports WHERE ReportType Is Not Null", dbFailOnError
     native.Execute "DELETE FROM Folders WHERE FolderID<>1", dbFailOnError
@@ -108,7 +111,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     report.Update: report.Close: Set report = Nothing
     Set members = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & " ORDER BY ReportID", dbOpenSnapshot)
     ' Native identities are deterministic within this package, not guessed from SSNs.
-    newID = 1
+    newID = 1: stage = "Write native group members"
     Do While Not members.EOF
         id = members!ReportID: Set values = SavedFields(id): newID = newID + 1
         receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & id & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
@@ -143,6 +146,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     members.Close: Set members = Nothing
     VerifyNativeGroupSummary native, preview
     native.Close: Set native = Nothing
+    stage = "Freeze group baseline"
     FileCopy pending, pendingManifest: Set baseline = DBEngine.OpenDatabase(pendingManifest)
     baseline.Execute "CREATE TABLE SwiftGroupExport (WorkspaceGuid TEXT(38), GroupGuid TEXT(38), GroupID LONG, GroupToken LONGTEXT, OperationID LONG, UsePSG BIT)", dbFailOnError
     baseline.Execute "CREATE TABLE SwiftGroupReport (SwiftReportID LONG PRIMARY KEY, ReportGuid TEXT(38), BaseRevisionID LONG, ExternalReportID LONG, SourceReceiptID LONG, CounselingCentury LONG)", dbFailOnError
@@ -170,28 +174,39 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     Set preview = NAVFITGroupPreview(groupID, usePSG)
     If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group changed during export. Pending files have not been published."
     FinishOperation operation, "Prepared", "Pending group export: " & pending & "; baseline: " & pendingManifest
+    stage = "Publish native group and baseline": publication = "No report transaction; publication started, inspect output and baseline"
     Name pendingManifest As manifest: Name pending As destination
+    publication = "No report transaction; files published"
     FinishOperation operation, "Completed", "Baseline SHA256 " & SourceFileHash(manifest)
     NAVFITExportGroup = destination: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If Not report Is Nothing Then report.Close
-    If Not members Is Nothing Then members.Close
-    If Not meta Is Nothing Then meta.Close
-    If Not fields Is Nothing Then fields.Close
-    If Not native Is Nothing Then native.Close
-    If Not baseline Is Nothing Then baseline.Close
-    If Len(staging) > 0 Then Kill staging
-    If operation > 0 Then FinishOperation operation, "Failed", message & "; pending: " & pending
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modNAVFITExchange", "NAVFITExportGroup", stage & "; pending: " & pending & "; baseline: " & pendingManifest, Err.Number, Err.Description, Err.Source, publication)
+    If Not report Is Nothing Then SwiftClose report, swiftPrimary, "group report reader"
+    If Not members Is Nothing Then SwiftClose members, swiftPrimary, "group member reader"
+    If Not meta Is Nothing Then SwiftClose meta, swiftPrimary, "baseline metadata reader"
+    If Not fields Is Nothing Then SwiftClose fields, swiftPrimary, "baseline field reader"
+    If Not native Is Nothing Then SwiftClose native, swiftPrimary, "native output database"
+    If Not baseline Is Nothing Then SwiftClose baseline, swiftPrimary, "baseline database"
+    If Len(staging) > 0 Then NAVFITCleanupStage staging, swiftPrimary
+    If operation > 0 Then SwiftFinishFailed operation, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "NAVFITExportGroup", message
+    SwiftRaise swiftPrimary
 End Function
+Private Sub NAVFITCleanupStage(ByVal path As String, ByVal context As Object)
+    On Error GoTo Failed
+    If Len(Dir$(path)) > 0 Then Kill path
+    Exit Sub
+Failed:
+    SwiftCleanupError context, "remove owned member staging", Err.Number
+End Sub
 Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As String, ByVal blankTemplate As String) As String
     Dim db As DAO.Database, native As DAO.Database, baseline As DAO.Database, r As DAO.Recordset, meta As DAO.Recordset, fields As DAO.Recordset, values As Object
     Dim receipt As Variant, source As String, external As Long, revision As Long, operation As Long, pending As String, manifest As String, pendingManifest As String, key As Variant, v As Variant, century As Long
     Dim failure As Long, message As String
+    Dim stage As String, publication As String
     On Error GoTo Failed
+    publication = "No report transaction; output not published": stage = "Validate report and destination"
     NAVFITCheckTarget reportID, False
     Set values = SavedFields(reportID): revision = CurrentRevision(reportID)
     Set reportReadiness = ValidateLiveFields(values, reportID)
@@ -207,11 +222,13 @@ Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As 
     operation = BeginOperation("NAVFIT export", destination)
     pending = destination & "." & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".pending.accdb"
     manifest = destination & ".swift-baseline.accdb": pendingManifest = pending & ".baseline.accdb"
+    stage = "Clone native template or retained source"
     If IsNull(receipt) Then
         FileCopy blankTemplate, pending
     Else
         NAVFITRebuildSource CLng(receipt), blankTemplate, pending
     End If
+    stage = "Validate and write native report"
     Set native = DBEngine.OpenDatabase(pending)
     ValidateNAVFITDatabase native
     If external > 0 Then
@@ -249,21 +266,23 @@ Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As 
     fields.Close: baseline.Close: Set baseline = Nothing
     If CurrentRevision(reportID) <> revision Then Err.Raise vbObjectError + 5303, "modNAVFITExchange.NAVFITExportReport", "Saved report changed during export. Pending files have not been published."
     FinishOperation operation, "Prepared", "Pending export: " & pending & "; baseline: " & pendingManifest
+    stage = "Publish native report and baseline": publication = "No report transaction; publication started, inspect output and baseline"
     Name pendingManifest As manifest
     Name pending As destination
+    publication = "No report transaction; files published"
     FinishOperation operation, "Completed", "Baseline SHA256 " & SourceFileHash(manifest)
     NAVFITExportReport = destination: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If Not r Is Nothing Then r.Close
-    If Not meta Is Nothing Then meta.Close
-    If Not fields Is Nothing Then fields.Close
-    If Not native Is Nothing Then native.Close
-    If Not baseline Is Nothing Then baseline.Close
-    If operation > 0 Then FinishOperation operation, "Failed", message & "; pending: " & pending & "; baseline: " & pendingManifest
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modNAVFITExchange", "NAVFITExportReport", stage & "; pending: " & pending & "; baseline: " & pendingManifest, Err.Number, Err.Description, Err.Source, publication)
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "native report reader"
+    If Not meta Is Nothing Then SwiftClose meta, swiftPrimary, "baseline metadata reader"
+    If Not fields Is Nothing Then SwiftClose fields, swiftPrimary, "baseline field reader"
+    If Not native Is Nothing Then SwiftClose native, swiftPrimary, "native output database"
+    If Not baseline Is Nothing Then SwiftClose baseline, swiftPrimary, "baseline database"
+    If operation > 0 Then SwiftFinishFailed operation, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "NAVFITExportReport", message
+    SwiftRaise swiftPrimary
 End Function
 Public Sub NAVFITCheckTarget(ByVal reportID As Long, Optional ByVal writing As Boolean = True)
     Dim r As DAO.Recordset, db As DAO.Database
@@ -467,7 +486,7 @@ Failed:
     SwiftRaise swiftPrimary
 End Function
 Public Function NAVFITClearReturned(Optional ByVal cancelSaved As Boolean = True) As Boolean
-    If cancelSaved Then Call WizardPreviewCancel("NAVFITReturn")
+    If cancelSaved Then Call WizardPreviewCancel("NAVFITReturn", returnContext.StageGuid)
     returnContext.Path = "": returnContext.Hash = "": returnContext.Baseline = "": returnContext.BaselineHash = "": returnContext.Report = 0: returnContext.Revision = 0: returnContext.External = 0: returnContext.Century = 0
     Set returnContext.Values = Nothing: Set returnContext.Decisions = Nothing: Set returnContext.Before = Nothing: Set returnContext.Frozen = Nothing: returnContext.NativeText = ""
     Set returnContext.NativeBase = Nothing: Set returnContext.NativeIncoming = Nothing
@@ -574,15 +593,15 @@ Public Sub NAVFITRebuildSource(ByVal receiptID As Long, ByVal blankTemplate As S
     Next
     db.Close: Exit Sub
 Failed:
-    failure = Err.Number: message = stage & ": " & Err.Description
-    On Error Resume Next
-    If Not q Is Nothing Then q.Close
-    If Not inserted Is Nothing Then inserted.Close
-    If Not cells Is Nothing Then cells.Close
-    If Not rows Is Nothing Then rows.Close
-    If Not db Is Nothing Then db.Close
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modNAVFITExchange", "NAVFITRebuildSource", stage, Err.Number, Err.Description, Err.Source, "No report transaction; retained source unchanged")
+    If Not q Is Nothing Then SwiftClose q, swiftPrimary, "retained source query"
+    If Not inserted Is Nothing Then SwiftClose inserted, swiftPrimary, "inserted source reader"
+    If Not cells Is Nothing Then SwiftClose cells, swiftPrimary, "retained cell reader"
+    If Not rows Is Nothing Then SwiftClose rows, swiftPrimary, "retained row reader"
+    If Not db Is Nothing Then SwiftClose db, swiftPrimary, "rebuilt native database"
     On Error GoTo 0
-    Err.Raise failure, "NAVFITRebuildSource", message
+    SwiftRaise swiftPrimary
 End Sub
 
 

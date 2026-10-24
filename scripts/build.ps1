@@ -136,8 +136,8 @@ try {
     $navTraitModule=Join-Path $root ('build/trait-catalogue-'+[guid]::NewGuid()+'.bas')
     & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath $navTraitModule -Application $app
     $app.LoadFromText(5,'modTraitCatalogue',$navTraitModule)
-    function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
-        $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
+    function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='',$parent='') {
+        $c = $app.CreateControl($f.Name,$type,0,$parent,'',$x,$y,$w,$h)
         $c.Name=$name
         if ($type -eq 100 -or $type -eq 104) { $c.Caption=$caption }
         if ($type -notin @(101,106,112)) { $c.FontName='Segoe UI'; $c.FontSize=10 }
@@ -162,10 +162,10 @@ try {
     }
     NewScreen 'frmSetup' 'Set up your Swift NAVFIT workspace' 5300; $f=$script:swiftForm
     [void](Control $f 100 'lblInfo' 400 1000 12600 650 'One authoritative local file. Profiles identify contributors; they do not authenticate users. Separate copies do not synchronize.')
-    [void](Control $f 100 'lblCommand' 400 1950 2800 350 'Command name')
     [void](Control $f 109 'txtCommand' 3300 1900 7000 420)
-    [void](Control $f 100 'lblUser' 400 2750 2800 350 'Contributor name')
+    [void](Control $f 100 'lblCommand' 400 1950 2800 350 'Command name' '' 'txtCommand')
     [void](Control $f 109 'txtProfile' 3300 2700 7000 420)
+    [void](Control $f 100 'lblUser' 400 2750 2800 350 'Contributor name' '' 'txtProfile')
     [void](Control $f 104 'cmdSetup' 3300 3550 4000 550 'Create workspace' '=SaveSetup()')
     SaveScreen $f 'frmSetup'
     NewScreen 'frmHome' 'Swift NAVFIT' 10200; $f=$script:swiftForm

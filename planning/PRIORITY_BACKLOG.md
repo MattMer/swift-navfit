@@ -172,8 +172,8 @@ M01 has development tooling and native compiled-candidate proof on desktop Acces
 16.0.20430.20182 x64, via the existing development entry point. It is **not complete
 for production**: normal-policy launch remains unresolved after cancelling an
 unsigned-file security prompt, no approved
-signing certificate is available, compiled PDF output remains unverified, and the
-ACCDE import-picker filter change awaits scope approval. See
+signing certificate is available, and compiled PDF output remains unverified.
+The ACCDE import-picker filter is implemented in 0.37. See
 [current scope and limitations](../PROJECT_STATE.md#environment-build-verification-and-delivery)
 and the [compiled-candidate procedure](../docs/Development_Workflow.md#compiled-desktop-candidate-m01).
 No release/publication or security-policy change is included.
@@ -189,8 +189,8 @@ reads and Undo prechecks, refresh-owned paths, batched directory-history average
 and shared scalar/batch group persistence validation. Existing prepared Reports/
 My Work readers and live write guards remain. The [inventory and verification
 scope](../PROJECT_STATE.md#m03-joinedbatched-read-paths) records measured native
-equivalence/performance and the separately reproduced preexisting read-row test
-fixture failure. No schema or release change is included.
+equivalence/performance. The preexisting read-row fixture failure is repaired in
+0.38 without weakening cache-divergence rejection. No schema or release change is included.
 
 M04–M06 implementation is in **0.33.0-dev/schema 31** development source:
 contextual primary/cleanup diagnostics and narrower suppression; required
@@ -211,6 +211,29 @@ H02. H02 is implemented separately above; no release is published.
 L01–L02 are implemented in **0.35.0-dev/schema 32** development source. See
 [behavior, compatibility and verification](../PROJECT_STATE.md#l01l02-relationship-names-and-revision-id-aliases).
 No release or publication is included; historical fixture waivers remain in force.
+
+**Remote follow-up, 0.37.0-dev/schema 33:** repaired the stale Members/workbench
+fixtures without dropping their behavioral assertions, fixed non-grid proposal
+projection and saved-export entry guards found by reordered task tests, and
+added native label/focus/resize checks. M07 has development preparation and
+targeted label/layout remediation, not accessibility acceptance. See
+[current scope and verification](../PROJECT_STATE.md#remote-regression-and-accessibility-preparation).
+
+**Reliability follow-up, 0.38.0-dev/schema 33:** current-schema ACCDB/ACCDE
+backup/restore, protected verification files and stale-token cancellation for PDF/
+native-return previews. Focused fixtures now honor contributor startup and reject
+deliberately divergent report caches before unrelated mutations. Native test and
+retained-schema evidence is recorded in the same current-state section; historical
+fixture waivers and attended acceptance remain unchanged.
+**M02/M03/M04 follow-ups, 0.39.0-dev/schema 33:** workspace-import cancellation
+is token-guarded and reopened previews require deliberate Resume. All three
+cancel adapters retain stale choices with recovery guidance. My Work's redundant
+closed-window return refresh (reproduced on 0.37/0.38) is removed while preserving
+initialization, activation and loaded-window refreshes. Native report/group export
+and retained-source rebuild preserve primary errors across cleanup/journal failures,
+redact diagnostic identifiers and disclose file-publication state. Existing focused
+runners cover failure/retry and post-publication journal faults; no schema change,
+new dependency, release or attended acceptance is implied.
 
 ## Initial source checks and partial delivery
 

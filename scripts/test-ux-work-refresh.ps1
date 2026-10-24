@@ -20,8 +20,8 @@ try {
   if($app.Eval('QueueTestCount()') -ne $expected){throw ('Expected one refresh: '+$action+'; actual='+$app.Eval('QueueTestCount()'))}
  }
  $app.DoCmd.Close(2,'frmMyWork',2);[void]$app.Eval('QueueTestReset()');[void]$app.Eval('UXWorkBack()')
- if($app.Eval('QueueTestCount()') -ne 2){throw 'Back to closed My Work loaded more than once'}
+ if($app.Eval('QueueTestCount()') -ne 2){throw ('Back to closed My Work expected 2 refreshes; actual='+$app.Eval('QueueTestCount()'))}
  $app.DoCmd.Close(2,'frmMyWork',2);[void]$app.Eval('QueueTestReset()');[void]$app.Eval('OpenMyWork()')
- if($app.Eval('QueueTestCount()') -ne 2){throw 'Legacy open loaded more than once'}
+ if($app.Eval('QueueTestCount()') -ne 2){throw ('Legacy open expected 2 refreshes; actual='+$app.Eval('QueueTestCount()'))}
  Write-Output 'PASS: seven queue refresh ownership checks (instrumented disposable copy)'
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

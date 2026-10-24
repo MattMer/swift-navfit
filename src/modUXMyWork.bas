@@ -210,9 +210,11 @@ Public Function UXWorkChanged() As Boolean
     UXWorkChanged = True
 End Function
 Public Function UXWorkBack() As Boolean
+ Dim wasLoaded As Boolean
  If Not UXLeaveEditor() Then Exit Function
+ wasLoaded = CurrentProject.AllForms("frmMyWork").IsLoaded
  DoCmd.OpenForm "frmMyWork"
- UXLoadMyWork
+ If wasLoaded Then UXLoadMyWork
  Forms!frmMyWork.SetFocus
  UXWorkBack = True
 End Function

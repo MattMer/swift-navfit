@@ -117,7 +117,7 @@ Public Function UXChooseSwiftWorkspace() As Boolean
  If importing Then Exit Function
  On Error GoTo Failed
  Set dialog = Application.FileDialog(3): dialog.Title = "Import previous Swift NAVFIT workspace": dialog.AllowMultiSelect = False
- dialog.Filters.Clear: dialog.Filters.Add "Swift NAVFIT database", "*.accdb"
+ dialog.Filters.Clear: dialog.Filters.Add "Swift NAVFIT database", "*.accdb;*.accde"
  If dialog.Show <> -1 Then Exit Function
  UXChooseSwiftWorkspace = UXPreviewSwiftWorkspace(dialog.SelectedItems(1)): Exit Function
 Failed:
@@ -141,13 +141,13 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
   End If
  Next
  source.Close: reader.Close
+ DoCmd.OpenForm "frmUXWorkspaceImport"
  importHash = SourceFileHash(path): importPath = path
  Dim choices As Object, token As String
  Set choices = CreateObject("Scripting.Dictionary")
  choices.Add "TargetStamp", WizardWorkspaceStamp()
  token = WizardPreviewSave("WorkspaceImport", path, importHash, "", "", 0, 0, choices)
  Set workspacePreview = WizardPreviewLoad("WorkspaceImport")
- DoCmd.OpenForm "frmUXWorkspaceImport"
  Forms!frmUXWorkspaceImport!txtPreview = text & vbCrLf & "All workspace data is copied, including revisions, reviews, members, defaults, recovery, history and import provenance. Source code/forms are not imported. Use a new blank app; this does not merge independent workspaces. Initial setup contributor details in an otherwise blank app will be replaced by the source workspace."
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = True
  UXPreviewSwiftWorkspace = True: Exit Function
@@ -268,14 +268,23 @@ Failed:
  Forms!frmUXWorkspaceImport!lblStatus.Caption = "Resume unavailable: " & Err.Description
 End Function
 Public Function UXCancelSwiftWorkspacePreview() As Boolean
+ Dim token As String
  If importing Then Exit Function
- UXCancelSwiftWorkspacePreview = WizardPreviewCancel("WorkspaceImport")
+ On Error GoTo Failed
+ If Not workspacePreview Is Nothing Then token = workspacePreview("StageGuid")
+ UXCancelSwiftWorkspacePreview = WizardPreviewCancel("WorkspaceImport", token)
+ On Error GoTo 0
  importPath = "": importHash = "": Set workspacePreview = Nothing
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
  Forms!frmUXWorkspaceImport!lblStatus.Caption = "Saved preview cancelled. No source or workspace data changed."
+ Exit Function
+Failed:
+ Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
+ Forms!frmUXWorkspaceImport!lblStatus.Caption = "Cancel unavailable: " & Err.Description & " Saved choices are retained. Resume before cancelling."
 End Function
 Public Function UXWorkspacePreviewStart() As Boolean
  If importing Then Exit Function
+ importPath = "": importHash = "": Set workspacePreview = Nothing
  Forms!frmUXWorkspaceImport.Modal = False
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
  Forms!frmUXWorkspaceImport!cmdClose.Enabled = True

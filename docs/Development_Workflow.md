@@ -197,8 +197,9 @@ build, then repeat against the unchanged final artifact:
 powershell.exe -NoProfile -File scripts/test-wizard-state.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema29-blank.accdb" -PDFPath "D:\path\synthetic-filled-eval.pdf"
 ```
 
-`-InstallSource` installs only the changed services and additive staging table on
-the disposable copy for early checks; it does not verify generated form layouts.
+`-InstallSource` installs changed services on an existing schema-30-or-newer
+disposable copy for early checks; it preserves staging rows and metadata. Use
+production migration for older sources. It does not verify generated form layouts.
 The final run omits it. The runner invokes an actual VBE Reset and an intentional
 unhandled VBA error, starts a separate Access session, and tests source/target/
 contributor changes, cancel, staged-state migration, late rollback/retry and source
@@ -216,6 +217,16 @@ existing PDF fixture-generator output); it adds positive PDF Resume-callback and
 resumed-Apply checks. Without it, PDF source/choice recovery uses the supplied blank
 template and positive filled-PDF UI/apply coverage is not claimed. The ignored local
 `verification.json` records which optional proofs ran, assertion counts and hashes.
+
+Use `-CrossWorkflowOnly -PDFPath <synthetic-filled-eval.pdf>` for deterministic
+contributor/task-order cases without the reset/error-dialog phase. It covers
+stale/superseded cancellation, owner-private drafts, archive-between-preview-and-
+Apply and invalid pending editor values. It does not claim reset/restart coverage.
+Cancel with a live context must match its saved token; Resume is required before
+cancelling a different or newer preview. Workspace-import cases additionally test
+contributor/superseded cancellation and close/reopen without automatic Apply.
+All three cancel adapters must return explicit failure guidance and preserve choices
+when a live token is stale, rather than exposing an unhandled event-expression error.
 
 ### Batched read verification (M03)
 
@@ -237,6 +248,23 @@ copies; it cannot establish a fresh integrated artifact. Optional `-DataSourcePa
 reuses an unchanged synthetic benchmark fixture through production import, avoiding
 repeated seeding; its command marker/row counts and source hash are checked. Do
 not use a populated operational workspace as benchmark data.
+
+Run [test-ux-read-rows.ps1](../scripts/test-ux-read-rows.ps1) for Reports
+prepared-row equivalence, sorting/filtering and null/NOB/missing-field cases,
+[test-ux-my-work.ps1](../scripts/test-ux-my-work.ps1) for My Work behavior, and
+[test-ux-performance.ps1](../scripts/test-ux-performance.ps1) for refresh/state
+invariants. Deliberate cache divergence must reject writes; restore the exact
+synthetic values before testing unrelated mutations. The benchmark accepts up to
+1,000 reports plus 1,000 prior evaluations; same-version comparisons measure
+regression/equivalence, not a new optimization's speedup.
+
+[measure-ux-read-rows.ps1](../scripts/measure-ux-read-rows.ps1) with
+`-BuildPath <blank.accdb> -Size 1000` compares prepared/unprepared Reports and
+My Work reads at 25, 100 and the selected maximum (100-1000), alternating sample
+order over five trials. Traits are seeded through normal saves. Exact values/order
+and unchanged history are required; per-run CSV and verification files sit beside
+the unique disposable fixture. Timings cover query/data preparation, not screen
+paint, cold startup, tail latency or a production performance guarantee.
 
 Also run the existing persistence, reporting-senior/RSCA, directory/history,
 folder cleanup/rollback/undo and performance/recovery suites for changes to the
@@ -300,6 +328,13 @@ These are Access/DAO format and workflow checks, not a new NAVFIT98A desktop
 acceptance or printed-fit claim. Actual serialization/capacity limits still fail
 without truncation/coercion; readiness findings do not require acknowledgement.
 
+The adapter guard suite also injects a missing template together with a rejected
+failure-journal write, and separately rejects completion-journal writes after files
+have been published, for report and group output. Require the original error
+number/identity, separate cleanup details, redacted diagnostics and truthful
+publication state. Existing published/pending files are recovery evidence, not
+permission to overwrite them; a retry must preserve their bytes and saved revisions.
+
 ### Diagnostics, view contracts and trait data (M04–M06)
 
 Run the focused checks before the final integrated build, then repeat without
@@ -335,6 +370,65 @@ requires its exact reviewed contents and still rejects all user/domain rows.
 Never delete the reference rows to make a blank check pass, reinterpret them as
 user content, or overwrite conflicting source definitions during import.
 
+### Remote regression and accessibility preparation
+
+For backup/recovery changes, run [test-backup.ps1](../scripts/test-backup.ps1)
+with `-BuildPath <blank.accdb>` and optional `-CompiledPath <candidate.accde>`,
+and [test-recovery.ps1](../scripts/test-recovery.ps1) with `-BuildPath <blank.accdb>`.
+The backup runner covers close-before-copy, literal filenames, byte-preserving
+restore, raw recovery fields, existing output/evidence, linked/corrupt/future-schema
+rejection and optional compiled round trips. `-InstallSource` prepares only its
+disposable copy; final verification omits it. Embedded workers receive the
+application schema ceiling; standalone workers read the canonical schema. Restore
+preserves the source extension and always creates a new file. Check the verification
+JSON before opening a restored copy; a dispatched worker is not a completed backup.
+
+Use the existing focused runners for task-order and view regressions:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-ux-validation.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-major-ui.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-live-members.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-group-exit.ps1 -BuildPath "D:\path\blank.accdb" -TaskOrders
+powershell.exe -NoProfile -File scripts/test-compat-pages.ps1 -BuildPath "D:\path\blank.accdb"
+```
+
+The six task orders alternate PDF preview, saved NAVFIT export and read-only
+findings with invalid pending grid/editor values. They assert unchanged saved
+revisions, retained raw values, explicit discard and guarded editing navigation.
+Members checks include live/historical views, stale revisions/membership and a
+canonical non-grid proposal. The retained workbench is tested as a hidden adapter,
+not presented as a second Members UI. List headers are not data rows, and native
+VBA checks real control bounds rather than nullable external COM properties.
+
+Validation tests set native `InsideWidth`/`InsideHeight` before asserting resized
+geometry; an initial zero client width is not a rendered layout. Repeated sizes
+check evidence/action clearance, Help, paging, selection and focus. Fixed-page
+tests check all 21 Chief comment labels, ordered tabs and native subform focus.
+The entry-label test checks ten associated labels/tab stops in setup, contributor
+selection and PDF preview. `-EntryLabelsOnly` is a bounded subset. The validation,
+Members, task-order and entry-label runners offer `-InstallSource` for supported
+preparation of their disposable copies; final checks use the fresh artifact
+without that switch. This does not replace full generation or visual acceptance.
+
+M07's development targets follow the [Access Board software provisions](https://www.access-board.gov/ict/#chapter-5-software)
+and Microsoft's [Access tab-order guidance](https://support.microsoft.com/en-us/access/set-the-tab-order-for-controls).
+Treat this as a traceable test plan, not a compliance determination:
+
+| Area | Development evidence | Remaining attended acceptance |
+| --- | --- | --- |
+| Names and state | Native attached-label and control-property checks | Screen reader announces correct label, role, value, state and findings |
+| Keyboard and focus | Tab indices, native focus and pending-value guards | Tab/Shift+Tab, activation, Escape, visible focus and no trapped dialogs across complete tasks |
+| Display and contrast | Bounds at explicit viewports; selected static contrast inspection | Target DPI/scaling, high contrast, zoom and physical readability |
+| Dialogs and output | Context, error/retry, source preservation and PDF checks where actually run | Screen-reader notifications, PDF reading order/accessibility and physical print fit |
+
+Retain attended results for contributor startup, all report kinds, Members,
+review, findings, import/export, dialogs and output. Do not infer keyboard-key
+delivery, screen-reader behavior or Windows DPI acceptance from `SetFocus`,
+geometry or a static lint verdict. The inspected screenshot tool refused normal
+PopUp opening before capture; do not count a design image as runtime evidence or
+cycle through alternate capture mechanisms to bypass that boundary.
+
 ### Compiled desktop candidate (M01)
 
 After a fresh ACCDB build and its applicable focused/integrated tests pass, use
@@ -362,9 +456,9 @@ user trust decision or an approved trusted location would permit.
 acceptance option: security prompts require user interaction and must not be
 bypassed. Compiled PDF generation is still unverified because the external COM
 compiled-form/control interface failed during the attempted test. Do not infer
-compiled PDF support from the passing ACCDB PDF suite. The import picker currently
-lists ACCDB only; its additional ACCDE filter awaits application-source scope
-approval even though the production data-import handlers accept ACCDE sources.
+  compiled PDF support from the passing ACCDB PDF suite. The import picker lists
+  both ACCDB and ACCDE; production data-import handlers read either through DAO
+  without executing source code.
 Keep the source ACCDB and its receipt: compiled VBA source cannot be edited or
 recovered through the ordinary Access development workflow.
 

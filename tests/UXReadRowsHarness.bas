@@ -24,6 +24,13 @@ Private Sub CompareReports()
     Check DCount("*", "ReportRevision") = before, "Reading created revisions"
     Check DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet") = snapshots, "Reading created historical snapshots"
 End Sub
+Private Function RejectDivergedMember(ByVal groupID As Long, ByVal reportID As Long) As Boolean
+    On Error GoTo Rejected
+    AddGroupMember groupID, reportID, "E5"
+    Exit Function
+Rejected:
+    RejectDivergedMember = InStr(Err.Description, "Derived report cache differs") > 0
+End Function
 Public Function TestUXReadRows() As String
     Dim id As Long, other As Long, p As Long, g As Long, g2 As Long, template As Long, run As Long, task As Long, thread As Long
     Dim changes As Object, key As Variant, revision As Long, f As Access.Form, preset As Variant, col As Long, rows As Long
@@ -57,6 +64,12 @@ Public Function TestUXReadRows() As String
     Check UXReportRowCell(id, 2) = "NOB", "NOB override lost"
     CurrentDb.Execute "INSERT INTO RevisionValue (RevisionID,FieldKey,ValueText,IsNullValue) VALUES (" & revision & ",'Trait39','4.0',False)", dbFailOnError
     g = CreateSummaryGroup("Z group", "EVAL", "E5"): g2 = CreateSummaryGroup("A; quoted group", "EVAL", "E5")
+    Check RejectDivergedMember(g, id), "Membership accepted the deliberately diverged report cache"
+    Check DCount("*", "GroupMember", "GroupID=" & g) = 0, "Rejected divergence changed membership"
+    'The preceding corrupt-cache cases are read-only probes. Restore their exact
+    'seed values before testing unrelated guarded review/group mutations.
+    CurrentDb.Execute "UPDATE Report SET Trait33='4.0',ObservationStatus=Null WHERE ReportID=" & id, dbFailOnError
+    CurrentDb.Execute "UPDATE RevisionValue SET ValueText='4.0',IsNullValue=False WHERE RevisionID=" & revision & " AND FieldKey IN ('Trait33','Trait34','Trait35')", dbFailOnError
     AddGroupMember g, id, "E5": AddGroupMember g2, id, "E5"
     CompareReports
     Check UXReportRowCell(id, 3) = "A; quoted group; Z group", "Group ordering/semicolons changed"

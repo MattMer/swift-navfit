@@ -1,20 +1,23 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$PDFPath)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$PDFPath,[switch]$CrossWorkflowOnly)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/wizard-state-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
 $hash=(Get-FileHash -LiteralPath $BuildPath).Hash
 $scratch=Join-Path $folder 'fixture.accdb';Copy-Item -LiteralPath $BuildPath -Destination $scratch
+$workspaceSource=Join-Path $folder 'workspace-source.accdb';Copy-Item -LiteralPath $BuildPath -Destination $workspaceSource
 $pdfInput='';$pdfOriginalHash=''
 if($PDFPath){$pdfOriginalHash=(Get-FileHash -LiteralPath $PDFPath).Hash;$pdfInput=Join-Path $folder 'synthetic-input.pdf';Copy-Item -LiteralPath $PDFPath -Destination $pdfInput}
-$app=$null;$cleanupFailure='';$assertionTotal=0;$phases=[Collections.Generic.List[string]]::new()
+$app=$null;$cleanupFailure='';$assertionTotal=0;$failureObserved=$false;$phases=[Collections.Generic.List[string]]::new()
 try {
  $app=New-Object -ComObject Access.Application
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  Write-Output ('Controller: focused wizard runner; database: '+$scratch)
  if($InstallSource){
-  $schema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw|ConvertFrom-Json
   $db=$app.CurrentDb()
-  try{foreach($sql in @($schema.SQL|Where-Object {$_ -match '(TABLE WizardPreview|INDEX UX_WizardPreview)'})){$db.Execute($sql,128)};$db.Execute("UPDATE AppMetadata SET AppVersion='0.31.0-dev',SchemaVersion=30",128)}finally{$db.Close()}
+  try{
+   $installedSchema=[int]$app.DLookup('SchemaVersion','AppMetadata')
+   if($installedSchema -lt 30){throw 'Source installation requires an existing schema 30 or newer fixture; use the production migration runner for older sources'}
+  }finally{$db.Close()}
   foreach($module in @('modSwift','modMigration','modWorkspaceImport','modNAVFITExchange','modUXNAVFIT','modPDFImport','modUXImportFlow')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
   foreach($binding in @(@('frmNAVFITExchange','OnUnload','=NAVFITClearReturned(False)'),@('frmPDFImport','OnUnload','=PDFClearPreview(False)'),@('frmUXWorkspaceImport','OnLoad','=UXWorkspacePreviewStart()'))){
    $app.DoCmd.OpenForm($binding[0],1);$form=$app.Forms.Item($binding[0]);$form.Properties.Item($binding[1]).Value=$binding[2];$app.DoCmd.Close(2,$binding[0],1)
@@ -23,6 +26,11 @@ try {
  $app.LoadFromText(5,'WizardStateHarness',(Join-Path $root 'tests/WizardStateHarness.bas'))
  Write-Output 'Compile wizard source'
  $app.DoCmd.RunCommand(126)
+ if($CrossWorkflowOnly){
+  if(-not $pdfInput){throw '-CrossWorkflowOnly requires a synthetic -PDFPath'}
+  $result=$app.Eval('TestWizardTaskOrders("'+$folder+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'","'+$pdfInput+'","'+$workspaceSource+'")')
+  Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)
+ }else{
  $app.CloseCurrentDatabase()
  $blank=Join-Path $folder 'blank.accdb';Copy-Item -LiteralPath $scratch -Destination $blank
  $app.OpenCurrentDatabase($scratch,$true)
@@ -96,12 +104,14 @@ try {
   if($app.Eval('DCount("*","Report")') -ne 1 -or $app.Eval('DCount("*","WizardPreview")') -ne 0){throw 'Schema-29 import lost records or retained target staging'}
   $app.CloseCurrentDatabase()
   if((Get-FileHash -LiteralPath $legacy).Hash -ne $legacyHash -or (Get-FileHash -LiteralPath $LegacyPath).Hash -ne $legacyOriginalHash){throw 'Legacy import changed source bytes'}
-  Write-Output 'PASS: real schema-29 to schema-30 Settings import, original-field verification and source hashes'
+  Write-Output 'PASS: real schema-29 to current-schema Settings import, original-field verification and source hashes'
+ }
  }
 }catch{$primary=$_;throw $primary}
 finally{if($app){try{$app.Quit(2)}catch{$cleanupFailure=$_.Exception.Message;Write-Warning ('Owned wizard cleanup: '+$cleanupFailure)};try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}catch{Write-Warning $_.Exception.Message}}}
 if($cleanupFailure){throw ('Owned test cleanup failed: '+$cleanupFailure)}
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash){throw 'Wizard tests changed their supplied artifact'}
+if((Get-FileHash -LiteralPath $workspaceSource).Hash -ne $hash){throw 'Workspace preview changed its read-only source'}
 if($PDFPath -and (Get-FileHash -LiteralPath $PDFPath).Hash -ne $pdfOriginalHash){throw 'Wizard tests changed supplied PDF bytes'}
-[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=$true;UnhandledFailure=$failureObserved;NewAccessSessionRestart=$true;Schema29Import=[bool]$LegacyPath;PDFResumeUIAndApply=[bool]$PDFPath;SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof; schema 29/30 only, no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
-Write-Output ('PASS: wizard reset/restart and source isolation; evidence: '+$folder)
+[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=(-not $CrossWorkflowOnly);UnhandledFailure=$failureObserved;NewAccessSessionRestart=(-not $CrossWorkflowOnly);CrossWorkflowOnly=[bool]$CrossWorkflowOnly;Schema29Import=([bool]$LegacyPath -and -not $CrossWorkflowOnly);PDFResumeUIAndApply=([bool]$PDFPath -and -not $CrossWorkflowOnly);SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof on the supplied artifact; selected native reset/restart or deterministic cross-workflow cases are recorded explicitly; no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
+Write-Output ('PASS: selected wizard phases and source isolation; evidence: '+$folder)

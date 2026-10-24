@@ -63,6 +63,59 @@ Failed:
  TestGroupExit = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
 End Function
 
+'Read-only tools must tolerate different task orders without saving pending data.
+Public Function TestGroupTaskOrders() As String
+ Dim order As Variant, action As Variant, id As Long, g As Long, before As Long, start As Long, stage As String
+ Dim rows As Access.Form, capture As Object, reports As Collection
+ On Error GoTo Failed
+ start = n
+ For Each order In Array("PDF,Export,Findings", "PDF,Findings,Export", "Export,PDF,Findings", "Export,Findings,PDF", "Findings,PDF,Export", "Findings,Export,PDF")
+  id = CommitDraft(0, "EVAL", "Task order", "SYNTHETIC ORDER", Null, Null, "")
+  g = CreateSummaryGroup("Synthetic task order " & order, "EVAL", "E5"): AddGroupMember g, id, "E5"
+  Check UXShowGroupMembers(g), "Task-order Members failed"
+  Set rows = Forms!frmUXComparison!uxTraitGrid.Form
+  rows!AssignmentRecommendationA = String$(21, "X")
+  Check UXGridQueue("AssignmentRecommendationA"), "Task-order queue failed"
+  before = CurrentRevision(id)
+  For Each action In Split(order, ",")
+   stage = order & " / " & action
+   Select Case action
+    Case "PDF"
+     Check PDFOutputOpenGroup("frmUXComparison"), "Pending cell blocked PDF preview"
+     Set capture = PDFOutputJob(): Set reports = capture("Reports")
+     Check reports(1)("Fields")("AssignmentRecommendationA") = String$(21, "X"), "PDF preview omitted pending cell"
+     Check PDFOutputClose(), "PDF preview close failed"
+    Case "Export"
+     Check UXCurrentGroupTool("frmUXComparison", "Export"), "Pending cell blocked saved NAVFIT export dialog"
+     Check Forms!frmNAVFITExchange!cboGroup = g, "NAVFIT dialog targeted stale group"
+     DoCmd.Close acForm, "frmNAVFITExchange", acSaveNo
+    Case "Findings"
+     Check UXOpenValidation(True, g), "Read-only findings failed"
+     Check Forms!frmUXValidation.OpenArgs = "G:" & g, "Findings targeted stale group"
+     Check UXValidationClose(), "Findings close failed"
+   End Select
+   Check UXGridPendingCount() = 1 And CurrentRevision(id) = before, "Read-only task saved or discarded pending cell"
+   Check IsNull(DLookup("AssignmentRecommendationA", "Report", "ReportID=" & id)), "Read-only task committed invalid field"
+  Next
+  Check Not UXCurrentGroupTool("frmUXComparison", "Senior"), "Invalid cell allowed editing-tool navigation"
+  Check Not UXGroupNavigate("frmUXComparison", 1), "Invalid cell allowed editing-context navigation"
+  Check UXGridPendingCount() = 1, "Blocked navigation lost pending cell"
+  Check UXGridDiscardPending(), "Explicit task-order discard failed"
+  Check UXGridOpenReport(), "Task-order report did not open"
+  Forms!frmEditor!txtMemberSSN = "123": before = CurrentRevision(id)
+  Check CheckpointEditor(), "Invalid editor checkpoint failed"
+  Check UXOpenNAVFITGroupExport(g), "Pending editor blocked saved group export dialog"
+  Check CurrentProject.AllForms("frmEditor").IsLoaded And Forms!frmEditor!txtMemberSSN = "123", "Export dialog lost pending editor"
+  Check CurrentRevision(id) = before And EditorHasPending(), "Export dialog saved or discarded editor"
+  DoCmd.Close acForm, "frmNAVFITExchange", acSaveNo
+  Check UXLeaveEditor("Discard"), "Explicit editor discard failed"
+  Check UXBackToGroups(), "Task-order group exit failed"
+ Next
+ TestGroupTaskOrders = "PASS: " & n - start & " six-order pending-grid/editor, PDF, saved export and findings assertions": Exit Function
+Failed:
+ TestGroupTaskOrders = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
+End Function
+
 Public Function TestUnifiedMembers() As String
  Dim g As Long, id As Long, other As Long, before As Long, snapshots As Long, i As Long, name As Variant
  On Error GoTo Failed

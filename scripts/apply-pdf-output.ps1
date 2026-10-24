@@ -17,8 +17,8 @@ if($RefreshBackgroundsOnly){
  $app.DoCmd.Close(3,'rptPDFOutput',1)
  return
 }
-function AddPDFControl($form,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
- $c=$app.CreateControl($form.Name,$type,0,'','',$x,$y,$w,$h);$c.Name=$name
+function AddPDFControl($form,$type,$name,$x,$y,$w,$h,$caption='',$event='',$parent='') {
+ $c=$app.CreateControl($form.Name,$type,0,$parent,'',$x,$y,$w,$h);$c.Name=$name
  if($type -in @(100,104)){$c.Caption=$caption}
  if($type -ne 106){$c.FontName='Segoe UI';$c.FontSize=10}
  if($event){$c.OnClick=$event}
@@ -29,21 +29,23 @@ $app.DoCmd.OpenForm('frmPDFOutput',1);$f=$app.Forms.Item('frmPDFOutput')
 $f.Caption='Preview and create PDFs';$f.Width=14200;$f.Section(0).Height=10300
 $f.PopUp=$true;$f.Modal=$false;$f.AutoCenter=$true;$f.RecordSelectors=$false;$f.NavigationButtons=$false;$f.ScrollBars=2
 AddPDFControl $f 100 'lblScope' 300 250 13500 500 'PDF preview'
-AddPDFControl $f 100 'lblSource' 300 900 1800 300 'Capture values'
 AddPDFControl $f 111 'cboSource' 2100 850 3400 400
 $pdfControl.RowSourceType='Value List';$pdfControl.RowSource='Current drafts;Saved revisions';$pdfControl.LimitToList=$true;$pdfControl.AfterUpdate='=PDFOutputRefreshPreview()'
-AddPDFControl $f 100 'lblFormat' 5800 900 1400 300 'Output'
+AddPDFControl $f 100 'lblSource' 300 900 1800 300 'Capture values' '' 'cboSource'
 AddPDFControl $f 111 'cboFormat' 7200 850 3400 400
 $pdfControl.RowSourceType='Value List';$pdfControl.RowSource='Combined packet;Individual PDFs;Both';$pdfControl.LimitToList=$true
+AddPDFControl $f 100 'lblFormat' 5800 900 1400 300 'Output' '' 'cboFormat'
 AddPDFControl $f 106 'chkSummary' 11000 880 300 300
-AddPDFControl $f 100 'lblSummary' 11400 900 2300 400 'Summary letter first'
-AddPDFControl $f 100 'lblFolder' 300 1450 1800 300 'Export folder'
+AddPDFControl $f 100 'lblSummary' 11400 900 2300 400 'Summary letter first' '' 'chkSummary'
 AddPDFControl $f 109 'txtFolder' 2100 1400 9000 450;$pdfControl.Locked=$true
+AddPDFControl $f 100 'lblFolder' 300 1450 1800 300 'Export folder' '' 'txtFolder'
 AddPDFControl $f 104 'cmdBrowse' 11400 1400 2400 450 'Choose folder' '=PDFOutputBrowseFolder()'
-AddPDFControl $f 100 'lblReports' 300 2100 13500 350 'Report order: last name, first name, middle initial. Select a row to view informational findings.'
 AddPDFControl $f 110 'lstReports' 300 2550 13500 2700
 $pdfControl.RowSourceType='Value List';$pdfControl.ColumnCount=5;$pdfControl.ColumnWidths='0;2800;1100;2900;6500';$pdfControl.AfterUpdate='=PDFOutputSelectRow()'
+AddPDFControl $f 100 'lblReports' 300 2100 13500 350 'Report order: last name, first name, middle initial. Select a row to view informational findings.' '' 'lstReports'
 AddPDFControl $f 109 'txtFindings' 300 5450 13500 2200;$pdfControl.Locked=$true;$pdfControl.ScrollBars=2
+AddPDFControl $f 100 'lblFindings' 300 5270 13500 160 'Findings and output information' '' 'txtFindings'
+$pdfControl.FontSize=8
 AddPDFControl $f 100 'lblStatus' 300 7850 13500 800 'Capture the preview before creating PDFs.'
 AddPDFControl $f 104 'cmdPagePreview' 300 9500 6100 500 'Preview printed pages (close preview to return)' '=PDFOutputPagePreview()'
 AddPDFControl $f 104 'cmdRefresh' 300 8800 2700 500 'Refresh captured preview' '=PDFOutputRefreshPreview()'

@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  n = n + 1
 End Sub
 Public Function TestCompatPages() As String
- Dim kind As Variant, id As Long, f As Access.Form, s As Access.Form, row As Variant, key As String, page As Long, before As Long, renders As Long, x As Long, y As Long, width As Long, groupID As Long, values As Object
+ Dim kind As Variant, id As Long, f As Access.Form, s As Access.Form, row As Variant, key As String, page As Long, before As Long, renders As Long, x As Long, y As Long, width As Long, groupID As Long, values As Object, block As Long, entry As Long, previous As Long
  On Error GoTo Failed
  ConfigureWorkspace "SYNTHETIC FIXED PAGES", "Tester"
  For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
@@ -26,6 +26,20 @@ Public Function TestCompatPages() As String
    Check ReportPageForField(CStr(kind), CStr(row)) = 0, "Trait not on Front Page: " & row
   Next
   UXSelectSection 0
+  If kind = "CHIEFEVAL" Then
+   For block = 33 To 39
+    previous = s.Controls("cboTrait" & block).TabIndex
+    For entry = 1 To 3
+     key = "Trait" & block & "Comment" & entry
+     Check s.Controls("txt" & key).TabIndex > previous, "Chief comment tab order does not follow its trait: " & key
+     previous = s.Controls("txt" & key).TabIndex
+     Check s.Controls("txt" & key).Controls("label" & key).Caption = "Comment " & entry, "Chief comment lacks its attached label"
+     f!uxFieldSurface.SetFocus: s.Controls("txt" & key).SetFocus
+     Check s.ActiveControl.Name = "txt" & key, "Chief comment cannot receive keyboard focus: " & s.ActiveControl.Name
+    Next
+    If block < 39 Then Check previous < s.Controls("cboTrait" & block + 1).TabIndex, "Chief comments follow a later trait in tab order"
+   Next
+  End If
   s!txtOfficialName = "PENDING, MEMBER": UXSurfaceEdited "OfficialName"
   before = DCount("*", "ReportRevision")
   UXSelectSection 5: UXSelectSection 0
@@ -57,4 +71,26 @@ Public Function TestCompatPages() As String
  TestCompatPages = "PASS: " & n & " fixed report-page, pending buffer, local workflow and closeout assertions": Exit Function
 Failed:
  TestCompatPages = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
+End Function
+
+'Inspect native label associations, not proximity or a static caption heuristic.
+Public Function TestEntryLabels() As String
+ Dim spec As Variant, f As Access.Form, c As Access.Control, checked As Long
+ On Error GoTo Failed
+ For Each spec In Array( _
+  Array("frmSetup", "txtCommand", "lblCommand"), Array("frmSetup", "txtProfile", "lblUser"), _
+  Array("frmContributorStart", "cboContributor", "lblExisting"), Array("frmContributorStart", "txtNewContributor", "lblNew"), _
+  Array("frmPDFOutput", "cboSource", "lblSource"), Array("frmPDFOutput", "cboFormat", "lblFormat"), _
+  Array("frmPDFOutput", "chkSummary", "lblSummary"), Array("frmPDFOutput", "txtFolder", "lblFolder"), _
+  Array("frmPDFOutput", "lstReports", "lblReports"), Array("frmPDFOutput", "txtFindings", "lblFindings"))
+  DoCmd.OpenForm CStr(spec(0)), acDesign
+  Set f = Forms(CStr(spec(0))): Set c = f.Controls(CStr(spec(1)))
+  Check Len(c.Controls(CStr(spec(2))).Caption) > 0, "Unlabelled entry control: " & spec(0) & "." & spec(1)
+  Check c.TabStop, "Entry control is not in the tab sequence: " & spec(1)
+  checked = checked + 1
+  DoCmd.Close acForm, CStr(spec(0)), acSaveNo
+ Next
+ TestEntryLabels = "PASS: " & checked & " native entry-control label associations and tab stops": Exit Function
+Failed:
+ TestEntryLabels = "FAIL: entry labels: " & Err.Number & " " & Err.Description
 End Function

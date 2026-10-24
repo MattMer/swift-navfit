@@ -14,18 +14,20 @@ End Function
 Public Function BackupWorkerCommand(ByVal mode As String, ByVal source As String, ByVal destination As String) As String
     Dim script As String
     If mode <> "Backup" And mode <> "Restore" Then Err.Raise vbObjectError + 4800, "modBackupUI.BackupWorkerCommand", "Invalid copy mode."
-    script = "$ErrorActionPreference='Stop'; try { & {" & vbCrLf & BackupWorkerScript() & vbCrLf & "} -Mode " & PowerShellLiteral(mode) & " -SourcePath " & PowerShellLiteral(source) & " -DestinationPath " & PowerShellLiteral(destination) & " -WaitForCloseSeconds 30 } catch { "
-    script = script & "@{Status='FAIL';Reason=$_.Exception.Message;Destination=" & PowerShellLiteral(destination) & "} | ConvertTo-Json | Set-Content -LiteralPath " & PowerShellLiteral(destination & ".verification.json") & " -Encoding utf8; exit 1 }"
+    script = "$ErrorActionPreference='Stop'; try { & {" & vbCrLf & BackupWorkerScript() & vbCrLf & "} -Mode " & PowerShellLiteral(mode) & " -SourcePath " & PowerShellLiteral(source) & " -DestinationPath " & PowerShellLiteral(destination) & " -WaitForCloseSeconds 30 -MaximumSchemaVersion " & SCHEMA_VERSION & " } catch { "
+    script = script & "$primary=$_; $stream=$null; try { $json=@{Status='FAIL';Reason=$primary.Exception.Message;Destination=" & PowerShellLiteral(destination) & "} | ConvertTo-Json; "
+    script = script & "$stream=[IO.File]::Open(" & PowerShellLiteral(destination & ".verification.json") & ",[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None); $bytes=[Text.Encoding]::UTF8.GetBytes($json); $stream.Write($bytes,0,$bytes.Length) "
+    script = script & "} catch { [Console]::Error.WriteLine('Verification record not replaced: '+$_.Exception.Message) } finally { if($stream){try{$stream.Dispose()}catch{[Console]::Error.WriteLine($_.Exception.Message)}} }; [Console]::Error.WriteLine($primary.Exception.Message); exit 1 }"
     BackupWorkerCommand = "powershell.exe -NoProfile -NonInteractive -EncodedCommand " & EncodeWorkerCommand(script)
 End Function
 Public Function GuidedWorkspaceCopy(ByVal mode As String) As Boolean
-    Dim folder As Object, sourcePicker As Object, source As String, destination As String, shell As Object, operation As Long
+    Dim folder As Object, sourcePicker As Object, source As String, destination As String, shell As Object, operation As Long, extension As String
     On Error GoTo Failed
     If mode = "Backup" Then
         source = CurrentProject.FullName
     ElseIf mode = "Restore" Then
         Set sourcePicker = Application.FileDialog(3): sourcePicker.Title = "Choose a closed Swift NAVFIT backup": sourcePicker.AllowMultiSelect = False
-        sourcePicker.Filters.Clear: sourcePicker.Filters.Add "Swift NAVFIT database", "*.accdb"
+        sourcePicker.Filters.Clear: sourcePicker.Filters.Add "Swift NAVFIT database", "*.accdb;*.accde"
         If sourcePicker.Show <> -1 Then Exit Function
         source = sourcePicker.SelectedItems(1)
     Else
@@ -33,7 +35,8 @@ Public Function GuidedWorkspaceCopy(ByVal mode As String) As Boolean
     End If
     Set folder = Application.FileDialog(4): folder.Title = "Choose a folder for the new verified " & LCase$(mode) & " file"
     If folder.Show <> -1 Then Exit Function
-    destination = folder.SelectedItems(1) & "\Swift_NAVFIT_" & LCase$(mode) & "_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".accdb"
+    extension = Mid$(source, InStrRev(source, "."))
+    destination = folder.SelectedItems(1) & "\Swift_NAVFIT_" & LCase$(mode) & "_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & extension
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, "modBackupUI.GuidedWorkspaceCopy", "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
     End If

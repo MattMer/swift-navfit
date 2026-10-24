@@ -136,7 +136,7 @@ Private Function PDFConvertValue(ByVal value As String, ByVal conversion As Stri
     End Select
 End Function
 Public Function PDFClearPreview(Optional ByVal cancelSaved As Boolean = True) As Boolean
-    If cancelSaved Then Call WizardPreviewCancel("PDFImport")
+    If cancelSaved Then Call WizardPreviewCancel("PDFImport", pdfContext.StageGuid)
     Set pdfContext.Preview = Nothing: pdfContext.XML = "": pdfContext.Path = "": pdfContext.Hash = ""
     Set pdfContext.Changes = Nothing: pdfContext.Target = 0: pdfContext.Revision = 0: pdfContext.Choice = ""
     pdfContext.StageGuid = ""

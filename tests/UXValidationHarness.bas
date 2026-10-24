@@ -130,7 +130,22 @@ Public Function TestUXValidation() As String
     Set result = ValidateLiveGroup(groupID): Check HasCode(result, "APP-DIGITS"), "Group omitted pending member value"
     DoCmd.OpenForm "frmUXValidation", , , , , , "G:" & groupID
     Check Forms!frmUXValidation!lstIssues.ListCount > 0 And InStr(Forms!frmUXValidation!lblBasis.Caption, "All group members") > 0, "Group issue view failed"
-    Check UXValidationLayout(), "Native validation layout failed"
+    'On initial open this automation host can report a zero client width.
+    'Use the native documented sizing properties; do not treat it as a render.
+    Set f = Forms!frmUXValidation
+    For Each key In Array(6500, 14000, 17000, 6500)
+        f.InsideWidth = CLng(key): f.InsideHeight = 9500
+        Check UXValidationLayout(), "Native validation layout failed after native sizing"
+        Check f!txtEvidence.Top + f!txtEvidence.Height + 250 <= f!cmdOpen.Top, "Evidence overlaps validation actions"
+        Check f!lstIssues.Top + f!lstIssues.Height < f!lblEvidence.Top, "Findings overlap evidence label"
+        Check f!cmdWindowHelp.Left >= f!lblHeading.Left + f!lblHeading.Width, "Help overlaps validation heading"
+        Check f!cmdBack.Left + f!cmdBack.Width <= f.Width, "Close validation action outside form"
+        Check f!lstIssues.Controls("lblIssues").Caption = "&Findings", "Findings has no attached accessible label"
+        Check f!txtEvidence.Controls("lblEvidence").Caption = "&Evidence and source", "Evidence has no attached accessible label"
+        Check f!lstIssues.TabIndex < f!txtEvidence.TabIndex And f!txtEvidence.TabIndex < f!cmdOpen.TabIndex, "Validation tab sequence is not findings/evidence/action"
+        f!lstIssues.SetFocus: Check Screen.ActiveControl.Name = "lstIssues", "Cannot focus findings"
+        f!txtEvidence.SetFocus: Check Screen.ActiveControl.Name = "txtEvidence", "Cannot focus read-only evidence"
+    Next
     UXValidationClose
     For i = 1 To 3
         extra = CommitDraft(0, "EVAL", "Pagination member " & i, "Synthetic page " & i, #1/1/2026#, #9/30/2026#, "", "Test")

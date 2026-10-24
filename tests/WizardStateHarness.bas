@@ -12,6 +12,119 @@ Private Function ApplyRejected() As Boolean
 Rejected:
  ApplyRejected = True
 End Function
+Private Function RejectLiveCancel(ByVal kind As String) As Boolean
+ On Error GoTo Rejected
+ If kind = "PDFImport" Then PDFClearPreview Else NAVFITClearReturned
+ Exit Function
+Rejected:
+ RejectLiveCancel = (Err.Number = vbObjectError + 9203)
+End Function
+Private Function RejectContributorChange(ByVal id As Long) As Boolean
+ On Error GoTo Rejected
+ SwitchContributor id
+ Exit Function
+Rejected:
+ RejectContributorChange = True
+End Function
+Private Function RejectOtherNote(ByVal identity As String, ByVal report As Long, ByVal version As Long) As Boolean
+ On Error GoTo Rejected
+ Call SaveReportMessageDraft(identity, report, version, "OTHER CONTRIBUTOR", 0)
+ Exit Function
+Rejected:
+ RejectOtherNote = True
+End Function
+Public Function TestWizardTaskOrders(ByVal folder As String, ByVal template As String, ByVal pdfPath As String, Optional ByVal workspaceSource As String = "") As String
+ Dim first As Long, second As Long, id As Long, note As String, otherNote As String, noteVersion As Long, revision As Long
+ Dim aPDF As Object, aReturn As Object, bPDF As Object, bReturn As Object, rows As Collection, source As Object, choices As Object, token As String, result As String, stage As String
+ On Error GoTo Failed
+ checks = 0: stage = "prepare"
+ result = PrepareWizardState(folder, template, pdfPath): Check Left$(result, 5) = "PASS:", result
+ first = MajorAuthor(): id = CLng(DMin("ReportID", "Report")): revision = CurrentRevision(id)
+ note = NewIdentity(): noteVersion = SaveReportMessageDraft(note, id, 0, "FIRST CONTRIBUTOR PRIVATE", 0)
+ Set aPDF = WizardPreviewLoad("PDFImport"): Set aReturn = WizardPreviewLoad("NAVFITReturn")
+ Check PDFClearPreview(False) And NAVFITClearReturned(False), "Live release failed"
+ second = AddContributor("Second task-order contributor"): Check SwitchContributor(second), "Second contributor failed"
+ Check RejectOtherNote(note, id, noteVersion), "Another contributor rewrote a private note draft"
+ otherNote = NewIdentity(): Call SaveReportMessageDraft(otherNote, id, 0, "SECOND CONTRIBUTOR PRIVATE", 0)
+ Set source = PreviewStructuredPDF(pdfPath): PDFCheckpointChoices "20", "Retain only", 0, "Fill empty fields"
+ Set bPDF = WizardPreviewLoad("PDFImport")
+ Set rows = NAVFITPreviewReturned(aReturn("SourcePath"), aReturn("BaselinePath"), 2000)
+ NAVFITResolveReturned "OfficialComments", "Keep current": Set bReturn = WizardPreviewLoad("NAVFITReturn")
+ Check PDFClearPreview(False) And NAVFITClearReturned(False), "Second live release failed"
+ Check SwitchContributor(first), "First contributor failed"
+ DoCmd.OpenForm "frmPDFImport": Check UXOpenNAVFITExchange(), "Return wizard did not open"
+ Set source = PDFResumePreview(): Set rows = NAVFITResumeReturned()
+ Set aPDF = WizardPreviewLoad("PDFImport"): Set aReturn = WizardPreviewLoad("NAVFITReturn")
+ Check SwitchContributor(second), "Switch with stale first-contributor contexts failed"
+ stage = "stale contributor PDF cancel"
+ Check RejectLiveCancel("PDFImport"), "Stale contributor PDF cancel was accepted"
+ Check Not UXCancelPDFImport(), "PDF cancel callback did not reject stale ownership"
+ Check InStr(Forms!frmPDFImport!uxState.Caption, "Saved choices are retained") > 0, "PDF cancel callback omitted recovery guidance"
+ Check WizardPreviewLoad("PDFImport")("StageGuid") = bPDF("StageGuid"), "Stale PDF cancel deleted the current contributor's saved choices"
+ stage = "stale contributor return cancel"
+ Check RejectLiveCancel("NAVFITReturn"), "Stale contributor return cancel was accepted"
+ Check Not UXCancelNAVFITReturn(), "Return cancel callback did not reject stale ownership"
+ Check InStr(Forms!frmNAVFITExchange!txtStatus, "Saved choices are retained") > 0, "Return cancel callback omitted recovery guidance"
+ Check WizardPreviewLoad("NAVFITReturn")("StageGuid") = bReturn("StageGuid"), "Stale return cancel deleted the current contributor's saved choices"
+ Set source = PDFResumePreview(): Check PDFClearPreview(), "Deliberate second PDF cancel failed"
+ Set rows = NAVFITResumeReturned(): Check NAVFITClearReturned(), "Deliberate second return cancel failed"
+ Check SwitchContributor(first), "Return to first contributor failed"
+ Check WizardPreviewLoad("PDFImport")("StageGuid") = aPDF("StageGuid"), "Second contributor deleted first PDF choices"
+ Check WizardPreviewLoad("NAVFITReturn")("StageGuid") = aReturn("StageGuid"), "Second contributor deleted first return choices"
+ stage = "superseded same-contributor cancellation"
+ Set source = PDFResumePreview(): Set aPDF = WizardPreviewLoad("PDFImport")
+ token = WizardPreviewSave("PDFImport", aPDF("SourcePath"), aPDF("SourceHash"), "", "", 0, 0, aPDF("Choices"))
+ Check RejectLiveCancel("PDFImport"), "Superseded PDF context cancelled a newer descriptor"
+ Check WizardPreviewLoad("PDFImport")("StageGuid") = token, "Newer PDF descriptor was lost"
+ Set source = PDFResumePreview(): Check PDFClearPreview(), "Explicit resumed PDF cancel failed"
+ Set rows = NAVFITResumeReturned(): Set aReturn = WizardPreviewLoad("NAVFITReturn")
+ token = WizardPreviewSave("NAVFITReturn", aReturn("SourcePath"), aReturn("SourceHash"), aReturn("BaselinePath"), aReturn("BaselineHash"), id, revision, aReturn("Choices"))
+ Check RejectLiveCancel("NAVFITReturn"), "Superseded return context cancelled a newer descriptor"
+ Check WizardPreviewLoad("NAVFITReturn")("StageGuid") = token, "Newer return descriptor was lost"
+ Set rows = NAVFITResumeReturned()
+ stage = "archive between preview and Apply"
+ ArchiveDraft id, True
+ Check ApplyRejected(), "Return Apply wrote an archived report"
+ Check WizardPreviewLoad("NAVFITReturn")("StageGuid") <> "", "Rejected archived Apply lost saved choices"
+ ArchiveDraft id, False: Check NAVFITClearReturned(), "Explicit return cancel failed"
+ stage = "pending editor and contributor switch"
+ DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+ Forms!frmEditor!txtStart = "raw invalid date": Check CheckpointEditor(), "Pending checkpoint failed"
+ Check RejectContributorChange(second), "Contributor changed while editor remained open"
+ Check MajorAuthor() = first And Forms!frmEditor!txtStart = "raw invalid date", "Rejected switch changed attribution or raw data"
+ Check CurrentRevision(id) = revision And EditorHasPending(), "Rejected tasks committed or discarded pending values"
+ Check UXLeaveEditor("Discard"), "Explicit task-order discard failed"
+ Check DCount("*", "ReportNoteDraft") = 2 And DCount("*", "ReportMessage") = 0, "Task order published or lost private note drafts"
+ Check DCount("*", "WizardPreview") = 0, "Explicit cancellations retained wizard rows"
+ DoCmd.Close acForm, "frmPDFImport", acSaveNo: DoCmd.Close acForm, "frmNAVFITExchange", acSaveNo
+ If workspaceSource <> "" Then
+  stage = "workspace contributor cancellation"
+  Check UXPreviewSwiftWorkspace(workspaceSource), "First workspace preview failed"
+  Check SwitchContributor(second), "Second workspace contributor failed"
+  Check UXPreviewSwiftWorkspace(workspaceSource), "Second workspace preview failed"
+  Check SwitchContributor(first) And UXResumeSwiftWorkspace(), "First workspace resume failed"
+  Check SwitchContributor(second), "Switch with stale workspace context failed"
+  Set bReturn = WizardPreviewLoad("WorkspaceImport")
+  Check Not UXCancelSwiftWorkspacePreview(), "Stale workspace cancel deleted another contributor's preview"
+  Check WizardPreviewLoad("WorkspaceImport")("StageGuid") = bReturn("StageGuid"), "Stale workspace cancel changed saved choices"
+  Check UXResumeSwiftWorkspace() And UXCancelSwiftWorkspacePreview(), "Explicit second workspace cancel failed"
+  Check SwitchContributor(first) And UXResumeSwiftWorkspace(), "First workspace choices were lost"
+  Set aReturn = WizardPreviewLoad("WorkspaceImport")
+  token = WizardPreviewSave("WorkspaceImport", aReturn("SourcePath"), aReturn("SourceHash"), "", "", 0, 0, aReturn("Choices"))
+  Check Not UXCancelSwiftWorkspacePreview(), "Superseded workspace context cancelled newer choices"
+  Check WizardPreviewLoad("WorkspaceImport")("StageGuid") = token, "Newer workspace preview was lost"
+  Check UXResumeSwiftWorkspace(), "Newer workspace resume failed"
+  DoCmd.Close acForm, "frmUXWorkspaceImport", acSaveNo
+  DoCmd.OpenForm "frmUXWorkspaceImport"
+  Check Not UXApplySwiftWorkspace(), "Reopened workspace preview applied without Resume"
+  Check InStr(Forms!frmUXWorkspaceImport!lblStatus.Caption, "ownership was reset") > 0, "Reopen failed for the wrong reason"
+  Check UXResumeSwiftWorkspace() And UXCancelSwiftWorkspacePreview(), "Reopened workspace explicit cancellation failed"
+  Check DCount("*", "WizardPreview") = 0, "Workspace cancellations left saved rows"
+ End If
+ TestWizardTaskOrders = "PASS: " & checks & " contributor/token cancellation, private drafts, archive/Apply and pending recovery assertions": Exit Function
+Failed:
+ TestWizardTaskOrders = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
+End Function
 Public Function PrepareWizardState(ByVal folder As String, ByVal template As String, Optional ByVal pdfPath As String = "") As String
  Dim id As Long, rows As Collection, db As DAO.Database, changes As Object, saved As Object, key As Variant, row As Variant, parts As Variant
  On Error GoTo Failed

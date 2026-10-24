@@ -18,7 +18,6 @@ Private nativePreview As NativeImportPreviewContext
 Private groupExportToken As String
 Public Function UXOpenNAVFITGroupExport(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
-    If Not UXLeaveEditor() Then Exit Function
     id = groupID: If id = 0 Then id = Nz(Forms!frmMajorWorkbench!cboGroup, 0)
     If id = 0 Then Exit Function
     Call UXOpenNAVFITExchange
@@ -96,7 +95,7 @@ Public Function UXOpenFullNAVFITResult() As Boolean
     UXOpenFullNAVFITResult = True
 End Function
 Public Function UXOpenNAVFITExchange() As Boolean
-    If Not UXLeaveEditor() Then Exit Function
+    'The exchange dialog exports saved values and must not save/discard an editor.
     DoCmd.OpenForm "frmNAVFITExchange"
     Forms!frmNAVFITExchange!cboReport.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') & IIf(IsArchived,' | Archived','') FROM Report ORDER BY MemberName"
     Forms!frmNAVFITExchange!cboGroup.RowSource = "SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade & IIf(IsArchived,' | Archived','') FROM SummaryGroup ORDER BY Title"
@@ -212,8 +211,14 @@ Failed:
     Forms!frmNAVFITExchange!txtStatus = "Resume unavailable: " & Err.Description
 End Function
 Public Function UXCancelNAVFITReturn() As Boolean
+    On Error GoTo Failed
     UXCancelNAVFITReturn = NAVFITClearReturned()
+    On Error GoTo 0
     Forms!frmNAVFITExchange!lstChoices.RowSource = ""
     Forms!frmNAVFITExchange!txtDetail = "": Forms!frmNAVFITExchange!cmdApply.Enabled = False
     Forms!frmNAVFITExchange!txtStatus = "Saved return preview cancelled. No report values changed."
+    Exit Function
+Failed:
+    Forms!frmNAVFITExchange!cmdApply.Enabled = False
+    Forms!frmNAVFITExchange!txtStatus = "Cancel unavailable: " & Err.Description & " Saved choices are retained. Resume before cancelling."
 End Function

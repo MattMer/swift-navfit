@@ -232,16 +232,17 @@ Public Function UXValidationLayout() As Boolean
     On Error GoTo Finished
     Set f = Forms!frmUXValidation: width = f.InsideWidth - 800: height = f.InsideHeight
     If width < 4500 Then Exit Function
-    f.Width = width + 650
-    f!lblHeading.Width = width: f!lblBasis.Width = width: f!lblCount.Width = width - 2700
+    f!lblHeading.Width = width - 750: f!lblBasis.Width = width: f!lblCount.Width = width - 2700
+    f!cmdWindowHelp.Left = width - 100
     f!cmdPrevious.Left = width - 2200: f!cmdNext.Left = width - 850
     f!lstIssues.Width = width: f!txtEvidence.Width = width
+    f!lblIssues.Width = width: f!lblEvidence.Width = width
     f!lstIssues.ColumnWidths = "0;" & CLng(width * 0.2) & ";" & CLng(width * 0.25) & ";" & CLng(width * 0.15) & ";" & CLng(width * 0.38)
     If height < 8500 Then height = 8500
-    f!txtEvidence.Height = height - 5700
+    f!txtEvidence.Height = height - 6450
     f!cmdOpen.Top = height - 650: f!cmdBack.Top = height - 650
     f!cmdOpen.Width = width \ 2 - 100: f!cmdBack.Left = 500 + width \ 2: f!cmdBack.Width = width \ 2 - 100
-    f.Section(acDetail).Height = height: f.ScrollBars = 2
+    f.Width = width + 800: f.Section(acDetail).Height = height: f.ScrollBars = 2
     UXValidationLayout = True
 Finished:
 End Function

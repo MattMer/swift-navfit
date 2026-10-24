@@ -27,17 +27,19 @@ Private Function Sample(ByVal prepared As Boolean, ByVal work As Boolean, ByRef 
     If Sample < 0 Then Sample = Sample + 86400
     Sample = Sample * 1000
 End Function
-Public Function TestReadRowsScale() As String
-    Dim target As Variant, i As Long, id As Long, p As Long, g As Long, template As Long, ignored As Long, work As Variant, trial As Long, before As String, after As String, a As Double, b As Double, output As String, revisions As Long, snapshots As Long
+Public Function TestReadRowsScale(Optional ByVal maximumRows As Long = 100) As String
+    Dim target As Variant, targets As Variant, i As Long, id As Long, p As Long, g As Long, template As Long, ignored As Long, work As Variant, trial As Long, before As String, after As String, a As Double, b As Double, output As String, revisions As Long, snapshots As Long
     On Error GoTo Failed
+    If maximumRows < 100 Or maximumRows > 1000 Then Err.Raise 5, , "Use 100-1000 synthetic reports"
     ConfigureWorkspace "SYNTHETIC READ ROW SCALE", "Reviewer"
     p = MajorAuthor(): g = CreateSummaryGroup("Synthetic scale group", "EVAL", "E5")
     template = CreateRouteTemplate("Scale route", CStr(p), "Read")
     output = "Reports,View,Trial,UnpreparedMs,PreparedMs" & vbCrLf
-    For Each target In Array(25, 100)
+    targets = Array(25, 100)
+    If maximumRows > 100 Then targets = Array(25, 100, maximumRows)
+    For Each target In targets
         For i = DCount("*", "Report") + 1 To CLng(target)
-            id = CommitDraft(0, "EVAL", "Synthetic " & i, "MEMBER " & Format$(i, "000"), #1/1/2026#, #9/30/2026#, "")
-            CurrentDb.Execute "UPDATE RevisionValue SET ValueText='4.0',IsNullValue=False WHERE RevisionID=" & CurrentRevision(id) & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')", dbFailOnError
+            id = CommitDraft(0, "EVAL", "Synthetic " & i, "MEMBER " & Format$(i, "000"), #1/1/2026#, #9/30/2026#, "", traits:=Array("4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0"))
             AddGroupMember g, id, "E5"
             ignored = AssignReview(id, CurrentRevision(id), p, Null, "Review")
             If i Mod 5 = 0 Then ignored = StartRoute(id, template, g)
