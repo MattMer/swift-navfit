@@ -85,23 +85,16 @@ Use Access's VBA editor for native breakpoints and runtime investigation. Bring
 native edits back to tracked source before rebuilding. Automatic VBA formatting
 on save is disabled to avoid unrelated source changes.
 
-### Direct project file reader
+### Agent tool registrations
 
-The official `@modelcontextprotocol/server-filesystem` 2.0.0 is installed in
-user-local tool storage and registered in Codex as `swift_files`. Its allowed
-directory is this project. Codex's tool allow-list exposes only text reads,
-multiple-file reads, directory listings/tree, file search, metadata and the
-allowed-directory listing; write/edit/move tools are excluded from Codex.
-The upstream package itself also contains write tools, so retain that Codex
-allow-list if changing the registration.
-
-A protocol smoke test read the project instructions and confirmed that an
-outside-project path was rejected. See
-[reader verification](../planning/FILESYSTEM_MCP_SETUP_2026-10-21.json). New
-servers require tool discovery in the client; this existing chat may need a
-new session before the reader tools appear. Prefer direct reader tools for source inspection. Use the existing PowerShell
-build and native-check commands when their verification scope is required;
-do not route unrelated inspection or editing through them.
+Agent tooling is per-client. On this workstation the read-only
+`@modelcontextprotocol/server-filesystem` reader is registered in Codex as
+`swift_files` (write tools excluded by its allow-list), and Access Explorer is
+registered for VS Code and Codex. Claude Code has neither; see
+[CLAUDE.md](../CLAUDE.md). Any agent may read source directly. Use the existing
+PowerShell build and native-check commands when their verification scope is
+required. [Reader verification](../planning/FILESYSTEM_MCP_SETUP_2026-10-21.json)
+is historical evidence.
 
 ### Access Explorer
 
@@ -109,7 +102,7 @@ Access Explorer 1.2.0 and its MCP backend are configured on this workstation.
 The runtime is under the extension's user-level managed storage, with its own
 Python 3.12 virtual environment. Access Explorer user settings select that
 interpreter and backend script. VS Code's user MCP configuration registers
-`access-explorer-local`; Codex's user configuration registers `access_explorer`.
+`access-explorer-local`; Codex registers `access_explorer`.
 Existing settings were backed up before registration. No machine-specific
 runtime paths are committed in this workspace's configuration.
 
@@ -149,7 +142,7 @@ Safety boundaries:
   against actual page/visibility state and fixed report geometry.
 - **Verification and sessions:** Explorer imports/transfers do not replace
   production migration, recovery, reproducible builds, or release gates. Apply
-  the [Access-session ownership and handoff rule](../AGENTS.md#development-and-release-procedures)
+  the [Access-session ownership and handoff rule](../AGENTS.md#access-automation-safety)
   before switching between Explorer and another controller. The backend close path
   has a force-kill fallback; do not use it on a session with unsaved user work
   or use restart-processes on user sessions.
@@ -757,6 +750,6 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 
 7. **Preserve useful evidence.** Record meaningful test outcomes, baseline comparisons, and unresolved failures without generating unnecessary permanent logs, reports, or documentation.
 
-8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#change-boundaries) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
+8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#how-to-work) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
 
 These working defaults allow justified debugging, native testing and broader validation. They do not relax mandatory session ownership, data protection, source/artifact verification or release requirements.

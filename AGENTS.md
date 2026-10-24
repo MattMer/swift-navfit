@@ -1,52 +1,137 @@
-# Swift NAVFIT: Codex operating rules
+# Swift NAVFIT: agent and contributor rules
 
-## Authority and source of truth
+These rules apply to every coding agent (Claude Code, Codex or others) and to
+human contributors. Tool-specific notes belong in that tool's own file, such as
+[CLAUDE.md](CLAUDE.md).
 
-This file governs agent behavior. Consult [PROJECT_STATE.md](PROJECT_STATE.md) for current architecture, supported behavior, and decisions; [planning/PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md) for planned work; [docs/Development_Workflow.md](docs/Development_Workflow.md) for commands; and [planning/BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md) for build order. Historical notes and release artifacts are evidence, not current requirements. If documents conflict, do not silently choose one: identify the conflict and ask for resolution when it affects the requested change. Explicit instructions from the current user task take precedence over project plans, but do not silently override data-integrity and safety requirements.
+## Sources of truth
 
-## Operating modes and authorization
+- [PROJECT_STATE.md](PROJECT_STATE.md): current architecture, supported behavior,
+  decisions and open gaps.
+- [planning/PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md): planned work.
+- [docs/Development_Workflow.md](docs/Development_Workflow.md): commands and focused
+  test runners. [CONTRIBUTING.md](CONTRIBUTING.md) maps each kind of change to its checks.
+- [planning/BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md): generator order.
+- Other dated `planning/` files, including `PROJECT_STATE_HISTORY.md`, are
+  historical evidence, not current requirements.
 
-- **Inspect/plan (default for audits, cleanup, ambiguous changes):** Read and analyze. Produce findings, affected components, proposed files, risks, and test plan. Do not alter application code, remove artifacts, mutate databases, or publish outputs.
-- **Implement (when the user requests a concrete change):** Make only the necessary authorized edits and run proportionate development checks. Implementation permission is not cleanup, data migration, or release permission.
-- **Cleanup:** Delete, move, or consolidate artifacts only when specifically authorized. Present candidates and dependency evidence first; preserve untracked, ignored, binary, and user files.
-- **Release/publish:** Run full release gates and publish Blank/Demo outputs only when explicitly requested. A feature change, development build, or test request alone does not authorize a release or upload.
+If documents conflict in a way that affects the task, point out the conflict
+and ask. The user's instructions for the current task take precedence over
+plans, but they never silently override the product invariants below.
 
-## Change boundaries
+## Product invariants (non-negotiable)
 
-1. Before nontrivial changes, state the desired behavior, proposed components/files, exclusions, and validation. For small changes, keep this brief. Do not interpret a general feature request as authorization for unrelated cleanup or modernization.
-2. Modify the **authoritative tracked implementation** directly. Prefer the smallest viable change and reuse established components where appropriate. Existing tooling is not automatically mandatory or optimal. No parallel implementations, release-specific assembly scripts, speculative abstractions, frameworks, or dependencies without a concrete operational need.
-3. Treat the proposed file set as a scope boundary, not a quota. If an unexpected dependency, cross-cutting change, or materially larger set of files is required, stop before broad edits, explain the dependency and alternatives, and request authorization for the enlarged scope.
-4. Avoid unrelated refactoring, formatting, renaming, sweeping regenerations, and opportunistic test updates. Distinguish generated outputs from authoritative sources; change generators/source rather than hand-editing generated files.
-5. Do not overwrite preexisting unrelated local modifications. Inspect working-tree status before significant changes, and report conflicts rather than reverting another person's work.
-6. Choose tools based on capability, correctness, safety, reproducibility, and total effort, **not incumbency or language**. At the start of a task involving nontrivial editing, building, testing, or automation, inspect relevant available native interfaces, existing project tools, direct APIs/COM, and accessible MCP integrations. Discovery should be bounded and proportional: do not conduct a broad tool survey for trivial edits or assume an integration exists without checking. Prefer direct, purpose-built interfaces when they materially improve the workflow. Do not force operations through PowerShell solely because a script already exists. Before using embedded C# or Win32 automation, identify the required capability missing from existing verified tools and define a bounded fallback with a stop condition; follow the workflow's investigation and execution guidance rather than repeatedly switching automation techniques.
-7. Distinguish **tool for editing** from **authoritative build and verification contracts**. Alternative editors, direct integrations, or MCP tools may be used if their outputs can be incorporated into authoritative tracked source and verified through the required development/release gates. Do not silently bypass those gates, and do not require every intermediate operation to invoke the full pipeline.
-8. Do not create persistent PowerShell/Python/shell scripts for one-off tasks or duplicate capabilities already available through better interfaces. Put disposable helpers outside the maintained repository where practical and remove them after use. If existing tooling is materially inefficient, propose a narrowly scoped replacement or improvement, with compatibility, reproducibility, and maintenance implications; do not modernize the pipeline as an unrelated side effect.
-9. For external tools or MCPs, verify availability and permissions before relying on them. Do not install connectors, add dependencies, send project data to external services, or change security boundaries without authorization.
-10. Do not classify code as unused based solely on text references: inspect dynamic Access callbacks, macro/form event bindings, generators, runtime discovery, and external consumers.
+- **Historical import:**
+  - Every release must import data from every previously supported schema.
+  - Preserve rows, fields, IDs and relationships, revision/review history,
+    provenance, recovery, command members, notes, defaults and reporting-senior
+    history.
+  - Use the production migration engine and the Settings & Help import. Read
+    sources through read-only DAO without executing their code, and verify copied
+    values before commit.
+  - Never silently replace a populated workspace or merge records by ID.
+- **Schema policy:**
+  - Changes are additive and versioned.
+  - The importer accepts source schemas 1 through the current `SCHEMA_VERSION`.
+    When the schema changes, raise the hard-coded bound in `modMigration`
+    alongside it. Never narrow the range.
+  - Do not claim retesting you did not perform. PROJECT_STATE.md records which
+    schemas were tested when, and the r128 old-output waiver.
+- **Report editor:**
+  - Keep the fixed Front/Back geometry in NAVPERS block order with the official
+    captions.
+  - All seven traits stay together on the editing Front Page; printed page
+    assignments do not change.
+  - Content stays to the right of the navigation rail.
+  - Resizing changes the viewport, never the field layout.
+  - Preserve the unbound buffer, pending values, saves, revisions and recovery
+    across page changes.
+  - Never claim printed fit without physical verification.
+- **Protected state:**
+  - Never modify user workspaces, earlier releases, supplied reference material
+  (`FORMS_REFERENCES_TEMPLATES/`, `NAVFIT98A*`), or data/recovery resources.
+    Work on copies.
+  - Blank builds stay blank, and Demos contain only synthetic data. Never put
+    personnel data in tracked fixtures or send it to external services.
+
+## Permissions
+
+- **Allowed while implementing a requested change:**
+  - the edits the task needs
+  - small cleanup in files you are already changing
+  - focused tests and fresh development builds
+  - scratch files outside the repository
+- **Ask first:**
+  - refactors outside the task's files, or a materially larger file set than you
+    described
+  - deleting tracked files
+  - moving or deleting untracked, ignored, binary or user files
+  - new runtime dependencies or external services
+  - security or Trust Center changes
+  - commits and pushes, unless the user asked for them
+- **Explicit request only:** releases, publishing Blank/Demo files, Drive
+  uploads, signing.
+
+Before a nontrivial change, state the intended behavior, the files involved and
+the checks you will run. Keep it brief.
+
+## How to work
+
+- Edit authoritative tracked source: `src/`, the catalogues, and the generator
+  scripts listed in the manifest. Change generators rather than generated
+  output. Native Access experiments happen only on disposable copies, and useful
+  results are ported back to source.
+- Check `git status` before significant changes. Do not overwrite someone
+  else's uncommitted work.
+- Use whatever tool fits the job best. Don't add permanent scripts for one-off
+  tasks, and don't add a second build or assembly path. Propose changes to the
+  build contract (`develop.ps1`, `build-manifest.json`) before making them.
+- Access code can be reached dynamically: control expressions (`=Fn()`), macros,
+  `Eval`, form events and generators. Before calling code unused, check those as
+  well as text references.
 
 ## Verification and reporting
 
-- Select checks based on the changed behavior and risk: prefer existing focused runners for stateful Access behavior, complete focused testing and applicable visual review before the final authoritative integrated build, add broader integration/data-transfer checks for affected boundaries, and use release gates only for releases. Preserve final-source/artifact verification when inputs change; this sequence does not waive required gates or impose a build-count limit. Never claim coverage that was not run. Never weaken assertions merely to suppress a failure. Report preexisting failures separately from regressions.
-- If a check fails, diagnose the relevant failure before adding defensive code or broadening the change. Avoid multiple alternative fixes layered on top of one another.
-- At completion, report **changed files**, behavior and reasons, **tests run and results**, unverified behavior, remaining issues, and any new scripts/dependencies. For a small edit, a compact summary is sufficient.
-- Update PROJECT_STATE.md only when supported behavior, architecture, or material decisions actually change. Update existing documentation rather than creating session-by-session narratives.
+- Run checks in proportion to the change:
+  - the focused runner for the behavior you touched (see CONTRIBUTING.md)
+  - before committing persistence, migration, generated-form or cross-module
+    changes: `scripts/develop.ps1 -Action BuildAndTest`
+  - release gates only for releases.
+- Never claim coverage you did not run, and never weaken an assertion to make it
+  pass. Diagnose a failure before adding defensive code, and report preexisting
+  failures separately from regressions.
+- At the end, report the changed files, behavior, tests run with their results,
+  and anything left unverified.
+- Update PROJECT_STATE.md only when behavior, architecture or a decision
+  changes, and keep it current-state only. Verification detail (assertion counts,
+  receipts) goes in the commit message, not the docs. Don't create per-session
+  narrative documents.
 
-## Cleanup and recovery
+## Access automation safety
 
-- The user requested [PROPOSED_PURGE/](PROPOSED_PURGE/) for uncertain candidates. It is a review holding area outside maintained build/test inputs, **not a substitute for deleting confirmed obsolete tracked files**. Before moving a candidate, inventory its original path, reason, dependencies considered, and verified hash. Do not execute/import quarantined scripts in place; relative paths may require restoration.
-- Do not move/delete active dependencies, protected reference/user/release files, or recovery resources merely because they are old. Git does not protect untracked, ignored, binary, or external artifacts. Keep approved removals reviewable and reversible.
+- Allow one native controller (COM, MCP or person) per database at a time.
+  Know which database you own and its PID. Before handing a file to another
+  controller, release it.
+- Close only Access sessions you started, through normal save and close. Never
+  force-kill a session with unsaved work, and never pick processes by application
+  name alone.
+- Capture the primary error before cleanup. Allow one justified retry on a fresh
+  disposable copy; after that, diagnose instead of retrying again.
 
-## Non-negotiable product invariants
+## Cleanup
 
-- **Historical import:** New releases must import data from every previously supported Swift NAVFIT schema. Preserve source rows, fields, IDs/relationships, revision/review history, provenance, recovery, command members, notes, defaults, and reporting-senior history. Use the production migration engine and Settings & Help import; read sources through read-only DAO without executing source code; verify copied values before committing. Never silently replace populated workspaces or merge records by ID.
-- **Schema policy:** Evolution remains additive and versioned. Schema 1–27 import remains implemented; historical-test policy remains unresolved. Respect the r128 old-output testing waiver in PROJECT_STATE.md; do not recreate removed outputs or claim waived fixtures were retested. Do not introduce speculative fallbacks or retire documented compatibility based only on missing fixtures.
-- **Report editor:** Preserve fixed Front Page/Back Page geometry in NAVPERS block order and official captions. All seven performance traits remain together on the editing Front Page, without changing printed page associations. Content stays to the right of the navigation rail. Window resizing may change the viewport but not reflow/resize fields. Preserve the unbound buffer, pending values, saves/revisions, and recovery across page changes; never claim printed fit without verification.
-- **Protected state:** Preserve user-edited workspaces, earlier releases, supplied reference material, and data/recovery resources. Blank builds must remain blank; demos must contain only synthetic data.
+Deleting confirmed-obsolete tracked files is the normal path, and git history is
+how you recover them. [PROPOSED_PURGE/](PROPOSED_PURGE/) is a review area for
+uncertain, untracked or binary items: record each item's original path, reason
+and hash, and never run anything from inside it.
 
-## Development and release procedures
+## Releases (explicit request only)
 
-- **Access Explorer:** Prefer direct edits to authoritative tracked source. Prefer the callable Access Explorer MCP for suitable installed-object inspection, native object discovery, procedure diagnostics, and cross-object searches when its verified capabilities offer a clear advantage. It is not a mandatory replacement for COM or existing native test runners. Experimental native changes are limited to disposable copies; tool schemas alone do not establish mutation reliability. Verify each relevant mutation operation before adopting it into routine use, reconcile useful results into tracked source, and retain existing build/migration/recovery/release gates. Follow the [workflow's Access Explorer safety boundaries](docs/Development_Workflow.md#access-explorer); the [capability audit](planning/ACCESS_EXPLORER_CAPABILITY_AUDIT.md) owns the tool inventory and verification evidence.
-- **Development:** Preserve tracked source/generators as the authoritative build inputs, regardless of which suitable editing tool is used. `scripts/develop.ps1` is the **current supported fresh-build and focused-check entry point**, not the exclusive tool for authoring, inspecting, or making individual changes. Use it when a fresh integrated build/check is warranted by the task. Alternative build tooling may be proposed, but do not replace the established build contract or alter `scripts/build-manifest.json` without explicit approval and equivalent verified results. VS Code's default build task currently invokes `scripts/develop.ps1`. Investigate Access objects on disposable development copies and reconcile changes into tracked source before rebuilding. See Development_Workflow.md for operational detail. Development checks do not prove release or physical acceptance.
-- **Release only when authorized:** Run `scripts/release-check.ps1 -BlankPath <blank> -DemoPath <synthetic demo>` and applicable feature-specific, native data-transfer, rollback, and unsupported-source checks before publication. Document tested schema fixtures and gaps; do not claim untested backward compatibility.
-- **Authorized publication:** Put dated/versioned Blank and Demo artifacts directly in `D:\Development\Swift NAVFIT\output`, retaining prior outputs. Upload verified artifacts to the Swift NAVFIT Google Drive folder specified in Development_Workflow.md, and verify file names, sizes, and destination membership. Never upload merely because a development task was completed.
-- **Access sessions:** Permit only one active native automation controller per disposable database; default to sequential native Access work. Identify the controller and target database explicitly. Before handing that file to another controller, preserve pending edits, close/release it through its owner and confirm release; do not overlap MCP and direct COM control of the same database. Capture primary failure details before cleanup and report cleanup failures separately. Identify the owned database and PID before process recovery; never select processes for termination solely by application name. Close only Microsoft Access sessions owned by the agent, including automation and preview instances, after saving through normal workflows. Never force-kill an instance with unsaved user work. Use the [workflow's recovery guidance](docs/Development_Workflow.md#efficient-investigation-and-execution) for stale sessions and bounded retries.
+1. Build a new Blank and a separate synthetic Demo.
+2. Run `scripts/release-check.ps1 -BlankPath <blank> -DemoPath <demo>` plus the
+   feature-specific, data-transfer, rollback and unsupported-source checks that
+   apply.
+3. Document which schema fixtures were tested.
+4. Put dated, versioned files in `output/` and keep the prior outputs.
+5. Upload to the Drive folder named in Development_Workflow.md, then verify the
+   names, sizes and folder membership.

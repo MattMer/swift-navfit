@@ -11,15 +11,15 @@ The severity below follows the user's requested categories. Reported inventory n
 | C01 | SSN protection decision accepted | **21 October user decision:** “No, protection is covered by file folder permissions.” Retain Windows file/folder protections; do not add a database password, encryption/key setup or extra application protection requirement. SSNs remain readable in current values, revisions, recovery and retained provenance; masking is presentation only. Inventory and scope are recorded in [C01/C02 implementation notes](DIRECTORY_MERGE_R127_2026-10-21.md). No historical values or original files are scrubbed. This closes the protection-design decision; it does not claim encrypted storage. |
 | C02 | Reviewed duplicate Sailor merging implemented | Schema 27 adds **Resources > Command member directory > Review possible duplicate Sailors**. Normalized surnames suggest candidates; changed-name pairs may be selected deliberately. Preview shows masked identities and report/prior IDs. Conflicting profile/report SSNs or report DoD IDs block merging. Apply requires a current preview and review reason, moves stable member links transactionally, retains the original archived profile and all report/history/trait values, and records durable mappings. Guarded Undo restores original links and metadata while retaining the audit; later affected changes block Undo. Native evidence and release scope: [C01/C02 implementation notes](DIRECTORY_MERGE_R127_2026-10-21.md). |
 | C03 | Startup contributor selection implemented | **r128:** every initialized launch requires an existing contributor choice or explicit add-and-continue; nothing is preselected. First-time setup confirms its entered creator. Imported lists require a fresh choice; cancellation/reopening, stale session rejection, new-profile rollback, saves, comments and review attribution pass native checks. The context displays the selected name. Retained profiles/history remain intact. This is attribution, not authentication. See [implementation and verification scope](CONTRIBUTOR_STARTUP_R128_2026-10-21.md); old-output retesting was explicitly waived by the user for this delivery. |
-| C04 | Historical and effective-dated validation implemented in development | Source-backed CH-1 calendars begin 16 December 2025, with table 1A and O5/O6 transitions from 2027; leap years, paygrades and special cases are covered. General CH-2 coverage begins 26 May 2026. **User decision: NAVADMIN 132/26 is authoritative; highest-paygrade Regular periodic exemptions begin 3 June 2026.** Earlier/missing-date coverage is explicitly Needs review, not a fabricated historical verdict. Live/saved/group/export paths share applicability; a new versioned pack preserves historical packs/results without extending legacy dates or relabeling old-engine runs. Eligibility requiring unavailable assignment/permanent-grade facts remains human review. See [current implementation and verification scope](../PROJECT_STATE.md#c04-validation-applicability). |
-| C05 | Relational summary-group completion and RSCA accounting implemented in development | **Schema 28:** lifecycle, immutable posting parents, per-counted-report revision/totals, active posting pointers and unique report claims replace new XML/list accounting writes. Baseline ancestry, exact totals, NOB exclusions, corrections and retained reopen/archive accounting are relational and queryable. Production import backfills old XML once without adding a baseline; original XML/history remain evidence. Legacy posting revisions and per-report totals that were never recorded stay explicitly unknown. Native checks cover reconciliation, idempotency, cancellation preservation, duplicate/deletion/senior guards and late rollback. See [persistence contracts and verification](../PROJECT_STATE.md#c05c07-persistence-contracts). |
-| C06 | Canonical field definitions and authoritative revisions implemented in development | The manifest fingerprints one versioned `field-definitions.json` catalogue for field types, controls/recovery, labels, applicability, limits/options, ordered NAVFIT/PDF bindings and fixed geometry. Services consume catalogue limits; compatibility-view generators no longer write competing VBA. `ReportHead` selects the authoritative saved revision through an ownership foreign key, replacing the circular relationship; retained report columns/pointer are checked projections. Original IDs, snapshots, changes, recovery and pending buffers remain intact. Metadata-only synthetic text/date additions exercise save/restore/checkpoint and fresh-session recovery; native fixed-page and interchange checks remain separate gates. See [implementation and verification](../PROJECT_STATE.md#c05c07-persistence-contracts). |
-| C07 | Typed dates, choices and default relationships implemented in development | Five `RevisionDate` projections separate DATETIME values from Missing/Blank/NOT REQ/NOT PERF/Unknown while retaining original strings and counseling explanations. Constrained `RevisionChoice` rows hold single responses and explicit Conflict/Unknown review states; native flag pairs remain lossless compatibility projections and deliberate box selection clears the opposite box. New form/workflow domains are constrained; imported legacy exceptions stay exact. `FieldDefaultLink` verifies one target with foreign keys, retains unresolved legacy links, and blocks their application. Native persistence/transfer checks cover nulls, dates, statuses, flags, ownership and rollback; NAVFIT/PDF checks cover interchange. See [implementation and verification scope](../PROJECT_STATE.md#c05c07-persistence-contracts). |
+| C04 | Historical and effective-dated validation implemented in development | Source-backed CH-1 calendars begin 16 December 2025, with table 1A and O5/O6 transitions from 2027; leap years, paygrades and special cases are covered. General CH-2 coverage begins 26 May 2026. **User decision: NAVADMIN 132/26 is authoritative; highest-paygrade Regular periodic exemptions begin 3 June 2026.** Earlier/missing-date coverage is explicitly Needs review, not a fabricated historical verdict. Live/saved/group/export paths share applicability; a new versioned pack preserves historical packs/results without extending legacy dates or relabeling old-engine runs. Eligibility requiring unavailable assignment/permanent-grade facts remains human review. See [current implementation and verification scope](PROJECT_STATE_HISTORY.md#c04-validation-applicability). |
+| C05 | Relational summary-group completion and RSCA accounting implemented in development | **Schema 28:** lifecycle, immutable posting parents, per-counted-report revision/totals, active posting pointers and unique report claims replace new XML/list accounting writes. Baseline ancestry, exact totals, NOB exclusions, corrections and retained reopen/archive accounting are relational and queryable. Production import backfills old XML once without adding a baseline; original XML/history remain evidence. Legacy posting revisions and per-report totals that were never recorded stay explicitly unknown. Native checks cover reconciliation, idempotency, cancellation preservation, duplicate/deletion/senior guards and late rollback. See [persistence contracts and verification](PROJECT_STATE_HISTORY.md#c05c07-persistence-contracts). |
+| C06 | Canonical field definitions and authoritative revisions implemented in development | The manifest fingerprints one versioned `field-definitions.json` catalogue for field types, controls/recovery, labels, applicability, limits/options, ordered NAVFIT/PDF bindings and fixed geometry. Services consume catalogue limits; compatibility-view generators no longer write competing VBA. `ReportHead` selects the authoritative saved revision through an ownership foreign key, replacing the circular relationship; retained report columns/pointer are checked projections. Original IDs, snapshots, changes, recovery and pending buffers remain intact. Metadata-only synthetic text/date additions exercise save/restore/checkpoint and fresh-session recovery; native fixed-page and interchange checks remain separate gates. See [implementation and verification](PROJECT_STATE_HISTORY.md#c05c07-persistence-contracts). |
+| C07 | Typed dates, choices and default relationships implemented in development | Five `RevisionDate` projections separate DATETIME values from Missing/Blank/NOT REQ/NOT PERF/Unknown while retaining original strings and counseling explanations. Constrained `RevisionChoice` rows hold single responses and explicit Conflict/Unknown review states; native flag pairs remain lossless compatibility projections and deliberate box selection clears the opposite box. New form/workflow domains are constrained; imported legacy exceptions stay exact. `FieldDefaultLink` verifies one target with foreign keys, retains unresolved legacy links, and blocks their application. Native persistence/transfer checks cover nulls, dates, statuses, flags, ownership and rollback; NAVFIT/PDF checks cover interchange. See [implementation and verification scope](PROJECT_STATE_HISTORY.md#c05c07-persistence-contracts). |
 | C08 | Implemented in schema-29 development: audit mechanisms | Map the distinct purposes of revisions/changes, report events, operation journal, folder moves, comment events and review-task events. Define consistent event identity, actor/time, operation correlation and affected-object links; remove redundant new writes only where semantics genuinely overlap. Retain domain-specific histories where needed, and preserve all older audit records, undo and review evidence. Completion requires an audited producer/consumer map and demonstrated history/rollback equivalence. |
 | C09 | Implemented in schema-29 development: note/message consolidation | Confirm all current comments, replies and note drafts use `ReportMessage` and the unified report conversation UI independently of approval. Stop redundant legacy writes and retire obsolete active callers after an audit. Preserve/import `ReportNote`, `ReviewComment`, legacy mappings, authors, timestamps and thread relationships until a proven migration/retention strategy permits retirement. Test all retained schemas, idempotency, out-of-order parents, private drafts, replies and independent approval behavior. Do not reintroduce resolve/reopen requirements. |
 | C10 | Implemented in schema-29 development: UI-generation and navigation consolidation | Inventory actual live destinations, generated forms, macros, control expressions, dispatchers and compatibility hosts. Retire demonstrably duplicate screens/routes and generation code, while preserving pending-edit guards and required hidden context hosts. `frmHome`, `frmLibrary` and a `frmUX*` name do not by themselves establish duplicate behavior. Prove every supported destination and return path, including reports, summary groups, My Work, notes, review, validation popouts and contextual help. Preserve the navigation rail and fixed Front/Back geometry. |
 
-C08–C10 implementation and the producer/consumer/navigation audit are documented in [current project state](../PROJECT_STATE.md) and the [consolidation audit](CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit). Development verification is separate from release or physical acceptance. C01 retains the accepted file/folder-permissions decision. C04's preexisting validation-window layout gap remains separate. The user intends to simplify context/workflow requirements after C03.
+C08–C10 implementation and the producer/consumer/navigation audit are documented in [current project state](../PROJECT_STATE.md) and the [consolidation audit](CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit). Development verification is separate from release or physical acceptance. C01 retains the accepted file/folder-permissions decision. C04's earlier validation-window layout gap was addressed in 0.37 (see PROJECT_STATE.md). The user intends to simplify context/workflow requirements after C03.
 
 ## High
 
@@ -55,7 +55,7 @@ comment box and places read-only selected-grade wording under its trait title.
 Summary-list actions open PDF preview/output for the selected group. These
 editing/navigation changes do not establish printed-fit acceptance.
 Font-aware measurement replaces the uniform Courier estimate. See
-[current implementation and verification](../PROJECT_STATE.md#h01-chief-comments-and-print-fidelity-corrections).
+[current implementation and verification](PROJECT_STATE_HISTORY.md#h01-chief-comments-and-print-fidelity-corrections).
 H01 is **not fully accepted**: physical fit and an Acrobat-absent workstation remain
 open, as does acceptance of the native six-point fallback for the official
 trait-34 grade-4/5 6.5-point wording. No release is published.
@@ -135,7 +135,7 @@ developer-only tools must not become undeclared end-user dependencies.
 ### H02 — Nonblocking NAVFIT98A export
 
 Implemented in **0.34.0-dev/schema 31** development source. See
-[behavior and verification scope](../PROJECT_STATE.md#h02-nonblocking-navfit98a-export).
+[behavior and verification scope](PROJECT_STATE_HISTORY.md#h02-nonblocking-navfit98a-export).
 No release or publication is included. H01's print-fidelity corrections remain open.
 
 The 0.42 user flow exports the selected entire summary group from its Members
@@ -183,21 +183,21 @@ for production**: normal-policy launch remains unresolved after cancelling an
 unsigned-file security prompt, no approved
 signing certificate is available, and compiled PDF output remains unverified.
 The ACCDE import-picker filter is implemented in 0.37. See
-[current scope and limitations](../PROJECT_STATE.md#environment-build-verification-and-delivery)
+[current scope and limitations](PROJECT_STATE_HISTORY.md#environment-build-verification-and-delivery)
 and the [compiled-candidate procedure](../docs/Development_Workflow.md#compiled-desktop-candidate-m01).
 No release/publication or security-policy change is included.
 
 M02 is implemented in **0.31.0-dev/schema 30** development source: contributor-owned
 durable descriptors, deliberate Resume/Cancel, source/target guards, atomic stage
 consumption and preserved preview rows during workspace import. The inventory and
-ephemeral-versus-durable policy are in [current project state](../PROJECT_STATE.md#m02-preview-ownership-and-recovery).
+ephemeral-versus-durable policy are in [current project state](PROJECT_STATE_HISTORY.md#m02-preview-ownership-and-recovery).
 Development/reset/migration checks remain separate from release acceptance.
 
 M03 is implemented in **0.32.0-dev/schema 30** development source: chunked folder
 reads and Undo prechecks, refresh-owned paths, batched directory-history averages
 and shared scalar/batch group persistence validation. Existing prepared Reports/
 My Work readers and live write guards remain. The [inventory and verification
-scope](../PROJECT_STATE.md#m03-joinedbatched-read-paths) records measured native
+scope](PROJECT_STATE_HISTORY.md#m03-joinedbatched-read-paths) records measured native
 equivalence/performance. The preexisting read-row fixture failure is repaired in
 0.38 without weakening cache-divergence rejection. No schema or release change is included.
 
@@ -205,7 +205,7 @@ M04–M06 implementation is in **0.33.0-dev/schema 31** development source:
 contextual primary/cleanup diagnostics and narrower suppression; required
 form/control/event contracts and installed form/report/macro verification; and
 versioned runtime trait reference data seeded from the reviewed catalogue.
-See [current contracts and verification](../PROJECT_STATE.md#m04m06-diagnostics-view-contracts-and-runtime-trait-data)
+See [current contracts and verification](PROJECT_STATE_HISTORY.md#m04m06-diagnostics-view-contracts-and-runtime-trait-data)
 and the [source/consumer audit](CONSOLIDATION_PLAN.md#m04m06-source-and-consumer-audit).
 M04–M06 did not implement H01's Chief performance-comment/rendering corrections or
 H02. H02 is implemented separately above; no release is published.
@@ -218,7 +218,7 @@ H02. H02 is implemented separately above; no release is published.
 | L02 | Clarify revision-ID field names — implemented in development | Writable schema-owned query aliases expose `ExpectedRevisionID` and `BaseRevisionID`; active batch/meeting/comparison consumers use them. Legacy physical columns remain the sole storage for exact historical import, without duplicated values or renumbering. See the implementation scope below. |
 
 L01–L02 are implemented in **0.35.0-dev/schema 32** development source. See
-[behavior, compatibility and verification](../PROJECT_STATE.md#l01l02-relationship-names-and-revision-id-aliases).
+[behavior, compatibility and verification](PROJECT_STATE_HISTORY.md#l01l02-relationship-names-and-revision-id-aliases).
 No release or publication is included; historical fixture waivers remain in force.
 
 **Remote follow-up, 0.37.0-dev/schema 33:** repaired the stale Members/workbench
@@ -226,7 +226,7 @@ fixtures without dropping their behavioral assertions, fixed non-grid proposal
 projection and saved-export entry guards found by reordered task tests, and
 added native label/focus/resize checks. M07 has development preparation and
 targeted label/layout remediation, not accessibility acceptance. See
-[current scope and verification](../PROJECT_STATE.md#remote-regression-and-accessibility-preparation).
+[current scope and verification](PROJECT_STATE_HISTORY.md#remote-regression-and-accessibility-preparation).
 
 **Reliability follow-up, 0.38.0-dev/schema 33:** current-schema ACCDB/ACCDE
 backup/restore, protected verification files and stale-token cancellation for PDF/

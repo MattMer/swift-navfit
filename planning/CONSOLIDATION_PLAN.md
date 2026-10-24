@@ -270,7 +270,7 @@ Preflight receipt history retained from the earlier record:
 ## Remaining limits and next work
 
 - Review-held files are not permanently purged; their inventories are the handoff.
-- Schema 1–27 import remains implemented. r128's old-output testing waiver does
+- Schema 1–27 import remained implemented at r128 (current source accepts 1–33; see PROJECT_STATE.md). r128's old-output testing waiver does
   not retire older support or prove current retesting. Future test policy remains
   a separate decision; no historical fixture matrix was run in this maintenance.
 - No new full application generation, release upload or physical display,

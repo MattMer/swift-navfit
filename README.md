@@ -125,7 +125,7 @@ in blocks 33–39, saved independently of the selected rating. PDF output separa
 these comments from the catalogue grade explanation and boxed numeric mark, and
 uses field-specific typography and measured wrapping. The native renderer's
 trait-34 grade-4/5 six-point fallback for the template's 6.5-point wording remains
-a documented acceptance difference; see [current scope](PROJECT_STATE.md#h01-chief-comments-and-print-fidelity-corrections).
+a documented acceptance difference; see [current scope](planning/PROJECT_STATE_HISTORY.md#h01-chief-comments-and-print-fidelity-corrections).
 
 M02 adds **Resume saved preview** and **Cancel saved preview** to returned-report,
 structured-PDF and workspace imports. Reviewed choices survive resets/restarts;
@@ -143,7 +143,7 @@ Current development implements backlog C05–C10:
 - A consistent audit timeline with stable event identities and operation correlation, while retaining domain histories and guarded undo. Current notes/replies use one conversation service; legacy history and private drafts remain preserved.
 - One workspace navigation list and direct generation of current report tools, preserving pending edits, contextual help, required context hosts and fixed Front/Back geometry.
 
-The fresh development build passes compile/reopen, installed-source/binding verification, blank-data checks and the standard development suite. Another 1,988 focused assertions and actual schema-21–29 imports pass, including exact original-field verification, source hashes, late rollback/retry and reopen. Schemas 1–20 were not retested; existing UI verification gaps and physical/accessibility/printing acceptance remain separate. See [current implementation and verification scope](PROJECT_STATE.md#c08c10-audit-conversations-and-navigation) and the [producer/consumer and navigation audit](planning/CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit).
+The fresh development build passes compile/reopen, installed-source/binding verification, blank-data checks and the standard development suite. Another 1,988 focused assertions and actual schema-21–29 imports pass, including exact original-field verification, source hashes, late rollback/retry and reopen. Schemas 1–20 were not retested; existing UI verification gaps and physical/accessibility/printing acceptance remain separate. See [current implementation and verification scope](planning/PROJECT_STATE_HISTORY.md#c08c10-audit-conversations-and-navigation) and the [producer/consumer and navigation audit](planning/CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit).
 
 The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
 
