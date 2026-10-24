@@ -11,7 +11,7 @@ Public Function LoadMajorWorkbench() As Boolean
     f!cboRun.RowSource = "SELECT RunID,UXRouteLabel(RunID) FROM RouteRun ORDER BY RunID DESC"
     f!cboMeeting.RowSource = "SELECT SetID,Title FROM ComparisonSet ORDER BY SetID DESC"
     f!cboBatch.RowSource = "SELECT BatchID,BatchKind & ' / ' & BatchState & ' / ' & Left(BatchNote,60) FROM ChangeBatch ORDER BY BatchID DESC"
-    f!cboProposal.RowSource = "SELECT ProposalID,'Report ' & ReportID & ' / ' & FieldKey & ' / ' & ProposalState FROM MeetingProposal ORDER BY ProposalID DESC"
+    f!cboProposal.RowSource = "SELECT ProposalID,'Report ' & ReportID & ' / ' & FieldKey & ' / ' & ProposalState FROM qryMeetingProposalRevisionIDs ORDER BY ProposalID DESC"
     f!cboFolder.RowSource = "SELECT FolderID,FolderName FROM Folder ORDER BY FolderName"
     f!cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName,UserProfileID"
     For Each key In DraftFieldKeys()
@@ -35,9 +35,9 @@ Public Function ShowMajorDetails() As Boolean
     If row < 0 Then Exit Function
     Set db = CurrentDb
     If f!lstDetails.RowSource Like "SELECT ReportID,FieldKey,*" Then
-        Set r = db.OpenRecordset("SELECT * FROM ChangeItem WHERE BatchID=" & Nz(f!cboBatch, 0) & " AND ReportID=" & CLng(f!lstDetails.Column(0, row)) & " AND FieldKey=" & QuoteSQL(CStr(f!lstDetails.Column(1, row))), dbOpenSnapshot)
+        Set r = db.OpenRecordset("SELECT * FROM qryChangeItemRevisionIDs WHERE BatchID=" & Nz(f!cboBatch, 0) & " AND ReportID=" & CLng(f!lstDetails.Column(0, row)) & " AND FieldKey=" & QuoteSQL(CStr(f!lstDetails.Column(1, row))), dbOpenSnapshot)
     ElseIf f!lstDetails.RowSource Like "SELECT ProposalID,*" Then
-        Set r = db.OpenRecordset("SELECT * FROM MeetingProposal WHERE ProposalID=" & CLng(f!lstDetails.Column(0, row)), dbOpenSnapshot)
+        Set r = db.OpenRecordset("SELECT * FROM qryMeetingProposalRevisionIDs WHERE ProposalID=" & CLng(f!lstDetails.Column(0, row)), dbOpenSnapshot)
     ElseIf f!lstDetails.RowSource Like "SELECT StepOrdinal,*" Then
         Set r = db.OpenRecordset("SELECT * FROM RouteRunStep WHERE RunID=" & Nz(f!cboRun, 0) & " AND StepOrdinal=" & CLng(f!lstDetails.Column(0, row)), dbOpenSnapshot)
     ElseIf f!lstDetails.RowSource Like "SELECT ReportID,RevisionID,*" Then
@@ -64,12 +64,12 @@ Private Function WorkbenchReports() As String
         If Len(WorkbenchReports) > 0 Then WorkbenchReports = WorkbenchReports & ","
         WorkbenchReports = WorkbenchReports & f!lstReports.ItemData(item)
     Next
-    If Len(WorkbenchReports) = 0 Then Err.Raise vbObjectError + 4600, , "Select reports in the list."
+    If Len(WorkbenchReports) = 0 Then Err.Raise vbObjectError + 4600, "modMajorUI.WorkbenchReports", "Select reports in the list."
 End Function
 Private Function WorkbenchOneReport() As Long
     Dim ids As Object, key As Variant
     Set ids = MajorIDs(WorkbenchReports())
-    If ids.Count <> 1 Then Err.Raise vbObjectError + 4601, , "Select exactly one report."
+    If ids.Count <> 1 Then Err.Raise vbObjectError + 4601, "modMajorUI.WorkbenchOneReport", "Select exactly one report."
     For Each key In ids.Keys: WorkbenchOneReport = ids(key): Next
 End Function
 Public Function MajorAction(ByVal action As String) As Boolean
@@ -92,7 +92,7 @@ Public Function MajorAction(ByVal action As String) As Boolean
         Case "PreviewBatch"
             id = PreviewFieldBatch(WorkbenchReports(), Nz(f!cboField, ""), value, Nz(f!txtNote, "")): f!cboBatch = id
         Case "ShowBatch"
-            f!lstDetails.RowSource = "SELECT ReportID,FieldKey,BeforeValue,NewValue,BeforeIsNull,NewIsNull FROM ChangeItem WHERE BatchID=" & Nz(f!cboBatch, 0) & " ORDER BY ReportID,ItemID"
+            f!lstDetails.RowSource = "SELECT ReportID,FieldKey,BeforeValue,NewValue,BeforeIsNull,NewIsNull FROM qryChangeItemRevisionIDs WHERE BatchID=" & Nz(f!cboBatch, 0) & " ORDER BY ReportID,ItemID"
         Case "ApplyBatch": ApplyFieldBatch Nz(f!cboBatch, 0)
         Case "PreviewUndo": id = PreviewBatchUndo(Nz(f!cboBatch, 0)): f!cboBatch = id
         Case "SaveDefault"
@@ -101,7 +101,7 @@ Public Function MajorAction(ByVal action As String) As Boolean
                 Case "Folder": scopeID = Nz(f!cboFolder, 0)
                 Case "Group": scopeID = Nz(f!cboGroup, 0)
                 Case "Report": scopeID = WorkbenchOneReport()
-                Case Else: Err.Raise vbObjectError + 4602, , "Select a default scope."
+                Case Else: Err.Raise vbObjectError + 4602, "modMajorUI.MajorAction", "Select a default scope."
             End Select
             SetFieldDefault f!cboScope, scopeID, Nz(f!cboField, ""), value
         Case "SuggestDefault"
@@ -112,7 +112,7 @@ Public Function MajorAction(ByVal action As String) As Boolean
             id = CreateRouteTemplate(Nz(f!txtTitle, ""), Nz(f!txtReviewers, ""), Nz(f!txtNote, "")): f!cboTemplate = id
         Case "AddReviewer"
             id = Nz(f!cboReviewer, 0)
-            If id = 0 Then Err.Raise vbObjectError + 4605, , "Choose a contributor for this step."
+            If id = 0 Then Err.Raise vbObjectError + 4605, "modMajorUI.MajorAction", "Choose a contributor for this step."
             If Len(Nz(f!txtReviewers, "")) > 0 Then f!txtReviewers = f!txtReviewers & ","
             f!txtReviewers = Nz(f!txtReviewers, "") & id
             If Len(Nz(f!txtReviewerNames, "")) > 0 Then f!txtReviewerNames = f!txtReviewerNames & " > "
@@ -134,25 +134,27 @@ Public Function MajorAction(ByVal action As String) As Boolean
         Case "ApplyProposal": ApplyMeetingProposal Nz(f!cboProposal, 0)
         Case "OrderMeeting": SetMeetingOrder Nz(f!cboMeeting, 0), Nz(f!txtMeetingOrder, "")
         Case "ShowProposals"
-            f!lstDetails.RowSource = "SELECT ProposalID,ReportID,FieldKey,ValueText,ProposalState,BaseRevision FROM MeetingProposal WHERE SetID=" & Nz(f!cboMeeting, 0) & " ORDER BY ProposalID"
+            f!lstDetails.RowSource = "SELECT ProposalID,ReportID,FieldKey,ValueText,ProposalState,BaseRevisionID FROM qryMeetingProposalRevisionIDs WHERE SetID=" & Nz(f!cboMeeting, 0) & " ORDER BY ProposalID"
         Case "ApplySelectedProposals"
             value = ""
             For Each key In f!lstDetails.ItemsSelected
                 If Len(Nz(value, "")) > 0 Then value = value & ","
                 value = value & f!lstDetails.ItemData(key)
             Next
-            If f!lstDetails.RowSource Like "SELECT ProposalID,*" Then ApplyMeetingProposals CStr(value) Else Err.Raise vbObjectError + 4604, , "Show and select proposal rows first."
+            If f!lstDetails.RowSource Like "SELECT ProposalID,*" Then ApplyMeetingProposals CStr(value) Else Err.Raise vbObjectError + 4604, "modMajorUI.MajorAction", "Show and select proposal rows first."
         Case "RunChecks"
             id = RunRulePack(WorkbenchOneReport(), InstallNavyDraftChecks())
             f!lstDetails.RowSource = "SELECT RuleID,FindingState,Message,ValidationRunID,'','' FROM ValidationFinding WHERE ValidationRunID=" & id & " ORDER BY FindingID"
             f!lblStatus.Caption = "Saved-revision draft checks " & id & ". Limited coverage; findings are not export approval.": MajorAction = True: Exit Function
-        Case Else: Err.Raise vbObjectError + 4603, , "Unknown action."
+        Case Else: Err.Raise vbObjectError + 4603, "modMajorUI.MajorAction", "Unknown action."
     End Select
     LoadMajorWorkbench
     f!lblStatus.Caption = "Completed: " & action & IIf(id > 0, " / " & id, "")
     MajorAction = True: Exit Function
 Failed:
-    message = Err.Description
-    If trans Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modMajorUI", "MajorAction", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
     Forms!frmMajorWorkbench!lblStatus.Caption = message
 End Function

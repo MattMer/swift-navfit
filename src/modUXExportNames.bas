@@ -26,8 +26,7 @@ Public Function UXExportName(ByVal groupID As Long, ByVal reportID As Long) As S
     Else
         rank = Nz(DLookup("RankRate", "Report", "ReportID=" & reportID), "")
         ending = DLookup("PeriodEnd", "Report", "ReportID=" & reportID)
-        If IsNull(ending) Then Err.Raise vbObjectError + 6910, , "Set the saved report's ending date before exporting."
-        ending = Format$(ending, "yyyy-mm-dd")
+        If IsNull(ending) Then ending = "UNSPECIFIED" Else ending = Format$(ending, "yyyy-mm-dd")
     End If
     UXExportName = "Swift_NAVFIT_Export_" & SafeRank(rank) & "_" & CStr(ending) & ".accdb"
 End Function
@@ -36,11 +35,11 @@ Public Function UXExportDestination(ByVal chosen As String, ByVal groupID As Lon
     Set fs = CreateObject("Scripting.FileSystemObject")
     folder = chosen
     If LCase$(Right$(chosen, 6)) = ".accdb" Then folder = fs.GetParentFolderName(chosen)
-    If Not fs.FolderExists(folder) Then Err.Raise vbObjectError + 6911, , "Choose an existing export directory."
+    If Not fs.FolderExists(folder) Then Err.Raise vbObjectError + 6911, "modUXExportNames.UXExportDestination", "Choose an existing export directory."
     name = UXExportName(groupID, reportID): stem = Left$(name, Len(name) - 6): path = fs.BuildPath(folder, name)
     Do While fs.FileExists(path) Or fs.FileExists(path & ".swift-baseline.accdb") Or fs.FolderExists(path)
         n = n + 1
-        If n > 10000 Then Err.Raise vbObjectError + 6912, , "Choose another export directory; too many matching export names exist."
+        If n > 10000 Then Err.Raise vbObjectError + 6912, "modUXExportNames.UXExportDestination", "Choose another export directory; too many matching export names exist."
         path = fs.BuildPath(folder, stem & "_" & n & ".accdb")
     Loop
     UXExportDestination = path

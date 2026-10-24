@@ -29,18 +29,18 @@ Public Sub ValidateNAVFITSourceSchema(ByVal db As DAO.Database, ByVal prefix As 
     Dim table As Variant, entry As Variant, parts As Variant, t As DAO.TableDef, f As DAO.Field, expected As Long
     For Each table In Array("Folders", "Reports", "Summary")
         Set t = db.TableDefs(prefix & table)
-        If t.Attributes <> 0 Then Err.Raise vbObjectError + 404, , "Linked or hidden source tables are unsupported."
+        If t.Attributes <> 0 Then Err.Raise vbObjectError + 404, "modNAVFITUpgrade.ValidateNAVFITSourceSchema", "Linked or hidden source tables are unsupported."
         expected = 0
         For Each entry In NAVFITSchemaFields(CStr(table))
             parts = Split(entry, "|")
             If NAVFITHasField(t, CStr(parts(0))) Then
                 Set f = t.Fields(parts(0)): expected = expected + 1
-                If f.Type <> CLng(parts(1)) Or f.Size <> CLng(parts(2)) Then Err.Raise vbObjectError + 403, , "Unsupported NAVFIT field: " & table & "." & parts(0)
+                If f.Type <> CLng(parts(1)) Or f.Size <> CLng(parts(2)) Then Err.Raise vbObjectError + 403, "modNAVFITUpgrade.ValidateNAVFITSourceSchema", "Unsupported NAVFIT field: " & table & "." & parts(0)
             ElseIf Not (allowV33 And prefix = "" And IsPatchColumn(CStr(table), CStr(parts(0)))) Then
-                Err.Raise vbObjectError + 403, , "Missing NAVFIT field: " & table & "." & parts(0)
+                Err.Raise vbObjectError + 403, "modNAVFITUpgrade.ValidateNAVFITSourceSchema", "Missing NAVFIT field: " & table & "." & parts(0)
             End If
         Next
-        If t.Fields.Count <> expected Then Err.Raise vbObjectError + 402, , "Unexpected NAVFIT fields in " & table
+        If t.Fields.Count <> expected Then Err.Raise vbObjectError + 402, "modNAVFITUpgrade.ValidateNAVFITSourceSchema", "Unexpected NAVFIT fields in " & table
     Next
 End Sub
 ' Detect missing Patch 2 fields only after complete base-schema validation.

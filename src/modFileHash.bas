@@ -10,20 +10,20 @@ Public Function SourceFileHash(ByVal path As String) As String
     Dim provider As LongPtr, hash As LongPtr, buffer() As Byte, digest(0 To 31) As Byte
     Dim file As Integer, remaining As Long, length As Long, i As Long, opened As Boolean, failure As Long, message As String
     On Error GoTo Failed
-    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise vbObjectError + 600, , "Cannot initialize source hashing."
-    If CryptCreateHash(provider, &H800C&, 0, 0, hash) = 0 Then Err.Raise vbObjectError + 601, , "Cannot create source hash."
+    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise vbObjectError + 600, "modFileHash.SourceFileHash", "Cannot initialize source hashing."
+    If CryptCreateHash(provider, &H800C&, 0, 0, hash) = 0 Then Err.Raise vbObjectError + 601, "modFileHash.SourceFileHash", "Cannot create source hash."
     file = FreeFile: Open path For Binary Access Read Shared As #file: opened = True
     remaining = LOF(file)
     Do While remaining > 0
         length = remaining: If length > 131072 Then length = 131072
         ReDim buffer(0 To length - 1)
         Get #file, , buffer
-        If CryptHashData(hash, buffer(0), length, 0) = 0 Then Err.Raise vbObjectError + 602, , "Cannot hash source bytes."
+        If CryptHashData(hash, buffer(0), length, 0) = 0 Then Err.Raise vbObjectError + 602, "modFileHash.SourceFileHash", "Cannot hash source bytes."
         remaining = remaining - length
     Loop
     Close #file: opened = False
     length = 32
-    If CryptGetHashParam(hash, 2, digest(0), length, 0) = 0 Then Err.Raise vbObjectError + 603, , "Cannot read source hash."
+    If CryptGetHashParam(hash, 2, digest(0), length, 0) = 0 Then Err.Raise vbObjectError + 603, "modFileHash.SourceFileHash", "Cannot read source hash."
     For i = 0 To 31: SourceFileHash = SourceFileHash & Right$("0" & Hex$(digest(i)), 2): Next
     CryptDestroyHash hash: CryptReleaseContext provider, 0
     Exit Function
@@ -39,15 +39,15 @@ End Function
 Public Function SourceTextHash(ByVal text As String) As String
     Dim provider As LongPtr, hash As LongPtr, buffer() As Byte, digest(0 To 31) As Byte, length As Long, i As Long, failure As Long, message As String
     On Error GoTo Failed
-    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise vbObjectError + 600, , "Cannot initialize hashing."
-    If CryptCreateHash(provider, &H800C&, 0, 0, hash) = 0 Then Err.Raise vbObjectError + 601, , "Cannot create hash."
+    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise vbObjectError + 600, "modFileHash.SourceTextHash", "Cannot initialize hashing."
+    If CryptCreateHash(provider, &H800C&, 0, 0, hash) = 0 Then Err.Raise vbObjectError + 601, "modFileHash.SourceTextHash", "Cannot create hash."
     ' VBA strings are hashed as UTF-16LE, without a byte-order marker.
     If Len(text) > 0 Then
         buffer = text
-        If CryptHashData(hash, buffer(0), UBound(buffer) + 1, 0) = 0 Then Err.Raise vbObjectError + 602, , "Cannot hash text."
+        If CryptHashData(hash, buffer(0), UBound(buffer) + 1, 0) = 0 Then Err.Raise vbObjectError + 602, "modFileHash.SourceTextHash", "Cannot hash text."
     End If
     length = 32
-    If CryptGetHashParam(hash, 2, digest(0), length, 0) = 0 Then Err.Raise vbObjectError + 603, , "Cannot read hash."
+    If CryptGetHashParam(hash, 2, digest(0), length, 0) = 0 Then Err.Raise vbObjectError + 603, "modFileHash.SourceTextHash", "Cannot read hash."
     For i = 0 To 31: SourceTextHash = SourceTextHash & Right$("0" & Hex$(digest(i)), 2): Next
     CryptDestroyHash hash: CryptReleaseContext provider, 0: Exit Function
 Failed:

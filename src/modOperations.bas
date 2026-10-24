@@ -1,6 +1,77 @@
 Attribute VB_Name = "modOperations"
 Option Compare Database
 Option Explicit
+Private lastFailure As Object
+
+'Keep originals in the owned in-memory context, never in a diagnostic log.
+'Capture before any cleanup; numeric error codes remain backward compatible.
+Public Function SwiftFailure(ByVal module As String, ByVal procedure As String, ByVal stage As String, ByVal number As Long, ByVal description As String, ByVal source As String, Optional ByVal transaction As String = "Not started") As Object
+    Dim result As Object
+    If Len(stage) = 0 Then stage = "Validate / initialize"
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "Identity", module & "." & procedure & ":" & number
+    result.Add "Module", module: result.Add "Procedure", procedure
+    result.Add "Stage", stage: result.Add "Number", number
+    result.Add "Description", description: result.Add "Source", source
+    result.Add "Transaction", transaction: result.Add "Cleanup", ""
+    Set lastFailure = result: Set SwiftFailure = result
+End Function
+
+Public Function SwiftRedact(ByVal text As String) As String
+    Dim pattern As Object
+    Set pattern = CreateObject("VBScript.RegExp")
+    pattern.Global = True
+    'Identifiers may be compact, hyphenated or space-separated. Deliberately
+    'redact long digit sequences too; logs do not need full personal identifiers.
+    pattern.pattern = "[0-9]([ -]?[0-9]){8,}"
+    SwiftRedact = pattern.Replace(text, "[identifier redacted]")
+End Function
+
+Public Function SwiftFailureText(ByVal context As Object) As String
+    Set lastFailure = context
+    SwiftFailureText = SwiftRedact(context("Description")) & vbCrLf & "Diagnostic: " & context("Identity") & "; source: " & SwiftRedact(context("Source")) & "; stage: " & SwiftRedact(context("Stage")) & "; transaction: " & context("Transaction")
+    If Len(context("Cleanup")) > 0 Then SwiftFailureText = SwiftFailureText & vbCrLf & "Cleanup: " & context("Cleanup")
+End Function
+
+Public Function SwiftLastFailure() As String
+    If Not lastFailure Is Nothing Then SwiftLastFailure = SwiftFailureText(lastFailure)
+End Function
+
+Public Sub SwiftCleanupError(ByVal context As Object, ByVal step As String, ByVal number As Long)
+    If Len(context("Cleanup")) > 0 Then context("Cleanup") = context("Cleanup") & "; "
+    context("Cleanup") = context("Cleanup") & step & " (" & number & ")"
+End Sub
+
+Public Sub SwiftRollback(ByVal workspace As DAO.workspace, ByVal context As Object)
+    On Error GoTo Failed
+    workspace.Rollback
+    context("Transaction") = "Rolled back"
+    Exit Sub
+Failed:
+    context("Transaction") = "Rollback failed; inspect saved state before retry"
+    SwiftCleanupError context, "rollback", Err.number
+End Sub
+
+Public Sub SwiftClose(ByVal owned As Object, ByVal context As Object, ByVal role As String)
+    On Error GoTo Failed
+    If Not owned Is Nothing Then owned.Close
+    Exit Sub
+Failed:
+    SwiftCleanupError context, role, Err.number
+End Sub
+
+Public Sub SwiftFinishFailed(ByVal operationID As Long, ByVal context As Object)
+    On Error GoTo Failed
+    If operationID > 0 Then FinishOperation operationID, "Failed", SwiftFailureText(context)
+    Exit Sub
+Failed:
+    SwiftCleanupError context, "record failed operation", Err.number
+End Sub
+
+Public Sub SwiftRaise(ByVal context As Object)
+    Set lastFailure = context
+    Err.Raise CLng(context("Number")), CStr(context("Module")) & "." & context("Procedure"), SwiftFailureText(context)
+End Sub
 Public Function BeginOperation(ByVal kind As String, ByVal source As String) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -15,9 +86,11 @@ Public Function BeginOperation(ByVal kind As String, ByVal source As String) As 
     AuditRecord "Operation", BeginOperation
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: On Error GoTo 0
-    Err.Raise failure, "BeginOperation", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modOperations", "BeginOperation", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Function
 Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByVal message As String)
     Dim ownedDB As DAO.Database
@@ -26,28 +99,32 @@ Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByV
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     Set r = ownedDB.OpenRecordset("SELECT * FROM OperationJournal WHERE OperationID=" & operationID, dbOpenDynaset)
-    If r.EOF Then Err.Raise vbObjectError + 1101, , "Operation entry missing."
-    r.Edit: r!OperationState = state: r!Outcome = message: r!FinishedAt = Now(): r.Update: r.Close
+    If r.EOF Then Err.Raise vbObjectError + 1101, "modOperations.FinishOperation", "Operation entry missing."
+    r.Edit: r!OperationState = state
+    If state = "Failed" Then r!Outcome = SwiftRedact(message) Else r!Outcome = message
+    r!FinishedAt = Now(): r.Update: r.Close
     AuditRecord "Operation", operationID, operationID, False, True
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: explanation = Err.Description
-    On Error Resume Next: w.Rollback: On Error GoTo 0
-    Err.Raise failure, "FinishOperation", explanation
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modOperations", "FinishOperation", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): explanation = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Sub
 Public Function UndoNarrativeImport(ByVal receiptID As Long) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, id As Long, operationID As Long, trans As Boolean
     Dim failure As Long, message As String, stage As String, beforeRevision As Variant
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("SELECT * FROM ImportReceipt WHERE ImportReceiptID=" & receiptID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 1102, , "Import receipt does not exist."
+    If r.EOF Then Err.Raise vbObjectError + 1102, "modOperations.UndoNarrativeImport", "Import receipt does not exist."
     operationID = BeginOperation("Undo import", "Receipt " & receiptID)
     id = r!ReportID
-    If Nz(r!IsUndone, False) Then Err.Raise vbObjectError + 1103, , "Import was already undone."
-    If IsNull(r!AppliedRevisionID) Then Err.Raise vbObjectError + 1104, , "This older receipt lacks an applied revision. Automatic undo is unavailable."
-    If Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> r!AppliedRevisionID Then Err.Raise vbObjectError + 1105, , "Later edits exist. Undo stopped to preserve them."
-    If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), False) Or Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 1106, , "Report is archived or locked. Undo stopped."
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1107, , "Close the editor before undoing an import."
+    If Nz(r!IsUndone, False) Then Err.Raise vbObjectError + 1103, "modOperations.UndoNarrativeImport", "Import was already undone."
+    If IsNull(r!AppliedRevisionID) Then Err.Raise vbObjectError + 1104, "modOperations.UndoNarrativeImport", "This older receipt lacks an applied revision. Automatic undo is unavailable."
+    If Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> r!AppliedRevisionID Then Err.Raise vbObjectError + 1105, "modOperations.UndoNarrativeImport", "Later edits exist. Undo stopped to preserve them."
+    If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), False) Or Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 1106, "modOperations.UndoNarrativeImport", "Report is archived or locked. Undo stopped."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1107, "modOperations.UndoNarrativeImport", "Close the editor before undoing an import."
     beforeRevision = r!BeforeRevisionID: r.Close
     stage = "Begin undo transaction"
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
@@ -64,13 +141,14 @@ Public Function UndoNarrativeImport(ByVal receiptID As Long) As Boolean
     Call FinishOperation(operationID, "Completed", "Compensated receipt " & receiptID & ". History and provenance retained.")
     w.CommitTrans: trans = False: UndoNarrativeImport = True: Exit Function
 Failed:
-    failure = Err.Number: message = stage & ": " & Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close
-    If operationID > 0 Then FinishOperation operationID, "Failed", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modOperations", "UndoNarrativeImport", stage, Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If operationID > 0 Then SwiftFinishFailed operationID, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "UndoNarrativeImport", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function LoadOperations() As Boolean
     Forms!frmOperations!lstOperations.RowSource = "SELECT OperationID,OperationKind,OperationState,StartedAt FROM OperationJournal ORDER BY OperationID DESC"

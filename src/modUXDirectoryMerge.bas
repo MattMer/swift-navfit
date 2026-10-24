@@ -73,7 +73,7 @@ Public Function UXDirectoryMergeUndo() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryMerge
-    If Nz(f!lstHistory, 0) = 0 Then Err.Raise 5, , "Select a merge in the history list."
+    If Nz(f!lstHistory, 0) = 0 Then Err.Raise 5, "modUXDirectoryMerge.UXDirectoryMergeUndo", "Select a merge in the history list."
     UndoDirectoryMerge CLng(f!lstHistory): UXDirectoryMergeLoad
     f!txtPreview = "Undo completed. Original links and profile availability restored; merge history retained."
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad

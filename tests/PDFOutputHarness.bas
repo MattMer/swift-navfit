@@ -1,10 +1,231 @@
 Attribute VB_Name = "PDFOutputHarness"
 Option Explicit
 Private n As Long
+
+Public Function TestPDFMetrics() As String
+    Dim wide As Double, narrow As Double, courier As Double
+    On Error GoTo Failed
+    wide = PDFOutputTextWidth("WWWWWWWWWW", "Times New Roman", 10)
+    narrow = PDFOutputTextWidth("iiiiiiiiii", "Times New Roman", 10)
+    courier = PDFOutputTextWidth("WWWWWWWWWW", "Courier New", 10)
+    If wide <= narrow * 2 Or courier < 50 Or courier > 70 Then Err.Raise 5, "PDFOutputHarness.TestPDFMetrics", "Native report font metrics are not usable in points."
+    PDFOutputEndPreview
+    TestPDFMetrics = "PASS: native printer font metrics; Times wide=" & wide & "; narrow=" & narrow & "; Courier=" & courier
+    Exit Function
+Failed:
+    TestPDFMetrics = "FAIL: native report metrics: " & Err.Number & " " & Err.Description
+    On Error Resume Next
+    PDFOutputEndPreview
+End Function
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  If Not ok Then Err.Raise vbObjectError + 9190, , message
  n = n + 1
 End Sub
+Public Function TestChiefRenderingProof(ByVal root As String) As String
+ Dim id As Long, block As Long, index As Long, current As Object, rows As Collection, fields As Object, selected As Object, changes As Object, folder As String
+ On Error GoTo Failed
+ ConfigureWorkspace "SYNTHETIC CHIEF PRINT PROOF", "Synthetic tester"
+ id = CommitDraft(0, "CHIEFEVAL", "Synthetic Chief proof", "SYNTHETIC, CHIEF", #1/1/2026#, #9/30/2026#, "", "Synthetic rendering proof", "Synthetic reporting senior narrative.", , Array("1.0", "2.0", "3.0", "4.0", "5.0", "1.0", "2.0"), Array("Observed", "Promotable"))
+ Set changes = CreateObject("Scripting.Dictionary")
+ changes("OfficialName") = "SYNTHETIC, CHIEF": changes("RankRate") = "YNC": changes("MemberSSN") = "000000000"
+ changes("CommandEmployment") = "Synthetic command employment paragraph for native text measurement and placement."
+ changes("DutyDescription") = "Synthetic primary duties, qualifications, collateral duties and performance evidence."
+ For block = 33 To 39
+  For index = 1 To 3
+   changes("Trait" & block & "Comment" & index) = "SYNTHETIC authored comment " & block & "." & index & ": distinct member performance evidence."
+  Next
+ Next
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "Synthetic authored Chief comments")
+ PDFOutputCapture 0, id, False
+ Set selected = CreateObject("Scripting.Dictionary"): selected.Add CStr(id), True
+ folder = PDFOutputGenerate(root, selected, "Individual PDFs", False)
+ TestChiefRenderingProof = "PASS: Chief rendering proof: " & folder: Exit Function
+Failed:
+ TestChiefRenderingProof = "FAIL: Chief rendering proof: " & Err.Number & " " & Err.Description
+End Function
+
+Public Function TestChiefComments(ByVal root As String, ByVal template As String) As String
+ Dim id As Long, block As Long, entry As Long, revision As Long, authored As Long, recovery As Long, start As Long
+ Dim changes As Object, expected As Object, fields As Object, selected As Object, rows As Collection, current As Object, surface As Access.Form
+ Dim db As DAO.Database, native As DAO.Recordset, prefixes As Variant, key As Variant, column As String, file As String, returned As String, text As String, folder As String
+ On Error GoTo Failed
+ start = n
+ If DCount("*", "UserProfile") > 0 Then BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+ ConfigureWorkspace "SYNTHETIC CHIEF COMMENTS", "Synthetic tester"
+ id = CommitDraft(0, "CHIEFEVAL", "Synthetic independent comments", "CHIEF, SYNTHETIC", Null, Null, "", "Synthetic Chief fields")
+ Set changes = CreateObject("Scripting.Dictionary"): Set expected = CreateObject("Scripting.Dictionary")
+ For Each key In DraftFieldKeys()
+  If UXFieldFlag(CStr(key)) Then changes(CStr(key)) = "No"
+ Next
+ changes("ObservationStatus") = "Observed"
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   changes(key) = "AUTHORED " & block & "." & entry & " O'Brien & evidence": expected(key) = changes(key)
+  Next
+ Next
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "21 independent authored comments")
+ authored = CurrentRevision(id)
+ Set changes = CreateObject("Scripting.Dictionary"): changes("Trait33") = "5.0"
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "Rating change cannot author comments")
+ Set fields = SavedFields(id)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check SameFieldValue(fields(key), expected(key)), "Rating change overwrote " & key
+   Check MajorRevisionValue(CurrentRevision(id), key) = expected(key), "Snapshot omitted " & key
+   Check RevisionFieldStatus(authored, CurrentRevision(id), CStr(key)) = "Unchanged", "Rating-only edit changed comment history: " & key
+  Next
+ Next
+ prefixes = Array("LEAD", "TAC", "PROF", "MIS", "EO", "TEAM", "MIL")
+ file = root & "\chief-comments.accdb": revision = CurrentRevision(id)
+ Check NAVFITExportReport(id, file, template) = file, "Chief native export failed"
+ Set db = DBEngine.OpenDatabase(file, False, True): Set native = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
+   Check native.Fields(column) = expected(key), "Native comment order/mapping differs: " & key
+  Next
+ Next
+ native.Close: db.Close
+ Check CurrentRevision(id) = revision, "Native export created a revision"
+ returned = root & "\chief-comments-returned.accdb": FileCopy file, returned
+ Set db = DBEngine.OpenDatabase(returned)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
+   expected(key) = "RETURNED " & block & "." & entry
+   db.Execute "UPDATE Reports SET [" & column & "]=" & QuoteSQL(CStr(expected(key))) & " WHERE ReportType Is Not Null", dbFailOnError
+  Next
+ Next
+ db.Close
+ Set changes = CreateObject("Scripting.Dictionary"): changes("Trait33Comment1") = "LOCAL CONFLICT VALUE"
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "Synthetic three-way comment conflict")
+ Set rows = NAVFITPreviewReturned(returned, file & ".swift-baseline.accdb")
+ Check NAVFITReturnedDecision("Trait33Comment1") = "Conflict", "Chief authored conflict was not surfaced"
+ NAVFITResolveReturned "Trait33Comment1", "Keep current": expected("Trait33Comment1") = "LOCAL CONFLICT VALUE"
+ Check NAVFITApplyReturned() = id, "Chief comment return failed"
+ Set fields = SavedFields(id)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check SameFieldValue(fields(key), expected(key)), "Returned comment lost or crossed: " & key
+  Next
+ Next
+ Set changes = CreateObject("Scripting.Dictionary"): changes("Trait33Comment2") = Null
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "Deliberately clear authored Chief comment")
+ file = root & "\chief-cleared.accdb": Call NAVFITExportReport(id, file, template)
+ Set db = DBEngine.OpenDatabase(file, False, True): Set native = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+ Check IsNull(native!LEADDN2), "Explicit comment clear was replaced by native provenance"
+ native.Close: db.Close
+ Check RestoreDraft(id, authored) = id, "Restoring authored Chief revision failed"
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check SavedFields(id)(key) = "AUTHORED " & block & "." & entry & " O'Brien & evidence", "Restore omitted authored comment: " & key
+  Next
+ Next
+ DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+ Check UXFixedSelect(0), "Chief Front Page cannot open"
+ Set surface = Forms!frmEditor!uxFieldSurface.Form: revision = CurrentRevision(id)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry: text = "PENDING " & block & "." & entry
+   surface.Controls(UXFieldControl(key)) = text
+   Check UXSurfaceEdited(key), "Chief comment edit failed: " & key
+   expected(key) = text
+  Next
+ Next
+ Check CheckpointEditor(), "Chief comment recovery checkpoint failed"
+ recovery = DMax("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check DLookup(key, "RecoveryDraft", "RecoveryDraftID=" & recovery) = expected(key), "Recovery omitted " & key
+  Next
+ Next
+ Check UXFixedSelect(5) And UXFixedSelect(0), "Chief comments cannot cross Back/Front pages"
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check Forms!frmEditor.Controls(UXFieldControl(key)) = expected(key), "Page switch lost " & key
+  Next
+ Next
+ Check CurrentRevision(id) = revision, "Pending comment navigation saved implicitly"
+ Check UXSaveEditor(), "Chief authored comment save failed"
+ Check UXLeaveEditor(), "Chief editor cannot close after save"
+ Set fields = SavedFields(id)
+ For block = 33 To 39
+  For entry = 1 To 3
+   key = "Trait" & block & "Comment" & entry
+   Check SameFieldValue(fields(key), expected(key)), "Saved editor comment differs: " & key
+  Next
+ Next
+ Set changes = CreateObject("Scripting.Dictionary"): changes("Trait39Comment3") = String$(800, "W") & " END_CHIEF_39_3"
+ Call CommitSavedFields(id, CurrentRevision(id), changes, "Synthetic full overflow preservation")
+ revision = CurrentRevision(id): file = root & "\chief-too-long.accdb"
+ Check InStr(ChiefExportFailure(id, file, template), "exceeds native capacity") > 0, "Native 255-character capacity was silently coerced"
+ Check Len(Dir$(file)) = 0 And CurrentRevision(id) = revision, "Failed native export published or changed report"
+ PDFOutputCapture 0, id, False: Set selected = CreateObject("Scripting.Dictionary"): selected(CStr(id)) = True
+ folder = PDFOutputGenerate(root, selected, "Individual PDFs", False)
+ Check Len(folder) > 0 And SavedFields(id)("Trait39Comment3") = changes("Trait39Comment3"), "PDF overflow changed full comment"
+ TestChiefComments = "PASS: " & n - start & " Chief authored-field, native-return, recovery, editor and overflow assertions; " & folder: Exit Function
+Failed:
+ TestChiefComments = "FAIL Chief comments after " & n - start & ": " & Err.Number & " " & Err.Source & " " & Err.Description
+End Function
+Private Function ChiefExportFailure(ByVal id As Long, ByVal file As String, ByVal template As String) As String
+ On Error GoTo Failed
+ Call NAVFITExportReport(id, file, template): ChiefExportFailure = "ACCEPTED": Exit Function
+Failed:
+ ChiefExportFailure = Err.Description
+End Function
+Public Function TestChiefPrintCases(ByVal root As String) As String
+ Dim groupID As Long, id As Long, which As Long, block As Long, entry As Long, mark As Long, marks As Variant, name As String, key As String, text As String, folder As String
+ Dim changes As Object, selected As Object, current As Object, rows As Collection
+ On Error GoTo Failed
+ If DCount("*", "UserProfile") > 0 Then BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+ ConfigureWorkspace "SYNTHETIC CHIEF PRINT CASES", "Synthetic tester"
+ groupID = CreateSummaryGroup("Synthetic Chief print matrix", "CHIEFEVAL", "E7")
+ For which = 0 To 8
+  Select Case which
+   Case 0: name = "ZULU": mark = 3
+   Case 1: name = "CHARLIE": mark = 4
+   Case 2: name = "ALPHA": mark = 2
+   Case 3: name = "BRAVO": mark = 5
+   Case Else: mark = which - 3: name = "GRADE" & mark
+  End Select
+  marks = Array(mark & ".0", mark & ".0", mark & ".0", mark & ".0", mark & ".0", mark & ".0", mark & ".0")
+  id = CommitDraft(0, "CHIEFEVAL", "Synthetic " & name, name & ", SYNTHETIC", #1/1/2026#, #9/30/2026#, "", "Synthetic print matrix", "Synthetic reporting senior narrative.", , marks, Array("Observed", "Promotable"))
+  Set changes = CreateObject("Scripting.Dictionary")
+  changes("OfficialName") = name & ", SYNTHETIC": changes("RankRate") = "YNC"
+  changes("ReportingSeniorName") = "SYNTHETIC, A B": changes("ReportingSeniorGrade") = "CAPT"
+  changes("MemberSSN") = "000000" & Format$(which, "000"): changes("UnitUIC") = "00001"
+  For block = 33 To 39
+   For entry = 1 To 3
+    key = "Trait" & block & "Comment" & entry
+    Select Case which
+     Case 0: text = "OVERFLOW " & block & "." & entry & " " & String$(500, "W") & " END_OVERFLOW_" & block & "_" & entry
+     Case 1: text = "FULL " & block & "." & entry & " first authored line of evidence." & vbCrLf & "FULL " & block & "." & entry & " second authored line of evidence."
+     Case 2: text = ""
+     Case 3: text = "SHORT " & block & "." & entry & " distinct evidence."
+     Case Else: text = ""
+    End Select
+    If text <> "" Then changes(key) = text
+   Next
+  Next
+  Call CommitSavedFields(id, CurrentRevision(id), changes, "Synthetic print case values")
+  AddGroupMember groupID, id, "E7"
+ Next
+ PDFOutputCapture groupID, 0, False: Set current = PDFOutputJob(): Set rows = current("Reports")
+ Check rows.Count = 9 And rows(1)("Last") = "ALPHA" And rows(2)("Last") = "BRAVO" And rows(3)("Last") = "CHARLIE" And rows(9)("Last") = "ZULU", "Chief matrix packet order differs"
+ Set selected = CreateObject("Scripting.Dictionary")
+ For which = 1 To rows.Count: selected(CStr(rows(which)("ID"))) = True: Next
+ folder = PDFOutputGenerate(root, selected, "Both", True)
+ Check current("Files").Count = 11, "Chief matrix omitted packet, summary or an individual report"
+ TestChiefPrintCases = "PASS: blank/short/two-line/overflow comments, all 35 grade combinations, summary and alphabetical Both output: " & folder: Exit Function
+Failed:
+ TestChiefPrintCases = "FAIL: Chief print matrix: " & Err.Number & " " & Err.Description
+End Function
 Public Function TestPDFOutput(ByVal root As String) As String
  Dim g As Long, id As Long, other As Long, fields As Object, current As Object, rows As Collection, selected As Object, folder As String, again As String, before As Long, key As Variant
  On Error GoTo Failed

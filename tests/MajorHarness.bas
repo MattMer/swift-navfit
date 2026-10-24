@@ -128,3 +128,205 @@ Public Function TestMajor() As String
 Failed:
     TestMajor = "FAIL after " & count & " assertions: " & Err.Number & ": " & Err.Description
 End Function
+
+'Use the installed version's importer: <=32 retains DN text as provenance;
+'>=33 maps the same native values into the new independent authored fields.
+Public Function SeedChiefTransfer(ByVal nativePath As String, ByVal exported As String, ByVal template As String) As String
+    Dim db As DAO.Database, rows As DAO.Recordset, external As Long, id As Long
+    On Error GoTo Failed
+    BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+    Set db = DBEngine.OpenDatabase(nativePath, False, True)
+    Set rows = db.OpenRecordset("SELECT ReportID FROM Reports WHERE ReportType='Chief'", dbOpenSnapshot)
+    external = rows!ReportID: rows.Close: db.Close
+    Call OpenReviewFile(nativePath)
+    id = ImportReviewedReport(external, SourceFileHash(nativePath), 2000, "SYNTHETIC TRANSFER CHIEF")
+    CloseReviewFile
+    Call NAVFITExportReport(id, exported, template)
+    SeedChiefTransfer = "PASS: synthetic Chief transfer report " & id & "; original native comment columns retained": Exit Function
+Failed:
+    SeedChiefTransfer = "FAIL: " & Err.Number & " " & Err.Description
+End Function
+
+Public Function VerifyChiefTransfer(ByVal sourceSchema As Long, ByVal nativePath As String, ByVal oldExport As String, ByVal exported As String, ByVal template As String) As String
+    Dim id As Long, block As Long, entry As Long, revision As Long, key As String, column As String, prefixes As Variant, expected As Object, fields As Object, changes As Object
+    Dim db As DAO.Database, rows As DAO.Recordset, preview As Collection, returned As String, started As Long
+    On Error GoTo Failed
+    started = count: BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+    id = DMax("ReportID", "Report", "FormKind='CHIEFEVAL'"): revision = CurrentRevision(id)
+    prefixes = Array("LEAD", "TAC", "PROF", "MIS", "EO", "TEAM", "MIL")
+    Set expected = CreateObject("Scripting.Dictionary")
+    Set db = DBEngine.OpenDatabase(nativePath, False, True): Set rows = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType='Chief'", dbOpenSnapshot)
+    Set fields = SavedFields(id)
+    For block = 33 To 39
+        For entry = 1 To 3
+            key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
+            expected(key) = rows.Fields(column).Value
+            If sourceSchema < 33 Then
+                Check IsNull(fields(key)), "Migration fabricated an authored legacy comment"
+                Check RevisionFieldStatus(revision, revision, key) = "Not recorded", "Older comment snapshot was treated as corruption or invented history"
+            Else
+                Check SameFieldValue(fields(key), expected(key)), "Migration lost an authored comment"
+            End If
+        Next
+    Next
+    rows.Close: db.Close
+    Call NAVFITExportReport(id, exported, template)
+    Set db = DBEngine.OpenDatabase(exported, False, True): Set rows = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+    For block = 33 To 39
+        For entry = 1 To 3
+            key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
+            Check SameFieldValue(rows.Fields(column).Value, expected(key)), "Export erased untouched native comment: " & key
+        Next
+    Next
+    rows.Close: db.Close
+    Set preview = NAVFITPreviewReturned(exported, exported & ".swift-baseline.accdb")
+    For block = 33 To 39
+        For entry = 1 To 3
+            key = "Trait" & block & "Comment" & entry
+            Check NAVFITReturnedDecision(key) = "Keep current", "Unchanged exported comment became an edit: " & key
+        Next
+    Next
+    NAVFITClearReturned
+    Set preview = NAVFITPreviewReturned(oldExport, oldExport & ".swift-baseline.accdb")
+    Check CurrentRevision(id) = revision, "Old baseline preview created a revision"
+    For block = 33 To 39
+        For entry = 1 To 3
+            key = "Trait" & block & "Comment" & entry
+            Check NAVFITReturnedDecision(key) = "Keep current", "Older sealed baseline lost native field identity: " & key
+        Next
+    Next
+    NAVFITClearReturned
+    returned = exported & ".returned.accdb": FileCopy exported, returned
+    Set db = DBEngine.OpenDatabase(returned): db.Execute "UPDATE Reports SET LEADDN1='SYNTHETIC LEGACY RETURN' WHERE ReportType Is Not Null", dbFailOnError: db.Close
+    Set preview = NAVFITPreviewReturned(returned, exported & ".swift-baseline.accdb")
+    If sourceSchema < 33 Then Check NAVFITReturnedDecision("Trait33Comment1") = "Conflict", "Legacy unknown/current blank did not require a return decision"
+    NAVFITResolveReturned "Trait33Comment1", "Accept returned"
+    Check NAVFITApplyReturned() = id, "Accepted comment return failed"
+    Set changes = CreateObject("Scripting.Dictionary"): changes("Title") = "Synthetic unrelated title change"
+    Call CommitSavedFields(id, CurrentRevision(id), changes, "Unrelated edit must preserve unknown native comments")
+    Call NAVFITExportReport(id, exported & ".again.accdb", template)
+    Set db = DBEngine.OpenDatabase(exported & ".again.accdb", False, True): Set rows = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+    For block = 33 To 39
+        For entry = 1 To 3
+            key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
+            If key = "Trait33Comment1" Then expected(key) = "SYNTHETIC LEGACY RETURN"
+            Check SameFieldValue(rows.Fields(column).Value, expected(key)), "Unrelated save erased retained comment: " & key
+        Next
+    Next
+    rows.Close: db.Close
+    VerifyChiefTransfer = "PASS: " & count - started & " Chief schema " & sourceSchema & " migration/native-provenance/old-baseline assertions": Exit Function
+Failed:
+    VerifyChiefTransfer = "FAIL: " & Err.Number & " " & Err.Source & " " & Err.Description
+End Function
+
+' Both writable names address the original stored ID, never RevisionNumber.
+Public Function TestMajorRevisionAliases(Optional ByVal trace As Boolean = False) As String
+    Dim db As DAO.Database, rows As DAO.Recordset, stored As DAO.Recordset, w As DAO.Workspace, trans As Boolean
+    Dim spec As Variant, parts As Variant, id As Long, original As Long, alternate As Long, checks As Long
+    On Error GoTo Failed
+    Set db = CurrentDb: Set w = DBEngine.Workspaces(0)
+    For Each spec In Array("ChangeItem|qryChangeItemRevisionIDs|ItemID|ExpectedRevision|ExpectedRevisionID", "MeetingProposal|qryMeetingProposalRevisionIDs|ProposalID|BaseRevision|BaseRevisionID")
+        parts = Split(CStr(spec), "|")
+        If trace Then MajorAliasTrace parts(0) & ": read"
+        Set rows = db.OpenRecordset(CStr(parts(1)), dbOpenDynaset)
+        If rows.EOF Or Not rows.Updatable Then Err.Raise 5, "MajorHarness.TestMajorRevisionAliases", "Populated writable alias required: " & parts(1)
+        Do While Not rows.EOF
+            If rows.Fields(CStr(parts(4))).Value <> DLookup(CStr(parts(3)), CStr(parts(0)), parts(2) & "=" & rows.Fields(CStr(parts(2))).Value) Then Err.Raise 5, , "Alias changed stored revision ID"
+            If DCount("*", "ReportRevision", "RevisionID=" & rows.Fields(CStr(parts(4))).Value) <> 1 Then Err.Raise 5, , "Alias is not a RevisionID"
+            checks = checks + 2: rows.MoveNext
+        Loop
+        rows.MoveFirst: id = rows.Fields(CStr(parts(2))).Value: original = rows.Fields(CStr(parts(4))).Value
+        alternate = DMin("RevisionID", "ReportRevision", "RevisionID<>" & original)
+        If trace Then MajorAliasTrace parts(0) & ": begin transaction"
+        w.BeginTrans: trans = True
+        If trace Then MajorAliasTrace parts(0) & ": alias write"
+        rows.Edit: rows.Fields(CStr(parts(4))) = alternate: rows.Update
+        If trace Then MajorAliasTrace parts(0) & ": read stored ID"
+        Set stored = db.OpenRecordset("SELECT [" & parts(3) & "] FROM [" & parts(0) & "] WHERE [" & parts(2) & "]=" & id, dbOpenSnapshot)
+        If stored.Fields(0) <> alternate Then Err.Raise 5, , "Alias write did not reach legacy storage"
+        stored.Close
+        If trace Then MajorAliasTrace parts(0) & ": legacy write"
+        db.Execute "UPDATE [" & parts(0) & "] SET [" & parts(3) & "]=" & original & " WHERE [" & parts(2) & "]=" & id, dbFailOnError
+        If trace Then MajorAliasTrace parts(0) & ": rollback"
+        w.Rollback: trans = False
+        If trace Then MajorAliasTrace parts(0) & ": close rolled-back cursor"
+        rows.Close
+        If trace Then MajorAliasTrace parts(0) & ": read restored ID"
+        If DLookup(CStr(parts(4)), CStr(parts(1)), parts(2) & "=" & id) <> original Then Err.Raise 5, , "Legacy write/rollback not visible through alias"
+        If trace Then MajorAliasTrace parts(0) & ": FK rejection"
+        If Not MajorSQLRejected("UPDATE [" & parts(1) & "] SET [" & parts(4) & "]=-1 WHERE [" & parts(2) & "]=" & id) Then Err.Raise 5, , "Alias bypassed revision foreign key"
+        If DLookup(CStr(parts(4)), CStr(parts(1)), parts(2) & "=" & id) <> original Then Err.Raise 5, , "Rejected alias write changed original ID"
+        checks = checks + 4
+    Next
+    Set rows = db.OpenRecordset("SELECT TOP 1 RevisionID FROM ReportRevision WHERE RevisionID<>RevisionNumber", dbOpenSnapshot)
+    If rows.EOF Then Err.Raise 5, , "Test must distinguish IDs from revision numbers"
+    rows.Close
+    TestMajorRevisionAliases = "PASS: " & checks + 1 & " revision-ID alias, rollback and FK assertions": Exit Function
+Failed:
+    Dim primary As String
+    primary = Err.Number & " " & Err.Source & " " & Err.Description
+    On Error Resume Next
+    If trace Then MajorAliasTrace "FAIL: " & primary
+    If Not stored Is Nothing Then stored.Close
+    If Not rows Is Nothing Then rows.Close
+    If trans Then w.Rollback
+    On Error GoTo 0
+    TestMajorRevisionAliases = "FAIL: " & primary
+End Function
+
+Private Sub MajorAliasTrace(ByVal stage As String)
+    Dim file As Integer
+    file = FreeFile
+    Open CurrentProject.Path & "\major-alias-trace.log" For Append As #file
+    Print #file, stage
+    Close #file
+End Sub
+
+Private Function MajorSQLRejected(ByVal sql As String) As Boolean
+    On Error GoTo Rejected
+    CurrentDb.Execute sql, dbFailOnError
+    Exit Function
+Rejected:
+    MajorSQLRejected = True
+End Function
+
+' Exercise the current comparison and the retained hidden workbench adapter;
+' opening the retired visible workbench route is not a supported test setup.
+Public Function TestMajorAliasViews() As String
+    Dim groupID As Long, reportID As Long, snapshot As Long, meeting As Long, proposal As Long, batch As Long, revision As Long, header As Long, f As Access.Form, changes As Object
+    On Error GoTo Failed
+    groupID = DMin("GroupID", "SummaryGroup"): reportID = DMin("ReportID", "GroupMember", "GroupID=" & groupID)
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add "Trait33", "4.0"
+    Call CommitSavedFields(reportID, CurrentRevision(reportID), changes, "Synthetic alias before value")
+    revision = CurrentRevision(reportID)
+    snapshot = FreezeSummaryGroup(groupID, "Synthetic alias view check")
+    meeting = CreateComparisonSet(snapshot, "Synthetic alias view")
+    proposal = ProposeMeetingField(meeting, reportID, "Trait33", "3.0")
+    DoCmd.OpenForm "frmUXComparison", , , , , , CStr(meeting)
+    Set f = Forms!frmUXComparison
+    Check UXRefreshComparisonPreview(), "Comparison alias preview failed"
+    header = Abs(f!lstProposals.ColumnHeads)
+    Check f!lstProposals.ListCount - header = 1, "Proposal alias list omitted row"
+    Check SameFieldValue(f!lstProposals.Column(3, header), MajorRevisionValue(revision, "Trait33")), "Proposal before value differs: " & Nz(f!lstProposals.Column(3, header), "[null]") & "; row zero=" & Nz(f!lstProposals.Column(3, 0), "[null]")
+    Check f!lstProposals.Column(4, header) = "3.0", "Proposal after value differs"
+    f!lstProposals = proposal
+    Check UXGridDetail(), "Proposal alias detail failed"
+    Check InStr(f!uxProposalDetail, "AFTER: 3.0") > 0, "Full proposal detail missing"
+    Check UXCloseComparison(False), "Comparison close failed"
+    DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
+    Check LoadMajorWorkbench(), "Hidden compatibility adapter failed"
+    Set f = Forms!frmMajorWorkbench
+    batch = PreviewFieldBatch(CStr(reportID), "Title", "Synthetic alias batch", "Synthetic view check")
+    f!cboBatch = batch
+    Check MajorAction("ShowBatch") And f!lstDetails.ListCount - Abs(f!lstDetails.ColumnHeads) = 1, "Batch alias list failed"
+    header = Abs(f!lstDetails.ColumnHeads): f!lstDetails.Selected(header) = True
+    Check ShowMajorDetails() And InStr(f!txtDetail, "Synthetic alias batch") > 0, "Batch alias detail failed"
+    f!cboMeeting = meeting
+    Check MajorAction("ShowProposals") And f!lstDetails.ListCount - Abs(f!lstDetails.ColumnHeads) = 1, "Workbench proposal alias list failed"
+    Check CLng(f!lstDetails.Column(5, Abs(f!lstDetails.ColumnHeads))) = revision, "Workbench proposal lost base RevisionID"
+    Check CurrentRevision(reportID) = revision, "View preview changed saved report"
+    DoCmd.Close acForm, "frmMajorWorkbench", acSaveNo
+    TestMajorAliasViews = "PASS: 13 current comparison/compatibility-adapter alias assertions": Exit Function
+Failed:
+    TestMajorAliasViews = "FAIL: " & Err.Number & " " & Err.Source & " " & Err.Description
+End Function

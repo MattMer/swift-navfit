@@ -12,7 +12,7 @@ Public Function RUADDecode(ByVal xml As Variant) As Object
     For Each key In RUADKeys(): d.Add CStr(key), Null: Next
     If Len(Nz(xml, "")) > 0 Then
         Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False
-        If Not doc.LoadXML(CStr(xml)) Then Err.Raise vbObjectError + 7060, , "RUAD profile data could not be read. No changes saved."
+        If Not doc.LoadXML(CStr(xml)) Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADDecode", "RUAD profile data could not be read. No changes saved."
         For Each n In doc.SelectNodes("/RUAD/Field")
             key = n.getAttribute("key")
             If d.Exists(CStr(key)) Then
@@ -28,14 +28,14 @@ Public Function RUADEncode(ByVal values As Object, ByVal memberName As String, O
     Set parent = doc.createElement("RUAD"): doc.appendChild parent
     Set supported = RUADDecode(Null)
     For Each key In values.Keys
-        If Not supported.Exists(CStr(key)) Then Err.Raise vbObjectError + 7060, , "Unsupported RUAD field: " & CStr(key)
+        If Not supported.Exists(CStr(key)) Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADEncode", "Unsupported RUAD field: " & CStr(key)
     Next
     For Each key In RUADKeys()
         v = Null
         If values.Exists(CStr(key)) Then v = values(CStr(key))
         If key = "NAME" Then v = memberName
         If Not IsNull(v) Then
-            If Len(CStr(v)) > 4000 Then Err.Raise vbObjectError + 7060, , CStr(key) & ": use no more than 4,000 characters. No value is truncated."
+            If Len(CStr(v)) > 4000 Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADEncode", CStr(key) & ": use no more than 4,000 characters. No value is truncated."
         End If
         Set n = doc.createElement("Field"): n.setAttribute "key", CStr(key)
         If IsNull(v) Then n.setAttribute "null", "1" Else n.Text = CStr(v)
@@ -45,7 +45,7 @@ Public Function RUADEncode(ByVal values As Object, ByVal memberName As String, O
         If Len(Nz(provenance, "")) > 0 Then
             Dim sourceDoc As Object, sourceNode As Object
             Set sourceDoc = CreateObject("MSXML2.DOMDocument.6.0"): sourceDoc.async = False
-            If Not sourceDoc.LoadXML(CStr(provenance)) Then Err.Raise vbObjectError + 7060, , "Existing RUAD provenance cannot be read."
+            If Not sourceDoc.LoadXML(CStr(provenance)) Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADEncode", "Existing RUAD provenance cannot be read."
             Set sourceNode = sourceDoc.SelectSingleNode("/RUAD/Source")
             If Not sourceNode Is Nothing Then parent.appendChild sourceNode.cloneNode(True)
         End If

@@ -4,14 +4,14 @@ Option Explicit
 Public Function SavePriorEvaluation(ByVal priorID As Long, ByVal expectedVersion As Long, ByVal memberID As Long, ByVal kind As String, ByVal rank As String, ByVal fromDate As Date, ByVal toDate As Date, ByVal promotion As String, ByVal observation As String, ByVal traits As Object, ByVal sourceNote As String) As Long
     Dim r As DAO.Recordset, mark As Variant, block As Long, w As DAO.Workspace, author As Long, failure As Long, message As String, q As DAO.QueryDef, op As Long
     author = MajorAuthor()
-    If kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Err.Raise vbObjectError + 6970, , "Choose a supported prior report type."
-    If toDate < fromDate Then Err.Raise vbObjectError + 6970, , "Prior report end precedes its start."
-    If Len(rank) > 5 Or Len(sourceNote) > 255 Or Trim$(sourceNote) = "" Then Err.Raise vbObjectError + 6970, , "Enter source/context within 255 characters and rank/rate within 5."
-    If observation <> "Observed" And observation <> "NOB" Then Err.Raise vbObjectError + 6970, , "Choose observed or whole-report NOB."
+    If kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Choose a supported prior report type."
+    If toDate < fromDate Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Prior report end precedes its start."
+    If Len(rank) > 5 Or Len(sourceNote) > 255 Or Trim$(sourceNote) = "" Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Enter source/context within 255 characters and rank/rate within 5."
+    If observation <> "Observed" And observation <> "NOB" Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Choose observed or whole-report NOB."
     If promotion <> "" Then mark = NAVFITEncode(promotion, "promotion")
-    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6970, , "Choose an active command member."
+    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Choose an active command member."
     For block = 33 To 39
-        If Not traits.Exists("Trait" & block) Then Err.Raise vbObjectError + 6970, , "Include all seven trait slots; unentered values may remain blank."
+        If Not traits.Exists("Trait" & block) Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Include all seven trait slots; unentered values may remain blank."
         If Not IsNull(traits("Trait" & block)) And Nz(traits("Trait" & block), "") <> "" Then mark = NAVFITEncode(traits("Trait" & block), "trait")
     Next
     Set w = DBEngine.Workspaces(0): w.BeginTrans
@@ -20,9 +20,9 @@ Public Function SavePriorEvaluation(ByVal priorID As Long, ByVal expectedVersion
     If priorID = 0 Then
         r.AddNew: r!PriorGuid = NewIdentity(): r!CreatedBy = author: r!CreatedAt = Now(): r!VersionCounter = 1: r!IsArchived = False
     Else
-        If r.EOF Then Err.Raise vbObjectError + 6970, , "Prior record no longer exists."
-        If r!MemberID <> memberID Or r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6970, , "Prior record changed. Reopen it before editing."
-        If r!IsArchived Then Err.Raise vbObjectError + 6970, , "Archived prior history is read only."
+        If r.EOF Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Prior record no longer exists."
+        If r!MemberID <> memberID Or r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Prior record changed. Reopen it before editing."
+        If r!IsArchived Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Archived prior history is read only."
         r.Edit: r!VersionCounter = r!VersionCounter + 1
     End If
     r!MemberID = memberID: r!FormKind = kind: r!RankRate = rank: r!PeriodStart = DateValue(fromDate): r!PeriodEnd = DateValue(toDate)
@@ -36,10 +36,12 @@ Public Function SavePriorEvaluation(ByVal priorID As Long, ByVal expectedVersion
     FinishOperation op, "Completed", "Prior report fields and traits saved atomically. Current Swift reports unchanged."
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    If Not q Is Nothing Then q.Close
-    On Error GoTo 0: Err.Raise failure, "SavePriorEvaluation", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modMemberHistory", "SavePriorEvaluation", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not q Is Nothing Then SwiftClose q, swiftPrimary, "q"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Function PriorEvaluationITARows(ByVal memberID As Long) As Object
     Dim result As Object, facts As Object, r As DAO.Recordset, id As Variant, row As Variant, mark As String

@@ -70,12 +70,12 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
     Dim db As DAO.Database, ruad As Object, ruadXML As String
     Dim r As DAO.Recordset, w As DAO.Workspace, author As Long, failure As Long, message As String, op As Long, duplicate As Variant
     author = MajorAuthor(): displayName = Trim$(displayName): ssn = Trim$(ssn)
-    If displayName = "" Or Len(displayName) > 120 Then Err.Raise vbObjectError + 6960, , "Enter a member name within 120 characters."
-    If Len(reportName) > 27 Or Len(rank) > 5 Then Err.Raise vbObjectError + 6960, , "Report name permits 27 characters; rank/rate permits 5. No value will be truncated."
-    If ssn <> "" And DirectorySSN(ssn) = "" Then Err.Raise vbObjectError + 6960, , "Enter all nine SSN digits or leave SSN unentered."
+    If displayName = "" Or Len(displayName) > 120 Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Enter a member name within 120 characters."
+    If Len(reportName) > 27 Or Len(rank) > 5 Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Report name permits 27 characters; rank/rate permits 5. No value will be truncated."
+    If ssn <> "" And DirectorySSN(ssn) = "" Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Enter all nine SSN digits or leave SSN unentered."
     If ssn <> "" Then
         duplicate = MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(ssn) & " AND MemberID<>" & memberID)
-        If Not IsNull(duplicate) Then Err.Raise vbObjectError + 6960, , "That SSN already belongs to a directory member. Choose the existing member; names alone are not an identity match."
+        If Not IsNull(duplicate) Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "That SSN already belongs to a directory member. Choose the existing member; names alone are not an identity match."
     End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
@@ -84,8 +84,8 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
     If memberID = 0 Then
         r.AddNew: r!MemberGuid = NewIdentity(): r!CreatedBy = author: r!CreatedAt = Now(): r!SourceKind = sourceKind: r!IsArchived = False: r!VersionCounter = 1
     Else
-        If r.EOF Then Err.Raise vbObjectError + 6960, , "Member no longer exists."
-        If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6960, , "Member profile changed. Reopen it before saving."
+        If r.EOF Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Member no longer exists."
+        If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Member profile changed. Reopen it before saving."
         r.Edit: r!VersionCounter = r!VersionCounter + 1
     End If
     If IsMissing(ruadValues) Then
@@ -106,9 +106,11 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
     FinishOperation op, "Completed", "Directory profile saved; report fields and prior evaluation records unchanged."
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "SaveDirectoryMember", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modCommandDirectory", "SaveDirectoryMember", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Function SyncReportDirectory(ByVal reportID As Long) As Long
     Dim ownedDB As DAO.Database
@@ -192,9 +194,11 @@ Public Function RepairPDFDirectoryLinks() As Long
     Next
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = stage & ": " & Err.Description
-    On Error Resume Next: w.Rollback: r.Close
-    On Error GoTo 0: Err.Raise failure, "RepairPDFDirectoryLinks", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modCommandDirectory", "RepairPDFDirectoryLinks", stage, Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Function SyncDirectoryFromReports() As Long
     Dim ownedDB As DAO.Database
@@ -211,11 +215,11 @@ Public Sub LinkReportDirectoryMember(ByVal reportID As Long, ByVal memberID As L
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
     Dim w As DAO.Workspace, r As DAO.Recordset, op As Long, failure As Long, message As String
-    If Trim$(reason) = "" Then Err.Raise vbObjectError + 6961, , "Record why this is the correct member."
+    If Trim$(reason) = "" Then Err.Raise vbObjectError + 6961, "modCommandDirectory.LinkReportDirectoryMember", "Record why this is the correct member."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
-    If CurrentRevision(reportID) <> expectedRevision Or Nz(MajorScalar("SELECT VersionCounter FROM CommandMember WHERE MemberID=" & memberID), 0) <> expectedMemberVersion Then Err.Raise vbObjectError + 6961, , "Report or member changed. Preview the identity link again."
-    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6961, , "Choose an active directory member."
+    If CurrentRevision(reportID) <> expectedRevision Or Nz(MajorScalar("SELECT VersionCounter FROM CommandMember WHERE MemberID=" & memberID), 0) <> expectedMemberVersion Then Err.Raise vbObjectError + 6961, "modCommandDirectory.LinkReportDirectoryMember", "Report or member changed. Preview the identity link again."
+    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6961, "modCommandDirectory.LinkReportDirectoryMember", "Choose an active directory member."
     Set r = ownedDB.OpenRecordset("SELECT * FROM MemberReport WHERE ReportID=" & reportID, dbOpenDynaset)
     op = BeginOperation("Confirm report member identity", "Report " & reportID & "; prior directory member " & IIf(r.EOF, "unlinked", Nz(MajorScalar("SELECT MemberID FROM MemberReport WHERE ReportID=" & reportID), 0)) & "; new member " & memberID & "; reason " & reason)
     If r.EOF Then r.AddNew: r!ReportID = reportID Else r.Edit
@@ -223,9 +227,11 @@ Public Sub LinkReportDirectoryMember(ByVal reportID As Long, ByVal memberID As L
     FinishOperation op, "Completed", "Identity link confirmed; saved report fields unchanged."
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "LinkReportDirectoryMember", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modCommandDirectory", "LinkReportDirectoryMember", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Sub
 Public Sub DirectoryCreationContext(ByVal memberID As Long)
     creationMember = memberID

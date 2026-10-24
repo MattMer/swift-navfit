@@ -115,13 +115,37 @@ Public Function TestUXWorkflows() As String
 Failed:
     TestUXWorkflows = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
 End Function
-Public Function PrepareForcedQuit(ByVal invalid As Boolean) As Boolean
-    Dim id As Long
+Public Function PrepareForcedQuit(ByVal invalid As Boolean, Optional ByVal kind As String = "EVAL") As Boolean
+    Dim id As Long, block As Long, entry As Long
     ConfigureWorkspace "SYNTHETIC QUIT TEST", "Quit tester"
-    id = CommitDraft(0, "EVAL", "Forced quit", "Quit member", Null, Null, "", "Test", "")
+    id = CommitDraft(0, kind, "Forced quit", "Quit member", Null, Null, "", "Test", "")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.TimerInterval = 0
     Forms!frmEditor!txtOfficialName = "QUIT SAVE NAME"
     Forms!frmEditor!txtMemberSSN = IIf(invalid, "123", "000000777")
+    If kind = "CHIEFEVAL" Then
+        For block = 33 To 39
+            For entry = 1 To 3
+                Forms!frmEditor.Controls("txtTrait" & block & "Comment" & entry) = "QUIT CHIEF " & block & "." & entry
+            Next
+        Next
+    End If
     PrepareForcedQuit = True
+End Function
+Public Function VerifyChiefRecovery() As String
+    Dim block As Long, entry As Long, recovery As Long
+    On Error GoTo Failed
+    BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+    recovery = DMin("RecoveryDraftID", "RecoveryDraft")
+    If Not RestoreRecoveryDraft(recovery) Then Err.Raise 5, , "Chief recovery did not reopen"
+    For block = 33 To 39
+        For entry = 1 To 3
+            If Forms!frmEditor.Controls("txtTrait" & block & "Comment" & entry) <> "QUIT CHIEF " & block & "." & entry Then Err.Raise 5, , "Reopened Chief recovery changed a comment"
+        Next
+    Next
+    If Forms!frmEditor!txtMemberSSN <> "123" Or Not EditorHasPending() Then Err.Raise 5, , "Reopened invalid pending values were coerced"
+    If Not UXLeaveEditor("Discard") Then Err.Raise 5, , "Explicit fixture discard failed"
+    VerifyChiefRecovery = "PASS: all 21 Chief comments restored in a new Access session with invalid pending data": Exit Function
+Failed:
+    VerifyChiefRecovery = "FAIL: " & Err.Number & " " & Err.Description
 End Function

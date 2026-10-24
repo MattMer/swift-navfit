@@ -88,7 +88,7 @@ Public Function UXPriorSave() As Boolean
     Dim f As Access.Form, traits As Object, block As Long, id As Long
     On Error GoTo Failed
     Set f = Forms!frmUXPriorEditor
-    If Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6975, , "Enter both report dates."
+    If Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6975, "modUXDirectory.UXPriorSave", "Enter both report dates."
     Set traits = CreateObject("Scripting.Dictionary")
     For block = 33 To 39: traits.Add "Trait" & block, Nz(f.Controls("cboTrait" & block), ""): Next
     id = SavePriorEvaluation(priorID, priorVersion, historyMember, Nz(f!cboKind, ""), Nz(f!txtRank, ""), CDate(f!txtFrom), CDate(f!txtTo), Nz(f!cboPromotion, ""), Nz(f!cboObservation, ""), traits, Nz(f!txtSource, ""))
@@ -145,7 +145,7 @@ Public Function UXDirectoryBatchPreview() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryBatch: f!cmdApply.Enabled = False
-    If IsNull(f!cboGroup) Or Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6992, , "Choose the group and both report dates."
+    If IsNull(f!cboGroup) Or Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchPreview", "Choose the group and both report dates."
     f!txtPreview = PreviewDirectoryReports(CLng(f!cboGroup), UXDirectoryBatchSelection(), CDate(f!txtFrom), CDate(f!txtTo))
     f!txtStamp = CStr(f!cboGroup) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
     f!cmdApply.Enabled = True: UXDirectoryBatchPreview = True: Exit Function
@@ -157,7 +157,7 @@ Public Function UXDirectoryBatchApply() As Boolean
     On Error GoTo Failed
     Set f = Forms!frmUXDirectoryBatch
     stamp = CStr(Nz(f!cboGroup, 0)) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
-    If stamp <> Nz(f!txtStamp, "") Then Err.Raise vbObjectError + 6992, , "Selection or dates changed. Preview again."
+    If stamp <> Nz(f!txtStamp, "") Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchApply", "Selection or dates changed. Preview again."
     count = ApplyDirectoryReports(): f!cmdApply.Enabled = False
     f!lblStatus.Caption = "Created " & count & " new drafts. Open the summary group to edit them.": UXDirectoryBatchApply = True: Exit Function
 Failed:
@@ -178,9 +178,9 @@ Public Function UXHistoryIdentityPreview() As Boolean
     Dim f As Access.Form, id As Long, memberID As Long
     On Error GoTo Failed
     Set f = Forms!frmUXConfirmIdentity: f!cmdApply.Enabled = False
-    If IsNull(f!cboMember) Then Err.Raise vbObjectError + 6993, , "Choose an active directory member."
+    If IsNull(f!cboMember) Then Err.Raise vbObjectError + 6993, "modUXDirectory.UXHistoryIdentityPreview", "Choose an active directory member."
     id = CLng(f!txtReport): memberID = CLng(f!cboMember)
-    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6993, , "Choose an active directory member."
+    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6993, "modUXDirectory.UXHistoryIdentityPreview", "Choose an active directory member."
     f!txtMember = memberID: f!txtVersion = MajorScalar("SELECT VersionCounter FROM CommandMember WHERE MemberID=" & memberID)
     f!txtPreview = "Saved report: " & UXIdentity(MajorScalar("SELECT OfficialName FROM Report WHERE ReportID=" & id), MajorScalar("SELECT MemberName FROM Report WHERE ReportID=" & id)) & vbCrLf & "Current identity state: " & MajorScalar("SELECT MatchState FROM MemberReport WHERE ReportID=" & id) & vbCrLf & "Confirm directory member: " & MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & memberID) & " / " & Nz(MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & memberID), "") & vbCrLf & "Report names, SSNs and saved revisions stay unchanged. Confirm only after checking that this is the same person."
     f!lblStatus.Caption = "": f!cmdApply.Enabled = True: UXHistoryIdentityPreview = True: Exit Function
@@ -191,7 +191,7 @@ Public Function UXHistoryApplyIdentity() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXConfirmIdentity
-    If Nz(f!cboMember, 0) <> Nz(f!txtMember, 0) Then Err.Raise vbObjectError + 6993, , "Member selection changed. Preview the identity link again."
+    If Nz(f!cboMember, 0) <> Nz(f!txtMember, 0) Then Err.Raise vbObjectError + 6993, "modUXDirectory.UXHistoryApplyIdentity", "Member selection changed. Preview the identity link again."
     LinkReportDirectoryMember CLng(f!txtReport), CLng(f!txtMember), CLng(f!txtRevision), CLng(f!txtVersion), Nz(f!txtReason, "")
     DoCmd.Close acForm, f.Name: UXHistoryLoad: UXHistoryApplyIdentity = True: Exit Function
 Failed:

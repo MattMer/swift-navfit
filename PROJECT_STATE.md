@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 22 October 2026. Current implementation, not a historical release log.
+Updated 23 October 2026. Current implementation, not a historical release log.
 Consolidation removed three superseded release assemblers and consolidated
 developer instructions, structural verification and Demo creation. Application
 behavior was unchanged by consolidation. The persistence changes below are separate.
@@ -39,6 +39,17 @@ descriptors and explicit preview ownership. The earlier ACCDE candidate remains
 unsigned 0.30.0-dev/schema 29 development evidence, not a current release.
 M03 advances application source to **0.32.0-dev**, retaining schema 30. It batches
 read work without changing storage, report geometry or the release contract.
+M04–M06 advance development source to **0.33.0-dev / schema 31**: contextual
+diagnostics, required view contracts and versioned runtime trait reference data.
+H02 advances development source to **0.34.0-dev / schema 31**, allowing saved
+report/group NAVFIT98A export despite readiness findings and archived/approved
+status. H01's corrected Chief fields and rendering advance source below;
+physical and renderer-specific acceptance remain separate.
+L01–L02 advance development to **0.35.0-dev / schema 32**: descriptive major
+relationship names and writable revision-ID compatibility queries. Original
+stored column names and revision IDs remain intact for historical import.
+H01 corrections advance development to **0.36.0-dev / schema 33**, with field
+catalogue version 2 and 21 independent authored Chief trait comments.
 
 ## Architecture and authoritative sources
 
@@ -106,7 +117,8 @@ read work without changing storage, report geometry or the release contract.
   All listed group reports are sorted by last/first/middle name and stable identity;
   the summary and packet use that same order. Combined, individual and Both modes
   use one Access report, without a user-operated merger or Acrobat automation.
-  Fixed Courier New values overlay embedded, reviewed 300-dpi blank templates.
+  Field-specific fonts overlay embedded, reviewed 300-dpi blank templates;
+  Windows printer GDI metrics drive width, wrapping and line height.
   [pdf-print-layout.json](src/pdf-print-layout.json) records source/image hashes,
   print geometry and exclusions; it does not replace the canonical field catalogue.
   Unrecognized choice values and text beyond a printed box continue on labelled
@@ -242,6 +254,266 @@ require identical cache/fact rejection codes. Historical-fixture, physical and
 release acceptance remain separate.
 
 ### Workstation and compiled candidate support
+
+### H01 Chief comments and print-fidelity corrections
+
+- Field catalogue version 2 appends 21 Chief-only memo values, named
+  `Trait33Comment1` through `Trait39Comment3`, after the original 79 ordinals.
+  Each trait has three independent entries beside its existing Front Page row.
+  All 188 existing field rectangles remain fixed; the Chief guidance panel moves
+  below the seven groups. Other editor kinds and printed page associations stay
+  unchanged. Rating selection never authors or replaces performance comments.
+- Schema 33 creates the additional report/recovery columns through the existing
+  canonical builder. Normal snapshots, revisions/changes, comparison, restore,
+  pending buffers, shutdown recovery and workspace import consume the catalogue.
+  The base form builder creates appended unbound buffers before shared layout;
+  the existing surface generator creates their visible controls.
+  Old snapshots remain unchanged and their new fields stay null/not recorded;
+  missing fields in a snapshot that claims the new catalogue remain corruption.
+- Chief native mappings use `LEAD/TAC/PROF/MIS/EO/TEAM/MIL` plus `DN1`–`DN3`.
+  Read-only DAO verified each native column is text(255); retained loader IL matches
+  the installed NAVFIT98A binary SHA256 and establishes the control/column roles.
+  There are now 96 Chief mappings and 75 EVAL/FITREP mappings; all 128 native
+  columns/provenance remain covered. Structured-PDF input maps the 21 corresponding
+  `FONTB1`–`FONTB3` fields independently. Native serialization capacity still fails
+  truthfully; full memo text and PDF continuation are never truncated to 255.
+- Prior Swift imports held these columns only in native provenance. An untouched
+  null new value does not erase that retained native text. Once authored or
+  deliberately cleared, mapped writes apply normally. Return reconciliation uses
+  the actual sealed native comment baseline, including older SwiftValue tables
+  without these new keys. Unchanged native text does not manufacture authored
+  history; a changed legacy value requires the appropriate three-way decision.
+- Printed Chief grade headings, full catalogue explanations and boxed numeric
+  marks occupy their own areas. Authored text alone fills the 21 performance
+  comment areas. Comments use the template's Times New Roman 12-point style;
+  grade wording normally uses 7 points. The official trait-34 grade-4/5 style is
+  6.5 points, which native Access plain and rich text both round. Development
+  uses a documented 6-point fallback for those two cells, pending user/template
+  acceptance; the other three trait-34 grades retain 7 points. No new renderer
+  dependency or PDF writer is introduced to hide that limitation.
+- Access report font properties cannot be read/set during planning (2455).
+  The renderer uses built-in Windows GDI printer metrics, verifies selected font
+  faces and releases its owned fonts/DC. It no longer substitutes Courier for
+  every field, estimates all fonts as 0.6-em, or relies on textbox reflow. Text is
+  planned into individual lines, with grade wording flowing around the boxed marks.
+  Continuations rewrap original text instead of retaining narrow field soft breaks.
+  Chief dates follow verified YYMMMDD/MM/YY display
+  pictures and SSNs use display separators; stored values remain unchanged.
+- Existing nonblocking capture, pending-grid/editor precedence, alphabetical
+  ordering, preview, combined/individual/Both output, signature exclusions,
+  collision protection and transactional publication behavior remain in effect.
+  Physical printed fit, an Acrobat-absent workstation and exact half-point style
+  acceptance remain open. Earlier historical-output waivers are unchanged.
+
+Development verification on 23 October uses the fresh
+[0.36.0-dev/schema-33 blank](build/dev/Swift_NAVFIT_0.36.0-dev_20261023-125710_96cbccd0.accdb),
+SHA256 `C0E952EE5E648941E36A96AD24459246D3B2684296CEED96EE54122A428677E8`:
+
+- [BuildAndTest receipt](build/workflow/20261023-125710-45f282c4-e665-4f46-a79e-0c42c6c753c3/verification.json):
+  compile/reopen, blank identity, exact source/bindings and standard native checks
+  passed. The unchanged manifest has 212 inputs, 105 source modules plus five
+  generated modules, 74 stages and 68 forms. Static catalogue/layout checks: 801.
+- [Fresh-artifact PDF receipt](build/tests/pdf-output-fb5de923-a8b0-4f32-99d2-fcf14e4208ea/verification.json):
+  58 existing and 225 Chief-specific assertions passed without source installation.
+  Independent PDF.js extraction checked 28 generated PDFs/390 Letter pages with no
+  printed `#Error`. All 35 Chief grade explanations match the complete catalogue
+  text, with no glyph overlap between lines or into numeric boxes. Blank, short,
+  two-line and all-grade examples stay on two pages; the deliberate overflow case
+  has six pages, all 10,500 oversized-comment characters and all 21 end markers.
+  The 23-page combined matrix packet has its
+  summary first and reports alphabetically ordered. Screen review covered Chief
+  front/back pages, the densest grade-1 paragraph, the summary, and EVAL/FITREP
+  front pages; physical output remains unverified.
+- [Transfer receipt](build/tests/major-69ee124b-dab5-41a5-94a5-5c72f602f7bc/verification.json):
+  populated schemas 31, 32 and 33 import through Settings & Help into schema 33,
+  preserving original values/history, relationships and native provenance;
+  rollback, reopen, repeated-import and unsupported-source rejection passed.
+  Chief-specific assertions: 107 for current schema and 129 for each older schema.
+  Cold-recovery checks restored all 21 comments in a new Access session alongside
+  invalid pending data.
+- [Interoperability receipt](build/workflow/h01-final-10d689e6-6104-4d8b-b418-686ef268d963/verification.json):
+  298 structured-PDF checks, 549 native adapter checks, 410 exchange checks,
+  121 integrity guards and 1,045 cumulative group/nonblocking-export checks passed.
+  These prove native-format behavior, not a new NAVFIT98A desktop journey.
+  Supplied build hashes remained unchanged. No runtime dependency, new runner,
+  manifest stage, release publication or user-workspace migration was introduced.
+
+### L01–L02 relationship names and revision-ID aliases
+
+- Schema 32 replaces the 34 opaque major relationship names with
+  `FK_<child table>_<foreign field>`. Referenced tables/fields, field order,
+  enforcement and cascade attributes remain unchanged. Upgrade uses the existing
+  Settings & Help import into a fresh blank; the source file is read through
+  read-only DAO and its schema/code is not modified or executed by import.
+- [major-schema.json](src/major-schema.json) defines two simple, writable saved
+  queries: `qryChangeItemRevisionIDs.ExpectedRevisionID` aliases the original
+  `ChangeItem.ExpectedRevision`, and `qryMeetingProposalRevisionIDs.BaseRevisionID`
+  aliases `MeetingProposal.BaseRevision`. These are `ReportRevision.RevisionID`
+  references, not `RevisionNumber`. There is one stored value, with no duplicate
+  columns, synchronization writes, renumbering or backfill. Legacy physical
+  columns/FKs remain available; production import copies and verifies them exactly.
+- Batch preview/apply/undo, meeting proposal/apply, group-impact and comparison/
+  workbench queries consume the aliases. Existing stale-revision, ownership,
+  atomic rollback and history behavior remains in effect. Historical source
+  queries are not trusted/copied; target queries come from the reviewed schema.
+- The existing builder installs the schema-owned query definitions. Reopened
+  installed verification checks relationship definitions/enforcement, absence of
+  opaque names, and exact alias SQL. No manifest stage or dependency is added.
+- The existing major runner checks bidirectional alias writes, FK rejection,
+  rollback and IDs distinct from revision numbers, alongside existing workflows.
+  Optional schema-31/30 inputs exercise populated Settings imports, exact original
+  field verification, complete DAO relationship-signature equivalence, late
+  rollback, populated-target rejection, reopen, future-version/unknown-table
+  rejection and input hashes. Old-output testing waivers remain unchanged.
+- The current comparison preview/detail and retained hidden workbench adapter are
+  exercised directly. The old visible-workbench UI fixture fails identically on
+  the unchanged 0.34 baseline at its existing report-selector assertion;
+  its unrelated fixture modernization is not part of this change. An initial
+  alias harness sequence triggered native DAO 3246; owned DAO readback and
+  rollback-before-cursor-close retain all alias/rollback assertions without a
+  production workaround. Only identified synthetic test sessions were recovered.
+  The older live-members fixture also fails with the same missing-workbench
+  error 2450 on both the candidate and unchanged 0.34 baseline. Current comparison/
+  adapter checks and the approved-trait retry suite remain the relevant passing
+  UI checks; neither obsolete fixture is represented as passing or weakened.
+  Comparison UI proof uses a supported Trait33 proposal. An exploratory generic
+  Title proposal hit error 3265 because the existing trait-cache column set does
+  not contain Title; that general-proposal display limitation is outside L01–L02
+  and was not repaired or represented as passing.
+
+The [fresh 0.35.0-dev/schema-32 blank](build/dev/Swift_NAVFIT_0.35.0-dev_20261023-100937_1dafb477.accdb)
+has SHA256 `2B2D41919E6DA99937BE9EC739DDDE69031CD5B138369A7391172545D89BC21A`.
+Its [integrated receipt](build/workflow/20261023-100937-25efe742-9f94-4371-add8-427a18aa7a1d/verification.json)
+passes all 74 stages, compile/reopen, installed source/bindings, blank checks,
+108 named single-column relationships and both canonical alias queries; standard
+report-tools (43), contributor (61), fixed-page (264), workflow/recovery (41),
+directory-merge (47), smoke, reopen/import/cancellation checks also pass.
+The [exact-artifact major receipt](build/tests/major-bd224c7f-f4ee-4a88-b5fd-8e5641d8e5b7/verification.json)
+records 46 existing workflow, 33 alias/rollback/FK and 13 comparison/adapter
+assertions, plus populated schema-30/31/32 Settings imports, unchanged original
+fields/IDs and complete relationship signatures, late rollback, reopen,
+populated-target/future-version/unknown-table rejection and source hashes.
+No application source was replaced. Final continuation checks also pass all
+26 approved-trait retry assertions and the
+[NAVFIT adapter/exchange/guard suite](build/tests/navfit-adapter-b4150473-825a-4306-9395-7ab225bcd244/verification.json)
+(507/410/100 assertions). No release or physical/printed acceptance is claimed.
+
+### H02 nonblocking NAVFIT98A export
+
+- Report and group exports include saved revisions despite incomplete fields,
+  mismatched group keys/type, readiness findings or archived/approved status.
+  The exchange selectors include archived records. Findings remain informational,
+  with existing report/group issue views available; no acknowledgement is added.
+- Every saved group member is exported using its own form kind and values.
+  Missing recommendations remain null, are disclosed separately and contribute
+  to no recommendation count (including NOB). An unavailable/partial/estimated
+  PSG RSCA is disclosed in preview and preserves native RSCA instead of blocking
+  export or inventing an average; the frozen baseline records actual PSG use.
+- Saved-only service exports do not touch open editor values or recovery drafts;
+  screen navigation retains explicit save/discard/cancel. Missing report end
+  dates use the existing `UNSPECIFIED` filename convention. Export does not
+  constitute approval, signature or submission.
+- Native format capacity/type constraints, sealed provenance, stale revision/group
+  checks, collisions, destination access and truthful failure remain enforced.
+  Unsupported checkbox/enumeration/date values cannot be silently coerced.
+  Group-return reconciliation remains unsupported. No schema, dependency,
+  manifest or release change is included.
+- Existing NAVFIT adapter/round-trip, group-export and exchange-screen runners
+  cover complete serializable fixtures and incomplete/mixed archived groups,
+  approved reports, exact/unavailable PSG, null values, pending buffers/recovery,
+  source/history preservation, stale previews and failed destinations. Their
+  default checks installed application code; `-InstallSource` is only for early
+  disposable-copy development checks.
+
+The [fresh 0.34.0-dev/schema-31 blank](build/dev/Swift_NAVFIT_0.34.0-dev_20261023-091723_cb948079.accdb)
+has SHA256 `E151101B08C5CC81FA1ADC276A7D9595784A9F552593AD5A130379A07C6F8353`.
+The [integrated receipt](build/workflow/20261023-091723-b304841e-81b8-4d51-b144-ae11dba0215d/verification.json)
+passes all 74 build stages, compile/reopen and current-source/blank verification,
+43 report-tools, 61 contributor, 264 fixed-page, 41 workflow/recovery and 47
+directory-merge assertions plus smoke/reopen/import/cancellation checks.
+Exact-artifact checks, without application-source replacement, pass:
+[group export](build/tests/navfit-group-e64587c5-b6d3-4dd0-8c5c-c93b8a0f9510/verification.json)
+(982 cumulative assertions plus 507 adapter assertions),
+[exchange screen](build/tests/navfit-ui-e7125b63-15ad-4738-9a5f-41031ecb11bc/verification.json)
+(48 assertions), and
+[adapter/round-trip/guards](build/tests/navfit-adapter-0bfaa07b-609f-4d63-a7a3-2f8d62868bfd/verification.json)
+(507/410/100 assertions). The existing filename suite passes all nine checks.
+The older guard harness expected pre-M02 error text; baseline reproduction and
+inspection confirmed the durable wizard rejects changed source/target first.
+Assertions now expect those specific errors and additionally verify the rejected
+return retained the current revision/comments. No production guard was weakened.
+Native screen behavior was exercised; no new screenshot/layout acceptance,
+NAVFIT98A desktop journey, printed-fit or release acceptance is claimed.
+
+### M04–M06 diagnostics, view contracts and runtime trait data
+
+- M04 retains existing numeric error codes and adds module/procedure identities
+  to explicit application raises. Transaction handlers capture the original error
+  before cleanup, record stage and rollback outcome, and retain secondary close,
+  rollback and failed-journal errors separately. The owned diagnostic context is
+  in memory; surfaced diagnostics and failed-operation outcomes redact compact,
+  hyphenated and space-separated personal identifiers. No raw diagnostic log or
+  new logging table is introduced. Successful saves and retained audit data are
+  unchanged. Editor save failures distinguish committed writes from refresh errors.
+- Cleanup helpers catch their own failures. Redundant broad suppression around
+  those calls was removed; remaining `Resume Next` sites are bounded optional
+  focus/text/property probes or local cleanup/recovery. The focused runner emits
+  complete suppression and reused-code inventories for review. Codes were not
+  renumbered, and Boolean event callbacks remain supported.
+- M05 adds explicit required control/event contracts for the editor, Members
+  grid, import previews and PDF output. Canonical field metadata owns editor
+  control membership; trait-grid contracts verify queue callbacks. Optional
+  compatibility probes remain distinct. Build verification checks installed
+  modules, literal form/control references, form/report expressions and macro
+  callbacks. Missing/renamed controls and wrong existing callbacks fail clearly;
+  literal contract extraction and native-property inspection avoid executing VBA
+  during build checks or changing file-trust policy. Editor/grid entry checks
+  protect the pending-buffer boundary without changing geometry or navigation.
+- M06 adds `TraitDefinition` with a composite form/block/mark/catalogue-version
+  identity, constrained domains, exact title/description, source identity and
+  original trait ID. The reviewed JSON seeds 147 reference rows (21 traits ×
+  general guidance plus six marks); `GENERAL` is an explicit storage key, while
+  callers retain the empty-mark API. NOB descriptions remain Null. Runtime readers
+  use the table; the generated module now contains only identity and thin accessors.
+  Official strings remain exact; editor display removes embedded title line breaks
+  as before. This does not add the missing authored Chief performance comments.
+- Blank means no user/domain data: the blank verifier permits only the exact
+  reviewed 147 reference rows. Production import retains the current seed for
+  older schemas, preserves additional source catalogue versions, verifies copied
+  reference values before commit, and rejects malformed source column types and
+  same-key conflicts atomically. Lookup numeric keys are explicitly typed.
+  Unknown source tables and populated targets remain rejected; historical import
+  support and the old-output waiver are unchanged. No manifest stages, runtime
+  dependencies or release artifacts are added.
+
+The fresh 0.33.0-dev/schema-31 artifact is
+[the verified development database](build/dev/Swift_NAVFIT_0.33.0-dev_20261023-081452_45345334.accdb),
+SHA256 `B1FAF44700EF85BD56C3BDA0DC262F637467498F69A329F3B870B47613EA911C`.
+Its [build receipt](build/dev/Swift_NAVFIT_0.33.0-dev_20261023-081452_45345334.accdb.build.json)
+records all 74 stages, compile/reopen, 105 static modules and 68 forms. The
+[standard development test receipt](build/workflow/20261023-084219-063e9c12-8fe0-48cb-8c9a-8ae962fe62d5/verification.json)
+passes blank/reference verification, 43 report-tools, 61 contributor, 264 fixed-page,
+41 workflow/recovery and 47 directory-merge assertions plus persistence smoke checks.
+Exact-artifact [diagnostics/contracts](build/tests/diagnostics-contracts-aaa02d91-5076-4d16-a669-9d3702b485d4/verification.json)
+pass 19 behavior assertions and both installed-verifier negative checks; the
+[catalogue/transfer receipt](build/tests/trait-transfer-069ea664-f07e-4c44-bdc7-d5cccf3ede89/verification.json)
+passes 909 exact/reference checks, populated schema-30/31 transfers, retained
+versions, same-key conflict rollback, malformed-column rejection and source hashes.
+No application source was replaced for these exact-artifact checks.
+The [final continuation receipt](build/workflow/m04-m06-final-continuation-20261023-085103/verification.json)
+also passes 26 trait-retry assertions and 58 PDF-output assertions, including
+pending drafts, failed destinations, native preview and the 144-member summary.
+Those PDF checks do not close H01's known Chief-comment/print-fidelity defects.
+
+One fixed-page run reported DAO 3059 with rollback; the unchanged baseline,
+diagnostic copy and subsequent unchanged-artifact runs passed all 264 assertions.
+One trait-retry run reported an open failure before its first assertion; subsequent
+unchanged-artifact runs passed all 26. Root causes of these transient observations
+are not established; failure logs remain retained and no assertion was weakened.
+Synthetic demo/provenance fixture guards now distinguish schema-31 reference rows
+from user data; normal blank verification still requires the exact reviewed seed.
+Earlier schema-fixture gaps/waivers, physical display/printing, accessibility and
+release acceptance remain separate. No release or publication is implied.
 
 Desktop Windows, Microsoft Access, Windows PowerShell 5.1 and Git are the current
 development environment. No free Access Runtime, macOS/WSL application runtime,

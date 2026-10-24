@@ -19,7 +19,7 @@ Public Function TestTraitRetry() As String
     revision = CurrentRevision(id)
     Set db = CurrentDb: db.TableDefs("Report").Fields("Trait33").ValidationRule = "<> '5.0'"
     DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID
-    Check UXOpenComparison(), "Open failed"
+    Check UXOpenComparison(), "Open failed: " & Forms!frmMajorWorkbench!lblStatus.Caption
     Set f = Forms!frmUXComparison: Set rows = f!uxTraitGrid.Form
     Set r = rows.RecordsetClone: r.FindFirst "ReportID=" & id: rows.Bookmark = r.Bookmark: r.Close
     rows!Trait33 = "5.0"
@@ -41,16 +41,18 @@ Public Function TestTraitRetry() As String
     Next
     Check Not IsNull(NumericTraitAverage(CurrentRevision(id))), "ITA unavailable"
     UXCloseComparison
-    Check UXOpenComparison(), "Reopen failed"
+    Check UXShowGroupMembers(groupID), "Reopen failed"
     Set rows = Forms!frmUXComparison!uxTraitGrid.Form
     Set r = rows.RecordsetClone: r.FindFirst "ReportID=" & id: rows.Bookmark = r.Bookmark: r.Close
     Check rows!Trait33 = "2.0" And rows!Trait34 = "5.0", "Reopened comparison lost saved values"
     TestTraitRetry = "PASS: " & checks & " approved-trait rollback, retry, repeated-save and reopen assertions": Exit Function
 Failed:
     failure = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+    TestTraitRetry = failure
     On Error Resume Next
     UXCloseComparison
     DoCmd.Close acForm, "frmMajorWorkbench", acSaveNo
-    If Not db Is Nothing Then db.TableDefs("Report").Fields("Trait33").ValidationRule = ""
-    TestTraitRetry = failure
+    'This is a disposable fixture. Do not modify locked table definitions during
+    'failure cleanup and obscure the original assertion/operation error.
+    On Error GoTo 0
 End Function

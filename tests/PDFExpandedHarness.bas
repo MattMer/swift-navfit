@@ -15,12 +15,14 @@ Private Function RejectedApply(ByVal target As Long, ByVal mode As String) As Bo
 End Function
 Public Function TestExpandedPDF(ByVal directory As String) As String
     Dim kind As Variant, p As Object, values As Object, selected As Object, old As Object, changes As Object
-    Dim id As Long, revision As Long, before As Long, receipt As Long, target As Long, rejected As Boolean, key As Variant, path As String
+    Dim id As Long, revision As Long, before As Long, receipt As Long, target As Long, block As Long, entry As Long, rejected As Boolean, key As Variant, path As String
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC PDF EXPANSION", "Synthetic PDF tester"
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         path = directory & "\" & LCase$(kind) & "-expanded.pdf"
-        Check Left$(PDFExtractionStatus(path), 5) = "PASS:", "Dependency cannot extract " & kind
+        Dim extraction As String
+        extraction = PDFExtractionStatus(path)
+        Check Left$(extraction, 5) = "PASS:", "Dependency cannot extract " & kind & ": " & extraction
         before = DCount("*", "ReportRevision")
         Set p = PreviewStructuredPDF(path): Set values = PDFMappedValues("20", "SSN")
         Check values("CommandEmployment") = "SYNTHETIC BLOCK 28: Training and command achievements.", "Block 28 text lost: " & kind
@@ -36,6 +38,12 @@ Public Function TestExpandedPDF(ByVal directory As String) As String
             Check values(key) = CStr(3 + (CLng(Right$(key, 2)) Mod 3)) & ".0", "Trait decoding wrong: " & key
         Next
         If kind = "CHIEFEVAL" Then
+            For block = 33 To 39
+                For entry = 1 To 3
+                    key = "Trait" & block & "Comment" & entry
+                    Check values(key) = "SYNTHETIC PDF COMMENT " & block & "." & entry, "Chief structured comment lost or reordered: " & key
+                Next
+            Next
             Check values("OccasionPeriodic") = "Yes" And values("ReportConcurrent") = "No", "Chief checkboxes wrong"
             Check values("ReportingSeniorAddress1") = "123 TEST ROAD" And values("ReportingSeniorPhone") = "0000000000", "Chief contacts wrong"
         Else

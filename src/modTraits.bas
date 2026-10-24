@@ -2,6 +2,46 @@ Attribute VB_Name = "modTraits"
 Option Compare Binary
 Option Explicit
 Private editorKind As String
+'The reviewed JSON seeds fresh databases; all runtime wording comes from this
+'versioned reference table. Unknown callers retain the prior empty-result contract.
+Public Function TraitDefinitionValue(ByVal kind As String, ByVal block As Long, ByVal mark As String, ByVal title As Boolean) As String
+    Dim r As DAO.Recordset
+    If kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Exit Function
+    If block < 33 Or block > 39 Then Exit Function
+    If mark <> "" And mark <> "NOB" And mark <> "1.0" And mark <> "2.0" And mark <> "3.0" And mark <> "4.0" And mark <> "5.0" Then Exit Function
+    If mark = "" Then mark = "GENERAL"
+    Set r = CurrentDb.OpenRecordset("SELECT TraitTitle,DescriptionText,SourceSHA256 FROM TraitDefinition WHERE FormKind='" & kind & "' AND BlockNumber=" & block & " AND Mark='" & mark & "' AND CatalogueVersion=" & TRAIT_CATALOGUE_VERSION, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 9300, "modTraits.TraitDefinitionValue", "Required trait definition is missing. Restore a verified application copy."
+    If StrComp(Nz(r!SourceSHA256, ""), TraitCatalogueHash(), vbBinaryCompare) <> 0 Then r.Close: Err.Raise vbObjectError + 9301, "modTraits.TraitDefinitionValue", "Trait catalogue source identity differs from this application."
+    If title Then TraitDefinitionValue = Nz(r!TraitTitle, "") Else TraitDefinitionValue = Nz(r!DescriptionText, "")
+    r.Close
+End Function
+
+'Called inside the production import transaction. Retain every older version and
+'reject conflicting identities/wording rather than overwriting either catalogue.
+Public Sub ImportTraitDefinitions(ByVal source As DAO.Database, ByVal target As DAO.Database)
+    Dim rows As DAO.Recordset, existing As DAO.Recordset, field As DAO.field, sql As String
+    If source.TableDefs("TraitDefinition").Fields.Count <> target.TableDefs("TraitDefinition").Fields.Count Then Err.Raise vbObjectError + 9303, "modTraits.ImportTraitDefinitions", "Invalid trait reference column inventory. No workspace data imported."
+    For Each field In target.TableDefs("TraitDefinition").Fields
+        If source.TableDefs("TraitDefinition").Fields(field.Name).Type <> field.Type Then Err.Raise vbObjectError + 9303, "modTraits.ImportTraitDefinitions", "Invalid trait reference column types. No workspace data imported."
+    Next
+    Set rows = source.OpenRecordset("TraitDefinition", dbOpenSnapshot)
+    Do While Not rows.EOF
+        sql = "SELECT * FROM TraitDefinition WHERE FormKind=" & QuoteSQL(rows!formKind) & " AND BlockNumber=" & CLng(rows!BlockNumber) & " AND Mark=" & QuoteSQL(rows!mark) & " AND CatalogueVersion=" & CLng(rows!CatalogueVersion)
+        Set existing = target.OpenRecordset(sql, dbOpenDynaset)
+        If existing.EOF Then
+            existing.AddNew
+            For Each field In rows.fields: existing.fields(field.name).value = field.value: Next
+            existing.Update
+            existing.Bookmark = existing.LastModified
+        End If
+        For Each field In rows.Fields
+            If Not SameFieldValue(existing.Fields(field.Name).Value, field.Value) Then Err.Raise vbObjectError + 9302, "modTraits.ImportTraitDefinitions", "Conflicting trait reference data. No workspace data imported."
+        Next
+        existing.Close: rows.MoveNext
+    Loop
+    rows.Close
+End Sub
 Public Function TraitKeys() As Variant
     TraitKeys = Array("Trait33", "Trait34", "Trait35", "Trait36", "Trait37", "Trait38", "Trait39")
 End Function
@@ -13,16 +53,16 @@ Public Function IsTraitKey(ByVal key As String) As Boolean
 End Function
 Public Function ValidateTraits(ByVal values As Variant) As Variant
     Dim i As Long, mark As Variant, allowed As Boolean
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2000, , "Traits must contain seven marks."
-    If LBound(values) <> 0 Or UBound(values) <> 6 Then Err.Raise vbObjectError + 2000, , "Traits must contain seven marks."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2000, "modTraits.ValidateTraits", "Traits must contain seven marks."
+    If LBound(values) <> 0 Or UBound(values) <> 6 Then Err.Raise vbObjectError + 2000, "modTraits.ValidateTraits", "Traits must contain seven marks."
     For i = 0 To 6
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2001, , "Trait marks must be listed text values or blank, not numeric codes."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2001, "modTraits.ValidateTraits", "Trait marks must be listed text values or blank, not numeric codes."
             allowed = False
             For Each mark In Array("", "NOB", "1.0", "2.0", "3.0", "4.0", "5.0")
                 If values(i) = mark Then allowed = True
             Next
-            If Not allowed Then Err.Raise vbObjectError + 2002, , "Block " & (33 + i) & ": choose NOB, 1.0, 2.0, 3.0, 4.0 or 5.0, or clear the mark."
+            If Not allowed Then Err.Raise vbObjectError + 2002, "modTraits.ValidateTraits", "Block " & (33 + i) & ": choose NOB, 1.0, 2.0, 3.0, 4.0 or 5.0, or clear the mark."
         End If
     Next
     ValidateTraits = values
@@ -40,9 +80,9 @@ Public Function TraitsFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 6
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If schema >= 10 Then r.Close: Err.Raise vbObjectError + 2003, , "Trait snapshot is incomplete."
+            If schema >= 10 Then r.Close: Err.Raise vbObjectError + 2003, "modTraits.TraitsFromRevision", "Trait snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2004, , "Trait snapshot has an inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2004, "modTraits.TraitsFromRevision", "Trait snapshot has an inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close

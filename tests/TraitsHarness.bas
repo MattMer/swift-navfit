@@ -1,6 +1,14 @@
 Attribute VB_Name = "TraitsHarness"
 Option Explicit
 Private checks As Long
+Public Function TraitDefinitionMissingRejected() As Boolean
+    On Error GoTo Failed
+    Dim title As String
+    title = CatalogueTraitTitle("EVAL", 33)
+    Exit Function
+Failed:
+    TraitDefinitionMissingRejected = (Err.Number = vbObjectError + 9300)
+End Function
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 2050, , message
     checks = checks + 1

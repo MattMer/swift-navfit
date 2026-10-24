@@ -23,10 +23,12 @@ Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, 
     On Error Resume Next
     Set origin = Screen.ActiveForm
     Set active = f.ActiveControl
+    On Error GoTo 0
     If compact Then f!uxCompactNav.Visible = True
     For i = 0 To 5
         If Not compact Then f.Controls("uxNav" & i).Visible = True
     Next
+    If Not active Is Nothing Then
     If compact And active.Parent.Name = f.Name Then
         If active.Name Like "uxNav#" Or active.Name Like "uxSection#" Then
             f.SetFocus: f!uxCompactNav.SetFocus
@@ -35,6 +37,7 @@ Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, 
         If active.Name = "uxCompactNav" Or active.Name = "uxCompactSection" Then
             f.SetFocus: f!uxNav0.SetFocus
         End If
+    End If
     End If
     If Not origin Is Nothing Then
         If origin.Name <> f.Name Then origin.SetFocus

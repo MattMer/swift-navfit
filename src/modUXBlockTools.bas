@@ -76,7 +76,7 @@ Public Function UXBlockValidated(ByVal changes As Object, ByVal kind As String) 
         v = changes(key)
         If Not IsNull(v) Then
             If UXFieldDate(key) And Len(v) > 0 Then
-                If Not IsDate(v) Then Err.Raise vbObjectError + 4800, , UXFieldCaption(key, kind) & ": enter a valid date."
+                If Not IsDate(v) Then Err.Raise vbObjectError + 4800, "modUXBlockTools.UXBlockValidated", UXFieldCaption(key, kind) & ": enter a valid date."
                 v = Format$(CDate(v), "yyyy-mm-dd")
             End If
             If Len(UXFieldOptions(key)) > 0 Then
@@ -84,11 +84,11 @@ Public Function UXBlockValidated(ByVal changes As Object, ByVal kind As String) 
                 For Each choice In Split(UXFieldOptions(key), ";")
                     If SameFieldValue(choice, v) Then allowed = True
                 Next
-                If Not allowed Then Err.Raise vbObjectError + 4805, , UXFieldCaption(key, kind) & ": choose a listed value or clear it."
+                If Not allowed Then Err.Raise vbObjectError + 4805, "modUXBlockTools.UXBlockValidated", UXFieldCaption(key, kind) & ": choose a listed value or clear it."
             End If
-            If UXFieldLimit(key) > 0 And Len(v) > UXFieldLimit(key) Then Err.Raise vbObjectError + 4801, , UXFieldCaption(key, kind) & ": value is too long."
+            If UXFieldLimit(key) > 0 And Len(v) > UXFieldLimit(key) Then Err.Raise vbObjectError + 4801, "modUXBlockTools.UXBlockValidated", UXFieldCaption(key, kind) & ": value is too long."
             If UXFieldDigits(key) > 0 And Len(v) > 0 Then
-                If Len(v) <> UXFieldDigits(key) Or v Like "*[!0-9]*" Then Err.Raise vbObjectError + 4802, , UXFieldCaption(key, kind) & ": enter " & UXFieldDigits(key) & " digits."
+                If Len(v) <> UXFieldDigits(key) Or v Like "*[!0-9]*" Then Err.Raise vbObjectError + 4802, "modUXBlockTools.UXBlockValidated", UXFieldCaption(key, kind) & ": enter " & UXFieldDigits(key) & " digits."
             End If
         End If
         result(key) = v

@@ -47,7 +47,7 @@ Private Sub SortValueList(ByVal c As Access.Control, ByVal column As Long, ByVal
  Dim tokens As Collection, rows() As Variant, count As Long, cols As Long, start As Long, i As Long, j As Long, k As Long, temp As Variant, text As String
  Set tokens = ListTokens(c.RowSource): cols = c.ColumnCount
  If tokens.Count = 0 Then Exit Sub
- If tokens.Count Mod cols <> 0 Then Err.Raise 5, , "List cells are incomplete; refresh the table before sorting."
+ If tokens.Count Mod cols <> 0 Then Err.Raise 5, "modTableSort.SortValueList", "List cells are incomplete; refresh the table before sorting."
  count = tokens.Count \ cols: ReDim rows(0 To count - 1)
  For i = 0 To count - 1
   ReDim temp(0 To cols - 1)

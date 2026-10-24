@@ -57,12 +57,15 @@ Public Function TestNAVFITGuards(ByVal directory As String, ByVal template As St
     Check EncodeFailure(#1/1/2026 12:00:00 PM#, "date") <> "ACCEPTED", "Swift date time silently discarded"
     Set rows = NAVFITPreviewReturned(file, baseline)
     Set db = DBEngine.OpenDatabase(file): db.Execute "UPDATE Reports SET Comments='Changed after preview' WHERE ReportType Is Not Null", dbFailOnError: db.Close
-    Check InStr(ApplyFailure(), "changed after preview") > 0, "Changed return file applied"
+    source = ApplyFailure()
+    Check InStr(source, "Source changed.") > 0, "Changed return file guard: " & source
     Check CurrentRevision(3) = revision And DCount("*", "ImportRawValue") = raw, "Rejected return wrote values"
     Set rows = NAVFITPreviewReturned(file, baseline)
     Set changes = CreateObject("Scripting.Dictionary"): changes.Add "OfficialComments", "Local edit after preview"
     Call CommitSavedFields(3, CurrentRevision(3), changes, "Guard test local edit")
-    Check InStr(ApplyFailure(), "Swift report changed") > 0, "Stale Swift preview applied"
+    revision = CurrentRevision(3): source = ApplyFailure()
+    Check InStr(source, "Target revision changed.") > 0, "Stale Swift preview guard: " & source
+    Check CurrentRevision(3) = revision And SavedFields(3)("OfficialComments") = "Local edit after preview", "Rejected stale return changed report"
     bad = directory & "\tampered-baseline.accdb": FileCopy baseline, bad
     Set db = DBEngine.OpenDatabase(bad): db.Execute "UPDATE SwiftValue SET ValueText='tampered' WHERE FieldKey='OfficialComments'", dbFailOnError: db.Close
     Check InStr(PreviewFailure(file, bad), "Baseline is modified") > 0, "Modified baseline accepted"

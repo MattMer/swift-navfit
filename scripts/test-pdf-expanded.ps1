@@ -1,6 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$FixturePath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 if(-not $FixturePath){$FixturePath=Join-Path $root 'output/pdf/r85'}
+$FixturePath=[IO.Path]::GetFullPath($FixturePath)
 $scratch=Join-Path $root ('build/tests/pdf-expanded-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $hashes=@{};Get-ChildItem $FixturePath -Filter '*.pdf' | ForEach-Object {$hashes[$_.FullName]=(Get-FileHash -LiteralPath $_.FullName).Hash}

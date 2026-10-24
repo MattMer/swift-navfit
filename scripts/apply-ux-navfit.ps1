@@ -11,7 +11,7 @@ $f.Controls('cmdOpenResult').OnClick='=UXOpenFullNAVFITResult()'
 [void](Control $f 111 'cboNAVFITCentury' 400 7550 4700 400);$c=$script:swiftControl;$c.RowSourceType='Value List';$c.RowSource='1900;2000';$c.LimitToList=$true;$c.AfterUpdate='=UXNarrativeInputChanged()'
 SaveScreen $f 'frmImportReview'
 NewScreen 'frmNAVFITExchange' 'NAVFIT export and returned reports' 12200;$f=$script:swiftForm;$f.ScrollBars=2
-[void](Control $f 100 'lblScope' 400 950 12600 600 'Export a saved report or preview a complete local group. Print through NAVFIT98A after validation. Keep Swift baselines locally. Returned-file reconciliation supports single-report exports.')
+[void](Control $f 100 'lblScope' 400 950 12600 600 'Export saved reports or all saved group members, including incomplete drafts. Findings do not block export; export is not approval, signature or submission. Keep Swift baselines locally. Returns support single-report exports.')
 [void](Control $f 100 'lblReport' 400 1650 2500 350 'Saved report')
 [void](Control $f 111 'cboReport' 3000 1650 10000 400);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;9000';$c.LimitToList=$true
 foreach($item in @(@('txtTemplate','Verified blank NAVFIT template',2150),@('txtExportPath','New export file',2700),@('txtReturned','Returned NAVFIT file',3900),@('txtBaseline','Original Swift baseline',4450))){
@@ -34,7 +34,7 @@ $f.OnUnload='=NAVFITClearReturned(False)'
 foreach($c in $f.Controls){if($c.Top -ge 3900){$c.Top=[int]($c.Top+1800)}}
 $f.Section(0).Height=14000
 [void](Control $f 100 'lblGroup' 400 3800 2500 350 'Summary group')
-[void](Control $f 111 'cboGroup' 3000 3800 10000 400);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;9000';$c.LimitToList=$true;$c.RowSource="SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE IsArchived=False ORDER BY Title";$c.AfterUpdate='=UXNAVFITInputChanged()'
+[void](Control $f 111 'cboGroup' 3000 3800 10000 400);$c=$script:swiftControl;$c.ColumnCount=2;$c.ColumnWidths='0;9000';$c.LimitToList=$true;$c.RowSource="SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade & IIf(IsArchived,' | Archived','') FROM SummaryGroup ORDER BY Title";$c.AfterUpdate='=UXNAVFITInputChanged()'
 [void](Control $f 106 'chkPSG' 400 4350 3700 400 'Write exact PSG RSCA');$script:swiftControl.AfterUpdate='=UXNAVFITInputChanged()';$script:swiftControl.DefaultValue='False'
 [void](Control $f 104 'cmdPreviewGroup' 4300 4350 8700 450 'Preview saved group members and counts' '=UXPreviewNAVFITGroup()')
 [void](Control $f 104 'cmdExportGroup' 4300 4900 8700 450 'Export previewed summary group to NAVFIT' '=UXExportNAVFITGroup()');$script:swiftControl.Enabled=$false

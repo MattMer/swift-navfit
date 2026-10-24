@@ -10,7 +10,7 @@ Public Function RSSeniorValues(ByVal seniorID As Long) As Object
     Set result = CreateObject("Scripting.Dictionary")
     For Each key In RSSeniorKeys(): result.Add CStr(key), Null: Next
     If seniorID > 0 Then
-        If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, , "Reporting senior record does not exist."
+        If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, "modRSDirectory.RSSeniorValues", "Reporting senior record does not exist."
         Set r = CurrentDb.OpenRecordset("SELECT * FROM ReportingSeniorValue WHERE SeniorID=" & seniorID, dbOpenSnapshot)
         Do While Not r.EOF
             If result.Exists(CStr(r!FieldKey)) Then
@@ -24,18 +24,18 @@ Public Function RSSeniorValues(ByVal seniorID As Long) As Object
 End Function
 Public Sub RSValidateSenior(ByVal title As String, ByVal values As Object)
     Dim key As Variant, value As Variant, size As Long, i As Long
-    If Len(Trim$(title)) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 4801, , "Enter a record name of up to 120 characters."
+    If Len(Trim$(title)) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 4801, "modRSDirectory.RSValidateSenior", "Enter a record name of up to 120 characters."
     For Each key In RSSeniorKeys()
-        If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 4802, , "Missing reporting senior value: " & key
+        If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 4802, "modRSDirectory.RSValidateSenior", "Missing reporting senior value: " & key
         value = values(CStr(key))
         If Not IsNull(value) Then
-            If VarType(value) <> vbString Then Err.Raise vbObjectError + 4803, , "Reporting senior values must be text."
+            If VarType(value) <> vbString Then Err.Raise vbObjectError + 4803, "modRSDirectory.RSValidateSenior", "Reporting senior values must be text."
             size = CurrentDb.TableDefs("Report").Fields(CStr(key)).Size
-            If Len(value) > size Then Err.Raise vbObjectError + 4804, , UXFieldLabel(CStr(key)) & " exceeds " & size & " characters."
+            If Len(value) > size Then Err.Raise vbObjectError + 4804, "modRSDirectory.RSValidateSenior", UXFieldLabel(CStr(key)) & " exceeds " & size & " characters."
             If key = "ReportingSeniorSSN" And Len(value) > 0 Then
-                If Len(value) <> 9 Then Err.Raise vbObjectError + 4805, , "Reporting senior SSN requires nine digits."
+                If Len(value) <> 9 Then Err.Raise vbObjectError + 4805, "modRSDirectory.RSValidateSenior", "Reporting senior SSN requires nine digits."
                 For i = 1 To 9
-                    If Mid$(value, i, 1) < "0" Or Mid$(value, i, 1) > "9" Then Err.Raise vbObjectError + 4805, , "Reporting senior SSN requires nine digits."
+                    If Mid$(value, i, 1) < "0" Or Mid$(value, i, 1) > "9" Then Err.Raise vbObjectError + 4805, "modRSDirectory.RSValidateSenior", "Reporting senior SSN requires nine digits."
                 Next
             End If
         End If
@@ -51,9 +51,9 @@ Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVa
         r.AddNew: r!SeniorGuid = NewIdentity(): r!Title = title: r!CreatedBy = author: r!ModifiedAt = Now(): r!VersionCounter = 1
         r.Update: r.Bookmark = r.LastModified: seniorID = r!SeniorID: r.Close
     Else
-        If expectedVersion < 1 Then Err.Raise vbObjectError + 4806, , "Reload the reporting senior before saving."
+        If expectedVersion < 1 Then Err.Raise vbObjectError + 4806, "modRSDirectory.RSSaveSenior", "Reload the reporting senior before saving."
         db.Execute "UPDATE ReportingSeniorRecord SET Title=" & QuoteSQL(title) & ",ModifiedAt=Now(),VersionCounter=VersionCounter+1 WHERE SeniorID=" & seniorID & " AND VersionCounter=" & expectedVersion, dbFailOnError
-        If db.RecordsAffected <> 1 Then Err.Raise vbObjectError + 4806, , "Reporting senior changed elsewhere. Reload before saving; pending values are retained."
+        If db.RecordsAffected <> 1 Then Err.Raise vbObjectError + 4806, "modRSDirectory.RSSaveSenior", "Reporting senior changed elsewhere. Reload before saving; pending values are retained."
         db.Execute "DELETE FROM ReportingSeniorValue WHERE SeniorID=" & seniorID, dbFailOnError
     End If
     Set r = db.OpenRecordset("ReportingSeniorValue", dbOpenDynaset)
@@ -65,35 +65,37 @@ Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVa
     FinishOperation operation, "Completed", "Directory details saved; report values unchanged."
     w.CommitTrans: RSSaveSenior = seniorID: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "RSSaveSenior", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRSDirectory", "RSSaveSenior", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Sub RSValidateBaseline(ByVal paygrade As String, ByVal average As Variant, ByVal traitCount As Long, ByVal traitSum As Variant)
     Dim allowed As Boolean, grade As Variant
     For Each grade In RSTableGrades()
         If grade = paygrade Then allowed = True
     Next
-    If Not allowed Then Err.Raise vbObjectError + 4807, , "Choose an evaluated paygrade."
-    If traitCount < 0 Then Err.Raise vbObjectError + 4808, , "Previous trait count cannot be negative."
+    If Not allowed Then Err.Raise vbObjectError + 4807, "modRSDirectory.RSValidateBaseline", "Choose an evaluated paygrade."
+    If traitCount < 0 Then Err.Raise vbObjectError + 4808, "modRSDirectory.RSValidateBaseline", "Previous trait count cannot be negative."
     If traitCount > 0 Or Not IsNull(average) Then
-        If IsNull(average) Then Err.Raise vbObjectError + 4809, , "Enter the historical RSCA."
-        If Not IsNumeric(average) Then Err.Raise vbObjectError + 4809, , "Enter a numeric RSCA."
-        If CDbl(average) < 1 Or CDbl(average) > 5 Then Err.Raise vbObjectError + 4809, , "RSCA must be from 1.00 to 5.00."
+        If IsNull(average) Then Err.Raise vbObjectError + 4809, "modRSDirectory.RSValidateBaseline", "Enter the historical RSCA."
+        If Not IsNumeric(average) Then Err.Raise vbObjectError + 4809, "modRSDirectory.RSValidateBaseline", "Enter a numeric RSCA."
+        If CDbl(average) < 1 Or CDbl(average) > 5 Then Err.Raise vbObjectError + 4809, "modRSDirectory.RSValidateBaseline", "RSCA must be from 1.00 to 5.00."
     End If
     If Not IsNull(traitSum) Then
-        If Not IsNumeric(traitSum) Then Err.Raise vbObjectError + 4810, , "Enter an exact numeric trait sum or leave it blank."
-        If CDbl(traitSum) < traitCount Or CDbl(traitSum) > CDbl(traitCount) * 5 Or CDbl(traitSum) <> Fix(CDbl(traitSum)) Then Err.Raise vbObjectError + 4810, , "Exact trait sum must be a whole number between trait count and five times trait count."
+        If Not IsNumeric(traitSum) Then Err.Raise vbObjectError + 4810, "modRSDirectory.RSValidateBaseline", "Enter an exact numeric trait sum or leave it blank."
+        If CDbl(traitSum) < traitCount Or CDbl(traitSum) > CDbl(traitCount) * 5 Or CDbl(traitSum) <> Fix(CDbl(traitSum)) Then Err.Raise vbObjectError + 4810, "modRSDirectory.RSValidateBaseline", "Exact trait sum must be a whole number between trait count and five times trait count."
         If traitCount > 0 Then
-            If Int(CDbl(traitSum) / traitCount * 100 + 0.5) <> Int(CDbl(average) * 100 + 0.5) Then Err.Raise vbObjectError + 4811, , "Exact sum and count must agree with RSCA rounded to two decimals."
+            If Int(CDbl(traitSum) / traitCount * 100 + 0.5) <> Int(CDbl(average) * 100 + 0.5) Then Err.Raise vbObjectError + 4811, "modRSDirectory.RSValidateBaseline", "Exact sum and count must agree with RSCA rounded to two decimals."
         End If
     End If
 End Sub
 Public Function RSAddBaseline(ByVal seniorID As Long, ByVal paygrade As String, ByVal asOfDate As Date, ByVal average As Variant, ByVal traitCount As Long, ByVal traitSum As Variant, Optional ByVal note As String = "") As Long
     Dim r As DAO.Recordset, w As DAO.Workspace, operation As Long, failure As Long, message As String
     RSValidateBaseline paygrade, average, traitCount, traitSum
-    If Len(note) > 255 Then Err.Raise vbObjectError + 4812, , "Source note must be 255 characters or fewer."
-    If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, , "Choose a saved reporting senior record."
+    If Len(note) > 255 Then Err.Raise vbObjectError + 4812, "modRSDirectory.RSAddBaseline", "Source note must be 255 characters or fewer."
+    If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, "modRSDirectory.RSAddBaseline", "Choose a saved reporting senior record."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("RSCABaseline", dbOpenDynaset)
@@ -103,17 +105,19 @@ Public Function RSAddBaseline(ByVal seniorID As Long, ByVal paygrade As String, 
     FinishOperation operation, "Completed", "Historical totals retained; group contributions are not added to this baseline automatically."
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "RSAddBaseline", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRSDirectory", "RSAddBaseline", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Sub RSSetGroupBaseline(ByVal groupID As Long, ByVal seniorID As Long, ByVal baselineID As Long, ByVal excludesGroup As Boolean)
     Dim r As DAO.Recordset, w As DAO.Workspace, operation As Long, failure As Long, message As String
     RSGuardPostedSenior groupID, seniorID
-    If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4813, , "Choose an active summary group."
-    If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, , "Choose a reporting senior."
+    If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4813, "modRSDirectory.RSSetGroupBaseline", "Choose an active summary group."
+    If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, "modRSDirectory.RSSetGroupBaseline", "Choose a reporting senior."
     If baselineID > 0 Then
-        If DCount("*", "RSCABaseline", "BaselineID=" & baselineID & " AND SeniorID=" & seniorID & " AND Paygrade=" & QuoteSQL(CStr(MajorScalar("SELECT Paygrade FROM SummaryGroup WHERE GroupID=" & groupID)))) <> 1 Then Err.Raise vbObjectError + 4814, , "Baseline senior and evaluated paygrade must match this group."
+        If DCount("*", "RSCABaseline", "BaselineID=" & baselineID & " AND SeniorID=" & seniorID & " AND Paygrade=" & QuoteSQL(CStr(MajorScalar("SELECT Paygrade FROM SummaryGroup WHERE GroupID=" & groupID)))) <> 1 Then Err.Raise vbObjectError + 4814, "modRSDirectory.RSSetGroupBaseline", "Baseline senior and evaluated paygrade must match this group."
     End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
@@ -125,9 +129,11 @@ Public Sub RSSetGroupBaseline(ByVal groupID As Long, ByVal seniorID As Long, ByV
     FinishOperation operation, "Completed", "Historical totals exclude current group: " & CStr(excludesGroup)
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "RSSetGroupBaseline", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRSDirectory", "RSSetGroupBaseline", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Sub
 Public Function RSGroupRows(ByVal groupID As Long) As DAO.Recordset
     Dim db As DAO.Database, rows As DAO.Recordset

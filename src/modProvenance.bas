@@ -4,7 +4,7 @@ Option Explicit
 Public Function OpenImportProvenance(ByVal receiptID As Long) As Boolean
     Dim r As DAO.Recordset, context As String
     Set r = CurrentDb.OpenRecordset("SELECT * FROM ImportReceipt WHERE ImportReceiptID=" & receiptID, dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 1600, , "Select an existing import receipt first."
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 1600, "modProvenance.OpenImportProvenance", "Select an existing import receipt first."
     context = "Receipt " & receiptID & " / Swift report " & r!ReportID & " / source report " & r!ExternalReportID & vbCrLf
     context = context & "Imported: " & r!ImportedAt & " / contributor " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & r!AuthorProfileID), "Unknown") & vbCrLf
     context = context & "Source: " & Nz(r!SourcePath, "") & vbCrLf & "SHA256: " & r!SourceHash & vbCrLf
@@ -35,12 +35,12 @@ Public Function LoadProvenanceFields() As Boolean
     term = Left$(Nz(Forms!frmProvenance!txtSearch, ""), 255)
     sql = "SELECT ImportRawValueID,SourceTable,SourceRow,FieldOrdinal,FieldKey,DAOType,IsNullValue FROM ImportRawValue WHERE ImportReceiptID=" & id
     If table <> "All" Then
-        If table <> "Reports" And table <> "Folders" And table <> "Summary" Then Err.Raise vbObjectError + 1601, , "Choose a listed source table."
+        If table <> "Reports" And table <> "Folders" And table <> "Summary" Then Err.Raise vbObjectError + 1601, "modProvenance.LoadProvenanceFields", "Choose a listed source table."
         sql = sql & " AND SourceTable='" & table & "'"
     End If
     If Not IsNull(row) And Nz(row, "") <> "" Then
-        If Not IsNumeric(row) Then Err.Raise vbObjectError + 1602, , "Source row must be a nonnegative whole number."
-        If CDbl(row) < 0 Or CDbl(row) > 2147483647# Or CDbl(row) <> Fix(CDbl(row)) Then Err.Raise vbObjectError + 1602, , "Source row must be a nonnegative whole number."
+        If Not IsNumeric(row) Then Err.Raise vbObjectError + 1602, "modProvenance.LoadProvenanceFields", "Source row must be a nonnegative whole number."
+        If CDbl(row) < 0 Or CDbl(row) > 2147483647# Or CDbl(row) <> Fix(CDbl(row)) Then Err.Raise vbObjectError + 1602, "modProvenance.LoadProvenanceFields", "Source row must be a nonnegative whole number."
         sql = sql & " AND SourceRow=" & CLng(row)
     End If
     sql = sql & " AND InStr(1,FieldKey,'" & Replace(term, "'", "''") & "',1)>0 ORDER BY SourceTable,SourceRow,FieldOrdinal"

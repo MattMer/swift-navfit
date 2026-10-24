@@ -132,15 +132,16 @@ Public Function ApplyDirectoryMerge(ByVal sourceID As Long, ByVal targetID As Lo
     FinishOperation operation, "Completed", "Directory links moved. Original profile, report values, revisions and prior traits retained. Merge ID " & id
     w.CommitTrans: trans = False: ApplyDirectoryMerge = id: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modDirectoryMerge", "ApplyDirectoryMerge", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
     Resume CleanupFailure
 CleanupFailure:
-    On Error Resume Next
-    If Not r Is Nothing Then r.Close
-    If Not parent Is Nothing Then parent.Close
-    If trans Then w.Rollback
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not parent Is Nothing Then SwiftClose parent, swiftPrimary, "parent"
+    If trans Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "ApplyDirectoryMerge", message
+    SwiftRaise swiftPrimary
 End Function
 
 Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
@@ -186,14 +187,15 @@ Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
     FinishOperation operation, "Completed", "Restored original directory links for merge ID " & mergeID & "; retained merge audit."
     w.CommitTrans: trans = False: UndoDirectoryMerge = True: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modDirectoryMerge", "UndoDirectoryMerge", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
     Resume CleanupFailure
 CleanupFailure:
-    On Error Resume Next
-    If Not item Is Nothing Then item.Close
-    If Not rows Is Nothing Then rows.Close
-    If Not parent Is Nothing Then parent.Close
-    If trans Then w.Rollback
+    If Not item Is Nothing Then SwiftClose item, swiftPrimary, "item"
+    If Not rows Is Nothing Then SwiftClose rows, swiftPrimary, "rows"
+    If Not parent Is Nothing Then SwiftClose parent, swiftPrimary, "parent"
+    If trans Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "UndoDirectoryMerge", message
+    SwiftRaise swiftPrimary
 End Function

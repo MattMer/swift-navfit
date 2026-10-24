@@ -24,7 +24,7 @@ Public Function RSReconcileAccounting() As String
     Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT p.CompletionID,p.TraitSum,p.TraitCount,Sum(c.TraitSum) AS ChildSum,Sum(c.TraitCount) AS ChildCount FROM GroupCompletion AS p LEFT JOIN GroupCompletionReport AS c ON p.CompletionID=c.CompletionID WHERE p.EvidenceKind='Saved revisions' GROUP BY p.CompletionID,p.TraitSum,p.TraitCount", dbOpenSnapshot)
     Do While Not r.EOF
-        If CDbl(r!TraitSum) <> CDbl(Nz(r!ChildSum, 0)) Or CLng(r!TraitCount) <> CLng(Nz(r!ChildCount, 0)) Then Err.Raise vbObjectError + 4865, , "Posting child totals do not reconcile: " & r!CompletionID
+        If CDbl(r!TraitSum) <> CDbl(Nz(r!ChildSum, 0)) Or CLng(r!TraitCount) <> CLng(Nz(r!ChildCount, 0)) Then Err.Raise vbObjectError + 4865, "modRSAccounting.RSReconcileAccounting", "Posting child totals do not reconcile: " & r!CompletionID
         rows = rows + 1: r.MoveNext
     Loop
     r.Close
@@ -86,7 +86,7 @@ Public Sub RSGuardPostedSenior(ByVal groupID As Long, ByVal seniorID As Long)
     Dim id As Long
     id = RSPosting(groupID)
     If id > 0 Then
-        If CLng(DLookup("SeniorID", "GroupCompletion", "CompletionID=" & id)) <> seniorID Then Err.Raise vbObjectError + 4862, , "A counted group cannot be reassigned to another reporting senior. Reconcile its accounting history first."
+        If CLng(DLookup("SeniorID", "GroupCompletion", "CompletionID=" & id)) <> seniorID Then Err.Raise vbObjectError + 4862, "modRSAccounting.RSGuardPostedSenior", "A counted group cannot be reassigned to another reporting senior. Reconcile its accounting history first."
     End If
 End Sub
 
@@ -103,8 +103,8 @@ Public Sub MigrateRSAccounting()
         note = Nz(r!SourceNote, "")
         If Left$(note, 25) = "Swift local RSCA; parent=" Then
             parent = Val(Mid$(note, 26))
-            If parent <= 0 Or parent >= r!BaselineID Then Err.Raise vbObjectError + 4863, , "Invalid legacy baseline ancestry. Import rolled back."
-            If PersistenceCount("RSCABaseline", "BaselineID=" & parent & " AND SeniorID=" & r!SeniorID & " AND Paygrade=" & QuoteSQL(CStr(r!Paygrade))) <> 1 Then Err.Raise vbObjectError + 4863, , "Legacy baseline ancestor does not match. Import rolled back."
+            If parent <= 0 Or parent >= r!BaselineID Then Err.Raise vbObjectError + 4863, "modRSAccounting.MigrateRSAccounting", "Invalid legacy baseline ancestry. Import rolled back."
+            If PersistenceCount("RSCABaseline", "BaselineID=" & parent & " AND SeniorID=" & r!SeniorID & " AND Paygrade=" & QuoteSQL(CStr(r!Paygrade))) <> 1 Then Err.Raise vbObjectError + 4863, "modRSAccounting.MigrateRSAccounting", "Legacy baseline ancestor does not match. Import rolled back."
             If IsNull(r!ParentBaselineID) Then r.Edit: r!ParentBaselineID = parent: r.Update
         End If
         r.MoveNext
@@ -115,7 +115,7 @@ Public Sub MigrateRSAccounting()
         groupID = r!GroupID
         Set d = CreateObject("MSXML2.DOMDocument.6.0"): d.async = False: d.resolveExternals = False: d.setProperty "ProhibitDTD", True
         If Len(Nz(r!KeySpec, "")) > 0 Then
-            If Not d.LoadXML(CStr(r!KeySpec)) Then Err.Raise vbObjectError + 4864, , "Invalid legacy group policy. Import rolled back."
+            If Not d.LoadXML(CStr(r!KeySpec)) Then Err.Raise vbObjectError + 4864, "modRSAccounting.MigrateRSAccounting", "Invalid legacy group policy. Import rolled back."
             Set node = d.selectSingleNode("/SwiftGroupPolicy/Workflow")
             If Not node Is Nothing And PersistenceCount("GroupLifecycle", "GroupID=" & groupID) = 0 Then
                 Set p = db.OpenRecordset("GroupLifecycle", dbOpenDynaset)
@@ -130,9 +130,9 @@ Public Sub MigrateRSAccounting()
             If Not node Is Nothing And RSPosting(groupID) = 0 Then
                 baseline = CLng(node.Text)
                 Set p = db.OpenRecordset("SELECT * FROM RSCABaseline WHERE BaselineID=" & baseline, dbOpenSnapshot)
-                If p.EOF Then Err.Raise vbObjectError + 4864, , "Missing legacy posted baseline. Import rolled back."
+                If p.EOF Then Err.Raise vbObjectError + 4864, "modRSAccounting.MigrateRSAccounting", "Missing legacy posted baseline. Import rolled back."
                 senior = p!SeniorID: parent = Nz(p!ParentBaselineID, 0): p.Close
-                If parent = 0 Then Err.Raise vbObjectError + 4864, , "Missing legacy posting lineage. Import rolled back."
+                If parent = 0 Then Err.Raise vbObjectError + 4864, "modRSAccounting.MigrateRSAccounting", "Missing legacy posting lineage. Import rolled back."
                 Set p = db.OpenRecordset("GroupCompletion", dbOpenDynaset)
                 p.AddNew: p!GroupID = groupID: p!SeniorID = senior: p!ParentBaselineID = parent: p!PostedBaselineID = baseline
                 p!TraitSum = CDbl(d.selectSingleNode("/SwiftGroupPolicy/RSCAGroupSum").Text)

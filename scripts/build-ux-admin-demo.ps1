@@ -13,7 +13,7 @@ $app=New-Object -ComObject Access.Application
 try {
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($OutputPath,$true)
  foreach($module in @('UXDemoSeed','DirectoryDemoSeed')){$app.LoadFromText(5,$module,(Join-Path $root ('tests/'+$module+'.bas')))}
- foreach($expression in @('SeedUXDemo()','SeedDirectoryDemoHistory()')){
+ foreach($expression in @('SeedUXDemoResult()','SeedDirectoryDemoHistory()')){
   $result=$app.Eval($expression);Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
  }
  [void]$app.Eval('MigrateLegacyReportNotes()');[void]$app.Eval('MigrateReportMessages()')

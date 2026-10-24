@@ -8,13 +8,39 @@ Private printPages As Collection
 Private cachePath As String, outputFailure As String
 Private exporting As Boolean
 Private previewFolder As String
+Private Type PDFExtent
+    Width As Long
+    Height As Long
+End Type
+Private Type PDFFontMetrics
+    Height As Long
+    Ascent As Long
+    Descent As Long
+    InternalLeading As Long
+    ExternalLeading As Long
+    Remaining(0 To 39) As Byte
+End Type
+'Report.FontName/TextWidth are unavailable during planning (Access 2455).
+'Use Windows printer GDI metrics; no UI automation or external renderer.
+'Point sizing: learn.microsoft.com/windows/win32/api/wingdi/nf-wingdi-createfontw
+Private Declare PtrSafe Function PDFCreateDC Lib "gdi32" Alias "CreateDCW" (ByVal driver As LongPtr, ByVal device As LongPtr, ByVal output As LongPtr, ByVal init As LongPtr) As LongPtr
+Private Declare PtrSafe Function PDFDeleteDC Lib "gdi32" Alias "DeleteDC" (ByVal dc As LongPtr) As Long
+Private Declare PtrSafe Function PDFDeviceCaps Lib "gdi32" Alias "GetDeviceCaps" (ByVal dc As LongPtr, ByVal index As Long) As Long
+Private Declare PtrSafe Function PDFCreateFont Lib "gdi32" Alias "CreateFontW" (ByVal height As Long, ByVal width As Long, ByVal escapement As Long, ByVal orientation As Long, ByVal weight As Long, ByVal italic As Long, ByVal underline As Long, ByVal strike As Long, ByVal charset As Long, ByVal precision As Long, ByVal clip As Long, ByVal quality As Long, ByVal pitch As Long, ByVal face As LongPtr) As LongPtr
+Private Declare PtrSafe Function PDFSelectObject Lib "gdi32" Alias "SelectObject" (ByVal dc As LongPtr, ByVal value As LongPtr) As LongPtr
+Private Declare PtrSafe Function PDFDeleteObject Lib "gdi32" Alias "DeleteObject" (ByVal value As LongPtr) As Long
+Private Declare PtrSafe Function PDFTextExtent Lib "gdi32" Alias "GetTextExtentPoint32W" (ByVal dc As LongPtr, ByVal value As LongPtr, ByVal count As Long, ByRef result As PDFExtent) As Long
+Private Declare PtrSafe Function PDFTextMetrics Lib "gdi32" Alias "GetTextMetricsW" (ByVal dc As LongPtr, ByRef result As PDFFontMetrics) As Long
+Private Declare PtrSafe Function PDFTextFace Lib "gdi32" Alias "GetTextFaceW" (ByVal dc As LongPtr, ByVal count As Long, ByVal buffer As LongPtr) As Long
+Private metricDC As LongPtr, metricFont As LongPtr, metricOldFont As LongPtr
+Private metricDpiX As Long, metricDpiY As Long, metricKey As String
 Public Const PDF_OUTPUT_SLOTS As Long = 340
 
 Public Function PDFOutputBusy() As Boolean
     PDFOutputBusy = exporting
 End Function
 Public Function PDFOutputJob() As Object
-    If job Is Nothing Then Err.Raise vbObjectError + 9100, , "Refresh the PDF preview; its captured values are no longer available."
+    If job Is Nothing Then Err.Raise vbObjectError + 9100, "modPDFOutput.PDFOutputJob", "Refresh the PDF preview; its captured values are no longer available."
     Set PDFOutputJob = job
 End Function
 Public Function PDFOutputText(ByVal fields As Object, ByVal key As String) As String
@@ -64,7 +90,7 @@ Private Function CaptureRow(ByVal id As Long, ByVal takePending As Boolean) As O
     If takePending And CurrentProject.AllForms("frmEditor").IsLoaded Then
         If Nz(Forms!frmEditor!txtReportID, 0) = id Then Set fields = EditorPendingFields(): source = "Captured editor draft"
     End If
-    If fields Is Nothing Then Err.Raise vbObjectError + 9101, , "Open the draft or choose a saved report."
+    If fields Is Nothing Then Err.Raise vbObjectError + 9101, "modPDFOutput.CaptureRow", "Open the draft or choose a saved report."
     If takePending And id > 0 Then
         If UXGridPDFSnapshot(id, fields) Then
             If source = "Captured editor draft" Then source = "Editor draft + pending group cells (group cells win)" Else source = "Captured group-table draft"
@@ -110,14 +136,14 @@ Private Sub AddSorted(ByVal rows As Collection, ByVal row As Object)
 End Sub
 Public Sub PDFOutputCapture(ByVal groupID As Long, ByVal reportID As Long, ByVal takePending As Boolean)
     Dim rows As New Collection, files As New Collection, stats As New Collection, r As DAO.Recordset, row As Object, context As Long
-    If exporting Then Err.Raise vbObjectError + 9102, , "Wait for the current PDF export to finish."
+    If exporting Then Err.Raise vbObjectError + 9102, "modPDFOutput.PDFOutputCapture", "Wait for the current PDF export to finish."
     PDFOutputEndPreview
     Set job = CreateObject("Scripting.Dictionary")
     job.Add "ID", NewIdentity(): job.Add "Captured", Now(): job.Add "GroupID", groupID
     job.Add "Title", "Ungrouped": job.Add "Paygrade", "": job.Add "GroupKind", ""
     If groupID > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
-        If r.EOF Then Err.Raise vbObjectError + 9103, , "The summary group is unavailable."
+        If r.EOF Then Err.Raise vbObjectError + 9103, "modPDFOutput.PDFOutputCapture", "The summary group is unavailable."
         job("Title") = Nz(r!Title, "Summary group"): job("Paygrade") = Nz(r!Paygrade, ""): job("GroupKind") = Nz(r!FormKind, ""): r.Close
         Set r = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID, dbOpenSnapshot)
         Do While Not r.EOF
@@ -156,8 +182,8 @@ End Sub
 Public Function PDFOutputReportOpen(ByVal report As Access.Report) As Boolean
     Dim sql As String
     On Error GoTo Failed
-    If job Is Nothing Then Err.Raise vbObjectError + 9100, , "PDF preview expired. Refresh it before generating."
-    If cachePath = "" Or printPages Is Nothing Then Err.Raise 5, , "PDF page cache is unavailable."
+    If job Is Nothing Then Err.Raise vbObjectError + 9100, "modPDFOutput.PDFOutputReportOpen", "PDF preview expired. Refresh it before generating."
+    If cachePath = "" Or printPages Is Nothing Then Err.Raise 5, "modPDFOutput.PDFOutputReportOpen", "PDF page cache is unavailable."
     sql = "SELECT * FROM PDFPage IN '" & Replace(cachePath, "'", "''") & "' ORDER BY PageNo"
     report.RecordSource = sql: PDFOutputReportOpen = True: Exit Function
 Failed:
@@ -182,6 +208,7 @@ Public Function PDFOutputFormat(ByVal report As Access.Report) As Boolean
         c.Left = 0: c.Top = 0: c.Width = CLng(slot(3) * 20): c.Height = CLng(slot(4) * 20)
         c.Left = CLng(slot(1) * 20): c.Top = CLng(slot(2) * 20)
         c.FontName = slot(5): c.FontSize = slot(6): c.TextAlign = slot(7)
+        c.FontBold = slot(9)
         c.BackStyle = IIf(slot(8), 1, 0): c.BackColor = vbWhite: c.Visible = True
     Next
     PDFOutputFormat = True: Exit Function
@@ -190,6 +217,7 @@ Failed:
 End Function
 Private Sub ClosePrintReport()
     If CurrentProject.AllReports("rptPDFOutput").IsLoaded Then DoCmd.Close acReport, "rptPDFOutput", acSaveNo
+    CloseMetricContext
 End Sub
 Public Sub PDFOutputEndPreview()
     Dim fs As Object
@@ -208,76 +236,147 @@ Public Sub PDFOutputPreviewPages(ByVal root As String, ByVal includeSummary As B
     Dim rows As Collection, row As Object, fs As Object
     PDFOutputEndPreview
     Set fs = CreateObject("Scripting.FileSystemObject")
-    If Not fs.FolderExists(root) Then Err.Raise 76, , "Choose an available protected export folder."
+    If Not fs.FolderExists(root) Then Err.Raise 76, "modPDFOutput.PDFOutputPreviewPages", "Choose an available protected export folder."
     Set rows = job("Reports"): Set printPages = New Collection
     If includeSummary And job("GroupID") > 0 Then PlanSummary rows
     For Each row In rows: PlanReport row, rows: Next
-    If printPages.Count = 0 Then Err.Raise 5, , "No pages are available."
+    ClosePrintReport
+    If printPages.Count = 0 Then Err.Raise 5, "modPDFOutput.PDFOutputPreviewPages", "No pages are available."
     previewFolder = fs.BuildPath(root, "PDF_Preview_" & ShortIdentity(NewIdentity()) & ".partial")
     fs.CreateFolder previewFolder: cachePath = previewFolder & "\pages.accdb"
     Call WritePageCache: outputFailure = ""
     DoCmd.OpenReport "rptPDFOutput", acViewPreview
-    If outputFailure <> "" Then Err.Raise vbObjectError + 9108, , outputFailure
+    If outputFailure <> "" Then Err.Raise vbObjectError + 9108, "modPDFOutput.PDFOutputPreviewPages", outputFailure
 End Sub
 Private Function NewPage(ByVal background As String) As Object
     Dim page As Object, slots As New Collection
     Set page = CreateObject("Scripting.Dictionary"): page.Add "Background", background: page.Add "Slots", slots
     printPages.Add page: Set NewPage = page
 End Function
-Private Sub AddSlot(ByVal page As Object, ByVal value As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, Optional ByVal font As String = "Times New Roman", Optional ByVal size As Double = 10, Optional ByVal align As Long = 1, Optional ByVal opaque As Boolean = False)
+Private Sub AddSlot(ByVal page As Object, ByVal value As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, Optional ByVal font As String = "Times New Roman", Optional ByVal size As Double = 10, Optional ByVal align As Long = 1, Optional ByVal opaque As Boolean = False, Optional ByVal bold As Boolean = False)
     If value = "" Then Exit Sub
-    If page("Slots").Count >= PDF_OUTPUT_SLOTS Then Err.Raise vbObjectError + 9105, , "PDF page exceeds its available text slots."
-    page("Slots").Add Array(value, x, y, width, height, font, size, align, opaque)
+    If page("Slots").Count >= PDF_OUTPUT_SLOTS Then Err.Raise vbObjectError + 9105, "modPDFOutput.AddSlot", "PDF page exceeds its available text slots."
+    page("Slots").Add Array(value, x, y, width, height, font, size, align, opaque, bold)
 End Sub
-Private Function LinesFor(ByVal text As String, ByVal width As Double, ByVal font As String, ByVal size As Double) As Collection
-    Dim lines As New Collection, parts As Variant, part As Variant, line As String, c As String, i As Long, count As Long, capacity As Long, breakAt As Long
-    'Courier New has a fixed 0.6-em advance. Reserve horizontal breathing room.
-    capacity = Fix((width - 2) / (size * 0.6)): If capacity < 1 Then capacity = 1
+Private Sub SetMetricFont(ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False)
+    Dim driver As String, device As String, key As String, face As String, created As LongPtr, previous As LongPtr
+    If metricDC = 0 Then
+        driver = "WINSPOOL": device = Application.Printer.DeviceName
+        metricDC = PDFCreateDC(StrPtr(driver), StrPtr(device), 0, 0)
+        If metricDC = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Printer font metrics are unavailable. No PDF was generated."
+        metricDpiX = PDFDeviceCaps(metricDC, 88): metricDpiY = PDFDeviceCaps(metricDC, 90)
+        If metricDpiX <= 0 Or metricDpiY <= 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Printer font metrics have no usable resolution."
+    End If
+    key = font & "|" & size & "|" & CStr(bold)
+    If key = metricKey Then Exit Sub
+    created = PDFCreateFont(-CLng(size * metricDpiY / 72#), 0, 0, 0, IIf(bold, 700, 400), 0, 0, 0, 1, 7, 0, 2, 0, StrPtr(font))
+    If created = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font could not be measured: " & font
+    previous = PDFSelectObject(metricDC, created)
+    If previous = 0 Or previous = -1 Then
+        PDFDeleteObject created
+        Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font could not be selected."
+    End If
+    If metricFont = 0 Then metricOldFont = previous Else PDFDeleteObject metricFont
+    metricFont = created
+    face = String$(128, vbNullChar)
+    If PDFTextFace(metricDC, 128, StrPtr(face)) = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Selected print font could not be verified."
+    face = Left$(face, InStr(face, vbNullChar) - 1)
+    If StrComp(face, font, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font is unavailable: " & font & ". Windows substituted " & face & "."
+    metricKey = key
+End Sub
+Public Function PDFOutputTextWidth(ByVal value As String, ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False) As Double
+    Dim extent As PDFExtent
+    SetMetricFont font, size, bold
+    If value = "" Then Exit Function
+    If PDFTextExtent(metricDC, StrPtr(value), Len(value), extent) = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.PDFOutputTextWidth", "Print text could not be measured."
+    PDFOutputTextWidth = extent.Width * 72# / metricDpiX
+End Function
+Private Function PDFLineHeight(ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False, Optional ByVal compact As Boolean = False) As Double
+    Dim metrics As PDFFontMetrics
+    SetMetricFont font, size, bold
+    If PDFTextMetrics(metricDC, metrics) = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.PDFLineHeight", "Print line height could not be measured."
+    PDFLineHeight = metrics.Height * 72# / metricDpiY
+    If Not compact Then PDFLineHeight = PDFLineHeight + metrics.ExternalLeading * 72# / metricDpiY
+End Function
+Private Sub CloseMetricContext()
+    If metricDC <> 0 Then
+        If metricOldFont <> 0 Then PDFSelectObject metricDC, metricOldFont
+        If metricFont <> 0 Then PDFDeleteObject metricFont
+        PDFDeleteDC metricDC
+    End If
+    metricDC = 0: metricFont = 0: metricOldFont = 0: metricKey = ""
+End Sub
+Private Function LinesFor(ByVal text As String, ByVal width As Double, ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False, Optional ByVal positions As Collection = Nothing) As Collection
+    Dim lines As New Collection, parts As Variant, part As Variant, line As String, c As String, i As Long, count As Long, breakAt As Long, partStart As Long, lineStart As Long
     text = Replace(Replace(text, vbCrLf, vbLf), vbCr, vbLf): parts = Split(text, vbLf)
+    partStart = 1
     For Each part In parts
-        line = "": i = 1
+        line = "": i = 1: lineStart = partStart
         Do While i <= Len(part)
             count = 1: c = Mid$(part, i, 1)
             If AscW(c) < 0 Then
                 If (AscW(c) And &HFC00) = &HD800 And i < Len(part) Then count = 2: c = Mid$(part, i, 2)
             End If
-            If Len(line) + Len(c) > capacity Then
+            If Len(line) > 0 And PDFOutputTextWidth(line & c, font, size, bold) > width - 1 Then
                 breakAt = InStrRev(line, " ")
                 If breakAt > 1 Then
-                    lines.Add Left$(line, breakAt - 1): line = Mid$(line, breakAt + 1)
+                    lines.Add Left$(line, breakAt - 1)
+                    lineStart = lineStart + breakAt
+                    If Not positions Is Nothing Then positions.Add lineStart
+                    line = Mid$(line, breakAt + 1)
                 Else
-                    lines.Add line: line = ""
+                    lines.Add line: lineStart = lineStart + Len(line)
+                    If Not positions Is Nothing Then positions.Add lineStart
+                    line = ""
                 End If
             End If
             line = line & c: i = i + count
         Loop
         lines.Add line
+        partStart = partStart + Len(part) + 1
+        If Not positions Is Nothing Then positions.Add partStart
     Next
     Set LinesFor = lines
 End Function
-Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1)
-    Dim lines As Collection, i As Long, step As Double, capacity As Long, shown As String, remaining As String
+Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1, Optional ByVal bold As Boolean = False, Optional ByVal spill As Object = Nothing, Optional ByVal compact As Boolean = False)
+    Dim lines As Collection, positions As New Collection, i As Long, step As Double, capacity As Long, remaining As String, normalized As String
     If value = "" Then Exit Sub
-    font = "Courier New": size = Int(size + 0.5): step = size * 1.2
-    capacity = Fix(CDbl(box(3)) / step): If capacity < 0 Then capacity = 0
-    Set lines = LinesFor(value, CDbl(box(2)), font, size)
-    For i = 1 To lines.Count
-        If i <= capacity Then
-            If shown <> "" Then shown = shown & vbCrLf
-            shown = shown & lines(i)
-        Else
-            If remaining <> "" Then remaining = remaining & vbCrLf
-            remaining = remaining & lines(i)
-        End If
-    Next
-    If remaining <> "" And capacity = 1 Then
-        shown = "*": remaining = value
+    step = PDFLineHeight(font, size, bold, compact)
+    'Retain an exact line despite floating-point division; tolerance is below a twip.
+    capacity = Fix((CDbl(box(3)) + 0.0001) / step): If capacity < 0 Then capacity = 0
+    Set lines = LinesFor(value, CDbl(box(2)), font, size, bold, positions)
+    normalized = Replace(Replace(value, vbCrLf, vbLf), vbCr, vbLf)
+    If lines.Count > capacity Then
+        If capacity = 0 Then remaining = value Else remaining = Mid$(normalized, CLng(positions(capacity)))
+    End If
+    If remaining <> "" And capacity = 1 And spill Is Nothing Then
+        remaining = value
         label = label & " (full value; field marked *)"
-    ElseIf remaining <> "" Then
+        AddSlot page, "*", CDbl(box(0)), CDbl(box(1)), CDbl(box(2)), step + 0.5, font, size, align, False, bold
+    ElseIf remaining <> "" And spill Is Nothing Then
         label = label & " (continued)"
     End If
-    AddSlot page, shown, CDbl(box(0)), CDbl(box(1)), CDbl(box(2)), CDbl(box(3)), font, size, align
-    If remaining <> "" Then overflow.Add label & vbCrLf & remaining
+    If Not (remaining <> "" And capacity = 1 And spill Is Nothing) Then
+        For i = 1 To lines.Count
+            If i > capacity Then Exit For
+            AddSlot page, CStr(lines(i)), CDbl(box(0)), CDbl(box(1)) + (i - 1) * step, CDbl(box(2)), step + 0.5, font, size, align, False, bold
+        Next
+    End If
+    If remaining <> "" Then
+        If spill Is Nothing Then overflow.Add label & vbCrLf & remaining Else spill("Text") = remaining
+    End If
+End Sub
+Private Sub FitGradeExplanation(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, ByVal narrowAt As Double, ByVal narrowWidth As Double)
+    Dim spill As Object, upper As Variant, lower As Variant, step As Double, height As Double
+    If value = "" Then Exit Sub
+    step = PDFLineHeight(font, size, False, True): height = Fix((narrowAt - CDbl(box(1)) - 0.5) / step) * step
+    Set spill = CreateObject("Scripting.Dictionary")
+    upper = Array(box(0), box(1), box(2), height)
+    FitText page, value, label, upper, font, size, overflow, 1, False, spill, True
+    If spill.Exists("Text") Then
+        lower = Array(box(0), CDbl(box(1)) + height, narrowWidth, CDbl(box(3)) - height)
+        FitText page, CStr(spill("Text")), label, lower, font, size, overflow, 1, False, Nothing, True
+    End If
 End Sub
 Private Function TraitAverage(ByVal fields As Object) As String
     Dim key As Variant, mark As String, total As Double, count As Long
@@ -311,6 +410,18 @@ End Function
 Private Function SeniorCity(ByVal fields As Object) As String
     SeniorCity = Trim$(PDFOutputText(fields, "ReportingSeniorCity") & " " & PDFOutputText(fields, "ReportingSeniorState") & " " & PDFOutputText(fields, "ReportingSeniorZip"))
 End Function
+Private Function PrintNavyDate(ByVal value As String, Optional ByVal readiness As Boolean = False) As String
+    Dim months As Variant, month As Long
+    PrintNavyDate = value
+    If Not IsValidIsoDate(value) Then Exit Function
+    month = CLng(Mid$(value, 6, 2))
+    If readiness Then
+        PrintNavyDate = Mid$(value, 6, 2) & "/" & Mid$(value, 3, 2)
+    Else
+        months = Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
+        PrintNavyDate = Mid$(value, 3, 2) & months(month - 1) & Right$(value, 2)
+    End If
+End Function
 Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule As String, ByVal selector As String, ByVal rows As Collection) As String
     Dim fields As Object, value As String, names As Variant, index As Long, parts As Variant, text As String, line As Variant, found As Long, block As Long
     Set fields = row("Fields")
@@ -332,22 +443,24 @@ Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule
         If job("StatisticsGroupID") > 0 Then FieldValue = CStr(RecommendationCount(job("StatisticsRows"), CLng(Right$(key, 1))))
         Exit Function
     End If
-    If Left$(key, 6) = "@Trait" Then
+    If Left$(key, 6) = "@Grade" Then
         block = CLng(Mid$(key, 7, 2)): value = PDFOutputText(fields, "Trait" & block)
         If value = "" Or value = "NOB" Then Exit Function
-        text = CatalogueTraitDescription(row("Kind"), block, value)
-        text = Replace(Replace(text, vbCrLf, vbLf), vbCr, vbLf)
-        For Each line In Split(text, vbLf)
-            If Trim$(line) <> "" Then
-                found = found + 1
-                If found = CLng(Right$(key, 1)) Then FieldValue = line: Exit Function
-            End If
-        Next
+        If selector <> "" And InStr(1, "," & selector & ",", "," & value & ",", vbBinaryCompare) = 0 Then Exit Function
+        FieldValue = CatalogueTraitDescription(row("Kind"), block, value)
         Exit Function
     End If
     value = PDFOutputText(fields, key)
     If key = "OfficialName" And value = "" Then value = PDFOutputText(fields, "MemberName")
     If key = "MemberSSN" And value = "" Then value = PDFOutputText(fields, "MemberDoDID")
+    If row("Kind") = "CHIEFEVAL" Then
+        Select Case key
+            Case "PeriodStart", "PeriodEnd", "DateReported", "CounselingDate": value = PrintNavyDate(value)
+            Case "ReadinessDate": value = PrintNavyDate(value, True)
+            Case "MemberSSN", "ReportingSeniorSSN"
+                If Len(value) = 9 And value Like "#########" Then value = Left$(value, 3) & "-" & Mid$(value, 4, 2) & "-" & Right$(value, 4)
+        End Select
+    End If
     Select Case rule
         Case "flag": If value = "Yes" Then FieldValue = "X"
         Case "observation": If value = "NOB" Then FieldValue = "X"
@@ -360,6 +473,8 @@ Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule
             Else
                 FieldValue = value
             End If
+        Case "chief-mark"
+            If value = "NOB" Then FieldValue = "0.0" Else FieldValue = value
         Case "recommendation"
             names = Array("NOB", "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote")
             parts = Split("NOB|sp|pg|pm|mp|ep", "|")
@@ -392,8 +507,8 @@ Private Function PrintFieldLabel(ByVal key As String) As String
         names = Array("Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote")
         PrintFieldLabel = "Summary promotion distribution - " & names(CLng(Right$(key, 1))): Exit Function
     End If
-    If Left$(key, 6) = "@Trait" Then
-        PrintFieldLabel = "Trait " & Mid$(key, 7, 2) & " performance comment " & Right$(key, 1): Exit Function
+    If Left$(key, 6) = "@Grade" Then
+        PrintFieldLabel = "Trait " & Mid$(key, 7, 2) & " performance grade explanation": Exit Function
     End If
     Select Case key
         Case "@SeniorCity", "@SeniorAddress": PrintFieldLabel = "Reporting senior address and contact details"
@@ -406,7 +521,7 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
     Dim page As Object, number As Long, map As Variant, parts As Variant, value As String, box As Variant, extra As New Collection, covered As Object, key As Variant, unrepresented As Object, raw As String, valid As Boolean, align As Long, lineHeight As Double
     Set covered = CreateObject("Scripting.Dictionary")
     Set unrepresented = CreateObject("Scripting.Dictionary")
-    If row("Kind") <> "EVAL" And row("Kind") <> "CHIEFEVAL" And row("Kind") <> "FITREP" Then Err.Raise vbObjectError + 9106, , "No print template exists for report type " & row("Kind") & "."
+    If row("Kind") <> "EVAL" And row("Kind") <> "CHIEFEVAL" And row("Kind") <> "FITREP" Then Err.Raise vbObjectError + 9106, "modPDFOutput.PlanReport", "No print template exists for report type " & row("Kind") & "."
     For number = 1 To 2
         Set page = NewPage(row("Kind") & "_" & number)
         For Each map In PDFPrintRows(CStr(row("Kind")), number)
@@ -417,7 +532,7 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
             Select Case parts(1)
                 Case "flag": valid = (raw = "" Or raw = "Yes" Or raw = "No")
                 Case "observation": valid = (raw = "" Or raw = "Observed" Or raw = "NOB")
-                Case "trait": valid = (raw = "" Or raw = "NOB" Or raw Like "[1-5].0")
+                Case "trait", "chief-trait", "chief-mark": valid = (raw = "" Or raw = "NOB" Or raw Like "[1-5].0")
                 Case "recommendation": valid = (raw = "" Or raw = "NOB" Or raw = "Significant Problems" Or raw = "Progressing" Or raw = "Promotable" Or raw = "Must Promote" Or raw = "Early Promote")
             End Select
             If Not valid And Not unrepresented.Exists(CStr(parts(0))) Then
@@ -439,8 +554,11 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
             End If
             If parts(9) = "1" Then
                 AddSlot page, value, CDbl(box(0)), CDbl(box(1)), CDbl(box(2)), CDbl(box(3)), "Arial", IIf(row("Kind") = "CHIEFEVAL", 8, 10), 2
+            ElseIf Val(parts(13)) > 0 Then
+                FitGradeExplanation page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), Val(parts(8)), extra, Val(parts(12)), Val(parts(13))
             Else
-                FitText page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), Val(parts(8)), extra, align
+                If parts(1) = "chief-mark" Then align = 2
+                FitText page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), Val(parts(8)), extra, align, (parts(11) = "1")
             End If
         Next
     Next
@@ -481,7 +599,7 @@ Private Sub PlanSummary(ByVal rows As Collection)
     Do
         Set page = NewPage("SUMMARY_" & template): bounds = PDFSummaryRows(template): n = UBound(bounds)
         FitText page, CStr(job("Title")), "Summary filename / group", Array(365, 30, 201, 14), "Courier New", 9, extra
-        values = Array(CommonField(rows, "ReportingSeniorName"), CommonField(rows, "ReportingSeniorGrade"), CommonField(rows, "ReportingSeniorSSN"), CommonField(rows, "ReportingSeniorUIC"), job("Paygrade"), CommonField(rows, "PromotionStatus"), CommonField(rows, "Designator"), SummaryFlags(rows, Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW"), Array("ACT", "TAR", "INACT", "AT")), CommonField(rows, "BilletSubcategory"), SummaryFlags(rows, Array("ReportRegular", "ReportConcurrent", "ReportOperationalCommander"), Array("REGULAR", "CONCURRENT", "OPS CDR")), CommonField(rows, "UnitUIC"), CommonField(rows, "PeriodEnd"))
+        values = Array(CommonField(rows, "ReportingSeniorName"), CommonField(rows, "ReportingSeniorGrade"), CommonField(rows, "ReportingSeniorSSN"), CommonField(rows, "ReportingSeniorUIC"), job("Paygrade"), CommonField(rows, "PromotionStatus"), CommonField(rows, "Designator"), SummaryFlags(rows, Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW"), Array("ACT", "TAR", "INACT", "AT")), CommonField(rows, "BilletSubcategory"), SummaryFlags(rows, Array("ReportRegular", "ReportConcurrent", "ReportOperationalCommander"), Array("REGULAR", "CONCURRENT", "OPS CDR")), CommonField(rows, "UnitUIC"), PrintNavyDate(CommonField(rows, "PeriodEnd")))
         boxes = Array(Array(20, 54, 159, 12), Array(185, 54, 173, 12), Array(366, 54, 91, 12), Array(462, 54, 104, 12), Array(20, 77, 157, 12), Array(186, 77, 174, 12), Array(365, 77, 91, 12), Array(463, 77, 104, 12), Array(20, 102, 157, 12), Array(186, 102, 174, 12), Array(365, 102, 91, 12), Array(463, 102, 104, 12))
         For j = 0 To UBound(values): FitText page, CStr(values(j)), "Summary header " & (j + 1), boxes(j), "Times New Roman", 9, extra: Next
         For j = 0 To 4: AddSlot page, CStr(RecommendationCount(rows, j)), 165 + j * 80, 140, 72, 22, "Times New Roman", 11, 2: Next
@@ -524,14 +642,14 @@ End Sub
 Private Sub EmitPDF(ByVal destination As String)
     Dim fs As Object
     Set fs = CreateObject("Scripting.FileSystemObject")
-    If fs.FileExists(destination) Or fs.FolderExists(destination) Then Err.Raise vbObjectError + 9107, , "PDF destination already exists. Existing output was preserved."
+    If fs.FileExists(destination) Or fs.FolderExists(destination) Then Err.Raise vbObjectError + 9107, "modPDFOutput.EmitPDF", "PDF destination already exists. Existing output was preserved."
     Call WritePageCache: outputFailure = ""
     DoCmd.OpenReport "rptPDFOutput", acViewPreview, , , acHidden
     DoCmd.OutputTo acOutputReport, "rptPDFOutput", acFormatPDF, destination, False, , , acExportQualityPrint
     ClosePrintReport
-    If outputFailure <> "" Then Err.Raise vbObjectError + 9108, , outputFailure
-    If Not fs.FileExists(destination) Then Err.Raise vbObjectError + 9109, , "Access did not produce a PDF."
-    If fs.GetFile(destination).Size < 100 Then Err.Raise vbObjectError + 9110, , "Access produced an empty PDF."
+    If outputFailure <> "" Then Err.Raise vbObjectError + 9108, "modPDFOutput.EmitPDF", outputFailure
+    If Not fs.FileExists(destination) Then Err.Raise vbObjectError + 9109, "modPDFOutput.EmitPDF", "Access did not produce a PDF."
+    If fs.GetFile(destination).Size < 100 Then Err.Raise vbObjectError + 9110, "modPDFOutput.EmitPDF", "Access produced an empty PDF."
     fs.DeleteFile cachePath: cachePath = ""
 End Sub
 Private Function JSONString(ByVal text As String) As String
@@ -556,17 +674,17 @@ End Sub
 Public Function PDFOutputGenerate(ByVal root As String, ByVal selected As Object, ByVal mode As String, ByVal includeSummary As Boolean) As String
     Dim rows As New Collection, row As Object, fs As Object, groupFolder As String, finalFolder As String, stageFolder As String, operation As Long, file As String, files As New Collection, stage As String, failure As Long, message As String, cleanup As String
     On Error GoTo Failed
-    If exporting Then Err.Raise vbObjectError + 9111, , "A PDF export is already running."
-    If job Is Nothing Then Err.Raise vbObjectError + 9100, , "Refresh the PDF preview."
+    If exporting Then Err.Raise vbObjectError + 9111, "modPDFOutput.PDFOutputGenerate", "A PDF export is already running."
+    If job Is Nothing Then Err.Raise vbObjectError + 9100, "modPDFOutput.PDFOutputGenerate", "Refresh the PDF preview."
     PDFOutputEndPreview
-    If mode <> "Combined packet" And mode <> "Individual PDFs" And mode <> "Both" Then Err.Raise 5, , "Choose an output format."
+    If mode <> "Combined packet" And mode <> "Individual PDFs" And mode <> "Both" Then Err.Raise 5, "modPDFOutput.PDFOutputGenerate", "Choose an output format."
     For Each row In job("Reports")
         If selected.Exists(CStr(row("ID"))) Then rows.Add row
     Next
     If includeSummary And job("GroupID") = 0 Then includeSummary = False
-    If rows.Count = 0 And Not includeSummary Then Err.Raise 5, , "Select a report or the summary sheet."
+    If rows.Count = 0 And Not includeSummary Then Err.Raise 5, "modPDFOutput.PDFOutputGenerate", "Select a report or the summary sheet."
     Set fs = CreateObject("Scripting.FileSystemObject")
-    If Not fs.FolderExists(root) Then Err.Raise 76, , "Choose an available export folder."
+    If Not fs.FolderExists(root) Then Err.Raise 76, "modPDFOutput.PDFOutputGenerate", "Choose an available export folder."
     exporting = True: stage = "Create output run": job("Folder") = ""
     groupFolder = fs.BuildPath(root, PDFOutputSafePart(job("Title")))
     If Not fs.FolderExists(groupFolder) Then fs.CreateFolder groupFolder
@@ -592,7 +710,7 @@ Public Function PDFOutputGenerate(ByVal root As String, ByVal selected As Object
         Next
     End If
     Call ClosePrintReport: stage = "Verify output inventory"
-    If files.Count = 0 Then Err.Raise 5, , "No PDF documents were selected."
+    If files.Count = 0 Then Err.Raise 5, "modPDFOutput.PDFOutputGenerate", "No PDF documents were selected."
     WriteManifest stageFolder, rows, files
     stage = "Publish completed run": fs.MoveFolder stageFolder, finalFolder
     job("Folder") = finalFolder: Set job("Files") = files

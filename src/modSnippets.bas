@@ -5,13 +5,13 @@ Private startersReady As Boolean
 Public Function SaveSnippet(ByVal snippetID As Long, ByVal title As String, ByVal body As String, ByVal attribution As String, ByVal kind As String) As Long
     Dim r As DAO.Recordset
     Call ActiveContributorID
-    If Len(Trim$(title)) = 0 Or Len(title) > 120 Or Len(Trim$(body)) = 0 Or Len(Trim$(attribution)) = 0 Or Len(attribution) > 255 Then Err.Raise vbObjectError + 1200, , "Provide a title (120 max), text and attribution (255 max)."
-    If kind <> "ALL" And kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Err.Raise vbObjectError + 1201, , "Choose a supported report type or ALL."
+    If Len(Trim$(title)) = 0 Or Len(title) > 120 Or Len(Trim$(body)) = 0 Or Len(Trim$(attribution)) = 0 Or Len(attribution) > 255 Then Err.Raise vbObjectError + 1200, "modSnippets.SaveSnippet", "Provide a title (120 max), text and attribution (255 max)."
+    If kind <> "ALL" And kind <> "EVAL" And kind <> "CHIEFEVAL" And kind <> "FITREP" Then Err.Raise vbObjectError + 1201, "modSnippets.SaveSnippet", "Choose a supported report type or ALL."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM NarrativeSnippet WHERE SnippetID=" & snippetID, dbOpenDynaset)
     If snippetID = 0 Then
         r.AddNew: r!SnippetGuid = NewIdentity(): r!CreatedBy = ActiveContributorID()
     Else
-        If r.EOF Then Err.Raise vbObjectError + 1202, , "Snippet missing."
+        If r.EOF Then Err.Raise vbObjectError + 1202, "modSnippets.SaveSnippet", "Snippet missing."
         r.Edit
     End If
     r!SnippetTitle = title: r!SnippetBody = body: r!Attribution = attribution: r!FormKind = kind
@@ -19,12 +19,12 @@ Public Function SaveSnippet(ByVal snippetID As Long, ByVal title As String, ByVa
 End Function
 Public Function InsertNarrativeSnippet(ByVal snippetID As Long) As Boolean
     Dim r As DAO.Recordset, text As String, kind As String
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1203, , "Open the target draft editor first."
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 1204, , "Recover the archived report before editing."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1203, "modSnippets.InsertNarrativeSnippet", "Open the target draft editor first."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 1204, "modSnippets.InsertNarrativeSnippet", "Recover the archived report before editing."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM NarrativeSnippet WHERE SnippetID=" & snippetID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 1205, , "Select a snippet."
+    If r.EOF Then Err.Raise vbObjectError + 1205, "modSnippets.InsertNarrativeSnippet", "Select a snippet."
     kind = Nz(Forms!frmEditor!cboKind, "")
-    If r!FormKind <> "ALL" And r!FormKind <> kind Then Err.Raise vbObjectError + 1206, , "Snippet is intended for a different report type."
+    If r!FormKind <> "ALL" And r!FormKind <> kind Then Err.Raise vbObjectError + 1206, "modSnippets.InsertNarrativeSnippet", "Snippet is intended for a different report type."
     text = Nz(Forms!frmEditor!txtOfficialComments, "")
     If Len(text) > 0 Then text = text & vbCrLf
     Forms!frmEditor!txtOfficialComments = text & r!SnippetBody

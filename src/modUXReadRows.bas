@@ -35,7 +35,7 @@ Public Function UXHistoryITARows(ByVal memberID As Long) As Object
         If Nz(row(0), "") = "NOB" Then
             rows(id) = "NOB"
         Else
-            If row(1) = 0 Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+            If row(1) = 0 Then Err.Raise vbObjectError + 8900, "modUXReadRows.UXHistoryITARows", "Report has no authoritative saved revision. Inspect persistence diagnostics."
             If traits.Exists(id) Then
                 complete = True: Set values = traits(id)
                 For Each key In TraitKeys()
@@ -84,7 +84,7 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
     Set r = db.OpenRecordset("SELECT t.TaskID,t.RevisionID,t.AssignedTo,t.RequestedBy,t.TaskState,p.CurrentRevisionID AS SavedRevision FROM ReviewTask AS t LEFT JOIN Report AS p ON t.ReportID=p.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         ' VBA's original And/Or evaluates CurrentRevision even for completed tasks.
-        If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, , "Select a saved report."
+        If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
         If r!TaskState = "Pending" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> r!SavedRevision)) Then rows("Assignment:" & r!TaskID) = True
         r.MoveNext
     Loop
@@ -93,7 +93,7 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
     Do While Not r.EOF
         id = r!RunID: visible = False
         If r!RunState = "Pending" Or r!RunState = "Accepted" Then
-            If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, , "Select a saved report."
+            If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
             current = ReadRouteCurrent(r, stamps)
             If r!RunState = "Pending" Then
                 assignee = 0
@@ -235,7 +235,7 @@ Public Sub UXPrepareReportRows()
         If Nz(row(6), "") = "NOB" Then
             row(2) = "NOB"
         Else
-            If row(5) = 0 Then Err.Raise vbObjectError + 4002, , "Select a saved report."
+            If row(5) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXPrepareReportRows", "Select a saved report."
             If traits.Exists(id) Then
                 Set values = traits(id): complete = True
                 For Each key In TraitKeys()
@@ -292,7 +292,7 @@ Public Sub UXPrepareReportRows()
 End Sub
 Public Function UXReportRowCell(ByVal id As Long, ByVal column As Long) As Variant
     Dim row As Variant
-    If reportRows Is Nothing Then Err.Raise 5, , "Refresh Reports before reading display values."
-    If Not reportRows.Exists(CStr(id)) Then Err.Raise 5, , "Report display changed; refresh Reports."
+    If reportRows Is Nothing Then Err.Raise 5, "modUXReadRows.UXReportRowCell", "Refresh Reports before reading display values."
+    If Not reportRows.Exists(CStr(id)) Then Err.Raise 5, "modUXReadRows.UXReportRowCell", "Report display changed; refresh Reports."
     row = reportRows(CStr(id)): UXReportRowCell = row(column)
 End Function

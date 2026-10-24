@@ -44,8 +44,8 @@ Public Function WizardPreviewSave(ByVal kind As String, ByVal path As String, By
  w.BeginTrans: trans = True
  Set r = db.OpenRecordset("SELECT StageGuid FROM WizardPreview WHERE " & predicate, dbOpenSnapshot)
  If expected <> "" Then
-  If r.EOF Then Err.Raise vbObjectError + 9203, , "Preview ownership was cleared. Resume or preview again."
-  If r!StageGuid <> expected Then Err.Raise vbObjectError + 9203, , "Another preview replaced this one. Resume before making choices."
+  If r.EOF Then Err.Raise vbObjectError + 9203, "modWorkspaceImport.WizardPreviewSave", "Preview ownership was cleared. Resume or preview again."
+  If r!StageGuid <> expected Then Err.Raise vbObjectError + 9203, "modWorkspaceImport.WizardPreviewSave", "Another preview replaced this one. Resume before making choices."
  End If
  r.Close: Set r = Nothing
  db.Execute "DELETE FROM WizardPreview WHERE " & predicate, dbFailOnError
@@ -59,20 +59,21 @@ Public Function WizardPreviewSave(ByVal kind As String, ByVal path As String, By
  r!ChoiceXML = dom.XML: r!SavedAt = Now(): r.Update: r.Close: Set r = Nothing
  w.CommitTrans: trans = False: WizardPreviewSave = id: Exit Function
 Failed:
- failure = Err.Number: message = Err.Description
- On Error Resume Next
- If Not r Is Nothing Then r.Close
- If trans Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modWorkspaceImport", "WizardPreviewSave", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+ failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+ If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+ If trans Then SwiftRollback w, swiftPrimary
  On Error GoTo 0
- Err.Raise failure, "WizardPreviewSave", message
+ SwiftRaise swiftPrimary
 End Function
 Public Sub WizardPreviewCheck(ByVal kind As String, ByVal token As String)
  Dim saved As Object
  Set saved = WizardPreviewLoad(kind)
  If token = "" Or saved("StageGuid") <> token Then Err.Raise vbObjectError + 9203, "WizardPreviewCheck", "This preview is no longer owned by the current contributor. Resume or preview again."
  If kind = "WorkspaceImport" Then
-  If Not saved("Choices").Exists("TargetStamp") Then Err.Raise vbObjectError + 9205, , "Saved workspace preview has no target stamp. Preview again."
-  If saved("Choices")("TargetStamp") <> WizardWorkspaceStamp() Then Err.Raise vbObjectError + 9205, , "Workspace setup changed. Cancel or preview again before importing."
+  If Not saved("Choices").Exists("TargetStamp") Then Err.Raise vbObjectError + 9205, "modWorkspaceImport.WizardPreviewCheck", "Saved workspace preview has no target stamp. Preview again."
+  If saved("Choices")("TargetStamp") <> WizardWorkspaceStamp() Then Err.Raise vbObjectError + 9205, "modWorkspaceImport.WizardPreviewCheck", "Workspace setup changed. Cancel or preview again before importing."
  End If
  If SourceFileHash(saved("SourcePath")) <> saved("SourceHash") Then Err.Raise vbObjectError + 9204, "WizardPreviewCheck", "Source changed. Saved choices are retained; cancel or start a new preview."
  If Nz(saved("BaselinePath"), "") <> "" Then
@@ -87,7 +88,7 @@ Public Function WizardPreviewCancel(ByVal kind As String, Optional ByVal expecte
  predicate = WizardWhere(kind)
  If expected <> "" Then predicate = predicate & " AND StageGuid=" & QuoteSQL(expected)
  Set db = CurrentDb: db.Execute "DELETE FROM WizardPreview WHERE " & predicate, dbFailOnError
- If expected <> "" And db.RecordsAffected <> 1 Then Err.Raise vbObjectError + 9203, , "The owned preview was replaced; its newer choices were not removed."
+ If expected <> "" And db.RecordsAffected <> 1 Then Err.Raise vbObjectError + 9203, "modWorkspaceImport.WizardPreviewCancel", "The owned preview was replaced; its newer choices were not removed."
  WizardPreviewCancel = True
 End Function
 Private Function WizardWorkspaceStamp() As String
@@ -127,11 +128,11 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  On Error GoTo Failed
  If importing Then Exit Function
  importPath = "": importHash = "": Set workspacePreview = Nothing
- If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, , "Choose a different Swift NAVFIT file."
+ If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "Choose a different Swift NAVFIT file."
  Set reader = DBEngine.CreateWorkspace("SwiftImportPreview", "admin", "", dbUseJet)
  Set source = reader.OpenDatabase(path, False, True)
  Set r = source.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot): version = r!SchemaVersion: r.Close
- If version < 1 Or version > SCHEMA_VERSION Then Err.Raise 5, , "This source version is not supported by the current app. No data was changed."
+ If version < 1 Or version > SCHEMA_VERSION Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This source version is not supported by the current app. No data was changed."
  text = "Source: " & path & vbCrLf & "Schema " & version & " -> " & SCHEMA_VERSION & vbCrLf & vbCrLf
  For Each table In source.TableDefs
   If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
@@ -159,11 +160,11 @@ End Function
 Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As String) As String
  Dim result As String, failure As Long, message As String
  On Error GoTo Failed
- If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, , "Cannot import this file into itself."
+ If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Cannot import this file into itself."
  WorkspaceImportProgress "Checking source fingerprint and destination..."
- If SourceFileHash(path) <> hash Then Err.Raise 5, , "Source changed. Choose and preview it again."
+ If SourceFileHash(path) <> hash Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Source changed. Choose and preview it again."
  result = MigrateWorkspace(path, importing, True, hash)
- If Left$(result, 5) <> "PASS:" Then Err.Raise 5, , result
+ If Left$(result, 5) <> "PASS:" Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", result
  ImportSwiftWorkspaceData = result: Exit Function
 Failed:
  failure = Err.Number: message = Err.Description
@@ -234,9 +235,9 @@ Public Function UXApplySwiftWorkspace() As Boolean
  Dim result As String, message As String
  If importing Then Exit Function
  On Error GoTo Failed
- If workspacePreview Is Nothing Then Err.Raise 5, , "Preview ownership was reset. Use Resume saved preview before Apply."
+ If workspacePreview Is Nothing Then Err.Raise 5, "modWorkspaceImport.UXApplySwiftWorkspace", "Preview ownership was reset. Use Resume saved preview before Apply."
  WizardPreviewCheck "WorkspaceImport", workspacePreview("StageGuid")
- If importPath = "" Then Err.Raise 5, , "Choose and preview a previous Swift file first."
+ If importPath = "" Then Err.Raise 5, "modWorkspaceImport.UXApplySwiftWorkspace", "Choose and preview a previous Swift file first."
  importStarted = Now: progressText = "": lastProgressPaint = 0: importing = True
  Forms!frmUXWorkspaceImport!txtProgress.SetFocus
  LockImportDisplay

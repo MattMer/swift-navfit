@@ -20,7 +20,7 @@ Public Function TestAdditionalField() As String
     stage = "Read older catalogue snapshot"
     id = DLookup("ReportID", "Report", "Title='Catalogue extension'")
     rev = CurrentRevision(id)
-    If DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev) <> 1 Then Err.Raise 5, , "Prior snapshot definition was relabeled"
+    If DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev) <> FIELD_DEFINITION_VERSION - 1 Then Err.Raise 5, , "Prior snapshot definition was relabeled"
     If MajorRevisionHasField(rev, "CatalogueTestValue") Or MajorRevisionHasField(rev, "CatalogueTestDate") Then Err.Raise 5, , "Prior snapshot was rewritten for new fields"
     Set f = CreateObject("Scripting.Dictionary"): f.Add "CatalogueTestValue", "Saved through catalogue"
     f.Add "CatalogueTestDate", #2/29/2024#
@@ -30,7 +30,7 @@ Public Function TestAdditionalField() As String
     If MajorRevisionValue(CurrentRevision(id), "CatalogueTestDate") <> "2024-02-29" Then Err.Raise 5, , "New date snapshot is not invariant ISO"
     stage = "Restore"
     RestoreDraft id, rev
-    If DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev) <> 1 Then Err.Raise 5, , "Restore relabeled the source snapshot"
+    If DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev) <> FIELD_DEFINITION_VERSION - 1 Then Err.Raise 5, , "Restore relabeled the source snapshot"
     If Not IsNull(MajorRevisionValue(CurrentRevision(id), "CatalogueTestValue")) Then Err.Raise 5, , "New field did not restore"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     stage = "Pending buffer"

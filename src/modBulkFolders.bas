@@ -4,10 +4,10 @@ Option Explicit
 Private displayFolders As Object
 Private Function IDs(ByVal text As String) As Collection
     Dim list As New Collection, part As Variant, id As Long
-    If Len(text) = 0 Then Err.Raise vbObjectError + 1400, , "Select reports first."
+    If Len(text) = 0 Then Err.Raise vbObjectError + 1400, "modBulkFolders.IDs", "Select reports first."
     For Each part In Split(text, ",")
         id = CLng(part)
-        If id <= 0 Or CStr(id) <> CStr(part) Then Err.Raise vbObjectError + 1401, , "Invalid report selection."
+        If id <= 0 Or CStr(id) <> CStr(part) Then Err.Raise vbObjectError + 1401, "modBulkFolders.IDs", "Invalid report selection."
         list.Add id, CStr(id)
     Next
     Set IDs = list
@@ -21,8 +21,8 @@ Private Function FolderRowsStamp(ByVal selected As Collection, ByVal rows As Obj
     Dim id As Variant, row As Variant
     For Each id In selected
         row = rows(CStr(id))
-        If Not row(0) Then Err.Raise vbObjectError + 1402, , "Selected report missing."
-        If row(4) Or row(5) <> "Draft" Then Err.Raise vbObjectError + 1403, , "Selected report is archived or locked."
+        If Not row(0) Then Err.Raise vbObjectError + 1402, "modBulkFolders.FolderRowsStamp", "Selected report missing."
+        If row(4) Or row(5) <> "Draft" Then Err.Raise vbObjectError + 1403, "modBulkFolders.FolderRowsStamp", "Selected report is archived or locked."
         FolderRowsStamp = FolderRowsStamp & id & ":" & Nz(row(2), 0) & ":" & Nz(row(3), 0) & ":" & row(6) & ";"
     Next
 End Function
@@ -54,8 +54,8 @@ Public Function ApplyFolderBatch(ByVal selection As String, ByVal destination As
     Dim r As DAO.Recordset, moved As DAO.Recordset, w As DAO.Workspace, trans As Boolean, failure As Long, message As String
     On Error GoTo Failed
     operationID = BeginOperation("Bulk folder move", selection & " to folder " & destination)
-    If destination <> 0 And DCount("*", "Folder", "FolderID=" & destination) = 0 Then Err.Raise vbObjectError + 1404, , "Destination missing."
-    If expected <> FolderBatchStamp(selection) Then Err.Raise vbObjectError + 1405, , "Reports changed after preview. Preview again."
+    If destination <> 0 And DCount("*", "Folder", "FolderID=" & destination) = 0 Then Err.Raise vbObjectError + 1404, "modBulkFolders.ApplyFolderBatch", "Destination missing."
+    If expected <> FolderBatchStamp(selection) Then Err.Raise vbObjectError + 1405, "modBulkFolders.ApplyFolderBatch", "Reports changed after preview. Preview again."
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     For Each id In IDs(selection)
         before = DLookup("FolderID", "Report", "ReportID=" & id)
@@ -73,13 +73,14 @@ Public Function ApplyFolderBatch(ByVal selection As String, ByVal destination As
     Call FinishOperation(operationID, "Completed", "Folder moves committed. Official report revisions unchanged.")
     w.CommitTrans: trans = False: ApplyFolderBatch = operationID: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close
-    If operationID > 0 Then FinishOperation operationID, "Failed", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modBulkFolders", "ApplyFolderBatch", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If operationID > 0 Then SwiftFinishFailed operationID, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "ApplyFolderBatch", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, undoID As Long, trans As Boolean, id As Long
@@ -87,7 +88,7 @@ Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     On Error GoTo Failed
     undoID = BeginOperation("Undo folder batch", "Operation " & operationID)
     Set r = CurrentDb.OpenRecordset("SELECT * FROM FolderBatchChange WHERE OperationID=" & operationID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 1406, , "No folder changes for this operation."
+    If r.EOF Then Err.Raise vbObjectError + 1406, "modBulkFolders.UndoFolderBatch", "No folder changes for this operation."
     Set seen = CreateObject("Scripting.Dictionary")
     Do While Not r.EOF
         If Not seen.Exists(CStr(r!ReportID)) Then seen.Add CStr(r!ReportID), True: selected.Add CLng(r!ReportID)
@@ -96,10 +97,10 @@ Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     Set rows = FolderReadRows(selected): r.MoveFirst
     Do While Not r.EOF
         id = r!ReportID
-        If r!IsUndone Then Err.Raise vbObjectError + 1407, , "Batch already undone."
+        If r!IsUndone Then Err.Raise vbObjectError + 1407, "modBulkFolders.UndoFolderBatch", "Batch already undone."
         row = rows(CStr(id))
-        If row(6) <> r!AppliedMoveID Or Nz(row(3), 0) <> r!BaseRevisionID Then Err.Raise vbObjectError + 1408, , "Later changes exist. Entire batch undo stopped."
-        If Nz(row(4), False) Or Nz(row(5), "") <> "Draft" Then Err.Raise vbObjectError + 1409, , "Archived or locked report blocks batch undo."
+        If row(6) <> r!AppliedMoveID Or Nz(row(3), 0) <> r!BaseRevisionID Then Err.Raise vbObjectError + 1408, "modBulkFolders.UndoFolderBatch", "Later changes exist. Entire batch undo stopped."
+        If Nz(row(4), False) Or Nz(row(5), "") <> "Draft" Then Err.Raise vbObjectError + 1409, "modBulkFolders.UndoFolderBatch", "Archived or locked report blocks batch undo."
         r.MoveNext
     Loop
     r.Close
@@ -112,13 +113,14 @@ Public Function UndoFolderBatch(ByVal operationID As Long) As Boolean
     r.Close: Call FinishOperation(undoID, "Completed", "Compensating folder moves recorded for operation " & operationID)
     w.CommitTrans: trans = False: UndoFolderBatch = True: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close
-    If undoID > 0 Then FinishOperation undoID, "Failed", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modBulkFolders", "UndoFolderBatch", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If undoID > 0 Then SwiftFinishFailed undoID, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "UndoFolderBatch", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function LoadBulkFolders() As Boolean
     Set displayFolders = FolderPathSnapshot()
@@ -156,8 +158,8 @@ Failed:
 End Function
 Public Function ApplyFolderBatchUI() As Boolean
     On Error GoTo Failed
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1410, , "Close the editor first."
-    If Nz(Forms!frmBulkFolders!txtSelection, "") <> SelectedReports() Or Nz(Forms!frmBulkFolders!txtDestination, -1) <> Nz(Forms!frmBulkFolders!cboDestination, 0) Then Err.Raise vbObjectError + 1411, , "Selection changed. Preview again."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1410, "modBulkFolders.ApplyFolderBatchUI", "Close the editor first."
+    If Nz(Forms!frmBulkFolders!txtSelection, "") <> SelectedReports() Or Nz(Forms!frmBulkFolders!txtDestination, -1) <> Nz(Forms!frmBulkFolders!cboDestination, 0) Then Err.Raise vbObjectError + 1411, "modBulkFolders.ApplyFolderBatchUI", "Selection changed. Preview again."
     If MsgBox("Apply the previewed folder moves as one batch?", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
     Call ApplyFolderBatch(SelectedReports(), CLng(Nz(Forms!frmBulkFolders!cboDestination, 0)), Nz(Forms!frmBulkFolders!txtStamp, ""))
     Call LoadBulkFolders(): Forms!frmBulkFolders!txtPreview = "Batch completed. Operations screen provides guarded undo."

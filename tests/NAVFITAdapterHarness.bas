@@ -11,7 +11,7 @@ Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath A
     On Error GoTo Failed
     checks = 0
     For Each k In Array("EVAL", "CHIEFEVAL", "FITREP")
-        Check NAVFITMapRows(CStr(k)).Count = 75, "Incomplete saved-field coverage"
+        Check NAVFITMapRows(CStr(k)).Count = IIf(k = "CHIEFEVAL", 96, 75), "Incomplete saved-field coverage"
         For n = 0 To 5
             Check NAVFITEncode(NAVFITDecode(n, "trait"), "trait") = n, "Trait code round trip"
             Check NAVFITEncode(NAVFITDecode(n, "promotion"), "promotion") = n, "Promotion code round trip"

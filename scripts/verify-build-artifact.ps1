@@ -15,8 +15,24 @@ try {
     if($row.EOF -or $row.Fields.Item('AppVersion').Value -ne $swiftBuildPlan.AppVersion -or $row.Fields.Item('SchemaVersion').Value -ne $swiftBuildPlan.SchemaVersion){throw 'Artifact identity differs from current source'}
     $row.Close();$row=$null
     if($RequireBlank){
+        # TraitDefinition is reviewed application reference data, never user data.
+        $catalogue=Get-Content (Join-Path $root 'src/trait-catalogue.json') -Raw|ConvertFrom-Json
+        $row=$db.OpenRecordset('SELECT Count(*) FROM TraitDefinition',4)
+        if($row.Fields.Item(0).Value -ne 147){throw 'Blank trait reference inventory differs'}
+        $row.Close();$row=$null
+        foreach($trait in $catalogue.Traits){foreach($mark in @('','NOB','1.0','2.0','3.0','4.0','5.0')){
+            $storedMark=if($mark -eq ''){'GENERAL'}else{$mark}
+            $row=$db.OpenRecordset("SELECT * FROM TraitDefinition WHERE FormKind='"+$trait.FormKind+"' AND BlockNumber="+$trait.Block+" AND Mark='"+$storedMark+"' AND CatalogueVersion=1",4)
+            $description=if($mark -eq ''){$trait.GeneralDescription}else{$trait.Marks.$mark}
+            if($row.EOF){throw 'Blank is missing a reviewed trait definition'}
+            foreach($pair in @(@('TraitTitle',$trait.Title),@('DescriptionText',$description),@('SourceName',$catalogue.Source),@('SourceSHA256',$catalogue.SourceSHA256),@('SourceTraitID',$trait.SourceTraitID))){
+                $actual=$row.Fields.Item($pair[0]).Value
+                if($null -eq $pair[1]){if($actual -isnot [DBNull]){throw 'Blank reference Null changed'}}elseif([string]$actual -cne [string]$pair[1]){throw ('Blank reference differs: '+$pair[0])}
+            }
+            $row.Close();$row=$null
+        }}
         foreach($table in $db.TableDefs){
-            if($table.Name -like 'MSys*' -or $table.Name -eq 'AppMetadata'){continue}
+            if($table.Name -like 'MSys*' -or $table.Name -in @('AppMetadata','TraitDefinition')){continue}
             $row=$db.OpenRecordset(('SELECT TOP 1 * FROM ['+$table.Name.Replace(']',']]')+']'),4)
             if(-not $row.EOF){throw ('Blank artifact contains rows in '+$table.Name)}
             $row.Close();$row=$null

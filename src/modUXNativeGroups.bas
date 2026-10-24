@@ -57,13 +57,13 @@ End Function
 Public Function UXAssignNativeGroupGrade() As Boolean
     Dim picks As Collection, key As Variant, item As Object, grade As String, parts As Variant, targets As Object, i As Long
     On Error GoTo Failed
-    Set picks = SelectedGroups(): If picks.Count = 0 Then Err.Raise 5, , "Select a group with unresolved source rank/rate first."
+    Set picks = SelectedGroups(): If picks.Count = 0 Then Err.Raise 5, "modUXNativeGroups.UXAssignNativeGroupGrade", "Select a group with unresolved source rank/rate first."
     grade = UCase$(Trim$(Nz(Forms!frmUXNativeGroups!cboImportGrade, "")))
     'Validate the entire selection before changing any local grouping metadata.
     For Each key In picks
         Set item = choices(CStr(key))
-        If item("UnresolvedCount") = 0 Then Err.Raise 5, , "Select only groups containing unresolved source rank/rate."
-        If Not NativeImportGradeMatches(item("Kind"), grade) Then Err.Raise 5, , "Choose a compatible paygrade for " & item("Kind") & "."
+        If item("UnresolvedCount") = 0 Then Err.Raise 5, "modUXNativeGroups.UXAssignNativeGroupGrade", "Select only groups containing unresolved source rank/rate."
+        If Not NativeImportGradeMatches(item("Kind"), grade) Then Err.Raise 5, "modUXNativeGroups.UXAssignNativeGroupGrade", "Choose a compatible paygrade for " & item("Kind") & "."
     Next
     Set targets = CreateObject("Scripting.Dictionary")
     For Each key In picks
@@ -88,12 +88,12 @@ Public Function UXPreviewNativeGroups() As Boolean
     Dim key As Variant, item As Object, nativeID As Variant, values As Object, field As Variant, text As String, picks As Collection
     On Error GoTo Failed
     UXNativeGroupSelectionChanged
-    Set picks = SelectedGroups(): If picks.Count = 0 Then Err.Raise 5, , "Select at least one source group."
+    Set picks = SelectedGroups(): If picks.Count = 0 Then Err.Raise 5, "modUXNativeGroups.UXPreviewNativeGroups", "Select at least one source group."
     previewCentury = 2000
     Set choices = NAVFITReviewGroupChoices(previewCentury, gradeOverrides)
     For Each key In picks
         Set item = choices(CStr(key)): previewHash = item("SourceHash")
-        If item("Blocked") <> "" Then Err.Raise 5, , item("Title") & ": " & item("Blocked")
+        If item("Blocked") <> "" Then Err.Raise 5, "modUXNativeGroups.UXPreviewNativeGroups", item("Title") & ": " & item("Blocked")
         text = text & vbCrLf & "NEW GROUP: " & item("Title") & " - " & item("Kind") & " " & item("Paygrade") & " (" & item("Count") & " reports)" & vbCrLf
         If item("UnresolvedCount") > 0 Then text = text & "Group paygrade assigned locally for " & item("UnresolvedCount") & " unresolved source rates. Report rank/rate values remain unchanged and need completion after import." & vbCrLf
         For Each field In item("Defaults").Keys
@@ -101,7 +101,7 @@ Public Function UXPreviewNativeGroups() As Boolean
         Next
         For Each nativeID In Split(item("Reports"), ",")
             Set values = FullNAVFITImportValues(CLng(nativeID), previewCentury)
-            If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(previewHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise 5, , "Selected member already imported. Use returned-file reconciliation instead."
+            If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(previewHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise 5, "modUXNativeGroups.UXPreviewNativeGroups", "Selected member already imported. Use returned-file reconciliation instead."
             text = text & vbCrLf & "NEW REPORT: " & NAVFITDisplay(values("OfficialName")) & vbCrLf
             For Each field In values.Keys
                 If field <> "SourceHash" Then text = text & UXFieldCaption(CStr(field), item("Kind")) & vbCrLf & "Before: [new report]" & vbCrLf & "After: " & NAVFITDisplay(values(field)) & vbCrLf
@@ -119,9 +119,9 @@ End Function
 Public Function UXApplyNativeGroups() As Boolean
     Dim result As Collection, picks As Collection
     On Error GoTo Failed
-    If selectedPreview Is Nothing Then Err.Raise 5, , "Preview the selected groups first."
+    If selectedPreview Is Nothing Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Preview the selected groups first."
     Set picks = SelectedGroups()
-    If SelectionKey(picks) <> SelectionKey(selectedPreview) Then Err.Raise 5, , "Selection changed. Preview again."
+    If SelectionKey(picks) <> SelectionKey(selectedPreview) Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Selection changed. Preview again."
     Set result = ImportNAVFITGroups(picks, previewHash, previewCentury, gradeOverrides)
     Forms!frmUXNativeGroups!cmdPreview.SetFocus: Forms!frmUXNativeGroups!cmdApply.Enabled = False
     Set selectedPreview = Nothing

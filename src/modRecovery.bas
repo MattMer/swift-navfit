@@ -56,7 +56,7 @@ Public Function GuardEditorBaseline() As Boolean
     Dim id As Long
     id = Nz(Forms!frmEditor!txtReportID, 0)
     If id > 0 Then
-        If Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> baseRevision Then Err.Raise vbObjectError + 900, , "A newer revision exists. Checkpoint these edits, then recover them as a new draft to avoid overwriting it."
+        If Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> baseRevision Then Err.Raise vbObjectError + 900, "modRecovery.GuardEditorBaseline", "A newer revision exists. Checkpoint these edits, then recover them as a new draft to avoid overwriting it."
     End If
     GuardEditorBaseline = True
 End Function
@@ -116,10 +116,13 @@ Public Function CheckpointEditor() As Boolean
     If CurrentProject.AllForms("frmHome").IsLoaded Then Call LoadHome()
     CheckpointEditor = True: Exit Function
 Failed:
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRecovery", "CheckpointEditor", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
     On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close
-    Forms!frmEditor!lblRecovery.Caption = "Recovery failed - latest edits are not checkpointed. Pending values remain here; use Save draft."
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0
+    Forms!frmEditor!lblRecovery.Caption = "Recovery failed. Pending values remain here; use Save draft. " & SwiftFailureText(swiftPrimary)
 End Function
 ' List checkpoints owned by the active contributor, newest first.
 Public Function LoadRecoveries() As Boolean
@@ -133,14 +136,14 @@ End Function
 ' locked saved baselines unless recovering as a new draft; saving remains explicit.
 Public Function RestoreRecoveryDraft(ByVal recoveryID As Long, Optional ByVal asNewDraft As Boolean = False) As Boolean
     Dim r As DAO.Recordset, id As Long, names As Variant, fields As Variant, i As Long
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 901, , "Close the current editor before recovering another draft."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 901, "modRecovery.RestoreRecoveryDraft", "Close the current editor before recovering another draft."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RecoveryDraft WHERE RecoveryDraftID=" & recoveryID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 902, , "Checkpoint no longer exists."
-    If r!AuthorProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 903, , "This checkpoint belongs to another contributor profile."
+    If r.EOF Then Err.Raise vbObjectError + 902, "modRecovery.RestoreRecoveryDraft", "Checkpoint no longer exists."
+    If r!AuthorProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 903, "modRecovery.RestoreRecoveryDraft", "This checkpoint belongs to another contributor profile."
     id = Nz(r!ReportID, 0)
     If Not asNewDraft And id > 0 Then
-        If DCount("*", "Report", "ReportID=" & id) = 0 Or Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> Nz(r!BaseRevisionID, 0) Then Err.Raise vbObjectError + 904, , "The saved report has changed. Use Recover as new draft."
-        If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), False) Or Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 905, , "The report is archived or locked. Use Recover as new draft."
+        If DCount("*", "Report", "ReportID=" & id) = 0 Or Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & id), 0) <> Nz(r!BaseRevisionID, 0) Then Err.Raise vbObjectError + 904, "modRecovery.RestoreRecoveryDraft", "The saved report has changed. Use Recover as new draft."
+        If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), False) Or Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 905, "modRecovery.RestoreRecoveryDraft", "The report is archived or locked. Use Recover as new draft."
     End If
     If asNewDraft Then id = 0
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)

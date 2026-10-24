@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 Public Function SaveLibraryView(ByVal preset As String) As Boolean
     Dim r As DAO.Recordset, pid As Long
-    If preset <> "Drafting" And preset <> "Dates" And preset <> "History" Then Err.Raise vbObjectError + 1300, , "Unsupported library view."
+    If preset <> "Drafting" And preset <> "Dates" And preset <> "History" Then Err.Raise vbObjectError + 1300, "modLibraryViews.SaveLibraryView", "Unsupported library view."
     pid = ActiveContributorID()
     Set r = CurrentDb.OpenRecordset("SELECT * FROM LibraryPreference WHERE AuthorProfileID=" & pid, dbOpenDynaset)
     If r.EOF Then r.AddNew: r!AuthorProfileID = pid Else r.Edit

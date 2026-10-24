@@ -8,16 +8,16 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Dim tables As Variant, n As Variant, i As Long, ver As Long, sql As String
     Dim names As String, vals As String, trans As Boolean, message As String, stage As String, sourceSQL As String, temporaryQuery As String
     Dim fieldName As String, deferred As Variant, relationPair As Variant, copyStarted As Single, verifyStarted As Single
-    Dim table As DAO.TableDef, known As Boolean, targetVersion As Long, copiedRows As Long, checkedRows As Long
+    Dim table As DAO.TableDef, known As Boolean, targetVersion As Long, copiedRows As Long, checkedRows As Long, committed As Boolean
     On Error GoTo Failed
     Set reader = DBEngine.CreateWorkspace("SwiftRead", "admin", "", dbUseJet)
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 30 Then Err.Raise vbObjectError + 301, , "Unsupported source schema."
+    If ver < 1 Or ver > 33 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion < 21 Or targetVersion > 30 Then Err.Raise vbObjectError + 302, , "Target schema must be 21 through 30."
-    If ver > targetVersion Then Err.Raise vbObjectError + 302, , "Migration cannot downgrade the source schema."
+    If targetVersion < 21 Or targetVersion > 33 Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through 33."
+    If ver > targetVersion Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
     If targetVersion >= 22 Then tables = Split(Join(tables, "|") & "|ReportNote|ReportNoteDraft", "|")
@@ -29,21 +29,21 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     If targetVersion >= 30 Then tables = Split(Join(tables, "|") & "|WizardPreview", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
-            known = (table.Name = "AppMetadata")
+            known = (table.name = "AppMetadata" Or (ver >= 31 And table.name = "TraitDefinition"))
             For Each n In tables
                 If table.Name = n Then known = True
             Next
-            If Not known Then Err.Raise vbObjectError + 309, , "Unrecognized source table: " & table.Name & ". Migration stopped to prevent data loss."
+            If Not known Then Err.Raise vbObjectError + 309, "modMigration.MigrateWorkspace", "Unrecognized source table: " & table.name & ". Migration stopped to prevent data loss."
         End If
     Next
     'One inexpensive guard; TOP 1 never counts all records in a populated table.
     For Each table In t.TableDefs
-        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+        If left$(table.name, 4) <> "MSys" And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
             known = False
             If replaceSetup And targetVersion >= 30 And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
             If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) And Not known Then
                 Set r = t.OpenRecordset("SELECT TOP 1 * FROM [" & table.Name & "]", dbOpenSnapshot)
-                If Not r.EOF Then r.Close: Err.Raise vbObjectError + 303, , "Target must be blank."
+                If Not r.EOF Then r.Close: Err.Raise vbObjectError + 303, "modMigration.MigrateWorkspace", "Target must be blank."
                 r.Close
             End If
         End If
@@ -64,6 +64,10 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
         End If
     Next
     w.BeginTrans: trans = True
+    If ver >= 31 Then
+        stage = "Preserve trait definitions"
+        ImportTraitDefinitions s, t
+    End If
     'Only the current import descriptor may occupy an otherwise blank target.
     'Its removal rolls back with the import; all source preview rows are copied.
     If replaceSetup And targetVersion >= 30 Then t.Execute "DELETE FROM WizardPreview", dbFailOnError
@@ -157,9 +161,9 @@ NextCheck:
     If targetVersion >= 29 Then MigrateAuditHistory
     If Len(expectedHash) > 0 Then
         If showProgress Then Application.Run "WorkspaceImportProgress", "All copied fields verified. Checking source is unchanged..."
-        If SourceFileHash(sourcePath) <> expectedHash Then Err.Raise vbObjectError + 310, , "Source changed during transfer. No data imported."
+        If SourceFileHash(sourcePath) <> expectedHash Then Err.Raise vbObjectError + 310, "modMigration.MigrateWorkspace", "Source changed during transfer. No data imported."
     End If
-    w.CommitTrans: trans = False
+    w.CommitTrans: trans = False: committed = True
     RemoveMigrationQueries temporaryQuery
     s.Close: reader.Close
     ResetActiveContributor
@@ -167,19 +171,22 @@ NextCheck:
     MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to " & targetVersion
     Exit Function
 Failed:
-    message = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modMigration", "MigrateWorkspace", stage, Err.Number, Err.Description, Err.Source, IIf(committed, "Committed", IIf(trans, "Active", "Not started")))
+    message = CStr(swiftPrimary("Description"))
     Resume RollbackFailure
 RollbackFailure:
     On Error Resume Next
     'Release readers/query handles before rollback invalidates their objects.
-    If Not r Is Nothing Then r.Close
-    If Not q Is Nothing Then q.Close
-    If trans Then w.Rollback
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not q Is Nothing Then SwiftClose q, swiftPrimary, "q"
+    If trans Then SwiftRollback w, swiftPrimary
     RemoveMigrationQueries temporaryQuery
-    If Not s Is Nothing Then s.Close
-    If Not reader Is Nothing Then reader.Close
+    If Not s Is Nothing Then SwiftClose s, swiftPrimary, "s"
+    If Not reader Is Nothing Then SwiftClose reader, swiftPrimary, "reader"
     Err.Clear
-    MigrateWorkspace = "FAIL: " & stage & ": " & message
+    On Error GoTo 0
+    MigrateWorkspace = "FAIL: " & SwiftFailureText(swiftPrimary)
 End Function
 
  'Exact set verification: indexed joins and binary string comparisons run in ACE.
@@ -204,7 +211,7 @@ Public Function VerifyMigrationTable(ByVal db As DAO.Database, ByVal sourceTable
             Exit For
         End If
     Next
-    If keys.count = 0 Then Err.Raise vbObjectError + 311, , "Source table has no primary key: " & sourceTable.Name
+    If keys.count = 0 Then Err.Raise vbObjectError + 311, "modMigration.VerifyMigrationTable", "Source table has no primary key: " & sourceTable.name
     firstKey = CStr(keys(1))
     For i = 1 To keys.count
         If Len(join) > 0 Then join = join & " AND "
@@ -214,7 +221,7 @@ Public Function VerifyMigrationTable(ByVal db As DAO.Database, ByVal sourceTable
     sourceCount = rows!n: rows.Close
     Set rows = db.OpenRecordset("SELECT Count(*) AS N FROM [" & sourceTable.Name & "]", dbOpenSnapshot)
     targetCount = rows!n: rows.Close
-    If sourceCount <> targetCount Then Err.Raise vbObjectError + 304, , "Row count mismatch in " & sourceTable.Name
+    If sourceCount <> targetCount Then Err.Raise vbObjectError + 304, "modMigration.VerifyMigrationTable", "Row count mismatch in " & sourceTable.name
     If sourceCount = 0 Then Exit Function
     numericKey = (sourceTable.Fields(firstKey).Type = dbLong)
     fromSQL = " FROM [" & sourceQuery & "] AS src LEFT JOIN [" & sourceTable.Name & "] AS dst ON " & join
@@ -241,7 +248,7 @@ Public Function VerifyMigrationTable(ByVal db As DAO.Database, ByVal sourceTable
                 predicate = predicate & " OR " & part
             Next
             Set rows = db.OpenRecordset("SELECT TOP 1 src.[" & firstKey & "]" & fromSQL & " WHERE " & range & "(" & predicate & ")", dbOpenSnapshot)
-            If Not rows.EOF Then Err.Raise vbObjectError + 306, , "Missing row or field mismatch in " & sourceTable.Name & " (fields " & first + 1 & "-" & last + 1 & ")."
+            If Not rows.EOF Then Err.Raise vbObjectError + 306, "modMigration.VerifyMigrationTable", "Missing row or field mismatch in " & sourceTable.name & " (fields " & first + 1 & "-" & last + 1 & ")."
             rows.Close
             If showProgress Then Application.Run "WorkspaceImportPulse"
         Next
@@ -271,7 +278,7 @@ Private Function MigrationDifference(ByVal field As DAO.Field) As String
         Case dbBoolean, dbByte, dbInteger, dbLong, dbCurrency, dbSingle, dbDouble, dbDate, dbDecimal, dbGUID
             compare = a & "<>" & b
         Case Else
-            Err.Raise vbObjectError + 312, , "Unsupported verification field type: " & field.Name & " (" & field.Type & ")"
+            Err.Raise vbObjectError + 312, "modMigration.MigrationDifference", "Unsupported verification field type: " & field.name & " (" & field.Type & ")"
     End Select
     MigrationDifference = "((" & a & " Is Null)<>(" & b & " Is Null) OR " & compare & ")"
 End Function

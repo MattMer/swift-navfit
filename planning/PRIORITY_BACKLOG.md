@@ -26,13 +26,74 @@ C08–C10 implementation and the producer/consumer/navigation audit are document
 | ID | Work | Scope and completion criteria |
 | --- | --- | --- |
 | H01 | Official-template PDF report output and summary letter | Build local print-to-PDF/export using the supported fillable EVAL, CHIEFEVAL and FITREP templates as the foundation, and obtain/version/map the NAVPERS 1610/1 Summary Letter template for group summaries. Use summary-group title and Sailor name in unique, sanitized filenames; prevent collisions and overwrites and omit SSNs from filenames. Produce visibly filled, printable appearances, not merely changed XFA datasets. Verify saved-field readback, every mapped block, all seven traits, narrative capacity, continuation/overflow handling, summary roster/totals, paper geometry and actual printed fit. Keep NAVFIT98A export. Do not imply generated output constitutes official signature/submission. Decide required versus deliberately excluded fields explicitly. |
+| H02 | Nonblocking NAVFIT98A export — implemented in development | 0.34.0-dev/schema 31 exports saved reports and all saved group members despite readiness findings or status, with informational findings and retained integrity safeguards. See the H02 scope below. |
 
-H01 is implemented in development source (0.30.0-dev/schema 29), with static
+H01 has an initial implementation in development source (0.30.0-dev/schema 29), with static
 template output, native preview, combined/individual/Both exports and nonblocking
 draft capture. [Current project state](../PROJECT_STATE.md) records the mapping,
 intentional blank fields and runtime contract. Physical printed-fit acceptance and
 verification on a workstation with Acrobat absent remain open; H01 is not marked
-fully accepted or released. Local PDF extraction in r126 remains an input feature.
+fully accepted or released. The 23 October comparison below identifies required
+field-coverage and rendering corrections. Local PDF extraction in r126 remains an input feature.
+
+**H01 correction scope, 23 October — Chief performance comments and print fidelity:**
+The supplied `TEST3__Packet.pdf`, `NAVFIT98A Chief Evaluation Report.pdf` and
+`NAVFIT98A Summary Letter.pdf` demonstrate differences in typography, form
+geometry, placement and text capacity. The pre-correction Chief exporter incorrectly
+places catalogue rating descriptions in member-specific Performance Comments
+areas, omits the full performance-grade presentation, and creates additional
+pages for content that fits in the NAVFIT98A example. Existing generation and
+text-preservation checks did not establish semantic mapping or visual acceptance.
+Preserve the supplied originals as comparison evidence; do not copy personnel
+values into tracked fixtures or alter user workspaces.
+
+**Correction implementation in development:** 0.36.0-dev/schema 33 adds the 21
+authored comment fields, complete persistence/native/structured-PDF mappings,
+legacy-provenance/baseline preservation and corrected grade/comment rendering.
+Font-aware measurement replaces the uniform Courier estimate. See
+[current implementation and verification](../PROJECT_STATE.md#h01-chief-comments-and-print-fidelity-corrections).
+H01 is **not fully accepted**: physical fit and an Acrobat-absent workstation remain
+open, as does acceptance of the native six-point fallback for the official
+trait-34 grade-4/5 6.5-point wording. No release is published.
+
+- **Separate marks, descriptions and authored comments.** Add 21 independent Chief
+  performance-comment text values: three entries for each trait in blocks 33–39,
+  matching the editable areas in the official template. Present seven trait groups
+  with three comment entries each. Keep all seven traits together on the editor's
+  Front Page and preserve fixed geometry, pending buffers and navigation behavior.
+  Official grade descriptions remain catalogue-derived; authored comments start
+  blank and must not be generated from, or overwritten by, a selected rating.
+  Earlier reports receive blank new values without fabricated historical comments.
+- **Complete persistence and interchange.** Incorporate the fields into the
+  canonical field catalogue, saves/revisions, recovery, comparison/restoration,
+  additive versioned migration and workspace transfer. Verify NAVFIT98A's actual
+  comment storage before choosing its import/export mapping; preserve grouping,
+  order and full text without assuming its storage matches the PDF's 21 areas.
+  Cover structured-PDF input, printed output and applicable return/reconciliation
+  paths. Preserve original source values, provenance and historical records.
+- **Prove one corrected Chief report before broad rendering changes.** Reconcile
+  the official template and NAVFIT98A geometry; correctly render grade headings,
+  explanatory wording, boxed numeric marks and authored comments in their own
+  areas. Respect verified field-specific fonts, sizes, alignment, line spacing and
+  capacity rather than forcing every mapped value to Courier New. Inspect the
+  summary sheet as well as both report pages; do not treat background differences
+  as text offsets alone. Then apply verified corrections to other report kinds.
+- **Evaluate the rendering route with a bounded proof.** Begin with the existing
+  native Access overlay route and establish whether it can reproduce the required
+  appearance reliably. Consider filling the rich PDF fields if the proof exposes
+  material limitations, but require verified visible appearances, rendering and
+  combined-packet assembly without Acrobat. Writing field values alone is not
+  sufficient, and this backlog entry does not approve new runtime dependencies.
+- **Acceptance:** compare blank, short, full and overflowing synthetic examples
+  against the supplied examples and authoritative templates at actual page size.
+  Verify every trait's three comments independently, rating changes, save/reopen,
+  recovery, migration and applicable interchange; prove catalogue wording never
+  substitutes for authored comments. Confirm correct font/placement, grade
+  presentation and no avoidable continuation caused by incorrect metrics or
+  geometry. Preserve genuine overflow completely and retain physical printed-fit
+  and Acrobat-absent workstation acceptance. Existing nonblocking draft output,
+  preview, alphabetical ordering and combined/individual/Both requirements below
+  remain unchanged.
 
 **H01 output decision, 22 October:** the user selected print-ready PDF as the
 primary output, including partial drafts and incomplete reports with issues.
@@ -66,6 +127,34 @@ application must assemble the packet itself without requiring Acrobat Pro or a
 separate user-operated PDF merge tool. The chosen generation/assembly route must
 be verified on the supported workstation environment without Acrobat installed;
 developer-only tools must not become undeclared end-user dependencies.
+
+### H02 — Nonblocking NAVFIT98A export
+
+Implemented in **0.34.0-dev/schema 31** development source. See
+[behavior and verification scope](../PROJECT_STATE.md#h02-nonblocking-navfit98a-export).
+No release or publication is included. H01's print-fidelity corrections remain open.
+
+**23 October user decision:** allow NAVFIT98A export of reports and summary groups
+regardless of existing validation findings, missing/incomplete values, readiness
+or report/group status. Inform users that validation issues exist, with access to
+the findings, but do not require corrections, status changes or an additional
+acknowledgement solely because findings exist. Do not omit reports from a group
+export because of validation findings. Export does not imply approval, signature
+or readiness for submission.
+
+Audit report/group export entry points and shared export services so the same
+nonblocking policy applies consistently. Preserve pending editor/grid values and
+existing explicit save/capture behavior; do not silently save or discard drafts
+to bypass validation. Keep actual export-integrity and operational safeguards:
+source/revision consistency, valid serialization, destination access, collision
+protection and truthful failure reporting. Distinguish these failures from report
+readiness findings; never produce a corrupt file or claim success after failure.
+
+Verify report and summary-group exports with clean and issue-bearing synthetic
+data, including incomplete drafts and mixed groups. Confirm all selected reports
+are retained, informational findings do not prevent export, source/history remain
+unchanged apart from deliberate user saves, and actual generation failures still
+report failure. Retain NAVFIT98A field coverage, provenance and round-trip checks.
 
 ## Medium
 
@@ -103,12 +192,25 @@ scope](../PROJECT_STATE.md#m03-joinedbatched-read-paths) records measured native
 equivalence/performance and the separately reproduced preexisting read-row test
 fixture failure. No schema or release change is included.
 
+M04–M06 implementation is in **0.33.0-dev/schema 31** development source:
+contextual primary/cleanup diagnostics and narrower suppression; required
+form/control/event contracts and installed form/report/macro verification; and
+versioned runtime trait reference data seeded from the reviewed catalogue.
+See [current contracts and verification](../PROJECT_STATE.md#m04m06-diagnostics-view-contracts-and-runtime-trait-data)
+and the [source/consumer audit](CONSOLIDATION_PLAN.md#m04m06-source-and-consumer-audit).
+M04–M06 did not implement H01's Chief performance-comment/rendering corrections or
+H02. H02 is implemented separately above; no release is published.
+
 ## Low
 
 | ID | Work | Scope and completion criteria |
 | --- | --- | --- |
-| L01 | Descriptive foreign-key names | Replace opaque names such as `FK_Major0`–`FK_Major33` with descriptive relationship names during a controlled schema migration. Preserve the actual constraints, relationships and earlier-schema imports; generated names alone do not mean integrity is absent. Coordinate with C05–C07 to avoid renaming relationships twice. |
-| L02 | Clarify revision-ID field names | Rename or introduce clear compatibility aliases for `ChangeItem.ExpectedRevision` and `MeetingProposal.BaseRevision` so callers know these reference `RevisionID`, not revision numbers. Update queries, schema, mappings and consumers together. Preserve stored IDs, historical records and older imports; do not renumber revisions. |
+| L01 | Descriptive foreign-key names — implemented in development | Schema 32 uses descriptive names for all 34 formerly opaque major relationships. Production Settings import retains original fields/IDs and unchanged relationship enforcement/attributes in the fresh target; source schemas remain untouched. See the implementation scope below. |
+| L02 | Clarify revision-ID field names — implemented in development | Writable schema-owned query aliases expose `ExpectedRevisionID` and `BaseRevisionID`; active batch/meeting/comparison consumers use them. Legacy physical columns remain the sole storage for exact historical import, without duplicated values or renumbering. See the implementation scope below. |
+
+L01–L02 are implemented in **0.35.0-dev/schema 32** development source. See
+[behavior, compatibility and verification](../PROJECT_STATE.md#l01l02-relationship-names-and-revision-id-aliases).
+No release or publication is included; historical fixture waivers remain in force.
 
 ## Initial source checks and partial delivery
 

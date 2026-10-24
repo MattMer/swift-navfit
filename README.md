@@ -47,7 +47,7 @@ The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and
 
 ### Bring existing data forward
 
-- **NAVFIT98A exchange:** import supported report/group data and export saved reports or summary groups while retaining native provenance.
+- **NAVFIT98A exchange:** import supported report/group data and export saved reports or all summary-group members while retaining native provenance. Incomplete drafts, validation findings and archived/approved status do not block export. Findings remain visible; export does not imply approval or submission.
 - **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
 - **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Extraction runs locally without Acrobat or an internet connection.
 - **Previous-Swift workspace transfer:** bulk-copy supported older workspace data/history into a separate blank build, with exact database-engine verification and responsive progress between batches. Source and rollback protections remain.
@@ -91,7 +91,7 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** Current development source is **0.32.0-dev / schema 30**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
+**Source and downloads can differ.** Current development source is **0.36.0-dev / schema 33**. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged. A source tag does not publish a new Access binary.
 
 H01 development adds **Create PDF** in a report and **Preview / create PDFs** in
 a summary group. Choose saved values or captured current drafts, a protected export
@@ -104,6 +104,13 @@ value on an additional page. Export creates a new dated folder and preserves pen
 it does not sign or approve reports. Fields without stored source values remain
 blank. Physical print acceptance and Acrobat-absent workstation testing are pending;
 the existing published downloads do not yet contain this feature.
+
+Chief reports now have three authored performance-comment entries for each trait
+in blocks 33–39, saved independently of the selected rating. PDF output separates
+these comments from the catalogue grade explanation and boxed numeric mark, and
+uses field-specific typography and measured wrapping. The native renderer's
+trait-34 grade-4/5 six-point fallback for the template's 6.5-point wording remains
+a documented acceptance difference; see [current scope](PROJECT_STATE.md#h01-chief-comments-and-print-fidelity-corrections).
 
 M02 adds **Resume saved preview** and **Cancel saved preview** to returned-report,
 structured-PDF and workspace imports. Reviewed choices survive resets/restarts;

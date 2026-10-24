@@ -16,16 +16,16 @@ End Function
 Public Function MajorIDs(ByVal csv As String) As Object
     Dim result As Object, item As Variant, i As Long, value As String, n As Long
     Set result = CreateObject("Scripting.Dictionary")
-    If Len(Trim$(csv)) = 0 Then Err.Raise vbObjectError + 4001, , "Select at least one report."
+    If Len(Trim$(csv)) = 0 Then Err.Raise vbObjectError + 4001, "modMajorCore.MajorIDs", "Select at least one report."
     For Each item In Split(csv, ",")
         value = Trim$(CStr(item))
-        If Len(value) = 0 Or Len(value) > 9 Then Err.Raise vbObjectError + 4001, , "Invalid report selection."
+        If Len(value) = 0 Or Len(value) > 9 Then Err.Raise vbObjectError + 4001, "modMajorCore.MajorIDs", "Invalid report selection."
         For i = 1 To Len(value)
-            If Mid$(value, i, 1) < "0" Or Mid$(value, i, 1) > "9" Then Err.Raise vbObjectError + 4001, , "Invalid report selection."
+            If Mid$(value, i, 1) < "0" Or Mid$(value, i, 1) > "9" Then Err.Raise vbObjectError + 4001, "modMajorCore.MajorIDs", "Invalid report selection."
         Next
         n = CLng(value)
-        If n < 1 Then Err.Raise vbObjectError + 4001, , "Invalid report selection."
-        If result.Exists(CStr(n)) Then Err.Raise vbObjectError + 4001, , "Duplicate report selection."
+        If n < 1 Then Err.Raise vbObjectError + 4001, "modMajorCore.MajorIDs", "Invalid report selection."
+        If result.Exists(CStr(n)) Then Err.Raise vbObjectError + 4001, "modMajorCore.MajorIDs", "Duplicate report selection."
         result.Add CStr(n), n
     Next
     Set MajorIDs = result
@@ -62,23 +62,23 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     stage = "Revision guard": Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT CurrentRevisionID,IsArchived,WorkflowState FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 4002, , "Report does not exist."
-    If r!IsArchived Or r!WorkflowState <> "Draft" Then r.Close: Err.Raise vbObjectError + 4003, , "Archived or locked report cannot be changed."
-    If expectedRevision = 0 Or Nz(r!CurrentRevisionID, 0) <> expectedRevision Then r.Close: Err.Raise vbObjectError + 4004, , "Report changed since preview."
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 4002, "modMajorCore.CommitSavedFields", "Report does not exist."
+    If r!IsArchived Or r!WorkflowState <> "Draft" Then r.Close: Err.Raise vbObjectError + 4003, "modMajorCore.CommitSavedFields", "Archived or locked report cannot be changed."
+    If expectedRevision = 0 Or Nz(r!CurrentRevisionID, 0) <> expectedRevision Then r.Close: Err.Raise vbObjectError + 4004, "modMajorCore.CommitSavedFields", "Report changed since preview."
     r.Close: stage = "Read saved fields": Set values = SavedFields(reportID)
     For Each key In changes.Keys
-        If Not values.Exists(key) Or key = "FormKind" Then Err.Raise vbObjectError + 4005, , "Unknown or immutable draft field."
-        If (key = "Title" Or key = "MemberName" Or key = "DraftNotes") And IsNull(changes(key)) Then Err.Raise vbObjectError + 4008, , "This draft field uses empty text. Clear the null selection and use an empty value."
+        If Not values.Exists(key) Or key = "FormKind" Then Err.Raise vbObjectError + 4005, "modMajorCore.CommitSavedFields", "Unknown or immutable draft field."
+        If (key = "Title" Or key = "MemberName" Or key = "DraftNotes") And IsNull(changes(key)) Then Err.Raise vbObjectError + 4008, "modMajorCore.CommitSavedFields", "This draft field uses empty text. Clear the null selection and use an empty value."
         values(key) = changes(key)
         If key = "PeriodStart" Or key = "PeriodEnd" Then
             If Not IsNull(values(key)) And VarType(values(key)) <> vbDate Then
-                If Not IsValidIsoDate(CStr(values(key))) Then Err.Raise vbObjectError + 4006, , "Batch dates require yyyy-mm-dd or null."
+                If Not IsValidIsoDate(CStr(values(key))) Then Err.Raise vbObjectError + 4006, "modMajorCore.CommitSavedFields", "Batch dates require yyyy-mm-dd or null."
                 values(key) = DateSerial(CLng(Left$(values(key), 4)), CLng(Mid$(values(key), 6, 2)), CLng(Right$(values(key), 2)))
             End If
         End If
     Next
     For Each key In Array("Title", "MemberName", "DraftNotes")
-        If IsNull(values(key)) Then Err.Raise vbObjectError + 4009, , "Review and explicitly fill the null draft field before applying a batch: " & key
+        If IsNull(values(key)) Then Err.Raise vbObjectError + 4009, "modMajorCore.CommitSavedFields", "Review and explicitly fill the null draft field before applying a batch: " & key
     Next
     stage = "Normal draft commit"
     CommitSavedFields = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
@@ -86,19 +86,20 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
         FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values)
     w.CommitTrans: Exit Function
 Failed:
-    failure = Err.Number: message = stage & ": " & Err.Description
-    On Error Resume Next
-    w.Rollback
-    If Not r Is Nothing Then r.Close
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modMajorCore", "CommitSavedFields", stage, Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0
-    Err.Raise failure, "CommitSavedFields", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function SameFieldValue(ByVal a As Variant, ByVal b As Variant) As Boolean
     SameFieldValue = (IsNull(a) = IsNull(b) And StrComp(Nz(a, ""), Nz(b, ""), vbBinaryCompare) = 0)
 End Function
 Public Function CurrentRevision(ByVal reportID As Long) As Long
     CurrentRevision = ReportHeadRevision(reportID)
-    If CurrentRevision = 0 Then Err.Raise vbObjectError + 4002, , "Select a saved report."
+    If CurrentRevision = 0 Then Err.Raise vbObjectError + 4002, "modMajorCore.CurrentRevision", "Select a saved report."
 End Function
 Public Function NumericTraitAverage(ByVal revisionID As Long) As Variant
     Dim key As Variant, value As Variant, total As Double, count As Long
@@ -122,7 +123,7 @@ Public Function MajorRevisionValue(ByVal revisionID As Long, ByVal key As String
     If r.EOF Then
         r.Close
         If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) < 24 Then MajorRevisionValue = Null: Exit Function
-        Err.Raise vbObjectError + 4007, , "Snapshot field missing."
+        Err.Raise vbObjectError + 4007, "modMajorCore.MajorRevisionValue", "Snapshot field missing."
     End If
     If r!IsNullValue Then MajorRevisionValue = Null Else MajorRevisionValue = r!ValueText
     r.Close

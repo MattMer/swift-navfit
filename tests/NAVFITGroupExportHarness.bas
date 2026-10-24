@@ -6,9 +6,9 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     checks = checks + 1
     If Not ok Then Err.Raise vbObjectError + 5360, , message
 End Sub
-Private Function Rejected(ByVal groupID As Long, ByVal file As String, ByVal template As String, ByVal token As String) As String
+Private Function Rejected(ByVal groupID As Long, ByVal file As String, ByVal template As String, ByVal token As String, Optional ByVal usePSG As Boolean = False) As String
     On Error GoTo Failed
-    Call NAVFITExportGroup(groupID, file, template, token)
+    Call NAVFITExportGroup(groupID, file, template, token, usePSG)
     Rejected = "ACCEPTED": Exit Function
 Failed:
     Rejected = Err.Description
@@ -85,7 +85,8 @@ Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template 
         Check InStr(Rejected(groupID, file, template, token), "not overwritten") > 0, "Existing export overwritten"
         Set values = SavedFields(copy): old = values("ReportingSeniorSSN"): values("ReportingSeniorSSN") = "999999999"
         Call NAVFITCommitFields(copy, values, "Synthetic group member", "Mismatch test")
-        Check Rejected(groupID, directory & "\bad-" & id & ".accdb", template, token) <> "ACCEPTED", "Mismatched group exported"
+        Set preview = NAVFITGroupPreview(groupID)
+        Check NAVFITExportGroup(groupID, directory & "\mixed-" & id & ".accdb", template, preview("Token")) <> "", "Shared-field findings blocked export"
         values("ReportingSeniorSSN") = old: Call NAVFITCommitFields(copy, values, "Synthetic group member", "Restore test")
         Check InStr(Rejected(groupID, directory & "\stale-" & id & ".accdb", template, token), "Preview again") > 0, "Stale preview exported"
         If id = 1 Then
@@ -108,4 +109,62 @@ Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template 
     TestNAVFITGroupExport = "PASS: " & checks & " group export assertions": Exit Function
 Failed:
     TestNAVFITGroupExport = "FAIL: " & Err.Number & " " & Err.Description
+End Function
+Public Function TestNAVFITNonblocking(ByVal directory As String, ByVal template As String) As String
+    Dim id As Long, member As Long, groupID As Long, values As Object, preview As Object, r As DAO.Recordset, native As DAO.Database, baseline As DAO.Database
+    Dim file As String, revisions As Long, receipts As Long, raw As Long, stamp As String, recovery As Long, findings As Collection, before As Object, key As Variant
+    On Error GoTo Failed
+    groupID = CreateSummaryGroup("Synthetic incomplete mixed group", "EVAL", "E5")
+    For id = 1 To 3
+        Set values = SavedFields(id)
+        values("ReportingSeniorSSN") = Null: values("PeriodEnd") = Null: values("PromotionRecommendation") = Null
+        values("Trait33") = Null: values("OfficialComments") = Null
+        member = NAVFITCommitFields(0, values, "Synthetic incomplete " & id, "Nonblocking export test")
+        ' Deliberately model an existing invalid mixed roster without weakening membership writes.
+        CurrentDb.Execute "INSERT INTO GroupMember (GroupID,ReportID,Paygrade) VALUES (" & groupID & "," & member & ",'E5')", dbFailOnError
+        CurrentDb.Execute "UPDATE Report SET IsArchived=True,WorkflowState='Approved' WHERE ReportID=" & member, dbFailOnError
+    Next
+    CurrentDb.Execute "UPDATE SummaryGroup SET IsArchived=True WHERE GroupID=" & groupID, dbFailOnError
+    Set r = CurrentDb.OpenRecordset("RecoveryDraft", dbOpenDynaset)
+    r.AddNew: r!SessionGuid = NewIdentity(): r!AuthorProfileID = ActiveContributorID(): r!ReportID = member: r!BaseRevisionID = CurrentRevision(member)
+    r!CheckpointAt = #1/1/2000#: r!DraftTitle = "SYNTHETIC UNSAVED": r.Update: r.Bookmark = r.LastModified: recovery = r!RecoveryDraftID: r.Close
+    revisions = DCount("*", "ReportRevision"): receipts = DCount("*", "ImportReceipt"): raw = DCount("*", "ImportRawValue"): stamp = GroupStamp(groupID)
+    Set before = SavedFields(member)
+    file = directory & "\incomplete-report.accdb"
+    Check NAVFITExportReport(member, file, template) = file, "Archived approved incomplete report blocked"
+    Set findings = NAVFITLastReportReadiness(): Check findings.Count > 0, "Report findings not available"
+    Set preview = NAVFITGroupPreview(groupID, True)
+    Set findings = preview("Readiness"): Check findings.Count > 0, "Mixed-group findings missing"
+    Check Not preview("WritePSG") And InStr(preview("Text"), "PSG RSCA unavailable") > 0, "Unavailable PSG fallback not disclosed"
+    Check preview("Count0") = 0, "Missing recommendations invented NOB counts"
+    file = directory & "\incomplete-group.accdb"
+    Check NAVFITExportGroup(groupID, file, template, preview("Token"), True) = file, "Incomplete mixed archived group blocked"
+    Set native = DBEngine.OpenDatabase(file, False, True)
+    Set r = native.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+    id = 0
+    Do While Not r.EOF
+        id = id + 1
+        Check IsNull(r!RSSSN) And IsNull(r!ToDate), "Missing report values invented"
+        Set values = NAVFITReadFields(r, 2000)
+        Check IsNull(values("PromotionRecommendation")) And IsNull(values("Trait33")), "Missing recommendation/trait invented"
+        Check CDbl(r!RSCA) = 0, "Unavailable PSG replaced the native new-row default"
+        Check Not r!IsValidated, "Export claimed validation"
+        r.MoveNext
+    Loop
+    Check id = 3, "Mixed/incomplete reports omitted": r.Close: native.Close
+    Set baseline = DBEngine.OpenDatabase(file & ".swift-baseline.accdb", False, True)
+    Set r = baseline.OpenRecordset("SELECT * FROM SwiftGroupReport", dbOpenSnapshot): r.MoveLast
+    Check r.RecordCount = 3, "Baseline omitted mixed reports": r.Close
+    Set r = baseline.OpenRecordset("SwiftGroupExport", dbOpenSnapshot): Check Not r!UsePSG, "Baseline claimed unavailable PSG was written": r.Close: baseline.Close
+    Check GroupStamp(groupID) = stamp And DCount("*", "ReportRevision") = revisions, "Export changed saved revisions/status/roster"
+    Check DCount("*", "ImportReceipt") = receipts And DCount("*", "ImportRawValue") = raw, "Export changed import provenance"
+    For Each key In before.Keys: Check SameFieldValue(before(key), SavedFields(member)(key)), "Export changed saved " & key: Next
+    Check DLookup("DraftTitle", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "SYNTHETIC UNSAVED", "Export changed pending recovery"
+    Check DLookup("CheckpointAt", "RecoveryDraft", "RecoveryDraftID=" & recovery) = #1/1/2000#, "Export rewrote recovery checkpoint"
+    Check InStr(Rejected(groupID, file, template, preview("Token"), True), "not overwritten") > 0, "Collision accepted"
+    Check Rejected(groupID, directory & "\missing-folder\export.accdb", template, preview("Token"), True) <> "ACCEPTED", "Inaccessible destination accepted"
+    CurrentDb.Execute "DELETE FROM RecoveryDraft WHERE RecoveryDraftID=" & recovery, dbFailOnError
+    TestNAVFITNonblocking = "PASS: " & checks & " cumulative group/nonblocking export assertions": Exit Function
+Failed:
+    TestNAVFITNonblocking = "FAIL: " & Err.Number & " " & Err.Source & " " & Err.Description
 End Function

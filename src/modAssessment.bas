@@ -12,11 +12,11 @@ Public Function AssessmentLabel(ByVal key As String) As String
 End Function
 Public Function ValidateAssessment(ByVal values As Variant) As Variant
     Dim i As Long, choice As Variant, choices As Variant, allowed As Boolean
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2200, , "Assessment must contain two text or null selections."
-    If LBound(values) <> 0 Or UBound(values) <> 1 Then Err.Raise vbObjectError + 2200, , "Assessment must contain two text or null selections."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2200, "modAssessment.ValidateAssessment", "Assessment must contain two text or null selections."
+    If LBound(values) <> 0 Or UBound(values) <> 1 Then Err.Raise vbObjectError + 2200, "modAssessment.ValidateAssessment", "Assessment must contain two text or null selections."
     For i = 0 To 1
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2201, , "Assessment selections must be text or null."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2201, "modAssessment.ValidateAssessment", "Assessment selections must be text or null."
             If i = 0 Then
                 choices = Array("", "Observed", "NOB")
             Else
@@ -26,7 +26,7 @@ Public Function ValidateAssessment(ByVal values As Variant) As Variant
             For Each choice In choices
                 If values(i) = choice Then allowed = True
             Next
-            If Not allowed Then Err.Raise vbObjectError + 2202, , "Choose a listed assessment selection or clear it. No assessment is inferred from trait marks."
+            If Not allowed Then Err.Raise vbObjectError + 2202, "modAssessment.ValidateAssessment", "Choose a listed assessment selection or clear it. No assessment is inferred from trait marks."
         End If
     Next
     ValidateAssessment = values
@@ -40,9 +40,9 @@ Public Function AssessmentFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 1
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If schema >= 11 Then r.Close: Err.Raise vbObjectError + 2203, , "Assessment snapshot is incomplete."
+            If schema >= 11 Then r.Close: Err.Raise vbObjectError + 2203, "modAssessment.AssessmentFromRevision", "Assessment snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2204, , "Assessment snapshot has an inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2204, "modAssessment.AssessmentFromRevision", "Assessment snapshot has an inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close

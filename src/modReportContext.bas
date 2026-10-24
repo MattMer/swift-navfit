@@ -9,7 +9,7 @@ Public Function ReportContextPanelKeys(ByVal panel As String) As Variant
         Case "Occasions": ReportContextPanelKeys = Array("OccasionPeriodic", "OccasionDetachment", "OccasionFrocking", "OccasionSpecial")
         Case "Categories": ReportContextPanelKeys = Array("ReportRegular", "ReportConcurrent", "ReportOperationalCommander")
         Case "Duties": ReportContextPanelKeys = Array("PrimaryDuty", "DutyDescription")
-        Case Else: Err.Raise vbObjectError + 2500, , "Unknown report context panel."
+        Case Else: Err.Raise vbObjectError + 2500, "modReportContext.ReportContextPanelKeys", "Unknown report context panel."
     End Select
 End Function
 Public Function ReportContextLabel(ByVal key As String) As String
@@ -27,19 +27,19 @@ Public Function ReportContextLabel(ByVal key As String) As String
 End Function
 Public Function ValidateReportContext(ByVal values As Variant) As Variant
     Dim i As Long, choice As Variant, allowed As Boolean
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2501, , "Report context requires nine text or null entries."
-    If LBound(values) <> 0 Or UBound(values) <> 8 Then Err.Raise vbObjectError + 2501, , "Report context requires nine text or null entries."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2501, "modReportContext.ValidateReportContext", "Report context requires nine text or null entries."
+    If LBound(values) <> 0 Or UBound(values) <> 8 Then Err.Raise vbObjectError + 2501, "modReportContext.ValidateReportContext", "Report context requires nine text or null entries."
     For i = 0 To 8
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2502, , "Report context entries must be text or null."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2502, "modReportContext.ValidateReportContext", "Report context entries must be text or null."
             If i < 7 Then
                 allowed = False
                 For Each choice In Array("", "Yes", "No")
                     If values(i) = choice Then allowed = True
                 Next
-                If Not allowed Then Err.Raise vbObjectError + 2503, , "Choose Yes, No or blank for each report-context flag."
+                If Not allowed Then Err.Raise vbObjectError + 2503, "modReportContext.ValidateReportContext", "Choose Yes, No or blank for each report-context flag."
             ElseIf i = 7 Then
-                If Len(values(i)) > UXFieldLimit("PrimaryDuty") Or InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2504, , "Primary duty exceeds its field limit or contains line breaks/tabs."
+                If Len(values(i)) > UXFieldLimit("PrimaryDuty") Or InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2504, "modReportContext.ValidateReportContext", "Primary duty exceeds its field limit or contains line breaks/tabs."
             End If
         End If
     Next
@@ -63,9 +63,9 @@ Public Function ReportContextFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 8
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 14 Then r.Close: Err.Raise vbObjectError + 2505, , "Report context snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 14 Then r.Close: Err.Raise vbObjectError + 2505, "modReportContext.ReportContextFromRevision", "Report context snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2506, , "Report context snapshot has inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2506, "modReportContext.ReportContextFromRevision", "Report context snapshot has inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close
@@ -75,7 +75,7 @@ End Function
 Public Function OpenReportContext(ByVal panel As String) As Boolean
     Dim keys As Variant, key As Variant, screen As String
     keys = ReportContextPanelKeys(panel): screen = "frmContext" & panel
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2507, , "Open a draft first."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2507, "modReportContext.OpenReportContext", "Open a draft first."
     DoCmd.OpenForm screen
     For Each key In keys
         Forms(screen).Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
@@ -86,7 +86,7 @@ End Function
 Public Function ApplyReportContext(ByVal panel As String) As Boolean
     Dim key As Variant, screen As String, keys As Variant
     keys = ReportContextPanelKeys(panel): screen = "frmContext" & panel
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2508, , "Recover the archived draft before editing."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2508, "modReportContext.ApplyReportContext", "Recover the archived draft before editing."
     For Each key In keys
         Forms!frmEditor.Controls("txt" & key) = Forms(screen).Controls("txt" & key).Value
     Next

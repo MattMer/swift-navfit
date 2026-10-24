@@ -15,7 +15,6 @@ Public Function UXToolsChoose(ByVal view As String) As Boolean
  UXToolsChoose = UXSelectSection(8)
 End Function
 Public Function UXToolsAvailable() As Boolean
- On Error Resume Next
  If CurrentProject.AllForms("frmEditor").IsLoaded Then UXToolsAvailable = UXHasControl(Forms!frmEditor, "uxToolsSurface")
 End Function
 Public Function UXToolsRefresh() As Boolean
@@ -56,6 +55,7 @@ Private Function MessageText() As String
  Set f = UXToolsForm(): MessageText = Nz(f!txtMessage, "")
  On Error Resume Next
  If Screen.ActiveControl.Name = "txtMessage" Then MessageText = f!txtMessage.Text
+ On Error GoTo 0
 End Function
 Public Function UXToolsCheckpoint(Optional ByVal closing As Boolean = False) As Boolean
  Dim f As Access.Form, text As String, r As Access.Form
@@ -64,7 +64,7 @@ Public Function UXToolsCheckpoint(Optional ByVal closing As Boolean = False) As 
  Set f = UXToolsForm()
  If closing Then
   Set r = UXReviewForm()
-  If Len(Nz(r!txtNote, "")) > 0 Or Len(Nz(r!txtAssignmentNote, "")) > 0 Then Err.Raise 5, , "Record or clear the unfinished review decision note before leaving this report."
+  If Len(Nz(r!txtNote, "")) > 0 Or Len(Nz(r!txtAssignmentNote, "")) > 0 Then Err.Raise 5, "modReportTools.UXToolsCheckpoint", "Record or clear the unfinished review decision note before leaving this report."
  End If
  text = MessageText()
  If Nz(f!txtReportID, 0) > 0 And (Len(text) > 0 Or Nz(f!txtDraftVersion, 0) > 0) Then
@@ -158,7 +158,7 @@ Public Function UXMessageResume(Optional ByVal identity As String = "") As Boole
  If identity = "" Then Exit Function
  If Not UXToolsCheckpoint() Then Exit Function
  Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportNoteDraft WHERE DraftGuid=" & QuoteSQL(identity) & " AND AuthorProfileID=" & MajorAuthor() & " AND ReportID=" & f!txtReportID, dbOpenSnapshot)
- If rows.EOF Then Err.Raise 5, , "Choose one of your unfinished notes for this report."
+ If rows.EOF Then Err.Raise 5, "modReportTools.UXMessageResume", "Choose one of your unfinished notes for this report."
  f!txtDraftGuid = rows!DraftGuid: f!txtDraftVersion = rows!VersionCounter: f!txtDraftParent = Nz(rows!ParentMessageID, 0)
  f!txtMessage = rows!NoteText: f!txtDraftSaved = rows!NoteText: rows.Close
  f!lblCompose.Caption = IIf(Nz(f!txtDraftParent, 0) > 0, "Continue your draft reply", "Continue your draft note")
@@ -251,7 +251,7 @@ End Function
 Public Function UXReportAssignmentDecision(ByVal outcome As String) As Boolean
  On Error GoTo Failed
  UXFlushSurface
- If EditorHasPending() And outcome <> "Cancelled" Then Err.Raise 5, , "Save or undo pending report changes before recording a review decision."
+ If EditorHasPending() And outcome <> "Cancelled" Then Err.Raise 5, "modReportTools.UXReportAssignmentDecision", "Save or undo pending report changes before recording a review decision."
  With UXReviewForm()
   UXReportAssignmentDecision = FinishReview(Nz(!lstAssignments, 0), outcome, Nz(!txtAssignmentNote, ""))
   If UXReportAssignmentDecision Then !txtAssignmentNote = Null

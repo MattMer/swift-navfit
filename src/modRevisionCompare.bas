@@ -7,24 +7,28 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
-        If key <> "CommandEmployment" And key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, , "Revision snapshot is incomplete."
-        If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 800, , "Block 28 snapshot is incomplete."
-        If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, , "Administrative snapshot is incomplete."
-        If key = "PromotionStatus" And RevisionSnapshotSchema(revisionID) >= 12 Then Err.Raise vbObjectError + 800, , "Promotion status snapshot is incomplete."
-        If Len(ReportingSeniorLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 13 Then Err.Raise vbObjectError + 800, , "Reporting senior snapshot is incomplete."
-        If Len(ReportContextLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 14 Then Err.Raise vbObjectError + 800, , "Report context snapshot is incomplete."
-        If Len(MemberDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 15 Then Err.Raise vbObjectError + 800, , "Member details snapshot is incomplete."
-        If Len(ServiceDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 16 Then Err.Raise vbObjectError + 800, , "Service details snapshot is incomplete."
-        If Len(DecisionDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 17 Then Err.Raise vbObjectError + 800, , "Recommendation and statement snapshot is incomplete."
-        If Len(ReportPeopleLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 18 Then Err.Raise vbObjectError + 800, , "Reporting contact and rater snapshot is incomplete."
-        If Len(PartyNamesLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 19 Then Err.Raise vbObjectError + 800, , "Structured names snapshot is incomplete."
-        If IsTraitKey(key) And RevisionSnapshotSchema(revisionID) >= 10 Then Err.Raise vbObjectError + 800, , "Trait snapshot is incomplete."
-        If Len(AssessmentLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 11 Then Err.Raise vbObjectError + 800, , "Assessment snapshot is incomplete."
+        If CatalogueFieldVersion(key) > 1 Then
+            If Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID), 0) >= CatalogueFieldVersion(key) Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Revision snapshot is missing a required catalogue field: " & key
+            SavedValue = Null: r.Close: Exit Function
+        End If
+        If key <> "CommandEmployment" And key <> "OfficialComments" And Len(AdministrationLabel(key)) = 0 And Not IsTraitKey(key) And Len(AssessmentLabel(key)) = 0 And key <> "PromotionStatus" And Len(ReportingSeniorLabel(key)) = 0 And Len(ReportContextLabel(key)) = 0 And Len(MemberDetailsLabel(key)) = 0 And Len(ServiceDetailsLabel(key)) = 0 And Len(DecisionDetailsLabel(key)) = 0 And Len(ReportPeopleLabel(key)) = 0 And Len(PartyNamesLabel(key)) = 0 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Revision snapshot is incomplete."
+        If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Block 28 snapshot is incomplete."
+        If Len(AdministrationLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 9 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Administrative snapshot is incomplete."
+        If key = "PromotionStatus" And RevisionSnapshotSchema(revisionID) >= 12 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Promotion status snapshot is incomplete."
+        If Len(ReportingSeniorLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 13 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Reporting senior snapshot is incomplete."
+        If Len(ReportContextLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 14 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Report context snapshot is incomplete."
+        If Len(MemberDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 15 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Member details snapshot is incomplete."
+        If Len(ServiceDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 16 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Service details snapshot is incomplete."
+        If Len(DecisionDetailsLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 17 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Recommendation and statement snapshot is incomplete."
+        If Len(ReportPeopleLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 18 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Reporting contact and rater snapshot is incomplete."
+        If Len(PartyNamesLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 19 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Structured names snapshot is incomplete."
+        If IsTraitKey(key) And RevisionSnapshotSchema(revisionID) >= 10 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Trait snapshot is incomplete."
+        If Len(AssessmentLabel(key)) > 0 And RevisionSnapshotSchema(revisionID) >= 11 Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Assessment snapshot is incomplete."
         SavedValue = Null
     ElseIf r!IsNullValue Then
         SavedValue = Null
     Else
-        If IsNull(r!ValueText) Then Err.Raise vbObjectError + 801, , "Revision snapshot has an inconsistent null flag."
+        If IsNull(r!ValueText) Then Err.Raise vbObjectError + 801, "modRevisionCompare.SavedValue", "Revision snapshot has an inconsistent null flag."
         SavedValue = r!ValueText
     End If
     r.Close
@@ -61,8 +65,8 @@ End Function
 Public Function OpenRevisionComparison(ByVal reportID As Long, ByVal older As Long, Optional ByVal newer As Long = 0) As Boolean
     Dim r As DAO.Recordset, recorded As Boolean, ignored As Variant, key As Variant
     If newer = 0 Then newer = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
-    If older = 0 Or newer = 0 Then Err.Raise vbObjectError + 802, , "Select a saved revision first."
-    If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & older), 0) <> reportID Or Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & newer), 0) <> reportID Then Err.Raise vbObjectError + 803, , "Both revisions must belong to this report."
+    If older = 0 Or newer = 0 Then Err.Raise vbObjectError + 802, "modRevisionCompare.OpenRevisionComparison", "Select a saved revision first."
+    If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & older), 0) <> reportID Or Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & newer), 0) <> reportID Then Err.Raise vbObjectError + 803, "modRevisionCompare.OpenRevisionComparison", "Both revisions must belong to this report."
     'Validate before displaying a new comparison; no writes or editor saves occur.
     For Each key In DraftFieldKeys()
         ignored = SavedValue(older, CStr(key), recorded): ignored = SavedValue(newer, CStr(key), recorded)
@@ -110,6 +114,10 @@ Public Function RefreshComparisonFields() As Boolean
 End Function
 
 Private Function ComparisonFieldLabel(ByVal key As String) As String
+    If CatalogueFieldVersion(key) > 1 Then
+        ComparisonFieldLabel = UXFieldCaption(key, Nz(MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & Forms!frmRevisionCompare!txtNewer), 0)), ""))
+        Exit Function
+    End If
     Select Case key
         Case "FormKind": ComparisonFieldLabel = "Report type"
         Case "Title": ComparisonFieldLabel = "Draft title"

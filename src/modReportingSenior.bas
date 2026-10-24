@@ -15,14 +15,14 @@ Public Function ReportingSeniorLabel(ByVal key As String) As String
 End Function
 Public Function ValidateReportingSenior(ByVal values As Variant) As Variant
     Dim i As Long, limits As Variant, keys As Variant
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2400, , "Reporting senior requires five text or null values."
-    If LBound(values) <> 0 Or UBound(values) <> 4 Then Err.Raise vbObjectError + 2400, , "Reporting senior requires five text or null values."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2400, "modReportingSenior.ValidateReportingSenior", "Reporting senior requires five text or null values."
+    If LBound(values) <> 0 Or UBound(values) <> 4 Then Err.Raise vbObjectError + 2400, "modReportingSenior.ValidateReportingSenior", "Reporting senior requires five text or null values."
     keys = ReportingSeniorKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 4
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2401, , ReportingSeniorLabel(keys(i)) & " must be text or null."
-            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 2402, , ReportingSeniorLabel(keys(i)) & " exceeds " & limits(i) & " characters; shorten it deliberately."
-            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2403, , ReportingSeniorLabel(keys(i)) & " must be single-line text without tabs."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2401, "modReportingSenior.ValidateReportingSenior", ReportingSeniorLabel(keys(i)) & " must be text or null."
+            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 2402, "modReportingSenior.ValidateReportingSenior", ReportingSeniorLabel(keys(i)) & " exceeds " & limits(i) & " characters; shorten it deliberately."
+            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2403, "modReportingSenior.ValidateReportingSenior", ReportingSeniorLabel(keys(i)) & " must be single-line text without tabs."
         End If
     Next
     ValidateReportingSenior = values
@@ -39,9 +39,9 @@ Public Function ReportingSeniorFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 4
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 13 Then r.Close: Err.Raise vbObjectError + 2404, , "Reporting senior snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 13 Then r.Close: Err.Raise vbObjectError + 2404, "modReportingSenior.ReportingSeniorFromRevision", "Reporting senior snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2405, , "Reporting senior snapshot has inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2405, "modReportingSenior.ReportingSeniorFromRevision", "Reporting senior snapshot has inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close
@@ -50,7 +50,7 @@ Public Function ReportingSeniorFromRevision(ByVal revisionID As Long) As Variant
 End Function
 Public Function OpenReportingSenior() As Boolean
     Dim key As Variant
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2406, , "Open a draft first."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2406, "modReportingSenior.OpenReportingSenior", "Open a draft first."
     DoCmd.OpenForm "frmReportingSenior"
     For Each key In ReportingSeniorKeys()
         Forms!frmReportingSenior.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
@@ -60,7 +60,7 @@ Public Function OpenReportingSenior() As Boolean
 End Function
 Public Function ApplyReportingSenior() As Boolean
     Dim key As Variant
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2407, , "Recover the archived draft before editing."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2407, "modReportingSenior.ApplyReportingSenior", "Recover the archived draft before editing."
     'Transfer raw pending values; full validation occurs at the atomic draft save.
     For Each key In ReportingSeniorKeys()
         Forms!frmEditor.Controls("txt" & key) = Forms!frmReportingSenior.Controls("txt" & key).Value

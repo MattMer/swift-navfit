@@ -20,11 +20,38 @@ images, creates the native report/preview and adds report/group entry buttons.
 Neither stage invokes PDF.js, Python or Acrobat. The print metadata owns template
 geometry and exclusions, while canonical field definitions retain field authority.
 
+H01 corrections use schema 33/catalogue version 2. The same canonical generator
+adds 21 memo report/recovery fields and editor controls; no module or stage is
+added. The base form builder creates appended unbound buffers before shared
+layout; the existing surface stage creates the visible controls. Chief
+comment/native/PDF compatibility views are regenerated from that
+catalogue. The existing print-catalogue stage adds bold and selected-grade
+typography metadata. Runtime width/line metrics use Windows printer GDI; report
+font properties are unavailable during planning. Stored comments remain plain
+text. The native whole-point exception for trait 34 is recorded in the print
+metadata and current acceptance scope.
+
 M02 keeps the same source-module inventory and stage order. The already
 fingerprinted [schema definition](../src/major-schema.json) adds `WizardPreview`
 for schema 30; the existing importer copies/verifies it only from schema-30 sources.
 The three existing wizard generators add Resume/Cancel controls. No manifest
 replacement, additional assembly path or source-specific build stage is introduced.
+
+M04–M06 retain that manifest inventory and ordering. Schema 31 adds the versioned
+`TraitDefinition` reference table. The existing trait generator seeds the reviewed
+JSON through an owned DAO recordset/transaction and emits only catalogue identity
+and runtime accessors; it no longer emits large wording `Select Case` blocks.
+The canonical blank verifier checks all 147 seeded rows against that JSON while
+requiring all user tables to be empty. Installed verification additionally checks
+required view/control contracts, literal references, report events and macros.
+
+L01–L02 retain the same stages and module inventory. Schema 32 gives the 34
+formerly opaque major relationships descriptive names without changing their
+constraints. The existing base builder also installs the two writable revision-ID
+queries defined in [major-schema.json](../src/major-schema.json). Reopened
+verification checks the relationship definitions/enforcement and canonical query
+SQL. Original physical columns remain the historical-import storage contract;
+no source database is renamed in place and no ID mapping/renumbering is introduced.
 
 ### Canonical report fields
 

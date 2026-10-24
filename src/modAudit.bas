@@ -5,11 +5,11 @@ Option Explicit
 Private Sub AuditRegisterActor(ByVal id As Long)
     Dim r As DAO.Recordset, p As DAO.Recordset
     If PersistenceCount("AuditActor", "ActorID=" & id) > 0 Then
-        If CStr(MajorScalar("SELECT ProfileGuid FROM AuditActor WHERE ActorID=" & id)) <> CStr(MajorScalar("SELECT ProfileGuid FROM UserProfile WHERE UserProfileID=" & id)) Then Err.Raise vbObjectError + 9052, , "Contributor identity differs from retained audit identity. History was preserved."
+        If CStr(MajorScalar("SELECT ProfileGuid FROM AuditActor WHERE ActorID=" & id)) <> CStr(MajorScalar("SELECT ProfileGuid FROM UserProfile WHERE UserProfileID=" & id)) Then Err.Raise vbObjectError + 9052, "modAudit.AuditRegisterActor", "Contributor identity differs from retained audit identity. History was preserved."
         Exit Sub
     End If
     Set p = CurrentDb.OpenRecordset("SELECT ProfileGuid,DisplayName FROM UserProfile WHERE UserProfileID=" & id, dbOpenSnapshot)
-    If p.EOF Then Err.Raise vbObjectError + 9052, , "Audit actor identity is missing."
+    If p.EOF Then Err.Raise vbObjectError + 9052, "modAudit.AuditRegisterActor", "Audit actor identity is missing."
     Set r = CurrentDb.OpenRecordset("AuditActor", dbOpenDynaset)
     r.AddNew: r!ActorID = id: r!ProfileGuid = p!ProfileGuid: r!RegisteredName = p!DisplayName: r!RegisteredAt = Now(): r.Update
     r.Close: p.Close
@@ -31,13 +31,13 @@ Public Function AuditRecord(ByVal source As String, ByVal id As Long, Optional B
         Case "Review event": pointer = "TaskEventSourceID": sql = "SELECT e.*,t.ReportID,t.RevisionID FROM ReviewTaskEvent AS e INNER JOIN ReviewTask AS t ON e.TaskID=t.TaskID WHERE e.TaskEventID=" & id
         Case "Operation": pointer = "JournalSourceID": sql = "SELECT * FROM OperationJournal WHERE OperationID=" & id: operation = id
         Case "Message": pointer = "MessageSourceID": sql = "SELECT * FROM ReportMessage WHERE MessageID=" & id
-        Case Else: Err.Raise vbObjectError + 9050, , "Unknown audit evidence type."
+        Case Else: Err.Raise vbObjectError + 9050, "modAudit.AuditRecord", "Unknown audit evidence type."
     End Select
     If outcome Then version = Nz(MajorScalar("SELECT Max(SourceVersion) FROM AuditEvent WHERE " & pointer & "=" & id), 0) + 1
     existing = MajorScalar("SELECT AuditID FROM AuditEvent WHERE " & pointer & "=" & id & " AND SourceVersion=" & version)
     If Not IsNull(existing) Then AuditRecord = CLng(existing): Exit Function
     Set r = db.OpenRecordset(sql, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 9051, , "Audit evidence is missing."
+    If r.EOF Then Err.Raise vbObjectError + 9051, "modAudit.AuditRecord", "Audit evidence is missing."
     Select Case source
         Case "Revision"
             report = r!ReportID: revision = id: author = r!AuthorProfileID: stamp = r!CommittedAt: label = "Revision saved": detail = r!Reason

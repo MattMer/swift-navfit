@@ -10,15 +10,15 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.32.0-dev"
-Public Const SCHEMA_VERSION As Long = 30
+Public Const APP_VERSION As String = "0.36.0-dev"
+Public Const SCHEMA_VERSION As Long = 33
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
-    If CoCreateGuid(value) <> 0 Then Err.Raise vbObjectError + 100, , "Could not create a stable identity."
+    If CoCreateGuid(value) <> 0 Then Err.Raise vbObjectError + 100, "modSwift.NewIdentity", "Could not create a stable identity."
     buffer = String$(39, vbNullChar)
     result = StringFromGUID2(value, StrPtr(buffer), 39)
-    If result = 0 Then Err.Raise vbObjectError + 101, , "Could not format identity."
+    If result = 0 Then Err.Raise vbObjectError + 101, "modSwift.NewIdentity", "Could not format identity."
     NewIdentity = Left$(buffer, result - 1)
 End Function
 
@@ -44,8 +44,8 @@ End Function
 Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayName As String) As Boolean
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, pid As Long
     commandName = Trim$(commandName): displayName = Trim$(displayName)
-    If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, , "Enter a command name and contributor name."
-    If Len(commandName) > 120 Or Len(displayName) > 120 Then Err.Raise vbObjectError + 104, , "Names must be 120 characters or fewer."
+    If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, "modSwift.ConfigureWorkspace", "Enter a command name and contributor name."
+    If Len(commandName) > 120 Or Len(displayName) > 120 Then Err.Raise vbObjectError + 104, "modSwift.ConfigureWorkspace", "Names must be 120 characters or fewer."
     If DCount("*", "Workspace", "WorkspaceID=1") > 0 Then Call ActiveContributorID
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed
@@ -68,8 +68,11 @@ Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayNam
     ConfigureWorkspace = True
     Exit Function
 Failed:
-    w.Rollback
-    Err.Raise Err.Number, "ConfigureWorkspace", Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modSwift", "ConfigureWorkspace", "Execute", Err.number, Err.description, Err.source, "Unknown")
+    SwiftRollback w, swiftPrimary
+    On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Function
 
 Private Sub Snapshot(ByVal ownedDB As DAO.Database, ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
@@ -106,14 +109,14 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
     Dim keys As Variant, previous() As Variant, current() As Variant, i As Long
     Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
-    If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, , "Choose EVAL, CHIEFEVAL, or FITREP."
-    If Len(title) > UXFieldLimit("Title") Or Len(memberName) > UXFieldLimit("MemberName") Then Err.Raise vbObjectError + 106, , "Title or member name exceeds local draft capacity."
+    If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, "modSwift.CommitDraft", "Choose EVAL, CHIEFEVAL, or FITREP."
+    If Len(title) > UXFieldLimit("Title") Or Len(memberName) > UXFieldLimit("MemberName") Then Err.Raise vbObjectError + 106, "modSwift.CommitDraft", "Title or member name exceeds local draft capacity."
     If Not IsNull(startDate) Then
-        If Not IsDate(startDate) Then Err.Raise vbObjectError + 107, , "Start date is not a valid date."
+        If Not IsDate(startDate) Then Err.Raise vbObjectError + 107, "modSwift.CommitDraft", "Start date is not a valid date."
         startDate = DateValue(startDate)
     End If
     If Not IsNull(endDate) Then
-        If Not IsDate(endDate) Then Err.Raise vbObjectError + 108, , "End date is not a valid date."
+        If Not IsDate(endDate) Then Err.Raise vbObjectError + 108, "modSwift.CommitDraft", "End date is not a valid date."
         endDate = DateValue(endDate)
     End If
     pid = ProfileID()
@@ -129,11 +132,11 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     If IsMissing(officialComments) Then
         If reportID = 0 Then current(6) = Null Else current(6) = StoredOfficialNarrative(reportID)
     Else
-        If Not IsNull(officialComments) And VarType(officialComments) <> vbString Then Err.Raise vbObjectError + 117, , "Official narrative must be text or null."
+        If Not IsNull(officialComments) And VarType(officialComments) <> vbString Then Err.Raise vbObjectError + 117, "modSwift.CommitDraft", "Official narrative must be text or null."
         current(6) = officialComments
     End If
     If Not IsMissing(commandEmployment) Then
-        If Not IsNull(commandEmployment) And VarType(commandEmployment) <> vbString Then Err.Raise vbObjectError + 118, , "Block 28 must be text or null."
+        If Not IsNull(commandEmployment) And VarType(commandEmployment) <> vbString Then Err.Raise vbObjectError + 118, "modSwift.CommitDraft", "Block 28 must be text or null."
         current(78) = commandEmployment
     End If
     If Not IsMissing(administration) Then
@@ -186,10 +189,10 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         r!IsArchived = False: changed = True: seq = 1: parentID = Null
     Else
         Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenDynaset)
-        If r.EOF Then Err.Raise vbObjectError + 109, , "Report does not exist."
-        If r!IsArchived Then Err.Raise vbObjectError + 110, , "Recover archived reports before editing."
-        If r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 111, , "Reopen locked reports before editing."
-        If r!FormKind <> formKind Then Err.Raise vbObjectError + 112, , "Report type cannot change after creation."
+        If r.EOF Then Err.Raise vbObjectError + 109, "modSwift.CommitDraft", "Report does not exist."
+        If r!IsArchived Then Err.Raise vbObjectError + 110, "modSwift.CommitDraft", "Recover archived reports before editing."
+        If r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 111, "modSwift.CommitDraft", "Reopen locked reports before editing."
+        If r!formKind <> formKind Then Err.Raise vbObjectError + 112, "modSwift.CommitDraft", "Report type cannot change after creation."
         If IsMissing(administration) Then
             For i = 7 To 11: current(i) = r.Fields(keys(i)).Value: Next
         End If
@@ -273,20 +276,21 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Call UXEditorContextChanged(): CommitDraft = reportID
     Exit Function
 Failed:
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modSwift", "CommitDraft", "Execute", Err.number, Err.description, Err.source, "Unknown")
     Dim failure As Long, explanation As String
-    failure = Err.Number: explanation = Err.Description
-    On Error Resume Next
-    w.Rollback
-    If Not r Is Nothing Then r.Close
-    If Not rev Is Nothing Then rev.Close
+    failure = CLng(swiftPrimary("Number")): explanation = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not rev Is Nothing Then SwiftClose rev, swiftPrimary, "rev"
     On Error GoTo 0
-    Err.Raise failure, "CommitDraft", explanation
+    SwiftRaise swiftPrimary
 End Function
 
 Public Function ArchiveDraft(ByVal reportID As Long, ByVal archived As Boolean, Optional ByVal auditOperationID As Long = 0) As Boolean
     Dim w As DAO.Workspace, pid As Long
     pid = ProfileID()
-    If DCount("*", "Report", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 113, , "Report does not exist."
+    If DCount("*", "Report", "ReportID=" & reportID) = 0 Then Err.Raise vbObjectError + 113, "modSwift.ArchiveDraft", "Report does not exist."
     Set w = DBEngine.Workspaces(0)
     On Error GoTo Failed
     w.BeginTrans
@@ -298,7 +302,9 @@ Public Function ArchiveDraft(ByVal reportID As Long, ByVal archived As Boolean, 
     AuditRecord "Report event", CLng(eventRow!ReportEventID), auditOperationID: eventRow.Close
     w.CommitTrans: Call UXEditorContextChanged(): ArchiveDraft = True: Exit Function
 Failed:
-    w.Rollback: Err.Raise Err.Number, "ArchiveDraft", Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modSwift", "ArchiveDraft", "Execute", Err.number, Err.description, Err.source, "Unknown")
+    SwiftRollback w, swiftPrimary: Err.Raise CLng(swiftPrimary("Number")), "ArchiveDraft", CStr(swiftPrimary("Description"))
 End Function
 
 Private Function RevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
@@ -306,13 +312,13 @@ Private Function RevisionValue(ByVal revisionID As Long, ByVal key As String) As
     Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
     Set r = ownedDB.OpenRecordset("SELECT ValueText, IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 114, , "Revision snapshot is incomplete."
+    If r.EOF Then Err.Raise vbObjectError + 114, "modSwift.RevisionValue", "Revision snapshot is incomplete."
     If r!IsNullValue Then RevisionValue = Null Else RevisionValue = r!ValueText
     r.Close
 End Function
 
 Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
-    If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, , "Revision belongs to another report."
+    If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, "modSwift.RestoreDraft", "Revision belongs to another report."
     RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID), AdministrationFromRevision(revisionID), TraitsFromRevision(revisionID), AssessmentFromRevision(revisionID), PromotionStatusFromRevision(revisionID), ReportingSeniorFromRevision(revisionID), ReportContextFromRevision(revisionID), MemberDetailsFromRevision(revisionID), ServiceDetailsFromRevision(revisionID), DecisionDetailsFromRevision(revisionID), ReportPeopleFromRevision(revisionID), PartyNamesFromRevision(revisionID), Block28FromRevision(revisionID), RevisionFields(revisionID))
 End Function
 
@@ -321,7 +327,7 @@ Public Function DuplicateDraft(ByVal reportID As Long) As Long
     Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
     Set r = ownedDB.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 116, , "Report does not exist."
+    If r.EOF Then Err.Raise vbObjectError + 116, "modSwift.DuplicateDraft", "Report does not exist."
     DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments, Array(r!OfficialName.Value, r!RankRate.Value, r!Designator.Value, r!UnitUIC.Value, r!ShipStation.Value), Array(r!Trait33.Value, r!Trait34.Value, r!Trait35.Value, r!Trait36.Value, r!Trait37.Value, r!Trait38.Value, r!Trait39.Value), Array(r!ObservationStatus.Value, r!PromotionRecommendation.Value), r!PromotionStatus.Value, Array(r!ReportingSeniorName.Value, r!ReportingSeniorGrade.Value, r!ReportingSeniorDesignator.Value, r!ReportingSeniorTitle.Value, r!ReportingSeniorUIC.Value), ReportContextFromRecordset(r), MemberDetailsFromRecordset(r), ServiceDetailsFromRecordset(r), DecisionDetailsFromRecordset(r), ReportPeopleFromRecordset(r), PartyNamesFromRecordset(r), StoredBlock28(reportID), SavedFields(reportID))
     r.Close
 End Function
@@ -337,7 +343,7 @@ Public Function SwiftAppStartup() As Boolean
         Application.Quit acQuitSaveNone
         Exit Function
     End If
-    If CurrentProject.AllForms("frmEditor").IsLoaded Or UXGridPendingCount() > 0 Then Err.Raise 5, , "Finish pending report edits before restarting contributor selection."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Or UXGridPendingCount() > 0 Then Err.Raise 5, "modSwift.SwiftAppStartup", "Finish pending report edits before restarting contributor selection."
     If CurrentProject.AllForms("frmHome").IsLoaded Then DoCmd.Close acForm, "frmHome", acSaveNo
     ResetActiveContributor
     ShowContributorStartup
@@ -410,6 +416,7 @@ Public Function LoadEditor() As Boolean
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
     Dim f As Form, r As DAO.Recordset, id As Long, block As Long, seniorKey As Variant
+    Call UXAssertView(UX_EDITOR_VIEW)
     Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
     f!cboKind = "EVAL"
     If id > 0 Then
@@ -460,15 +467,20 @@ Private Sub RefreshRevisions()
 End Sub
 
 Public Function SaveEditor() As Boolean
-    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean
+    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean, committed As Boolean, stage As String
     On Error GoTo Failed
     Set f = Forms!frmEditor
+    stage = "Capture and validate pending values"
     UXFlushSurface
     Call GuardEditorBaseline()
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    stage = "Write draft revision"
     id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value, EditorPendingFields())
+    stage = "Clear committed checkpoint"
     Call DiscardEditorCheckpoint()
-    w.CommitTrans: trans = False
+    stage = "Commit save"
+    w.CommitTrans: trans = False: committed = True
+    stage = "Refresh saved report display"
     f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved revision " & Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & id), "?") & " at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
@@ -478,11 +490,15 @@ Public Function SaveEditor() As Boolean
     If UXHasControl(f, "uxReviewSetup") Then UXHeaderReviewState
     SaveEditor = True: Exit Function
 Failed:
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modSwift", "SaveEditor", stage, Err.Number, Err.Description, Err.Source, IIf(committed, "Committed", IIf(trans, "Active", "Not started")))
     Dim message As String
-    message = Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not UXShowSaveError(message) Then MsgBox message, vbExclamation
+    message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    On Error GoTo 0
+    message = SwiftFailureText(swiftPrimary)
+    If Not UXShowSaveError(message, committed) Then MsgBox message, vbExclamation
+    SaveEditor = committed
 End Function
 
 Public Function CloseEditor() As Boolean
@@ -542,7 +558,7 @@ Private Function StoredOfficialNarrative(ByVal reportID As Long) As Variant
     Set ownedDB = CurrentDb
     Dim r As DAO.Recordset
     Set r = ownedDB.OpenRecordset("SELECT OfficialComments FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 109, , "Report does not exist."
+    If r.EOF Then Err.Raise vbObjectError + 109, "modSwift.StoredOfficialNarrative", "Report does not exist."
     StoredOfficialNarrative = r!OfficialComments
     r.Close
 End Function
@@ -562,7 +578,7 @@ End Function
 
 Public Function Block28FromRevision(ByVal revisionID As Long) As Variant
     If Not MajorRevisionHasField(revisionID, "CommandEmployment") Then
-        If RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 119, , "Block 28 is missing from this revision."
+        If RevisionSnapshotSchema(revisionID) >= 24 Then Err.Raise vbObjectError + 119, "modSwift.Block28FromRevision", "Block 28 is missing from this revision."
         Block28FromRevision = Null
     Else
         Block28FromRevision = MajorRevisionValue(revisionID, "CommandEmployment")

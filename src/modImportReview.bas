@@ -13,7 +13,7 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
     Dim i As Long, prefix As String, kind As String, failure As Long, message As String
     Dim prepared As String, originalHash As String, preparedHash As String
     On Error GoTo Failed
-    If StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise vbObjectError + 400, , "Choose a NAVFIT source or isolated staging file."
+    If StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise vbObjectError + 400, "modImportReview.OpenReviewFile", "Choose a NAVFIT source or isolated staging file."
     Set reader = DBEngine.CreateWorkspace("SwiftReview", "admin", "", dbUseJet)
     Set candidate = reader.OpenDatabase(filePath, False, True)
     prefix = ""
@@ -28,7 +28,7 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
             candidate.Close: Set candidate = Nothing
             prepared = Environ$("TEMP") & "\SwiftNAVFIT-v33p2-" & NewIdentity() & ".accdb"
             FileCopy filePath, prepared: SetAttr prepared, vbNormal
-            If SourceFileHash(prepared) <> originalHash Or SourceFileHash(filePath) <> originalHash Then Err.Raise vbObjectError + 420, , "Source changed while preparing the upgrade. Choose it again."
+            If SourceFileHash(prepared) <> originalHash Or SourceFileHash(filePath) <> originalHash Then Err.Raise vbObjectError + 420, "modImportReview.OpenReviewFile", "Source changed while preparing the upgrade. Choose it again."
             UpgradeNAVFITV33Copy prepared, reader
             preparedHash = SourceFileHash(prepared)
             Set candidate = reader.OpenDatabase(prepared, False, True)
@@ -79,7 +79,7 @@ Private Function ReviewImportHash() As String
     Dim hash As String
     hash = SourceFileHash(reviewOriginalPath)
     If Len(reviewCopyPath) > 0 Then
-        If hash <> reviewOriginalHash Or SourceFileHash(reviewCopyPath) <> reviewPreparedHash Then Err.Raise vbObjectError + 420, , "Source or prepared upgrade changed. Choose the source again."
+        If hash <> reviewOriginalHash Or SourceFileHash(reviewCopyPath) <> reviewPreparedHash Then Err.Raise vbObjectError + 420, "modImportReview.ReviewImportHash", "Source or prepared upgrade changed. Choose the source again."
     End If
     ReviewImportHash = hash
 End Function
@@ -167,33 +167,33 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     Dim db As DAO.Database, w As DAO.Workspace, hash As String, kind As String, id As Long, receiptID As Long, operationID As Long, beforeRevision As Variant, target As DAO.Recordset
     Dim mapped As Object
     Dim table As Variant, row As Long, i As Long, value As Variant, trans As Boolean, failure As Long, message As String
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Open and review a source database first."
-    If Len(memberDisplay) > 120 Then Err.Raise vbObjectError + 411, , "Member display name exceeds 120 characters."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, "modImportReview.ImportReviewedNarrative", "Open and review a source database first."
+    If Len(memberDisplay) > 120 Then Err.Raise vbObjectError + 411, "modImportReview.ImportReviewedNarrative", "Member display name exceeds 120 characters."
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0)
     On Error GoTo Failed
     operationID = BeginOperation("Narrative import", ReviewUpgradeMessage() & reviewOriginalPath & " report " & externalID)
     hash = ReviewImportHash()
-    If Len(expectedSourceHash) > 0 And hash <> expectedSourceHash Then Err.Raise vbObjectError + 420, , "Source changed after preview. Choose the source and preview again."
-    If DCount("*", "ImportReceipt", "SourceHash='" & hash & "' AND ExternalReportID=" & externalID) > 0 Then Err.Raise vbObjectError + 412, , "This exact source report has already been imported. Existing drafts are not overwritten."
+    If Len(expectedSourceHash) > 0 And hash <> expectedSourceHash Then Err.Raise vbObjectError + 420, "modImportReview.ImportReviewedNarrative", "Source changed after preview. Choose the source and preview again."
+    If DCount("*", "ImportReceipt", "SourceHash='" & hash & "' AND ExternalReportID=" & externalID) > 0 Then Err.Raise vbObjectError + 412, "modImportReview.ImportReviewedNarrative", "This exact source report has already been imported. Existing drafts are not overwritten."
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 413, , "Source report does not exist."
+    If r.EOF Then Err.Raise vbObjectError + 413, "modImportReview.ImportReviewedNarrative", "Source report does not exist."
     kind = ""
     If StrComp(Nz(r!ReportType, ""), "Eval", vbBinaryCompare) = 0 Then kind = "EVAL"
     If StrComp(Nz(r!ReportType, ""), "Chief", vbBinaryCompare) = 0 Then kind = "CHIEFEVAL"
     If StrComp(Nz(r!ReportType, ""), "FitRep", vbBinaryCompare) = 0 Then kind = "FITREP"
-    If kind = "" Then Err.Raise vbObjectError + 414, , "Unknown or null report type is quarantined."
+    If kind = "" Then Err.Raise vbObjectError + 414, "modImportReview.ImportReviewedNarrative", "Unknown or null report type is quarantined."
     If fullReport Then Set mapped = NAVFITReadFields(r, counselingCentury)
     w.BeginTrans: trans = True
     beforeRevision = Null
     If destinationID > 0 Then
-        If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 416, , "Close the editor before applying an incoming narrative."
+        If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 416, "modImportReview.ImportReviewedNarrative", "Close the editor before applying an incoming narrative."
         Set target = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & destinationID, dbOpenSnapshot)
-        If target.EOF Then Err.Raise vbObjectError + 417, , "Destination draft missing."
-        If target!FormKind <> kind Then Err.Raise vbObjectError + 418, , "Source and destination report types differ."
-        If target!CurrentRevisionID <> expectedRevision Then Err.Raise vbObjectError + 419, , "Destination changed after preview. Compare again."
+        If target.EOF Then Err.Raise vbObjectError + 417, "modImportReview.ImportReviewedNarrative", "Destination draft missing."
+        If target!FormKind <> kind Then Err.Raise vbObjectError + 418, "modImportReview.ImportReviewedNarrative", "Source and destination report types differ."
+        If target!CurrentRevisionID <> expectedRevision Then Err.Raise vbObjectError + 419, "modImportReview.ImportReviewedNarrative", "Destination changed after preview. Compare again."
         beforeRevision = target!CurrentRevisionID
         If fullReport Then
-            If Not IsObject(acceptedChanges) Then Err.Raise vbObjectError + 5111, , "Preview and resolve the returned file against its export baseline first."
+            If Not IsObject(acceptedChanges) Then Err.Raise vbObjectError + 5111, "modImportReview.ImportReviewedNarrative", "Preview and resolve the returned file against its export baseline first."
             NAVFITCheckTarget destinationID
             id = CommitSavedFields(destinationID, expectedRevision, acceptedChanges, "Accept returned NAVFIT report")
         Else
@@ -241,24 +241,25 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
         raw.Close
     Next
     values.Close
-    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 415, , "Source changed during import. Review it again."
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 415, "modImportReview.ImportReviewedNarrative", "Source changed during import. Review it again."
     If IsNull(beforeRevision) Or Nz(beforeRevision, 0) <> CurrentRevision(id) Then AuditCorrelateRevision CurrentRevision(id), operationID
     Call FinishOperation(operationID, "Completed", ReviewUpgradeMessage() & "Applied narrative to Swift report " & id)
     w.CommitTrans: trans = False
     ImportReviewedNarrative = id
     Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close
-    If Not raw Is Nothing Then raw.Close
-    If Not values Is Nothing Then values.Close
-    If Not receipt Is Nothing Then receipt.Close
-    If Not target Is Nothing Then target.Close
-    If operationID > 0 Then FinishOperation operationID, "Failed", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modImportReview", "ImportReviewedNarrative", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not raw Is Nothing Then SwiftClose raw, swiftPrimary, "raw"
+    If Not values Is Nothing Then SwiftClose values, swiftPrimary, "values"
+    If Not receipt Is Nothing Then SwiftClose receipt, swiftPrimary, "receipt"
+    If Not target Is Nothing Then SwiftClose target, swiftPrimary, "target"
+    If operationID > 0 Then SwiftFinishFailed operationID, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "ImportReviewedNarrative", message
+    SwiftRaise swiftPrimary
 End Function
 
 Public Function ImportSelectedNarrativeUI() As Boolean
@@ -266,20 +267,20 @@ Public Function ImportSelectedNarrativeUI() As Boolean
 End Function
 Public Function NarrativeImportValues(ByVal externalID As Long) As Object
     Dim r As DAO.Recordset, result As Object, kind As String, sourceHash As String
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, "modImportReview.NarrativeImportValues", "Choose a source database first."
     sourceHash = ReviewImportHash()
     Set r = reviewDb.OpenRecordset("SELECT ReportType,FullName,Comments FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, "modImportReview.NarrativeImportValues", "Select a source report."
     Select Case Nz(r!ReportType, "")
         Case "Eval": kind = "EVAL"
         Case "Chief": kind = "CHIEFEVAL"
         Case "FitRep": kind = "FITREP"
-        Case Else: r.Close: Err.Raise vbObjectError + 414, , "This source report is quarantined because its type is unsupported."
+        Case Else: r.Close: Err.Raise vbObjectError + 414, "modImportReview.NarrativeImportValues", "This source report is quarantined because its type is unsupported."
     End Select
     Set result = CreateObject("Scripting.Dictionary")
     result.Add "FormKind", kind: result.Add "OfficialComments", r!Comments.Value: result.Add "SourceName", r!FullName.Value
     r.Close
-    If ReviewImportHash() <> sourceHash Then Err.Raise vbObjectError + 420, , "Source changed during preview. Choose it again."
+    If ReviewImportHash() <> sourceHash Then Err.Raise vbObjectError + 420, "modImportReview.NarrativeImportValues", "Source changed during preview. Choose it again."
     result.Add "SourceHash", sourceHash
     Set NarrativeImportValues = result
 End Function
@@ -294,10 +295,10 @@ End Sub
 
 Public Function PreviewIncomingNarrative(ByVal externalID As Long, ByVal reportID As Long) As Boolean
     Dim source As DAO.Recordset, target As DAO.Recordset
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, , "Open a source first."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, "modImportReview.PreviewIncomingNarrative", "Open a source first."
     Set source = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
     Set target = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If source.EOF Or target.EOF Then Err.Raise vbObjectError + 421, , "Select source and destination reports."
+    If source.EOF Or target.EOF Then Err.Raise vbObjectError + 421, "modImportReview.PreviewIncomingNarrative", "Select source and destination reports."
     DoCmd.OpenForm "frmReconcile"
     With Forms!frmReconcile
         !txtExternalID = externalID: !txtReportID = reportID: !txtExpectedRevision = target!CurrentRevisionID
@@ -314,8 +315,8 @@ Failed:
     MsgBox Err.Description, vbExclamation, "Compare incoming narrative"
 End Function
 Public Function AcceptIncomingNarrative(ByVal externalID As Long, ByVal reportID As Long, ByVal expectedRevision As Long, ByVal expectedHash As String) As Long
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, , "Source review is closed."
-    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 422, , "Source changed after preview. Compare again."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, "modImportReview.AcceptIncomingNarrative", "Source review is closed."
+    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 422, "modImportReview.AcceptIncomingNarrative", "Source changed after preview. Compare again."
     AcceptIncomingNarrative = ImportReviewedNarrative(externalID, "", reportID, expectedRevision)
 End Function
 Public Function AcceptIncomingUI() As Boolean
@@ -338,12 +339,12 @@ End Function
 
 Public Function FullNAVFITImportValues(ByVal externalID As Long, Optional ByVal counselingCentury As Long = 0) As Object
     Dim r As DAO.Recordset, result As Object, hash As String
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, , "Choose a source database first."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 410, "modImportReview.FullNAVFITImportValues", "Choose a source database first."
     hash = ReviewImportHash()
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportID=" & externalID, dbOpenSnapshot)
-    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, , "Select a source report."
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 413, "modImportReview.FullNAVFITImportValues", "Select a source report."
     Set result = NAVFITReadFields(r, counselingCentury): r.Close
-    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 420, , "Source changed during preview."
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 420, "modImportReview.FullNAVFITImportValues", "Source changed during preview."
     result.Add "SourceHash", hash
     Set FullNAVFITImportValues = result
 End Function
@@ -356,13 +357,13 @@ Public Sub ValidateNAVFITDatabase(ByVal db As DAO.Database)
     ValidateReviewSchema db, ""
     For Each t In db.TableDefs
         If Left$(t.Name, 4) <> "MSys" Then
-            If t.Name <> "Folders" And t.Name <> "Reports" And t.Name <> "Summary" Then Err.Raise vbObjectError + 5322, , "Native exchange database contains unexpected tables."
+            If t.Name <> "Folders" And t.Name <> "Reports" And t.Name <> "Summary" Then Err.Raise vbObjectError + 5322, "modImportReview.ValidateNAVFITDatabase", "Native exchange database contains unexpected tables."
             count = count + 1
         End If
     Next
-    If count <> 3 Or db.QueryDefs.Count <> 0 Then Err.Raise vbObjectError + 5322, , "Native exchange expects the three verified data tables and no saved queries."
+    If count <> 3 Or db.QueryDefs.Count <> 0 Then Err.Raise vbObjectError + 5322, "modImportReview.ValidateNAVFITDatabase", "Native exchange expects the three verified data tables and no saved queries."
     For Each name In Array("Forms", "Reports", "Modules", "Scripts", "DataAccessPages")
-        If db.Containers(name).Documents.Count <> 0 Then Err.Raise vbObjectError + 5322, , "Choose a NAVFIT data database without executable or interface objects."
+        If db.Containers(name).Documents.Count <> 0 Then Err.Raise vbObjectError + 5322, "modImportReview.ValidateNAVFITDatabase", "Choose a NAVFIT data database without executable or interface objects."
     Next
 End Sub
 Public Function NAVFITImportScope(ByVal reportID As Long) As String
@@ -377,16 +378,16 @@ Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0, Opt
     Dim groups As Object, item As Object, r As DAO.Recordset, folder As DAO.Recordset, values As Object, defaults As Object, key As Variant, row As Variant, parts As Variant
     Dim parent As String, fid As Long, kind As String, grade As String, token As String, hash As String, field As DAO.Field, exists As Boolean
     Dim unresolved As Boolean, missingKey As String, blocked As String
-    If reviewDb Is Nothing Then Err.Raise vbObjectError + 6940, , "Choose a NAVFIT source first."
+    If reviewDb Is Nothing Then Err.Raise vbObjectError + 6940, "modImportReview.NAVFITReviewGroupChoices", "Choose a NAVFIT source first."
     hash = ReviewImportHash(): Set groups = CreateObject("Scripting.Dictionary")
     Set r = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Reports] WHERE ReportType Is Not Null ORDER BY ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         kind = NAVFITKind(r!ReportType): grade = ValidationWornPaygrade(Nz(r!Rate, ""))
         unresolved = (grade = ""): blocked = ""
         parent = Nz(r!Parent, "")
-        If Left$(parent, 2) <> "a " Then Err.Raise vbObjectError + 6940, , "Source report has an unsupported parent reference."
+        If Left$(parent, 2) <> "a " Then Err.Raise vbObjectError + 6940, "modImportReview.NAVFITReviewGroupChoices", "Source report has an unsupported parent reference."
         fid = Val(Mid$(parent, 3))
-        If parent <> "a " & CStr(fid) Then Err.Raise vbObjectError + 6940, , "Source report has a malformed folder reference."
+        If parent <> "a " & CStr(fid) Then Err.Raise vbObjectError + 6940, "modImportReview.NAVFITReviewGroupChoices", "Source report has a malformed folder reference."
         missingKey = fid & "|" & kind & "|?"
         If unresolved Then
             grade = "?"
@@ -402,7 +403,7 @@ Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0, Opt
         token = fid & "|" & kind & "|" & grade
         If Not groups.Exists(token) Then
             Set folder = reviewDb.OpenRecordset("SELECT * FROM [" & reviewPrefix & "Folders] WHERE FolderID=" & fid, dbOpenSnapshot)
-            If folder.EOF Then Err.Raise vbObjectError + 6940, , "Source report references a missing folder."
+            If folder.EOF Then Err.Raise vbObjectError + 6940, "modImportReview.NAVFITReviewGroupChoices", "Source report references a missing folder."
             Set item = CreateObject("Scripting.Dictionary"): Set defaults = CreateObject("Scripting.Dictionary")
             item.Add "Title", Nz(folder!FolderName, "Imported group"): item.Add "Kind", kind: item.Add "Paygrade", grade: item.Add "Reports", "": item.Add "Count", 0
             item.Add "UnresolvedCount", 0: item.Add "Blocked", blocked
@@ -428,7 +429,7 @@ Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0, Opt
         r.MoveNext
     Loop
     r.Close
-    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 6940, , "Source changed during group preview. Choose it again."
+    If ReviewImportHash() <> hash Then Err.Raise vbObjectError + 6940, "modImportReview.NAVFITReviewGroupChoices", "Source changed during group preview. Choose it again."
     Set NAVFITReviewGroupChoices = groups
 End Function
 ' Only explicit supported paygrades may fill missing source grouping metadata.
@@ -449,15 +450,15 @@ Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expecte
     Dim w As DAO.Workspace, id As Long, g As Long, failure As Long, message As String, trans As Boolean, title As String
     On Error GoTo Failed
     Set groups = NAVFITReviewGroupChoices(century, gradeOverrides)
-    If selections.Count = 0 Then Err.Raise vbObjectError + 6941, , "Select at least one source group."
+    If selections.Count = 0 Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Select at least one source group."
     For Each selected In selections
-        If Not groups.Exists(CStr(selected)) Then Err.Raise vbObjectError + 6941, , "Source groups changed. Preview again."
+        If Not groups.Exists(CStr(selected)) Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Source groups changed. Preview again."
         Set item = groups(CStr(selected))
-        If item("Blocked") <> "" Then Err.Raise vbObjectError + 6941, , item("Title") & ": " & item("Blocked")
-        If item("SourceHash") <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed after preview."
+        If item("Blocked") <> "" Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", item("Title") & ": " & item("Blocked")
+        If item("SourceHash") <> expectedHash Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Source changed after preview."
         For Each nativeID In Split(item("Reports"), ",")
             Set values = FullNAVFITImportValues(CLng(nativeID), century)
-            If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(expectedHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise vbObjectError + 6941, , "A selected report was already imported. Use returned-file reconciliation for existing drafts."
+            If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(expectedHash) & " AND ExternalReportID=" & CLng(nativeID)) > 0 Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "A selected report was already imported. Use returned-file reconciliation for existing drafts."
         Next
     Next
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
@@ -471,12 +472,13 @@ Public Function ImportNAVFITGroups(ByVal selections As Collection, ByVal expecte
         Next
         result.Add g
     Next
-    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 6941, , "Source changed during group import. No selected group was committed."
+    If ReviewImportHash() <> expectedHash Then Err.Raise vbObjectError + 6941, "modImportReview.ImportNAVFITGroups", "Source changed during group import. No selected group was committed."
     w.CommitTrans: trans = False: Set ImportNAVFITGroups = result: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modImportReview", "ImportNAVFITGroups", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "ImportNAVFITGroups", message
+    SwiftRaise swiftPrimary
 End Function

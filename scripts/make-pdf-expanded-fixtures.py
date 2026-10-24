@@ -17,7 +17,7 @@ def create(output=None):
     mapping = json.loads((ROOT / "src/pdf-field-map.json").read_text())
     manifest = []
     for kind, filename in SOURCES.items():
-        source = ROOT / filename
+        source = ROOT / 'FORMS_REFERENCES_TEMPLATES' / filename
         before = hashlib.sha256(source.read_bytes()).hexdigest()
         with pikepdf.open(source) as pdf:
             xfa = pdf.Root["/AcroForm"]["/XFA"]
@@ -38,6 +38,9 @@ def create(output=None):
                 'PromotionRecommendation':'Must Promote', 'ReportingSeniorAddress1':'123 TEST ROAD',
                 'ReportingSeniorAddress2':'SUITE 2', 'ReportingSeniorPhone':'0000000000', 'ReportingSeniorDSN':'0000000',
                 'RaterName':'EXAMPLE, R', 'SeniorRaterName':'EXAMPLE, S'}
+            for block in range(33, 40):
+                for entry in range(1, 4):
+                    values[f'Trait{block}Comment{entry}'] = f'SYNTHETIC PDF COMMENT {block}.{entry}'
             raw = {}
             for row in mapping[kind]:
                 target, field, conversion = row['target'], row['source'], row['conversion']

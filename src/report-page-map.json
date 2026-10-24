@@ -621,6 +621,111 @@
       "page": 0,
       "block": 28,
       "basis": "Current NAVPERS XFA page subform"
+    },
+    "Trait33Comment1": {
+      "page": 0,
+      "block": 33,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait33Comment2": {
+      "page": 0,
+      "block": 33,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait33Comment3": {
+      "page": 0,
+      "block": 33,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait34Comment1": {
+      "page": 0,
+      "block": 34,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait34Comment2": {
+      "page": 0,
+      "block": 34,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait34Comment3": {
+      "page": 0,
+      "block": 34,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait35Comment1": {
+      "page": 0,
+      "block": 35,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait35Comment2": {
+      "page": 0,
+      "block": 35,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait35Comment3": {
+      "page": 0,
+      "block": 35,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait36Comment1": {
+      "page": 0,
+      "block": 36,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait36Comment2": {
+      "page": 0,
+      "block": 36,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait36Comment3": {
+      "page": 0,
+      "block": 36,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait37Comment1": {
+      "page": 1,
+      "block": 37,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait37Comment2": {
+      "page": 1,
+      "block": 37,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait37Comment3": {
+      "page": 1,
+      "block": 37,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait38Comment1": {
+      "page": 1,
+      "block": 38,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait38Comment2": {
+      "page": 1,
+      "block": 38,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait38Comment3": {
+      "page": 1,
+      "block": 38,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
+    },
+    "Trait39Comment1": {
+      "page": 1,
+      "block": 39,
+      "basis": "NAVPERS 1616/27 performance comment area 1"
+    },
+    "Trait39Comment2": {
+      "page": 1,
+      "block": 39,
+      "basis": "NAVPERS 1616/27 performance comment area 2"
+    },
+    "Trait39Comment3": {
+      "page": 1,
+      "block": 39,
+      "basis": "NAVPERS 1616/27 performance comment area 3"
     }
   },
   "FITREP": {

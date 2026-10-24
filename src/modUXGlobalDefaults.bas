@@ -37,7 +37,9 @@ Public Sub UXRemoveDefault(ByVal groupID As Long, ByVal key As String)
     FinishOperation op, "Completed", "Explicit override removed; inherit parent starting value. Saved reports unchanged."
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: On Error GoTo 0
-    Err.Raise failure, "UXRemoveDefault", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXGlobalDefaults", "UXRemoveDefault", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Sub

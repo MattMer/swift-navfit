@@ -6,7 +6,7 @@ Public Function NAVFITKind(ByVal value As Variant) As String
         Case "Eval": NAVFITKind = "EVAL"
         Case "Chief": NAVFITKind = "CHIEFEVAL"
         Case "FitRep": NAVFITKind = "FITREP"
-        Case Else: Err.Raise vbObjectError + 5100, , "Unsupported or null NAVFIT report type."
+        Case Else: Err.Raise vbObjectError + 5100, "modNAVFITAdapter.NAVFITKind", "Unsupported or null NAVFIT report type."
     End Select
 End Function
 Public Function NAVFITType(ByVal kind As String) As String
@@ -14,7 +14,7 @@ Public Function NAVFITType(ByVal kind As String) As String
         Case "EVAL": NAVFITType = "Eval"
         Case "CHIEFEVAL": NAVFITType = "Chief"
         Case "FITREP": NAVFITType = "FitRep"
-        Case Else: Err.Raise vbObjectError + 5100, , "Unsupported Swift report type."
+        Case Else: Err.Raise vbObjectError + 5100, "modNAVFITAdapter.NAVFITType", "Unsupported Swift report type."
     End Select
 End Function
 Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String, Optional ByVal century As Long = 0) As Variant
@@ -23,20 +23,20 @@ Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String,
     Select Case conversion
         Case "text": NAVFITDecode = CStr(value)
         Case "date"
-            If VarType(value) <> vbDate Then Err.Raise vbObjectError + 5101, , "Native date is not a typed date."
+            If VarType(value) <> vbDate Then Err.Raise vbObjectError + 5101, "modNAVFITAdapter.NAVFITDecode", "Native date is not a typed date."
             'NAVFIT Date/Time fields may carry incidental clock values. Import
             'their calendar date; the receipt retains the original typed value.
             NAVFITDecode = Format$(value, "yyyy-mm-dd")
         Case "flag", "observation"
-            If VarType(value) <> vbBoolean Then Err.Raise vbObjectError + 5102, , "Native checkbox is not Boolean."
+            If VarType(value) <> vbBoolean Then Err.Raise vbObjectError + 5102, "modNAVFITAdapter.NAVFITDecode", "Native checkbox is not Boolean."
             If conversion = "flag" Then
                 If value Then NAVFITDecode = "Yes" Else NAVFITDecode = "No"
             Else
                 If value Then NAVFITDecode = "NOB" Else NAVFITDecode = "Observed"
             End If
         Case "trait", "promotion"
-            If Not IsNumeric(value) Then Err.Raise vbObjectError + 5103, , "Unknown native assessment code."
-            If CDbl(value) <> Fix(CDbl(value)) Or CDbl(value) < 0 Or CDbl(value) > 5 Then Err.Raise vbObjectError + 5103, , "Unknown native assessment code."
+            If Not IsNumeric(value) Then Err.Raise vbObjectError + 5103, "modNAVFITAdapter.NAVFITDecode", "Unknown native assessment code."
+            If CDbl(value) <> Fix(CDbl(value)) Or CDbl(value) < 0 Or CDbl(value) > 5 Then Err.Raise vbObjectError + 5103, "modNAVFITAdapter.NAVFITDecode", "Unknown native assessment code."
             n = CLng(value)
             If conversion = "trait" Then
                 If n = 0 Then NAVFITDecode = "NOB" Else NAVFITDecode = CStr(n) & ".0"
@@ -49,24 +49,24 @@ Public Function NAVFITDecode(ByVal value As Variant, ByVal conversion As String,
             If IsCounselingStatus(s) Then NAVFITDecode = s: Exit Function
             If IsValidIsoDate(s) Then NAVFITDecode = s: Exit Function
             If century = 0 Then century = 2000
-            If century <> 1900 And century <> 2000 Then Err.Raise vbObjectError + 5104, , "Unsupported counseling century."
-            If Len(s) <> 7 Then Err.Raise vbObjectError + 5104, , "Counseling text cannot be represented as a Swift date. Source value must be reviewed."
-            If Not Left$(s, 2) Like "##" Or Not Right$(s, 2) Like "##" Then Err.Raise vbObjectError + 5104, , "Unsupported counseling date encoding."
+            If century <> 1900 And century <> 2000 Then Err.Raise vbObjectError + 5104, "modNAVFITAdapter.NAVFITDecode", "Unsupported counseling century."
+            If Len(s) <> 7 Then Err.Raise vbObjectError + 5104, "modNAVFITAdapter.NAVFITDecode", "Counseling text cannot be represented as a Swift date. Source value must be reviewed."
+            If Not Left$(s, 2) Like "##" Or Not Right$(s, 2) Like "##" Then Err.Raise vbObjectError + 5104, "modNAVFITAdapter.NAVFITDecode", "Unsupported counseling date encoding."
             months = Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
             For i = 0 To 11
                 If UCase$(Mid$(s, 3, 3)) = months(i) Then m = i + 1
             Next
-            If m = 0 Then Err.Raise vbObjectError + 5104, , "Invalid counseling month."
+            If m = 0 Then Err.Raise vbObjectError + 5104, "modNAVFITAdapter.NAVFITDecode", "Invalid counseling month."
             y = century + CLng(Left$(s, 2)): dayValue = CLng(Right$(s, 2)): d = DateSerial(y, m, dayValue)
-            If Year(d) <> y Or Month(d) <> m Or Day(d) <> dayValue Then Err.Raise vbObjectError + 5104, , "Invalid counseling date."
+            If Year(d) <> y Or Month(d) <> m Or Day(d) <> dayValue Then Err.Raise vbObjectError + 5104, "modNAVFITAdapter.NAVFITDecode", "Invalid counseling date."
             NAVFITDecode = Format$(d, "yyyy-mm-dd")
-        Case Else: Err.Raise vbObjectError + 5105, , "Unknown adapter conversion."
+        Case Else: Err.Raise vbObjectError + 5105, "modNAVFITAdapter.NAVFITDecode", "Unknown adapter conversion."
     End Select
 End Function
 Public Function NAVFITEncode(ByVal value As Variant, ByVal conversion As String) As Variant
     Dim i As Long, choices As Variant, d As Date, s As String, months As Variant
     If IsNull(value) Then
-        If conversion = "flag" Or conversion = "observation" Then Err.Raise vbObjectError + 5107, , "Choose a checkbox value before export; native checkboxes cannot preserve an unknown value."
+        If conversion = "flag" Or conversion = "observation" Then Err.Raise vbObjectError + 5107, "modNAVFITAdapter.NAVFITEncode", "Choose a checkbox value before export; native checkboxes cannot preserve an unknown value."
         NAVFITEncode = Null: Exit Function
     End If
     s = CStr(value)
@@ -79,15 +79,15 @@ Public Function NAVFITEncode(ByVal value As Variant, ByVal conversion As String)
                 Exit Function
             End If
             If VarType(value) = vbDate Then
-                If TimeValue(value) <> TimeSerial(0, 0, 0) Then Err.Raise vbObjectError + 5106, , "Export cannot silently discard a time from a date-only report field."
+                If TimeValue(value) <> TimeSerial(0, 0, 0) Then Err.Raise vbObjectError + 5106, "modNAVFITAdapter.NAVFITEncode", "Export cannot silently discard a time from a date-only report field."
                 s = Format$(value, "yyyy-mm-dd")
             End If
-            If Not IsValidIsoDate(s) Then Err.Raise vbObjectError + 5106, , "Export requires a real ISO date."
+            If Not IsValidIsoDate(s) Then Err.Raise vbObjectError + 5106, "modNAVFITAdapter.NAVFITEncode", "Export requires a real ISO date."
             d = DateSerial(CLng(Left$(s, 4)), CLng(Mid$(s, 6, 2)), CLng(Right$(s, 2)))
             If conversion = "date" Then
                 NAVFITEncode = d
             Else
-                If Year(d) < 1900 Or Year(d) > 2099 Then Err.Raise vbObjectError + 5106, , "NAVFIT counseling export supports explicitly resolved years from 1900 through 2099."
+                If Year(d) < 1900 Or Year(d) > 2099 Then Err.Raise vbObjectError + 5106, "modNAVFITAdapter.NAVFITEncode", "NAVFIT counseling export supports explicitly resolved years from 1900 through 2099."
                 months = Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
                 NAVFITEncode = Format$(d, "yy") & months(Month(d) - 1) & Format$(d, "dd")
             End If
@@ -96,20 +96,20 @@ Public Function NAVFITEncode(ByVal value As Variant, ByVal conversion As String)
             If conversion = "observation" Then choices = Array("Observed", "NOB")
             If s = choices(0) Then NAVFITEncode = False: Exit Function
             If s = choices(1) Then NAVFITEncode = True: Exit Function
-            Err.Raise vbObjectError + 5107, , "Choose a checkbox value before export. Blank is not silently treated as false."
+            Err.Raise vbObjectError + 5107, "modNAVFITAdapter.NAVFITEncode", "Choose a checkbox value before export. Blank is not silently treated as false."
         Case "trait"
             If s = "NOB" Then NAVFITEncode = CInt(0): Exit Function
             For i = 1 To 5
                 If s = CStr(i) & ".0" Then NAVFITEncode = CInt(i): Exit Function
             Next
-            Err.Raise vbObjectError + 5108, , "Unknown Swift trait value."
+            Err.Raise vbObjectError + 5108, "modNAVFITAdapter.NAVFITEncode", "Unknown Swift trait value."
         Case "promotion"
             choices = Array("NOB", "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote")
             For i = 0 To 5
                 If s = choices(i) Then NAVFITEncode = CInt(i): Exit Function
             Next
-            Err.Raise vbObjectError + 5109, , "Choose a supported promotion recommendation."
-        Case Else: Err.Raise vbObjectError + 5105, , "Unknown adapter conversion."
+            Err.Raise vbObjectError + 5109, "modNAVFITAdapter.NAVFITEncode", "Choose a supported promotion recommendation."
+        Case Else: Err.Raise vbObjectError + 5105, "modNAVFITAdapter.NAVFITEncode", "Unknown adapter conversion."
     End Select
 End Function
 Public Function NAVFITReadFields(ByVal source As DAO.Recordset, Optional ByVal century As Long = 0) As Object
@@ -124,18 +124,30 @@ Public Function NAVFITReadFields(ByVal source As DAO.Recordset, Optional ByVal c
     Next
     Set NAVFITReadFields = result
 End Function
-Public Sub NAVFITWriteFields(ByVal destination As DAO.Recordset, ByVal values As Object)
+Public Sub NAVFITWriteFields(ByVal destination As DAO.Recordset, ByVal values As Object, Optional ByVal revisionID As Long = 0)
     Dim row As Variant, parts As Variant, value As Variant, f As DAO.Field
-    Dim fieldKey As String, failure As Long, message As String
+    Dim fieldKey As String, failure As Long, message As String, touched As Object, changes As DAO.Recordset, reportID As Long
     On Error GoTo Failed
     destination!ReportType = NAVFITType(values("FormKind"))
     For Each row In NAVFITMapRows(values("FormKind"))
         parts = Split(row, "|"): fieldKey = parts(0)
         value = NAVFITEncode(values(fieldKey), parts(2)): Set f = destination.Fields(parts(1))
+        'An untouched blank new field must not erase native-only legacy comments.
+        If revisionID > 0 And fieldKey Like "Trait##Comment#" And IsNull(value) And Not IsNull(f.Value) Then
+            If touched Is Nothing Then
+                Set touched = CreateObject("Scripting.Dictionary")
+                reportID = CLng(MajorScalar("SELECT ReportID FROM ReportRevision WHERE RevisionID=" & revisionID))
+                Set changes = CurrentDb.OpenRecordset("SELECT DISTINCT c.FieldKey FROM RevisionChange AS c INNER JOIN ReportRevision AS r ON c.RevisionID=r.RevisionID WHERE r.ReportID=" & reportID, dbOpenSnapshot)
+                Do While Not changes.EOF: touched(CStr(changes!FieldKey)) = True: changes.MoveNext: Loop
+                changes.Close
+            End If
+            If Not touched.Exists(fieldKey) Then GoTo NextMappedField
+        End If
         If Not IsNull(value) And f.Type = dbText Then
-            If Len(CStr(value)) > f.Size Then Err.Raise vbObjectError + 5110, , parts(0) & " exceeds native capacity; no truncation is permitted."
+            If Len(CStr(value)) > f.Size Then Err.Raise vbObjectError + 5110, "modNAVFITAdapter.NAVFITWriteFields", parts(0) & " exceeds native capacity; no truncation is permitted."
         End If
         f.Value = value
+NextMappedField:
     Next
     destination!IsValidated = False
     Exit Sub
@@ -156,7 +168,13 @@ Public Function NAVFITMergeDecision(ByVal baseline As Variant, ByVal current As 
 End Function
 ' Normal commit and revision services remain the only write path for mapped values.
 Public Function NAVFITCommitFields(ByVal reportID As Long, ByVal values As Object, ByVal member As String, ByVal reason As String) As Long
+    Dim additional As Object, keys As Variant, index As Long, key As String
+    Set additional = CreateObject("Scripting.Dictionary"): keys = DraftFieldKeys()
+    For index = 79 To UBound(keys)
+        key = CStr(keys(index))
+        If values.Exists(key) Then additional.Add key, values(key) Else additional.Add key, Null
+    Next
     NAVFITCommitFields = CommitDraft(reportID, values("FormKind"), "Imported " & values("FormKind"), member, values("PeriodStart"), values("PeriodEnd"), "", reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"))
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), additional)
 End Function

@@ -80,7 +80,7 @@ Public Function UXPreviewPDFImport() As Boolean
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdPreview.SetFocus
     Forms!frmPDFImport!cmdOpenResult.Enabled = False
-    If Nz(Forms!frmPDFImport!cboIdentifier, "") = "DoDID" And Not Nz(Forms!frmPDFImport!chkLegacy, False) Then Err.Raise vbObjectError + 4903, , "Enable legacy compatibility explicitly before mapping DoDID."
+    If Nz(Forms!frmPDFImport!cboIdentifier, "") = "DoDID" And Not Nz(Forms!frmPDFImport!chkLegacy, False) Then Err.Raise vbObjectError + 4903, "modUXImportFlow.UXPreviewPDFImport", "Enable legacy compatibility explicitly before mapping DoDID."
     Set incoming = PDFMappedValues("20", Nz(Forms!frmPDFImport!cboIdentifier, ""))
     kind = PDFImportKind()
     target = Nz(Forms!frmPDFImport!cboTarget, 0): mode = Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields")
@@ -102,7 +102,7 @@ Public Function UXPreviewPDFImport() As Boolean
             text = text & vbCrLf & UXFieldCaption(CStr(key), kind) & vbCrLf & "Before: " & ImportValue(before(key)) & vbCrLf & "PDF: " & ImportValue(incoming(key)) & vbCrLf & outcome & vbCrLf
         End If
     Next
-    If changes.Count = 0 Then Err.Raise vbObjectError + 4904, , "No changed values to apply. Choose another merge mode or target."
+    If changes.Count = 0 Then Err.Raise vbObjectError + 4904, "modUXImportFlow.UXPreviewPDFImport", "No changed values to apply. Choose another merge mode or target."
     Forms!frmPDFImport!txtPreview = text
     PDFCheckpointChoices "20", Nz(Forms!frmPDFImport!cboIdentifier, ""), target, mode
     pdfSignature = UXPDFSignature()
@@ -133,7 +133,7 @@ Public Function UXCancelPDFImport() As Boolean
 End Function
 Public Function UXApplyPDFImport() As Boolean
     On Error GoTo Failed
-    If Len(pdfSignature) = 0 Or pdfSignature <> UXPDFSignature() Then Err.Raise vbObjectError + 4901, , "Preview the current mapping before Apply."
+    If Len(pdfSignature) = 0 Or pdfSignature <> UXPDFSignature() Then Err.Raise vbObjectError + 4901, "modUXImportFlow.UXApplyPDFImport", "Preview the current mapping before Apply."
     pdfCreated = ImportPDFPreview("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"))
     pdfSignature = ""
     Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
@@ -170,7 +170,7 @@ Public Function UXPreviewNarrativeImport() As Boolean
     id = Nz(Forms!frmImportReview!lstImportReports, 0)
     Set values = NarrativeImportValues(id)
     narrativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
-    If Len(narrativePreview.Member) > 120 Then Err.Raise vbObjectError + 411, , "Local member display name exceeds 120 characters."
+    If Len(narrativePreview.Member) > 120 Then Err.Raise vbObjectError + 411, "modUXImportFlow.UXPreviewNarrativeImport", "Local member display name exceeds 120 characters."
     text = "NEW " & values("FormKind") & " DRAFT - source member " & ImportValue(values("SourceName")) & vbCrLf & "Narrative-only mapping. Official name, dates, traits, duties, senior blocks and folder links are unmapped. Full source values are retained in provenance." & vbCrLf & vbCrLf & UXFieldCaption("OfficialComments", values("FormKind")) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(values("OfficialComments")) & vbCrLf & vbCrLf & "Local member display name (separate from official name)" & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(narrativePreview.Member)
     Forms!frmImportReview!cmdPreview.SetFocus
     Forms!frmImportReview!uxPreview.Visible = True
@@ -187,8 +187,8 @@ Failed:
 End Function
 Public Function UXApplyNarrativeImport() As Boolean
     On Error GoTo Failed
-    If narrativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, , "Preview this import as the current contributor before Apply."
-    If narrativePreview.SourceID = 0 Or narrativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Or narrativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 4902, , "Preview the selected source member and current display name before Apply."
+    If narrativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, "modUXImportFlow.UXApplyNarrativeImport", "Preview this import as the current contributor before Apply."
+    If narrativePreview.SourceID = 0 Or narrativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Or narrativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 4902, "modUXImportFlow.UXApplyNarrativeImport", "Preview the selected source member and current display name before Apply."
     narrativePreview.Created = ImportReviewedNarrative(narrativePreview.SourceID, narrativePreview.Member, 0, 0, narrativePreview.Hash)
     narrativePreview.SourceID = 0: narrativePreview.Hash = ""
     Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativePreview.Created) & ". Narrative-only import; source provenance retained. Open the draft to complete its official fields.", False)

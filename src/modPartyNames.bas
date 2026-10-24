@@ -20,14 +20,14 @@ Public Function PartyNamesLabel(ByVal key As String) As String
 End Function
 Public Function ValidatePartyNames(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
-    If Not IsArray(values) Then Err.Raise vbObjectError + 3100, , "Structured names require ten text or null entries."
-    If LBound(values) <> 0 Or UBound(values) <> 9 Then Err.Raise vbObjectError + 3100, , "Structured names require ten text or null entries."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 3100, "modPartyNames.ValidatePartyNames", "Structured names require ten text or null entries."
+    If LBound(values) <> 0 Or UBound(values) <> 9 Then Err.Raise vbObjectError + 3100, "modPartyNames.ValidatePartyNames", "Structured names require ten text or null entries."
     keys = PartyNamesKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 9
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 3101, , PartyNamesLabel(keys(i)) & " must be text or null."
-            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 3102, , PartyNamesLabel(keys(i)) & " exceeds " & limits(i) & " characters; no truncation is performed."
-            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 3103, , PartyNamesLabel(keys(i)) & " must be single-line without tabs."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 3101, "modPartyNames.ValidatePartyNames", PartyNamesLabel(keys(i)) & " must be text or null."
+            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 3102, "modPartyNames.ValidatePartyNames", PartyNamesLabel(keys(i)) & " exceeds " & limits(i) & " characters; no truncation is performed."
+            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 3103, "modPartyNames.ValidatePartyNames", PartyNamesLabel(keys(i)) & " must be single-line without tabs."
 
         End If
     Next
@@ -51,9 +51,9 @@ Public Function PartyNamesFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 9
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 19 Then r.Close: Err.Raise vbObjectError + 3104, , "Structured names snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 19 Then r.Close: Err.Raise vbObjectError + 3104, "modPartyNames.PartyNamesFromRevision", "Structured names snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 3105, , "Structured names snapshot has inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 3105, "modPartyNames.PartyNamesFromRevision", "Structured names snapshot has inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close
@@ -62,7 +62,7 @@ Public Function PartyNamesFromRevision(ByVal revisionID As Long) As Variant
 End Function
 Public Function OpenPartyNames() As Boolean
     Dim key As Variant
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 3106, , "Open a draft first."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 3106, "modPartyNames.OpenPartyNames", "Open a draft first."
     DoCmd.OpenForm "frmPartyNames"
     For Each key In PartyNamesKeys()
         Forms!frmPartyNames.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
@@ -72,7 +72,7 @@ Public Function OpenPartyNames() As Boolean
 End Function
 Public Function ApplyPartyNames() As Boolean
     Dim key As Variant
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 3107, , "Recover the archived draft before editing."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 3107, "modPartyNames.ApplyPartyNames", "Recover the archived draft before editing."
     'Transfer raw pending values; full validation occurs at the atomic draft save.
     For Each key In PartyNamesKeys()
         Forms!frmEditor.Controls("txt" & key) = Forms!frmPartyNames.Controls("txt" & key).Value

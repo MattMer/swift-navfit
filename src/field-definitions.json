@@ -1,5 +1,5 @@
 {
-  "catalogueVersion": 1,
+  "catalogueVersion": 2,
   "fields": [
     {
       "key": "FormKind",
@@ -3538,7 +3538,7 @@
     },
     {
       "key": "ReadinessDetail",
-      "label": "Physical Readiness — result",
+      "label": "Physical Readiness \u2014 result",
       "section": 0,
       "block": "20",
       "limit": 15,
@@ -3590,7 +3590,7 @@
     },
     {
       "key": "ReadinessDate",
-      "label": "Physical Readiness — date",
+      "label": "Physical Readiness \u2014 date",
       "section": 0,
       "block": "20",
       "limit": 10,
@@ -3740,7 +3740,7 @@
     },
     {
       "key": "AssignmentRecommendationA",
-      "label": "Career Recommendations — first",
+      "label": "Career Recommendations \u2014 first",
       "section": 5,
       "block": "41",
       "limit": 20,
@@ -3826,7 +3826,7 @@
     },
     {
       "key": "AssignmentRecommendationB",
-      "label": "Career Recommendations — second",
+      "label": "Career Recommendations \u2014 second",
       "section": 5,
       "block": "41",
       "limit": 20,
@@ -4845,7 +4845,7 @@
     },
     {
       "key": "RaterName",
-      "label": "Signature of Rater — typed name & grade/rate",
+      "label": "Signature of Rater \u2014 typed name & grade/rate",
       "section": 6,
       "block": "42",
       "limit": 28,
@@ -4917,7 +4917,7 @@
     },
     {
       "key": "RaterDate",
-      "label": "Signature of Rater — date",
+      "label": "Signature of Rater \u2014 date",
       "section": 6,
       "block": "42",
       "limit": 10,
@@ -4989,7 +4989,7 @@
     },
     {
       "key": "SeniorRaterName",
-      "label": "Signature of Senior Rater — typed name & grade/rate",
+      "label": "Signature of Senior Rater \u2014 typed name & grade/rate",
       "section": 6,
       "block": "49",
       "limit": 28,
@@ -5061,7 +5061,7 @@
     },
     {
       "key": "SeniorRaterDate",
-      "label": "Signature of Senior Rater — date",
+      "label": "Signature of Senior Rater \u2014 date",
       "section": 6,
       "block": "49",
       "limit": 10,
@@ -5731,6 +5731,1098 @@
         }
       },
       "recoveryKey": "CommandEmployment"
+    },
+    {
+      "key": "Trait33Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "33",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 79,
+      "control": "txtTrait33Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TECHFONTB1",
+              "conversion": "text",
+              "ordinal": 52
+            }
+          ],
+          "navfit": [
+            {
+              "source": "LEADDN1",
+              "conversion": "text",
+              "ordinal": 75
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait33Comment1"
+    },
+    {
+      "key": "Trait33Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "33",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 80,
+      "control": "txtTrait33Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TECHFONTB2",
+              "conversion": "text",
+              "ordinal": 53
+            }
+          ],
+          "navfit": [
+            {
+              "source": "LEADDN2",
+              "conversion": "text",
+              "ordinal": 76
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait33Comment2"
+    },
+    {
+      "key": "Trait33Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "33",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 81,
+      "control": "txtTrait33Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TECHFONTB3",
+              "conversion": "text",
+              "ordinal": 54
+            }
+          ],
+          "navfit": [
+            {
+              "source": "LEADDN3",
+              "conversion": "text",
+              "ordinal": 77
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 33,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait33Comment3"
+    },
+    {
+      "key": "Trait34Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "34",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 82,
+      "control": "txtTrait34Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INSTITUTEFONTB1",
+              "conversion": "text",
+              "ordinal": 55
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TACDN1",
+              "conversion": "text",
+              "ordinal": 78
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait34Comment1"
+    },
+    {
+      "key": "Trait34Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "34",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 83,
+      "control": "txtTrait34Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INSTITUTEFONTB2",
+              "conversion": "text",
+              "ordinal": 56
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TACDN2",
+              "conversion": "text",
+              "ordinal": 79
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait34Comment2"
+    },
+    {
+      "key": "Trait34Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "34",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 84,
+      "control": "txtTrait34Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INSTITUTEFONTB3",
+              "conversion": "text",
+              "ordinal": 57
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TACDN3",
+              "conversion": "text",
+              "ordinal": 80
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 34,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait34Comment3"
+    },
+    {
+      "key": "Trait35Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "35",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 85,
+      "control": "txtTrait35Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "PROFFFONTB1",
+              "conversion": "text",
+              "ordinal": 58
+            }
+          ],
+          "navfit": [
+            {
+              "source": "PROFDN1",
+              "conversion": "text",
+              "ordinal": 81
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait35Comment1"
+    },
+    {
+      "key": "Trait35Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "35",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 86,
+      "control": "txtTrait35Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "PROFFFONTB2",
+              "conversion": "text",
+              "ordinal": 59
+            }
+          ],
+          "navfit": [
+            {
+              "source": "PROFDN2",
+              "conversion": "text",
+              "ordinal": 82
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait35Comment2"
+    },
+    {
+      "key": "Trait35Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "35",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 87,
+      "control": "txtTrait35Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "PROFFFONTB3",
+              "conversion": "text",
+              "ordinal": 60
+            }
+          ],
+          "navfit": [
+            {
+              "source": "PROFDN3",
+              "conversion": "text",
+              "ordinal": 83
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 35,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait35Comment3"
+    },
+    {
+      "key": "Trait36Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "36",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 88,
+      "control": "txtTrait36Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INTEGFONTB1",
+              "conversion": "text",
+              "ordinal": 61
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MISDN1",
+              "conversion": "text",
+              "ordinal": 84
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait36Comment1"
+    },
+    {
+      "key": "Trait36Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "36",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 89,
+      "control": "txtTrait36Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INTEGFONTB2",
+              "conversion": "text",
+              "ordinal": 62
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MISDN2",
+              "conversion": "text",
+              "ordinal": 85
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait36Comment2"
+    },
+    {
+      "key": "Trait36Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "36",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 90,
+      "control": "txtTrait36Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "INTEGFONTB3",
+              "conversion": "text",
+              "ordinal": 63
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MISDN3",
+              "conversion": "text",
+              "ordinal": 86
+            }
+          ],
+          "page": {
+            "page": 0,
+            "block": 36,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait36Comment3"
+    },
+    {
+      "key": "Trait37Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "37",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 91,
+      "control": "txtTrait37Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "ACCFONTB1",
+              "conversion": "text",
+              "ordinal": 64
+            }
+          ],
+          "navfit": [
+            {
+              "source": "EODN1",
+              "conversion": "text",
+              "ordinal": 87
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 37,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait37Comment1"
+    },
+    {
+      "key": "Trait37Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "37",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 92,
+      "control": "txtTrait37Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "ACCFONTB2",
+              "conversion": "text",
+              "ordinal": 65
+            }
+          ],
+          "navfit": [
+            {
+              "source": "EODN2",
+              "conversion": "text",
+              "ordinal": 88
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 37,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait37Comment2"
+    },
+    {
+      "key": "Trait37Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "37",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 93,
+      "control": "txtTrait37Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "ACCFONTB3",
+              "conversion": "text",
+              "ordinal": 66
+            }
+          ],
+          "navfit": [
+            {
+              "source": "EODN3",
+              "conversion": "text",
+              "ordinal": 89
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 37,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait37Comment3"
+    },
+    {
+      "key": "Trait38Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "38",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 94,
+      "control": "txtTrait38Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "DECKFONTB1",
+              "conversion": "text",
+              "ordinal": 67
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TEAMDN1",
+              "conversion": "text",
+              "ordinal": 90
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 38,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait38Comment1"
+    },
+    {
+      "key": "Trait38Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "38",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 95,
+      "control": "txtTrait38Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "DECKFONTB2",
+              "conversion": "text",
+              "ordinal": 68
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TEAMDN2",
+              "conversion": "text",
+              "ordinal": 91
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 38,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait38Comment2"
+    },
+    {
+      "key": "Trait38Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "38",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 96,
+      "control": "txtTrait38Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "DECKFONTB3",
+              "conversion": "text",
+              "ordinal": 69
+            }
+          ],
+          "navfit": [
+            {
+              "source": "TEAMDN3",
+              "conversion": "text",
+              "ordinal": 92
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 38,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait38Comment3"
+    },
+    {
+      "key": "Trait39Comment1",
+      "label": "Performance comment 1",
+      "section": 4,
+      "block": "39",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 97,
+      "control": "txtTrait39Comment1",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TEAMFONTB1",
+              "conversion": "text",
+              "ordinal": 70
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MILDN1",
+              "conversion": "text",
+              "ordinal": 93
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 39,
+            "basis": "NAVPERS 1616/27 performance comment area 1"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait39Comment1"
+    },
+    {
+      "key": "Trait39Comment2",
+      "label": "Performance comment 2",
+      "section": 4,
+      "block": "39",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 98,
+      "control": "txtTrait39Comment2",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TEAMFONTB2",
+              "conversion": "text",
+              "ordinal": 71
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MILDN2",
+              "conversion": "text",
+              "ordinal": 94
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 39,
+            "basis": "NAVPERS 1616/27 performance comment area 2"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait39Comment2"
+    },
+    {
+      "key": "Trait39Comment3",
+      "label": "Performance comment 3",
+      "section": 4,
+      "block": "39",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "forms": [
+        "CHIEFEVAL"
+      ],
+      "ordinal": 99,
+      "control": "txtTrait39Comment3",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 2,
+      "bindings": {
+        "EVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "CHIEFEVAL": {
+          "pdf": [
+            {
+              "source": "TEAMFONTB3",
+              "conversion": "text",
+              "ordinal": 72
+            }
+          ],
+          "navfit": [
+            {
+              "source": "MILDN3",
+              "conversion": "text",
+              "ordinal": 95
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 39,
+            "basis": "NAVPERS 1616/27 performance comment area 3"
+          }
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Trait39Comment3"
     }
   ],
   "fixedLayout": {
@@ -6248,7 +7340,7 @@
       ]
     },
     "CHIEFEVAL:0": {
-      "height": 15120,
+      "height": 17000,
       "fields": [
         {
           "key": "OfficialName",
@@ -6547,12 +7639,60 @@
           "trait": true
         },
         {
+          "key": "Trait33Comment1",
+          "x": 5550,
+          "y": 10380,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait33Comment2",
+          "x": 7620,
+          "y": 10380,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait33Comment3",
+          "x": 9690,
+          "y": 10380,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
           "key": "Trait34",
           "x": 180,
           "y": 11000,
           "w": 5000,
           "h": 360,
           "trait": true
+        },
+        {
+          "key": "Trait34Comment1",
+          "x": 5550,
+          "y": 11000,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait34Comment2",
+          "x": 7620,
+          "y": 11000,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait34Comment3",
+          "x": 9690,
+          "y": 11000,
+          "w": 1950,
+          "h": 360,
+          "trait": false
         },
         {
           "key": "Trait35",
@@ -6563,12 +7703,60 @@
           "trait": true
         },
         {
+          "key": "Trait35Comment1",
+          "x": 5550,
+          "y": 11620,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait35Comment2",
+          "x": 7620,
+          "y": 11620,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait35Comment3",
+          "x": 9690,
+          "y": 11620,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
           "key": "Trait36",
           "x": 180,
           "y": 12240,
           "w": 5000,
           "h": 360,
           "trait": true
+        },
+        {
+          "key": "Trait36Comment1",
+          "x": 5550,
+          "y": 12240,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait36Comment2",
+          "x": 7620,
+          "y": 12240,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait36Comment3",
+          "x": 9690,
+          "y": 12240,
+          "w": 1950,
+          "h": 360,
+          "trait": false
         },
         {
           "key": "Trait37",
@@ -6579,12 +7767,60 @@
           "trait": true
         },
         {
+          "key": "Trait37Comment1",
+          "x": 5550,
+          "y": 12860,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait37Comment2",
+          "x": 7620,
+          "y": 12860,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait37Comment3",
+          "x": 9690,
+          "y": 12860,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
           "key": "Trait38",
           "x": 180,
           "y": 13480,
           "w": 5000,
           "h": 360,
           "trait": true
+        },
+        {
+          "key": "Trait38Comment1",
+          "x": 5550,
+          "y": 13480,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait38Comment2",
+          "x": 7620,
+          "y": 13480,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait38Comment3",
+          "x": 9690,
+          "y": 13480,
+          "w": 1950,
+          "h": 360,
+          "trait": false
         },
         {
           "key": "Trait39",
@@ -6595,11 +7831,35 @@
           "trait": true
         },
         {
-          "key": "@guidance",
+          "key": "Trait39Comment1",
           "x": 5550,
-          "y": 10380,
-          "w": 6000,
-          "h": 4260
+          "y": 14100,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait39Comment2",
+          "x": 7620,
+          "y": 14100,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "Trait39Comment3",
+          "x": 9690,
+          "y": 14100,
+          "w": 1950,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "@guidance",
+          "x": 180,
+          "y": 15000,
+          "w": 11600,
+          "h": 1800
         }
       ]
     },

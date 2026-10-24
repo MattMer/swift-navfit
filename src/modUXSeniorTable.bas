@@ -64,16 +64,16 @@ Public Function RSSaveTable() As Boolean
  Dim grade As Variant, row As Variant, average As Variant, count As Variant, dateText As String, verified As Date, total As Variant
  Dim plans As New Collection, item As Variant, w As DAO.Workspace, trans As Boolean, id As Long, message As String
  On Error GoTo Failed
- If Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) = 0 Or RSSeniorDirty() Then Err.Raise vbObjectError + 8300, , "Save the reporting senior record details first."
+ If Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) = 0 Or RSSeniorDirty() Then Err.Raise vbObjectError + 8300, "modUXSeniorTable.RSSaveTable", "Save the reporting senior record details first."
  For Each grade In RSTableGrades()
   row = initialRows(CStr(grade)): average = TableValue("avg" & grade): count = TableValue("count" & grade): dateText = Nz(UXDateEntry(TableValue("date" & grade)), "")
   If Not SameFieldValue(average, row(0)) Or Not SameFieldValue(count, row(1)) Or Not SameFieldValue(dateText, Nz(UXDateEntry(row(2)), "")) Then
-   If Len(Nz(count, "")) = 0 Or Not IsNumeric(count) Then Err.Raise vbObjectError + 8301, , grade & ": enter the previous graded trait count."
-   If CDbl(count) < 0 Or CDbl(count) > 2147483647# Or CDbl(count) <> Fix(CDbl(count)) Then Err.Raise vbObjectError + 8301, , grade & ": count must be a nonnegative whole number."
+   If Len(Nz(count, "")) = 0 Or Not IsNumeric(count) Then Err.Raise vbObjectError + 8301, "modUXSeniorTable.RSSaveTable", grade & ": enter the previous graded trait count."
+   If CDbl(count) < 0 Or CDbl(count) > 2147483647# Or CDbl(count) <> Fix(CDbl(count)) Then Err.Raise vbObjectError + 8301, "modUXSeniorTable.RSSaveTable", grade & ": count must be a nonnegative whole number."
    If Len(Nz(average, "")) = 0 Then average = Null
-   If Not dateText Like "####-##-##" Then Err.Raise vbObjectError + 8302, , grade & ": enter the date verified/pulled from BOL."
+   If Not dateText Like "####-##-##" Then Err.Raise vbObjectError + 8302, "modUXSeniorTable.RSSaveTable", grade & ": enter the date verified/pulled from BOL."
    verified = DateSerial(CInt(Left$(dateText, 4)), CInt(Mid$(dateText, 6, 2)), CInt(Right$(dateText, 2)))
-   If Format$(verified, "yyyy-mm-dd") <> dateText Then Err.Raise vbObjectError + 8302, , grade & ": enter a valid date."
+   If Format$(verified, "yyyy-mm-dd") <> dateText Then Err.Raise vbObjectError + 8302, "modUXSeniorTable.RSSaveTable", grade & ": enter a valid date."
    total = Null
    If SameFieldValue(average, row(0)) And SameFieldValue(count, row(1)) Then total = row(3)
    RSValidateBaseline CStr(grade), average, CLng(count), total
@@ -90,10 +90,13 @@ Public Function RSSaveTable() As Boolean
  Forms!frmUXSeniorEditor!lblStatus.Caption = "Saved " & plans.Count & " paygrade rows. Earlier baselines remain in history. Counts are traits, not reports."
  RSSaveTable = True: Exit Function
 Failed:
- message = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXSeniorTable", "RSSaveTable", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+ message = CStr(swiftPrimary("Description"))
  On Error Resume Next
- If trans Then w.Rollback
- Forms!frmUXSeniorEditor!lblStatus.Caption = message & " Table entries retained; no partial table changes saved."
+ If trans Then SwiftRollback w, swiftPrimary
+ On Error GoTo 0
+ Forms!frmUXSeniorEditor!lblStatus.Caption = SwiftFailureText(swiftPrimary) & " Table entries retained."
 End Function
 Public Function RSSaveTableButton() As Boolean
  Forms!frmUXSeniorEditor!cmdSave.SetFocus

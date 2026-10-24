@@ -100,16 +100,16 @@ Public Function RSAddBaselineUI() As Boolean
     Dim f As Access.Form, count As Double, average As Variant, total As Variant, dateEntry As String, asOf As Date, id As Long
     On Error GoTo Failed
     Set f = Forms!frmUXSeniorEditor
-    If Nz(f!txtSeniorID, 0) = 0 Or RSSeniorDirty() Then Err.Raise vbObjectError + 4820, , "Save the reporting senior details before adding a historical baseline."
-    If Len(Nz(f!txtTraitCount, "")) = 0 Or Not IsNumeric(f!txtTraitCount) Then Err.Raise vbObjectError + 4821, , "Enter a whole previous trait count."
+    If Nz(f!txtSeniorID, 0) = 0 Or RSSeniorDirty() Then Err.Raise vbObjectError + 4820, "modRSDirectoryUI.RSAddBaselineUI", "Save the reporting senior details before adding a historical baseline."
+    If Len(Nz(f!txtTraitCount, "")) = 0 Or Not IsNumeric(f!txtTraitCount) Then Err.Raise vbObjectError + 4821, "modRSDirectoryUI.RSAddBaselineUI", "Enter a whole previous trait count."
     count = CDbl(f!txtTraitCount)
-    If count <> Fix(count) Or count < 0 Or count > 2147483647# Then Err.Raise vbObjectError + 4821, , "Enter a whole trait count from 0 to 2147483647."
+    If count <> Fix(count) Or count < 0 Or count > 2147483647# Then Err.Raise vbObjectError + 4821, "modRSDirectoryUI.RSAddBaselineUI", "Enter a whole trait count from 0 to 2147483647."
     average = f!txtRSCA.Value: If Len(Nz(average, "")) = 0 Then average = Null
     total = f!txtTraitSum.Value: If Len(Nz(total, "")) = 0 Then total = Null
     dateEntry = Nz(UXDateEntry(f!txtAsOf.Value), "")
-    If Not dateEntry Like "####-##-##" Then Err.Raise vbObjectError + 4822, , "Enter an as-of date as YYYY-MM-DD."
+    If Not dateEntry Like "####-##-##" Then Err.Raise vbObjectError + 4822, "modRSDirectoryUI.RSAddBaselineUI", "Enter an as-of date as YYYY-MM-DD."
     asOf = DateSerial(CInt(Left$(dateEntry, 4)), CInt(Mid$(dateEntry, 6, 2)), CInt(Right$(dateEntry, 2)))
-    If Format$(asOf, "yyyy-mm-dd") <> dateEntry Then Err.Raise vbObjectError + 4822, , "Enter a valid as-of date."
+    If Format$(asOf, "yyyy-mm-dd") <> dateEntry Then Err.Raise vbObjectError + 4822, "modRSDirectoryUI.RSAddBaselineUI", "Enter a valid as-of date."
     id = RSAddBaseline(f!txtSeniorID, Nz(f!cboPaygrade, ""), asOf, average, CLng(count), total, Nz(f!txtSource, ""))
     RSReloadBaselines: f!lblStatus.Caption = "Historical baseline saved. Counts are graded traits, not reports. Exact trait sum avoids rounded-RSCA estimates."
     f!txtRSCA = Null: f!txtTraitCount = Null: f!txtTraitSum = Null: f!txtSource = Null: f!txtAsOf = Null
@@ -120,8 +120,8 @@ End Function
 Public Function RSUseSeniorInEditor() As Boolean
     Dim values As Object, key As Variant, id As Long
     On Error GoTo Failed
-    id = Nz(Forms!frmEditor!uxSeniorRecord, 0): If id = 0 Then Err.Raise vbObjectError + 4800, , "Choose a reporting senior record."
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 4823, , "Reopen the report before editing."
+    id = Nz(Forms!frmEditor!uxSeniorRecord, 0): If id = 0 Then Err.Raise vbObjectError + 4800, "modRSDirectoryUI.RSUseSeniorInEditor", "Choose a reporting senior record."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 4823, "modRSDirectoryUI.RSUseSeniorInEditor", "Reopen the report before editing."
     Set values = RSSeniorValues(id)
     For Each key In RSSeniorKeys(): Forms!frmEditor.Controls("txt" & key) = values(CStr(key)): Next
     UXRefreshEditor: RSUseSeniorInEditor = True: Exit Function
@@ -195,7 +195,7 @@ Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0
     Dim values As Object, groupID As Long
     On Error GoTo Failed
     groupID = Nz(Forms!frmUXGroupRSCA!txtGroupID, 0)
-    If Nz(Forms!frmUXGroupRSCA!cboSenior, 0) = 0 Then Err.Raise vbObjectError + 4800, , "Choose a reporting senior."
+    If Nz(Forms!frmUXGroupRSCA!cboSenior, 0) = 0 Then Err.Raise vbObjectError + 4800, "modRSDirectoryUI.RSStageGroupSenior", "Choose a reporting senior."
     Set values = RSSeniorValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
     RSStageGroupSenior = UXConfirmReportFields(groupID, values, "Apply selected reporting senior details", decision)
     If RSStageGroupSenior Then

@@ -13,7 +13,7 @@ Public Function EncodeWorkerCommand(ByVal command As String) As String
 End Function
 Public Function BackupWorkerCommand(ByVal mode As String, ByVal source As String, ByVal destination As String) As String
     Dim script As String
-    If mode <> "Backup" And mode <> "Restore" Then Err.Raise vbObjectError + 4800, , "Invalid copy mode."
+    If mode <> "Backup" And mode <> "Restore" Then Err.Raise vbObjectError + 4800, "modBackupUI.BackupWorkerCommand", "Invalid copy mode."
     script = "$ErrorActionPreference='Stop'; try { & {" & vbCrLf & BackupWorkerScript() & vbCrLf & "} -Mode " & PowerShellLiteral(mode) & " -SourcePath " & PowerShellLiteral(source) & " -DestinationPath " & PowerShellLiteral(destination) & " -WaitForCloseSeconds 30 } catch { "
     script = script & "@{Status='FAIL';Reason=$_.Exception.Message;Destination=" & PowerShellLiteral(destination) & "} | ConvertTo-Json | Set-Content -LiteralPath " & PowerShellLiteral(destination & ".verification.json") & " -Encoding utf8; exit 1 }"
     BackupWorkerCommand = "powershell.exe -NoProfile -NonInteractive -EncodedCommand " & EncodeWorkerCommand(script)
@@ -29,13 +29,13 @@ Public Function GuidedWorkspaceCopy(ByVal mode As String) As Boolean
         If sourcePicker.Show <> -1 Then Exit Function
         source = sourcePicker.SelectedItems(1)
     Else
-        Err.Raise vbObjectError + 4800, , "Invalid copy mode."
+        Err.Raise vbObjectError + 4800, "modBackupUI.GuidedWorkspaceCopy", "Invalid copy mode."
     End If
     Set folder = Application.FileDialog(4): folder.Title = "Choose a folder for the new verified " & LCase$(mode) & " file"
     If folder.Show <> -1 Then Exit Function
     destination = folder.SelectedItems(1) & "\Swift_NAVFIT_" & LCase$(mode) & "_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".accdb"
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, , "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
+        If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, "modBackupUI.GuidedWorkspaceCopy", "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
     End If
     operation = BeginOperation("Guided " & LCase$(mode), destination)
     FinishOperation operation, "Dispatched", "Access will close. Read " & destination & ".verification.json for the copy verification result. Pending edits remain recovery checkpoints."
@@ -54,7 +54,7 @@ Public Function ShowCopyVerification() As Boolean
     picker.Filters.Clear: picker.Filters.Add "Verification result", "*.verification.json"
     If picker.Show <> -1 Then Exit Function
     path = picker.SelectedItems(1)
-    If FileLen(path) > 500000 Then Err.Raise vbObjectError + 4802, , "Verification result is too large."
+    If FileLen(path) > 500000 Then Err.Raise vbObjectError + 4802, "modBackupUI.ShowCopyVerification", "Verification result is too large."
     Set stream = CreateObject("ADODB.Stream"): stream.Type = 2: stream.Charset = "utf-8": stream.Open: stream.LoadFromFile path
     Forms!frmBackup!txtResult = stream.ReadText: stream.Close
     ShowCopyVerification = True: Exit Function

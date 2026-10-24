@@ -21,12 +21,12 @@ Private Function MoveStamp(ByVal id As Long, ByVal destination As Long) As Strin
 End Function
 Private Sub CheckMove(ByVal id As Long, ByVal destination As Long)
     Dim grade As String
-    If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then Err.Raise vbObjectError + 6800, , "Recover the report before moving it."
-    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 6801, , "Reopen local approval before moving this report."
+    If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then Err.Raise vbObjectError + 6800, "modUXGroupOrganization.CheckMove", "Recover the report before moving it."
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") <> "Draft" Then Err.Raise vbObjectError + 6801, "modUXGroupOrganization.CheckMove", "Reopen local approval before moving this report."
     If destination = 0 Then Exit Sub
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & destination), True) Then Err.Raise vbObjectError + 6802, , "Choose an active group."
+    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & destination), True) Then Err.Raise vbObjectError + 6802, "modUXGroupOrganization.CheckMove", "Choose an active group."
     grade = ValidationWornPaygrade(Nz(DLookup("RankRate", "Report", "ReportID=" & id), ""))
-    If grade = "" Or grade <> Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & destination), "") Or Nz(DLookup("FormKind", "Report", "ReportID=" & id), "") <> Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & destination), "") Then Err.Raise vbObjectError + 6803, , "Set the report's worn rank/rate and choose a matching report type/paygrade group."
+    If grade = "" Or grade <> Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & destination), "") Or Nz(DLookup("FormKind", "Report", "ReportID=" & id), "") <> Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & destination), "") Then Err.Raise vbObjectError + 6803, "modUXGroupOrganization.CheckMove", "Set the report's worn rank/rate and choose a matching report type/paygrade group."
 End Sub
 Public Sub MoveReportGroup(ByVal id As Long, ByVal destination As Long, ByVal expected As String)
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, old As String, failure As Long, message As String, op As Long
@@ -34,7 +34,7 @@ Public Sub MoveReportGroup(ByVal id As Long, ByVal destination As Long, ByVal ex
     On Error GoTo Failed
     w.BeginTrans
     CheckMove id, destination
-    If MoveStamp(id, destination) <> expected Then Err.Raise vbObjectError + 6804, , "Report or group changed. Preview the move again."
+    If MoveStamp(id, destination) <> expected Then Err.Raise vbObjectError + 6804, "modUXGroupOrganization.MoveReportGroup", "Report or group changed. Preview the move again."
     old = UXTableGroups(id)
     Set r = db.OpenRecordset("SELECT GroupID FROM GroupMember WHERE ReportID=" & id & " ORDER BY GroupID", dbOpenSnapshot)
     Do While Not r.EOF
@@ -49,9 +49,11 @@ Public Sub MoveReportGroup(ByVal id As Long, ByVal destination As Long, ByVal ex
     FinishOperation op, "Completed", "Membership changed atomically. Saved report values unchanged; affected roster reviews require rechecking."
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: If Not r Is Nothing Then r.Close
-    On Error GoTo 0: Err.Raise failure, "MoveReportGroup", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXGroupOrganization", "MoveReportGroup", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Sub
 Public Function UXChooseReportGroup() As Boolean
     Dim id As Long
@@ -89,7 +91,7 @@ Failed:
 End Function
 Public Function UXApplyMoveGroup() As Boolean
     On Error GoTo Failed
-    If Len(moveToken) = 0 Then Err.Raise vbObjectError + 6805, , "Preview this move first."
+    If Len(moveToken) = 0 Then Err.Raise vbObjectError + 6805, "modUXGroupOrganization.UXApplyMoveGroup", "Preview this move first."
     MoveReportGroup CLng(Forms!frmUXMoveGroup!reportID), CLng(Nz(Forms!frmUXMoveGroup!cboGroup, 0)), moveToken
     moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = "Moved successfully. Saved report values unchanged."
     Forms!frmUXMoveGroup!cmdApply.Enabled = False

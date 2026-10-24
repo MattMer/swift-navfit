@@ -35,7 +35,7 @@ Public Function UXMemberAction(ByVal action As String) As Boolean
     If action = "Open" Then UXMemberAction = UXGridOpenReport(): Exit Function
     If action = "Validation" Then UXMemberAction = UXOpenValidation(True, id): Exit Function
     If action = "Blocks" Then UXMemberAction = UXStartGroupBulk(False, False, id): Exit Function
-    If action <> "Members" And action <> "Policy" Then Err.Raise 5, , "Unknown member action."
+    If action <> "Members" And action <> "Policy" Then Err.Raise 5, "modUXGroupPages.UXMemberAction", "Unknown member action."
     If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
     Forms!frmMajorWorkbench.Visible = False
     Forms!frmMajorWorkbench!cboGroup = id: Forms!frmMajorWorkbench!uxGroupContext = id
@@ -132,7 +132,7 @@ End Sub
 Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
-    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before adding a report."
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUXGroupPages.UXGroupAddReport", "Retry or discard pending cells before adding a report."
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
         If UXGroupBulkPending() Then
             Forms!frmUXBulk!uxStatus.Caption = "Apply the previewed defaults or close this tool before adding a report. New reports use saved starting defaults."
@@ -141,7 +141,7 @@ Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     End If
     createGroup = Nz(Forms(screen)!uxGroupContext, 0)
     If createGroup = 0 Then Exit Function
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & createGroup), True) Then Err.Raise vbObjectError + 7061, , "Recover this group before adding reports."
+    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & createGroup), True) Then Err.Raise vbObjectError + 7061, "modUXGroupPages.UXGroupAddReport", "Recover this group before adding reports."
     createGroupStamp = GroupStamp(createGroup): createDefaultStamp = UXDefaultsStamp(createGroup)
     DoCmd.OpenForm "frmUXGroupReport"
     Set f = Forms!frmUXGroupReport
@@ -174,34 +174,34 @@ End Function
 ' create the report and membership in one transaction using inherited starting values.
 Public Function CreateGroupDraft(ByVal groupID As Long, ByVal groupBaseline As String, ByVal defaultBaseline As String, ByVal memberID As Long, ByVal memberVersion As Long, ByVal name As String, ByVal official As String, ByVal rank As String, ByVal ssn As String, ByVal startEntry As Variant, ByVal endEntry As Variant) As Long
     Dim w As DAO.Workspace, values As Object, key As Variant, kind As String, grade As String, id As Long, startDate As Variant, endDate As Variant, failure As Long, message As String
-    If Trim$(name) = "" Or Len(name) > 120 Then Err.Raise vbObjectError + 7061, , "Enter a member name within 120 characters."
-    If Len(official) > 27 Or Len(rank) > 5 Then Err.Raise vbObjectError + 7061, , "Report name permits 27 characters; rank/rate permits five."
+    If Trim$(name) = "" Or Len(name) > 120 Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Enter a member name within 120 characters."
+    If Len(official) > 27 Or Len(rank) > 5 Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Report name permits 27 characters; rank/rate permits five."
     If ssn <> "" Then
-        If Len(ssn) <> 9 Or ssn Like "*[!0-9]*" Then Err.Raise vbObjectError + 7061, , "Enter nine SSN digits or leave SSN unentered."
+        If Len(ssn) <> 9 Or ssn Like "*[!0-9]*" Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Enter nine SSN digits or leave SSN unentered."
     End If
     startDate = Null: endDate = Null
     If Len(Nz(startEntry, "")) > 0 Then
-        If Not IsDate(startEntry) Then Err.Raise vbObjectError + 7061, , "Enter a valid From date."
+        If Not IsDate(startEntry) Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Enter a valid From date."
         startDate = DateValue(startEntry)
     End If
     If Len(Nz(endEntry, "")) > 0 Then
-        If Not IsDate(endEntry) Then Err.Raise vbObjectError + 7061, , "Enter a valid To date."
+        If Not IsDate(endEntry) Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Enter a valid To date."
         endDate = DateValue(endEntry)
     End If
     If Not IsNull(startDate) And Not IsNull(endDate) Then
-        If endDate < startDate Then Err.Raise vbObjectError + 7061, , "To date must follow From date."
+        If endDate < startDate Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "To date must follow From date."
     End If
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
-    If GroupStamp(groupID) <> groupBaseline Or UXDefaultsStamp(groupID) <> defaultBaseline Then Err.Raise vbObjectError + 7061, , "Group or defaults changed. Close and reopen Add report."
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 7061, , "Recover this group before adding reports."
+    If GroupStamp(groupID) <> groupBaseline Or UXDefaultsStamp(groupID) <> defaultBaseline Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Group or defaults changed. Close and reopen Add report."
+    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Recover this group before adding reports."
     kind = DLookup("FormKind", "SummaryGroup", "GroupID=" & groupID): grade = DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID)
-    If ValidationWornPaygrade(rank) <> grade Then Err.Raise vbObjectError + 7061, , "Enter a rank/rate matching group paygrade " & grade & "."
+    If ValidationWornPaygrade(rank) <> grade Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Enter a rank/rate matching group paygrade " & grade & "."
     If memberID > 0 Then
-        If Nz(DLookup("IsArchived", "CommandMember", "MemberID=" & memberID), True) Or Nz(DLookup("VersionCounter", "CommandMember", "MemberID=" & memberID), 0) <> memberVersion Then Err.Raise vbObjectError + 7061, , "Member profile changed. Select the member again."
-        If ssn <> Nz(DLookup("MemberSSN", "CommandMember", "MemberID=" & memberID), "") Then Err.Raise vbObjectError + 7061, , "Edit SSN in the member profile first, then select the member again."
+        If Nz(DLookup("IsArchived", "CommandMember", "MemberID=" & memberID), True) Or Nz(DLookup("VersionCounter", "CommandMember", "MemberID=" & memberID), 0) <> memberVersion Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Member profile changed. Select the member again."
+        If ssn <> Nz(DLookup("MemberSSN", "CommandMember", "MemberID=" & memberID), "") Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "Edit SSN in the member profile first, then select the member again."
         If Not IsNull(startDate) And Not IsNull(endDate) Then
-            If DCount("*", "Report", "ReportID In (SELECT ReportID FROM MemberReport WHERE MemberID=" & memberID & ") AND FormKind=" & QuoteSQL(kind) & " AND PeriodStart=#" & Format$(startDate, "yyyy-mm-dd") & "# AND PeriodEnd=#" & Format$(endDate, "yyyy-mm-dd") & "#") > 0 Then Err.Raise vbObjectError + 7061, , "A report already exists for this member, type and period. Open that report instead."
+            If DCount("*", "Report", "ReportID In (SELECT ReportID FROM MemberReport WHERE MemberID=" & memberID & ") AND FormKind=" & QuoteSQL(kind) & " AND PeriodStart=#" & Format$(startDate, "yyyy-mm-dd") & "# AND PeriodEnd=#" & Format$(endDate, "yyyy-mm-dd") & "#") > 0 Then Err.Raise vbObjectError + 7061, "modUXGroupPages.CreateGroupDraft", "A report already exists for this member, type and period. Open that report instead."
         End If
     End If
     Set values = CreateObject("Scripting.Dictionary")
@@ -215,15 +215,17 @@ Public Function CreateGroupDraft(ByVal groupID As Long, ByVal groupBaseline As S
     DirectoryCreationContext 0: AddGroupMember groupID, id, grade
     w.CommitTrans: CreateGroupDraft = id: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: DirectoryCreationContext 0: w.Rollback
-    On Error GoTo 0: Err.Raise failure, "CreateGroupDraft", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXGroupPages", "CreateGroupDraft", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    DirectoryCreationContext 0: SwiftRollback w, swiftPrimary
+    On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 ' Create the pending report from its captured context and open it for editing; retain errors in the dialog.
 Public Function UXGroupReportCreate() As Boolean
     Dim f As Access.Form, id As Long
     On Error GoTo Failed
-    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before creating a report."
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUXGroupPages.UXGroupReportCreate", "Retry or discard pending cells before creating a report."
     Set f = Forms!frmUXGroupReport
     id = CreateGroupDraft(createGroup, createGroupStamp, createDefaultStamp, Nz(f!cboMember, 0), Nz(f!txtMemberVersion, 0), Nz(f!txtName, ""), Nz(f!txtOfficial, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), f!txtFrom, f!txtTo)
     DoCmd.Close acForm, f.Name, acSaveNo

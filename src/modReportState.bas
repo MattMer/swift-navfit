@@ -11,7 +11,7 @@ End Function
 'are an interchange/query cache; every service read/save checks that projection.
 Public Function ReportHeadRevision(ByVal reportID As Long) As Long
     ReportHeadRevision = Nz(MajorScalar("SELECT RevisionID FROM ReportHead WHERE ReportID=" & reportID), 0)
-    If ReportHeadRevision = 0 Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+    If ReportHeadRevision = 0 Then Err.Raise vbObjectError + 8900, "modReportState.ReportHeadRevision", "Report has no authoritative saved revision. Inspect persistence diagnostics."
 End Function
 
 Private Function StateText(ByVal value As Variant) As Variant
@@ -43,19 +43,19 @@ Public Sub ValidateCatalogueField(ByVal key As String, ByVal value As Variant)
     If IsNull(value) Then Exit Sub
     kind = CatalogueStorageType(key)
     If kind = "DATETIME" Then
-        If VarType(value) <> vbDate And Not IsValidIsoDate(CStr(value)) Then Err.Raise vbObjectError + 8910, , key & " requires a real ISO date."
+        If VarType(value) <> vbDate And Not IsValidIsoDate(CStr(value)) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires a real ISO date."
     Else
-        If VarType(value) <> vbString Then Err.Raise vbObjectError + 8910, , key & " requires text or Null."
-        If UXFieldLimit(key) > 0 And Len(value) > UXFieldLimit(key) Then Err.Raise vbObjectError + 8910, , key & " exceeds its canonical field limit."
+        If VarType(value) <> vbString Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires text or Null."
+        If UXFieldLimit(key) > 0 And Len(value) > UXFieldLimit(key) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " exceeds its canonical field limit."
         If UXFieldDate(key) And Len(value) > 0 Then
-            If Not IsValidIsoDate(CStr(value)) Then Err.Raise vbObjectError + 8910, , key & " requires a real ISO date."
+            If Not IsValidIsoDate(CStr(value)) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires a real ISO date."
         End If
     End If
     options = UXFieldOptions(key)
     If Len(options) > 0 And Len(CStr(value)) > 0 Then
         For Each item In Split(options, ";"): If item = value Then valid = True
         Next
-        If Not valid Then Err.Raise vbObjectError + 8910, , key & " is outside its canonical choice domain."
+        If Not valid Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " is outside its canonical choice domain."
     End If
 End Sub
 
@@ -63,7 +63,7 @@ Public Sub AssertReportCache(ByVal reportID As Long)
     Dim db As DAO.Database, r As DAO.Recordset, v As DAO.Recordset, head As Long, key As Variant, values As Object, cache As Object
     Set db = CurrentDb: head = ReportHeadRevision(reportID)
     Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 8901, , "Report does not exist."
+    If r.EOF Then Err.Raise vbObjectError + 8901, "modReportState.AssertReportCache", "Report does not exist."
     Set cache = CacheRecord(r)
     Set values = CreateObject("Scripting.Dictionary")
     Set v = db.OpenRecordset("SELECT FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & head, dbOpenSnapshot)
@@ -84,13 +84,13 @@ Private Function CacheRecord(ByVal rows As DAO.Recordset) As Object
 End Function
 Private Sub CheckCacheValues(ByVal cache As Object, ByVal head As Long, ByVal version As Long, ByVal values As Object)
     Dim key As Variant
-    If Nz(cache("CurrentRevisionID"), 0) <> head Then Err.Raise vbObjectError + 8902, , "Derived revision pointer differs from saved state. No values were changed."
+    If Nz(cache("CurrentRevisionID"), 0) <> head Then Err.Raise vbObjectError + 8902, "modReportState.CheckCacheValues", "Derived revision pointer differs from saved state. No values were changed."
     For Each key In DraftFieldKeys()
         If values.Exists(CStr(key)) Then
-            If Not SameFieldValue(StateText(cache(CStr(key))), values(CStr(key))) Then Err.Raise vbObjectError + 8903, , "Derived report cache differs from revision " & head & " at " & key & ". Preserve both values and review persistence diagnostics."
+            If Not SameFieldValue(StateText(cache(CStr(key))), values(CStr(key))) Then Err.Raise vbObjectError + 8903, "modReportState.CheckCacheValues", "Derived report cache differs from revision " & head & " at " & key & ". Preserve both values and review persistence diagnostics."
         Else
             If version < 0 Then version = Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & head), 0)
-            If version >= CatalogueFieldVersion(CStr(key)) Or Not IsNull(cache(CStr(key))) Then Err.Raise vbObjectError + 8904, , "Saved revision is missing " & key & ". No values were inferred."
+            If version >= CatalogueFieldVersion(CStr(key)) Or Not IsNull(cache(CStr(key))) Then Err.Raise vbObjectError + 8904, "modReportState.CheckCacheValues", "Saved revision is missing " & key & ". No values were inferred."
         End If
     Next
 End Sub
@@ -111,27 +111,27 @@ Private Sub CheckRevisionFacts(ByVal values As Object, ByVal dates As Collection
     Next
     For Each row In dates
         key = CStr(row(0))
-        If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 8911, , "Typed date has no original snapshot field."
+        If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 8911, "modReportState.CheckRevisionFacts", "Typed date has no original snapshot field."
         state = DateFactState(values(key), CStr(key))
-        If state <> CStr(row(1)) Then Err.Raise vbObjectError + 8911, , "Typed date state differs from its original snapshot."
+        If state <> CStr(row(1)) Then Err.Raise vbObjectError + 8911, "modReportState.CheckRevisionFacts", "Typed date state differs from its original snapshot."
         If state = "Date" Then
-            If IsNull(row(2)) Then Err.Raise vbObjectError + 8911, , "Typed date is missing."
-            If Format$(row(2), "yyyy-mm-dd") <> CStr(values(key)) Then Err.Raise vbObjectError + 8911, , "Typed date differs from its original snapshot."
+            If IsNull(row(2)) Then Err.Raise vbObjectError + 8911, "modReportState.CheckRevisionFacts", "Typed date is missing."
+            If Format$(row(2), "yyyy-mm-dd") <> CStr(values(key)) Then Err.Raise vbObjectError + 8911, "modReportState.CheckRevisionFacts", "Typed date differs from its original snapshot."
         End If
         actual = actual + 1
     Next
-    If actual <> expected Then Err.Raise vbObjectError + 8911, , "Typed date projection is incomplete."
+    If actual <> expected Then Err.Raise vbObjectError + 8911, "modReportState.CheckRevisionFacts", "Typed date projection is incomplete."
     expected = 0: actual = 0
     For Each key In Array("Retention", "Statement")
         If values.Exists(CStr(key) & "Yes") And values.Exists(CStr(key) & "No") Then expected = expected + 1
     Next
     For Each row In choices
         family = CStr(row(0))
-        If Not values.Exists(family & "Yes") Or Not values.Exists(family & "No") Then Err.Raise vbObjectError + 8912, , "Typed choice has no original snapshot pair."
-        If CStr(row(1)) <> PairChoice(values(family & "Yes"), values(family & "No")) Then Err.Raise vbObjectError + 8912, , "Typed choice differs from its original snapshot."
+        If Not values.Exists(family & "Yes") Or Not values.Exists(family & "No") Then Err.Raise vbObjectError + 8912, "modReportState.CheckRevisionFacts", "Typed choice has no original snapshot pair."
+        If CStr(row(1)) <> PairChoice(values(family & "Yes"), values(family & "No")) Then Err.Raise vbObjectError + 8912, "modReportState.CheckRevisionFacts", "Typed choice differs from its original snapshot."
         actual = actual + 1
     Next
-    If actual <> expected Then Err.Raise vbObjectError + 8912, , "Typed choice projection is incomplete."
+    If actual <> expected Then Err.Raise vbObjectError + 8912, "modReportState.CheckRevisionFacts", "Typed choice projection is incomplete."
 End Sub
 
 'Fresh bounded snapshots, never a write-time cache. The scalar writer/service
@@ -159,7 +159,7 @@ Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     Set dates = CreateObject("Scripting.Dictionary"): Set choices = CreateObject("Scripting.Dictionary")
     Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
     Do While Not r.EOF
-        If Nz(r!RevisionID, 0) = 0 Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+        If Nz(r!RevisionID, 0) = 0 Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
         heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0))
         snapshots.Add CStr(r!RevisionID), CreateObject("Scripting.Dictionary")
         dates.Add CStr(r!RevisionID), New Collection: choices.Add CStr(r!RevisionID), New Collection
@@ -185,7 +185,7 @@ Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     Loop
     r.Close
     For Each key In caches.Keys
-        If Not heads.Exists(CStr(key)) Then Err.Raise vbObjectError + 8900, , "Report has no authoritative saved revision. Inspect persistence diagnostics."
+        If Not heads.Exists(CStr(key)) Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
         head = heads(key): Set values = snapshots(CStr(head(0)))
         CheckCacheValues caches(key), CLng(head(0)), CLng(head(1)), values
         CheckRevisionFacts values, dates(CStr(head(0))), choices(CStr(head(0)))
@@ -194,8 +194,8 @@ End Sub
 
 Public Function CommitReportChoice(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal family As String, ByVal choice As String) As Long
     Dim changes As Object
-    If family <> "Retention" And family <> "Statement" Then Err.Raise vbObjectError + 8913, , "Choose a supported response."
-    If choice <> "Yes" And choice <> "No" And choice <> "Unspecified" Then Err.Raise vbObjectError + 8913, , "Choose Yes, No or Unspecified. Conflicting legacy entries require an explicit choice."
+    If family <> "Retention" And family <> "Statement" Then Err.Raise vbObjectError + 8913, "modReportState.CommitReportChoice", "Choose a supported response."
+    If choice <> "Yes" And choice <> "No" And choice <> "Unspecified" Then Err.Raise vbObjectError + 8913, "modReportState.CommitReportChoice", "Choose Yes, No or Unspecified. Conflicting legacy entries require an explicit choice."
     Set changes = CreateObject("Scripting.Dictionary")
     changes.Add family & "Yes", IIf(choice = "Yes", "Yes", "No")
     changes.Add family & "No", IIf(choice = "No", "Yes", "No")
@@ -267,7 +267,7 @@ Public Sub LinkFieldDefault(ByVal defaultID As Long)
     Dim db As DAO.Database, source As DAO.Recordset, link As DAO.Recordset, kind As String, id As Long, valid As Boolean
     Set db = CurrentDb
     Set source = db.OpenRecordset("SELECT * FROM FieldDefault WHERE DefaultID=" & defaultID, dbOpenSnapshot)
-    If source.EOF Then Err.Raise vbObjectError + 8905, , "Default does not exist."
+    If source.EOF Then Err.Raise vbObjectError + 8905, "modReportState.LinkFieldDefault", "Default does not exist."
     kind = source!ScopeKind: id = source!ScopeID: source.Close
     Set link = db.OpenRecordset("SELECT * FROM FieldDefaultLink WHERE DefaultID=" & defaultID, dbOpenDynaset)
     If link.EOF Then link.AddNew: link!DefaultID = defaultID Else link.Edit
@@ -284,8 +284,8 @@ End Sub
 Public Sub AssertDefaultLink(ByVal defaultID As Long)
     Dim r As DAO.Recordset, linked As Variant
     Set r = CurrentDb.OpenRecordset("SELECT d.ScopeKind,d.ScopeID,l.* FROM FieldDefault AS d INNER JOIN FieldDefaultLink AS l ON d.DefaultID=l.DefaultID WHERE d.DefaultID=" & defaultID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 8906, , "Default has no verified relationship. Review its legacy scope."
-    If r!LinkState <> "Verified" Then Err.Raise vbObjectError + 8906, , "Default has an unresolved legacy scope."
+    If r.EOF Then Err.Raise vbObjectError + 8906, "modReportState.AssertDefaultLink", "Default has no verified relationship. Review its legacy scope."
+    If r!LinkState <> "Verified" Then Err.Raise vbObjectError + 8906, "modReportState.AssertDefaultLink", "Default has an unresolved legacy scope."
     linked = Null
     Select Case CStr(r!ScopeKind)
         Case "Command": linked = r!CommandWorkspaceID.Value
@@ -293,8 +293,8 @@ Public Sub AssertDefaultLink(ByVal defaultID As Long)
         Case "Group": linked = r!GroupID.Value
         Case "Report": linked = r!ReportID.Value
     End Select
-    If IsNull(linked) Then Err.Raise vbObjectError + 8906, , "Default relationship does not match its scope."
-    If CLng(linked) <> CLng(r!ScopeID) Then Err.Raise vbObjectError + 8906, , "Default relationship differs from its legacy scope."
+    If IsNull(linked) Then Err.Raise vbObjectError + 8906, "modReportState.AssertDefaultLink", "Default relationship does not match its scope."
+    If CLng(linked) <> CLng(r!ScopeID) Then Err.Raise vbObjectError + 8906, "modReportState.AssertDefaultLink", "Default relationship differs from its legacy scope."
     r.Close
 End Sub
 

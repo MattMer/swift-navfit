@@ -4,14 +4,14 @@ Option Explicit
 Public Const NAVY_RULE_SOURCE_HASH As String = "5E71CA59D66C509640B48845960D236670ABFB5D57AE76435A7C7983F0DC9058"
 Public Function PromotionCapacity(ByVal paygrade As String, ByVal observedGroupSize As Long, ByVal isLDO As Boolean, Optional ByVal earlyPromotesUsed As Long = -1) As Object
     Dim result As Object, percent As Long, ep As Long, combined As Long
-    If observedGroupSize < 1 Or observedGroupSize > 1000000 Then Err.Raise vbObjectError + 4510, , "Enter a positive, verified observed group size."
+    If observedGroupSize < 1 Or observedGroupSize > 1000000 Then Err.Raise vbObjectError + 4510, "modValidation.PromotionCapacity", "Enter a positive, verified observed group size."
     Select Case paygrade
         Case "E1", "E2", "E3", "E4", "W1", "W2": percent = 100
         Case "E5", "E6", "O3": percent = 60
         Case "E7", "E8", "E9", "W3", "W4", "W5", "O4": percent = 50
         Case "O5", "O6": percent = 40
         Case "O1", "O2": If isLDO Then percent = 100 Else percent = 0
-        Case Else: Err.Raise vbObjectError + 4511, , "Unsupported paygrade requires policy review."
+        Case Else: Err.Raise vbObjectError + 4511, "modValidation.PromotionCapacity", "Unsupported paygrade requires policy review."
     End Select
     If percent > 0 Then
         ep = (observedGroupSize * 20 + 99) \ 100
@@ -19,7 +19,7 @@ Public Function PromotionCapacity(ByVal paygrade As String, ByVal observedGroupS
         If observedGroupSize = 2 Then combined = 2
     End If
     If earlyPromotesUsed = -1 Then earlyPromotesUsed = ep
-    If earlyPromotesUsed < 0 Or earlyPromotesUsed > ep Then Err.Raise vbObjectError + 4512, , "Early Promote count exceeds its capacity."
+    If earlyPromotesUsed < 0 Or earlyPromotesUsed > ep Then Err.Raise vbObjectError + 4512, "modValidation.PromotionCapacity", "Early Promote count exceeds its capacity."
     Set result = CreateObject("Scripting.Dictionary")
     result.Add "EarlyPromoteMaximum", ep: result.Add "CombinedMaximum", combined: result.Add "MustPromoteMaximum", combined - earlyPromotesUsed
     result.Add "Source", "BUPERSINST 1610.10H CH-2, enclosure 2, 1-17 and table 1-2; observed, complete eligible groups only"
@@ -52,13 +52,14 @@ Public Function InstallLegacyNavyDraftChecks() As Long
     Next
     d.Close: w.CommitTrans: InstallLegacyNavyDraftChecks = id: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    w.Rollback
-    If Not p Is Nothing Then p.Close
-    If Not d Is Nothing Then d.Close
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modValidation", "InstallLegacyNavyDraftChecks", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary
+    If Not p Is Nothing Then SwiftClose p, swiftPrimary, "p"
+    If Not d Is Nothing Then SwiftClose d, swiftPrimary, "d"
     On Error GoTo 0
-    Err.Raise failure, "InstallNavyDraftChecks", message
+    SwiftRaise swiftPrimary
 End Function
 Private Function TraitPromotionFinding(ByVal fields As Object) As String
     Dim key As Variant, value As String, recommendation As String, incomplete As Boolean
@@ -78,17 +79,17 @@ Public Function RunRulePack(ByVal reportID As Long, ByVal packID As Long) As Lon
     Dim p As DAO.Recordset, d As DAO.Recordset, r As DAO.Recordset, f As DAO.Recordset, fields As Object, id As Long, revision As Long, state As String, value As Variant
     Dim w As DAO.Workspace, failure As Long, message As String
     If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = SHARED_READINESS_VERSION Then RunRulePack = RunSharedReadiness(reportID, packID): Exit Function
-    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = "1610.10H CH-2 / shared-readiness-r110" Then Err.Raise vbObjectError + 8403, , "Historical r110 readiness results are preserved. Select the current pack for a new run; the r110 engine is not reproduced by this build."
+    If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") = "1610.10H CH-2 / shared-readiness-r110" Then Err.Raise vbObjectError + 8403, "modValidation.RunRulePack", "Historical r110 readiness results are preserved. Select the current pack for a new run; the r110 engine is not reproduced by this build."
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     revision = CurrentRevision(reportID): Set fields = SavedFields(reportID)
     Set p = CurrentDb.OpenRecordset("SELECT * FROM RulePack WHERE PackID=" & packID, dbOpenSnapshot)
-    If p.EOF Then Err.Raise vbObjectError + 4500, , "Rule pack does not exist."
-    If Len(Nz(p!SourceSHA256, "")) <> 64 Or Len(Nz(p!SourceURL, "")) = 0 Then Err.Raise vbObjectError + 4501, , "Rule pack requires a source fingerprint and URL."
+    If p.EOF Then Err.Raise vbObjectError + 4500, "modValidation.RunRulePack", "Rule pack does not exist."
+    If Len(Nz(p!SourceSHA256, "")) <> 64 Or Len(Nz(p!SourceURL, "")) = 0 Then Err.Raise vbObjectError + 4501, "modValidation.RunRulePack", "Rule pack requires a source fingerprint and URL."
     Set r = CurrentDb.OpenRecordset("ValidationRun", dbOpenDynaset)
     r.AddNew: r!ReportID = reportID: r!RevisionID = revision: r!PackID = packID: r!RunAt = Now(): r.Update: r.Bookmark = r.LastModified: id = r!ValidationRunID: r.Close
     Set d = CurrentDb.OpenRecordset("SELECT * FROM RuleDefinition WHERE PackID=" & packID & " ORDER BY RuleID", dbOpenSnapshot)
-    If d.EOF Then Err.Raise vbObjectError + 4502, , "Rule pack is empty."
+    If d.EOF Then Err.Raise vbObjectError + 4502, "modValidation.RunRulePack", "Rule pack is empty."
     Set f = CurrentDb.OpenRecordset("ValidationFinding", dbOpenDynaset)
     Do While Not d.EOF
         If Nz(d!FormKind, "") = "" Or d!FormKind = fields("FormKind") Then
@@ -118,13 +119,14 @@ Public Function RunRulePack(ByVal reportID As Long, ByVal packID As Long) As Lon
     Loop
     f.Close: d.Close: p.Close: w.CommitTrans: RunRulePack = id: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    w.Rollback
-    If Not p Is Nothing Then p.Close
-    If Not d Is Nothing Then d.Close
-    If Not r Is Nothing Then r.Close
-    If Not f Is Nothing Then f.Close
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modValidation", "RunRulePack", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary
+    If Not p Is Nothing Then SwiftClose p, swiftPrimary, "p"
+    If Not d Is Nothing Then SwiftClose d, swiftPrimary, "d"
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If Not f Is Nothing Then SwiftClose f, swiftPrimary, "f"
     On Error GoTo 0
-    Err.Raise failure, "RunRulePack", message
+    SwiftRaise swiftPrimary
 End Function

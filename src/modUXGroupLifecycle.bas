@@ -3,18 +3,18 @@ Option Explicit
 Public Sub ChangeSummaryGroup(ByVal id As Long, ByVal stamp As String, ByVal action As String, Optional ByVal title As String = "")
     Dim r As DAO.Recordset, db As DAO.Database, w As DAO.Workspace, op As Long, failure As Long, message As String, started As Boolean, oldTitle As String
     MajorAuthor
-    If action <> "Rename" And action <> "Archive" And action <> "Recover" Then Err.Raise vbObjectError + 4900, , "Unknown group action."
+    If action <> "Rename" And action <> "Archive" And action <> "Recover" Then Err.Raise vbObjectError + 4900, "modUXGroupLifecycle.ChangeSummaryGroup", "Unknown group action."
     title = Trim$(title)
-    If action = "Rename" And (Len(title) = 0 Or Len(title) > 120) Then Err.Raise vbObjectError + 4901, , "Enter a group name of 1 to 120 characters."
+    If action = "Rename" And (Len(title) = 0 Or Len(title) > 120) Then Err.Raise vbObjectError + 4901, "modUXGroupLifecycle.ChangeSummaryGroup", "Enter a group name of 1 to 120 characters."
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0)
     On Error GoTo Failed
     w.BeginTrans: started = True
-    If GroupStamp(id) <> stamp Then Err.Raise vbObjectError + 4902, , "This group changed. Refresh the list and try again."
+    If GroupStamp(id) <> stamp Then Err.Raise vbObjectError + 4902, "modUXGroupLifecycle.ChangeSummaryGroup", "This group changed. Refresh the list and try again."
     Set r = db.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & id, dbOpenDynaset)
     oldTitle = r!Title
-    If action = "Rename" And r!IsArchived Then Err.Raise vbObjectError + 4904, , "Recover this group before renaming it."
-    If action = "Archive" And r!IsArchived Then Err.Raise vbObjectError + 4904, , "Group is already archived."
-    If action = "Recover" And Not r!IsArchived Then Err.Raise vbObjectError + 4904, , "Group is already active."
+    If action = "Rename" And r!IsArchived Then Err.Raise vbObjectError + 4904, "modUXGroupLifecycle.ChangeSummaryGroup", "Recover this group before renaming it."
+    If action = "Archive" And r!IsArchived Then Err.Raise vbObjectError + 4904, "modUXGroupLifecycle.ChangeSummaryGroup", "Group is already archived."
+    If action = "Recover" And Not r!IsArchived Then Err.Raise vbObjectError + 4904, "modUXGroupLifecycle.ChangeSummaryGroup", "Group is already active."
     If action = "Rename" And StrComp(title, oldTitle, vbBinaryCompare) = 0 Then r.Close: w.CommitTrans: Exit Sub
     op = BeginOperation(action & " summary group", "Group " & id & "; previous name: " & oldTitle)
     r.Edit
@@ -23,12 +23,13 @@ Public Sub ChangeSummaryGroup(ByVal id As Long, ByVal stamp As String, ByVal act
     FinishOperation op, "Completed", IIf(action = "Rename", "New name: " & title, action & " completed") & "; reports, members, defaults and history retained."
     w.CommitTrans: Call UXEditorContextChanged(): started = False: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If started Then w.Rollback
-    If Not r Is Nothing Then r.Close
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXGroupLifecycle", "ChangeSummaryGroup", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If started Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0
-    Err.Raise failure, "ChangeSummaryGroup", message
+    SwiftRaise swiftPrimary
 End Sub
 Public Function UXGroupList() As Boolean
     Dim f As Access.Form, id As Long, filter As String, where As String
@@ -88,7 +89,7 @@ Public Function UXGroupAction(ByVal action As String) As Boolean
     Dim f As Access.Form, id As Long, title As String
     On Error GoTo Failed
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0)
-    If id = 0 Then Err.Raise vbObjectError + 4903, , "Choose a group first."
+    If id = 0 Then Err.Raise vbObjectError + 4903, "modUXGroupLifecycle.UXGroupAction", "Choose a group first."
     title = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & id), "")
     If action = "Rename" Then
         DoCmd.OpenForm "frmUXRenameGroup", , , , , acDialog, CStr(id)

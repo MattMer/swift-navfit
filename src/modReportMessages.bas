@@ -44,11 +44,11 @@ Public Function MigrateReportMessages(Optional ByVal report As Long = 0) As Long
  Do While Not rows.EOF
   parent = Nz(MajorScalar("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & rows!ThreadID & " AND ReportID=" & rows!ReportID), 0)
   mapped = Nz(MajorScalar("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & rows!CommentID & " AND ReportID=" & rows!ReportID), 0)
-  If parent = 0 Or mapped = 0 Then Err.Raise vbObjectError + 8710, , "Legacy parent is missing or belongs to another report. Conversion rolled back."
+  If parent = 0 Or mapped = 0 Then Err.Raise vbObjectError + 8710, "modReportMessages.MigrateReportMessages", "Legacy parent is missing or belongs to another report. Conversion rolled back."
   If created.Exists(CStr(mapped)) Then
    CurrentDb.Execute "UPDATE ReportMessage SET ParentMessageID=" & parent & " WHERE MessageID=" & mapped, dbFailOnError
   ElseIf Nz(MajorScalar("SELECT ParentMessageID FROM ReportMessage WHERE MessageID=" & mapped), 0) <> parent Then
-   Err.Raise vbObjectError + 8710, , "Existing legacy conversation mapping differs. Original history was preserved."
+   Err.Raise vbObjectError + 8710, "modReportMessages.MigrateReportMessages", "Existing legacy conversation mapping differs. Original history was preserved."
   End If
   rows.MoveNext
  Loop
@@ -61,23 +61,24 @@ Public Function MigrateReportMessages(Optional ByVal report As Long = 0) As Long
  Loop
  rows.Close: w.CommitTrans: trans = False: Exit Function
 Failed:
- failure = Err.Number: message = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modReportMessages", "MigrateReportMessages", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+ failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
  Resume Cleanup
 Cleanup:
- On Error Resume Next
- If Not rows Is Nothing Then rows.Close
- If trans Then w.Rollback
- On Error GoTo 0: Err.Raise failure, "MigrateReportMessages", message
+ If Not rows Is Nothing Then SwiftClose rows, swiftPrimary, "rows"
+ If trans Then SwiftRollback w, swiftPrimary
+ On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 
 Public Function ReportMessageRoot(ByVal id As Long, ByVal report As Long) As Long
  Dim seen As Object, r As DAO.Recordset, parent As Long
  Set seen = CreateObject("Scripting.Dictionary")
  Do While id > 0
-  If seen.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, , "Conversation has a parent cycle. Original history was preserved."
+  If seen.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, "modReportMessages.ReportMessageRoot", "Conversation has a parent cycle. Original history was preserved."
   seen(CStr(id)) = True
   Set r = CurrentDb.OpenRecordset("SELECT ParentMessageID FROM ReportMessage WHERE MessageID=" & id & " AND ReportID=" & report, dbOpenSnapshot)
-  If r.EOF Then Err.Raise vbObjectError + 8711, , "Conversation parent is missing or belongs to another report."
+  If r.EOF Then Err.Raise vbObjectError + 8711, "modReportMessages.ReportMessageRoot", "Conversation parent is missing or belongs to another report."
   parent = Nz(r!ParentMessageID, 0): r.Close
   If parent = 0 Then ReportMessageRoot = id: Exit Function
   id = parent
@@ -95,7 +96,7 @@ Public Function ReportMessageMapRoot(ByVal id As Long, ByVal parents As Object) 
  Dim seen As Object, parent As Long
  Set seen = CreateObject("Scripting.Dictionary")
  Do While id > 0
-  If seen.Exists(CStr(id)) Or Not parents.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, , "Conversation parent is cyclic, missing or belongs to another report."
+  If seen.Exists(CStr(id)) Or Not parents.Exists(CStr(id)) Then Err.Raise vbObjectError + 8711, "modReportMessages.ReportMessageMapRoot", "Conversation parent is cyclic, missing or belongs to another report."
   seen(CStr(id)) = True: parent = CLng(parents(CStr(id)))
   If parent = 0 Then ReportMessageMapRoot = id: Exit Function
   id = parent
@@ -104,14 +105,14 @@ End Function
 Public Function AddReportMessage(ByVal report As Long, ByVal body As String, Optional ByVal parent As Long = 0, Optional ByVal contextRevision As Long = 0) As Long
  Dim rows As DAO.Recordset, author As Long, w As DAO.Workspace, failure As Long, explanation As String
  author = MajorAuthor()
- If PersistenceCount("Report", "ReportID=" & report) <> 1 Then Err.Raise 5, , "Save the report before posting a note."
- If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & report), True) Then Err.Raise 5, , "Recover the archived report before posting notes."
- If Len(Trim$(Replace(Replace(Replace(body, vbCr, ""), vbLf, ""), vbTab, ""))) = 0 Or Len(body) > 10000 Then Err.Raise 5, , "Enter a note of 1 to 10,000 characters."
+ If PersistenceCount("Report", "ReportID=" & report) <> 1 Then Err.Raise 5, "modReportMessages.AddReportMessage", "Save the report before posting a note."
+ If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & report), True) Then Err.Raise 5, "modReportMessages.AddReportMessage", "Recover the archived report before posting notes."
+ If Len(Trim$(Replace(Replace(Replace(body, vbCr, ""), vbLf, ""), vbTab, ""))) = 0 Or Len(body) > 10000 Then Err.Raise 5, "modReportMessages.AddReportMessage", "Enter a note of 1 to 10,000 characters."
  If parent > 0 Then
-  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "Choose a conversation belonging to this report."
+  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, "modReportMessages.AddReportMessage", "Choose a conversation belonging to this report."
  End If
  If contextRevision > 0 Then
-  If PersistenceCount("ReportRevision", "RevisionID=" & contextRevision & " AND ReportID=" & report) <> 1 Then Err.Raise 5, , "Revision context belongs to another report."
+  If PersistenceCount("ReportRevision", "RevisionID=" & contextRevision & " AND ReportID=" & report) <> 1 Then Err.Raise 5, "modReportMessages.AddReportMessage", "Revision context belongs to another report."
  End If
  Set w = DBEngine.Workspaces(0): w.BeginTrans
  On Error GoTo Failed
@@ -125,16 +126,18 @@ Public Function AddReportMessage(ByVal report As Long, ByVal body As String, Opt
  AuditRecord "Message", AddReportMessage
  w.CommitTrans: Exit Function
 Failed:
- failure = Err.Number: explanation = Err.Description
- On Error Resume Next: w.Rollback: On Error GoTo 0
- Err.Raise failure, "AddReportMessage", explanation
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modReportMessages", "AddReportMessage", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+ failure = CLng(swiftPrimary("Number")): explanation = CStr(swiftPrimary("Description"))
+ SwiftRollback w, swiftPrimary: On Error GoTo 0
+ SwiftRaise swiftPrimary
 End Function
 Public Function SaveReportMessageDraft(ByVal identity As String, ByVal report As Long, ByVal expected As Long, ByVal body As String, ByVal parent As Long) As Long
  Dim w As DAO.Workspace, failure As Long, message As String
  Set w = DBEngine.Workspaces(0): w.BeginTrans
  On Error GoTo Failed
  If parent > 0 Then
-  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, , "The reply conversation belongs to another report."
+  If PersistenceCount("ReportMessage", "MessageID=" & parent & " AND ReportID=" & report & " AND ParentMessageID Is Null") <> 1 Then Err.Raise 5, "modReportMessages.SaveReportMessageDraft", "The reply conversation belongs to another report."
  End If
  SaveReportMessageDraft = SaveReportNoteDraft(identity, report, expected, body)
  If parent > 0 Then
@@ -144,27 +147,30 @@ Public Function SaveReportMessageDraft(ByVal identity As String, ByVal report As
  End If
  w.CommitTrans: Exit Function
 Failed:
- failure = Err.Number: message = Err.Description: Resume Cleanup
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modReportMessages", "SaveReportMessageDraft", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+ failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description")): Resume Cleanup
 Cleanup:
- On Error Resume Next: w.Rollback
- On Error GoTo 0: Err.Raise failure, "SaveReportMessageDraft", message
+ SwiftRollback w, swiftPrimary
+ On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
 Public Function PostReportMessageDraft(ByVal identity As String, ByVal expected As Long) As Long
  Dim rows As DAO.Recordset, w As DAO.Workspace, failure As Long, message As String
  Set w = DBEngine.Workspaces(0): w.BeginTrans
  On Error GoTo Failed
  Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportNoteDraft WHERE DraftGuid=" & QuoteSQL(identity), dbOpenSnapshot)
- If rows.EOF Then Err.Raise 5, , "Draft no longer exists. Refresh your notes."
- If rows!AuthorProfileID <> MajorAuthor() Or rows!VersionCounter <> expected Then Err.Raise 5, , "The note draft changed. Resume its latest version."
+ If rows.EOF Then Err.Raise 5, "modReportMessages.PostReportMessageDraft", "Draft no longer exists. Refresh your notes."
+ If rows!AuthorProfileID <> MajorAuthor() Or rows!VersionCounter <> expected Then Err.Raise 5, "modReportMessages.PostReportMessageDraft", "The note draft changed. Resume its latest version."
  PostReportMessageDraft = AddReportMessage(rows!ReportID, Nz(rows!NoteText, ""), Nz(rows!ParentMessageID, 0))
  rows.Close
  DiscardReportNoteDraft identity, expected
  w.CommitTrans: Exit Function
 Failed:
- failure = Err.Number: message = Err.Description: Resume Cleanup
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modReportMessages", "PostReportMessageDraft", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+ failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description")): Resume Cleanup
 Cleanup:
- On Error Resume Next
- If Not rows Is Nothing Then rows.Close
- w.Rollback
- On Error GoTo 0: Err.Raise failure, "PostReportMessageDraft", message
+ If Not rows Is Nothing Then SwiftClose rows, swiftPrimary, "rows"
+ SwiftRollback w, swiftPrimary
+ On Error GoTo 0: SwiftRaise swiftPrimary
 End Function

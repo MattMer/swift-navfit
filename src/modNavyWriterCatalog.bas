@@ -98,7 +98,7 @@ Case 88: values = Array("AC qualification instruction", "As OJTI, delivered 55 h
 Case 89: values = Array("HM medical readiness", "Managed medical care for 331 sailors and maintained overall medical readiness at 92% in support of operational requirements.", "https://www.navywriter.com/medical.htm", "HM", "Excerpt")
 Case 90: values = Array("MA equipment accountability", "Conducted inventories, tracked gear issuance, and resolved discrepancies with precision.", "https://www.navywriter.com/master-at-arms.htm", "MA", "Excerpt")
 Case 91: values = Array("PS pay entitlements", "He efficiently processed 170 family separation allowance, resulting in $42K in pay and allowances.", "https://www.navywriter.com/administration-PS.htm", "PS", "Excerpt")
-Case Else: Err.Raise vbObjectError + 6921, , "Choose a catalog entry."
+Case Else: Err.Raise vbObjectError + 6921, "modNavyWriterCatalog.NavyWriterValue", "Choose a catalog entry."
 End Select
 NavyWriterValue = values(column)
 End Function

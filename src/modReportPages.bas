@@ -173,6 +173,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
  For Each row In ReportPageRows(kind, page)
   parts = Split(CStr(row), "|"): key = parts(0): y = CLng(parts(2))
   If key = "@guidance" Then
+   If f.Section(acDetail).Height < y + CLng(parts(4)) + 200 Then f.Section(acDetail).Height = y + CLng(parts(4)) + 200
    Place f, "uxTraitGuidance", CLng(parts(1)), y, CLng(parts(3)), CLng(parts(4))
   Else
    trait = IsTraitKey(key)
@@ -189,6 +190,12 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    If trait Then
     f.Controls("label" & key).Width = 4000
     c.Left = 4400: c.Top = y: c.Width = 1000
+   End If
+   If key Like "Trait##Comment#" Then
+    f.Controls("label" & key).Caption = "Comment " & Right$(key, 1)
+    f.Controls("label" & key).Height = 190
+    c.Top = y + 200: c.FontSize = 9
+    c.ControlTipText = UXFieldCaption("Trait" & Mid$(key, 6, 2), kind) & " / authored performance comment " & Right$(key, 1)
    End If
    If key = "OfficialComments" Then
     c.FontName = "Courier New": c.FontSize = UXNarrativeFontSize(kind): c.TextFormat = 0: c.Width = UXNarrativeWidth(kind)

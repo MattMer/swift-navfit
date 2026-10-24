@@ -93,8 +93,8 @@ Public Function AcceptContributorStartup(Optional ByVal createNew As Boolean = F
  If createNew Then
   RequireContributorSwitch
   name = Trim$(Nz(Forms!frmContributorStart!txtNewContributor, ""))
-  If Len(name) = 0 Or Len(name) > 120 Then Err.Raise 5, , "Enter a contributor name of 1 to 120 characters."
-  If DCount("*", "UserProfile", "DisplayName=" & QuoteSQL(name)) > 0 Then Err.Raise 5, , "That contributor already exists. Choose the existing name."
+  If Len(name) = 0 Or Len(name) > 120 Then Err.Raise 5, "modContributorStartup.AcceptContributorStartup", "Enter a contributor name of 1 to 120 characters."
+  If DCount("*", "UserProfile", "DisplayName=" & QuoteSQL(name)) > 0 Then Err.Raise 5, "modContributorStartup.AcceptContributorStartup", "That contributor already exists. Choose the existing name."
   stage = "Create contributor"
   Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
   Set rows = db.OpenRecordset("UserProfile", dbOpenDynaset)
@@ -117,12 +117,14 @@ Public Function AcceptContributorStartup(Optional ByVal createNew As Boolean = F
  UXLoadContext
  AcceptContributorStartup = True: Exit Function
 Failed:
- message = stage & ": " & Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modContributorStartup", "AcceptContributorStartup", stage, Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+ message = stage & ": " & CStr(swiftPrimary("Description"))
  lastStartupFailure = message
  If trans Then
   On Error Resume Next
-  If Not rows Is Nothing Then rows.Close
-  w.Rollback
+  If Not rows Is Nothing Then SwiftClose rows, swiftPrimary, "rows"
+  SwiftRollback w, swiftPrimary
   ResetActiveContributor
   On Error GoTo 0
  End If

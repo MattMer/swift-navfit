@@ -39,12 +39,12 @@ End Function
 Public Function UXImportNavyWriter() As Boolean
     Dim i As Long, r As DAO.Recordset, db As DAO.Database, title As String, body As String, attribution As String, id As Long
     On Error GoTo Failed
-    If IsNull(Forms!frmUXNavyWriter!lstCatalog) Then Err.Raise vbObjectError + 6920, , "Select an example and review its wording first."
+    If IsNull(Forms!frmUXNavyWriter!lstCatalog) Then Err.Raise vbObjectError + 6920, "modUXNavyWriter.UXImportNavyWriter", "Select an example and review its wording first."
     i = CLng(Forms!frmUXNavyWriter!lstCatalog): title = "NavyWriter - " & NavyWriterValue(i, 0)
-    If Not NavyWriterMatches(i, Nz(Forms!frmUXNavyWriter!cboRate, "ALL"), Nz(Forms!frmUXNavyWriter!txtSearch, "")) Then Err.Raise vbObjectError + 6920, , "Selection is outside the current filter. Choose it again."
-    If NavyWriterValue(i, 4) <> "Excerpt" Then Err.Raise vbObjectError + 6920, , "This is a source collection. Open its source to review the full examples."
+    If Not NavyWriterMatches(i, Nz(Forms!frmUXNavyWriter!cboRate, "ALL"), Nz(Forms!frmUXNavyWriter!txtSearch, "")) Then Err.Raise vbObjectError + 6920, "modUXNavyWriter.UXImportNavyWriter", "Selection is outside the current filter. Choose it again."
+    If NavyWriterValue(i, 4) <> "Excerpt" Then Err.Raise vbObjectError + 6920, "modUXNavyWriter.UXImportNavyWriter", "This is a source collection. Open its source to review the full examples."
     body = Nz(Forms!frmUXNavyWriter!txtBody, ""): attribution = "NavyWriter excerpt [Rate: " & NavyWriterValue(i, 3) & "]: " & NavyWriterValue(i, 2)
-    If Len(Trim$(body)) = 0 Then Err.Raise vbObjectError + 6920, , "Enter reviewed narrative wording before adding it."
+    If Len(Trim$(body)) = 0 Then Err.Raise vbObjectError + 6920, "modUXNavyWriter.UXImportNavyWriter", "Enter reviewed narrative wording before adding it."
     Set db = CurrentDb: Set r = db.OpenRecordset("SELECT SnippetID,SnippetBody FROM NarrativeSnippet WHERE SnippetTitle=" & QuoteSQL(title) & " AND InStr(1,Attribution," & QuoteSQL(NavyWriterValue(i, 2)) & ",1)>0", dbOpenSnapshot)
     Do While Not r.EOF
         If StrComp(Nz(r!SnippetBody, ""), body, vbBinaryCompare) = 0 Then

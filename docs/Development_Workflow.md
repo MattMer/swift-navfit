@@ -244,6 +244,97 @@ shared readers. A preexisting fixture that intentionally corrupts a C06 projecti
 must not justify disabling that persistence guard. Profile before widening scope;
 keep display snapshots separate from live write-time validation.
 
+### Relationship names and revision-ID aliases (L01–L02)
+
+Use the existing major-workflow runner before the integrated build, then repeat
+against the exact final blank without `-InstallSource`:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-major.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\schema31-blank.accdb" -OlderPath "D:\path\schema30-blank.accdb"
+powershell.exe -NoProfile -File scripts/test-ux-trait-retry.ps1 -BuildPath "D:\path\blank.accdb"
+```
+
+The major runner owns sequential disposable sessions and checks existing batch,
+meeting, routing and undo behavior, writable revision-ID aliases and FK rejection.
+It also exercises the current comparison's before/after/detail rows and the
+retained hidden workbench adapter; these checks do not reopen a retired route.
+It seeds synthetic populated sources, imports them through Settings & Help, and
+verifies original fields/IDs, complete relationship signatures (including field
+order and attributes), late rollback, source hashes, populated-target rejection
+and reopen. Future schemas and unknown source tables remain rejected. Optional
+legacy paths must be actual retained templates, not relabeled current schemas.
+This does not change historical-output waivers or establish release acceptance.
+
+`-InstallSource` prepares an early blank disposable candidate, installing the two
+schema-owned alias queries and transactionally replacing only opaque relationship
+names with the same definitions. It verifies signature equality and imports the
+changed source modules. It is not the production migration path or a fresh build.
+Production import reads the source without executing its code, leaving source
+relationships, physical column names and original IDs untouched; the fresh target
+already contains the reviewed schema-32 names/queries. No in-place rename of a
+populated workspace is needed.
+
+During alias transaction checks, use the owned DAO reader and roll back before
+closing the query cursor. The initial harness sequence raised native error 3246;
+that test orchestration was corrected without adding a production workaround.
+
+### NAVFIT98A export (H02)
+
+Run the existing native suites sequentially on disposable copies before the final
+integrated build, then repeat against the exact final blank:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-navfit-group-export.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-ux-navfit.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-navfit-adapter.ps1 -BuildPath "D:\path\blank.accdb"
+```
+
+These runners default to installed application code. Use `-InstallSource` only for
+early focused changes on their disposable copies; that is not a fresh integrated
+build. They check source-build hashes and preserve primary errors during owned
+session cleanup. The adapter suite retains mapped/native field and return/undo
+checks; group/UI suites cover incomplete/mixed/archived/approved exports, every
+selected member, informational findings, exact/unavailable PSG, pending buffers,
+recovery, source/history preservation, stale previews and operational failures.
+These are Access/DAO format and workflow checks, not a new NAVFIT98A desktop
+acceptance or printed-fit claim. Actual serialization/capacity limits still fail
+without truncation/coercion; readiness findings do not require acknowledgement.
+
+### Diagnostics, view contracts and trait data (M04–M06)
+
+Run the focused checks before the final integrated build, then repeat without
+source installation against the exact final blank:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-diagnostics-contracts.ps1 -BuildPath "D:\path\blank.accdb" -VerifyViews
+powershell.exe -NoProfile -File scripts/test-trait-catalogue.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema30-blank.accdb"
+```
+
+The diagnostics runner owns disposable copies and tests original/cleanup error
+separation, redaction, rollback/retry, and renamed or incorrectly bound controls.
+It writes suppression/error-identity inventories and a verification receipt.
+`-InstallSource` is for early disposable-copy checks only; `-PrepareOnly` prepares
+a candidate without behavioral assertions. Neither establishes a fresh build.
+`-VerifyViews` reuses installed-source/form/report/macro verification and proves
+the installed checker rejects renamed controls and wrong existing callbacks.
+Build verification reads literal contract data from verified VBA and inspects
+native properties without Eval or Trust Center changes. Unsupported contract
+syntax fails explicitly. Expected failures are caught in their VBA harness or
+native-property checker so no unhandled modal dialog is expected.
+
+The catalogue runner compares every trait/mark/title/description/source field,
+checks uniqueness/domains and missing-definition failure, and uses production
+migration to test populated transfer, retained catalogue versions, malformed
+source-column rejection and atomic conflict rejection. Optional `-LegacyPath` must be a real schema-30 blank; its
+copy receives synthetic data. Both originals remain hash-checked and unchanged.
+This does not claim all historical fixtures were retested. Run affected native
+save/recovery, trait, group, migration and navigation suites as well.
+
+Schema 31 includes seeded `TraitDefinition` reference data. Blank verification
+requires its exact reviewed contents and still rejects all user/domain rows.
+Never delete the reference rows to make a blank check pass, reinterpret them as
+user content, or overwrite conflicting source definitions during import.
+
 ### Compiled desktop candidate (M01)
 
 After a fresh ACCDB build and its applicable focused/integrated tests pass, use
@@ -334,6 +425,44 @@ check every mapped block, all seven traits, exact long-text readback, absence of
 `#Error`/blank pages, combined order, summary continuation and Letter page size.
 Review actual filled pages before the final integrated build; a native export
 return value or file length alone is insufficient.
+
+For the schema-33 Chief correction, the same runner also checks all 21 authored
+comments, mark-change isolation, native mapping/return conflicts/clear, history
+restore, editor page changes and overflow. Its print matrix includes blank,
+short, two-line and overflowing comments, all 35 block/grade combinations, a
+summary sheet and alphabetical combined/individual/Both output. During focused
+work, `-MetricsOnly`, `-ChiefFieldsOnly`, `-ChiefProofOnly` and `-ChiefCasesOnly`
+select bounded subsets. `-InstallSource` additionally prepares nullable report/
+recovery columns, regenerated metadata and new editor controls on its disposable
+copy; production upgrade remains fresh-build plus Settings & Help import.
+
+Retain the related focused gates:
+
+```powershell
+powershell.exe -NoProfile -File scripts/test-major.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\schema32-blank.accdb" -OlderPath "D:\path\schema31-blank.accdb" -ChiefComments
+powershell.exe -NoProfile -File scripts/test-ux-workflows.ps1 -BuildPath "D:\path\blank.accdb" -ChiefComments
+powershell.exe -NoProfile -File scripts/test-pdf-expanded.ps1 -BuildPath "D:\path\blank.accdb" -FixturePath "D:\path\synthetic-xfa-fixtures"
+```
+
+The transfer suite verifies blank new values in old snapshots, actual authored
+values in current snapshots, old sealed native baselines, untouched native-only
+comments after unrelated saves, late rollback and source hashes. The workflow
+suite verifies all 21 values after normal shutdown and restoration in a new
+Access session. Structured input fixtures must carry distinct synthetic markers
+in all 21 fields; never use personnel data in tracked test fixtures.
+
+The font-metrics choice is deliberate: native report font properties are limited
+to the print context ([Microsoft's report-font example](https://learn.microsoft.com/en-us/office/vba/api/access.textbox.fontsize))
+and returned Access 2455 during planning. The existing renderer now uses built-in
+Windows [font creation](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-createfontw)
+and [text metrics](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-gettextmetricsw),
+with face verification and owned-handle release. This is application text
+measurement, not a development UI-control/capture helper. No C#, PDF.js, Python or
+Acrobat is introduced into the application runtime. Plain and rich Access print
+slots both rounded the source's 6.5-point trait-34 grade-4/5 wording; the recorded
+development fallback is 6 points for those cells, with the other grades at 7.
+That difference, actual printed fit and an Acrobat-absent workstation remain
+explicit acceptance items. The unsuccessful rich-text route was removed.
 
 The [print catalogue](../src/pdf-print-layout.json) records public Navy source and
 300-dpi image hashes. Development asset preparation used approved temporary

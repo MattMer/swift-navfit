@@ -8,8 +8,8 @@ Private Function PolicyDocument(ByVal groupID As Long) As Object
     d.setProperty "ProhibitDTD", True
     raw = Nz(DLookup("KeySpec", "SummaryGroup", "GroupID=" & groupID), "")
     If Len(raw) = 0 Then raw = "<SwiftGroupPolicy version=""1""/>"
-    If Not d.LoadXML(raw) Then Err.Raise vbObjectError + 6600, , "Existing group policy is not recognized; preserve it and inspect diagnostics."
-    If d.documentElement.nodeName <> "SwiftGroupPolicy" Or Nz(d.documentElement.getAttribute("version"), "") <> "1" Then Err.Raise vbObjectError + 6600, , "Existing group policy is not recognized; preserve it and inspect diagnostics."
+    If Not d.LoadXML(raw) Then Err.Raise vbObjectError + 6600, "modGroupPolicy.PolicyDocument", "Existing group policy is not recognized; preserve it and inspect diagnostics."
+    If d.documentElement.nodeName <> "SwiftGroupPolicy" Or Nz(d.documentElement.getAttribute("version"), "") <> "1" Then Err.Raise vbObjectError + 6600, "modGroupPolicy.PolicyDocument", "Existing group policy is not recognized; preserve it and inspect diagnostics."
     Set PolicyDocument = d
 End Function
 Private Sub PolicyPut(ByVal d As Object, ByVal key As String, ByVal value As String)
@@ -36,12 +36,12 @@ End Function
 Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByVal state As String)
     Dim w As DAO.Workspace, db As DAO.Database, d As Object, old As String, op As Long, failure As Long, message As String, author As Long
     author = MajorAuthor()
-    If state <> "Initialized" And state <> "In-Work" And state <> "Ready for Signature" And state <> "Completed" Then Err.Raise vbObjectError + 6810, , "Choose a supported group status."
+    If state <> "Initialized" And state <> "In-Work" And state <> "Ready for Signature" And state <> "Completed" Then Err.Raise vbObjectError + 6810, "modGroupPolicy.SetGroupWorkflow", "Choose a supported group status."
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed
     w.BeginTrans
-    If GroupStamp(groupID) <> expected Then Err.Raise vbObjectError + 6811, , "Group changed. Refresh and choose its status again."
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6812, , "Recover this group before changing its status."
+    If GroupStamp(groupID) <> expected Then Err.Raise vbObjectError + 6811, "modGroupPolicy.SetGroupWorkflow", "Group changed. Refresh and choose its status again."
+    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6812, "modGroupPolicy.SetGroupWorkflow", "Recover this group before changing its status."
     old = GroupWorkflow(groupID)
     If old = state And state <> "Completed" Then w.CommitTrans: Exit Sub
     Set d = PolicyDocument(groupID)
@@ -53,9 +53,11 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     FinishOperation op, "Completed", "Local group status changed; member report states unchanged."
     w.CommitTrans: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next: w.Rollback: On Error GoTo 0
-    Err.Raise failure, "SetGroupWorkflow", message
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modGroupPolicy", "SetGroupWorkflow", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    SwiftRollback w, swiftPrimary: On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Sub
 Public Function GroupReviewCurrent(ByVal groupID As Long) As Boolean
     GroupReviewCurrent = GroupPolicyValue(groupID, "Complete") = "Yes" And GroupPolicyValue(groupID, "RosterStamp") = GroupStamp(groupID)
@@ -78,23 +80,23 @@ Public Sub SaveGroupPolicy(ByVal groupID As Long, ByVal expectedStamp As String,
     Dim d As Object, w As DAO.Workspace, db As DAO.Database, old As String, op As Long, author As Long, failure As Long, message As String, started As Boolean, kind As String
     author = MajorAuthor(): kind = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & groupID), "")
     If kind = "FITREP" Then
-        If uicMode <> "Officer normal" And uicMode <> "Officer dual-hatted" Then Err.Raise vbObjectError + 6601, , "Choose an officer command grouping mode."
+        If uicMode <> "Officer normal" And uicMode <> "Officer dual-hatted" Then Err.Raise vbObjectError + 6601, "modGroupPolicy.SaveGroupPolicy", "Choose an officer command grouping mode."
     Else
-        If uicMode <> "Unconfirmed" And uicMode <> "Combined enlisted UICs" And uicMode <> "Separate enlisted UICs" Then Err.Raise vbObjectError + 6601, , "Choose an enlisted UIC grouping mode."
+        If uicMode <> "Unconfirmed" And uicMode <> "Combined enlisted UICs" And uicMode <> "Separate enlisted UICs" Then Err.Raise vbObjectError + 6601, "modGroupPolicy.SaveGroupPolicy", "Choose an enlisted UIC grouping mode."
     End If
-    If officerBasis <> "Unconfirmed" And officerBasis <> "Active" And officerBasis <> "Reserve" Then Err.Raise vbObjectError + 6602, , "Choose a competitive-category basis."
-    If Len(Trim$(note)) = 0 Or Len(note) > 2000 Then Err.Raise vbObjectError + 6603, , "Record the review basis and any UIC authority in a note of up to 2000 characters."
-    If complete And DCount("*", "GroupMember", "GroupID=" & groupID) = 0 Then Err.Raise vbObjectError + 6604, , "An empty roster cannot be confirmed complete."
+    If officerBasis <> "Unconfirmed" And officerBasis <> "Active" And officerBasis <> "Reserve" Then Err.Raise vbObjectError + 6602, "modGroupPolicy.SaveGroupPolicy", "Choose a competitive-category basis."
+    If Len(Trim$(note)) = 0 Or Len(note) > 2000 Then Err.Raise vbObjectError + 6603, "modGroupPolicy.SaveGroupPolicy", "Record the review basis and any UIC authority in a note of up to 2000 characters."
+    If complete And DCount("*", "GroupMember", "GroupID=" & groupID) = 0 Then Err.Raise vbObjectError + 6604, "modGroupPolicy.SaveGroupPolicy", "An empty roster cannot be confirmed complete."
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)) > 0 Then
-            If EditorHasPending() Then Err.Raise vbObjectError + 6605, , "Save or discard pending member edits before recording a roster review."
+            If EditorHasPending() Then Err.Raise vbObjectError + 6605, "modGroupPolicy.SaveGroupPolicy", "Save or discard pending member edits before recording a roster review."
         End If
     End If
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb
     On Error GoTo Failed
     w.BeginTrans: started = True
-    If GroupStamp(groupID) <> expectedStamp Then Err.Raise vbObjectError + 6606, , "Group changed. Reopen policy review."
-    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6607, , "Recover this group first."
+    If GroupStamp(groupID) <> expectedStamp Then Err.Raise vbObjectError + 6606, "modGroupPolicy.SaveGroupPolicy", "Group changed. Reopen policy review."
+    If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6607, "modGroupPolicy.SaveGroupPolicy", "Recover this group first."
     old = Nz(DLookup("KeySpec", "SummaryGroup", "GroupID=" & groupID), ""): Set d = PolicyDocument(groupID)
     PolicyPut d, "UICMode", uicMode: PolicyPut d, "OfficerBasis", officerBasis: PolicyPut d, "Note", note
     PolicyPut d, "Complete", IIf(complete, "Yes", "No"): PolicyPut d, "ReviewedBy", CStr(author): PolicyPut d, "ReviewedAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
@@ -105,11 +107,12 @@ Public Sub SaveGroupPolicy(ByVal groupID As Long, ByVal expectedStamp As String,
     FinishOperation op, "Completed", "Policy context and deliberate local completeness review recorded; report values unchanged."
     w.CommitTrans: started = False: Exit Sub
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If started Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modGroupPolicy", "SaveGroupPolicy", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If started Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "SaveGroupPolicy", message
+    SwiftRaise swiftPrimary
 End Sub
 Public Function UXOpenGroupPolicy() As Boolean
     Dim id As Long
@@ -178,7 +181,7 @@ End Function
 Public Function GroupBulkImpact(ByVal groupID As Long, ByVal batchID As Long) As String
     Dim changes As Object, f As Object, r As DAO.Recordset, db As DAO.Database, id As String
     Set changes = CreateObject("Scripting.Dictionary"): Set db = CurrentDb
-    Set r = db.OpenRecordset("SELECT * FROM ChangeItem WHERE BatchID=" & batchID & " ORDER BY ReportID,ItemID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT * FROM qryChangeItemRevisionIDs WHERE BatchID=" & batchID & " ORDER BY ReportID,ItemID", dbOpenSnapshot)
     Do While Not r.EOF
         id = CStr(r!ReportID)
         If Not changes.Exists(id) Then changes.Add id, SavedFields(CLng(id))
@@ -224,7 +227,7 @@ Failed:
 End Function
 Public Function UXApplyGroupMembers() As Boolean
     On Error GoTo Failed
-    If Len(memberPreviewToken) = 0 Or memberPreviewToken <> MemberToken(SelectedMembers()) Then Err.Raise vbObjectError + 6608, , "Selection, candidates or group changed. Preview membership again."
+    If Len(memberPreviewToken) = 0 Or memberPreviewToken <> MemberToken(SelectedMembers()) Then Err.Raise vbObjectError + 6608, "modGroupPolicy.UXApplyGroupMembers", "Selection, candidates or group changed. Preview membership again."
     UXApplyGroupMembers = UXSaveMembers(): If UXApplyGroupMembers Then memberPreviewToken = ""
     Exit Function
 Failed:

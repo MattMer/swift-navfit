@@ -19,20 +19,20 @@ Public Function AddContributor(ByVal name As String) As Long
     Dim r As DAO.Recordset
     Call RouteProfile
     name = Trim$(name)
-    If Len(name) = 0 Or Len(name) > 120 Then Err.Raise vbObjectError + 1801, , "Enter a contributor name of 1 to 120 characters."
-    If DCount("*", "UserProfile", "DisplayName='" & Replace(name, "'", "''") & "'") > 0 Then Err.Raise vbObjectError + 1802, , "A contributor with this display name already exists."
+    If Len(name) = 0 Or Len(name) > 120 Then Err.Raise vbObjectError + 1801, "modRouting.AddContributor", "Enter a contributor name of 1 to 120 characters."
+    If DCount("*", "UserProfile", "DisplayName='" & Replace(name, "'", "''") & "'") > 0 Then Err.Raise vbObjectError + 1802, "modRouting.AddContributor", "A contributor with this display name already exists."
     Set r = CurrentDb.OpenRecordset("UserProfile", dbOpenDynaset)
     r.AddNew: r!ProfileGuid = NewIdentity(): r!DisplayName = name: r.Update: r.Bookmark = r.LastModified
     AddContributor = r!UserProfileID: r.Close: Set r = Nothing
 End Function
 Public Sub RequireContributorSwitch()
-    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4815, , "Retry or discard pending comparison cells before switching contributors."
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1803, , "Close the draft editor and review comments before switching contributors."
-    If DCount("*", "Workspace", "WorkspaceID=1") <> 1 Then Err.Raise 5, , "Complete workspace setup first."
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4815, "modRouting.RequireContributorSwitch", "Retry or discard pending comparison cells before switching contributors."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1803, "modRouting.RequireContributorSwitch", "Close the draft editor and review comments before switching contributors."
+    If DCount("*", "Workspace", "WorkspaceID=1") <> 1 Then Err.Raise 5, "modRouting.RequireContributorSwitch", "Complete workspace setup first."
 End Sub
 Public Function SwitchContributor(ByVal profileID As Long) As Boolean
     RequireContributorSwitch
-    If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, , "Select an existing contributor."
+    If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.SwitchContributor", "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError
     BindActiveContributor profileID
     UXLoadContext
@@ -42,16 +42,16 @@ Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As L
     Dim r As DAO.Recordset, w As DAO.Workspace, db As DAO.Database, trans As Boolean, id As Long, pid As Long, failure As Long, message As String, stage As String
     On Error GoTo Failed
     pid = RouteProfile()
-    If DCount("*", "UserProfile", "UserProfileID=" & assigneeID) = 0 Then Err.Raise vbObjectError + 1804, , "Select an existing reviewer."
+    If DCount("*", "UserProfile", "UserProfileID=" & assigneeID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.AssignReview", "Select an existing reviewer."
     If Not IsNull(due) Then due = DateValue(due)
     stage = "Begin assignment"
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 1805, , "Select a saved report."
-    If r!IsArchived Or r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 1806, , "Review assignment requires an active draft."
-    If Nz(r!CurrentRevisionID, 0) <> expectedRevision Or expectedRevision = 0 Then Err.Raise vbObjectError + 1807, , "Saved revision changed. Refresh before assigning."
+    If r.EOF Then Err.Raise vbObjectError + 1805, "modRouting.AssignReview", "Select a saved report."
+    If r!IsArchived Or r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 1806, "modRouting.AssignReview", "Review assignment requires an active draft."
+    If Nz(r!CurrentRevisionID, 0) <> expectedRevision Or expectedRevision = 0 Then Err.Raise vbObjectError + 1807, "modRouting.AssignReview", "Saved revision changed. Refresh before assigning."
     r.Close: Set r = Nothing
-    If RouteValue(db, "SELECT Count(*) FROM ReviewTask WHERE ReportID=" & reportID & " AND TaskState='Pending'") > 0 Then Err.Raise vbObjectError + 1808, , "Finish or cancel the pending review before assigning another."
+    If RouteValue(db, "SELECT Count(*) FROM ReviewTask WHERE ReportID=" & reportID & " AND TaskState='Pending'") > 0 Then Err.Raise vbObjectError + 1808, "modRouting.AssignReview", "Finish or cancel the pending review before assigning another."
     stage = "Write task"
     Set r = db.OpenRecordset("ReviewTask", dbOpenDynaset)
     r.AddNew: r!TaskGuid = NewIdentity(): r!ReportID = reportID: r!RevisionID = expectedRevision
@@ -62,12 +62,13 @@ Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As L
     stage = "Commit assignment"
     w.CommitTrans: trans = False: AssignReview = id: Exit Function
 Failed:
-    failure = Err.Number: message = stage & ": " & Err.Description
-    On Error Resume Next
-    If trans Then w.Rollback
-    If Not r Is Nothing Then r.Close: Set r = Nothing
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRouting", "AssignReview", stage, Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
+    If trans Then SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r": Set r = Nothing
     On Error GoTo 0
-    Err.Raise failure, "AssignReview", message
+    SwiftRaise swiftPrimary
 End Function
 Private Sub RouteEvent(ByVal db As DAO.Database, ByVal taskID As Long, ByVal authorID As Long, ByVal kind As String, ByVal notes As String)
     Dim r As DAO.Recordset
@@ -79,30 +80,31 @@ Public Function FinishReview(ByVal taskID As Long, ByVal outcome As String, ByVa
     Dim r As DAO.Recordset, w As DAO.Workspace, db As DAO.Database, pid As Long, trans As Boolean, failure As Long, message As String
     On Error GoTo Failed
     pid = RouteProfile()
-    If outcome <> "Accepted" And outcome <> "Returned" And outcome <> "Cancelled" Then Err.Raise vbObjectError + 1809, , "Choose an available review outcome."
-    If outcome = "Returned" And Len(Trim$(Replace(Replace(Replace(notes, vbCr, ""), vbLf, ""), vbTab, ""))) = 0 Then Err.Raise vbObjectError + 1810, , "Explain why the review is returned."
+    If outcome <> "Accepted" And outcome <> "Returned" And outcome <> "Cancelled" Then Err.Raise vbObjectError + 1809, "modRouting.FinishReview", "Choose an available review outcome."
+    If outcome = "Returned" And Len(Trim$(Replace(Replace(Replace(notes, vbCr, ""), vbLf, ""), vbTab, ""))) = 0 Then Err.Raise vbObjectError + 1810, "modRouting.FinishReview", "Explain why the review is returned."
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     Set r = db.OpenRecordset("SELECT * FROM ReviewTask WHERE TaskID=" & taskID, dbOpenDynaset)
-    If r.EOF Then Err.Raise vbObjectError + 1811, , "Select a review assignment."
-    If r!TaskState <> "Pending" Then Err.Raise vbObjectError + 1812, , "This review already has an outcome."
+    If r.EOF Then Err.Raise vbObjectError + 1811, "modRouting.FinishReview", "Select a review assignment."
+    If r!TaskState <> "Pending" Then Err.Raise vbObjectError + 1812, "modRouting.FinishReview", "This review already has an outcome."
     If outcome = "Cancelled" Then
-        If pid <> r!RequestedBy Then Err.Raise vbObjectError + 1813, , "Switch to the requesting contributor to cancel this assignment."
+        If pid <> r!RequestedBy Then Err.Raise vbObjectError + 1813, "modRouting.FinishReview", "Switch to the requesting contributor to cancel this assignment."
     Else
-        If pid <> r!AssignedTo Then Err.Raise vbObjectError + 1814, , "Switch to the assigned reviewer to record an outcome."
-        If Nz(RouteValue(db, "SELECT IsArchived FROM Report WHERE ReportID=" & r!ReportID), True) Then Err.Raise vbObjectError + 1815, , "Archived reports cannot receive review outcomes."
-        If Nz(RouteValue(db, "SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 1815, , "Reopen local approval before recording review outcomes."
-        If Nz(RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID), 0) <> r!RevisionID Then Err.Raise vbObjectError + 1816, , "This review is stale. The requester must cancel it and assign the latest saved revision."
+        If pid <> r!AssignedTo Then Err.Raise vbObjectError + 1814, "modRouting.FinishReview", "Switch to the assigned reviewer to record an outcome."
+        If Nz(RouteValue(db, "SELECT IsArchived FROM Report WHERE ReportID=" & r!ReportID), True) Then Err.Raise vbObjectError + 1815, "modRouting.FinishReview", "Archived reports cannot receive review outcomes."
+        If Nz(RouteValue(db, "SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 1815, "modRouting.FinishReview", "Reopen local approval before recording review outcomes."
+        If Nz(RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID), 0) <> r!RevisionID Then Err.Raise vbObjectError + 1816, "modRouting.FinishReview", "This review is stale. The requester must cancel it and assign the latest saved revision."
     End If
     r.Edit: r!TaskState = outcome: r!FinishedAt = Now(): r.Update: r.Close: Set r = Nothing
     Call RouteEvent(db, taskID, pid, outcome, notes)
     w.CommitTrans: trans = False: FinishReview = True: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If Not r Is Nothing Then r.Close: Set r = Nothing
-    If trans Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRouting", "FinishReview", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r": Set r = Nothing
+    If trans Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "FinishReview", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function OpenMyWork(Optional ByVal reportID As Long = 0) As Boolean
     Dim wasLoaded As Boolean

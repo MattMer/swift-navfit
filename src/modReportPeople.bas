@@ -31,18 +31,18 @@ Private Function ReportingIdentifierDigits(ByVal value As String) As Boolean
 End Function
 Public Function ValidateReportPeople(ByVal values As Variant) As Variant
     Dim i As Long, keys As Variant, limits As Variant
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2900, , "Reporting contact and rater details require thirteen text or null entries."
-    If LBound(values) <> 0 Or UBound(values) <> 12 Then Err.Raise vbObjectError + 2900, , "Reporting contact and rater details require thirteen text or null entries."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2900, "modReportPeople.ValidateReportPeople", "Reporting contact and rater details require thirteen text or null entries."
+    If LBound(values) <> 0 Or UBound(values) <> 12 Then Err.Raise vbObjectError + 2900, "modReportPeople.ValidateReportPeople", "Reporting contact and rater details require thirteen text or null entries."
     keys = ReportPeopleKeys(): limits = CatalogueFieldLimits(keys)
     For i = 0 To 12
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2901, , ReportPeopleLabel(keys(i)) & " must be text or null."
-            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 2902, , ReportPeopleLabel(keys(i)) & " exceeds " & limits(i) & " characters; no truncation is performed."
-            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2903, , ReportPeopleLabel(keys(i)) & " must be single-line without tabs."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2901, "modReportPeople.ValidateReportPeople", ReportPeopleLabel(keys(i)) & " must be text or null."
+            If Len(values(i)) > limits(i) Then Err.Raise vbObjectError + 2902, "modReportPeople.ValidateReportPeople", ReportPeopleLabel(keys(i)) & " exceeds " & limits(i) & " characters; no truncation is performed."
+            If InStr(values(i), vbCr) > 0 Or InStr(values(i), vbLf) > 0 Or InStr(values(i), vbTab) > 0 Then Err.Raise vbObjectError + 2903, "modReportPeople.ValidateReportPeople", ReportPeopleLabel(keys(i)) & " must be single-line without tabs."
             If i < 2 Then
-                If Not ReportingIdentifierDigits(CStr(values(i))) Then Err.Raise vbObjectError + 2904, , ReportPeopleLabel(keys(i)) & " accepts digits only. Leading zeros are retained."
+                If Not ReportingIdentifierDigits(CStr(values(i))) Then Err.Raise vbObjectError + 2904, "modReportPeople.ValidateReportPeople", ReportPeopleLabel(keys(i)) & " accepts digits only. Leading zeros are retained."
             ElseIf (i = 10 Or i = 12) And Len(values(i)) > 0 Then
-                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2905, , ReportPeopleLabel(keys(i)) & " must be a real yyyy-mm-dd date or blank."
+                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2905, "modReportPeople.ValidateReportPeople", ReportPeopleLabel(keys(i)) & " must be a real yyyy-mm-dd date or blank."
             End If
         End If
     Next
@@ -66,9 +66,9 @@ Public Function ReportPeopleFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 12
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 18 Then r.Close: Err.Raise vbObjectError + 2904, , "Reporting contact and rater details snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 18 Then r.Close: Err.Raise vbObjectError + 2904, "modReportPeople.ReportPeopleFromRevision", "Reporting contact and rater details snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2905, , "Reporting contact and rater details snapshot has inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2905, "modReportPeople.ReportPeopleFromRevision", "Reporting contact and rater details snapshot has inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close
@@ -77,7 +77,7 @@ Public Function ReportPeopleFromRevision(ByVal revisionID As Long) As Variant
 End Function
 Public Function OpenReportPeople() As Boolean
     Dim key As Variant
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2906, , "Open a draft first."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2906, "modReportPeople.OpenReportPeople", "Open a draft first."
     DoCmd.OpenForm "frmReportPeople"
     For Each key In ReportPeopleKeys()
         Forms!frmReportPeople.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
@@ -87,7 +87,7 @@ Public Function OpenReportPeople() As Boolean
 End Function
 Public Function ApplyReportPeople() As Boolean
     Dim key As Variant
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2907, , "Recover the archived draft before editing."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2907, "modReportPeople.ApplyReportPeople", "Recover the archived draft before editing."
     'Transfer raw pending values; full validation occurs at the atomic draft save.
     For Each key In ReportPeopleKeys()
         Forms!frmEditor.Controls("txt" & key) = Forms!frmReportPeople.Controls("txt" & key).Value

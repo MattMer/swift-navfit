@@ -14,13 +14,13 @@ Private Declare PtrSafe Function CryptDestroyKey Lib "advapi32" (ByVal key As Lo
 Private Function Digest(ByRef data() As Byte, ByVal count As Long, ByVal algorithm As Long, ByVal size As Long) As Byte()
     Dim provider As LongPtr, hash As LongPtr, result() As Byte, failure As Long, message As String
     On Error GoTo Failed
-    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise 5, , "Windows hashing unavailable."
-    If CryptCreateHash(provider, algorithm, 0, 0, hash) = 0 Then Err.Raise 5, , "Cannot initialize PDF hashing."
+    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise 5, "modPDFCrypto.Digest", "Windows hashing unavailable."
+    If CryptCreateHash(provider, algorithm, 0, 0, hash) = 0 Then Err.Raise 5, "modPDFCrypto.Digest", "Cannot initialize PDF hashing."
     If count > 0 Then
-        If CryptHashData(hash, data(0), count, 0) = 0 Then Err.Raise 5, , "Cannot hash PDF bytes."
+        If CryptHashData(hash, data(0), count, 0) = 0 Then Err.Raise 5, "modPDFCrypto.Digest", "Cannot hash PDF bytes."
     End If
     ReDim result(0 To size - 1)
-    If CryptGetHashParam(hash, 2, result(0), size, 0) = 0 Then Err.Raise 5, , "Cannot read PDF hash."
+    If CryptGetHashParam(hash, 2, result(0), size, 0) = 0 Then Err.Raise 5, "modPDFCrypto.Digest", "Cannot read PDF hash."
     Digest = result
     CryptDestroyHash hash: CryptReleaseContext provider, 0: Exit Function
 Failed:
@@ -39,7 +39,7 @@ Private Function MD5(ByRef data() As Byte, ByVal count As Long) As Byte()
 End Function
 Public Function PDFBinaryBytes(ByVal text As String) As Byte()
     Dim data() As Byte, i As Long
-    If Len(text) = 0 Then Err.Raise 5, , "Missing PDF byte string."
+    If Len(text) = 0 Then Err.Raise 5, "modPDFCrypto.PDFBinaryBytes", "Missing PDF byte string."
     ReDim data(0 To Len(text) - 1)
     For i = 1 To Len(text): data(i - 1) = AscW(Mid$(text, i, 1)): Next
     PDFBinaryBytes = data
@@ -68,9 +68,9 @@ End Function
 Public Function PDFEmptyPasswordKey(ByVal revision As Long, ByVal bits As Long, ByVal permissions As Long, ByVal owner As String, ByVal user As String, ByVal documentID As String, ByVal metadata As Boolean) As Byte()
     Dim pad As Variant, buffer() As Byte, digestBytes() As Byte, key() As Byte, probe() As Byte, roundKey() As Byte
     Dim i As Long, j As Long, count As Long, size As Long, unsigned As Double
-    If revision < 2 Or revision > 4 Or bits < 40 Or bits > 128 Or bits Mod 8 <> 0 Then Err.Raise 5, , "Unsupported PDF encryption revision."
-    If (permissions And 16) = 0 Then Err.Raise 5, , "This PDF does not permit data extraction."
-    If Len(owner) <> 32 Or Len(user) <> 32 Or Len(documentID) = 0 Then Err.Raise 5, , "Invalid PDF security dictionary."
+    If revision < 2 Or revision > 4 Or bits < 40 Or bits > 128 Or bits Mod 8 <> 0 Then Err.Raise 5, "modPDFCrypto.PDFEmptyPasswordKey", "Unsupported PDF encryption revision."
+    If (permissions And 16) = 0 Then Err.Raise 5, "modPDFCrypto.PDFEmptyPasswordKey", "This PDF does not permit data extraction."
+    If Len(owner) <> 32 Or Len(user) <> 32 Or Len(documentID) = 0 Then Err.Raise 5, "modPDFCrypto.PDFEmptyPasswordKey", "Invalid PDF security dictionary."
     pad = Array(40, 191, 78, 94, 78, 117, 138, 65, 100, 0, 78, 86, 255, 250, 1, 8, 46, 46, 0, 182, 208, 104, 62, 128, 47, 12, 169, 254, 100, 83, 105, 122)
     count = 68 + Len(documentID): If revision >= 4 And Not metadata Then count = count + 4
     ReDim buffer(0 To count - 1)
@@ -103,7 +103,7 @@ Public Function PDFEmptyPasswordKey(ByVal revision As Long, ByVal bits As Long, 
         count = 16
     End If
     For i = 0 To count - 1
-        If probe(i) <> AscW(Mid$(user, i + 1, 1)) Then Err.Raise 5, , "Password-protected PDF: local import supports forms that open without a password."
+        If probe(i) <> AscW(Mid$(user, i + 1, 1)) Then Err.Raise 5, "modPDFCrypto.PDFEmptyPasswordKey", "Password-protected PDF: local import supports forms that open without a password."
     Next
     PDFEmptyPasswordKey = key
 End Function
@@ -121,19 +121,19 @@ Public Function PDFDecryptObject(ByRef source() As Byte, ByRef fileKey() As Byte
     digestBytes = MD5(buffer, count): size = size + 5: If size > 16 Then size = 16
     ReDim keyBytes(0 To size - 1): For i = 0 To size - 1: keyBytes(i) = digestBytes(i): Next
     If method = "V2" Then PDFDecryptObject = RC4(source, keyBytes): Exit Function
-    If method <> "AESV2" Or size <> 16 Then Err.Raise 5, , "Unsupported PDF encryption filter."
+    If method <> "AESV2" Or size <> 16 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Unsupported PDF encryption filter."
     count = UBound(source) + 1
-    If count < 32 Or count Mod 16 <> 0 Then Err.Raise 5, , "Invalid encrypted PDF packet length."
+    If count < 32 Or count Mod 16 <> 0 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Invalid encrypted PDF packet length."
     For i = 0 To 15: iv(i) = source(i): Next
     count = count - 16: ReDim result(0 To count - 1)
     For i = 0 To count - 1: result(i) = source(i + 16): Next
     blob(0) = 8: blob(1) = 2: blob(4) = 14: blob(5) = 102: blob(8) = 16
     For i = 0 To 15: blob(12 + i) = keyBytes(i): Next
-    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise 5, , "Windows PDF decryption unavailable."
-    If CryptImportKey(provider, blob(0), 28, 0, 0, key) = 0 Then Err.Raise 5, , "Cannot initialize PDF packet key."
+    If CryptAcquireContextW(provider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Windows PDF decryption unavailable."
+    If CryptImportKey(provider, blob(0), 28, 0, 0, key) = 0 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Cannot initialize PDF packet key."
     mode = 1
-    If CryptSetKeyParam(key, 4, mode, 0) = 0 Or CryptSetKeyParam(key, 1, iv(0), 0) = 0 Then Err.Raise 5, , "Cannot initialize PDF packet cipher."
-    If CryptDecrypt(key, 0, 1, 0, result(0), count) = 0 Or count = 0 Then Err.Raise 5, , "Invalid encrypted PDF packet."
+    If CryptSetKeyParam(key, 4, mode, 0) = 0 Or CryptSetKeyParam(key, 1, iv(0), 0) = 0 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Cannot initialize PDF packet cipher."
+    If CryptDecrypt(key, 0, 1, 0, result(0), count) = 0 Or count = 0 Then Err.Raise 5, "modPDFCrypto.PDFDecryptObject", "Invalid encrypted PDF packet."
     ReDim Preserve result(0 To count - 1): PDFDecryptObject = result
     CryptDestroyKey key: CryptReleaseContext provider, 0: Exit Function
 Failed:

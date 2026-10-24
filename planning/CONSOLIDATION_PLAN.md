@@ -303,3 +303,27 @@ PROPOSED_PURGE/              review-held originals and hash inventories
 Final housekeeping: all 27 checked document link sets resolve; editor diagnostics
 and diff whitespace checks pass (line-ending warnings only). Access process count
 is zero. Existing unrelated edits remain local; no commit, push or upload was made.
+
+## M04–M06 source and consumer audit
+
+| Area | Authoritative producer and consumers | Preservation boundary |
+| --- | --- | --- |
+| Error identities and cleanup | Explicit raises retain numeric codes and identify their module/procedure. Shared helpers in `modOperations` capture original failure context; transactional services use caught rollback/close/journal cleanup. | Primary errors remain distinct from secondary cleanup failures. Redacted surfaced diagnostics and failed journal outcomes do not create raw identifier logs. Successful audit/history writes remain unchanged. |
+| Required views and callbacks | `modUX` owns critical view contracts; canonical field metadata supplies editor control names. The existing installed verifier audits actual controls, literal references, form/report events and macro callbacks against installed source/generators. | Optional compatibility probes remain optional. Missing/renamed required controls and wrong callbacks fail explicitly; no parallel UI implementation or geometry change is introduced. |
+| Trait wording and provenance | The reviewed `trait-catalogue.json` seeds `TraitDefinition`; the existing generator emits identity/accessors instead of wording branches. Trait guidance, validation labels, revision comparison and existing PDF output use those accessors. | All 21 traits, general guidance, six mark entries and source references remain exact. Display-only title line-break removal remains deliberate. Catalogue descriptions are not authored Chief comments; H01 correction scope remains separate. |
+
+The source inventory started with 111 `On Error Resume Next` sites; 48 remain
+after removing redundant suppression around caught cleanup and narrowing focus/UI
+probes. The diagnostics runner writes every remaining site with module, procedure
+and line, plus raise/reused-code inventories, into its local evidence folder.
+Remaining scopes cover optional active-control/text/property lookups, best-effort
+owned resource/UI restoration, derived-cache teardown and noncritical progress
+painting. They do not authorize new swallowed domain writes. Native forced failures
+exercise rollback, retry, cleanup failure, diagnostic redaction and UI outcome text.
+
+The older trait-retry harness failed after assertion 24 on both the unchanged
+0.32.0 baseline and the candidate because reopening relied on a workbench host
+that unified Members closes. Its reopen step now uses the canonical group-aware
+Members entry point; all 26 assertions are retained. Failure cleanup no longer
+attempts DDL on an open test table, and the runner preserves the primary result
+if process cleanup also fails. This is fixture repair, not a relaxed save guard.

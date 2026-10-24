@@ -74,7 +74,7 @@ Public Function PDFOutputBrowseFolder() As Boolean
     dialog.Title = "Choose the folder for this PDF export"
     If dialog.Show <> -1 Then Exit Function
     folder = dialog.SelectedItems(1)
-    If Not CreateObject("Scripting.FileSystemObject").FolderExists(folder) Then Err.Raise 76, , "Choose an existing folder."
+    If Not CreateObject("Scripting.FileSystemObject").FolderExists(folder) Then Err.Raise 76, "modPDFOutputUI.PDFOutputBrowseFolder", "Choose an existing folder."
     Forms!frmPDFOutput!txtFolder = folder: PDFOutputRememberFolder folder
     PDFOutputBrowseFolder = True: Exit Function
 Failed:

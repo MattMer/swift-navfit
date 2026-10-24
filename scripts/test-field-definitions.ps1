@@ -5,7 +5,7 @@ $catalogue=Get-Content (Join-Path $root 'src/field-definitions.json') -Raw|Conve
 $fields=@($catalogue.fields|Sort-Object ordinal)
 $checks=0
 function Check([bool]$ok,[string]$message){if(-not $ok){throw $message};$script:checks++}
-Check ($catalogue.catalogueVersion -eq 1) 'Unsupported catalogue version'
+Check ($catalogue.catalogueVersion -eq 2) 'Unsupported catalogue version'
 Check (@($fields.key|Sort-Object -Unique).Count -eq $fields.Count) 'Duplicate field keys'
 Check (@($fields.control|Sort-Object -Unique).Count -eq $fields.Count) 'Duplicate editor controls'
 for($i=0;$i -lt $fields.Count;$i++){
@@ -41,15 +41,26 @@ foreach($layout in $oldLayouts.PSObject.Properties){
 }
 $manifest=Get-Content (Join-Path $root 'scripts/build-manifest.json') -Raw|ConvertFrom-Json
 Check ($manifest.inputs -contains 'src/field-definitions.json') 'Canonical catalogue is not fingerprinted'
+$chief=@($fields|Where-Object {$_.key -match '^Trait(3[3-9])Comment([123])$'})
+Check ($chief.Count -eq 21) 'Chief comments must contain three independent fields per trait'
+$prefixes=@('LEAD','TAC','PROF','MIS','EO','TEAM','MIL')
+foreach($field in $chief){
+    [void]($field.key -match '^Trait(3[3-9])Comment([123])$');$block=[int]$Matches[1];$entry=[int]$Matches[2]
+    Check ($field.storageType -eq 'LONGTEXT' -and $field.definitionVersion -eq 2 -and $field.multiline -and ($field.forms -join '|') -eq 'CHIEFEVAL') ('Chief comment storage/applicability differs: '+$field.key)
+    Check ($field.bindings.CHIEFEVAL.navfit[0].source -ceq ($prefixes[$block-33]+'DN'+$entry)) ('Chief native comment order differs: '+$field.key)
+    Check ($field.bindings.EVAL.navfit.Count -eq 0 -and $field.bindings.FITREP.navfit.Count -eq 0) ('Chief comments leaked into another native kind: '+$field.key)
+    $row=$catalogue.fixedLayout.'CHIEFEVAL:0'.fields|Where-Object key -eq $field.key
+    Check ($row.y -eq 10380+($block-33)*620 -and $row.x -eq 5550+($entry-1)*2070) ('Chief comment group moved: '+$field.key)
+}
 Write-Output ('PASS: '+$checks+' canonical definitions, exact adapter bindings and fixed-geometry checks')
 if($BuildPath){
     $before=(Get-FileHash -LiteralPath $BuildPath).Hash
     $fixture=Join-Path $root ('build/tests/catalogue-extension-'+[guid]::NewGuid())
     [void](New-Item -ItemType Directory -Path (Join-Path $fixture 'src'))
     [void](New-Item -ItemType Directory -Path (Join-Path $fixture 'build'))
-    $catalogue.catalogueVersion=2
-    $extra=[pscustomobject]@{key='CatalogueTestValue';ordinal=$fields.Count;definitionVersion=2;storageType='TEXT(40)';label='Synthetic catalogue field';control='txtCatalogueTestValue';recoveryKey='CatalogueTestValue';section=7;block='';limit=40;date=$false;digits=$null;options=$null;multiline=$false;bindings=[pscustomobject]@{EVAL=$null;CHIEFEVAL=$null;FITREP=$null}}
-    $extraDate=[pscustomobject]@{key='CatalogueTestDate';ordinal=($fields.Count+1);definitionVersion=2;storageType='DATETIME';label='Synthetic catalogue date';control='txtCatalogueTestDate';recoveryKey='CatalogueTestDate';section=7;block='';limit=10;date=$true;digits=$null;options=$null;multiline=$false;bindings=[pscustomobject]@{EVAL=$null;CHIEFEVAL=$null;FITREP=$null}}
+    $catalogue.catalogueVersion++
+    $extra=[pscustomobject]@{key='CatalogueTestValue';ordinal=$fields.Count;definitionVersion=$catalogue.catalogueVersion;storageType='TEXT(40)';label='Synthetic catalogue field';control='txtCatalogueTestValue';recoveryKey='CatalogueTestValue';section=7;block='';limit=40;date=$false;digits=$null;options=$null;multiline=$false;bindings=[pscustomobject]@{EVAL=$null;CHIEFEVAL=$null;FITREP=$null}}
+    $extraDate=[pscustomobject]@{key='CatalogueTestDate';ordinal=($fields.Count+1);definitionVersion=$catalogue.catalogueVersion;storageType='DATETIME';label='Synthetic catalogue date';control='txtCatalogueTestDate';recoveryKey='CatalogueTestDate';section=7;block='';limit=10;date=$true;digits=$null;options=$null;multiline=$false;bindings=[pscustomobject]@{EVAL=$null;CHIEFEVAL=$null;FITREP=$null}}
     $catalogue.fields+=@($extra,$extraDate)
     $catalogue|ConvertTo-Json -Depth 40|Set-Content (Join-Path $fixture 'src/field-definitions.json') -Encoding UTF8
     foreach($file in @('trait-catalogue.json','modUX.bas')){Copy-Item -LiteralPath (Join-Path $root ('src/'+$file)) -Destination (Join-Path $fixture ('src/'+$file))}

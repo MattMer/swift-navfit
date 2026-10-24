@@ -204,7 +204,7 @@ Public Sub VerifyNativeGroupSummary(ByVal db As DAO.Database, ByVal preview As O
  Do While Not r.EOF
   i = 1
   For Each key In Array("SummarySP", "SummaryProg", "SummaryProm", "SummaryMP", "SummaryEP")
-   If Nz(r.Fields(CStr(key)), "") <> CStr(preview("Count" & i)) Then r.Close: Err.Raise vbObjectError + 8410, , "Native summary counts differ from the exported saved roster. Nothing published."
+   If Nz(r.Fields(CStr(key)), "") <> CStr(preview("Count" & i)) Then r.Close: Err.Raise vbObjectError + 8410, "modValidationExpansion.VerifyNativeGroupSummary", "Native summary counts differ from the exported saved roster. Nothing published."
    i = i + 1
   Next
   r.MoveNext

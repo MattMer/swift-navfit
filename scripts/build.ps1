@@ -96,6 +96,11 @@ try {
     $majorSchema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw | ConvertFrom-Json
     $definitions += $majorSchema.SQL
     foreach ($sql in $definitions) { try { $swiftBaseDatabase.Execute($sql,128) } catch { throw ($sql + "`n" + $_.Exception.Message) } }
+    foreach($definition in $majorSchema.Queries){
+        $query=$swiftBaseDatabase.CreateQueryDef($definition.Name,$definition.SQL)
+        $query.Properties.Append($query.CreateProperty('Description',10,$definition.Description))
+        $query.Close()
+    }
     $swiftBaseDatabase.TableDefs('RevisionDate').ValidationRule = "[FieldKey] In ('DateReported','CounselingDate','RaterDate','SeniorRaterDate','ReadinessDate') And (([DateState]='Date' And [DateValue] Is Not Null) Or ([DateState] In ('Missing','Blank','Unknown') And [DateValue] Is Null) Or ([FieldKey]='CounselingDate' And [DateState] In ('NOT REQ','NOT PERF') And [DateValue] Is Null))"
     $swiftBaseDatabase.TableDefs('RevisionChoice').ValidationRule = "[ChoiceKind] In ('Retention','Statement') And [ChoiceValue] In ('Yes','No','Unspecified','Conflict','Unknown')"
     $auditPointers=@('RevisionSourceID','ReportEventSourceID','FolderMoveSourceID','CommentEventSourceID','TaskEventSourceID','JournalSourceID','MessageSourceID')
@@ -129,7 +134,7 @@ try {
         $app.LoadFromText(5,[IO.Path]::GetFileNameWithoutExtension($sourceModule),(Join-Path $root $sourceModule))
     }
     $navTraitModule=Join-Path $root ('build/trait-catalogue-'+[guid]::NewGuid()+'.bas')
-    & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath $navTraitModule
+    & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath $navTraitModule -Application $app
     $app.LoadFromText(5,'modTraitCatalogue',$navTraitModule)
     function Control($f,$type,$name,$x,$y,$w,$h,$caption='',$event='') {
         $c = $app.CreateControl($f.Name,$type,0,'','',$x,$y,$w,$h)
@@ -312,6 +317,12 @@ try {
     [void](Control $f 104 'cmdPartyNames' 8800 6750 4200 400 'Structured names' '=OpenPartyNames()')
     foreach($nameKey in @('MemberFirstName','MemberMiddleInitial','MemberLastName','MemberSuffix','ReportingSeniorLastName','ReportingSeniorFirstInitial','ReportingSeniorMiddleInitial','CounselorLastName','CounselorFirstInitial','CounselorMiddleInitial')){
         Control $f 109 ('txt'+$nameKey) 10 10 100 100; $script:swiftControl.Visible=$false
+    }
+    # Appended catalogue fields use the same unbound editor/recovery buffer.
+    foreach($field in $canonicalFields | Where-Object {$_.definitionVersion -ge 2}){
+        Control $f 109 $field.control 10 10 100 100
+        $script:swiftControl.Visible=$false
+        $script:swiftControl.EnterKeyBehavior=[bool]$field.multiline
     }
     $f.TimerInterval=30000; $f.OnTimer='=CheckpointEditor()'
     $f.OnLoad='=LoadEditor()'; $f.ScrollBars=2; SaveScreen $f 'frmEditor'

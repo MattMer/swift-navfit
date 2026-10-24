@@ -21,10 +21,11 @@ Rejected:
 End Function
 Private Function SeedViewerFixture() As Long
     Dim db As DAO.Database, table As DAO.TableDef, r As DAO.Recordset
-    Dim reportID As Long, receiptIDs(1 To 2) As Long, i As Long
+    Dim reportID As Long, receiptIDs(1 To 2) As Long, i As Long, referenceData As Boolean
     Set db = CurrentDb
+    referenceData = DLookup("SchemaVersion", "AppMetadata") >= 31
     For Each table In db.TableDefs
-        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" And Not (referenceData And table.Name = "TraitDefinition") Then
             If DCount("*", "[" & table.Name & "]") > 0 Then Err.Raise vbObjectError + 1651, , "Provenance viewer fixture requires a blank test copy."
         End If
     Next

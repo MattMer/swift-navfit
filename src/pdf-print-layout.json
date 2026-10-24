@@ -3690,55 +3690,84 @@
                 128.828,
                 335.828,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation33",
+              "target": "@Grade33",
+              "rule": "text",
+              "selector": "",
+              "box": [127.417, 352.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 414.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "TECHNUMBER",
+              "target": "Trait33",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.828,
+                421.028,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "TECHFONTB1",
-              "target": "@Trait33Description1",
+              "target": "Trait33Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 338.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "TECHFONTB2",
-              "target": "@Trait33Description2",
+              "target": "Trait33Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 374.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "TECHFONTB3",
-              "target": "@Trait33Description3",
+              "target": "Trait33Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 410.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
@@ -3750,55 +3779,98 @@
                 128.828,
                 443.828,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "INSTITUTE_NORMAL_EXPLANATION",
+              "target": "@Grade34",
+              "rule": "text",
+              "selector": "1.0,2.0,3.0",
+              "box": [127.417, 460.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 522.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "INSTITUTE_COMPACT_EXPLANATION",
+              "target": "@Grade34",
+              "rule": "text",
+              "selector": "4.0,5.0",
+              "box": [127.417, 460.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 6,
+              "check": false,
+              "sourceSize": 6.5,
+              "fontDecision": "Native Access whole-point fallback; rich-text proof also rounded. Physical/template acceptance remains open.",
+              "narrowAt": 522.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "INSTITUTENUMBER",
+              "target": "Trait34",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.828,
+                529.028,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "INSTITUTEFONTB1",
-              "target": "@Trait34Description1",
+              "target": "Trait34Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 446.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "INSTITUTEFONTB2",
-              "target": "@Trait34Description2",
+              "target": "Trait34Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 482.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "INSTITUTEFONTB3",
-              "target": "@Trait34Description3",
+              "target": "Trait34Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 518.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
@@ -3810,55 +3882,84 @@
                 128.734,
                 551.938,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation35",
+              "target": "@Grade35",
+              "rule": "text",
+              "selector": "",
+              "box": [127.323, 568.527, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 630.11,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "PROFNUMBER",
+              "target": "Trait35",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.734,
+                637.138,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "PROFFFONTB1",
-              "target": "@Trait35Description1",
+              "target": "Trait35Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 554.859,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "PROFFFONTB2",
-              "target": "@Trait35Description2",
+              "target": "Trait35Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 590.859,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "PROFFFONTB3",
-              "target": "@Trait35Description3",
+              "target": "Trait35Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 626.859,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
@@ -3870,55 +3971,84 @@
                 128.812,
                 659.828,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation36",
+              "target": "@Grade36",
+              "rule": "text",
+              "selector": "",
+              "box": [127.401, 676.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 738.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "INTEGNUMBER",
+              "target": "Trait36",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.812,
+                745.028,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "INTEGFONTB1",
-              "target": "@Trait36Description1",
+              "target": "Trait36Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 662.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "INTEGFONTB2",
-              "target": "@Trait36Description2",
+              "target": "Trait36Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 698.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "INTEGFONTB3",
-              "target": "@Trait36Description3",
+              "target": "Trait36Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 734.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             }
           ]
@@ -3999,55 +4129,84 @@
                 128.766,
                 83.672,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation37",
+              "target": "@Grade37",
+              "rule": "text",
+              "selector": "",
+              "box": [127.355, 100.261, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 161.844,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "ACCNUMBER",
+              "target": "Trait37",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.766,
+                168.872,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "ACCFONTB1",
-              "target": "@Trait37Description1",
+              "target": "Trait37Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 86.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "ACCFONTB2",
-              "target": "@Trait37Description2",
+              "target": "Trait37Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 122.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "ACCFONTB3",
-              "target": "@Trait37Description3",
+              "target": "Trait37Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 158.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
@@ -4059,55 +4218,84 @@
                 128.828,
                 191.828,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation38",
+              "target": "@Grade38",
+              "rule": "text",
+              "selector": "",
+              "box": [127.417, 208.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 270.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "DECKNUMBER",
+              "target": "Trait38",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.828,
+                277.028,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "DECKFONTB1",
-              "target": "@Trait38Description1",
+              "target": "Trait38Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 194.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "DECKFONTB2",
-              "target": "@Trait38Description2",
+              "target": "Trait38Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 230.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "DECKFONTB3",
-              "target": "@Trait38Description3",
+              "target": "Trait38Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 266.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
@@ -4119,55 +4307,84 @@
                 128.828,
                 299.828,
                 111.344,
-                30
+                14
+              ],
+              "font": "Times New Roman",
+              "size": 8,
+              "check": false,
+              "bold": true
+            },
+            {
+              "source": "GradeExplanation39",
+              "target": "@Grade39",
+              "rule": "text",
+              "selector": "",
+              "box": [127.417, 316.417, 114.166, 87.5],
+              "font": "Times New Roman",
+              "size": 7,
+              "check": false,
+              "narrowAt": 378.0,
+              "narrowWidth": 87.083
+            },
+            {
+              "source": "TEAMNUMBER",
+              "target": "Trait39",
+              "rule": "chief-mark",
+              "selector": "",
+              "box": [
+                218.828,
+                385.028,
+                21.344,
+                14
               ],
               "font": "Times New Roman",
               "size": 10,
-              "check": false
+              "check": false,
+              "bold": true
             },
             {
               "source": "TEAMFONTB1",
-              "target": "@Trait39Description1",
+              "target": "Trait39Comment1",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 302.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "TEAMFONTB2",
-              "target": "@Trait39Description2",
+              "target": "Trait39Comment2",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 338.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {
               "source": "TEAMFONTB3",
-              "target": "@Trait39Description3",
+              "target": "Trait39Comment3",
               "rule": "text",
               "selector": "",
               "box": [
                 246.594,
                 374.75,
                 343.812,
-                27.375
+                29.0
               ],
               "font": "Times New Roman",
-              "size": 10,
+              "size": 12,
               "check": false
             },
             {

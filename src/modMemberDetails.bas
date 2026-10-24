@@ -34,22 +34,22 @@ Invalid:
 End Function
 Public Function ValidateMemberDetails(ByVal values As Variant) As Variant
     Dim i As Long, choice As Variant, allowed As Boolean, limit As Long
-    If Not IsArray(values) Then Err.Raise vbObjectError + 2600, , "Member details require seven text or null entries."
-    If LBound(values) <> 0 Or UBound(values) <> 6 Then Err.Raise vbObjectError + 2600, , "Member details require seven text or null entries."
+    If Not IsArray(values) Then Err.Raise vbObjectError + 2600, "modMemberDetails.ValidateMemberDetails", "Member details require seven text or null entries."
+    If LBound(values) <> 0 Or UBound(values) <> 6 Then Err.Raise vbObjectError + 2600, "modMemberDetails.ValidateMemberDetails", "Member details require seven text or null entries."
     For i = 0 To 6
         If Not IsNull(values(i)) Then
-            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2601, , "Member details must be text or null."
+            If VarType(values(i)) <> vbString Then Err.Raise vbObjectError + 2601, "modMemberDetails.ValidateMemberDetails", "Member details must be text or null."
             If i < 2 Then
                 If i = 0 Then limit = UXFieldLimit("MemberSSN") Else limit = UXFieldLimit("MemberDoDID")
-                If Len(values(i)) > limit Or Not DigitsOnly(CStr(values(i))) Then Err.Raise vbObjectError + 2602, , "Identifiers accept digits only, up to their storage capacity. Leading zeros remain intact; no formatting or truncation is performed."
+                If Len(values(i)) > limit Or Not DigitsOnly(CStr(values(i))) Then Err.Raise vbObjectError + 2602, "modMemberDetails.ValidateMemberDetails", "Identifiers accept digits only, up to their storage capacity. Leading zeros remain intact; no formatting or truncation is performed."
             ElseIf i < 6 Then
                 allowed = False
                 For Each choice In Array("", "Yes", "No")
                     If values(i) = choice Then allowed = True
                 Next
-                If Not allowed Then Err.Raise vbObjectError + 2603, , "Choose Yes, No or blank for each component selection."
+                If Not allowed Then Err.Raise vbObjectError + 2603, "modMemberDetails.ValidateMemberDetails", "Choose Yes, No or blank for each component selection."
             ElseIf Len(values(i)) > 0 Then
-                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2604, , "Date reported must be a real date in yyyy-mm-dd format, or blank."
+                If Not IsValidIsoDate(CStr(values(i))) Then Err.Raise vbObjectError + 2604, "modMemberDetails.ValidateMemberDetails", "Date reported must be a real date in yyyy-mm-dd format, or blank."
             End If
         End If
     Next
@@ -73,9 +73,9 @@ Public Function MemberDetailsFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 6
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 15 Then r.Close: Err.Raise vbObjectError + 2604, , "Member details snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 15 Then r.Close: Err.Raise vbObjectError + 2604, "modMemberDetails.MemberDetailsFromRevision", "Member details snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
-            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2605, , "Member details snapshot has inconsistent null flag."
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2605, "modMemberDetails.MemberDetailsFromRevision", "Member details snapshot has inconsistent null flag."
             values(i) = r!ValueText
         End If
         r.Close
@@ -84,7 +84,7 @@ Public Function MemberDetailsFromRevision(ByVal revisionID As Long) As Variant
 End Function
 Public Function OpenMemberDetails() As Boolean
     Dim key As Variant
-    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2606, , "Open a draft first."
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2606, "modMemberDetails.OpenMemberDetails", "Open a draft first."
     DoCmd.OpenForm "frmMemberDetails"
     For Each key In MemberDetailsKeys()
         Forms!frmMemberDetails.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
@@ -94,7 +94,7 @@ Public Function OpenMemberDetails() As Boolean
 End Function
 Public Function ApplyMemberDetails() As Boolean
     Dim key As Variant
-    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2607, , "Recover the archived draft before editing."
+    If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2607, "modMemberDetails.ApplyMemberDetails", "Recover the archived draft before editing."
     'Transfer raw pending values; full validation occurs at the atomic draft save.
     For Each key In MemberDetailsKeys()
         Forms!frmEditor.Controls("txt" & key) = Forms!frmMemberDetails.Controls("txt" & key).Value

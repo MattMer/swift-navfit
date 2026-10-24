@@ -1,13 +1,15 @@
-param([string]$BuildPath='D:\Development\Swift NAVFIT\build\ux-r26-final.accdb')
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $dir=Join-Path $root ('build/tests/navfit-adapter-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $dir)
 $original=Join-Path $root 'FORMS_REFERENCES_TEMPLATES/TEST_DB.accdb';$hash=(Get-FileHash -LiteralPath $original).Hash
 $source=Join-Path $dir 'synthetic.accdb'; & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source
 $scratch=Join-Path $dir 'test.accdb';Copy-Item -LiteralPath $BuildPath -Destination $scratch
-$app=New-Object -ComObject Access.Application
+$buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash
+$app=New-Object -ComObject Access.Application;$primary=$null;$cleanup=@()
 try{
+ Write-Output ('Controller: NAVFIT adapter runner; disposable database: '+$scratch)
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
- foreach($m in @('modNAVFITMapping','modNAVFITAdapter','modNAVFITExchange','modImportReview')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}
+ if($InstallSource){foreach($m in @('modNAVFITMapping','modNAVFITAdapter','modNAVFITExchange','modImportReview')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas'))) }}
  $app.LoadFromText(5,'NAVFITAdapterHarness',(Join-Path $root 'tests/NAVFITAdapterHarness.bas'))
  $app.LoadFromText(5,'NAVFITExchangeHarness',(Join-Path $root 'tests/NAVFITExchangeHarness.bas'))
  $app.LoadFromText(5,'NAVFITGuardHarness',(Join-Path $root 'tests/NAVFITGuardHarness.bas'))
@@ -22,6 +24,12 @@ try{
  Write-Output $guards
  $app.CloseCurrentDatabase()
  if((Get-FileHash -LiteralPath $original).Hash -ne $hash){throw 'Source changed'}
- @{Status=$result;ExchangeStatus=$exchange;Guards=$guards;SourceUnchanged=$true;NativeApplicationProof=$false;Directory=$dir}|ConvertTo-Json|Set-Content (Join-Path $dir 'verification.json')
  Write-Output $result
-}finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+}catch{$primary=$_}finally{
+ try{$app.Quit(2)}catch{$cleanup+=$_.Exception.Message}
+ try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}catch{$cleanup+=$_.Exception.Message}
+ if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $buildHash){$cleanup+='Source build changed'}
+}
+if($primary){if($cleanup){Write-Warning ($cleanup -join '; ')};throw $primary}
+if($cleanup){throw ($cleanup -join '; ')}
+@{Status=$result;ExchangeStatus=$exchange;Guards=$guards;SourceUnchanged=$true;BuildSHA256=$buildHash;InstalledSource=[bool]$InstallSource;NativeApplicationProof=$false;Directory=$dir}|ConvertTo-Json|Set-Content (Join-Path $dir 'verification.json')

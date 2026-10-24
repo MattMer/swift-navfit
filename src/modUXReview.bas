@@ -42,7 +42,7 @@ Public Function UXReviewStatus() As Boolean
     If Not editable Then message = "Editing is locked. Reopen local approval with a reason, or recover the archived report first."
     If run > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & run & " AND ReportID=" & id, dbOpenSnapshot)
-        If r.EOF Then r.Close: Err.Raise vbObjectError + 5901, , "Choose a route for this report."
+        If r.EOF Then r.Close: Err.Raise vbObjectError + 5901, "modUXReview.UXReviewStatus", "Choose a route for this report."
         state = r!RunState: current = RouteIsCurrent(run)
         f!txtExpectedRevision = CurrentRevision(id): f!txtExpectedStamp = ""
         If Nz(r!GroupID, 0) > 0 Then f!txtExpectedStamp = GroupStamp(r!GroupID)
@@ -125,38 +125,39 @@ Public Function RestartStaleRoute(ByVal runID As Long, ByVal expectedRevision As
     On Error GoTo Failed
     Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & runID, dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 5902, , "Route no longer exists."
+    If r.EOF Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Route no longer exists."
     id = r!ReportID: template = r!TemplateID: group = Nz(r!GroupID, 0)
-    If r!RequestedBy <> MajorAuthor() Then Err.Raise vbObjectError + 5902, , "Only the requester can restart this route."
-    If (r!RunState <> "Pending" And r!RunState <> "Accepted") Or RouteIsCurrent(runID) Then Err.Raise vbObjectError + 5902, , "Only a stale pending or accepted route can be restarted."
-    If CurrentRevision(id) <> expectedRevision Then Err.Raise vbObjectError + 5902, , "Saved report changed; refresh review before restarting."
+    If r!RequestedBy <> MajorAuthor() Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Only the requester can restart this route."
+    If (r!RunState <> "Pending" And r!RunState <> "Accepted") Or RouteIsCurrent(runID) Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Only a stale pending or accepted route can be restarted."
+    If CurrentRevision(id) <> expectedRevision Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Saved report changed; refresh review before restarting."
     If group > 0 Then
-        If GroupStamp(group) <> expectedStamp Or Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & group), True) Then Err.Raise vbObjectError + 5902, , "Group changed or is archived; refresh or recover it before restarting."
+        If GroupStamp(group) <> expectedStamp Or Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & group), True) Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Group changed or is archived; refresh or recover it before restarting."
     End If
-    If Nz(DLookup("IsArchived", "RouteTemplate", "TemplateID=" & template), True) Then Err.Raise vbObjectError + 5902, , "Recover the route template before restarting."
+    If Nz(DLookup("IsArchived", "RouteTemplate", "TemplateID=" & template), True) Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Recover the route template before restarting."
     r.Close: Set r = Nothing
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
-    If CurrentRevision(id) <> expectedRevision Then Err.Raise vbObjectError + 5902, , "Saved report changed; refresh review before restarting."
+    If CurrentRevision(id) <> expectedRevision Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Saved report changed; refresh review before restarting."
     If group > 0 Then
-        If GroupStamp(group) <> expectedStamp Then Err.Raise vbObjectError + 5902, , "Group changed; refresh review before restarting."
+        If GroupStamp(group) <> expectedStamp Then Err.Raise vbObjectError + 5902, "modUXReview.RestartStaleRoute", "Group changed; refresh review before restarting."
     End If
     db.Execute "UPDATE RouteRun SET RunState='Cancelled' WHERE RunID=" & runID, dbFailOnError
     replacement = StartRoute(id, template, group, False)
     w.CommitTrans: trans = False
     RestartStaleRoute = replacement: Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
-    On Error Resume Next
-    If Not r Is Nothing Then r.Close
-    If trans Then w.Rollback
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUXReview", "RestartStaleRoute", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    failure = CLng(swiftPrimary("Number")): message = CStr(swiftPrimary("Description"))
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    If trans Then SwiftRollback w, swiftPrimary
     On Error GoTo 0
-    Err.Raise failure, "RestartStaleRoute", message
+    SwiftRaise swiftPrimary
 End Function
 Public Function UXReviewAction(ByVal action As String) As Boolean
     Dim f As Access.Form, run As Long, id As Long, group As Long, stamp As String, expected As Long
     On Error GoTo Failed
     UXFlushSurface
-    If EditorHasPending() And action <> "Cancel" Then Err.Raise 5, , "Save or undo pending report changes before recording a review action."
+    If EditorHasPending() And action <> "Cancel" Then Err.Raise 5, "modUXReview.UXReviewAction", "Save or undo pending report changes before recording a review action."
     Set f = UXReviewForm(): run = Nz(f!cboRun, 0): id = Nz(f!txtReportID, 0)
     Select Case action
         Case "Start": f!cboRun = StartRoute(id, Nz(f!cboTemplate, 0), Nz(f!txtGroupID, 0))
@@ -169,7 +170,7 @@ Public Function UXReviewAction(ByVal action As String) As Boolean
         Case "Cancel": CancelRoute run
         Case "Approve": ApproveSavedRoute run, Nz(f!txtNote, "")
         Case "Reopen": ReopenApprovedReport id, Nz(f!txtNote, "")
-        Case Else: Err.Raise vbObjectError + 5903, , "Unknown review action."
+        Case Else: Err.Raise vbObjectError + 5903, "modUXReview.UXReviewAction", "Unknown review action."
     End Select
     Call UXRefreshEditorWorkflow(CLng(f!txtReportID))
     Forms!frmEditor!cmdClose.SetFocus

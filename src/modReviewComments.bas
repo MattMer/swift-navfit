@@ -5,18 +5,18 @@ Option Explicit
 'New adapter results are negative canonical message tokens; namespaces never mix.
 Public Function AddReviewComment(ByVal reportID As Long, ByVal revisionID As Long, ByVal body As String, Optional ByVal threadID As Long = 0) As Long
     Dim parent As Long
-    If PersistenceCount("ReportRevision", "RevisionID=" & revisionID & " AND ReportID=" & reportID) <> 1 Then Err.Raise vbObjectError + 1701, , "Choose a revision belonging to this report."
+    If PersistenceCount("ReportRevision", "RevisionID=" & revisionID & " AND ReportID=" & reportID) <> 1 Then Err.Raise vbObjectError + 1701, "modReviewComments.AddReviewComment", "Choose a revision belonging to this report."
     If threadID < 0 Then
         parent = -threadID
     ElseIf threadID > 0 Then
         MigrateReportMessages reportID
         parent = Nz(MajorScalar("SELECT MessageID FROM ReportMessage WHERE LegacyCommentID=" & threadID & " AND ReportID=" & reportID), 0)
-        If parent = 0 Then Err.Raise vbObjectError + 1704, , "Legacy conversation does not belong to this report."
+        If parent = 0 Then Err.Raise vbObjectError + 1704, "modReviewComments.AddReviewComment", "Legacy conversation does not belong to this report."
     End If
     AddReviewComment = -AddReportMessage(reportID, body, parent, revisionID)
 End Function
 Public Function SetReviewThreadState(ByVal threadID As Long, ByVal resolved As Boolean) As Boolean
-    Err.Raise vbObjectError + 1706, , "Conversation resolve/reopen is retired. Notes and replies are independent of approval."
+    Err.Raise vbObjectError + 1706, "modReviewComments.SetReviewThreadState", "Conversation resolve/reopen is retired. Notes and replies are independent of approval."
 End Function
 Public Function OpenReviewComments(ByVal reportID As Long) As Boolean
  OpenReviewComments = UXOpenReportTool(reportID, "Notes")

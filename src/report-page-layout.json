@@ -513,7 +513,7 @@
     ]
   },
   "CHIEFEVAL:0": {
-    "height": 15120,
+    "height": 17000,
     "fields": [
       {
         "key": "OfficialName",
@@ -812,12 +812,60 @@
         "trait": true
       },
       {
+        "key": "Trait33Comment1",
+        "x": 5550,
+        "y": 10380,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait33Comment2",
+        "x": 7620,
+        "y": 10380,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait33Comment3",
+        "x": 9690,
+        "y": 10380,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
         "key": "Trait34",
         "x": 180,
         "y": 11000,
         "w": 5000,
         "h": 360,
         "trait": true
+      },
+      {
+        "key": "Trait34Comment1",
+        "x": 5550,
+        "y": 11000,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait34Comment2",
+        "x": 7620,
+        "y": 11000,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait34Comment3",
+        "x": 9690,
+        "y": 11000,
+        "w": 1950,
+        "h": 360,
+        "trait": false
       },
       {
         "key": "Trait35",
@@ -828,12 +876,60 @@
         "trait": true
       },
       {
+        "key": "Trait35Comment1",
+        "x": 5550,
+        "y": 11620,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait35Comment2",
+        "x": 7620,
+        "y": 11620,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait35Comment3",
+        "x": 9690,
+        "y": 11620,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
         "key": "Trait36",
         "x": 180,
         "y": 12240,
         "w": 5000,
         "h": 360,
         "trait": true
+      },
+      {
+        "key": "Trait36Comment1",
+        "x": 5550,
+        "y": 12240,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait36Comment2",
+        "x": 7620,
+        "y": 12240,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait36Comment3",
+        "x": 9690,
+        "y": 12240,
+        "w": 1950,
+        "h": 360,
+        "trait": false
       },
       {
         "key": "Trait37",
@@ -844,12 +940,60 @@
         "trait": true
       },
       {
+        "key": "Trait37Comment1",
+        "x": 5550,
+        "y": 12860,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait37Comment2",
+        "x": 7620,
+        "y": 12860,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait37Comment3",
+        "x": 9690,
+        "y": 12860,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
         "key": "Trait38",
         "x": 180,
         "y": 13480,
         "w": 5000,
         "h": 360,
         "trait": true
+      },
+      {
+        "key": "Trait38Comment1",
+        "x": 5550,
+        "y": 13480,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait38Comment2",
+        "x": 7620,
+        "y": 13480,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait38Comment3",
+        "x": 9690,
+        "y": 13480,
+        "w": 1950,
+        "h": 360,
+        "trait": false
       },
       {
         "key": "Trait39",
@@ -860,11 +1004,35 @@
         "trait": true
       },
       {
-        "key": "@guidance",
+        "key": "Trait39Comment1",
         "x": 5550,
-        "y": 10380,
-        "w": 6000,
-        "h": 4260
+        "y": 14100,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait39Comment2",
+        "x": 7620,
+        "y": 14100,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "Trait39Comment3",
+        "x": 9690,
+        "y": 14100,
+        "w": 1950,
+        "h": 360,
+        "trait": false
+      },
+      {
+        "key": "@guidance",
+        "x": 180,
+        "y": 15000,
+        "w": 11600,
+        "h": 1800
       }
     ]
   },

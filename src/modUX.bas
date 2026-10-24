@@ -24,6 +24,68 @@ Private bulkDefaults As Boolean
 Private bulkDefaultStamp As String
 Private bulkDefaultResets As Object
 
+'Required live-view contracts are distinct from optional compatibility probes.
+Public Const UX_EDITOR_VIEW As String = "frmEditor"
+Public Const UX_MEMBERS_VIEW As String = "frmUXComparison"
+Public Const UX_TRAIT_ROWS_VIEW As String = "frmUXTraitRows"
+Public Function UXViewContracts(ByVal view As String) As Variant
+    Select Case view
+        Case UX_EDITOR_VIEW: UXViewContracts = Array("cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface")
+        Case UX_MEMBERS_VIEW: UXViewContracts = Array("uxTraitGrid|SourceObject|Form.frmUXTraitRows", "uxGroupContext", "txtMeeting", "lblStatus", "cmdRetryCells", "cmdDiscardCells", "uxCurrentExport", "uxCurrentPDF")
+        Case UX_TRAIT_ROWS_VIEW: UXViewContracts = Array("ReportID", "RevisionID", "Member", "RowStatus", "PromotionRecommendation", "AssignmentRecommendationA", "AssignmentRecommendationB")
+        Case "frmPDFImport": UXViewContracts = Array("cmdResume|OnClick|=UXResumePDFImport()", "cmdCancelPreview|OnClick|=UXCancelPDFImport()", "cmdImport", "txtPreview", "cboIdentifier", "cboTarget", "cboMergeMode")
+        Case "frmNAVFITExchange": UXViewContracts = Array("cmdResumeReturn|OnClick|=UXResumeNAVFITReturn()", "cmdCancelReturn|OnClick|=UXCancelNAVFITReturn()", "cmdApply|OnClick|=UXApplyNAVFITReturn()", "cmdExportGroup", "cboGroup")
+        Case "frmUXWorkspaceImport": UXViewContracts = Array("cmdResume|OnClick|=UXResumeSwiftWorkspace()", "cmdCancelPreview|OnClick|=UXCancelSwiftWorkspacePreview()", "cmdApply", "txtPreview")
+        Case "frmPDFOutput": UXViewContracts = Array("cmdGenerate|OnClick|=PDFOutputCreate()", "cmdPagePreview|OnClick|=PDFOutputPagePreview()", "lstReports", "txtFolder", "txtFindings", "cboSource", "cboFormat")
+        Case Else: UXViewContracts = Array()
+    End Select
+End Function
+Public Function UXRequireControl(ByVal view As String, ByVal name As String) As Access.control
+    On Error GoTo Missing
+    If view = UX_TRAIT_ROWS_VIEW And CurrentProject.AllForms(UX_MEMBERS_VIEW).IsLoaded Then
+        If Forms(UX_MEMBERS_VIEW).CurrentView <> 0 Then
+            Set UXRequireControl = Forms(UX_MEMBERS_VIEW)!uxTraitGrid.Form.Controls(name)
+            Exit Function
+        End If
+    End If
+    Set UXRequireControl = Forms(view).Controls(name)
+    Exit Function
+Missing:
+    Err.Raise vbObjectError + 9400, "modUX.UXRequireControl", "Required view contract missing: " & view & "." & name & ". Restore a verified application copy."
+End Function
+Public Function UXAssertView(ByVal view As String) As Boolean
+    Dim entry As Variant, parts As Variant, c As Access.Control, key As Variant, block As Long, actual As String, expected As String
+    For Each entry In UXViewContracts(view)
+        parts = Split(CStr(entry), "|"): Set c = UXRequireControl(view, CStr(parts(0)))
+        If UBound(parts) = 2 Then
+            actual = Nz(c.Properties(parts(1)).Value, ""): expected = CStr(parts(2))
+            If parts(1) = "SourceObject" Then
+                If Left$(actual, 5) = "Form." Then actual = Mid$(actual, 6)
+                If Left$(expected, 5) = "Form." Then expected = Mid$(expected, 6)
+            End If
+            If StrComp(actual, expected, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 9401, "modUX.UXAssertView", "Required view binding differs: " & view & "." & parts(0) & "." & parts(1)
+        End If
+    Next
+    If view = UX_EDITOR_VIEW Then
+        For Each key In CatalogueControls(): Set c = UXRequireControl(view, CStr(key)): Next
+    End If
+    If view = UX_TRAIT_ROWS_VIEW Then
+        For block = 33 To 39
+            Set c = UXRequireControl(view, "Trait" & block)
+            If c.AfterUpdate <> "=UXGridQueue(""Trait" & block & """)" Then Err.Raise vbObjectError + 9401, "modUX.UXAssertView", "Required trait queue binding differs: " & view & ".Trait" & block
+        Next
+    End If
+    UXAssertView = True
+End Function
+'Return caught failures to automation rather than opening an unhandled VBA dialog.
+Public Function UXCheckView(ByVal view As String) As String
+    On Error GoTo Failed
+    Call UXAssertView(view)
+    UXCheckView = "PASS": Exit Function
+Failed:
+    UXCheckView = "FAIL: " & Err.Number & " " & Err.Description
+End Function
+
 'One workspace destination list for native dispatch and generated navigation rails.
 Public Function UXWorkspaceRoutes() As Variant
     UXWorkspaceRoutes = Array("Overview|frmHome", "Reports|frmLibrary", "Summary groups|frmUXGroups", "My Work|frmMyWork", "Resources|frmUXResources", "Settings & Help|frmUXSettings")
@@ -335,19 +397,29 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
     UXRefreshEditor = True
 End Function
 ' Keep pending values visible and explain how to undo them after a failed save.
-Public Function UXShowSaveError(ByVal message As String) As Boolean
-    Dim f As Access.Form
+Public Function UXShowSaveError(ByVal message As String, Optional ByVal committed As Boolean = False) As Boolean
+    Dim f As Access.Form, primary As String, detail As String, separator As Long
     Set f = Forms!frmEditor
     If Not UXHasControl(f, "uxError") Then Exit Function
-    f!uxError.Caption = "Not saved: " & message & " Pending values are preserved. Correct the problem and retry Save draft. Undo pending changes discards these edits."
-    f!uxDirty.Caption = "Not saved - pending edits retained"
+    message = SwiftRedact(message): separator = InStr(message, vbCrLf)
+    If separator > 0 Then primary = Left$(message, separator - 1): detail = Mid$(message, separator + 2) Else primary = message: detail = message
+    'Keep the existing fixed-height status readable; fuller redacted context is
+    'available in its tooltip and SwiftLastFailure(), without resizing the editor.
+    If committed Then
+        f!uxError.Caption = "Saved; display refresh failed. Reopen the report. " & Left$(primary, 65)
+        f!uxDirty.Caption = "Saved - reopen report to refresh display"
+    Else
+        f!uxError.Caption = "Not saved: " & Left$(primary, 80) & " Pending edits retained."
+        f!uxDirty.Caption = "Not saved - pending edits retained"
+    End If
+    f!uxError.ControlTipText = Left$(detail, 255)
     UXShowSaveError = True
 End Function
 ' Validate and flush the visible surface before the normal atomic draft save;
 ' refresh saved context afterward and retain the editor buffer on failure.
 Public Function UXSaveEditor() As Boolean
     On Error GoTo Failed
-    Dim f As Access.Form
+    Dim f As Access.Form, saved As Boolean, context As Object
     Set f = Forms!frmEditor
     f!uxError.Caption = ""
     If UXSurfaceAvailable() Then
@@ -356,11 +428,13 @@ Public Function UXSaveEditor() As Boolean
             Exit Function
         End If
     End If
-    UXSaveEditor = SaveEditor()
+    saved = SaveEditor(): UXSaveEditor = saved
     UXRefreshEditor
     Exit Function
 Failed:
-    UXShowSaveError Err.Description
+    Set context = SwiftFailure("modUX", "UXSaveEditor", "Capture/refresh editor", Err.Number, Err.Description, Err.Source, IIf(saved, "Committed", "Not started"))
+    UXShowSaveError SwiftFailureText(context), saved
+    UXSaveEditor = saved
 End Function
 ' Delegate summary-group directory loading to its current list adapter.
 Public Function UXLoadGroups() As Boolean
@@ -434,8 +508,10 @@ Public Function UXSaveMembers() As Boolean
     w.CommitTrans: started = False: DoCmd.Close acForm, "frmUXMembers", acSaveNo
     UXSaveMembers = UXShowGroupMembers(groupContext, True): Exit Function
 Failed:
-    If started Then w.Rollback
-    Forms!frmUXMembers!lblStatus.Caption = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUX", "UXSaveMembers", "Execute", Err.number, Err.description, Err.source, "Unknown")
+    If started Then SwiftRollback w, swiftPrimary
+    Forms!frmUXMembers!lblStatus.caption = CStr(swiftPrimary("Description"))
 End Function
 ' Open live Members or an explicitly requested historical comparison according to
 ' the workbench mode; reuse an existing window rather than replacing its pending edits.
@@ -505,11 +581,11 @@ End Function
 Public Function UXStageComparison() As Boolean
     Dim f As Access.Form, id As Long, revision As Long, block As Long, before As Variant, value As Variant, count As Long, w As DAO.Workspace, started As Boolean
     On Error GoTo Failed
-    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before staging proposals."
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUX.UXStageComparison", "Retry or discard pending cells before staging proposals."
     Set f = Forms!frmUXComparison: id = Nz(f!uxTraitGrid.Form!ReportID, 0)
-    If id = 0 Then Err.Raise vbObjectError + 4700, , "Choose a member in the comparison grid."
+    If id = 0 Then Err.Raise vbObjectError + 4700, "modUX.UXStageComparison", "Choose a member in the comparison grid."
     revision = Nz(f!uxTraitGrid.Form!RevisionID, 0)
-    If CurrentRevision(id) <> revision Then Err.Raise vbObjectError + 4810, , "Saved report changed. Reopen Members before staging proposals."
+    If CurrentRevision(id) <> revision Then Err.Raise vbObjectError + 4810, "modUX.UXStageComparison", "Saved report changed. Reopen Members before staging proposals."
     If Nz(f!txtMeeting, 0) = 0 Then
         f!txtMeeting = ReuseGroupComparison(f!uxGroupContext, "Group proposals")
     End If
@@ -521,20 +597,22 @@ Public Function UXStageComparison() As Boolean
     before = MajorRevisionValue(revision, "PromotionRecommendation"): value = f!cboPromotion.Value
     If Not SameFieldValue(before, value) Then ProposeMeetingField f!txtMeeting, id, "PromotionRecommendation", value: count = count + 1
     w.CommitTrans: started = False
-    UXGridLoad: UXRefreshComparisonPreview
+UXGridLoad: UXRefreshComparisonPreview
     f!lblStatus.Caption = count & " proposals staged. Saved reports are unchanged. Select one proposal per field below, then Apply."
     If UXHasControl(f, "uxPreviewPage") And count > 0 Then UXComparisonPage "Preview"
     UXStageComparison = True: Exit Function
 Failed:
-    If started Then w.Rollback
-    Forms!frmUXComparison!lblStatus.Caption = Err.Description
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modUX", "UXStageComparison", "Execute", Err.number, Err.description, Err.source, "Unknown")
+    If started Then SwiftRollback w, swiftPrimary
+    Forms!frmUXComparison!lblStatus.caption = CStr(swiftPrimary("Description"))
 End Function
 ' Apply selected reviewed proposals atomically, then show results and treat that
 ' comparison as historical; pending direct-edit cells must be resolved first.
 Public Function UXApplyComparison() As Boolean
     Dim item As Variant, csv As String
     On Error GoTo Failed
-    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, , "Retry or discard pending cells before applying proposals."
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUX.UXApplyComparison", "Retry or discard pending cells before applying proposals."
     For Each item In Forms!frmUXComparison!lstProposals.ItemsSelected
         If Len(csv) > 0 Then csv = csv & ","
         csv = csv & Forms!frmUXComparison!lstProposals.ItemData(item)

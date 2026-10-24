@@ -42,7 +42,7 @@ Public Function UXExportNAVFITGroup() As Boolean
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), Nz(!cboGroup, 0), 0)
         Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False))
         Set findings = NAVFITLastGroupReadiness()
-        !txtStatus = "Group export complete: " & !txtExportPath & vbCrLf & "Open this file in NAVFIT98A, select the group folder, validate its reports and use NAVFIT's Print Folder/Print Summary actions. Keep the group baseline locally. Group-return reconciliation is pending."
+        !txtStatus = "Group export complete: " & !txtExportPath & vbCrLf & "Open this file in NAVFIT98A, select the group folder, validate its reports and use NAVFIT's Print Folder/Print Summary actions. Keep the group baseline locally. Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Open All summary-group validation issues to inspect findings. If exact PSG RSCA was unavailable, native RSCA values were preserved as shown in the preview. Group-return reconciliation is pending."
         !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
         !cmdExportGroup.Enabled = False
     End With
@@ -57,7 +57,7 @@ Public Function UXPreviewFullNAVFIT() As Boolean
     century = 2000: id = Nz(Forms!frmImportReview!lstImportReports, 0)
     nativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
     Set values = FullNAVFITImportValues(id, century)
-    text = "NEW " & values("FormKind") & " REPORT" & vbCrLf & "74 saved official fields are mapped. All 128 native report columns, folder defaults and summary values are retained in provenance. Native-only values are preserved for export; they are not editable in Swift's current editor. Native validation is not a local approval." & vbCrLf
+    text = "NEW " & values("FormKind") & " REPORT" & vbCrLf & "" & NAVFITMapRows(values("FormKind")).Count & " saved official fields are mapped. All 128 native report columns, folder defaults and summary values are retained in provenance. Native-only values are preserved for export; they are not editable in Swift's current editor. Native validation is not a local approval." & vbCrLf
     text = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance." & vbCrLf
     text = text & vbCrLf & "Local display name: " & IIf(nativePreview.Member = "", NAVFITDisplay(values("OfficialName")), nativePreview.Member) & vbCrLf
     For Each key In values.Keys
@@ -76,9 +76,9 @@ Failed:
 End Function
 Public Function UXApplyFullNAVFIT() As Boolean
     On Error GoTo Failed
-    If nativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, , "Preview this import as the current contributor before Apply."
-    If nativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 5500, , "Display name changed. Preview again."
-    If nativePreview.SourceID = 0 Or nativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Then Err.Raise vbObjectError + 5500, , "Preview the current source before Apply."
+    If nativePreview.OwnerProfileID <> ActiveContributorID() Then Err.Raise vbObjectError + 9203, "modUXNAVFIT.UXApplyFullNAVFIT", "Preview this import as the current contributor before Apply."
+    If nativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 5500, "modUXNAVFIT.UXApplyFullNAVFIT", "Display name changed. Preview again."
+    If nativePreview.SourceID = 0 Or nativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Then Err.Raise vbObjectError + 5500, "modUXNAVFIT.UXApplyFullNAVFIT", "Preview the current source before Apply."
     nativePreview.Created = ImportReviewedReport(nativePreview.SourceID, nativePreview.Hash, nativePreview.Century, nativePreview.Member): nativePreview.SourceID = 0: nativePreview.Hash = ""
     With Forms!frmImportReview
         !cmdPreview.SetFocus: !cmdImport.Enabled = False: !cmdOpenResult.Enabled = True
@@ -98,8 +98,8 @@ End Function
 Public Function UXOpenNAVFITExchange() As Boolean
     If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm "frmNAVFITExchange"
-    Forms!frmNAVFITExchange!cboReport.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') FROM Report WHERE IsArchived=False ORDER BY MemberName"
-    Forms!frmNAVFITExchange!cboGroup.RowSource = "SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
+    Forms!frmNAVFITExchange!cboReport.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') & IIf(IsArchived,' | Archived','') FROM Report ORDER BY MemberName"
+    Forms!frmNAVFITExchange!cboGroup.RowSource = "SELECT GroupID,Title & ' | ' & FormKind & ' | ' & Paygrade & IIf(IsArchived,' | Archived','') FROM SummaryGroup ORDER BY Title"
     UXOpenNAVFITExchange = True
 End Function
 Public Function UXChooseNAVFITPath(ByVal controlName As String, ByVal savePath As Boolean) As Boolean
@@ -115,11 +115,11 @@ Public Function UXExportNAVFIT() As Boolean
     Dim findings As Collection
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
-        !txtStatus = "Checking saved report readiness and preparing export. Open All report readiness issues to inspect findings before exporting."
+        !txtStatus = "Exporting the saved revision. Findings do not block export; pending edits are not included."
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), 0, Nz(!cboReport, 0))
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
         Set findings = NAVFITLastReportReadiness()
-        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group." & vbCrLf & vbCrLf & ReadinessSummary(findings)
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Open All report readiness issues to inspect findings. Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group." & vbCrLf & vbCrLf & ReadinessSummary(findings)
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"
     End With
     UXExportNAVFIT = True: Exit Function

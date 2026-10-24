@@ -29,11 +29,15 @@ End Function
 Public Function SeedUXDemo() As String
     Dim table As DAO.TableDef, db As DAO.Database, senior As Object, seniorID As Long, key As Variant
     Dim ids(1 To 9) As Long, folders(1 To 3) As Long, groups(1 To 3) As Long, baselines(1 To 3) As Long
-    Dim author As Long, reviewer As Long, route As Long, template As Long, task As Long, changes As Object, i As Long
+    Dim author As Long, reviewer As Long, route As Long, template As Long, task As Long, changes As Object, i As Long, referenceData As Boolean
     Set db = CurrentDb
+    referenceData = DLookup("SchemaVersion", "AppMetadata") >= 31
+    If referenceData Then
+        If DCount("*", "TraitDefinition") <> 147 Or DCount("*", "TraitDefinition", "CatalogueVersion<>1 OR SourceSHA256<>" & QuoteSQL(TraitCatalogueHash())) <> 0 Then Err.Raise vbObjectError + 5100, "UXDemoSeed.SeedUXDemo", "Demo seeding requires the reviewed trait reference dataset."
+    End If
     'Never add demonstration data to a populated or operational workspace.
     For Each table In db.TableDefs
-        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+        If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" And Not (referenceData And table.Name = "TraitDefinition") Then
             If DCount("*", "[" & table.Name & "]") > 0 Then Err.Raise vbObjectError + 5100, , "Demo seeding requires a completely blank workspace."
         End If
     Next
@@ -103,6 +107,13 @@ Public Function SeedUXDemo() As String
     SeedValidationGroups senior, seniorID
     db.Execute "UPDATE AppMetadata SET CompatibilityStatus='Synthetic UX demo - NAVFIT exchange remains unverified'", dbFailOnError
     SeedUXDemo = "PASS: 13 synthetic reports, 5 groups (including zero-report-issue and three-report-issue examples), 2 contributors, 1 reporting senior, 4 RSCA baselines, review/approval/archive/NOB/recovery examples."
+End Function
+Public Function SeedUXDemoResult() As String
+    On Error GoTo Failed
+    SeedUXDemoResult = SeedUXDemo()
+    Exit Function
+Failed:
+    SeedUXDemoResult = "FAIL: " & Err.Number & " " & Err.Description & ". Discard this disposable copy if seeding was interrupted."
 End Function
 
 Private Function DemoValidationReport(ByVal member As String, ByVal number As Long, ByVal senior As Object) As Long

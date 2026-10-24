@@ -15,7 +15,7 @@ Public Function RSBaselineIncludes(ByVal baselineID As Long, ByVal ancestor As L
   If baselineID = ancestor Then RSBaselineIncludes = True: Exit Function
   parent = Nz(DLookup("ParentBaselineID", "RSCABaseline", "BaselineID=" & baselineID), 0)
   If parent = 0 Then Exit Function
-  If parent >= baselineID Then Err.Raise vbObjectError + 4850, , "RSCA baseline ancestry is invalid. Inspect history before continuing."
+  If parent >= baselineID Then Err.Raise vbObjectError + 4850, "modRSCompletion.RSBaselineIncludes", "RSCA baseline ancestry is invalid. Inspect history before continuing."
   baselineID = parent
  Loop
 End Function
@@ -32,10 +32,10 @@ Public Sub RSExcludePostedGroup(ByVal groupID As Long, ByVal baselineID As Long,
  Dim posted As Long
  posted = Val(GroupPolicyValue(groupID, "RSCAPostedBaseline"))
  If posted = 0 Then Exit Sub
- If Not RSBaselineIncludes(baselineID, posted) Then Err.Raise vbObjectError + 4851, , "This group was already counted. The selected history does not contain its local completion entry. Reconcile the BOL observation with local completion history before continuing."
+ If Not RSBaselineIncludes(baselineID, posted) Then Err.Raise vbObjectError + 4851, "modRSCompletion.RSExcludePostedGroup", "This group was already counted. The selected history does not contain its local completion entry. Reconcile the BOL observation with local completion history before continuing."
  total = total - CDbl(GroupPolicyValue(groupID, "RSCAGroupSum"))
  count = count - CLng(GroupPolicyValue(groupID, "RSCAGroupCount"))
- If count < 0 Or total < 0 Then Err.Raise vbObjectError + 4852, , "Recorded completion exceeds historical totals. Inspect RSCA history."
+ If count < 0 Or total < 0 Then Err.Raise vbObjectError + 4852, "modRSCompletion.RSExcludePostedGroup", "Recorded completion exceeds historical totals. Inspect RSCA history."
 End Sub
 'Called inside SetGroupWorkflow's transaction: errors roll back status, baseline,
 'operation history and markers together. No report revision is changed.
@@ -45,22 +45,22 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  Dim grade As String, total As Double, count As Long, exact As Variant, asOf As Date, average As Variant
  If CurrentProject.AllForms("frmEditor").IsLoaded Then
   If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)) > 0 Then
-   If EditorHasPending() Then Err.Raise vbObjectError + 4853, , "Save or discard pending member edits before completing this group."
+   If EditorHasPending() Then Err.Raise vbObjectError + 4853, "modRSCompletion.RSPostGroupCompletion", "Save or discard pending member edits before completing this group."
   End If
  End If
  Set p = RSGroupPSG(groupID)
- If Not p.Exists("GroupCount") Then Err.Raise vbObjectError + 4854, , "Cannot complete RSCA accounting: " & p("Reason")
+ If Not p.Exists("GroupCount") Then Err.Raise vbObjectError + 4854, "modRSCompletion.RSPostGroupCompletion", "Cannot complete RSCA accounting: " & p("Reason")
  grade = CStr(DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID))
  latest = RSLatestBaseline(CLng(p("SeniorID")), grade)
- If latest <> CLng(p("BaselineID")) Then Err.Raise vbObjectError + 4855, , "Select the latest matching paygrade baseline before completing this group. Earlier observations remain in history."
+ If latest <> CLng(p("BaselineID")) Then Err.Raise vbObjectError + 4855, "modRSCompletion.RSPostGroupCompletion", "Select the latest matching paygrade baseline before completing this group. Earlier observations remain in history."
  Set r = CurrentDb.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " ORDER BY r.ReportID", dbOpenSnapshot): ids = "|"
  Do While Not r.EOF
   If Nz(r!ObservationStatus, "") <> "NOB" Then
-   If Nz(r!ObservationStatus, "") <> "Observed" Then Err.Raise vbObjectError + 4856, , "Choose Observed or whole-report NOB for every member."
+   If Nz(r!ObservationStatus, "") <> "Observed" Then Err.Raise vbObjectError + 4856, "modRSCompletion.RSPostGroupCompletion", "Choose Observed or whole-report NOB for every member."
    For Each key In TraitKeys()
     Select Case Nz(r.Fields(CStr(key)).Value, "")
      Case "1.0", "2.0", "3.0", "4.0", "5.0", "NOB"
-     Case Else: Err.Raise vbObjectError + 4856, , "Finish all observed member traits before completing this group. Explicit NOB traits are excluded."
+     Case Else: Err.Raise vbObjectError + 4856, "modRSCompletion.RSPostGroupCompletion", "Finish all observed member traits before completing this group. Explicit NOB traits are excluded."
     End Select
    Next
    ids = ids & r!ReportID & "|"
@@ -70,7 +70,7 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  r.Close
  For Each id In Split(Mid$(ids, 2), "|")
   If Len(id) > 0 Then
-   If MajorScalar("SELECT Count(*) FROM RSCountedReport AS c INNER JOIN GroupCompletion AS p ON c.CompletionID=p.CompletionID WHERE c.ReportID=" & CLng(id) & " AND p.GroupID<>" & groupID) > 0 Then Err.Raise vbObjectError + 4857, , "A report is already counted through another group. Reconcile its accounting before completion."
+   If MajorScalar("SELECT Count(*) FROM RSCountedReport AS c INNER JOIN GroupCompletion AS p ON c.CompletionID=p.CompletionID WHERE c.ReportID=" & CLng(id) & " AND p.GroupID<>" & groupID) > 0 Then Err.Raise vbObjectError + 4857, "modRSCompletion.RSPostGroupCompletion", "A report is already counted through another group. Reconcile its accounting before completion."
   End If
  Next
  posted = Val(GroupPolicyValue(groupID, "RSCAPostedBaseline"))
