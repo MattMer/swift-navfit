@@ -26,9 +26,9 @@ try{
   }
   $app.DoCmd.Close(2,$screen,2)
  }
- #Known gaps: these lists predate the rule's enforcement (added by stages that ran
- #after the old sort stage). Remove an entry when its list gains sorting.
- $knownGaps=@('frmOperations.lstAudit (native header)','frmPDFOutput.lstReports (Sort headings)','frmUXDirectoryMerge.lstCandidates (native header)','frmUXDirectoryMerge.lstHistory (native header)')
+ #Known gaps: lists allowed to lack sorting for now, each with a reason. Remove
+ #an entry when its list gains sorting.
+ $knownGaps=@()
  $unexpected=@($missing|Where-Object {$knownGaps -notcontains $_});$fixed=@($knownGaps|Where-Object {$missing -notcontains $_})
  if($unexpected.Count){throw ('Lists without sorting: '+($unexpected -join ', '))}
  if($fixed.Count){throw ('Known sorting gap is fixed; remove it from the list: '+($fixed -join ', '))}

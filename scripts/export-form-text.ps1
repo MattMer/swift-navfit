@@ -4,6 +4,8 @@ param([Parameter(Mandatory=$true)][string]$BuildPath,[string[]]$Form,[string]$Ou
 # -Form every form is exported. The build itself is never opened; a copy is.
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 if(-not $OutDir){$OutDir=Join-Path $root 'src/forms'}
+#powershell.exe -File passes "-Form a,b" as one string; accept either form.
+$Form=@($Form|ForEach-Object {$_ -split ','}|ForEach-Object {$_.Trim()}|Where-Object {$_})
 [void](New-Item -ItemType Directory -Force -Path $OutDir)
 #Per-build noise that LoadFromText does not need: the checksum, generated GUID,
 #name-map and record-source-date blocks, and the BaseInfo combo cache (it embeds

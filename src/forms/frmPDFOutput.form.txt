@@ -9,13 +9,14 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =14200
-    ItemSuffix =21
+    ItemSuffix =27
     Left =3330
-    Top =1980
+    Top =1530
     Right =21855
     Bottom =14775
     OnUnload ="[Event Procedure]"
     Caption ="Preview and create PDFs"
+    OnActivate ="=UXSortActivate(\"frmPDFOutput\")"
     OnLoad ="=PDFOutputLoad()"
     FilterOnLoad =0
     AllowLayoutView =0
@@ -355,9 +356,9 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =5
                     Left =300
-                    Top =2550
+                    Top =2900
                     Width =13500
-                    Height =2700
+                    Height =2350
                     FontSize =10
                     TabIndex =5
                     Name ="lstReports"
@@ -367,7 +368,7 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2900
                     LayoutCachedWidth =13800
                     LayoutCachedHeight =5250
                     ThemeFontIndex =-1
@@ -592,6 +593,129 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =300
+                    Top =2550
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstReports_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",0)"
+                    Tag ="SORT:lstReports:0"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =1100
+                    LayoutCachedHeight =2850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =300
+                    Top =2550
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstReports_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",1)"
+                    Tag ="SORT:lstReports:1"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =1100
+                    LayoutCachedHeight =2850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =300
+                    Top =2550
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstReports_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",2)"
+                    Tag ="SORT:lstReports:2"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =1100
+                    LayoutCachedHeight =2850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =300
+                    Top =2550
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstReports_3"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",3)"
+                    Tag ="SORT:lstReports:3"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =1100
+                    LayoutCachedHeight =2850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =300
+                    Top =2550
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstReports_4"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",4)"
+                    Tag ="SORT:lstReports:4"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =1100
+                    LayoutCachedHeight =2850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    TabIndex =13
+                    Name ="uxSortActivateOriginal"
+                    DefaultValue ="\"\""
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
                 End
             End
         End

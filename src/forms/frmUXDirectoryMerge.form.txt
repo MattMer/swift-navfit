@@ -20,7 +20,7 @@ Begin Form
     DatasheetFontHeight =11
     ItemSuffix =17
     Left =3330
-    Top =1980
+    Top =1530
     Right =21855
     Bottom =14775
     DatasheetGridlinesColor =15263976
@@ -327,6 +327,7 @@ Begin Form
                     ColumnWidths ="0;10500;2500"
                     OnDblClick ="=UXDirectoryMergeCandidate()"
                     FontName ="Segoe UI"
+                    OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =300
                     LayoutCachedTop =2300
@@ -480,6 +481,7 @@ Begin Form
                     RowSourceType ="Table/Query"
                     ColumnWidths ="1000;2400;2400;2400;4200"
                     FontName ="Segoe UI"
+                    OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =300
                     LayoutCachedTop =9600
@@ -539,3 +541,19 @@ Begin Form
         End
     End
 End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+
+Private Sub lstCandidates_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstCandidates", X, Y) Then Exit Sub
+
+End Sub
+
+Private Sub lstHistory_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstHistory", X, Y) Then Exit Sub
+
+End Sub

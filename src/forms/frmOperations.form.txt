@@ -12,7 +12,7 @@ Begin Form
     Width =13800
     ItemSuffix =24
     Right =18525
-    Bottom =12795
+    Bottom =13245
     Caption ="Operations and import undo"
     OnActivate ="=UXSortActivate(\"frmOperations\")"
     OnResize ="=UXHelpResize(\"frmOperations\",\"\")"
@@ -729,6 +729,7 @@ Begin Form
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;2000;2700;2200;900;4400"
                     AfterUpdate ="=AuditDetails()"
+                    OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =13000
@@ -739,3 +740,14 @@ Begin Form
         End
     End
 End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+
+Private Sub lstAudit_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstAudit", X, Y) Then Exit Sub
+
+End Sub
