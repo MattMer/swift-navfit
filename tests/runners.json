@@ -48,8 +48,7 @@
   {
    "name": "test-build-finalization",
    "area": "Build and source",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-build-plan",
@@ -59,8 +58,7 @@
   {
    "name": "test-build-property-bindings",
    "area": "Build and source",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-bulk-workspace-import",
@@ -211,8 +209,7 @@
   {
    "name": "test-narrative-layout",
    "area": "Traits and narratives",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-narratives",
@@ -260,8 +257,7 @@
   {
    "name": "test-o3-cells",
    "area": "NAVFIT and PDF exchange",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-page-switch",
@@ -371,8 +367,7 @@
   {
    "name": "test-report-notes",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-report-people",
@@ -402,8 +397,7 @@
   {
    "name": "test-routing",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-rs-completion",
@@ -491,8 +485,7 @@
   {
    "name": "test-ux-admin-feedback",
    "area": "Workspace and settings",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-block-tools",
@@ -517,8 +510,7 @@
   {
    "name": "test-ux-export-names",
    "area": "Workspace and settings",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-feedback",
@@ -555,20 +547,17 @@
   {
    "name": "test-ux-group-reads",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-header-review",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-help",
    "area": "Workspace and settings",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-import-flow",
@@ -579,8 +568,7 @@
   {
    "name": "test-ux-member-grid",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-my-work",
@@ -615,8 +603,7 @@
   {
    "name": "test-ux-prior-grid",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-read-rows",
@@ -637,14 +624,12 @@
   {
    "name": "test-ux-review-return",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-shell",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-startup",
@@ -654,8 +639,7 @@
   {
    "name": "test-ux-surface",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-trait-retry",
@@ -670,8 +654,7 @@
   {
    "name": "test-ux-work-inclusion",
    "area": "Workflow and validation",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended"
   },
   {
    "name": "test-ux-work-refresh",
@@ -729,8 +712,8 @@
   {
    "name": "verify-table-sort-bindings",
    "area": "Workspace and settings",
-   "tier": "pending",
-   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+   "tier": "extended",
+   "note": "Reads build/r115-sort-coverage.json written by the latest build in the same checkout; run it after building that blank."
   },
   {
    "name": "verify-ux-group-discovery",
