@@ -1,109 +1,89 @@
 # Build pipeline
 
 Current architecture and support decisions are in [PROJECT_STATE.md](../PROJECT_STATE.md).
-This document owns generator ordering and build verification details.
+This document owns build ordering and build verification details.
 
 For VS Code tasks, environment setup, the daily build-and-test command and
 release verification, see [Development workflow](../docs/Development_Workflow.md).
 
-The source of truth is `src/`, the ordered `scripts/build-manifest.json`, and the generator scripts it lists. Run a fresh full build with `scripts/build.ps1 -OutputPath <new file.accdb>`. Existing files are never overwritten. Identity comes from `src/modSwift.bas`; the schema must agree with `src/major-schema.json`.
+The source of truth is `src/` (VBA modules, catalogues and the forms in
+`src/forms`), `scripts/build-manifest.json` and the resource scripts it lists. Run
+a fresh build with `scripts/build.ps1 -OutputPath <new file.accdb>` (about two
+minutes). Existing files are never overwritten. Identity comes from
+`src/modSwift.bas`; the schema must agree with `src/major-schema.json`.
 
-## Ownership and order
+## Order
 
-The manifest currently lists 105 static VBA modules, five generated modules and 74 ordered stages across base resources, presentation and finalization. Full builds centrally load static source before generating forms and suppress the old repeated stage imports. The field catalogue retains one compatibility refresh of modUX alongside its generated metadata. Named field and surface catalogue generators replace execution of sliced script text. Incremental scripts retain their standalone imports and dependency behavior for disposable development copies.
+1. Create the database: tables, validation rules, relationships and canonical
+   queries from `major-schema.json` and `build.ps1`.
+2. Load every static module in `sourceModules`, then generate `modTraitCatalogue`.
+3. Run the `resources` stages in manifest order. Each generates something that
+   is not a form:
+   - `apply-pdf-print-catalogue`: `modPDFPrintCatalogue` from `pdf-print-layout.json`
+     (checks the embedded template image hashes).
+   - `apply-ux-field-catalogue`: `modUXFields` from `field-definitions.json`, which
+     carries runtime field layout, bindings and labels; refreshes `modUX`.
+   - `apply-ux-surface-catalogue`: `modUXSurfaceFields`.
+   - `resource-navfit-template`: `modNAVFITTemplate`, embedding the reviewed
+     native blank.
+   - `resource-pdf-report`: the `rptPDFOutput` report with the eight template
+     images and its text slots. It stays generated, not stored as text, because
+     its printer settings differ on every save.
+   - `resource-startup-properties`: hides the navigation pane.
+4. Load every form in `forms` from `src/forms` (`install-form-text.ps1`).
+5. Restore identity metadata, load `AutoExec`, compile, reopen and run
+   `verify-built-application.ps1`.
 
-H01's [print catalogue stage](../scripts/apply-pdf-print-catalogue.ps1) runs in
-base resources before the first presentation evaluation. It checks embedded-image
-hashes and generates renderer-specific geometry bindings. The final
-[PDF output stage](../scripts/apply-pdf-output.ps1) embeds the eight blank template
-images, creates the native report/preview and adds report/group entry buttons.
-Neither stage invokes PDF.js, Python or Acrobat. The print metadata owns template
-geometry and exclusions, while canonical field definitions retain field authority.
+## Forms are source
 
-H01 corrections use schema 33/catalogue version 2. The same canonical generator
-adds 21 memo report/recovery fields and editor controls; no module or stage is
-added. The base form builder creates appended unbound buffers before shared
-layout; the existing surface stage creates the visible controls. Chief
-comment/native/PDF compatibility views are regenerated from that
-catalogue. The existing print-catalogue stage adds bold and selected-grade
-typography metadata. Runtime width/line metrics use Windows printer GDI; report
-font properties are unavailable during planning. Stored comments remain plain
-text. The native whole-point exception for trait 34 is recorded in the print
-metadata and current acceptance scope.
+Each form is stored as normalized Access text in `src/forms/<name>.form.txt`,
+including its class module. Normalization drops only per-build noise that
+`LoadFromText` does not need: the checksum, generated GUID, name-map and
+record-source-date blocks, and the `BaseInfo` combo cache. The stored text is a
+fixed point: building it and exporting again gives the same files.
 
-M02 keeps the same source-module inventory and stage order. The already
-fingerprinted [schema definition](../src/major-schema.json) adds `WizardPreview`
-for schema 30; the existing importer copies/verifies it only from schema-30 sources.
-The three existing wizard generators add Resume/Cancel controls. No manifest
-replacement, additional assembly path or source-specific build stage is introduced.
+- Small changes: edit the text directly.
+- Layout work: build a disposable copy, change the form in Access design view,
+  then run `scripts/export-form-text.ps1 -BuildPath <that copy> -Form <name>`. It
+  writes normalized text into `src/forms`. Add a new form to `forms` in the manifest.
+- Catalogue changes include the form edit. `field-definitions.json` drives the
+  generated runtime layout, but each field's control must exist on `frmEditor`
+  and `frmUXEditorFields` (the report type is the one field the surface does not
+  edit). `test-field-definitions.ps1` fails without it.
 
-M04–M06 retain that manifest inventory and ordering. Schema 31 adds the versioned
-`TraitDefinition` reference table. The existing trait generator seeds the reviewed
-JSON through an owned DAO recordset/transaction and emits only catalogue identity
-and runtime accessors; it no longer emits large wording `Select Case` blocks.
-The canonical blank verifier checks all 147 seeded rows against that JSON while
-requiring all user tables to be empty. Installed verification additionally checks
-required view/control contracts, literal references, report events and macros.
-
-L01–L02 retain the same stages and module inventory. Schema 32 gives the 34
-formerly opaque major relationships descriptive names without changing their
-constraints. The existing base builder also installs the two writable revision-ID
-queries defined in [major-schema.json](../src/major-schema.json). Reopened
-verification checks the relationship definitions/enforcement and canonical query
-SQL. Original physical columns remain the historical-import storage contract;
-no source database is renamed in place and no ID mapping/renumbering is introduced.
-
-### Canonical report fields
+## Canonical report fields
 
 [field-definitions.json](../src/field-definitions.json) supplies report-column
-types, recovery storage/control keys, field order and UI/validation metadata,
-NAVFIT/PDF binding order, and fixed geometry. Native mapping/page wrappers read
-the generated catalogue, rather than carrying separately generated VBA copies.
-The three older Python mapping/page generators now refresh only compatibility
-JSON views from this catalogue. They do not infer geometry or overwrite VBA.
+types, recovery storage and control keys, field order, UI and validation
+metadata, NAVFIT/PDF binding order and fixed geometry. The three Python
+mapping/page generators refresh only the compatibility JSON views from it.
 
 To add a field, increment the catalogue version and append a stable ordinal with
 its introduction `definitionVersion`, key, storage type, recovery key, control,
 labels, applicability and validation metadata. Supply explicit per-form adapter
 bindings and fixed-layout coordinates when the field participates in interchange
-or the official editor. Preserve existing ordinals, captions, coordinates and
-printed page associations. The first 79 fields retain the established service
-facades; appended fields use the generic commit/restore/recovery path. Do not
-extend official forms without supporting form/policy evidence.
-
-Run `test-field-definitions.ps1` for exact existing binding/geometry checks; with
-`-BuildPath <fresh blank>` it also exercises an appended synthetic field using
-the production generators on a disposable catalogue/database, including a new
-Access session's recovery. The report and recovery DDL, field/control arrays and
-generic persistence loops consume the same metadata. New snapshots record the
-catalogue version; prior snapshots retain their original definition version.
-
-The fresh builder reasserts its canonical metadata before reopen and after final
-stages, since historical standalone stages stamp their own older schema versions.
-This does not upgrade an existing workspace in place or replace schema gates.
-
-The consolidation audit retained these active layers. The 72 stages comprise one
-base-resource stage, 65 presentation stages and six final stages. Fixed-page
-geometry, visual decoration, unload-event installation and retired-route cleanup
-have distinct responsibilities; do not drop a pass merely because it revisits
-an existing form. Historical binary-template assemblers and the browser builder
-are held in PROPOSED_PURGE, not alternative managed build paths.
-
-`build-plan.ps1` validates files, root boundaries, inventory, stage dependencies, phase order and identity before Access opens. It fingerprints all declared inputs. `invoke-build-phase.ps1` executes stages in manifest order and records durations. Helpers deliberately share the build script scope because later generators consume catalogue/layout helpers.
-
-`finalize-application.ps1` owns final legacy-route cleanup after presentation decorators. It removes obsolete Reports folder controls, labels the still-active organizational folder tools, redirects old help bindings, and rejects unresolved retired form references before deletion. Folder data, moves, history and undo remain intact. `frmMajorWorkbench` remains a required context host. Hidden `lstFolders` is a compatibility name for the summary-group filter, not a folder ID.
-
-After compile and reopen, `verify-built-application.ps1` compares installed VBA with all static source modules, checks generated modules, metadata, native editor/group unload guards, retired form absence and event function bindings. Input fingerprints must still match. The adjacent `.accdb.build.json` receipt contains artifact hash, identity, input fingerprints, stage durations and structural results. A receipt is not a substitute for workflow, migration or physical acceptance tests.
+or the official editor, and add its control to the two editor forms. Preserve
+existing ordinals, captions, coordinates and printed page associations. Do not
+extend official forms without supporting form or policy evidence.
 
 ## Verification
 
-C10 removes duplicate base help/checklist/comments construction, the old note
-composer and the temporary review screen. The review-return stage now creates
-frmReportReviewPanel directly. Decoration and final binding checks retain their
-order. Rails and compact selectors use the six routes from modUX rather than
-parallel destination lists. Required group/folder hosts remain. See the
-[producer/consumer and generation audit](CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit).
+`build-plan.ps1` validates files, root boundaries, source-module and form
+inventories, stage order and identity before Access opens, and fingerprints all
+declared inputs, including every form file. After compile and reopen,
+`verify-built-application.ps1` compares installed VBA with the static source
+modules and checks generated modules, metadata, native unload guards, retired
+form absence and event function bindings. The adjacent `.accdb.build.json`
+receipt records the artifact hash, identity, input fingerprints, stage durations
+and structural results; it does not replace workflow, migration or physical
+acceptance tests.
 
-Run `scripts/test-build-plan.ps1` without Access to exercise rejected plans and input drift. Run `scripts/test-build-cleanup.ps1 -BuildPath <fresh blank>` for native legacy adapters, folder history and pending report navigation. Select other suites for the changed behavior; see [contributing](../CONTRIBUTING.md). Release preservation requirements and the recorded historical-test exception are described in [AGENTS.md](../AGENTS.md) and [PROJECT_STATE.md](../PROJECT_STATE.md).
+Run `scripts/test-build-plan.ps1` without Access for rejected plans, input
+drift, form normalization and the runner inventory, and
+`scripts/test-field-definitions.ps1` for catalogue and form-control agreement.
+Select other suites for the changed behavior; see [contributing](../CONTRIBUTING.md).
 
-Add a generator to the manifest rather than adding a hidden nested full-build call. Declare its inputs, dependencies and phase. Any source/input change during a build invalidates its receipt; rebuild from the final source. Keep old release binaries and populated workspaces untouched. Publish only verified Blank and synthetic Demo copies in `output/`.
+Add a non-form resource as a manifest stage rather than a hidden nested build
+call, and declare its inputs. Any source or input change during a build
+invalidates its receipt; rebuild from the final source. Keep old release
+binaries and populated workspaces untouched.

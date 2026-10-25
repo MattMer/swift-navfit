@@ -1141,7 +1141,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
                     Top =3100
@@ -1163,7 +1163,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =215
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
                     Top =3100
@@ -1185,7 +1185,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =215
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
                     Top =3100

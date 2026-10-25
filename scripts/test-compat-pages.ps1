@@ -5,13 +5,9 @@ $app=New-Object -ComObject Access.Application
 $primary=$null;$cleanup=@()
 try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  if($InstallSource){
-  $app.DoCmd.OpenForm('frmSetup',1);$f=$app.Forms.Item('frmSetup')
-  foreach($spec in @(@('lblCommand','txtCommand',1950,'Command name'),@('lblUser','txtProfile',2750,'Contributor name'))){
-   $app.DeleteControl($f.Name,$spec[0]);$label=$app.CreateControl($f.Name,100,0,$spec[1],'',400,$spec[2],2800,350);$label.Name=$spec[0];$label.Caption=$spec[3];$label.FontName='Segoe UI';$label.FontSize=10
-  }
-  $app.DoCmd.Close(2,$f.Name,1)
-  . (Join-Path $PSScriptRoot 'apply-contributor-startup.ps1')
-  . (Join-Path $PSScriptRoot 'apply-pdf-output.ps1')
+  #Forms are source: reload them from src/forms, with the report they open.
+  . (Join-Path $PSScriptRoot 'install-form-text.ps1');[void](InstallSwiftFormText)
+  . (Join-Path $PSScriptRoot 'resource-pdf-report.ps1')
  }
  $app.LoadFromText(5,'CompatPagesHarness',(Join-Path $root 'tests/CompatPagesHarness.bas'));$app.DoCmd.RunCommand(126)
  if(-not $EntryLabelsOnly){

@@ -465,18 +465,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-ui-author-baseline",
-   "area": "Build and source",
-   "tier": "pending",
-   "note": "Startup failed on a fresh blank."
-  },
-  {
-   "name": "test-ui-author-data",
-   "area": "Build and source",
-   "tier": "manual",
-   "note": "Takes EditedPath, CandidatePath."
-  },
-  {
    "name": "test-user-data-equivalence",
    "area": "Import and transfer",
    "tier": "manual",
@@ -712,8 +700,7 @@
   {
    "name": "verify-table-sort-bindings",
    "area": "Workspace and settings",
-   "tier": "extended",
-   "note": "Reads build/r115-sort-coverage.json written by the latest build in the same checkout; run it after building that blank."
+   "tier": "extended"
   },
   {
    "name": "verify-ux-group-discovery",

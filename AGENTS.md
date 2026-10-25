@@ -11,7 +11,7 @@ human contributors. Tool-specific notes belong in that tool's own file, such as
 - [planning/PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md): planned work.
 - [docs/Development_Workflow.md](docs/Development_Workflow.md): commands and focused
   test runners. [CONTRIBUTING.md](CONTRIBUTING.md) maps each kind of change to its checks.
-- [planning/BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md): generator order.
+- [planning/BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md): build order and the form workflow.
 - Other dated `planning/` files, including `PROJECT_STATE_HISTORY.md`, are
   historical evidence, not current requirements.
 
@@ -77,9 +77,11 @@ the checks you will run. Keep it brief.
 
 ## How to work
 
-- Edit authoritative tracked source: `src/`, the catalogues, and the generator
-  scripts listed in the manifest. Change generators rather than generated
-  output. Native Access experiments happen only on disposable copies, and useful
+- Edit authoritative tracked source: `src/` (modules, catalogues and the forms
+  in `src/forms`) and the resource scripts listed in the manifest. Forms are
+  source: edit their text, or change them in Access on a disposable build and
+  re-export with `scripts/export-form-text.ps1`. A catalogue change includes the
+  matching form edit. Change generators rather than generated output. Native Access experiments happen only on disposable copies, and useful
   results are ported back to source.
 - Check `git status` before significant changes. Do not overwrite someone
   else's uncommitted work.

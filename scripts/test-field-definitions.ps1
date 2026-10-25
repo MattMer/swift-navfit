@@ -58,7 +58,15 @@ foreach($field in $chief){
     $row=$catalogue.fixedLayout.'CHIEFEVAL:0'.fields|Where-Object key -eq $field.key
     Check ($row.y -eq 10380+($block-33)*2800+250+($entry-1)*720 -and $row.x -eq 4932 -and $row.w -eq 6876 -and $row.h -eq 580) ('Chief comment must match the printed width/height in its trait group: '+$field.key)
 }
-Write-Output ('PASS: '+$checks+' canonical definitions, exact adapter bindings and fixed-geometry checks')
+# Forms are source: a catalogue change must include the form edit. Every field's
+# control exists in the editor and its surface; runtime layout comes from modUXFields.
+foreach($formName in @('frmEditor','frmUXEditorFields')){
+    $text=[IO.File]::ReadAllText((Join-Path $root ('src/forms/'+$formName+'.form.txt')))
+    $controls=@([regex]::Matches($text,'(?m)^\s+Name ="([^"]+)"')|ForEach-Object {$_.Groups[1].Value})
+    # The report type is chosen when a report is created; the surface never edits it.
+    foreach($field in $fields|Where-Object {-not ($formName -eq 'frmUXEditorFields' -and $_.key -eq 'FormKind')}){Check ($controls -contains $field.control) ('Catalogue field has no control in src/forms/'+$formName+'.form.txt: '+$field.key+' ('+$field.control+')')}
+}
+Write-Output ('PASS: '+$checks+' canonical definitions, exact adapter bindings, fixed-geometry and form-control checks')
 if($BuildPath){
     $before=(Get-FileHash -LiteralPath $BuildPath).Hash
     $fixture=Join-Path $root ('build/tests/catalogue-extension-'+[guid]::NewGuid())

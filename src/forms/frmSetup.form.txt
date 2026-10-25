@@ -19,6 +19,7 @@ Begin Form
     FilterOnLoad =0
     AllowLayoutView =0
     NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
             BackStyle =0

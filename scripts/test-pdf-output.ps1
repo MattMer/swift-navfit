@@ -22,22 +22,11 @@ try {
   $db.Execute("UPDATE AppMetadata SET SchemaVersion=33,AppVersion='0.36.0-dev'",128);$db.Close();$db=$null
   . (Join-Path $PSScriptRoot 'apply-ux-field-catalogue.ps1')
   . (Join-Path $PSScriptRoot 'apply-ux-surface-catalogue.ps1')
-  foreach($view in @('frmEditor','frmUXEditorFields')){
-   $app.DoCmd.OpenForm($view,1);$form=$app.Forms.Item($view)
-   foreach($field in $definitions.fields|Where-Object {$_.definitionVersion -ge 2}){
-    if(@($form.Controls|ForEach-Object {$_.Name}) -contains $field.control){continue}
-    $control=$app.CreateControl($view,109,0,'','',200,200,1950,360);$control.Name=$field.control;$control.Visible=$false
-    if($view -eq 'frmEditor'){$control.Tag='BUFFER'}else{
-     $control.Tag='SURF:'+$field.key;$control.AfterUpdate='=UXSurfaceEdited("'+$field.key+'")';$control.EnterKeyBehavior=$true;$control.ScrollBars=2
-     $label=$app.CreateControl($view,100,0,$control.Name,'',200,100,1950,340);$label.Name='label'+$field.key;$label.Caption=$field.label;$label.Visible=$false
-     $errorLabel=$app.CreateControl($view,100,0,'','',200,900,1950,200);$errorLabel.Name='err'+$field.key;$errorLabel.Caption='';$errorLabel.Visible=$false
-    }
-   }
-   $app.DoCmd.Close(2,$view,1)
-  }
+  #Forms are source: reload them from src/forms.
+  . (Join-Path $PSScriptRoot 'install-form-text.ps1');[void](InstallSwiftFormText)
   . (Join-Path $PSScriptRoot 'apply-pdf-print-catalogue.ps1')
   foreach($module in @('modSwift','modMigration','modRevisionCompare','modNAVFITAdapter','modNAVFITExchange','modUXNAVFIT','modPDFOutput','modPDFOutputUI','modUXTraitGrid','modReportPages','modUXGroupPages')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
-  if($ReusePresentation){. (Join-Path $PSScriptRoot 'apply-pdf-output.ps1') -RefreshBackgroundsOnly}else{. (Join-Path $PSScriptRoot 'apply-pdf-output.ps1')}
+  if($ReusePresentation){. (Join-Path $PSScriptRoot 'resource-pdf-report.ps1') -RefreshBackgroundsOnly}else{. (Join-Path $PSScriptRoot 'resource-pdf-report.ps1')}
  }
  $app.LoadFromText(5,'PDFOutputHarness',(Join-Path $root 'tests/PDFOutputHarness.bas'))
  Write-Output 'Compile focused PDF source'

@@ -1791,7 +1791,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1813,7 +1813,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1835,7 +1835,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1857,7 +1857,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1879,7 +1879,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1901,7 +1901,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000

@@ -23,6 +23,7 @@ $m=$original|ConvertFrom-Json;$m.stages[0].requires=@($m.stages[-1].id);RejectPl
 $m=$original|ConvertFrom-Json;$m.stages[0].phase='unknown';RejectPlan $m 'Invalid build phase'
 $m=$original|ConvertFrom-Json;$m.inputs+=('../outside.txt');RejectPlan $m 'escapes repository'
 $m=$original|ConvertFrom-Json;$m.sourceModules=@($m.sourceModules|Select-Object -Skip 1);RejectPlan $m 'inventory differs'
+$m=$original|ConvertFrom-Json;$m.forms=@($m.forms|Select-Object -Skip 1);RejectPlan $m 'form inventory differs'
 $badSchema=Join-Path $folder 'bad-schema.json';@{SchemaVersion=999}|ConvertTo-Json|Set-Content $badSchema
 $m=$original|ConvertFrom-Json;$m.schemaSource=$badSchema.Substring($root.Length+1).Replace('\','/');RejectPlan $m 'Schema definition and application constant disagree'
 $stamp=Join-Path $folder 'input-stamp.txt';'before'|Set-Content $stamp
@@ -53,7 +54,7 @@ $validJSON|Set-Content -LiteralPath $receiptPath
 Check (TestSwiftBuildReceipt $artifact $plan) 'Matching complete receipt was rejected'
 $changedArtifact=[pscustomobject]@{Path=$artifact.Path;SHA256=('B'*64)}
 Check (-not(TestSwiftBuildReceipt $changedArtifact $plan)) 'Changed artifact was accepted'
-foreach($key in @('src/modSwift.bas','scripts/apply-contributor-startup.ps1','scripts/verify-built-application.ps1','scripts/vba-source-normalization.ps1')){
+foreach($key in @('src/modSwift.bas','scripts/resource-pdf-report.ps1','src/forms/frmEditor.form.txt','scripts/verify-built-application.ps1','scripts/vba-source-normalization.ps1')){
  $receipt=$validJSON|ConvertFrom-Json;$receipt.Inputs.$key='changed'
  $receipt|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $receiptPath
  Check (-not(TestSwiftBuildReceipt $artifact $plan)) ('Changed source/generator/checker was accepted: '+$key)
@@ -74,6 +75,14 @@ foreach($kind in @('missing-input','extra-input','incomplete','string-flag','wro
  $receipt|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $receiptPath
  Check (-not(TestSwiftBuildReceipt $artifact $plan)) ('Invalid receipt was accepted: '+$kind)
 }
+# Forms are source: each file in src/forms must be normalized Access text, so a
+# diff shows only real changes (scripts/export-form-text.ps1 writes them).
+$noise='(?m)^(Checksum =|\s*(GUID|NameMap|RecSrcDt) = Begin\s*$|\s*BaseInfo =)'
+foreach($form in Get-ChildItem (Join-Path $root 'src/forms') -Filter '*.form.txt'){
+ Check ([IO.File]::ReadAllText($form.FullName) -notmatch $noise) ('Form text is not normalized; export it with export-form-text.ps1: '+$form.Name)
+}
+$probe=Join-Path $folder 'raw.form.txt';[IO.File]::WriteAllText($probe,"Version =20`r`nChecksum =12345`r`nBegin Form`r`nEnd`r`n")
+Check ([IO.File]::ReadAllText($probe) -match $noise) 'Normalization check missed a raw export'
 # Runner inventory: every runner is classified, and no runner or harness is orphaned.
 $runners=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners)
 $scripts=@(Get-ChildItem (Join-Path $root 'scripts') -Filter '*.ps1')

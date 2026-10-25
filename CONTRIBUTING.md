@@ -3,7 +3,7 @@
 Start with [PROJECT_STATE.md](PROJECT_STATE.md) for current architecture and
 support, [AGENTS.md](AGENTS.md) for task/data/release constraints, and
 [Development_Workflow.md](docs/Development_Workflow.md) for environment and commands.
-[BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md) owns generator dependencies.
+[BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md) owns build order and the form workflow.
 Historical release notes are evidence, not additional daily task requirements.
 
 ## Working on a change

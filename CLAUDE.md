@@ -8,8 +8,9 @@
   PowerShell runners, which drive Access through COM.
 - Run Access scripts with `powershell.exe -NoProfile -File ...` (Windows
   PowerShell 5.1), not `pwsh` or WSL.
-- `scripts/develop.ps1 -Action BuildAndTest` takes about 11 minutes. Run it in
-  the background and wait for the completion notification.
+- `scripts/develop.ps1 -Action BuildAndTest` takes about 5 minutes and
+  `-Action ExtendedTest` about an hour. Run them in the background and wait for
+  the completion notification.
 - [.claude/settings.json](.claude/settings.json) enforces two AGENTS.md rules
   with hooks, plus a permissions allowlist:
   - `.claude/hooks/guard.ps1` denies edits under `output/`,
