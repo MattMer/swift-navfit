@@ -1,0 +1,541 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    Modal = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    TabularFamily =0
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridX =24
+    GridY =24
+    Width =14500
+    DatasheetFontHeight =11
+    ItemSuffix =17
+    Left =3330
+    Top =1980
+    Right =21855
+    Bottom =14775
+    DatasheetGridlinesColor =15263976
+    Caption ="Review possible duplicate Sailors"
+    DatasheetFontName ="Aptos"
+    OnResize ="=UXHelpResize(\"frmUXDirectoryMerge\",\"\")"
+    OnLoad ="=UXDirectoryMergeLoad()"
+    FilterOnLoad =0
+    ShowPageMargins =0
+    DisplayOnSharePointSite =1
+    DatasheetAlternateBackColor =15921906
+    DatasheetGridlinesColor12 =0
+    FitToScreen =1
+    DatasheetBackThemeColorIndex =1
+    BorderThemeColorIndex =3
+    ThemeFontIndex =1
+    ForeThemeColorIndex =0
+    AlternateBackThemeColorIndex =1
+    AlternateBackShade =95.0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =11800
+            Name ="Detail"
+            AutoHeight =1
+            AlternateBackColor =15921906
+            AlternateBackThemeColorIndex =1
+            AlternateBackShade =95.0
+            BackThemeColorIndex =1
+            Begin
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =13700
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontSize =10
+                    FontWeight =700
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXDirectoryMerge\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =13700
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =550
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =200
+                    Width =13000
+                    Height =750
+                    FontSize =10
+                    Name ="lblInfo"
+                    Caption ="Review two profiles for the same Sailor. Surname matches are suggestions only. C"
+                        "onflicting identifiers block merging. The original profile stays archived; saved"
+                        " report content and history are preserved."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =200
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =950
+                    ThemeFontIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =1000
+                    Width =6700
+                    Height =350
+                    FontSize =10
+                    Name ="lblSource"
+                    Caption ="Original member - archive after moving links"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =1000
+                    LayoutCachedWidth =7000
+                    LayoutCachedHeight =1350
+                    ThemeFontIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7500
+                    Top =1000
+                    Width =6700
+                    Height =350
+                    FontSize =10
+                    Name ="lblTarget"
+                    Caption ="Surviving member - keep this profile"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =7500
+                    LayoutCachedTop =1000
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =1350
+                    ThemeFontIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =300
+                    Top =1400
+                    Width =6700
+                    Height =430
+                    FontSize =10
+                    TabIndex =1
+                    Name ="cboSource"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;6400"
+                    AfterUpdate ="=UXDirectoryMergeChanged()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =1400
+                    LayoutCachedWidth =7000
+                    LayoutCachedHeight =1830
+                    ThemeFontIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =7500
+                    Top =1400
+                    Width =6700
+                    Height =430
+                    FontSize =10
+                    TabIndex =2
+                    Name ="cboTarget"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;6400"
+                    AfterUpdate ="=UXDirectoryMergeChanged()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7500
+                    LayoutCachedTop =1400
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =1830
+                    ThemeFontIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =1900
+                    Width =13900
+                    Height =350
+                    FontSize =10
+                    Name ="lblCandidates"
+                    Caption ="Possible surname matches - double-click to choose a survivor, or use the survivo"
+                        "r list for changed names"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =1900
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =2250
+                    ThemeFontIndex =-1
+                End
+                Begin ListBox
+                    ColumnHeads = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =3
+                    Left =300
+                    Top =2300
+                    Width =13900
+                    Height =1100
+                    FontSize =10
+                    TabIndex =3
+                    Name ="lstCandidates"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;10500;2500"
+                    OnDblClick ="=UXDirectoryMergeCandidate()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2300
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =3400
+                    ThemeFontIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =3500
+                    Width =13900
+                    Height =450
+                    FontSize =10
+                    TabIndex =4
+                    Name ="cmdPreview"
+                    Caption ="Preview identities and all affected links"
+                    OnClick ="=UXDirectoryMergePreview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =3950
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    EnterKeyBehavior = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =300
+                    Top =4050
+                    Width =13900
+                    Height =3400
+                    FontSize =10
+                    TabIndex =5
+                    Name ="txtPreview"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =4050
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =7450
+                    ThemeFontIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =7550
+                    Width =13900
+                    Height =350
+                    FontSize =10
+                    Name ="lblReason"
+                    Caption ="Why are these profiles the same Sailor? Required; do not include SSNs or DoD IDs"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =7550
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =7900
+                    ThemeFontIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =300
+                    Top =7950
+                    Width =13900
+                    Height =500
+                    FontSize =10
+                    TabIndex =6
+                    Name ="txtReason"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =7950
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =8450
+                    ThemeFontIndex =-1
+                End
+                Begin CommandButton
+                    Enabled = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =8550
+                    Width =13900
+                    Height =500
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =16777215
+                    Name ="cmdApply"
+                    Caption ="Apply reviewed merge"
+                    OnClick ="=UXDirectoryMergeApply()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =8550
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =9050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5948108
+                    BackThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =9200
+                    Width =13900
+                    Height =350
+                    FontSize =10
+                    Name ="lblHistory"
+                    Caption ="Merge history - undo restores original links only if no later changes affect the"
+                        " members"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =9200
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =9550
+                    ThemeFontIndex =-1
+                End
+                Begin ListBox
+                    ColumnHeads = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =5
+                    Left =300
+                    Top =9600
+                    Width =13900
+                    Height =1300
+                    FontSize =10
+                    TabIndex =8
+                    Name ="lstHistory"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="1000;2400;2400;2400;4200"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =9600
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =10900
+                    ThemeFontIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =11000
+                    Width =6700
+                    Height =450
+                    FontSize =10
+                    TabIndex =9
+                    Name ="cmdUndo"
+                    Caption ="Undo selected merge"
+                    OnClick ="=UXDirectoryMergeUndo()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =11000
+                    LayoutCachedWidth =7000
+                    LayoutCachedHeight =11450
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7500
+                    Top =11000
+                    Width =6700
+                    Height =450
+                    FontSize =10
+                    TabIndex =10
+                    Name ="cmdClose"
+                    Caption ="Back to member directory"
+                    OnClick ="=UXDirectoryClose(\"frmUXDirectoryMerge\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7500
+                    LayoutCachedTop =11000
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =11450
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End

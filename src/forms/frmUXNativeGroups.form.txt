@@ -1,0 +1,687 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =13800
+    ItemSuffix =22
+    Right =18525
+    Bottom =12795
+    Caption ="Import NAVFIT groups"
+    OnActivate ="=UXSortActivate(\"frmUXNativeGroups\")"
+    OnResize ="=UXHelpResize(\"frmUXNativeGroups\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =13500
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =12800
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Import NAVFIT groups"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =950
+                    Width =12600
+                    Height =400
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSource"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =950
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =1350
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    MultiSelect =1
+                    IMESentenceMode =3
+                    ColumnCount =5
+                    Left =400
+                    Top =2500
+                    Width =12600
+                    Height =1100
+                    FontSize =10
+                    TabIndex =1
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstGroups"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;7000;2100;1500;1000"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXNativeGroupSelectionChanged()"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2500
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =3600
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =4900
+                    Width =6100
+                    Height =450
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =4205854
+                    Name ="cmdPreview"
+                    Caption ="Preview selected groups and reports"
+                    OnClick ="=UXPreviewNativeGroups()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4900
+                    LayoutCachedWidth =6500
+                    LayoutCachedHeight =5350
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    Enabled = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6800
+                    Top =4900
+                    Width =6200
+                    Height =450
+                    FontSize =10
+                    TabIndex =3
+                    ForeColor =8746084
+                    Name ="cmdApply"
+                    Caption ="Apply selected groups"
+                    OnClick ="=UXApplyNativeGroups()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6800
+                    LayoutCachedTop =4900
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =5350
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8746084
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8746084
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =5700
+                    Width =12600
+                    Height =4800
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtPreview"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5700
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =10500
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =10800
+                    Width =12600
+                    Height =1050
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblStatus"
+                    Caption ="Choose the counseling century, then select groups and Preview."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =10800
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =11850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =12200
+                    Width =12600
+                    Height =500
+                    FontSize =10
+                    TabIndex =5
+                    ForeColor =4205854
+                    Name ="cmdBack"
+                    Caption ="Back to import choices"
+                    OnClick ="=UXCloseNativeGroups()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =12200
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =12700
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =4300
+                    Width =4700
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblImportGrade"
+                    Caption ="Paygrade for unresolved source rank/rate"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4300
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =4700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5200
+                    Top =4300
+                    Width =2000
+                    Height =400
+                    FontSize =10
+                    TabIndex =6
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="cboImportGrade"
+                    RowSourceType ="Value List"
+                    RowSource ="E1;E2;E3;E4;E5;E6;E7;E8;E9;W1;W2;W3;W4;W5;O1;O2;O3;O4;O5;O6;O7;O8;O9;O10"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5200
+                    LayoutCachedTop =4300
+                    LayoutCachedWidth =7200
+                    LayoutCachedHeight =4700
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7500
+                    Top =4300
+                    Width =5500
+                    Height =400
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =4205854
+                    Name ="cmdAssignImportGrade"
+                    Caption ="Assign paygrade to selected groups"
+                    OnClick ="=UXAssignNativeGroupGrade()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7500
+                    LayoutCachedTop =4300
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4700
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    Left =13000
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =8
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXNativeGroups\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =13000
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =13500
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =3700
+                    Width =4000
+                    Height =400
+                    FontSize =10
+                    TabIndex =9
+                    ForeColor =4205854
+                    Name ="cmdSelectAll"
+                    Caption ="Select all for import"
+                    OnClick ="=UXSelectAllNativeGroups(True)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3700
+                    LayoutCachedWidth =4400
+                    LayoutCachedHeight =4100
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =4600
+                    Top =3700
+                    Width =4000
+                    Height =400
+                    FontSize =10
+                    TabIndex =10
+                    ForeColor =4205854
+                    Name ="cmdClearSelection"
+                    Caption ="Clear selection"
+                    OnClick ="=UXSelectAllNativeGroups(False)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =4600
+                    LayoutCachedTop =3700
+                    LayoutCachedWidth =8600
+                    LayoutCachedHeight =4100
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2150
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstGroups_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNativeGroups\",\"lstGroups\",0)"
+                    Tag ="SORT:lstGroups:0"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =2450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2150
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstGroups_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNativeGroups\",\"lstGroups\",1)"
+                    Tag ="SORT:lstGroups:1"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =2450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2150
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstGroups_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNativeGroups\",\"lstGroups\",2)"
+                    Tag ="SORT:lstGroups:2"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =2450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2150
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstGroups_3"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNativeGroups\",\"lstGroups\",3)"
+                    Tag ="SORT:lstGroups:3"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =2450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2150
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstGroups_4"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNativeGroups\",\"lstGroups\",4)"
+                    Tag ="SORT:lstGroups:4"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =2450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    TabIndex =11
+                    Name ="uxSortActivateOriginal"
+                    DefaultValue ="\"=UXVisualEvent(\"\"frmUXNativeGroups\"\",\"\"\"\")\""
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                End
+            End
+        End
+    End
+End

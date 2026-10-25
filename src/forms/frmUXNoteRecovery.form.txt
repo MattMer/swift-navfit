@@ -1,0 +1,386 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    Width =13800
+    ItemSuffix =10
+    Right =18525
+    Bottom =12795
+    Caption ="My unposted notes"
+    OnActivate ="=UXSortActivate(\"frmUXNoteRecovery\")"
+    OnResize ="=UXHelpResize(\"frmUXNoteRecovery\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =6700
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =12800
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="My unposted notes"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =3
+                    Left =400
+                    Top =1600
+                    Width =12600
+                    Height =2550
+                    FontSize =10
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstDrafts"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;7800;4300"
+                    OnDblClick ="=UXResumeSelectedNote()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4150
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =4400
+                    Width =12600
+                    Height =850
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblStatus"
+                    Caption ="Select a note checkpoint to resume it alongside its report. Archived reports mus"
+                        "t be recovered before posting."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =5250
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5550
+                    Width =6100
+                    Height =500
+                    FontSize =10
+                    TabIndex =1
+                    ForeColor =4205854
+                    Name ="cmdResume"
+                    Caption ="Resume selected note"
+                    OnClick ="=UXResumeSelectedNote()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5550
+                    LayoutCachedWidth =6500
+                    LayoutCachedHeight =6050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6800
+                    Top =5550
+                    Width =6200
+                    Height =500
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =4205854
+                    Name ="cmdBack"
+                    Caption ="Back to Overview"
+                    OnClick ="=UXCloseResource(\"frmUXNoteRecovery\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6800
+                    LayoutCachedTop =5550
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =6050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    Left =13000
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =3
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXNoteRecovery\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =13000
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =13500
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1250
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstDrafts_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNoteRecovery\",\"lstDrafts\",0)"
+                    Tag ="SORT:lstDrafts:0"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1250
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =1550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =1250
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstDrafts_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNoteRecovery\",\"lstDrafts\",1)"
+                    Tag ="SORT:lstDrafts:1"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1250
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =1550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =1250
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstDrafts_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXNoteRecovery\",\"lstDrafts\",2)"
+                    Tag ="SORT:lstDrafts:2"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1250
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =1550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    TabIndex =4
+                    Name ="uxSortActivateOriginal"
+                    DefaultValue ="\"=UXVisualEvent(\"\"frmUXNoteRecovery\"\",\"\"\"\")\""
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                End
+            End
+        End
+    End
+End

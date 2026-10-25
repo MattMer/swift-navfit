@@ -1,0 +1,2549 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =10100
+    ItemSuffix =100
+    Right =18525
+    Bottom =12795
+    OnActivate ="=UXVisualEvent(\"frmUXRSCATable\",\"\")"
+    OnResize ="=RSTableResize()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =10000
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =50
+                    Width =800
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="headgrade"
+                    Caption ="Paygrade"
+                    FontName ="Segoe UI"
+                    OnClick ="=RSTableSort(\"grade\")"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =50
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =1000
+                    Top =50
+                    Width =1600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="headavg"
+                    Caption ="RSCA"
+                    FontName ="Segoe UI"
+                    OnClick ="=RSTableSort(\"avg\")"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =50
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2900
+                    Top =50
+                    Width =2600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="headcount"
+                    Caption ="Previous graded traits"
+                    FontName ="Segoe UI"
+                    OnClick ="=RSTableSort(\"count\")"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =50
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5800
+                    Top =50
+                    Width =3700
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="headdate"
+                    Caption ="As of (BOL / local completion)"
+                    FontName ="Segoe UI"
+                    OnClick ="=RSTableSort(\"date\")"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =50
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =500
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE1"
+                    Caption ="E1"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =830
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =500
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE1"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E1 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =830
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =500
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE1"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E1 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =830
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =500
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE1"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E1 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =830
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =890
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE2"
+                    Caption ="E2"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =890
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =1220
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =890
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE2"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E2 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =890
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =1220
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =890
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE2"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E2 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =890
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =1220
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =890
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =5
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE2"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E2 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =890
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =1220
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =1280
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE3"
+                    Caption ="E3"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =1280
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =1610
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =1280
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =6
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE3"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E3 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =1280
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =1610
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =1280
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =7
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE3"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E3 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =1280
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =1610
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =1280
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =8
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE3"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E3 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =1280
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =1610
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =1670
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE4"
+                    Caption ="E4"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =1670
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =2000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =1670
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE4"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E4 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =1670
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =2000
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =1670
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE4"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E4 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =1670
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =2000
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =1670
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE4"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E4 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =1670
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =2000
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =2060
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE5"
+                    Caption ="E5"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =2060
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =2390
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =2060
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =12
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE5"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E5 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =2060
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =2390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =2060
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =13
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE5"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E5 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =2060
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =2390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =2060
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =14
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE5"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E5 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =2060
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =2390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =2450
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE6"
+                    Caption ="E6"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =2450
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =2780
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =2450
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =15
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE6"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E6 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =2450
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =2780
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =2450
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =16
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE6"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E6 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =2450
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =2780
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =2450
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =17
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE6"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E6 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =2450
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =2780
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =2840
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE7"
+                    Caption ="E7"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =2840
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =3170
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =2840
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =18
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE7"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E7 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =2840
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =3170
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =2840
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =19
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE7"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E7 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =2840
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =3170
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =2840
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =20
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE7"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E7 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =2840
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =3170
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =3230
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE8"
+                    Caption ="E8"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =3230
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =3560
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =3230
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =21
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE8"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E8 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =3230
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =3560
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =3230
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =22
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE8"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E8 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =3230
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =3560
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =3230
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =23
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE8"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E8 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =3230
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =3560
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =3620
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeE9"
+                    Caption ="E9"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =3620
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =3950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =3620
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =24
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgE9"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E9 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =3620
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =3950
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =3620
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =25
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countE9"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E9 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =3620
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =3950
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =3620
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =26
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateE9"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E9 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =3620
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =3950
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =4010
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeW1"
+                    Caption ="W1"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =4010
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =4340
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =4010
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =27
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgW1"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W1 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =4010
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =4340
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =4010
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =28
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countW1"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W1 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =4010
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =4340
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =4010
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =29
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateW1"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W1 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =4010
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =4340
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =4400
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeW2"
+                    Caption ="W2"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =4730
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =4400
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =30
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgW2"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W2 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =4730
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =4400
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =31
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countW2"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W2 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =4730
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =4400
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =32
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateW2"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W2 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =4730
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =4790
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeW3"
+                    Caption ="W3"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =4790
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =5120
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =4790
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =33
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgW3"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W3 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =4790
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =5120
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =4790
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =34
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countW3"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W3 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =4790
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =5120
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =4790
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =35
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateW3"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W3 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =4790
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =5120
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =5180
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeW4"
+                    Caption ="W4"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =5180
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =5510
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =5180
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =36
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgW4"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W4 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =5180
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =5510
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =5180
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =37
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countW4"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W4 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =5180
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =5510
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =5180
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =38
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateW4"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W4 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =5180
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =5510
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =5570
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeW5"
+                    Caption ="W5"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =5570
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =5900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =5570
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =39
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgW5"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W5 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =5570
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =5900
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =5570
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =40
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countW5"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W5 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =5570
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =5900
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =5570
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =41
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateW5"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="W5 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =5570
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =5900
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =5960
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO1"
+                    Caption ="O1"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =5960
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =6290
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =5960
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =42
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO1"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O1 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =5960
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =6290
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =5960
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =43
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO1"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O1 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =5960
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =6290
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =5960
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =44
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO1"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O1 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =5960
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =6290
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =6350
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO2"
+                    Caption ="O2"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =6350
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =6680
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =6350
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =45
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO2"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O2 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =6350
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =6680
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =6350
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =46
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO2"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O2 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =6350
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =6680
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =6350
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =47
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO2"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O2 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =6350
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =6680
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =6740
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO3"
+                    Caption ="O3"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =6740
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =7070
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =6740
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =48
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO3"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O3 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =6740
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =7070
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =6740
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =49
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO3"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O3 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =6740
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =7070
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =6740
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =50
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO3"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O3 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =6740
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =7070
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =7130
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO4"
+                    Caption ="O4"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =7130
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =7460
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =7130
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =51
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO4"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O4 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =7130
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =7460
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =7130
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =52
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO4"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O4 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =7130
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =7460
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =7130
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =53
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO4"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O4 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =7130
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =7460
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =7520
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO5"
+                    Caption ="O5"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =7520
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =7850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =7520
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =54
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO5"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O5 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =7520
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =7850
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =7520
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =55
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO5"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O5 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =7520
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =7850
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =7520
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =56
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO5"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O5 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =7520
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =7850
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =7910
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO6"
+                    Caption ="O6"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =7910
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =8240
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =7910
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =57
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO6"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O6 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =7910
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =8240
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =7910
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =58
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO6"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O6 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =7910
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =8240
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =7910
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =59
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO6"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O6 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =7910
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =8240
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =8300
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO7"
+                    Caption ="O7"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =8300
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =8630
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =8300
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =60
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO7"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O7 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =8300
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =8630
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =8300
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =61
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO7"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O7 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =8300
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =8630
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =8300
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =62
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO7"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O7 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =8300
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =8630
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =8690
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO8"
+                    Caption ="O8"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =8690
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =9020
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =8690
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =63
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO8"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O8 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =8690
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =9020
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =8690
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =64
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO8"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O8 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =8690
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =9020
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =8690
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =65
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO8"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O8 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =8690
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =9020
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =9080
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO9"
+                    Caption ="O9"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =9080
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =9410
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =9080
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =66
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO9"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O9 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =9080
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =9410
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =9080
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =67
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO9"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O9 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =9080
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =9410
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =9080
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =68
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO9"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O9 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =9080
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =9410
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =100
+                    Top =9470
+                    Width =800
+                    Height =330
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="gradeO10"
+                    Caption ="O10"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =100
+                    LayoutCachedTop =9470
+                    LayoutCachedWidth =900
+                    LayoutCachedHeight =9800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =1000
+                    Top =9470
+                    Width =1600
+                    Height =330
+                    FontSize =10
+                    TabIndex =69
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="avgO10"
+                    Format ="Fixed"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O10 - RSCA"
+
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =9470
+                    LayoutCachedWidth =2600
+                    LayoutCachedHeight =9800
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =9470
+                    Width =2600
+                    Height =330
+                    FontSize =10
+                    TabIndex =70
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="countO10"
+                    Format ="0"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O10 - Previous graded traits"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =9470
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =9800
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5800
+                    Top =9470
+                    Width =3700
+                    Height =330
+                    FontSize =10
+                    TabIndex =71
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="dateO10"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=RSTableChanged()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="O10 - Date verified / pulled from BOL"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =9470
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =9800
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+            End
+        End
+    End
+End

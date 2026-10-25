@@ -1,0 +1,559 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    Modal = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    Width =13800
+    ItemSuffix =17
+    Left =6555
+    Top =1530
+    Right =21855
+    Bottom =14775
+    Caption ="Counseling, readiness and billet"
+    OnActivate ="=UXVisualEvent(\"frmServiceDetails\",\"\")"
+    OnResize ="=UXHelpResize(\"frmServiceDetails\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =9000
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =12800
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Counseling, readiness and billet"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =950
+                    Width =12600
+                    Height =650
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblScope"
+                    Caption ="Apply checkpoints pending values; Save draft commits them. Blank remains saveabl"
+                        "e. Suggestions are reference vocabulary; applicability, eligibility and Navy rul"
+                        "es are not assessed."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =950
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =1600
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1900
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblCounselingDate"
+                    Caption ="Counseling date (yyyy-mm-dd)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1900
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =2300
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =1850
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtCounselingDate"
+                    Format ="yyyy-mm-dd"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD. Authorized counseling statu"
+                        "s text is also supported."
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =1850
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =2300
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2750
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblCounselorName"
+                    Caption ="Counselor name (20)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2750
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =3150
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =2700
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtCounselorName"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2700
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =3150
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =3600
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblReadinessSummary"
+                    Caption ="Readiness summary (4)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3600
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =4000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =3550
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtReadinessSummary"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =3550
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4000
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =4450
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblReadinessDetail"
+                    Caption ="Readiness detail (15)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4450
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =4850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =4400
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtReadinessDetail"
+                    RowSourceType ="Value List"
+                    RowSource ="DEP/OP;Excellent;Failure;Good;Maximum;Med Waiver;Other;Outstanding;Probationary;"
+                        "Satisfactory"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4850
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5300
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblReadinessDate"
+                    Caption ="Readiness date (yyyy-mm-dd)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5300
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =5700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =5250
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtReadinessDate"
+                    Format ="yyyy-mm-dd"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =5250
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =5700
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =6150
+                    Width =5000
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblBilletSubcategory"
+                    Caption ="Billet subcategory (10)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6150
+                    LayoutCachedWidth =5400
+                    LayoutCachedHeight =6550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =6100
+                    Width =7500
+                    Height =450
+                    FontSize =10
+                    TabIndex =5
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtBilletSubcategory"
+                    RowSourceType ="Value List"
+                    RowSource ="APPROVED;BASIC;CANVASSER;CO AFLOAT;CO ASHORE;CRF;INDIV AUG;INSTRUCTOR;INTERN;NA;"
+                        "OIC;RESAC1;RESAC6;RESIDENT;SCREENED;SEA COMP;SPECIAL01;SPECIAL02;SPECIAL03;SPECI"
+                        "AL04;SPECIAL05;SPECIAL06;SPECIAL07;SPECIAL08;SPECIAL09;SPECIAL10;SPECIAL11;SPECI"
+                        "AL12;SPECIAL13;SPECIAL14;SPECIAL15;SPECIAL16;SPECIAL17;SPECIAL18;SPECIAL19;SPECI"
+                        "AL20;STUDENT"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =6100
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =6550
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =7500
+                    Width =5800
+                    Height =550
+                    FontSize =10
+                    TabIndex =6
+                    ForeColor =16777215
+                    Name ="cmdApply"
+                    Caption ="Apply pending values and return"
+                    OnClick ="=ApplyServiceDetails()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =7500
+                    LayoutCachedWidth =6200
+                    LayoutCachedHeight =8050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7000
+                    Top =7500
+                    Width =6000
+                    Height =550
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =4205854
+                    Name ="cmdCancel"
+                    Caption ="Cancel panel changes"
+                    OnClick ="=CancelServiceDetails()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7000
+                    LayoutCachedTop =7500
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =8050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    Left =13000
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =8
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmServiceDetails\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =13000
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =13500
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+            End
+        End
+    End
+End

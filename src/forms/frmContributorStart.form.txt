@@ -1,0 +1,321 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    Modal = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    BorderStyle =3
+    Width =8600
+    ItemSuffix =10
+    Left =3330
+    Top =1980
+    Right =21855
+    Bottom =14775
+    Caption ="Choose your contributor"
+    OnLoad ="=LoadContributorStartup()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =6300
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =300
+                    Width =7800
+                    Height =600
+                    FontSize =20
+                    Name ="lblHeading"
+                    Caption ="Who is contributing today?"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =300
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =900
+                    ThemeFontIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1050
+                    Width =7800
+                    Height =850
+                    Name ="lblInfo"
+                    Caption ="Choose a contributor for this launch. This name records local authorship; it is "
+                        "not sign-in or proof of identity."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1050
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =1900
+                    ThemeFontIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =400
+                    Top =2450
+                    Width =7800
+                    Height =450
+                    Name ="cboContributor"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;7400"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2450
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =2900
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2050
+                            Width =7800
+                            Height =350
+                            Name ="lblExisting"
+                            Caption ="Existing contributor"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2050
+                            LayoutCachedWidth =8200
+                            LayoutCachedHeight =2400
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =3100
+                    Width =7800
+                    Height =500
+                    TabIndex =1
+                    Name ="cmdContinue"
+                    Caption ="Continue as selected contributor"
+                    OnClick ="=AcceptContributorStartup(False)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3100
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =3600
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =4300
+                    Width =5100
+                    Height =450
+                    TabIndex =2
+                    Name ="txtNewContributor"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4300
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =4750
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3900
+                            Width =7800
+                            Height =350
+                            Name ="lblNew"
+                            Caption ="Or add your name as a new contributor"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3900
+                            LayoutCachedWidth =8200
+                            LayoutCachedHeight =4250
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5700
+                    Top =4300
+                    Width =2500
+                    Height =450
+                    TabIndex =3
+                    Name ="cmdAdd"
+                    Caption ="Add and continue"
+                    OnClick ="=AcceptContributorStartup(True)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5700
+                    LayoutCachedTop =4300
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =4750
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5050
+                    Width =7800
+                    Height =650
+                    Name ="lblStatus"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5050
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =5700
+                    ThemeFontIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5800
+                    Width =7800
+                    Height =400
+                    TabIndex =4
+                    Name ="cmdCancel"
+                    Caption ="Exit Swift NAVFIT"
+                    OnClick ="=CancelContributorStartup()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5800
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =6200
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End

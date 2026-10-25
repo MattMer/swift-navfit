@@ -1,0 +1,936 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =18100
+    ItemSuffix =32
+    Right =18525
+    Bottom =12795
+    OnUnload ="=CloseReviewFile()"
+    Caption ="NAVFIT source review"
+    OnClose ="=CloseReviewFile()"
+    OnActivate ="=UXSortActivate(\"frmImportReview\")"
+    OnResize ="=UXHelpResize(\"frmImportReview\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =9900
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =12800
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="NAVFIT source review"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =900
+                    Width =12600
+                    Height =550
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblScope"
+                    Caption ="Choose > Preview > Apply > Results. Map all supported Swift report values and re"
+                        "tain every native source column. Imported reports become separate Swift drafts."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =900
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =1450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =2150
+                    Width =4700
+                    Height =450
+                    FontSize =10
+                    TabIndex =12
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSource"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =2600
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =4
+                    Left =400
+                    Top =3250
+                    Width =4700
+                    Height =1950
+                    FontSize =10
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstImportReports"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;1100;1500;2000"
+                    AfterUpdate ="=ReviewReportFields()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3250
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =5200
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =4
+                    Left =5500
+                    Top =3250
+                    Width =7500
+                    Height =1550
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstImportFields"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;4000;1300;1300"
+                    AfterUpdate ="=ReviewFieldValue()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =3250
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4800
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2550
+                    Width =7500
+                    Height =350
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblFieldColumns"
+                    Caption ="Field name / DAO type / Null or Value"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =2900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Locked = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =5050
+                    Width =7500
+                    Height =1350
+                    FontSize =10
+                    TabIndex =8
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtFieldValue"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =5050
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =6400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =9250
+                    Width =3000
+                    Height =500
+                    FontSize =10
+                    TabIndex =11
+                    ForeColor =4205854
+                    Name ="cmdLeave"
+                    Caption ="Back to Reports"
+                    OnClick ="=UXLeaveImportReview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =9250
+                    LayoutCachedWidth =3400
+                    LayoutCachedHeight =9750
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5500
+                    Width =4700
+                    Height =350
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblImportMember"
+                    Caption ="Local member display name (optional)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5500
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =5850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =5900
+                    Width =4700
+                    Height =450
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtImportMember"
+                    AfterUpdate ="=UXNarrativeInputChanged()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5900
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =6350
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    Enabled = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5500
+                    Top =6900
+                    Width =3500
+                    Height =550
+                    FontSize =10
+                    TabIndex =4
+                    ForeColor =8746084
+                    Name ="cmdImport"
+                    Caption ="Apply reviewed import"
+                    OnClick ="=UXApplyFullNAVFIT()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =6900
+                    LayoutCachedWidth =9000
+                    LayoutCachedHeight =7450
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8746084
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8746084
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =5500
+                    Top =7550
+                    Width =7500
+                    Height =550
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblImportResult"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =7550
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =8100
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =3
+                    Left =400
+                    Top =8550
+                    Width =7000
+                    Height =500
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    ColumnInfo ="\"\";\"\";\"\";\"\";\"\";\"\";\"10\";\"320\""
+                    Name ="cboDestinationReport"
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT ReportID, Title, FormKind FROM Report WHERE IsArchived=False ORDER BY Tit"
+                        "le; "
+                    ColumnWidths ="0;5000;1800"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =8550
+                    LayoutCachedWidth =7400
+                    LayoutCachedHeight =9050
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8000
+                    Top =8550
+                    Width =4900
+                    Height =500
+                    FontSize =10
+                    TabIndex =10
+                    ForeColor =4205854
+                    Name ="cmdCompareIncoming"
+                    Caption ="Compare with selected saved draft"
+                    OnClick ="=PreviewReconcileUI()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8000
+                    LayoutCachedTop =8550
+                    LayoutCachedWidth =12900
+                    LayoutCachedHeight =9050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2150
+                    Width =7500
+                    Height =550
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =4205854
+                    Name ="cmdPreview"
+                    Caption ="Preview full report mapping"
+                    OnClick ="=UXPreviewFullNAVFIT()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =2700
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =6500
+                    Width =4700
+                    Height =450
+                    FontSize =10
+                    TabIndex =6
+                    ForeColor =4205854
+                    Name ="cmdInspect"
+                    Caption ="Inspect source fields"
+                    OnClick ="=UXNarrativeInspect()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6500
+                    LayoutCachedWidth =5100
+                    LayoutCachedHeight =6950
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5500
+                    Top =2900
+                    Width =7500
+                    Height =3500
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="uxPreview"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =6400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1500
+                    Width =12600
+                    Height =550
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxState"
+                    Caption ="2. Preview - select a source member and preview mapping."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1500
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =2050
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    Enabled = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9400
+                    Top =6900
+                    Width =3600
+                    Height =550
+                    FontSize =10
+                    TabIndex =5
+                    ForeColor =8746084
+                    Name ="cmdOpenResult"
+                    Caption ="Open imported report"
+                    OnClick ="=UXOpenFullNAVFITResult()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9400
+                    LayoutCachedTop =6900
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =7450
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8746084
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8746084
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    Left =400
+                    Top =8100
+                    Width =12600
+                    Height =350
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblReconcile"
+                    Caption ="Existing report reconciliation: compare separately before accepting an incoming "
+                        "narrative"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =8100
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =8450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    Left =17300
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =13
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmImportReview\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =17300
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =17800
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportReports_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportReports\",0)"
+                    Tag ="SORT:lstImportReports:0"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportReports_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportReports\",1)"
+                    Tag ="SORT:lstImportReports:1"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportReports_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportReports\",2)"
+                    Tag ="SORT:lstImportReports:2"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportReports_3"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportReports\",3)"
+                    Tag ="SORT:lstImportReports:3"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =1200
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportFields_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportFields\",0)"
+                    Tag ="SORT:lstImportFields:0"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =6300
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportFields_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportFields\",1)"
+                    Tag ="SORT:lstImportFields:1"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =6300
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportFields_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportFields\",2)"
+                    Tag ="SORT:lstImportFields:2"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =6300
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =5500
+                    Top =2900
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstImportFields_3"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmImportReview\",\"lstImportFields\",3)"
+                    Tag ="SORT:lstImportFields:3"
+                    LayoutCachedLeft =5500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =6300
+                    LayoutCachedHeight =3200
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    TabIndex =14
+                    Name ="uxSortActivateOriginal"
+                    DefaultValue ="\"=UXVisualEvent(\"\"frmImportReview\"\",\"\"\"\")\""
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                End
+            End
+        End
+    End
+End

@@ -1,0 +1,1024 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    AllowDeletions = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    AllowAdditions = NotDefault
+    ScrollBars =2
+    Width =17050
+    ItemSuffix =34
+    Right =18525
+    Bottom =12795
+    Caption ="Trait comparison"
+    OnCurrent ="=UXGridCurrent()"
+    OnActivate ="=UXVisualEvent(\"frmUXTraitRows\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin FormHeader
+            Height =950
+            BackColor =15783096
+            Name ="FormHeader"
+            AutoHeight =1
+            AlternateBackThemeColorIndex =1
+            AlternateBackShade =95.0
+            BackThemeColorIndex =2
+            BackTint =20.0
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =750
+                    Top =20
+                    Width =2000
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingMember"
+                    Caption ="Member / state"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Member\")"
+                    Tag ="750:2000"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =750
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =2750
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2900
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading33"
+                    Caption ="Trait 33"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait33\")"
+                    Tag ="2900:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =3660
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3720
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading34"
+                    Caption ="Trait 34"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait34\")"
+                    Tag ="3720:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =3720
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =4480
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =4540
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading35"
+                    Caption ="Trait 35"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait35\")"
+                    Tag ="4540:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =4540
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =5300
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5360
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading36"
+                    Caption ="Trait 36"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait36\")"
+                    Tag ="5360:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =5360
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =6120
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6180
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading37"
+                    Caption ="Trait 37"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait37\")"
+                    Tag ="6180:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =6180
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =6940
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7000
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading38"
+                    Caption ="Trait 38"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait38\")"
+                    Tag ="7000:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =7000
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =7760
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7820
+                    Top =20
+                    Width =760
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="heading39"
+                    Caption ="Trait 39"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"Trait39\")"
+                    Tag ="7820:760"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =7820
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =8580
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8800
+                    Top =20
+                    Width =700
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingITA"
+                    Caption ="ITA"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"ITA\")"
+                    Tag ="8800:700"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =8800
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9700
+                    Top =20
+                    Width =1350
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingPromotion"
+                    Caption ="Promotion recommendation"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"PromotionRecommendation\")"
+                    Tag ="9700:1350"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =9700
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =11050
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =11150
+                    Top =20
+                    Width =1350
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingAssignmentRecommendationA"
+                    Caption ="Career recommendation 1"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"AssignmentRecommendationA\")"
+                    Tag ="11150:1350"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =11150
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =12500
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =12550
+                    Top =20
+                    Width =1350
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingAssignmentRecommendationB"
+                    Caption ="Career recommendation 2"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"AssignmentRecommendationB\")"
+                    Tag ="12550:1350"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =12550
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =13900
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =13950
+                    Top =20
+                    Width =1000
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingPriorITA"
+                    Caption ="Prior ITA"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"PriorITA\")"
+                    Tag ="13950:1000"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =13950
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =14950
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    Left =14950
+                    Top =20
+                    Width =2100
+                    Height =900
+                    FontSize =8
+                    ForeColor =4205854
+                    Name ="headingPriorPromotion"
+                    Caption ="Prior promotion"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortGrid(\"PriorPromotion\")"
+                    Tag ="14950:2100"
+                    ControlTipText ="Click to sort; click again to reverse"
+                    LayoutCachedLeft =14950
+                    LayoutCachedTop =20
+                    LayoutCachedWidth =17050
+                    LayoutCachedHeight =920
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+            End
+        End
+        Begin Section
+            Height =650
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Locked = NotDefault
+                    TabStop = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =750
+                    Top =30
+                    Width =2000
+                    Height =300
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Member"
+                    ControlSource ="Member"
+                    OnDblClick ="=UXGridOpenReport()"
+                    FontName ="Segoe UI"
+                    Tag ="750:2000"
+
+                    LayoutCachedLeft =750
+                    LayoutCachedTop =30
+                    LayoutCachedWidth =2750
+                    LayoutCachedHeight =330
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    TabStop = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =750
+                    Top =340
+                    Width =2000
+                    Height =280
+                    FontSize =8
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="RowStatus"
+                    ControlSource ="RowStatus"
+                    FontName ="Segoe UI"
+                    Tag ="750:2000"
+
+                    LayoutCachedLeft =750
+                    LayoutCachedTop =340
+                    LayoutCachedWidth =2750
+                    LayoutCachedHeight =620
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ReportID"
+                    ControlSource ="ReportID"
+                    FontName ="Segoe UI"
+                    Tag ="0:100"
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="RevisionID"
+                    ControlSource ="RevisionID"
+                    FontName ="Segoe UI"
+                    Tag ="0:100"
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ObservationStatus"
+                    ControlSource ="ObservationStatus"
+                    FontName ="Segoe UI"
+                    Tag ="0:100"
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2900
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =5
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait33"
+                    ControlSource ="Trait33"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait33\")"
+                    FontName ="Segoe UI"
+                    Tag ="2900:760"
+
+                    LayoutCachedLeft =2900
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =3660
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =3720
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =6
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait34"
+                    ControlSource ="Trait34"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait34\")"
+                    FontName ="Segoe UI"
+                    Tag ="3720:760"
+
+                    LayoutCachedLeft =3720
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =4480
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4540
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =7
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait35"
+                    ControlSource ="Trait35"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait35\")"
+                    FontName ="Segoe UI"
+                    Tag ="4540:760"
+
+                    LayoutCachedLeft =4540
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =5300
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5360
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =8
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait36"
+                    ControlSource ="Trait36"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait36\")"
+                    FontName ="Segoe UI"
+                    Tag ="5360:760"
+
+                    LayoutCachedLeft =5360
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =6120
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =6180
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait37"
+                    ControlSource ="Trait37"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait37\")"
+                    FontName ="Segoe UI"
+                    Tag ="6180:760"
+
+                    LayoutCachedLeft =6180
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =6940
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =7000
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait38"
+                    ControlSource ="Trait38"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait38\")"
+                    FontName ="Segoe UI"
+                    Tag ="7000:760"
+
+                    LayoutCachedLeft =7000
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =7760
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =7820
+                    Top =40
+                    Width =760
+                    Height =360
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="Trait39"
+                    ControlSource ="Trait39"
+                    RowSourceType ="Value List"
+                    RowSource ="NOB;1.0;2.0;3.0;4.0;5.0"
+                    AfterUpdate ="=UXGridQueue(\"Trait39\")"
+                    FontName ="Segoe UI"
+                    Tag ="7820:760"
+
+                    LayoutCachedLeft =7820
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =8580
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    TabStop = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8800
+                    Top =40
+                    Width =700
+                    Height =360
+                    FontSize =10
+                    TabIndex =12
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ITA"
+                    ControlSource ="ITA"
+                    FontName ="Segoe UI"
+                    Tag ="8800:700"
+                    ControlTipText ="Compared with this sailor's prior ITA: green = higher; yellow = lower. Equal or "
+                        "no prior ITA keeps the normal appearance."
+                    ConditionalFormat = Begin
+                        0x01000000ea000000020000000100000000000000000000002000000001000000 ,
+                        0x1f654400e2f2e90001000000000000002200000043000000010000007a470000 ,
+                        0xfff0cf0000000000000000000000000000000000000000000000000000000000 ,
+                        0x550058004900540041004300680061006e006700650028005b00490054004100 ,
+                        0x5d002c005b005000720069006f0072004900540041005d0029003d0031000000 ,
+                        0x00000000550058004900540041004300680061006e006700650028005b004900 ,
+                        0x540041005d002c005b005000720069006f0072004900540041005d0029003d00 ,
+                        0x2d003100000000000000
+                    End
+
+                    LayoutCachedLeft =8800
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    ConditionalFormat14 = Begin
+                        0x0100020000000100000000000000010000001f654400e2f2e9001f0000005500 ,
+                        0x58004900540041004300680061006e006700650028005b004900540041005d00 ,
+                        0x2c005b005000720069006f0072004900540041005d0029003d00310000000000 ,
+                        0x0000000000e2f2e90000000000000000000100000000000000010000007a4700 ,
+                        0x00fff0cf0020000000550058004900540041004300680061006e006700650028 ,
+                        0x005b004900540041005d002c005b005000720069006f0072004900540041005d ,
+                        0x0029003d002d003100000000000000000000fff0cf000000000000000000
+                    End
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =9700
+                    Top =40
+                    Width =1350
+                    Height =360
+                    FontSize =10
+                    TabIndex =13
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="PromotionRecommendation"
+                    ControlSource ="PromotionRecommendation"
+                    RowSourceType ="Value List"
+                    RowSource =";NOB;Significant Problems;Progressing;Promotable;Must Promote;Early Promote"
+                    AfterUpdate ="=UXGridQueue(\"PromotionRecommendation\")"
+                    FontName ="Segoe UI"
+                    Tag ="9700:1350"
+
+                    LayoutCachedLeft =9700
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =11050
+                    LayoutCachedHeight =400
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =11150
+                    Top =40
+                    Width =1350
+                    Height =360
+                    FontSize =10
+                    TabIndex =14
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="AssignmentRecommendationA"
+                    ControlSource ="AssignmentRecommendationA"
+                    AfterUpdate ="=UXGridQueue(\"AssignmentRecommendationA\")"
+                    FontName ="Segoe UI"
+                    Tag ="11150:1350"
+
+                    LayoutCachedLeft =11150
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =12500
+                    LayoutCachedHeight =400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =12550
+                    Top =40
+                    Width =1350
+                    Height =360
+                    FontSize =10
+                    TabIndex =15
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="AssignmentRecommendationB"
+                    ControlSource ="AssignmentRecommendationB"
+                    AfterUpdate ="=UXGridQueue(\"AssignmentRecommendationB\")"
+                    FontName ="Segoe UI"
+                    Tag ="12550:1350"
+
+                    LayoutCachedLeft =12550
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =13900
+                    LayoutCachedHeight =400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =30
+                    Top =40
+                    Width =650
+                    FontSize =10
+                    TabIndex =16
+                    ForeColor =4205854
+                    Name ="uxOpenReport"
+                    Caption ="Open"
+                    OnClick ="=UXGridOpenReport()"
+                    FontName ="Segoe UI"
+                    Tag ="30:650"
+
+                    LayoutCachedLeft =30
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =680
+                    LayoutCachedHeight =400
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin TextBox
+                    Enabled = NotDefault
+                    Locked = NotDefault
+                    TabStop = NotDefault
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =13950
+                    Top =40
+                    Width =1000
+                    Height =360
+                    FontSize =10
+                    TabIndex =17
+                    BackColor =15985893
+                    BorderColor =13285543
+                    ForeColor =8746084
+                    Name ="PriorITA"
+                    ControlSource ="PriorITA"
+                    FontName ="Segoe UI"
+                    Tag ="13950:1000"
+
+                    LayoutCachedLeft =13950
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =14950
+                    LayoutCachedHeight =400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Enabled = NotDefault
+                    Locked = NotDefault
+                    TabStop = NotDefault
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =14950
+                    Top =40
+                    Width =2100
+                    Height =360
+                    FontSize =10
+                    TabIndex =18
+                    BackColor =15985893
+                    BorderColor =13285543
+                    ForeColor =8746084
+                    Name ="PriorPromotion"
+                    ControlSource ="PriorPromotion"
+                    FontName ="Segoe UI"
+                    Tag ="14950:2100"
+
+                    LayoutCachedLeft =14950
+                    LayoutCachedTop =40
+                    LayoutCachedWidth =17050
+                    LayoutCachedHeight =400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+            End
+        End
+        Begin FormFooter
+            Height =0
+            BackColor =15921906
+            Name ="FormFooter"
+            AutoHeight =1
+            AlternateBackThemeColorIndex =1
+            AlternateBackShade =95.0
+        End
+    End
+End

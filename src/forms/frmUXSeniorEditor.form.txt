@@ -1,0 +1,2085 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    Width =15850
+    ItemSuffix =71
+    Right =18525
+    Bottom =12795
+    Caption ="Reporting senior record"
+    OnActivate ="=UXVisualEvent(\"frmUXSeniorEditor\",\"UXLoadContext()\")"
+    OnResize ="=UXHelpResize(\"frmUXSeniorEditor\",\"UXResizeWorkspace(\"\"frmUXSeniorEditor\"\""
+        ")\")"
+    OnLoad ="=RSLoadSeniorEditor()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Rectangle
+            SpecialEffect =3
+            BackStyle =0
+            BorderLineStyle =0
+            BorderColor =10921638
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Subform
+            BorderLineStyle =0
+            BorderColor =10921638
+            GridlineColor =10921638
+            BorderThemeColorIndex =1
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            BorderShade =65.0
+            ShowPageHeaderAndPageFooter =1
+        End
+        Begin Section
+            Height =8400
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Rectangle
+                    BackStyle =1
+                    OverlapFlags =93
+                    Width =2450
+                    Height =8400
+                    BackColor =5123348
+                    BorderColor =5123348
+                    Name ="uxRail"
+                    LayoutCachedWidth =2450
+                    LayoutCachedHeight =8400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =1100
+                    Width =10112
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Reporting senior record"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =1100
+                    LayoutCachedWidth =12978
+                    LayoutCachedHeight =1600
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =1450
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    TabIndex =1
+                    ForeColor =16777215
+                    Name ="uxNav0"
+                    Caption ="Overview"
+                    OnClick ="=UXNavigate(\"frmHome\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =1450
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =2000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5123348
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =5123348
+                    HoverThemeColorIndex =-1
+                    PressedColor =5123348
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =2100
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =16777215
+                    Name ="uxNav1"
+                    Caption ="Reports"
+                    OnClick ="=UXNavigate(\"frmLibrary\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =2100
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =2650
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5123348
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =5123348
+                    HoverThemeColorIndex =-1
+                    PressedColor =5123348
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =2750
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    TabIndex =3
+                    ForeColor =16777215
+                    Name ="uxNav2"
+                    Caption ="Summary groups"
+                    OnClick ="=UXNavigate(\"frmUXGroups\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =2750
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5123348
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =5123348
+                    HoverThemeColorIndex =-1
+                    PressedColor =5123348
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =3400
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    TabIndex =4
+                    ForeColor =16777215
+                    Name ="uxNav3"
+                    Caption ="My Work"
+                    OnClick ="=UXNavigate(\"frmMyWork\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =3400
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =3950
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5123348
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =5123348
+                    HoverThemeColorIndex =-1
+                    PressedColor =5123348
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =4050
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    FontWeight =700
+                    TabIndex =5
+                    ForeColor =16777215
+                    Name ="uxNav4"
+                    Caption ="Resources"
+                    OnClick ="=UXNavigate(\"frmUXResources\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =4050
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =4600
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =7041038
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =7041038
+                    HoverThemeColorIndex =-1
+                    PressedColor =7041038
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =180
+                    Top =4700
+                    Width =2100
+                    Height =550
+                    FontSize =10
+                    TabIndex =6
+                    ForeColor =16777215
+                    Name ="uxNav5"
+                    Caption ="Settings && Help"
+                    OnClick ="=UXNavigate(\"frmUXSettings\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =180
+                    LayoutCachedTop =4700
+                    LayoutCachedWidth =2280
+                    LayoutCachedHeight =5250
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =5123348
+                    BackThemeColorIndex =-1
+                    OldBorderStyle =0
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =5123348
+                    HoverThemeColorIndex =-1
+                    PressedColor =5123348
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =2
+                    WebImagePaddingBottom =2
+                    Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =300
+                    Width =10300
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxContext"
+                    Caption ="Swift NAVFIT | Local workspace"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =300
+                    LayoutCachedWidth =13150
+                    LayoutCachedHeight =700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSeniorID"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =12
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtVersion"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =1650
+                    Width =9954
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblTitle"
+                    Caption ="Record name"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =1650
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =1950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =2000
+                    Width =9954
+                    Height =400
+                    FontSize =10
+                    TabIndex =13
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtTitle"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2000
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =2400
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2600
+                    Width =2370
+                    Height =450
+                    FontSize =10
+                    TabIndex =14
+                    ForeColor =4205854
+                    Name ="cmdPage0"
+                    Caption ="Reporting senior details"
+                    OnClick ="=RSSelectSeniorPage(0)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2600
+                    LayoutCachedWidth =5236
+                    LayoutCachedHeight =3050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    AccessKey =32
+                    TextFontFamily =34
+                    Left =5394
+                    Top =2600
+                    Width =2370
+                    Height =450
+                    FontSize =10
+                    TabIndex =15
+                    ForeColor =4205854
+                    Name ="cmdPage1"
+                    Caption ="Address & contact"
+                    OnClick ="=RSSelectSeniorPage(1)"
+                    FontName ="Segoe UI"
+                    UnicodeAccessKey =32
+
+                    LayoutCachedLeft =5394
+                    LayoutCachedTop =2600
+                    LayoutCachedWidth =7764
+                    LayoutCachedHeight =3050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =7922
+                    Top =2600
+                    Width =2370
+                    Height =450
+                    FontSize =10
+                    TabIndex =16
+                    ForeColor =4205854
+                    Name ="cmdPage2"
+                    Caption ="Additional details"
+                    OnClick ="=RSSelectSeniorPage(2)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7922
+                    LayoutCachedTop =2600
+                    LayoutCachedWidth =10292
+                    LayoutCachedHeight =3050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =10450
+                    Top =2600
+                    Width =2370
+                    Height =450
+                    FontSize =10
+                    TabIndex =17
+                    ForeColor =4205854
+                    Name ="cmdPage3"
+                    Caption ="RSCA history"
+                    OnClick ="=RSSelectSeniorPage(3)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10450
+                    LayoutCachedTop =2600
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =3050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =2866
+                    Top =3300
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorName"
+                    Caption ="Reporting Senior (Last, FI MI)"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =3750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =22
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorName"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8001
+                    Top =3300
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorGrade"
+                    Caption ="Grade"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =3750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =23
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorGrade"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =2866
+                    Top =4350
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorDesignator"
+                    Caption ="Desig"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4350
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =4850
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =27
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorDesignator"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5250
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8001
+                    Top =4350
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorTitle"
+                    Caption ="Title"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4350
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =4850
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =30
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorTitle"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5250
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =2866
+                    Top =5400
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorUIC"
+                    Caption ="UIC"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5400
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =5900
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =34
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorUIC"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5900
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =6300
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8001
+                    Top =5400
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorSSN"
+                    Caption ="SSN"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =5400
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =5900
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =36
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorSSN"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:0"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =5900
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =6300
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =3300
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorAddress1"
+                    Caption ="Address line 1"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =3750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =21
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorAddress1"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8001
+                    Top =3300
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorAddress2"
+                    Caption ="Address line 2"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =3750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =24
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorAddress2"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =4350
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorCity"
+                    Caption ="City"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4350
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =4850
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =28
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorCity"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5250
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8001
+                    Top =4350
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorState"
+                    Caption ="State / region"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4350
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =4850
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =29
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorState"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5250
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =5400
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorZip"
+                    Caption ="ZIP / postal code"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5400
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =5900
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =35
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorZip"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5900
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =6300
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8001
+                    Top =5400
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorPhone"
+                    Caption ="Phone"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =5400
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =5900
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =37
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorPhone"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:1"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =5900
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =6300
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =3300
+                    Width =4740
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblRSReportingSeniorDSN"
+                    Caption ="DSN"
+                    FontName ="Segoe UI"
+                    Tag ="SR:2"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =3750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =20
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorDSN"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:2"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorDoDID"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =7
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorLastName"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =8
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorFirstInitial"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorMiddleInitial"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =3250
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblcboPaygrade"
+                    Caption ="Evaluated paygrade"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3250
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =3550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    Visible = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =3600
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =18
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="cboPaygrade"
+                    RowSourceType ="Value List"
+                    RowSource ="E1;E2;E3;E4;E5;E6;E7;E8;E9;W1;W2;W3;W4;W5;O1;O2;O3;O4;O5;O6"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =3600
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =3950
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8001
+                    Top =3250
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtAsOf"
+                    Caption ="As-of date (YYYY-MM-DD)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3250
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =3550
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =3600
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =19
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtAsOf"
+                    Format ="yyyy-mm-dd"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3600
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =3950
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =2866
+                    Top =4050
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtRSCA"
+                    Caption ="Historical RSCA"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4050
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4350
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =4400
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =25
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtRSCA"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =4750
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =8001
+                    Top =4050
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtTraitCount"
+                    Caption ="Previous graded trait count (not reports)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4050
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4350
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =4400
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =26
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtTraitCount"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4400
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4750
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =2866
+                    Top =4850
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtTraitSum"
+                    Caption ="Exact trait sum (optional)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5150
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2866
+                    Top =5200
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =31
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtTraitSum"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5200
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =5550
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =8001
+                    Top =4850
+                    Width =4740
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtSource"
+                    Caption ="Source / note"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =4850
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5150
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =5200
+                    Width =4740
+                    Height =350
+                    FontSize =10
+                    TabIndex =32
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSource"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =5200
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =5550
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =2866
+                    Top =5800
+                    Width =9954
+                    Height =450
+                    FontSize =10
+                    TabIndex =33
+                    ForeColor =4205854
+                    Name ="cmdAddBaseline"
+                    Caption ="Add historical baseline (save record details first)"
+                    OnClick ="=RSAddBaselineUI()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =5800
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =6250
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin ListBox
+                    ColumnHeads = NotDefault
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =6
+                    Left =2850
+                    Top =3000
+                    Width =10450
+                    Height =3500
+                    FontSize =10
+                    TabIndex =38
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstBaselines"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="900;1600;1200;1800;1400;3300"
+                    FontName ="Segoe UI"
+                    OnMouseDown ="[Event Procedure]"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3000
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =6500
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =7300
+                    Width =4740
+                    Height =500
+                    FontSize =10
+                    TabIndex =39
+                    ForeColor =4205854
+                    Name ="cmdBack"
+                    Caption ="Back to reporting seniors"
+                    OnClick ="=UXNavigate(\"frmUXSeniors\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =7300
+                    LayoutCachedWidth =7606
+                    LayoutCachedHeight =7800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8080
+                    Top =7300
+                    Width =4740
+                    Height =500
+                    FontSize =10
+                    TabIndex =40
+                    ForeColor =16777215
+                    Name ="cmdSave"
+                    Caption ="Save record details"
+                    OnClick ="=RSSaveSeniorUI()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8080
+                    LayoutCachedTop =7300
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =7800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    BackStyle =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =7900
+                    Width =9954
+                    Height =450
+                    FontSize =10
+                    BackColor =15332066
+                    ForeColor =4482335
+                    Name ="lblStatus"
+                    Caption ="Changes to this record do not automatically change saved reports. Exact trait su"
+                        "m avoids rounded-RSCA estimates."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =7900
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =8350
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =220
+                    Top =250
+                    Width =2100
+                    Height =500
+                    FontSize =17
+                    ForeColor =16777215
+                    Name ="uxBrand"
+                    Caption ="Swift NAVFIT"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =220
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =2320
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =220
+                    Top =1000
+                    Width =2100
+                    Height =300
+                    FontSize =9
+                    ForeColor =16777215
+                    Name ="uxNavCaption"
+                    Caption ="WORKSPACE"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =220
+                    LayoutCachedTop =1000
+                    LayoutCachedWidth =2320
+                    LayoutCachedHeight =1300
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    Visible = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =250
+                    Top =150
+                    Width =2500
+                    Height =400
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="uxCompactNav"
+                    RowSourceType ="Value List"
+                    RowSource ="frmHome;Overview;frmLibrary;Reports;frmUXGroups;Summary groups;frmMyWork;My Work"
+                        ";frmUXResources;Resources;frmUXSettings;Settings & Help"
+                    ColumnWidths ="0;2500"
+                    AfterUpdate ="=UXCompactNavigate(\"frmUXSeniorEditor\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Workspace navigation"
+
+                    LayoutCachedLeft =250
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =2750
+                    LayoutCachedHeight =550
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Subform
+                    OverlapFlags =247
+                    Left =2850
+                    Top =3000
+                    Width =10450
+                    Height =3500
+                    TabIndex =41
+                    Name ="uxRSCATable"
+                    SourceObject ="Form.frmUXRSCATable"
+                    Tag ="SR:3"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3000
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =6500
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =6600
+                    Width =5000
+                    Height =450
+                    FontSize =10
+                    TabIndex =42
+                    ForeColor =4205854
+                    Name ="cmdSaveRSTable"
+                    Caption ="Save RSCA table"
+                    OnClick ="=RSSaveTableButton()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:3"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =6600
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =7050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8100
+                    Top =6600
+                    Width =5200
+                    Height =450
+                    FontSize =10
+                    TabIndex =43
+                    ForeColor =4205854
+                    Name ="cmdRSHistory"
+                    Caption ="View prior baselines"
+                    OnClick ="=RSViewTableHistory()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:3"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =6600
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =7050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    Left =15050
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =44
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXSeniorEditor\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =15050
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =15550
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+
+Private Sub lstBaselines_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstBaselines", X, Y) Then Exit Sub
+
+End Sub

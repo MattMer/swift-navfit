@@ -1,0 +1,1955 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =10450
+    ItemSuffix =207
+    Right =15300
+    Bottom =13245
+    Caption ="Shared blocks"
+    OnActivate ="=UXVisualEvent(\"frmUXSharedFields\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin CheckBox
+            BorderLineStyle =0
+            LabelX =230
+            LabelY =-30
+            BorderColor =10921638
+            GridlineColor =10921638
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =5000
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin CommandButton
+                    TabStop = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="anchor"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelPeriodStart"
+                    Caption ="From"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valuePeriodStart"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=UXBlockEdit(\"PeriodStart\")"
+                    OnEnter ="=UXSharedScope(\"PeriodStart\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelPeriodEnd"
+                    Caption ="To"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valuePeriodEnd"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=UXBlockEdit(\"PeriodEnd\")"
+                    OnEnter ="=UXSharedScope(\"PeriodEnd\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelUnitUIC"
+                    Caption ="Unit ID Code (UIC)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueUnitUIC"
+                    AfterUpdate ="=UXBlockEdit(\"UnitUIC\")"
+                    OnEnter ="=UXSharedScope(\"UnitUIC\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Unit ID Code (UIC)"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelShipStation"
+                    Caption ="Ship/Station"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueShipStation"
+                    AfterUpdate ="=UXBlockEdit(\"ShipStation\")"
+                    OnEnter ="=UXSharedScope(\"ShipStation\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Ship/Station"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelObservationStatus"
+                    Caption ="Not Observed Report (NOB)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =5
+                    Name ="valueObservationStatus"
+                    AfterUpdate ="=UXBlockEdit(\"ObservationStatus\")"
+                    OnEnter ="=UXSharedScope(\"ObservationStatus\")"
+                    ControlTipText ="Not Observed Report (NOB)"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelPromotionStatus"
+                    Caption ="Promotion Status"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =6
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valuePromotionStatus"
+                    RowSourceType ="Value List"
+                    RowSource =";REGULAR;FROCKED;SELECTED;SPOT"
+                    AfterUpdate ="=UXBlockEdit(\"PromotionStatus\")"
+                    OnEnter ="=UXSharedScope(\"PromotionStatus\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Promotion Status"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorName"
+                    Caption ="Reporting Senior (Last, FI MI)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =7
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorName"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorName\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorName\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Reporting Senior (Last, FI MI)"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorGrade"
+                    Caption ="Grade"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =8
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorGrade"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorGrade\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorGrade\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Grade"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorDesignator"
+                    Caption ="Desig"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorDesignator"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorDesignator\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorDesignator\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Desig"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorTitle"
+                    Caption ="Title"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorTitle"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorTitle\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorTitle\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Title"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorUIC"
+                    Caption ="UIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorUIC"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorUIC\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorUIC\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="UIC"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelOccasionPeriodic"
+                    Caption ="Periodic"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =12
+                    Name ="valueOccasionPeriodic"
+                    AfterUpdate ="=UXBlockEdit(\"OccasionPeriodic\")"
+                    OnEnter ="=UXSharedScope(\"OccasionPeriodic\")"
+                    ControlTipText ="Periodic"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelOccasionDetachment"
+                    Caption ="Detachment of Individual"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =13
+                    Name ="valueOccasionDetachment"
+                    AfterUpdate ="=UXBlockEdit(\"OccasionDetachment\")"
+                    OnEnter ="=UXSharedScope(\"OccasionDetachment\")"
+                    ControlTipText ="Detachment of Individual"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelOccasionFrocking"
+                    Caption ="Detachment of Reporting Senior"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =14
+                    Name ="valueOccasionFrocking"
+                    AfterUpdate ="=UXBlockEdit(\"OccasionFrocking\")"
+                    OnEnter ="=UXSharedScope(\"OccasionFrocking\")"
+                    ControlTipText ="Detachment of Reporting Senior"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelOccasionSpecial"
+                    Caption ="Special"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =15
+                    Name ="valueOccasionSpecial"
+                    AfterUpdate ="=UXBlockEdit(\"OccasionSpecial\")"
+                    OnEnter ="=UXSharedScope(\"OccasionSpecial\")"
+                    ControlTipText ="Special"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportRegular"
+                    Caption ="Regular"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =16
+                    Name ="valueReportRegular"
+                    AfterUpdate ="=UXBlockEdit(\"ReportRegular\")"
+                    OnEnter ="=UXSharedScope(\"ReportRegular\")"
+                    ControlTipText ="Regular"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportConcurrent"
+                    Caption ="Concurrent"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =17
+                    Name ="valueReportConcurrent"
+                    AfterUpdate ="=UXBlockEdit(\"ReportConcurrent\")"
+                    OnEnter ="=UXSharedScope(\"ReportConcurrent\")"
+                    ControlTipText ="Concurrent"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportOperationalCommander"
+                    Caption ="Ops Cdr"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =18
+                    Name ="valueReportOperationalCommander"
+                    AfterUpdate ="=UXBlockEdit(\"ReportOperationalCommander\")"
+                    OnEnter ="=UXSharedScope(\"ReportOperationalCommander\")"
+                    ControlTipText ="Ops Cdr"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelPrimaryDuty"
+                    Caption ="Primary duty abbreviation"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =19
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valuePrimaryDuty"
+                    AfterUpdate ="=UXBlockEdit(\"PrimaryDuty\")"
+                    OnEnter ="=UXSharedScope(\"PrimaryDuty\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Primary duty abbreviation"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelDutyDescription"
+                    Caption ="Primary/Collateral/Watchstanding Duties/PFA"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =20
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueDutyDescription"
+                    AfterUpdate ="=UXBlockEdit(\"DutyDescription\")"
+                    OnEnter ="=UXSharedScope(\"DutyDescription\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Primary/Collateral/Watchstanding Duties/PFA"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelComponentActive"
+                    Caption ="ACT"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =21
+                    Name ="valueComponentActive"
+                    AfterUpdate ="=UXBlockEdit(\"ComponentActive\")"
+                    OnEnter ="=UXSharedScope(\"ComponentActive\")"
+                    ControlTipText ="ACT"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelComponentTAR"
+                    Caption ="TAR"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =22
+                    Name ="valueComponentTAR"
+                    AfterUpdate ="=UXBlockEdit(\"ComponentTAR\")"
+                    OnEnter ="=UXSharedScope(\"ComponentTAR\")"
+                    ControlTipText ="TAR"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelComponentInactive"
+                    Caption ="INACT"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =23
+                    Name ="valueComponentInactive"
+                    AfterUpdate ="=UXBlockEdit(\"ComponentInactive\")"
+                    OnEnter ="=UXSharedScope(\"ComponentInactive\")"
+                    ControlTipText ="INACT"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelComponentATADSW"
+                    Caption ="AT/ADOS"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CheckBox
+                    TripleState = NotDefault
+                    OverlapFlags =255
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    TabIndex =24
+                    Name ="valueComponentATADSW"
+                    AfterUpdate ="=UXBlockEdit(\"ComponentATADSW\")"
+                    OnEnter ="=UXSharedScope(\"ComponentATADSW\")"
+                    ControlTipText ="AT/ADOS"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelDateReported"
+                    Caption ="Date Reported"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =25
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueDateReported"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=UXBlockEdit(\"DateReported\")"
+                    OnEnter ="=UXSharedScope(\"DateReported\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReadinessSummary"
+                    Caption ="Physical Readiness"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =26
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReadinessSummary"
+                    AfterUpdate ="=UXBlockEdit(\"ReadinessSummary\")"
+                    OnEnter ="=UXSharedScope(\"ReadinessSummary\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Physical Readiness"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReadinessDetail"
+                    Caption ="Physical Readiness - result"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =27
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReadinessDetail"
+                    AfterUpdate ="=UXBlockEdit(\"ReadinessDetail\")"
+                    OnEnter ="=UXSharedScope(\"ReadinessDetail\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Physical Readiness - result"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReadinessDate"
+                    Caption ="Physical Readiness - date"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =28
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReadinessDate"
+                    Format ="yyyy-mm-dd"
+                    AfterUpdate ="=UXBlockEdit(\"ReadinessDate\")"
+                    OnEnter ="=UXSharedScope(\"ReadinessDate\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelBilletSubcategory"
+                    Caption ="Billet Subcategory (if any)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =29
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueBilletSubcategory"
+                    AfterUpdate ="=UXBlockEdit(\"BilletSubcategory\")"
+                    OnEnter ="=UXSharedScope(\"BilletSubcategory\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Billet Subcategory (if any)"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorSSN"
+                    Caption ="SSN"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =30
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorSSN"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorSSN\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorSSN\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="SSN"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorAddress1"
+                    Caption ="Address line 1"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =31
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorAddress1"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorAddress1\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorAddress1\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Address line 1"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorAddress2"
+                    Caption ="Address line 2"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =32
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorAddress2"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorAddress2\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorAddress2\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Address line 2"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorCity"
+                    Caption ="City"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =33
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorCity"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorCity\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorCity\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="City"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorState"
+                    Caption ="State / region"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =34
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorState"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorState\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorState\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="State / region"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorZip"
+                    Caption ="ZIP / postal code"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =35
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorZip"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorZip\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorZip\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="ZIP / postal code"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorPhone"
+                    Caption ="Phone"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =36
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorPhone"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorPhone\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorPhone\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Phone"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorDSN"
+                    Caption ="DSN"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =37
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorDSN"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorDSN\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorDSN\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="DSN"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorLastName"
+                    Caption ="Reporting senior last name"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =38
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorLastName"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorLastName\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorLastName\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Reporting senior last name"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorFirstInitial"
+                    Caption ="Reporting senior first initial"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =39
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorFirstInitial"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorFirstInitial\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorFirstInitial\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Reporting senior first initial"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelReportingSeniorMiddleInitial"
+                    Caption ="Reporting senior middle initial(s)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =40
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueReportingSeniorMiddleInitial"
+                    AfterUpdate ="=UXBlockEdit(\"ReportingSeniorMiddleInitial\")"
+                    OnEnter ="=UXSharedScope(\"ReportingSeniorMiddleInitial\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Reporting senior middle initial(s)"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =150
+                    Top =150
+                    Width =3000
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="labelCommandEmployment"
+                    Caption ="Command employment and command achievements"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =450
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =150
+                    Top =500
+                    Width =3000
+                    Height =360
+                    FontSize =10
+                    TabIndex =41
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="valueCommandEmployment"
+                    AfterUpdate ="=UXBlockEdit(\"CommandEmployment\")"
+                    OnEnter ="=UXSharedScope(\"CommandEmployment\")"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Command employment and command achievements"
+
+                    LayoutCachedLeft =150
+                    LayoutCachedTop =500
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =860
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+            End
+        End
+    End
+End

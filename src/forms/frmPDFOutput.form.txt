@@ -1,0 +1,610 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =14200
+    ItemSuffix =21
+    Left =3330
+    Top =1980
+    Right =21855
+    Bottom =14775
+    OnUnload ="[Event Procedure]"
+    Caption ="Preview and create PDFs"
+    OnLoad ="=PDFOutputLoad()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin CheckBox
+            BorderLineStyle =0
+            LabelX =230
+            LabelY =-30
+            BorderColor =10921638
+            GridlineColor =10921638
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =10300
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =250
+                    Width =13500
+                    Height =500
+                    FontSize =10
+                    Name ="lblScope"
+                    Caption ="PDF preview"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2100
+                    Top =850
+                    Width =3400
+                    Height =400
+                    FontSize =10
+                    Name ="cboSource"
+                    RowSourceType ="Value List"
+                    RowSource ="Current drafts;Saved revisions"
+                    AfterUpdate ="=PDFOutputRefreshPreview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2100
+                    LayoutCachedTop =850
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =1250
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =300
+                            Top =900
+                            Width =1800
+                            Height =300
+                            FontSize =10
+                            Name ="lblSource"
+                            Caption ="Capture values"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =900
+                            LayoutCachedWidth =2100
+                            LayoutCachedHeight =1200
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =7200
+                    Top =850
+                    Width =3400
+                    Height =400
+                    FontSize =10
+                    TabIndex =1
+                    Name ="cboFormat"
+                    RowSourceType ="Value List"
+                    RowSource ="Combined packet;Individual PDFs;Both"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7200
+                    LayoutCachedTop =850
+                    LayoutCachedWidth =10600
+                    LayoutCachedHeight =1250
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =5800
+                            Top =900
+                            Width =1400
+                            Height =300
+                            FontSize =10
+                            Name ="lblFormat"
+                            Caption ="Output"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =900
+                            LayoutCachedWidth =7200
+                            LayoutCachedHeight =1200
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin CheckBox
+                    OverlapFlags =85
+                    Left =11000
+                    Top =880
+                    Width =300
+                    Height =300
+                    TabIndex =2
+                    Name ="chkSummary"
+
+                    LayoutCachedLeft =11000
+                    LayoutCachedTop =880
+                    LayoutCachedWidth =11300
+                    LayoutCachedHeight =1180
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =11400
+                            Top =900
+                            Width =2300
+                            Height =400
+                            FontSize =10
+                            Name ="lblSummary"
+                            Caption ="Summary letter first"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =11400
+                            LayoutCachedTop =900
+                            LayoutCachedWidth =13700
+                            LayoutCachedHeight =1300
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2100
+                    Top =1400
+                    Width =9000
+                    Height =450
+                    FontSize =10
+                    TabIndex =3
+                    Name ="txtFolder"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2100
+                    LayoutCachedTop =1400
+                    LayoutCachedWidth =11100
+                    LayoutCachedHeight =1850
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =300
+                            Top =1450
+                            Width =1800
+                            Height =300
+                            FontSize =10
+                            Name ="lblFolder"
+                            Caption ="Export folder"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =1450
+                            LayoutCachedWidth =2100
+                            LayoutCachedHeight =1750
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =11400
+                    Top =1400
+                    Width =2400
+                    Height =450
+                    FontSize =10
+                    TabIndex =4
+                    Name ="cmdBrowse"
+                    Caption ="Choose folder"
+                    OnClick ="=PDFOutputBrowseFolder()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11400
+                    LayoutCachedTop =1400
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =1850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin ListBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =5
+                    Left =300
+                    Top =2550
+                    Width =13500
+                    Height =2700
+                    FontSize =10
+                    TabIndex =5
+                    Name ="lstReports"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;2800;1100;2900;6500"
+                    AfterUpdate ="=PDFOutputSelectRow()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =5250
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =2100
+                            Width =13500
+                            Height =350
+                            FontSize =10
+                            Name ="lblReports"
+                            Caption ="Report order: last name, first name, middle initial. Select a row to view inform"
+                                "ational findings."
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =2100
+                            LayoutCachedWidth =13800
+                            LayoutCachedHeight =2450
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =300
+                    Top =5450
+                    Width =13500
+                    Height =2200
+                    FontSize =10
+                    TabIndex =6
+                    Name ="txtFindings"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =5450
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =7650
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =5270
+                            Width =13500
+                            Height =160
+                            FontSize =8
+                            Name ="lblFindings"
+                            Caption ="Findings and output information"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =5270
+                            LayoutCachedWidth =13800
+                            LayoutCachedHeight =5430
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =7850
+                    Width =13500
+                    Height =800
+                    FontSize =10
+                    Name ="lblStatus"
+                    Caption ="Capture the preview before creating PDFs."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =7850
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =8650
+                    ThemeFontIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =9500
+                    Width =6100
+                    Height =500
+                    FontSize =10
+                    TabIndex =7
+                    Name ="cmdPagePreview"
+                    Caption ="Preview printed pages (close preview to return)"
+                    OnClick ="=PDFOutputPagePreview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =9500
+                    LayoutCachedWidth =6400
+                    LayoutCachedHeight =10000
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =300
+                    Top =8800
+                    Width =2700
+                    Height =500
+                    FontSize =10
+                    TabIndex =8
+                    Name ="cmdRefresh"
+                    Caption ="Refresh captured preview"
+                    OnClick ="=PDFOutputRefreshPreview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =3000
+                    LayoutCachedHeight =9300
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3200
+                    Top =8800
+                    Width =3200
+                    Height =500
+                    FontSize =10
+                    TabIndex =9
+                    Name ="cmdGenerate"
+                    Caption ="Create print-ready PDFs"
+                    OnClick ="=PDFOutputCreate()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3200
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =6400
+                    LayoutCachedHeight =9300
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6600
+                    Top =8800
+                    Width =2300
+                    Height =500
+                    FontSize =10
+                    TabIndex =10
+                    Name ="cmdOpenPDF"
+                    Caption ="Open first PDF"
+                    OnClick ="=PDFOutputOpenResult(False)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6600
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =8900
+                    LayoutCachedHeight =9300
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9100
+                    Top =8800
+                    Width =2300
+                    Height =500
+                    FontSize =10
+                    TabIndex =11
+                    Name ="cmdOpenFolder"
+                    Caption ="Open output folder"
+                    OnClick ="=PDFOutputOpenResult(True)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9100
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =11400
+                    LayoutCachedHeight =9300
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =11600
+                    Top =8800
+                    Width =2200
+                    Height =500
+                    FontSize =10
+                    TabIndex =12
+                    Name ="cmdClose"
+                    Caption ="Close"
+                    OnClick ="=PDFOutputClose()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11600
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =13800
+                    LayoutCachedHeight =9300
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+
+Private Sub Form_Unload(Cancel As Integer)
+ Cancel = PDFOutputBusy()
+ If Not Cancel Then PDFOutputEndPreview
+End Sub

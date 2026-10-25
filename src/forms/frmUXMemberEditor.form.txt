@@ -1,0 +1,2127 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    Modal = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =13200
+    ItemSuffix =86
+    Left =6555
+    Top =1530
+    Right =21855
+    Bottom =14775
+    Caption ="Command member profile"
+    OnActivate ="=UXVisualEvent(\"frmUXMemberEditor\",\"\")"
+    OnResize ="=UXHelpResize(\"frmUXMemberEditor\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =8500
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =11200
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Command member profile"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =11600
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1000
+                    Width =5500
+                    Height =320
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtName"
+                    Caption ="NAME / Member display name"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1000
+                    LayoutCachedWidth =5900
+                    LayoutCachedHeight =1320
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =1350
+                    Width =5500
+                    Height =420
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtName"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1350
+                    LayoutCachedWidth =5900
+                    LayoutCachedHeight =1770
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6200
+                    Top =1000
+                    Width =5500
+                    Height =320
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtReportName"
+                    Caption ="Official report name (27 characters)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =6200
+                    LayoutCachedTop =1000
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =1320
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =6200
+                    Top =1350
+                    Width =5500
+                    Height =420
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtReportName"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6200
+                    LayoutCachedTop =1350
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =1770
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1900
+                    Width =2700
+                    Height =320
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtRank"
+                    Caption ="Report rank/rate (5 characters)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1900
+                    LayoutCachedWidth =3100
+                    LayoutCachedHeight =2220
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =2250
+                    Width =2700
+                    Height =420
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtRank"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2250
+                    LayoutCachedWidth =3100
+                    LayoutCachedHeight =2670
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3450
+                    Top =1900
+                    Width =2700
+                    Height =320
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtSSN"
+                    Caption ="SSN (nine digits, or unentered)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =3450
+                    LayoutCachedTop =1900
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =2220
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =3450
+                    Top =2250
+                    Width =2700
+                    Height =420
+                    FontSize =10
+                    TabIndex =3
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSSN"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3450
+                    LayoutCachedTop =2250
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =2670
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2850
+                    Width =2150
+                    Height =450
+                    FontSize =10
+                    TabIndex =4
+                    ForeColor =4205854
+                    Name ="ruadPage0"
+                    Caption ="Unit"
+                    OnClick ="=UXRUADPage(0)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =2550
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2700
+                    Top =2850
+                    Width =2150
+                    Height =450
+                    FontSize =10
+                    TabIndex =5
+                    ForeColor =4205854
+                    Name ="ruadPage1"
+                    Caption ="Member"
+                    OnClick ="=UXRUADPage(1)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2700
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =4850
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5000
+                    Top =2850
+                    Width =2150
+                    Height =450
+                    FontSize =10
+                    TabIndex =6
+                    ForeColor =4205854
+                    Name ="ruadPage2"
+                    Caption ="Assignment"
+                    OnClick ="=UXRUADPage(2)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5000
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =7150
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7300
+                    Top =2850
+                    Width =2150
+                    Height =450
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =4205854
+                    Name ="ruadPage3"
+                    Caption ="Mobilization"
+                    OnClick ="=UXRUADPage(3)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7300
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =9450
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9600
+                    Top =2850
+                    Width =2150
+                    Height =450
+                    FontSize =10
+                    TabIndex =8
+                    ForeColor =4205854
+                    Name ="ruadPage4"
+                    Caption ="Contact"
+                    OnClick ="=UXRUADPage(4)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9600
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =11750
+                    LayoutCachedHeight =3300
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel0"
+                    Caption ="CUI"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad0"
+                    FontName ="Segoe UI"
+                    ControlTipText ="CUI - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =4250
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel1"
+                    Caption ="RUIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad1"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RUIC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8100
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel2"
+                    Caption ="RESERVE UNIT"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad2"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RESERVE UNIT - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel3"
+                    Caption ="RESERVE ACTIVITY AND LOC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =12
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad3"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RESERVE ACTIVITY AND LOC - retained as RUAD text; identifiers keep leading zeroe"
+                        "s"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =4250
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel4"
+                    Caption ="ST"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =13
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad4"
+                    FontName ="Segoe UI"
+                    ControlTipText ="ST - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8100
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel5"
+                    Caption ="UIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =14
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad5"
+                    FontName ="Segoe UI"
+                    ControlTipText ="UIC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel6"
+                    Caption ="NRC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =15
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad6"
+                    FontName ="Segoe UI"
+                    ControlTipText ="NRC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =4250
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel7"
+                    Caption ="NRA"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =16
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad7"
+                    FontName ="Segoe UI"
+                    ControlTipText ="NRA - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =8100
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel8"
+                    Caption ="RPC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =17
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad8"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RPC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel9"
+                    Caption ="RATE/RANK"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =18
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad9"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RATE/RANK - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel11"
+                    Caption ="RFAS Asgmt"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =19
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad11"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RFAS Asgmt - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel12"
+                    Caption ="E/O"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =20
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad12"
+                    FontName ="Segoe UI"
+                    ControlTipText ="E/O - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8100
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel13"
+                    Caption ="SELRES TYPE"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =21
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad13"
+                    FontName ="Segoe UI"
+                    ControlTipText ="SELRES TYPE - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel14"
+                    Caption ="BIN"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =22
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad14"
+                    FontName ="Segoe UI"
+                    ControlTipText ="BIN - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8100
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel15"
+                    Caption ="RFAS"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =23
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad15"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RFAS - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel16"
+                    Caption ="REQ DESG/REQ RTING"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =24
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad16"
+                    FontName ="Segoe UI"
+                    ControlTipText ="REQ DESG/REQ RTING - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel17"
+                    Caption ="PNOBC/PNEC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =25
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad17"
+                    FontName ="Segoe UI"
+                    ControlTipText ="PNOBC/PNEC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel18"
+                    Caption ="DESG"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =26
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad18"
+                    FontName ="Segoe UI"
+                    ControlTipText ="DESG - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel19"
+                    Caption ="NOBC/NEC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =27
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad19"
+                    FontName ="Segoe UI"
+                    ControlTipText ="NOBC/NEC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8100
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel20"
+                    Caption ="AUIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =28
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad20"
+                    FontName ="Segoe UI"
+                    ControlTipText ="AUIC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel21"
+                    Caption ="TRUIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =29
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad21"
+                    FontName ="Segoe UI"
+                    ControlTipText ="TRUIC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel22"
+                    Caption ="UMUIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =30
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad22"
+                    FontName ="Segoe UI"
+                    ControlTipText ="UMUIC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =400
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel23"
+                    Caption ="MOB ACTIVITY"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =31
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad23"
+                    FontName ="Segoe UI"
+                    ControlTipText ="MOB ACTIVITY - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =4250
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel24"
+                    Caption ="MOB BILLET"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =32
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad24"
+                    FontName ="Segoe UI"
+                    ControlTipText ="MOB BILLET - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =8100
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel25"
+                    Caption ="PRD"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =33
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad25"
+                    Format ="Short Date"
+                    FontName ="Segoe UI"
+                    ControlTipText ="PRD - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8100
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel26"
+                    Caption ="IMS"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =34
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad26"
+                    FontName ="Segoe UI"
+                    ControlTipText ="IMS - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel27"
+                    Caption ="MAS (A)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =35
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad27"
+                    FontName ="Segoe UI"
+                    ControlTipText ="MAS (A) - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =4250
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel28"
+                    Caption ="MAS (M)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =36
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad28"
+                    FontName ="Segoe UI"
+                    ControlTipText ="MAS (M) - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =8100
+                    Top =4550
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel29"
+                    Caption ="MAS (T)"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4550
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =4990
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =37
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad29"
+                    FontName ="Segoe UI"
+                    ControlTipText ="MAS (T) - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =4990
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =5440
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel30"
+                    Caption ="ABSC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =38
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad30"
+                    FontName ="Segoe UI"
+                    ControlTipText ="ABSC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =4250
+                    Top =5600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel31"
+                    Caption ="RBSC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =5600
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =6040
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =39
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad31"
+                    FontName ="Segoe UI"
+                    ControlTipText ="RBSC - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =6040
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =6490
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =400
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel32"
+                    Caption ="ADDRESS"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =40
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad32"
+                    FontName ="Segoe UI"
+                    ControlTipText ="ADDRESS - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =4000
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =4250
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel33"
+                    Caption ="PHONE"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4250
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =41
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad33"
+                    FontName ="Segoe UI"
+                    ControlTipText ="PHONE - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =4250
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =215
+                    TextFontFamily =34
+                    Left =8100
+                    Top =3500
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="ruadLabel34"
+                    Caption ="NROWS Email"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =3900
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8100
+                    Top =3940
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =42
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="ruad34"
+                    FontName ="Segoe UI"
+                    ControlTipText ="NROWS Email - retained as RUAD text; identifiers keep leading zeroes"
+
+                    LayoutCachedLeft =8100
+                    LayoutCachedTop =3940
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =4390
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =6850
+                    Width =11400
+                    Height =500
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblStatus"
+                    Caption ="All 35 RUAD columns are available. NAME is maintained above; RUAD grade and repo"
+                        "rt rank/rate are separate. Profile edits do not rewrite reports."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6850
+                    LayoutCachedWidth =11800
+                    LayoutCachedHeight =7350
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =7500
+                    Width =5400
+                    Height =500
+                    FontSize =10
+                    TabIndex =43
+                    ForeColor =16777215
+                    Name ="cmdSave"
+                    Caption ="Save member profile"
+                    OnClick ="=UXDirectorySave()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =7500
+                    LayoutCachedWidth =5800
+                    LayoutCachedHeight =8000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6300
+                    Top =7500
+                    Width =5400
+                    Height =500
+                    FontSize =10
+                    TabIndex =44
+                    ForeColor =4205854
+                    Name ="cmdCancel"
+                    Caption ="Cancel"
+                    OnClick ="=UXDirectoryClose(\"frmUXMemberEditor\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6300
+                    LayoutCachedTop =7500
+                    LayoutCachedWidth =11700
+                    LayoutCachedHeight =8000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    Left =12400
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =45
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXMemberEditor\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =12400
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =12900
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End
