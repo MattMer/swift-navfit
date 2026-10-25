@@ -130,16 +130,31 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
 
   | Source schemas | Last verified | Scope |
   | --- | --- | --- |
-  | 1–26 | r126, 20 Oct 2026 | Retained fixtures, exact transfer, populated schema-20 history. |
+  | 1–33 | 0.44.0-dev, 24 Oct 2026 | Seeded synthetic source per schema (both schema-27 variants) and populated kept releases for 21–27; production import, independent exact comparison, guards. |
   | 21–29 | 0.29.0-dev, 22 Oct 2026 | Actual retained-schema audit/message matrix. |
   | 28–33 | 0.40.0-dev, 23 Oct 2026 | Actual retained-schema matrix; populated 30–33 major transfers. |
 
-- r128 ran under a user-granted **waiver** of old-output retesting. The waiver
-  does not end support for any schema. **The ongoing historical-test policy is
-  unresolved:** schemas 1–20 have not been retested since r126, while the
-  migration code has changed since.
+- **Historical-test policy:** every release runs
+  [test-swift-data-import.ps1](scripts/test-swift-data-import.ps1) over schema 1
+  to the current one, and release-check requires full coverage. Old output files
+  are not needed. [tests/historical-schemas](tests/historical-schemas/README.md) holds
+  each older schema's DDL:
+  - 8–20: exact, from git
+  - 21–32: captured from real builds
+  - 1–7: reconstructed, because they predate git. These cover tables and the
+    documented column changes only; any undocumented column change before
+    schema 8 is untested.
+
+  r128's waiver of old-output retesting ended no schema's support.
 
 ## Known gaps and test caveats
+
+- `MigrateWorkspace` calls `MigrateLegacyReportNotes` and
+  `MigrateReportMessages` through `Application.Eval`. An error raised inside
+  them, such as a contributor identity that differs from its audit actor, shows
+  an unhandled VBA run-time dialog instead of returning a clean import
+  rejection. Fixed in 0.44.0-dev by calling them directly; the import runner's
+  audit-identity guard covers it.
 
 - Attended acceptance still outstanding: physical print fit, an Acrobat-absent
   workstation, normal-security launch and signing, screen reader/keyboard/DPI,

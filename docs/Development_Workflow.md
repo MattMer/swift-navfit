@@ -701,11 +701,18 @@ powershell.exe -NoProfile -File scripts/verify-build-artifact.ps1 -BuildPath "D:
 The verifier reports whether it reused the build result. It does not create a
 new cache or automatically copy receipts alongside seeded/renamed distributions.
 
-For r128, the user explicitly waived old-output fixture retesting. The existing
-`-CurrentFixturesOnly` switch records that limited scope; it is not a declaration
-that older-schema import support ended. Future historical test policy remains
-unresolved. Do not recreate removed outputs or silently omit required checks;
-record exactly which fixtures were verified. See PROJECT_STATE.md.
+Historical import coverage no longer depends on old output files.
+`test-swift-data-import.ps1` builds a data-only source for every schema from 1 to
+the build's from [tests/historical-schemas](../tests/historical-schemas/README.md),
+seeds synthetic rows into every table, imports each through the production
+Settings import and compares every source row and field itself. Each file
+records its origin (`git-ddl`, `captured` or `reconstructed`). Before a schema
+change, `scripts/capture-schema-definition.ps1 -BuildPath <build>` adds the
+outgoing schema. A schema number that shipped with more than one structure has
+one file per variant. Kept populated releases in `output/` are imported as well. `release-check.ps1`
+requires the receipt to cover every schema. `-CurrentFixturesOnly` still records a
+user-granted waiver, as for r128; it never ends support for older schemas. See
+PROJECT_STATE.md.
 
 Before publication, follow [AGENTS.md](../AGENTS.md): preserve earlier releases
 and user workspaces, place dated/versioned Blank and Demo directly in `output`,

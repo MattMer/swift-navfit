@@ -155,9 +155,11 @@ NextCheck:
         MigrateRSAccounting
         MigrateReportState
     End If
-    If targetVersion >= 22 And ver < 29 Then Application.Eval "MigrateLegacyReportNotes()"
+    'Direct calls: an error raised through Application.Eval never reaches Failed
+    'and shows an unhandled run-time dialog instead of rolling back the import.
+    If targetVersion >= 22 And ver < 29 Then Call MigrateLegacyReportNotes
     If targetVersion >= 23 And ver < 23 Then Call MigrateDirectoryCompatibility()
-    If targetVersion >= 26 Then Application.Eval "MigrateReportMessages()"
+    If targetVersion >= 26 Then Call MigrateReportMessages
     If targetVersion >= 29 Then MigrateAuditHistory
     If Len(expectedHash) > 0 Then
         If showProgress Then Application.Run "WorkspaceImportProgress", "All copied fields verified. Checking source is unchanged..."

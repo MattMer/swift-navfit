@@ -28,7 +28,7 @@ if($CurrentFixturesOnly){$directoryArguments+='-CurrentFixturesOnly'}
 InvokeSwiftWorkflowStep 'test-directory-merge-release' $directoryArguments $logFolder
 $migration=Get-Content (Join-Path $root 'build/r115-data-import-verification.json') -Raw | ConvertFrom-Json
 $expectedSchemas=if($CurrentFixturesOnly){@($plan.SchemaVersion)}else{@(1..$plan.SchemaVersion)}
-if($migration.Status -ne 'PASS' -or (Compare-Object $expectedSchemas @($migration.Fixtures|ForEach-Object {[int]$_.Schema}))){throw 'Requested schema coverage is incomplete'}
+if($migration.Status -ne 'PASS' -or (Compare-Object $expectedSchemas @($migration.Fixtures|ForEach-Object {[int]$_.Schema}|Sort-Object -Unique))){throw 'Requested schema coverage is incomplete'}
 foreach($guard in @('Rollback','ChangedSourceRejected','PopulatedTargetRejected','UnknownTableRejected','FutureSchemaRejected','UIEntryPointTested')){
     if($migration.$guard -ne $true){throw ('Missing release migration guard: '+$guard)}
 }

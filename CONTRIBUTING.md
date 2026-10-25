@@ -41,7 +41,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Report people | test-report-people.ps1; all 13 fields, revisions, restore, rollback and fresh-process recovery |
 | Structured names | test-party-names.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |
 | Viewing area/identity | test-ux-responsive-identity.ps1; control geometry, active field/caret; not physical DPI acceptance |
-| Schema/import engine | test-swift-data-import.ps1, test-workspace-upgrade.ps1, test-engine-verification.ps1 as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
+| Schema/import engine | [test-swift-data-import.ps1](scripts/test-swift-data-import.ps1) -BuildPath <fresh blank> imports a seeded synthetic source for every schema from 1 to the build's, built from the per-schema files in [tests/historical-schemas](tests/historical-schemas/README.md), plus populated kept releases in `output/`; -Schemas '1-7,20' narrows a focused run. Add test-workspace-upgrade.ps1 and test-engine-verification.ps1 as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
 | Canonical report definitions/revisions and typed persistence | test-field-definitions.ps1 (also with -BuildPath); test-persistence.ps1; test-persistence-transfer.ps1 -BuildPath <fresh blank> -LegacyTemplate <real schema-27 blank>; exact raw/null/status/choice preservation, catalogue field extension, revision/cache ownership, constraints and rollback |
 | Summary-group completion/RSCA | test-rs-completion.ps1 -AccountingOnly; reconciliation, correction, duplicate/deletion/senior guards, cancelled legacy state and idempotent XML backfill. The default full suite also retains historical UI assertions; report any separate preexisting UI failure explicitly |
 | Provenance viewer | test-provenance.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
@@ -68,6 +68,9 @@ button-layout assertions; current fixed-page acceptance remains a separate gate.
 
 For schema changes, assess persistent-data impact explicitly and update build DDL,
 version constants, metadata, migration and relevant table inventories together.
+First capture the outgoing schema with `scripts/capture-schema-definition.ps1
+-BuildPath <build of that schema>`. Otherwise the import runner stops with "no
+definition for schema N".
 Never test against the only copy of a workspace. Historical import support and
 the r128 old-output retest waiver are distinguished in PROJECT_STATE.md; do not
 silently narrow compatibility or recreate deleted fixtures.

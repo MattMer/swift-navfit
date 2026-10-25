@@ -1,0 +1,30 @@
+-- schema: 1
+-- kind: reconstructed
+-- source: reconstructed from schema 8 (git f80560f: scripts/build.ps1)
+-- note: Reconstructed: no schema-1 source predates the git history (first commit is schema 8). Tables follow the schema-1..7 boundaries in modMigration; columns follow schema 8 except documented changes.
+-- note: Report.OfficialComments omitted (added in schema 3, 0.3.0).
+-- note: Report.FolderID omitted (references Folder, which did not exist yet).
+-- note: Folder, FolderMove and Report.FolderID omitted (folders added in schema 2).
+CREATE TABLE AppMetadata (MetadataID LONG CONSTRAINT PK_AppMetadata PRIMARY KEY, AppVersion TEXT(40), SchemaVersion LONG, CompatibilityStatus TEXT(120))
+CREATE TABLE UserProfile (UserProfileID COUNTER CONSTRAINT PK_UserProfile PRIMARY KEY, ProfileGuid TEXT(38) NOT NULL, DisplayName TEXT(120) NOT NULL)
+CREATE TABLE Workspace (WorkspaceID LONG CONSTRAINT PK_Workspace PRIMARY KEY, WorkspaceGuid TEXT(38) NOT NULL, CommandName TEXT(120) NOT NULL, ActiveProfileID LONG NOT NULL)
+CREATE TABLE Report (ReportID COUNTER CONSTRAINT PK_Report PRIMARY KEY, ReportGuid TEXT(38) NOT NULL, FormKind TEXT(12) NOT NULL, Title TEXT(160), MemberName TEXT(120), PeriodStart DATETIME, PeriodEnd DATETIME, DraftNotes LONGTEXT, WorkflowState TEXT(40), IsArchived BIT, CreatedAt DATETIME, ModifiedAt DATETIME, CurrentRevisionID LONG)
+CREATE TABLE ReportRevision (RevisionID COUNTER CONSTRAINT PK_ReportRevision PRIMARY KEY, ReportID LONG NOT NULL, RevisionNumber LONG NOT NULL, ParentRevisionID LONG, AuthorProfileID LONG NOT NULL, CommittedAt DATETIME, Reason TEXT(255))
+CREATE TABLE RevisionValue (RevisionValueID COUNTER CONSTRAINT PK_RevisionValue PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText LONGTEXT, IsNullValue BIT)
+CREATE TABLE RevisionChange (RevisionChangeID COUNTER CONSTRAINT PK_RevisionChange PRIMARY KEY, RevisionID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, OldValue LONGTEXT, NewValue LONGTEXT, OldIsNull BIT, NewIsNull BIT)
+CREATE TABLE ReportEvent (ReportEventID COUNTER CONSTRAINT PK_ReportEvent PRIMARY KEY, ReportID LONG NOT NULL, AuthorProfileID LONG NOT NULL, EventAt DATETIME, EventKind TEXT(40))
+CREATE UNIQUE INDEX UX_ReportGuid ON Report (ReportGuid)
+CREATE UNIQUE INDEX UX_ProfileGuid ON UserProfile (ProfileGuid)
+CREATE UNIQUE INDEX UX_WorkspaceGuid ON Workspace (WorkspaceGuid)
+CREATE UNIQUE INDEX UX_ReportRevision ON ReportRevision (ReportID, RevisionNumber)
+CREATE UNIQUE INDEX UX_RevisionValue ON RevisionValue (RevisionID, FieldKey)
+ALTER TABLE Workspace ADD CONSTRAINT FK_WorkspaceProfile FOREIGN KEY (ActiveProfileID) REFERENCES UserProfile (UserProfileID)
+ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)
+ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)
+ALTER TABLE ReportRevision ADD CONSTRAINT FK_RevisionParent FOREIGN KEY (ParentRevisionID) REFERENCES ReportRevision (RevisionID)
+ALTER TABLE Report ADD CONSTRAINT FK_ReportCurrentRevision FOREIGN KEY (CurrentRevisionID) REFERENCES ReportRevision (RevisionID)
+ALTER TABLE RevisionValue ADD CONSTRAINT FK_ValueRevision FOREIGN KEY (RevisionID) REFERENCES ReportRevision (RevisionID)
+ALTER TABLE RevisionChange ADD CONSTRAINT FK_ChangeRevision FOREIGN KEY (RevisionID) REFERENCES ReportRevision (RevisionID)
+ALTER TABLE ReportEvent ADD CONSTRAINT FK_EventReport FOREIGN KEY (ReportID) REFERENCES Report (ReportID)
+ALTER TABLE ReportEvent ADD CONSTRAINT FK_EventAuthor FOREIGN KEY (AuthorProfileID) REFERENCES UserProfile (UserProfileID)
+INSERT INTO AppMetadata VALUES (1,'reconstructed-schema-1',1,'Synthetic reconstructed fixture')
