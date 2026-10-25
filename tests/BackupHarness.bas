@@ -20,3 +20,10 @@ Public Function PrepareBackupCheckpoint() As String
 Failed:
     PrepareBackupCheckpoint = "FAIL: " & Err.Description
 End Function
+'Catch intentional rejections so Access shows no run-time dialog to the COM runner.
+Public Function TryWorkspaceBackup(ByVal destination As String) As String
+    On Error GoTo Failed
+    TryWorkspaceBackup = WriteWorkspaceBackup(destination): Exit Function
+Failed:
+    TryWorkspaceBackup = "REJECTED: " & Err.Description
+End Function

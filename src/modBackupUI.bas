@@ -1,59 +1,118 @@
 Attribute VB_Name = "modBackupUI"
 Option Compare Binary
 Option Explicit
-Private Function PowerShellLiteral(ByVal value As String) As String
-    PowerShellLiteral = "'" & Replace(value, "'", "''") & "'"
-End Function
-Public Function EncodeWorkerCommand(ByVal command As String) As String
-    Dim dom As Object, node As Object, bytes() As Byte
-    bytes = command
-    Set dom = CreateObject("MSXML2.DOMDocument.6.0"): Set node = dom.createElement("command")
-    node.DataType = "bin.base64": node.nodeTypedValue = bytes
-    EncodeWorkerCommand = Replace(Replace(node.Text, vbCr, ""), vbLf, "")
-End Function
-Public Function BackupWorkerCommand(ByVal mode As String, ByVal source As String, ByVal destination As String) As String
-    Dim script As String
-    If mode <> "Backup" And mode <> "Restore" Then Err.Raise vbObjectError + 4800, "modBackupUI.BackupWorkerCommand", "Invalid copy mode."
-    script = "$ErrorActionPreference='Stop'; try { & {" & vbCrLf & BackupWorkerScript() & vbCrLf & "} -Mode " & PowerShellLiteral(mode) & " -SourcePath " & PowerShellLiteral(source) & " -DestinationPath " & PowerShellLiteral(destination) & " -WaitForCloseSeconds 30 -MaximumSchemaVersion " & SCHEMA_VERSION & " } catch { "
-    script = script & "$primary=$_; $stream=$null; try { $json=@{Status='FAIL';Reason=$primary.Exception.Message;Destination=" & PowerShellLiteral(destination) & "} | ConvertTo-Json; "
-    script = script & "$stream=[IO.File]::Open(" & PowerShellLiteral(destination & ".verification.json") & ",[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None); $bytes=[Text.Encoding]::UTF8.GetBytes($json); $stream.Write($bytes,0,$bytes.Length) "
-    script = script & "} catch { [Console]::Error.WriteLine('Verification record not replaced: '+$_.Exception.Message) } finally { if($stream){try{$stream.Dispose()}catch{[Console]::Error.WriteLine($_.Exception.Message)}} }; [Console]::Error.WriteLine($primary.Exception.Message); exit 1 }"
-    BackupWorkerCommand = "powershell.exe -NoProfile -NonInteractive -EncodedCommand " & EncodeWorkerCommand(script)
-End Function
-Public Function GuidedWorkspaceCopy(ByVal mode As String) As Boolean
-    Dim folder As Object, sourcePicker As Object, source As String, destination As String, shell As Object, operation As Long, extension As String
+'Backups are verified data files written inside Access: no helper process, so
+'endpoint rules that block Office child processes do not stop them. Restore is
+'the Settings & Help import into a new blank workspace, which reads any backup.
+Public Function GuidedWorkspaceBackup() As Boolean
+    Dim folder As Object, destination As String, evidence As String
     On Error GoTo Failed
-    If mode = "Backup" Then
-        source = CurrentProject.FullName
-    ElseIf mode = "Restore" Then
-        Set sourcePicker = Application.FileDialog(3): sourcePicker.Title = "Choose a closed Swift NAVFIT backup": sourcePicker.AllowMultiSelect = False
-        sourcePicker.Filters.Clear: sourcePicker.Filters.Add "Swift NAVFIT database", "*.accdb;*.accde"
-        If sourcePicker.Show <> -1 Then Exit Function
-        source = sourcePicker.SelectedItems(1)
-    Else
-        Err.Raise vbObjectError + 4800, "modBackupUI.GuidedWorkspaceCopy", "Invalid copy mode."
-    End If
-    Set folder = Application.FileDialog(4): folder.Title = "Choose a folder for the new verified " & LCase$(mode) & " file"
+    Set folder = Application.FileDialog(4): folder.Title = "Choose a folder for the new verified backup file"
     If folder.Show <> -1 Then Exit Function
-    extension = Mid$(source, InStrRev(source, "."))
-    destination = folder.SelectedItems(1) & "\Swift_NAVFIT_" & LCase$(mode) & "_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & extension
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, "modBackupUI.GuidedWorkspaceCopy", "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
+    destination = folder.SelectedItems(1) & "\Swift_NAVFIT_backup_" & Format$(Now(), "yyyymmdd_hhnnss") & "_" & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".accdb"
+    Forms!frmBackup!lblStatus.Caption = "Writing and verifying the backup. Keep Access open."
+    DoEvents
+    evidence = WriteWorkspaceBackup(destination)
+    If CurrentProject.AllForms("frmBackup").IsLoaded Then
+        Forms!frmBackup!txtResult = evidence
+        Forms!frmBackup!lblStatus.Caption = "Backup verified: every row and field matches. Saved " & destination
     End If
-    operation = BeginOperation("Guided " & LCase$(mode), destination)
-    FinishOperation operation, "Dispatched", "Access will close. Read " & destination & ".verification.json for the copy verification result. Pending edits remain recovery checkpoints."
-    Set shell = CreateObject("WScript.Shell")
-    shell.Run BackupWorkerCommand(mode, source, destination), 0, False
-    GuidedWorkspaceCopy = True
-    Application.Quit acQuitSaveNone
-    Exit Function
+    GuidedWorkspaceBackup = True: Exit Function
 Failed:
     If CurrentProject.AllForms("frmBackup").IsLoaded Then Forms!frmBackup!lblStatus.Caption = Err.Description
 End Function
+
+'Writes every local table, keys and indexes included, into a new .accdb, then
+'checks every row and field against this workspace with the importer's own
+'verifier. Returns the verification record, also saved beside the backup.
+Public Function WriteWorkspaceBackup(ByVal destination As String) As String
+    Dim db As DAO.Database, backup As DAO.Database, table As DAO.TableDef, q As DAO.QueryDef, names As Collection, name As Variant
+    Dim prefix As String, counts As String, rows As Long, total As Long, created As Boolean, evidence As String, operation As Long
+    Dim failure As Long, message As String, source As String, folder As String
+    On Error GoTo Failed
+    If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "A backup is a new .accdb data file."
+    folder = Left$(destination, InStrRev(destination, "\") - 1)
+    If Len(folder) = 0 Or Len(Dir$(folder, vbDirectory)) = 0 Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "Destination folder does not exist."
+    If Len(Dir$(destination)) > 0 Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "Destination already exists. A backup always creates a new file."
+    If Len(Dir$(destination & ".verification.json")) > 0 Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "Destination verification file already exists; it was not overwritten."
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, "modBackupUI.WriteWorkspaceBackup", "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
+    End If
+    Set db = CurrentDb: Set names = New Collection
+    For Each table In db.TableDefs
+        If Left$(table.Name, 4) <> "MSys" And Left$(table.Name, 1) <> "~" Then
+            If Len(table.Connect) > 0 Then Err.Raise vbObjectError + 4802, "modBackupUI.WriteWorkspaceBackup", "Linked tables cannot be backed up as one file."
+            names.Add table.Name
+        End If
+    Next
+    Set backup = DBEngine.CreateDatabase(destination, dbLangGeneral, dbVersion120): created = True
+    backup.Close: Set backup = Nothing
+    For Each name In names
+        DoCmd.TransferDatabase acExport, "Microsoft Access", destination, acTable, CStr(name), CStr(name), False
+    Next
+    prefix = "zSwiftBackup" & Left$(Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", ""), 20)
+    Set backup = DBEngine.OpenDatabase(destination, False, True)
+    For Each name In names
+        Set q = db.CreateQueryDef(prefix & name, "SELECT * FROM [" & name & "] IN " & Chr$(34) & destination & Chr$(34)): q.Close: Set q = Nothing
+        rows = VerifyMigrationTable(db, backup.TableDefs(CStr(name)), prefix & name)
+        If Len(counts) > 0 Then counts = counts & ","
+        counts = counts & JsonString(CStr(name)) & ":" & rows
+        total = total + rows
+    Next
+    backup.Close: Set backup = Nothing
+    RemoveBackupQueries prefix
+    source = CurrentProject.FullName
+    evidence = "{""Status"":""PASS"",""Mode"":""Data backup"",""Source"":" & JsonString(source) & ",""Destination"":" & JsonString(destination) & _
+        ",""SHA256"":""" & SourceFileHash(destination) & """,""Schema"":" & SCHEMA_VERSION & ",""AppVersion"":" & JsonString(APP_VERSION) & _
+        ",""RowsVerified"":" & total & ",""CreatedAt"":""" & Format$(Now(), "yyyy-mm-dd\Thh:nn:ss") & """,""Counts"":{" & counts & "}}"
+    WriteNewTextFile destination & ".verification.json", evidence
+    operation = BeginOperation("Data backup", destination)
+    FinishOperation operation, "Completed", "Verified " & total & " rows. Restore with Settings & Help > Import data into a new blank workspace."
+    WriteWorkspaceBackup = evidence
+    Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not q Is Nothing Then q.Close
+    If Not backup Is Nothing Then backup.Close
+    RemoveBackupQueries prefix
+    'Only the incomplete file this call created is removed; nothing else is touched.
+    If created Then Kill destination
+    On Error GoTo 0
+    Err.Raise failure, "modBackupUI.WriteWorkspaceBackup", message
+End Function
+Private Sub RemoveBackupQueries(ByVal prefix As String)
+    Dim db As DAO.Database, i As Long
+    If Len(prefix) = 0 Then Exit Sub
+    Set db = CurrentDb
+    For i = db.QueryDefs.Count - 1 To 0 Step -1
+        If Left$(db.QueryDefs(i).Name, Len(prefix)) = prefix Then db.QueryDefs.Delete db.QueryDefs(i).Name
+    Next
+End Sub
+Private Function JsonString(ByVal value As String) As String
+    Dim i As Long, c As String, result As String
+    For i = 1 To Len(value)
+        c = Mid$(value, i, 1)
+        Select Case AscW(c)
+            Case 34: result = result & "\"""
+            Case 92: result = result & "\\"
+            Case 0 To 31: result = result & "\u" & Right$("000" & Hex$(AscW(c)), 4)
+            Case Else: result = result & c
+        End Select
+    Next
+    JsonString = """" & result & """"
+End Function
+Private Sub WriteNewTextFile(ByVal path As String, ByVal text As String)
+    Dim stream As Object
+    Set stream = CreateObject("ADODB.Stream"): stream.Type = 2: stream.Charset = "utf-8": stream.Open
+    stream.WriteText text
+    stream.SaveToFile path, 1
+    stream.Close
+End Sub
 Public Function ShowCopyVerification() As Boolean
     Dim picker As Object, stream As Object, path As String
     On Error GoTo Failed
-    Set picker = Application.FileDialog(3): picker.Title = "Choose the backup or restore verification file": picker.AllowMultiSelect = False
+    Set picker = Application.FileDialog(3): picker.Title = "Choose the backup verification file": picker.AllowMultiSelect = False
     picker.Filters.Clear: picker.Filters.Add "Verification result", "*.verification.json"
     If picker.Show <> -1 Then Exit Function
     path = picker.SelectedItems(1)

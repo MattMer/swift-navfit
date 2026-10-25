@@ -24,8 +24,3 @@ if(-not @($f.Controls|ForEach-Object {$_.Name}).Contains('txtCommandEmployment')
 }
 SaveScreen $f 'frmEditor'
 
-$workerSource=@('Attribute VB_Name = "modBackupWorker"','Option Explicit','Public Function BackupWorkerScript() As String','    Dim result As String')
-foreach($line in (Get-Content (Join-Path $root 'scripts/workspace-backup.ps1'))){$workerSource+='    result = result & "'+$line.Replace('"','""')+'" & vbCrLf'}
-$workerSource+=@('    BackupWorkerScript = result','End Function')
-$workerPath=Join-Path $root 'build/modBackupWorker.bas';[IO.File]::WriteAllText($workerPath,($workerSource -join "`r`n"))
-$app.LoadFromText(5,'modBackupWorker',$workerPath)

@@ -112,7 +112,6 @@
   "generatedModules": [
     "modPDFPrintCatalogue",
     "modNAVFITTemplate",
-    "modBackupWorker",
     "modTraitCatalogue",
     "modUXFields",
     "modUXSurfaceFields"
@@ -143,7 +142,6 @@
     "prototype/fields.mjs",
     "src/BlankForm.txt",
     "src/AutoExec.txt",
-    "scripts/workspace-backup.ps1",
     "scripts/write-trait-catalogue.ps1",
     "scripts/access-properties.ps1",
     "scripts/build-plan.ps1",

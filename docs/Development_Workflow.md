@@ -461,13 +461,14 @@ user content, or overwrite conflicting source definitions during import.
 For backup/recovery changes, run [test-backup.ps1](../scripts/test-backup.ps1)
 with `-BuildPath <blank.accdb>` and optional `-CompiledPath <candidate.accde>`,
 and [test-recovery.ps1](../scripts/test-recovery.ps1) with `-BuildPath <blank.accdb>`.
-The backup runner covers close-before-copy, literal filenames, byte-preserving
-restore, raw recovery fields, existing output/evidence, linked/corrupt/future-schema
-rejection and optional compiled round trips. `-InstallSource` prepares only its
-disposable copy; final verification omits it. Embedded workers receive the
-application schema ceiling; standalone workers read the canonical schema. Restore
-preserves the source extension and always creates a new file. Check the verification
-JSON before opening a restored copy; a dispatched worker is not a completed backup.
+The backup runner covers a backup taken while the editor holds pending values
+(it is checkpointed and closed, and Access stays open), literal filenames, the
+verification record and file hash, an independent row-by-row comparison, restore
+through the Settings & Help import with raw recovery fields, and rejection of
+existing output or evidence, missing folders, wrong extensions and linked tables.
+With `-CompiledPath` it also backs up an ACCDE workspace. `-InstallSource`
+prepares only its disposable copy; final verification omits it. Backup starts no
+other process.
 
 Use the existing focused runners for task-order and view regressions:
 

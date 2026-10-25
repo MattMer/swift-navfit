@@ -90,8 +90,9 @@ import and print-ready PDF output.
 - **Runtime external calls:**
   - MSXML 6, Scripting.FileSystemObject, ADODB.Stream and Windows GDI/crypto
     `Declare`s.
-  - Backup launches `powershell.exe -EncodedCommand` from Access
-    ([modBackupUI.bas](src/modBackupUI.bas)).
+  - No child processes. Backup is a data-only `.accdb` written and verified
+    inside Access ([modBackupUI.bas](src/modBackupUI.bas)); restore is the
+    Settings & Help import into a new blank workspace.
 
 ## Feature status
 
@@ -159,9 +160,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
 - Attended acceptance still outstanding: physical print fit, an Acrobat-absent
   workstation, normal-security launch and signing, screen reader/keyboard/DPI,
   PDF preview popup visuals.
-- No one has tested on a target (Navy-managed) workstation. The backup worker's
-  `powershell.exe -EncodedCommand` launch from Office may be blocked or flagged
-  by endpoint protection.
+- No one has tested on a target (Navy-managed) workstation.
 - Legacy harness gaps that reproduce on unchanged baselines:
   - `GroupReadHarness` stops after 153 checks because its deliberate cache
     divergence is now correctly rejected.

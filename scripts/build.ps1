@@ -123,13 +123,6 @@ try {
     }
     $swiftBaseDatabase.Close(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($swiftBaseDatabase); $swiftBaseDatabase=$null
     [void][IO.Directory]::CreateDirectory((Join-Path $root 'build'))
-    $workerLines=Get-Content -LiteralPath (Join-Path $root 'scripts/workspace-backup.ps1')
-    $workerSource=@('Attribute VB_Name = "modBackupWorker"','Option Explicit','Public Function BackupWorkerScript() As String','    Dim result As String')
-    foreach($line in $workerLines){$workerSource+='    result = result & "'+$line.Replace('"','""')+'" & vbCrLf'}
-    $workerSource+=@('    BackupWorkerScript = result','End Function')
-    $workerPath=Join-Path $root 'build/modBackupWorker.bas'
-    [IO.File]::WriteAllLines($workerPath,$workerSource,[Text.UTF8Encoding]::new($false))
-    $app.LoadFromText(5,'modBackupWorker',$workerPath)
     foreach($sourceModule in $swiftBuildPlan.Manifest.sourceModules){
         $app.LoadFromText(5,[IO.Path]::GetFileNameWithoutExtension($sourceModule),(Join-Path $root $sourceModule))
     }
@@ -643,12 +636,12 @@ try {
     [void](Control $f 104 'cmdHome' 400 9250 12600 350 'Return home' '=OpenScreen("frmHome")')
     SaveScreen $f 'frmPDFImport'
     NewScreen 'frmBackup' 'Verified workspace backup and restore' 10300; $f=$script:swiftForm
-    [void](Control $f 100 'lblInfo' 400 950 12600 1250 'Backup checkpoints pending editor values and closes this Access session before copying the whole workspace. Restore copies a closed backup to a new file. Existing files are never overwritten. The worker verifies the SHA256 byte hash and opens the copied database read only. A verification file is written beside the new database; reopen Swift NAVFIT to read the result.')
-    [void](Control $f 104 'cmdBackup' 400 2450 6000 550 'Checkpoint, close Access and back up' '=GuidedWorkspaceCopy("Backup")')
-    [void](Control $f 104 'cmdRestore' 6800 2450 6000 550 'Close Access and restore to a new file' '=GuidedWorkspaceCopy("Restore")')
-    [void](Control $f 104 'cmdStatus' 400 3250 12600 550 'Read a copy verification result' '=ShowCopyVerification()')
+    [void](Control $f 100 'lblInfo' 400 950 12600 1250 'Backup checkpoints pending editor values, then writes every table into a new data file and checks every row and field against this workspace. Access stays open and no other program runs. Existing files are never overwritten; a verification file is saved beside the backup. To restore, open a new blank Swift NAVFIT workspace and import the backup here.')
+    [void](Control $f 104 'cmdBackup' 400 2450 6000 550 'Checkpoint and write a verified backup' '=GuidedWorkspaceBackup()')
+    [void](Control $f 104 'cmdRestore' 6800 2450 6000 550 'Restore a backup into this blank workspace' '=UXChooseSwiftWorkspace()')
+    [void](Control $f 104 'cmdStatus' 400 3250 12600 550 'Read a backup verification result' '=ShowCopyVerification()')
     [void](Control $f 109 'txtResult' 400 4150 12600 4400);$c=$script:swiftControl;$c.Locked=$true;$c.ScrollBars=2
-    [void](Control $f 100 'lblStatus' 400 8800 12600 650 'Requires Windows PowerShell and Access DAO. Other Access sessions must also release the source. Pending checkpoint values still require deliberate recovery after reopening. Runtime and other workstations remain untested.')
+    [void](Control $f 100 'lblStatus' 400 8800 12600 650 'Restore accepts only a blank workspace and verifies every copied value before commit. Pending checkpoint values still require deliberate recovery after restoring. Runtime and other workstations remain untested.')
     [void](Control $f 104 'cmdHome' 400 9700 12600 450 'Return home' '=OpenScreen("frmHome")')
     SaveScreen $f 'frmBackup'
     . (Join-Path $PSScriptRoot 'invoke-build-phase.ps1') -BuildPhase 'presentation'

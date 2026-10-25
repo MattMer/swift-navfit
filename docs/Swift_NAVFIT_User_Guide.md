@@ -601,9 +601,11 @@ This is a whole-workspace transfer into an empty destination, not a merge betwee
 
 ## 17.2 Backup and restore
 
-Use the backup/restore tools in **Settings & Help** and follow their destination and confirmation prompts. For a file-copy backup, close Access cleanly first and retain a dated copy in the approved backup location. Protect exported native files and return baselines at the same data sensitivity as the workspace.
+In **Settings & Help**, choose **Backup and restore**, then **Checkpoint and write a verified backup** and pick a folder. Swift NAVFIT saves pending editor values as a recovery checkpoint and writes every table into a new data file. It then checks every row and field against the open workspace. Access stays open. A `.verification.json` record is saved beside the backup; **Read a backup verification result** displays it. Keep dated backups in the approved backup location, and protect them, exported native files and return baselines at the same data sensitivity as the workspace.
 
-Verify a restored copy before replacing the authoritative working file. Keep older copies until the restore is checked. A restore to a previous whole-file backup can predate later report changes; report History is the better tool when only one earlier report revision is needed.
+A backup holds the data, not the application. To restore, open a new blank Swift NAVFIT workspace, choose **Restore a backup into this blank workspace** (the same as **Import data from a previous Swift NAVFIT version**), select the backup and import it. Restore only fills a blank workspace and verifies every value before committing. Whole-file copies made by earlier versions import the same way.
+
+Check the restored workspace before replacing the authoritative working file, and keep older backups until then. A backup can predate later report changes; report History is the better tool when only one earlier report revision is needed.
 
 ---
 
