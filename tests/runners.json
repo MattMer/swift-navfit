@@ -694,28 +694,10 @@
    "tier": "extended"
   },
   {
-   "name": "verify-ux-group-discovery",
-   "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Historical evidence generator tied to retired output/ux release paths."
-  },
-  {
    "name": "verify-ux-immediate-defaults",
    "area": "Workflow and validation",
    "tier": "manual",
    "note": "Needs BlankPath, DemoPath."
-  },
-  {
-   "name": "verify-ux-import-rank",
-   "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Historical evidence generator tied to retired output/ux release paths."
-  },
-  {
-   "name": "verify-ux-member-psg",
-   "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Historical evidence generator tied to retired output/ux release paths."
   },
   {
    "name": "verify-validation-policy",
