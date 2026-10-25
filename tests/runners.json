@@ -1,0 +1,766 @@
+{
+ "description": "Every test runner in scripts/ (test-*, verify-*, smoke-test), its feature area and when it runs. test-build-plan.ps1 fails if this list and scripts/ disagree. Tiers: core runs in every develop.ps1 Test/BuildAndTest; release runs from release-check.ps1; extended runs with develop.ps1 -Action ExtendedTest (weekly and before every release) with -BuildPath plus any extraArgs; manual needs other inputs (see note); helper is called by other scripts; pending fails today and is not run (see note).",
+ "runners": [
+  {
+   "name": "smoke-test",
+   "area": "Workspace and settings",
+   "tier": "core"
+  },
+  {
+   "name": "test-administration",
+   "area": "Workflow and validation",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-assessment",
+   "area": "Workflow and validation",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-audit-conversations-navigation",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-audit-message-transfer",
+   "area": "Import and transfer",
+   "tier": "manual",
+   "note": "Needs BuildPath, FixtureMapPath."
+  },
+  {
+   "name": "test-backup",
+   "area": "Backup and recovery",
+   "tier": "extended"
+  },
+  {
+   "name": "test-batched-reads",
+   "area": "Workspace and settings",
+   "tier": "manual",
+   "note": "Needs BuildPath, BaselinePath."
+  },
+  {
+   "name": "test-build-cleanup",
+   "area": "Build and source",
+   "tier": "release"
+  },
+  {
+   "name": "test-build-finalization",
+   "area": "Build and source",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-build-plan",
+   "area": "Build and source",
+   "tier": "core"
+  },
+  {
+   "name": "test-build-property-bindings",
+   "area": "Build and source",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-bulk-workspace-import",
+   "area": "Import and transfer",
+   "tier": "extended"
+  },
+  {
+   "name": "test-compat-pages",
+   "area": "Report editor and pages",
+   "tier": "core"
+  },
+  {
+   "name": "test-compiled-distribution",
+   "area": "Build and source",
+   "tier": "core"
+  },
+  {
+   "name": "test-context-help",
+   "area": "Report editor and pages",
+   "tier": "release"
+  },
+  {
+   "name": "test-contributor-context",
+   "area": "Report editor and pages",
+   "tier": "helper",
+   "note": "Shared contributor-selection helper loaded by other runners."
+  },
+  {
+   "name": "test-contributor-startup",
+   "area": "Workspace and settings",
+   "tier": "core"
+  },
+  {
+   "name": "test-decision-details",
+   "area": "Workflow and validation",
+   "tier": "extended",
+   "extraArgs": [
+    "-PersistenceOnly"
+   ],
+   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
+  },
+  {
+   "name": "test-diagnostics-contracts",
+   "area": "Build and source",
+   "tier": "extended"
+  },
+  {
+   "name": "test-directory-batch",
+   "area": "Groups, directory and members",
+   "tier": "release"
+  },
+  {
+   "name": "test-directory-history",
+   "area": "Groups, directory and members",
+   "tier": "release"
+  },
+  {
+   "name": "test-directory-merge",
+   "area": "Groups, directory and members",
+   "tier": "core"
+  },
+  {
+   "name": "test-directory-merge-release",
+   "area": "Groups, directory and members",
+   "tier": "release"
+  },
+  {
+   "name": "test-directory-merge-transfer",
+   "area": "Import and transfer",
+   "tier": "release"
+  },
+  {
+   "name": "test-engine-import",
+   "area": "Import and transfer",
+   "tier": "extended"
+  },
+  {
+   "name": "test-engine-verification",
+   "area": "Import and transfer",
+   "tier": "release"
+  },
+  {
+   "name": "test-field-definitions",
+   "area": "Build and source",
+   "tier": "core"
+  },
+  {
+   "name": "test-group-correctness",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
+   "name": "test-group-exit",
+   "area": "Groups, directory and members",
+   "tier": "release"
+  },
+  {
+   "name": "test-import-commit",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Needs TEST_DB.accdb, which no longer exists."
+  },
+  {
+   "name": "test-import-rank",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Needs output/pdf fixtures that no longer exist."
+  },
+  {
+   "name": "test-import-review",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Defaults to a 0.2.3 output and a staging folder that no longer exist."
+  },
+  {
+   "name": "test-live-members",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
+   "name": "test-local-pdf",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "manual",
+   "note": "Needs BuildPath, FixturePath."
+  },
+  {
+   "name": "test-major",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-major-ui",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-member-details",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-member-psg",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Needs output/pdf fixtures that no longer exist."
+  },
+  {
+   "name": "test-narrative-layout",
+   "area": "Traits and narratives",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-narratives",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-native-dates",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-native-group-discovery",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Needs TEST_DB.accdb, which no longer exists."
+  },
+  {
+   "name": "test-navfit-adapter",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "extended"
+  },
+  {
+   "name": "test-navfit-group-export",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "extended"
+  },
+  {
+   "name": "test-navfit-native-return",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "manual",
+   "note": "Needs WorkspacePath, ReturnedPath, ReportID."
+  },
+  {
+   "name": "test-navfit-upgrade",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Native NAVFIT template not found (\"Clone and validate native template\")."
+  },
+  {
+   "name": "test-navigation-context",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-o3-cells",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-page-switch",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-page-width",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-party-names",
+   "area": "Groups, directory and members",
+   "tier": "extended",
+   "extraArgs": [
+    "-PersistenceOnly"
+   ],
+   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
+  },
+  {
+   "name": "test-pdf-counseling-status",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "extended"
+  },
+  {
+   "name": "test-pdf-expanded",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "pending",
+   "note": "Needs output/pdf/r85 fixtures that no longer exist."
+  },
+  {
+   "name": "test-pdf-import",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Needs output/pdf fixtures that no longer exist."
+  },
+  {
+   "name": "test-pdf-output",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "extended"
+  },
+  {
+   "name": "test-pdf-target-computer",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "helper",
+   "note": "Called by package-pdf-target-check.ps1 on a target computer."
+  },
+  {
+   "name": "test-pending-cells",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-persistence",
+   "area": "Backup and recovery",
+   "tier": "extended"
+  },
+  {
+   "name": "test-persistence-transfer",
+   "area": "Import and transfer",
+   "tier": "manual",
+   "note": "Needs BuildPath, LegacyTemplate."
+  },
+  {
+   "name": "test-preview-launch",
+   "area": "Report editor and pages",
+   "tier": "release"
+  },
+  {
+   "name": "test-promotion-status",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-provenance",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-readiness",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-recovery",
+   "area": "Backup and recovery",
+   "tier": "extended"
+  },
+  {
+   "name": "test-recursive-defaults",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-report-context",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-report-message-import",
+   "area": "Import and transfer",
+   "tier": "release"
+  },
+  {
+   "name": "test-report-notes",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-report-people",
+   "area": "Groups, directory and members",
+   "tier": "extended",
+   "extraArgs": [
+    "-PersistenceOnly"
+   ],
+   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
+  },
+  {
+   "name": "test-report-tools",
+   "area": "Report editor and pages",
+   "tier": "core"
+  },
+  {
+   "name": "test-reporting-senior",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+  },
+  {
+   "name": "test-revision-compare",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-routing",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-rs-completion",
+   "area": "Groups, directory and members",
+   "tier": "extended",
+   "extraArgs": [
+    "-AccountingOnly"
+   ],
+   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
+  },
+  {
+   "name": "test-rs-directory",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ruad-import",
+   "area": "Import and transfer",
+   "tier": "manual",
+   "note": "Needs BuildPath, SamplePath."
+  },
+  {
+   "name": "test-rules",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-service-details",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-swift-data-import",
+   "area": "Import and transfer",
+   "tier": "release"
+  },
+  {
+   "name": "test-table-sort",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-trait-catalogue",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-trait-events",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-trait-queue",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-trait-summary",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-traits",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ui-author-baseline",
+   "area": "Build and source",
+   "tier": "pending",
+   "note": "Startup failed on a fresh blank."
+  },
+  {
+   "name": "test-ui-author-data",
+   "area": "Build and source",
+   "tier": "manual",
+   "note": "Takes EditedPath, CandidatePath."
+  },
+  {
+   "name": "test-user-data-equivalence",
+   "area": "Import and transfer",
+   "tier": "manual",
+   "note": "Needs SourcePath, CandidatePath."
+  },
+  {
+   "name": "test-ux-admin-feedback",
+   "area": "Workspace and settings",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-block-tools",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-date-pickers",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-demo",
+   "area": "Workspace and settings",
+   "tier": "release"
+  },
+  {
+   "name": "test-ux-directory",
+   "area": "Groups, directory and members",
+   "tier": "release"
+  },
+  {
+   "name": "test-ux-export-names",
+   "area": "Workspace and settings",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-feedback",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-global-defaults",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-grid-reads",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-group-directory",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Hard-codes schema 25."
+  },
+  {
+   "name": "test-ux-group-directory-data",
+   "area": "Groups, directory and members",
+   "tier": "manual",
+   "note": "Needs SourcePath, CandidatePath."
+  },
+  {
+   "name": "test-ux-group-lifecycle",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-group-reads",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-header-review",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-help",
+   "area": "Workspace and settings",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-import-flow",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Needs TEST_DB.accdb, which no longer exists."
+  },
+  {
+   "name": "test-ux-member-grid",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-my-work",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-native-groups",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-navfit",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-navywriter",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-organization",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-performance",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-prior-grid",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-read-rows",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-resource-tools",
+   "area": "Workspace and settings",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-responsive-identity",
+   "area": "Workspace and settings",
+   "tier": "pending",
+   "note": "Fails \"Narrow navigation not collapsed\" on 0.44.0-dev; not yet diagnosed."
+  },
+  {
+   "name": "test-ux-review-return",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-shell",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-startup",
+   "area": "Workspace and settings",
+   "tier": "release"
+  },
+  {
+   "name": "test-ux-surface",
+   "area": "Report editor and pages",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-trait-retry",
+   "area": "Traits and narratives",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-validation",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-work-inclusion",
+   "area": "Workflow and validation",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "test-ux-work-refresh",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-ux-workflows",
+   "area": "Workflow and validation",
+   "tier": "core"
+  },
+  {
+   "name": "test-vba-source-normalization",
+   "area": "Build and source",
+   "tier": "core"
+  },
+  {
+   "name": "test-visual",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
+   "name": "test-wizard-state",
+   "area": "Workflow and validation",
+   "tier": "extended"
+  },
+  {
+   "name": "test-workspace-upgrade",
+   "area": "Import and transfer",
+   "tier": "release"
+  },
+  {
+   "name": "verify-build-artifact",
+   "area": "Build and source",
+   "tier": "core"
+  },
+  {
+   "name": "verify-built-application",
+   "area": "Build and source",
+   "tier": "helper",
+   "note": "Structural verifier called by build.ps1 and verify-build-artifact."
+  },
+  {
+   "name": "verify-navfit-field-coverage",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "pending",
+   "note": "Reads protected NAVFIT reference files and writes planning evidence; confirm its purpose before use."
+  },
+  {
+   "name": "verify-navfit-native-roundtrip",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "manual",
+   "note": "Needs BeforePath, AfterPath, EvidencePath."
+  },
+  {
+   "name": "verify-table-sort-bindings",
+   "area": "Workspace and settings",
+   "tier": "pending",
+   "note": "Fails on 0.44.0-dev; under diagnosis (24 Oct 2026 sweep follow-up)."
+  },
+  {
+   "name": "verify-ux-group-discovery",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Historical evidence generator tied to retired output/ux release paths."
+  },
+  {
+   "name": "verify-ux-immediate-defaults",
+   "area": "Workflow and validation",
+   "tier": "manual",
+   "note": "Needs BlankPath, DemoPath."
+  },
+  {
+   "name": "verify-ux-import-rank",
+   "area": "Import and transfer",
+   "tier": "pending",
+   "note": "Historical evidence generator tied to retired output/ux release paths."
+  },
+  {
+   "name": "verify-ux-member-psg",
+   "area": "Groups, directory and members",
+   "tier": "pending",
+   "note": "Historical evidence generator tied to retired output/ux release paths."
+  },
+  {
+   "name": "verify-validation-policy",
+   "area": "Workflow and validation",
+   "tier": "pending",
+   "note": "Reads a BUPERSINST PDF from the repository root; confirm the input before use."
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('Preflight','Build','Test','BuildAndTest','Compile')][string]$Action='BuildAndTest',
+    [ValidateSet('Preflight','Build','Test','BuildAndTest','Compile','ExtendedTest')][string]$Action='BuildAndTest',
     [string]$BuildPath,
     [string]$CompiledPath
 )
@@ -8,7 +8,7 @@ $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'build-plan.ps1')
 . (Join-Path $PSScriptRoot 'workflow-common.ps1')
 $plan=GetSwiftBuildPlan $root (Join-Path $PSScriptRoot 'build-manifest.json')
-if($Action -in @('Test','Compile') -and -not $BuildPath){throw '-BuildPath is required for Test or Compile'}
+if($Action -in @('Test','Compile','ExtendedTest') -and -not $BuildPath){throw '-BuildPath is required for Test, Compile or ExtendedTest'}
 if($CompiledPath -and $Action -ne 'Compile'){throw '-CompiledPath is only valid for Compile'}
 if($CompiledPath){
     $CompiledPath=[IO.Path]::GetFullPath($CompiledPath)
@@ -86,6 +86,19 @@ if($Action -in @('Test','BuildAndTest')){
     }
     $after=GetSwiftWorkflowArtifact $before.Path
     if($after.SHA256 -ne $before.SHA256){throw 'Development tests changed the supplied artifact'}
+}
+if($Action -eq 'ExtendedTest'){
+    #The extended tier in tests/runners.json, run weekly and before every release.
+    #Every runner runs even after a failure, so one run reports the whole tier.
+    $before=GetSwiftWorkflowArtifact $BuildPath
+    InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
+    $extended=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners|Where-Object {$_.tier -eq 'extended'})
+    $failed=@()
+    foreach($runner in $extended){
+        try{InvokeSwiftWorkflowStep ([string]$runner.name) (@('-BuildPath',$before.Path)+@($runner.extraArgs|Where-Object {$_})) $logFolder}catch{$failed+=[string]$runner.name;Write-Output $_.Exception.Message}
+    }
+    if((GetSwiftWorkflowArtifact $before.Path).SHA256 -ne $before.SHA256){throw 'Extended tests changed the supplied artifact'}
+    if($failed.Count){throw ('Extended tier: '+$failed.Count+' of '+$extended.Count+' runners failed: '+($failed -join ', ')+'. Logs: '+$logFolder)}
 }
 AssertSwiftBuildInputs $plan
 $artifact=if($Action -ne 'Preflight'){GetSwiftWorkflowArtifact $BuildPath}else{$null}

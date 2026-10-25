@@ -90,6 +90,18 @@ the checks you will run. Keep it brief.
   `Eval`, form events and generators. Before calling code unused, check those as
   well as text references.
 
+## Tests
+
+- Removing a feature removes its tests and their harnesses in the same commit.
+- Extend the existing test for a feature rather than adding a runner named
+  after a change, milestone or release.
+- Fixtures are generated from tracked definitions, or kept small and synthetic in
+  the repository. Never depend on files outside it or on old outputs.
+- [tests/runners.json](tests/runners.json) lists every runner with its area and
+  tier. `test-build-plan.ps1` fails if a runner or harness is missing from it or
+  orphaned. Run `scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`
+  weekly; release-check runs it too.
+
 ## Verification and reporting
 
 - Run checks in proportion to the change:

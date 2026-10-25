@@ -74,4 +74,24 @@ foreach($kind in @('missing-input','extra-input','incomplete','string-flag','wro
  $receipt|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $receiptPath
  Check (-not(TestSwiftBuildReceipt $artifact $plan)) ('Invalid receipt was accepted: '+$kind)
 }
-Write-Output ('PASS: '+$checks+' build-plan preflight, dependency, identity and input-drift checks')
+# Runner inventory: every runner is classified, and no runner or harness is orphaned.
+$runners=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners)
+$scripts=@(Get-ChildItem (Join-Path $root 'scripts') -Filter '*.ps1')
+$files=@($scripts|Where-Object {$_.BaseName -match '^(test-|verify-|smoke-test$)'}|ForEach-Object {$_.BaseName}|Sort-Object)
+$listed=@($runners|ForEach-Object {[string]$_.name}|Sort-Object)
+$unlisted=@($files|Where-Object {$listed -notcontains $_});$missing=@($listed|Where-Object {$files -notcontains $_})
+Check ($unlisted.Count -eq 0) ('Add these runners to tests/runners.json: '+($unlisted -join ', '))
+Check ($missing.Count -eq 0) ('Remove these deleted runners from tests/runners.json: '+($missing -join ', '))
+Check (@($listed|Group-Object|Where-Object {$_.Count -gt 1}).Count -eq 0) 'tests/runners.json lists a runner twice'
+foreach($runner in $runners){
+ Check ($runner.tier -in @('core','release','extended','manual','helper','pending') -and $runner.area) ('Runner needs an area and a known tier: '+$runner.name)
+ if($runner.tier -in @('manual','helper','pending')){Check ([bool]$runner.note) ('Runner needs a note explaining its tier: '+$runner.name)}
+}
+$developText=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'develop.ps1'))
+$developRuns=@([regex]::Matches($developText,"'((?:test-|verify-)[a-z-]+|smoke-test)'")|ForEach-Object {$_.Groups[1].Value}|Sort-Object -Unique)
+$coreRunners=@($runners|Where-Object {$_.tier -eq 'core'}|ForEach-Object {[string]$_.name}|Sort-Object)
+Check (-not (Compare-Object $developRuns $coreRunners)) ('Core tier differs from what develop.ps1 runs: '+((Compare-Object $developRuns $coreRunners|ForEach-Object {$_.InputObject})-join ', '))
+$scriptText=($scripts|ForEach-Object {[IO.File]::ReadAllText($_.FullName)})-join "`n"
+$orphans=@(Get-ChildItem (Join-Path $root 'tests') -Filter '*.bas'|Where-Object {$scriptText -notmatch [regex]::Escape($_.BaseName)}|ForEach-Object {$_.Name})
+Check ($orphans.Count -eq 0) ('No script loads these harnesses; remove them or wire them to a runner: '+($orphans -join ', '))
+Write-Output ('PASS: '+$checks+' build-plan preflight, dependency, identity, input-drift and runner-inventory checks')

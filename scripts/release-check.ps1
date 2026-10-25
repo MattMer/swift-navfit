@@ -36,6 +36,7 @@ foreach($suite in @('test-contributor-startup','test-compat-pages','test-ux-work
     InvokeSwiftWorkflowStep $suite @('-BuildPath',$blank.Path) $logFolder
 }
 InvokeSwiftWorkflowStep 'test-engine-verification' @('-BuildPath',$blank.Path,'-SourcePath',$demo.Path) $logFolder
+InvokeSwiftWorkflowStep 'develop' @('-Action','ExtendedTest','-BuildPath',$blank.Path) $logFolder
 InvokeSwiftWorkflowStep 'test-report-message-import' @('-BlankPath',$blank.Path,'-DemoPath',$demo.Path) $logFolder
 foreach($artifact in @($blank,$demo)){
     if((GetSwiftWorkflowArtifact $artifact.Path).SHA256 -ne $artifact.SHA256){throw ('Release checks changed '+$artifact.Path)}
