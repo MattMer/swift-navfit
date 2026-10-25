@@ -7,7 +7,7 @@ $originals=@{}
 foreach($path in @($BuildPath,$CompiledPath)){$originals[$path]=(Get-FileHash -LiteralPath $path).Hash}
 $folder=Join-Path $root ('build/tests/compiled-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
-$script:checks=0;$script:app=$null;$script:cleanupFailure=''
+$script:checks=0;$script:app=$null;$script:cleanupFailure='';$script:pdfWorkspace=''
 function AssertCompiled([bool]$Condition,[string]$Message){
     if(-not $Condition){throw $Message}
     $script:checks++
@@ -26,6 +26,21 @@ function OpenCompiledSession([string]$Path,[switch]$NormalSecurity){
     $script:app=New-Object -ComObject Access.Application
     if(-not $NormalSecurity){$script:app.AutomationSecurity=1}
     $script:app.OpenCurrentDatabase($Path,$true)
+}
+function CheckCompiledPDFRun([string]$Pattern,[int]$MinimumPages){
+    # The dialog reports the published run folder; check it against the manifest
+    # the application wrote, not against anything the runner produced.
+    $status=[string]$app.Eval('Forms!frmPDFOutput!lblStatus.Caption')
+    AssertCompiled ($status -like 'Completed: *') ('Compiled PDF run did not complete: '+$status)
+    $run=$status.Substring(11)
+    AssertCompiled ($run.StartsWith($pdfRoot+'\') -and (Test-Path -LiteralPath $run -PathType Container)) 'Compiled PDF run folder is missing or outside the export folder'
+    $pdfs=@(Get-ChildItem -LiteralPath $run -Filter '*.pdf')
+    AssertCompiled ($pdfs.Count -eq 1 -and $pdfs[0].Name -like $Pattern) ('Compiled PDF run has unexpected files: '+(($pdfs|ForEach-Object Name) -join ', '))
+    $manifest=Get-Content -LiteralPath (Join-Path $run 'manifest.json') -Raw -Encoding UTF8|ConvertFrom-Json
+    AssertCompiled (@($manifest.files).Count -eq 1 -and $manifest.files[0].name -eq $pdfs[0].Name -and $manifest.files[0].sha256 -eq (Get-FileHash -LiteralPath $pdfs[0].FullName).Hash) 'Compiled PDF manifest does not match the published file'
+    $text=[Text.Encoding]::GetEncoding(28591).GetString([IO.File]::ReadAllBytes($pdfs[0].FullName))
+    AssertCompiled ($text.StartsWith('%PDF-') -and $text.TrimEnd().EndsWith('%%EOF')) 'Compiled output is not a complete PDF'
+    AssertCompiled ([regex]::Matches($text,'/Type\s*/Page[^s]').Count -ge $MinimumPages) ('Compiled PDF has fewer than '+$MinimumPages+' pages')
 }
 function CheckCompiled {
     $db=$app.CurrentDb()
@@ -101,6 +116,39 @@ try {
     AssertCompiled ($app.Eval('DCount("*","ReportRevision")') -eq 4) 'Compiled revisions did not persist'
     AssertCompiled ($app.Eval('DLookup("OfficialComments","Report","ReportID='+$ids[0]+'")') -eq 'SYNTHETIC UPDATED TEXT') 'Compiled saved text did not persist'
     CloseOwnedCompiledSession
+    # PDF output through the production dialog on a separate copy, so the group
+    # it creates does not change the workspace the upgrade check imports. COM
+    # cannot reach form controls in an ACCDE: set the folder the way Browse
+    # remembers it, call the dialog's own callbacks and read results from disk.
+    $pdfCopy=Join-Path $folder 'pdf.accde'
+    Copy-Item -LiteralPath $target -Destination $pdfCopy
+    OpenCompiledSession $pdfCopy
+    [void]$app.Eval('SwitchContributor('+$contributor+')')
+    $pdfRoot=Join-Path $folder 'pdf-output'
+    [void](New-Item -ItemType Directory -Path $pdfRoot)
+    $script:pdfWorkspace=[string]$app.Eval('DLookup("WorkspaceGuid","Workspace","WorkspaceID=1")')
+    [string]$folderArgument=$pdfRoot
+    [void]$app.Run('PDFOutputRememberFolder',[ref]$folderArgument)
+    $app.DoCmd.OpenForm('frmEditor',0,[Type]::Missing,[Type]::Missing,[Type]::Missing,[Type]::Missing,[string]$ids[1])
+    AssertCompiled ([bool]$app.Eval('PDFOutputOpenReport()')) 'Compiled report PDF dialog failed'
+    AssertCompiled ($app.Eval('Forms!frmPDFOutput!txtFolder') -eq $pdfRoot) 'Compiled PDF dialog did not load the remembered export folder'
+    AssertCompiled ([bool]$app.Eval('PDFOutputCreate()')) 'Compiled report PDF creation failed'
+    CheckCompiledPDFRun '*__CHIEFEVAL__*.pdf' 2
+    AssertCompiled ([bool]$app.Eval('PDFOutputClose()')) 'Compiled PDF dialog close failed'
+    AssertCompiled ([bool]$app.Eval('UXLeaveEditor("Discard")')) 'Compiled editor close after PDF failed'
+    $group=[int]$app.Eval('CreateSummaryGroup("COMPILED PDF PACKET","EVAL","E5")')
+    [int]$groupArgument=$group;[int]$reportArgument=$ids[0];[string]$paygradeArgument='E5'
+    [void]$app.Run('AddGroupMember',[ref]$groupArgument,[ref]$reportArgument,[ref]$paygradeArgument)
+    AssertCompiled ([bool]$app.Eval('UXShowGroupMembers('+$group+',True)')) 'Compiled group members page failed'
+    AssertCompiled ([bool]$app.Eval('PDFOutputOpenGroup("frmUXComparison")')) 'Compiled group PDF dialog failed'
+    AssertCompiled ($app.Eval('Forms!frmPDFOutput!cboFormat') -eq 'Combined packet' -and [bool]$app.Eval('Forms!frmPDFOutput!chkSummary')) 'Compiled group PDF did not default to a packet with its summary sheet'
+    AssertCompiled ([bool]$app.Eval('PDFOutputCreate()')) 'Compiled group packet creation failed'
+    CheckCompiledPDFRun 'COMPILED_PDF_PACKET__Packet.pdf' 3
+    AssertCompiled ([bool]$app.Eval('PDFOutputClose()')) 'Compiled group PDF dialog close failed'
+    AssertCompiled ($app.Eval('DCount("*","OperationJournal","OperationKind=''Create print-ready PDFs'' AND OperationState=''Completed''")') -eq 2) 'Compiled PDF runs were not journaled as completed'
+    AssertCompiled (@(Get-ChildItem -LiteralPath $pdfRoot -Recurse -Directory -Filter '*.partial').Count -eq 0) 'Compiled PDF output left a partial run'
+    AssertCompiled ([bool]$app.Eval('UXCloseComparison()')) 'Compiled group page close failed'
+    CloseOwnedCompiledSession
     # Upgrade from an actual populated ACCDE, through the same production UI
     # handlers. DAO reads data without importing or executing source code.
     $compiledSourceHash=(Get-FileHash -LiteralPath $target).Hash
@@ -116,7 +164,11 @@ try {
     AssertCompiled ((Get-FileHash -LiteralPath $target).Hash -eq $compiledSourceHash) 'Upgrade modified its populated ACCDE source'
     foreach($path in $originals.Keys){AssertCompiled ((Get-FileHash -LiteralPath $path).Hash -eq $originals[$path]) 'A supplied artifact changed'}
 } catch {$primary=$_;throw $primary}
-finally {CloseOwnedCompiledSession}
+finally {
+    CloseOwnedCompiledSession
+    # The remembered folder belongs to the synthetic workspace identity only.
+    if($script:pdfWorkspace){Remove-Item -LiteralPath ('HKCU:\Software\VB and VBA Program Settings\SwiftNAVFIT\PDF-'+$script:pdfWorkspace) -Recurse -ErrorAction SilentlyContinue}
+}
 if($script:cleanupFailure){throw ('Owned test session cleanup failed: '+$script:cleanupFailure)}
-[pscustomobject]@{Status='PASS';Assertions=$checks;Source=$BuildPath;SourceSHA256=$originals[$BuildPath];Compiled=$CompiledPath;CompiledSHA256=$originals[$CompiledPath];NormalSecurityTested=[bool]$CheckNormalSecurity;PDFOutputTested=$false;Scope='Trusted development automation: native compiled startup, protected source, three report types, save/reopen, ACCDB and ACCDE Settings import, history/provenance and source hashes; current schema and installed desktop Access only. Normal Office security/signing acceptance is separate unless explicitly tested; compiled PDF output requires further verification.'}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
+[pscustomobject]@{Status='PASS';Assertions=$checks;Source=$BuildPath;SourceSHA256=$originals[$BuildPath];Compiled=$CompiledPath;CompiledSHA256=$originals[$CompiledPath];NormalSecurityTested=[bool]$CheckNormalSecurity;PDFOutputTested=$true;Scope='Trusted development automation: native compiled startup, protected source, three report types, save/reopen, ACCDB and ACCDE Settings import, history/provenance, source hashes, and PDF output through the production dialog (report PDF and group packet with summary sheet; manifest hashes, page counts, journal); current schema and installed desktop Access only. Normal Office security/signing, physical print fit and an Acrobat-absent workstation are separate acceptance.'}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
 Write-Output ('PASS: '+$checks+' native compiled-distribution assertions; evidence: '+$folder)

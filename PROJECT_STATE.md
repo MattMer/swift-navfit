@@ -106,7 +106,7 @@ import and print-ready PDF output.
 | C08–C10 | Audit index, unified conversations, single navigation list | Dev (schema 29). |
 | H01 | Print-ready PDF output, packets, Chief comments and print fidelity | Dev (schema 33). **Not accepted:** physical print fit, Acrobat-absent workstation and the trait-34 grade-4/5 6-point fallback still need checking. |
 | H02 | NAVFIT98A export without validation blocking (whole summary group) | Dev (schema 31). |
-| M01 | Compiled ACCDE distribution | Unsigned dev candidate only. Normal-security launch is unresolved, there is no signing certificate, and compiled PDF output is unverified. |
+| M01 | Compiled ACCDE distribution | Unsigned dev candidate only. The compiled runner covers startup, import, saves and PDF output (report PDF and group packet) under trusted automation. Normal-security launch is unresolved and there is no signing certificate. |
 | M02 | Recoverable/owned import previews (Resume/Cancel) | Dev (schema 30); follow-ups through 0.44. |
 | M03 | Batched reads for folders, history, groups/RSCA, summary list | Dev. |
 | M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). |

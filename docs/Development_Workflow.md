@@ -541,11 +541,17 @@ produced a security/signature refusal. This does not establish what an explicit
 user trust decision or an approved trusted location would permit.
 `-CheckNormalSecurity` on the focused runner is a separate **attended**
 acceptance option: security prompts require user interaction and must not be
-bypassed. Compiled PDF generation is still unverified because the external COM
-compiled-form/control interface failed during the attempted test. Do not infer
-  compiled PDF support from the passing ACCDB PDF suite. The import picker lists
-  both ACCDB and ACCDE; production data-import handlers read either through DAO
-  without executing source code.
+bypassed. The runner also creates PDFs in the ACCDE through the production
+dialog: a report PDF and a summary-group packet with its summary sheet, checked
+against the application's manifest hashes, page counts and operation journal.
+In an ACCDE, COM returns nothing for form controls, so the runner calls only the
+dialog's public callbacks (`PDFOutputOpenReport`, `PDFOutputOpenGroup`,
+`PDFOutputCreate`), reads values through `Eval`, and sets the export folder with
+`PDFOutputRememberFolder`. It removes that synthetic workspace's folder setting
+afterwards. `Application.Run` arguments must be typed `[ref]` variables. This
+does not establish printed fit or an Acrobat-absent workstation. The import picker
+lists both ACCDB and ACCDE; production data-import handlers read either through
+DAO without executing source code.
 Keep the source ACCDB and its receipt: compiled VBA source cannot be edited or
 recovered through the ordinary Access development workflow.
 

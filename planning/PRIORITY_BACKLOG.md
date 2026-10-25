@@ -181,8 +181,10 @@ report failure. Retain NAVFIT98A field coverage, provenance and round-trip check
 M01 has development tooling and native compiled-candidate proof on desktop Access
 16.0.20430.20182 x64, via the existing development entry point. It is **not complete
 for production**: normal-policy launch remains unresolved after cancelling an
-unsigned-file security prompt, no approved
-signing certificate is available, and compiled PDF output remains unverified.
+unsigned-file security prompt, and no approved
+signing certificate is available. Compiled PDF output (report PDF and group packet
+with summary sheet) is verified through the production dialog by the compiled
+runner on Access 16.0.20527.20088 x64; printed fit and an Acrobat-absent workstation remain H01 acceptance.
 The ACCDE import-picker filter is implemented in 0.37. See
 [current scope and limitations](PROJECT_STATE_HISTORY.md#environment-build-verification-and-delivery)
 and the [compiled-candidate procedure](../docs/Development_Workflow.md#compiled-desktop-candidate-m01).
