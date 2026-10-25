@@ -40,7 +40,7 @@ Public Function TestAssessment() As String
         id = SaveAssessment(0, CStr(kind), Array("Observed", "Promotable"))
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "ObservationStatus") = "Observed" And Stored(id, "PromotionRecommendation") = "Promotable", "Selections lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Incomplete snapshot"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
         Call CommitDraft(id, CStr(kind), "Assessment", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted assessment changed history"
         copy = DuplicateDraft(id)

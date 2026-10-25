@@ -11,9 +11,9 @@ $app=New-Object -ComObject Access.Application
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  $app.LoadFromText(5,'NativeGroupDiscoveryHarness',(Join-Path $root 'tests/NativeGroupDiscoveryHarness.bas'));$app.DoCmd.RunCommand(126)
- $original=Join-Path $root 'TEST_DB.accdb';$originalHash=(Get-FileHash -LiteralPath $original).Hash
+ $original=Join-Path $dir 'original.accdb'; & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $original;$originalHash=(Get-FileHash -LiteralPath $original).Hash
  $result=$app.Eval('TestOriginalGroupDiscovery("'+$original+'")');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
- if((Get-FileHash -LiteralPath $original).Hash -ne $originalHash){throw 'Original TEST_DB changed'}
+ if((Get-FileHash -LiteralPath $original).Hash -ne $originalHash){throw 'Original fixture changed'}
  $result=$app.Eval('TestNativeGroupDiscovery("'+$source+'")');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
 if((Get-FileHash -LiteralPath $source).Hash -ne $before){throw 'Source file changed'}

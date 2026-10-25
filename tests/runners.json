@@ -9,14 +9,12 @@
   {
    "name": "test-administration",
    "area": "Workflow and validation",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-assessment",
    "area": "Workflow and validation",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-audit-conversations-navigation",
@@ -158,8 +156,7 @@
   {
    "name": "test-import-commit",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Needs TEST_DB.accdb, which no longer exists."
+   "tier": "extended"
   },
   {
    "name": "test-import-rank",
@@ -170,8 +167,7 @@
   {
    "name": "test-import-review",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Defaults to a 0.2.3 output and a staging folder that no longer exist."
+   "tier": "extended"
   },
   {
    "name": "test-live-members",
@@ -197,8 +193,7 @@
   {
    "name": "test-member-details",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-member-psg",
@@ -224,8 +219,7 @@
   {
    "name": "test-native-group-discovery",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Needs TEST_DB.accdb, which no longer exists."
+   "tier": "extended"
   },
   {
    "name": "test-navfit-adapter",
@@ -246,8 +240,7 @@
   {
    "name": "test-navfit-upgrade",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Native NAVFIT template not found (\"Clone and validate native template\")."
+   "tier": "extended"
   },
   {
    "name": "test-navigation-context",
@@ -330,8 +323,7 @@
   {
    "name": "test-promotion-status",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-provenance",
@@ -356,8 +348,7 @@
   {
    "name": "test-report-context",
    "area": "Report editor and pages",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-report-message-import",
@@ -386,8 +377,7 @@
   {
    "name": "test-reporting-senior",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Expects 78 snapshot fields (the catalogue now has 100) and predates the startup contributor choice."
+   "tier": "extended"
   },
   {
    "name": "test-revision-compare",
@@ -518,8 +508,7 @@
   {
    "name": "test-ux-group-directory",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Hard-codes schema 25."
+   "tier": "extended"
   },
   {
    "name": "test-ux-group-directory-data",
@@ -550,8 +539,11 @@
   {
    "name": "test-ux-import-flow",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Needs TEST_DB.accdb, which no longer exists."
+   "tier": "extended",
+   "note": "PDF half waits for synthetic PDF fixtures (pikepdf).",
+   "extraArgs": [
+    "-SkipPDF"
+   ]
   },
   {
    "name": "test-ux-member-grid",
@@ -606,8 +598,7 @@
   {
    "name": "test-ux-responsive-identity",
    "area": "Workspace and settings",
-   "tier": "pending",
-   "note": "Fails \"Narrow navigation not collapsed\" on 0.44.0-dev; not yet diagnosed."
+   "tier": "extended"
   },
   {
    "name": "test-ux-review-return",
@@ -688,8 +679,8 @@
   {
    "name": "verify-navfit-field-coverage",
    "area": "NAVFIT and PDF exchange",
-   "tier": "pending",
-   "note": "Reads protected NAVFIT reference files and writes planning evidence; confirm its purpose before use."
+   "tier": "manual",
+   "note": "Run when src/navfit-field-map.json changes; regenerates planning/evidence/navfit/field-coverage.json from the protected NAVFIT references (read-only)."
   },
   {
    "name": "verify-navfit-native-roundtrip",
@@ -729,8 +720,8 @@
   {
    "name": "verify-validation-policy",
    "area": "Workflow and validation",
-   "tier": "pending",
-   "note": "Reads a BUPERSINST PDF from the repository root; confirm the input before use."
+   "tier": "manual",
+   "note": "No Access or build; run when validation citations or the BUPERSINST source change."
   }
  ]
 }

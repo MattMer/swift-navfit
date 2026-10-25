@@ -75,11 +75,13 @@ Public Function UXWindowHelpTopic(ByVal formName As String) As Long
         Case Else: UXWindowHelpTopic = 6
     End Select
 End Function
-Public Function UXWindowHelpLayout(ByVal formName As String) As Boolean
+Public Function UXWindowHelpLayout(ByVal formName As String, Optional ByVal viewportWidth As Long = 0) As Boolean
     Dim f As Access.Form, width As Long, c As Access.Control
     Set f = Forms(formName)
     If Not UXHasControl(f, "cmdWindowHelp") Then Exit Function
-    width = f.InsideWidth
+    'Match the width the workspace was just laid out for; a window resize passes none.
+    width = viewportWidth
+    If width = 0 Then width = f.InsideWidth
     If width < 1500 Then width = f.Width
     With f!cmdWindowHelp
         .Left = width - 800: .Top = 150: .Width = 500: .Height = 400

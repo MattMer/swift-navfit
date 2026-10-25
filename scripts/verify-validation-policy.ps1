@@ -1,4 +1,4 @@
-param([string]$InstructionPath=(Join-Path $PSScriptRoot '../BUPERSINST 1610.10.pdf'),[string]$InstructionTextPath=(Join-Path $PSScriptRoot '../planning/evidence/BUPERSINST 1610.10.txt'))
+param([string]$InstructionPath=(Join-Path $PSScriptRoot '../FORMS_REFERENCES_TEMPLATES/BUPERSINST 1610.10.pdf'),[string]$InstructionTextPath=(Join-Path $PSScriptRoot '../planning/evidence/BUPERSINST 1610.10.txt'))
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $sources=@((Get-Content (Join-Path $root 'src/modLiveValidation.bas') -Raw),(Get-Content (Join-Path $root 'src/modValidationReferences.bas') -Raw))
 $definitions=Get-Content (Join-Path $root 'src/modValidation.bas') -Raw

@@ -30,7 +30,7 @@ try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  $app.LoadFromText(5,'NAVFITUpgradeHarness',(Join-Path $root 'tests/NAVFITUpgradeHarness.bas'))
  $app.DoCmd.RunCommand(126)
- $result=$app.Eval('TestNAVFITUpgrade("'+$dir+'","'+(Join-Path $root 'NAVFIT_BLANK.accdb')+'")');Write-Output $result
+ $result=$app.Eval('TestNAVFITUpgrade("'+$dir+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
  foreach($name in $before.Keys){if($name -eq 'stale.accdb'){continue};if((Get-FileHash (Join-Path $dir $name)).Hash -ne $before[$name]){throw ('Original fixture changed: '+$name)}}
  [ordered]@{Result=$result;BuildSHA256=(Get-FileHash $BuildPath).Hash;FixtureDirectory=$dir;OriginalsPreserved=$true}|ConvertTo-Json|Set-Content (Join-Path $root 'build/tests/navfit-upgrade-results.json')

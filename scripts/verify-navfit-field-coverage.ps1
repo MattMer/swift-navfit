@@ -1,4 +1,4 @@
-param([string]$OutputPath='D:\Development\Swift NAVFIT\planning\evidence\navfit\field-coverage.json')
+param([string]$OutputPath=(Join-Path $PSScriptRoot '../planning/evidence/navfit/field-coverage.json'))
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $map=Get-Content -Raw (Join-Path $root 'src/navfit-field-map.json')|ConvertFrom-Json
 $il=Get-Content -Raw (Join-Path $root 'planning/evidence/navfit/native-bindings.json')|ConvertFrom-Json

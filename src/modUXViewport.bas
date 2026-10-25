@@ -143,7 +143,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
 Finished:
     If Not f Is Nothing Then
         UXSortHeaders f
-        UXWindowHelpLayout f.Name
+        UXWindowHelpLayout f.Name, width
         UXApplyVisual f
     End If
     viewportBusy = False

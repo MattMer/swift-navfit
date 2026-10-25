@@ -1,7 +1,8 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$source=Join-Path $root 'TEST_DB.accdb'
+$dir=Join-Path $root ('build\tests\import-commit-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $dir)
+$source=Join-Path $dir 'synthetic.accdb'; & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source
 $hash=(Get-FileHash -LiteralPath $source).Hash
 $scratch=Join-Path $root ('build\tests\import-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch

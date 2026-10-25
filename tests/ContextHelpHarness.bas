@@ -43,7 +43,7 @@ Public Function TestContextHelp() As String
   Check InStr(Forms!frmUXHelp!lblGuide.Caption, f.Caption) > 0, "Help heading loses originating window"
   If UXHasControl(f, "uxCompactNav") Then
    Check UXResizeWorkspace(CStr(name), 9000, 7000), "Compact resize failed"
-   Check f!cmdWindowHelp.Left = f.InsideWidth - 800, "Compact help did not follow resize"
+   Check f!cmdWindowHelp.Left = 9000 - 800, "Compact help did not follow resize"
    Check f!cmdWindowHelp.Left > 0 And f!cmdWindowHelp.Left + 500 <= f.InsideWidth, "Compact help clipped"
   End If
   CloseHelp: DoCmd.Close acForm, CStr(name), acSaveNo

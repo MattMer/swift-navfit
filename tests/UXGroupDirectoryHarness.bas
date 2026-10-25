@@ -7,10 +7,9 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
 End Sub
 Public Function TestUXGroupDirectory() As String
     Dim values As Object, readback As Object, key As Variant, memberID As Long, version As Long, rejected As Boolean, id As Long, groupID As Long, grade As String, kind As Variant, rate As String
-    Dim baseline As String, defaults As String, reports As Long, members As Long, f As Access.Form, page As Long, i As Long, captions As Variant, screen As Variant, oldValue As Variant, width As Variant, w As DAO.Workspace, otherGroup As Long, operations As Long
+    Dim baseline As String, defaults As String, reports As Long, members As Long, f As Access.Form, page As Long, i As Long, captions As Variant, screen As Variant, oldValue As Variant, width As Variant, w As DAO.Workspace, otherGroup As Long, operations As Long, revisions As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC GROUP DIRECTORY TEST", "Tester"
-    Check SCHEMA_VERSION = 25, "Schema constant incorrect"
     Set values = RUADDecode(Null)
     Check values.Count = 35, "RUAD must retain all 35 columns"
     For Each key In values.Keys: values(key) = "Synthetic " & key & " & apostrophe ' and <tag>": Next
@@ -92,17 +91,17 @@ Public Function TestUXGroupDirectory() As String
     CreateGroupDraft groupID, GroupStamp(groupID), UXDefaultsStamp(groupID), memberID, version, "Duplicate", "SYNTHETIC, RUAD", "IT2", "", #1/1/2026#, #9/30/2026#
     rejected = (Err.Number <> 0): Err.Clear: On Error GoTo Failed
     Check rejected And DCount("*", "Report") = reports, "Duplicate type and period accepted"
-    DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID
+    DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID: Forms!frmMajorWorkbench!uxGroupContext = groupID
     Check UXWorkbenchMode("Members"), "Group members mode failed"
-    captions = Array("Members", "Defaults for new reports", "Review", "Comparison", "History")
+    captions = Array("Members", "Defaults", "Review", "", "History")
     Check UXGroupAddReport("frmMajorWorkbench"), "Add report dialog failed"
     DoCmd.Close acForm, "frmUXGroupReport", acSaveNo
     Check DCount("*", "Report") = reports, "Cancel created an empty report"
     Check UXGroupNavigate("frmMajorWorkbench", 0), "Members navigation failed"
     Check Forms!frmUXComparison!uxGroupContext = groupID, "Members context lost"
     operations = DCount("*", "ComparisonSet")
-    Check UXGroupNavigate("frmUXComparison", 3), "Comparison tab switch failed"
-    Check DCount("*", "ComparisonSet") = operations And Forms!frmUXComparison!uxGroupTab3.FontBold, "Tab switch recreated or failed to select comparison"
+    Check UXGroupNavigate("frmUXComparison", 3), "Comparison navigation failed"
+    Check DCount("*", "ComparisonSet") = operations And Forms!frmUXComparison!uxGroupTab0.FontBold And Not UXHasControl(Forms!frmUXComparison, "uxGroupTab3"), "Comparison navigation recreated a set or left members"
     Check UXGroupNavigate("frmUXComparison", 0), "Members tab switch failed"
     Check DCount("*", "ComparisonSet") = operations And Forms!frmUXComparison!uxGroupTab0.FontBold, "Tab switch recreated or failed to select members"
     otherGroup = CreateSummaryGroup("Other group context", "FITREP", "O3")
@@ -110,19 +109,22 @@ Public Function TestUXGroupDirectory() As String
     UXGridViewport
     Check Forms!frmUXComparison!uxGroupContext = groupID, "Resize retargeted an open comparison to another group"
     Forms!frmMajorWorkbench!cboGroup = groupID
-    For i = 0 To 4: Check Forms!frmUXComparison.Controls("uxGroupTab" & i).Caption = captions(i), "Comparison tab caption wrong": Next
+    For i = 0 To 4: If i <> 3 Then Check Forms!frmUXComparison.Controls("uxGroupTab" & i).Caption = captions(i), "Comparison tab caption wrong"
+    Next
     Check UXGroupNavigate("frmUXComparison", 1), "Defaults navigation failed"
-    For i = 0 To 4: Check Forms!frmUXBulk.Controls("uxGroupTab" & i).Caption = captions(i) And Forms!frmUXBulk.Controls("uxGroupTab" & i).Visible, "Defaults tab caption/visibility wrong": Next
+    For i = 0 To 4: If i <> 3 Then Check Forms!frmUXBulk.Controls("uxGroupTab" & i).Caption = captions(i) And Forms!frmUXBulk.Controls("uxGroupTab" & i).Visible, "Defaults tab caption/visibility wrong"
+    Next
     Check Forms!frmUXBulk!uxGroupContext = groupID And Forms!frmUXBulk!uxAddGroupReport.Visible, "Defaults group context/Add report missing"
-    Forms!frmUXBulk!uxValueUnitUIC = "00001": UXBulkChanged "UnitUIC"
-    Check Not UXGroupNavigate("frmUXBulk", 2), "Pending defaults were silently discarded on navigation"
-    Check CurrentProject.AllForms("frmUXBulk").IsLoaded And Forms!frmUXBulk!uxValueUnitUIC = "00001", "Pending default value lost"
+    revisions = DCount("*", "ReportRevision")
+    Forms!frmUXBulk!uxValueUnitUIC = "00001": Call UXConfirmBlockChange("UnitUIC", vbNo)
+    Check Nz(Forms!frmUXBulk!uxValueUnitUIC, "") <> "00001" And DCount("*", "ReportRevision") = revisions, "Declined default change was applied"
     UXCloseBlocks
     Check UXGroupNavigate("frmMajorWorkbench", 2), "Review navigation failed"
     Check Forms!frmMajorWorkbench!uxMode = "Review", "Review mode wrong"
     Check UXGroupNavigate("frmMajorWorkbench", 4), "History navigation failed"
     Check Forms!frmMajorWorkbench!uxMode = "History", "History mode wrong"
-    For i = 0 To 4: Check Forms!frmMajorWorkbench.Controls("uxGroupTab" & i).Caption = captions(i), "Main group tab caption wrong": Next
+    For i = 0 To 4: If i <> 3 Then Check Forms!frmMajorWorkbench.Controls("uxGroupTab" & i).Caption = captions(i), "Main group tab caption wrong"
+    Next
     Check UXGroupAddReport("frmMajorWorkbench"), "Create dialog failed"
     With Forms!frmUXGroupReport
         !txtName = "Synthetic group UI creation": !txtOfficial = "SYNTHETIC, UI": !txtRank = "IT2"

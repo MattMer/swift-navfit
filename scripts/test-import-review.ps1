@@ -1,8 +1,7 @@
-param([string]$BuildPath=(Join-Path $PSScriptRoot '..\output\Swift_NAVFIT_0.2.3-tested.accdb'), [string]$SourcePath="")
+param([Parameter(Mandatory=$true)][string]$BuildPath, [string]$SourcePath="")
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$source=Join-Path $root 'build\navfit-staging-verified4\E732EE41A384495AC37BC009C59516A73461C7DB99E251B5384CE917652386E7\staged-values.accdb'
-if($SourcePath){$source=[IO.Path]::GetFullPath($SourcePath)}
+if($SourcePath){$source=[IO.Path]::GetFullPath($SourcePath)}else{$source=Join-Path $root ('build\tests\review-source-'+[guid]::NewGuid()+'.accdb'); & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source}
 $hash=(Get-FileHash -LiteralPath $source).Hash
 $scratch=Join-Path $root ('build\tests\review-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
@@ -24,7 +23,7 @@ try {
     $db=$app.CurrentDb()
     $engine=New-Object -ComObject DAO.DBEngine.120
     $raw=$engine.OpenDatabase($source,$false,$true)
-    $table=if($SourcePath){'Reports'}else{'RawReports'}
+    $table='Reports'
     $fields=$raw.TableDefs.Item($table).Fields
     $parent=-1; $type=-1
     for($i=0;$i -lt $fields.Count;$i++) {if($fields.Item($i).Name -eq 'Parent'){$parent=$i};if($fields.Item($i).Name -eq 'ReportType'){$type=$i}}
@@ -44,12 +43,12 @@ try {
      $badDb.TableDefs.Item($table).Fields.Item('Parent').Name='ChangedParent'
     $badDb.Close()
     $rejected=$app.Eval('TryReview("'+$bad.Replace('"','""')+'")')
-    Assert ($rejected -ne 'PASS' -and $rejected -like '*Unrecognized staging field*') 'Altered staging schema rejected'
+    Assert ($rejected -ne 'PASS' -and $rejected -like '*Missing NAVFIT field: Reports.Parent*') 'Altered staging schema rejected'
     Assert ($app.Eval('LeaveImportReview()')) 'Close review succeeds'
-    Assert ($app.Screen.ActiveForm.Name -eq 'frmHome') 'Close returns to home'
+    Assert ($app.CurrentProject.AllForms.Item('frmHome').IsLoaded -and -not $app.CurrentProject.AllForms.Item('frmImportReview').IsLoaded) 'Close returns to home'
     $app.CloseCurrentDatabase()
     Assert ((Get-FileHash -LiteralPath $source).Hash -eq $hash) 'Staged source hash unchanged'
-    $resultFile=if($SourcePath){'import-review-direct-results.json'}else{'import-review-staged-results.json'}
+    $resultFile='import-review-results.json'
     @{Status='PASS';Checks=$checks;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root ('build\tests\'+$resultFile))
     Write-Output "PASS: $($checks.Count) import review checks"
 } finally {if($null -ne $app){$app.Quit(2)}}

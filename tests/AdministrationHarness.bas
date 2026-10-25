@@ -11,6 +11,12 @@ Private Function Stored(ByVal id As Long, ByVal key As String) As Variant
     Set r = CurrentDb.OpenRecordset("SELECT [" & key & "] FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     Stored = r.Fields(0).Value: r.Close
 End Function
+Private Function MissingInput(ByVal id As Long, ByVal key As String) As Boolean
+    Dim item As Object
+    For Each item In ValidateLiveFields(SavedFields(id), id)
+        If item("Key") = key And item("Severity") = "Incomplete draft" Then MissingInput = True
+    Next
+End Function
 Private Function Rejected(ByVal id As Long, ByVal kind As String, ByVal values As Variant) As Boolean
     On Error GoTo Failed
     Call CommitDraft(id, kind, "Synthetic", "Local display", Null, Null, "Notes", "Rejected", "Narrative", values)
@@ -43,7 +49,7 @@ Public Function TestAdministration() As String
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "OfficialName") = values(0) And Stored(id, "MemberName") = "Local display", "Names combined"
         Check Stored(id, "UnitUIC") = "00123", "Leading zero lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = 78, "Snapshot not complete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Snapshot not complete"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Local display", Null, Null, "Notes", "Omitted fields", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "UnitUIC") = "00123", "Omitted administration changed values"
         copy = DuplicateDraft(id)
@@ -84,7 +90,7 @@ Public Function TestAdministration() As String
     Check SaveEditor(), "Editor save failed"
     Check Stored(id, "OfficialName") = "UI OFFICIAL NAME" And Stored(id, "UnitUIC") = "00234", "Editor save lost administration"
     Check OpenDraftChecklist(id), "Checklist failed"
-    Check InStr(Forms!frmChecklist!lstFindings.RowSource, "OfficialName;Missing input") = 0 And InStr(Forms!frmChecklist!lstFindings.RowSource, "UnitUIC;Missing input") = 0, "Complete administration still missing"
+    Check Not MissingInput(id, "OfficialName") And Not MissingInput(id, "UnitUIC"), "Complete administration still missing"
     Call CloseDraftChecklist()
     Forms!frmEditor!txtOfficialName = String$(35, "P"): Forms!frmEditor!txtUnitUIC = "00789"
     Check CheckpointEditor(), "Administrative checkpoint failed"
