@@ -13,6 +13,15 @@ Private Function AverageError(ByVal g As Long) As Long
 Failed:
     AverageError = Err.Number
 End Function
+Private Function CommittedReadError(ByVal g As Long) As Long
+    Dim result As Object, rows As DAO.Recordset
+    On Error GoTo Failed
+    Set result = RSGroupPSG(g)
+    Set rows = RSGroupRows(g): rows.Close
+    Exit Function
+Failed:
+    CommittedReadError = Err.Number
+End Function
 Private Sub Compare(ByVal g As Long)
     Dim currentAverage As Variant, fresh As Object, sharedResult As Object, key As Variant, rows As DAO.Recordset, revisions As Long, snapshots As Long, text As String
     revisions = DCount("*", "ReportRevision"): snapshots = DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet")
@@ -67,8 +76,12 @@ Public Function TestGroupReads() As String
     CommitSavedFields id, CurrentRevision(id), changes, "Senior mismatch": Compare g
     changes("ReportingSeniorSSN") = "000123456"
     CommitSavedFields id, CurrentRevision(id), changes, "Restore senior": Compare g
-    ' Deliberate scratch divergence: average uses revision traits; PSG/context use committed Report fields.
+    ' Deliberate scratch divergence: the average reads revision traits; PSG and group rows read
+    ' the derived Report cache, which now rejects a value that differs from its revision.
     CurrentDb.Execute "UPDATE Report SET Trait35='5.0' WHERE ReportID=" & id, dbFailOnError
+    Check AverageError(g) = 0, "Revision-based average read the derived cache"
+    Check CommittedReadError(g) = vbObjectError + 8903, "Derived cache divergence not rejected"
+    CurrentDb.Execute "UPDATE Report SET Trait35='3.0' WHERE ReportID=" & id, dbFailOnError
     Compare g
     rev = CurrentRevision(id)
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & rev & " AND FieldKey='Trait39'", dbFailOnError

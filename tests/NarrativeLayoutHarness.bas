@@ -30,9 +30,11 @@ Public Function TestNarrativeLayout() As String
             Check c.Left + c.Width <= f!uxFieldSurface.Width - 300, "Narrative exceeds surface"
             Check c.Value = value, "Layout truncated overflow"
         Next
+        ' Fixed sheet geometry: a narrow window scrolls the viewport; it never rewraps the narrative.
         Check UXResizeEditor(9000, 8000), "Narrow layout failed"
-        Check c.Width < UXNarrativeWidth(CStr(kind)), "Narrow viewport did not fit"
-        Check InStr(surface!uxNarrativeCount.Caption, "Narrow view") > 0, "Narrow wrapping not disclosed"
+        Check c.Width = UXNarrativeWidth(CStr(kind)) And c.Height = UXNarrativeHeight(CStr(kind)), "Narrow viewport changed narrative geometry"
+        Check f.ScrollBars = 3 And c.Left + c.Width <= f!uxFieldSurface.Width - 300,"Narrow viewport does not scroll the full narrative"
+        Check InStr(surface!uxNarrativeCount.Caption, "Narrow view") = 0, "Narrow viewport claims changed wrapping"
         Check c.Value = value, "Narrow layout lost text"
         Check UXSelectSection(0), "Admin section failed"
         Check UXSelectSection(5), "Comments return failed"

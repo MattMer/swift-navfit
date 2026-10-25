@@ -2,7 +2,7 @@ Attribute VB_Name = "modUXHeaderReview"
 Option Compare Binary
 Option Explicit
 Public Function UXHeaderReview(ByVal action As String, Optional ByVal decisionNote As Variant) As Boolean
- Dim f As Access.Form, choice As String
+ Dim f As Access.Form, choice As String, id As Long
  On Error GoTo Failed
  UXFlushSurface
  If Not IsMissing(decisionNote) And EditorHasPending() Then
@@ -14,6 +14,9 @@ Public Function UXHeaderReview(ByVal action As String, Optional ByVal decisionNo
   End If
  End If
  If Not UXToolsChoose("Review") Then Exit Function
+ 'Header buttons reflect the newest route; act on that route, not an older panel selection.
+ id = Nz(Forms!frmEditor!txtReportID, 0)
+ Call UXLoadReview(id, -1, Nz(MajorScalar("SELECT Max(RunID) FROM RouteRun WHERE ReportID=" & id), 0))
  Set f = UXReviewForm()
  If IsMissing(decisionNote) Then
   f!txtNote.SetFocus: UXHeaderReview = True: Exit Function

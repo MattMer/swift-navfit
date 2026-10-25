@@ -31,8 +31,11 @@ Public Function TestUXExportNames() As String
     Check UXExportDestination(first, 0, id) = second, "Subsequent export did not retain directory"
     fs.DeleteFile first & ".swift-baseline.accdb": RmDir folder
     DoCmd.OpenForm "frmNAVFITExchange"
-    Check Forms!frmNAVFITExchange!txtExportPath.Locked, "Export filename requires manual editing"
+    ' The path box holds a directory (typed or chosen); UXExportDestination always supplies the filename.
+    Check Forms!frmNAVFITExchange!lbltxtExportPath.Caption = "Export directory", "Export path not labeled as a directory"
+    Check Forms!frmNAVFITExchange!txtExportPath.AfterUpdate = "=UXPreviewNAVFITGroup()", "Typed export directory does not refresh the preview"
     Check Forms!frmNAVFITExchange!cmdtxtExportPath.Caption = "Choose folder", "Export chooser still labeled file selection"
+    Check Forms!frmNAVFITExchange!cmdtxtExportPath.OnClick = "=UXChooseNAVFITGroupFolder()", "Export chooser does not pick a folder"
     TestUXExportNames = "PASS: " & n & " automatic export filename assertions": Exit Function
 Failed:
     TestUXExportNames = "FAIL after " & n & ": " & Err.Number & " " & Err.Description

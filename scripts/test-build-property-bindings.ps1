@@ -8,6 +8,11 @@ try{
  foreach($opened in @($app.Forms|ForEach-Object {$_.Name})){$app.DoCmd.Close(2,$opened,2)}
  $source=Get-Content (Join-Path $root 'scripts/build.ps1') -Raw
  Invoke-Expression ([regex]::Match($source,'(?s)    function Control\(.*?(?=    NewScreen ''frmSetup'')').Value)
+ #The baseline stage runs before finalize-application.ps1 deletes cmdBulkFolders. Confirm the
+ #finished build lacks it, then restore a placeholder so repeat application sees stage conditions.
+ $app.DoCmd.OpenForm('frmLibrary',1);$f=$app.Forms.Item('frmLibrary')
+ if(@($f.Controls|ForEach-Object {$_.Name}) -contains 'cmdBulkFolders'){throw 'Retired cmdBulkFolders is still installed'};$checks++
+ [void](Control $f 104 'cmdBulkFolders' 11240 8050 1501 500 'Bulk moves');$app.DoCmd.Close(2,'frmLibrary',1)
  . (Join-Path $PSScriptRoot 'apply-ui-author-baseline.ps1')
  . (Join-Path $PSScriptRoot 'apply-ui-author-baseline.ps1')
  $baseline=Get-Content (Join-Path $root 'src/ui-author-baseline.json') -Raw|ConvertFrom-Json

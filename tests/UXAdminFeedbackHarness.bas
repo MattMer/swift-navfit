@@ -25,7 +25,13 @@ Public Function TestUXAdminFeedback() As String
         Check DLookup("CommandEmployment", "RecoveryDraft", "ReportID=" & id) = "Synthetic deployment and command achievement", "Checkpoint omitted Block 28"
         Check UXSelectSection(4), "Trait section failed"
         Check f!txtCommandEmployment = "Synthetic deployment and command achievement" And CurrentRevision(id) = revision, "Section navigation lost or saved pending Block 28"
-        If s.Width >= 7000 Then Check s!uxTraitGuidance.Height = s!cboTrait39.Top + s!cboTrait39.Height - s!uxTraitGuidance.Top, "Trait guidance height does not match trait list"
+        ' Fixed page layout: shared guidance starts level with block 33 and covers through block 39;
+        ' Chief evaluations show per-trait guidance instead.
+        If kind = "CHIEFEVAL" Then
+            Check s!uxChiefGuidance33.Visible And s!uxChiefGuidance39.Visible, "Chief trait guidance missing"
+        Else
+            Check s!uxTraitGuidance.Visible And s!uxTraitGuidance.Top = s!cboTrait33.Top And s!uxTraitGuidance.Top + s!uxTraitGuidance.Height >= s!cboTrait39.Top + s!cboTrait39.Height, "Trait guidance does not span the trait list"
+        End If
         Check SaveEditor(), "Block 28 save failed"
         Check MajorRevisionValue(CurrentRevision(id), "CommandEmployment") = "Synthetic deployment and command achievement", "Block 28 revision missing"
         duplicate = DuplicateDraft(id)
@@ -93,7 +99,7 @@ Private Sub CheckLegacyBlock28()
     revision = CurrentRevision(id): Set db = CurrentDb
     db.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
     db.Execute "DELETE FROM RevisionChange WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
-    db.Execute "UPDATE ReportRevision SET SnapshotSchema=23 WHERE RevisionID=" & revision, dbFailOnError
+    db.Execute "UPDATE ReportRevision SET SnapshotSchema=23, FieldDefinitionVersion=Null WHERE RevisionID=" & revision, dbFailOnError
     Set r = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     r.AddNew: r!ReceiptGuid = NewIdentity(): r!SourceHash = String$(64, "0"): r!ExternalReportID = 42: r!ReportID = id
     r!AuthorProfileID = MajorAuthor(): r!ImportedAt = Now(): r!AdapterVersion = "navfit-full-v1/local-CStr": r!IsUndone = False
@@ -108,6 +114,10 @@ Private Sub CheckLegacyBlock28()
     Check values("CommandEmployment") = "Original native command achievements", "Export values omitted legacy Block 28 provenance"
     Check IsNull(DLookup("CommandEmployment", "Report", "ReportID=" & id)), "Read-only projection changed a saved report"
     Check IsNull(Block28FromRevision(revision)), "Old revision invented a recorded Block 28 value"
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "Title", "Legacy source renamed"
+    Call CommitSavedFields(id, revision, values, "Unrelated saved-field edit")
+    Check CurrentRevision(id) <> revision And Nz(StoredBlock28(id), "") = "Original native command achievements", "Unrelated save cleared legacy Block 28"
+    revision = CurrentRevision(id)
     Set values = CreateObject("Scripting.Dictionary"): values.Add "CommandEmployment", Null
     Call CommitSavedFields(id, revision, values, "Explicitly clear inherited Block 28")
     Check CurrentRevision(id) <> revision And IsNull(StoredBlock28(id)), "Explicit clear revived prior native Block 28"

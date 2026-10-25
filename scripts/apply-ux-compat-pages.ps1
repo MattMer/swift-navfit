@@ -38,7 +38,8 @@ foreach($name in @('uxRecoverySession','uxRecoveryRevision','uxReturnGroup')){
 foreach($c in $f.Controls){if($c.Name -like 'uxSection?' -or $c.Name -in @('uxCompactSection','uxPage','uxPrevious','uxNext','lblHeading','lblImportOrigin')){$c.Visible=$false}}
 foreach($item in @(@('uxFrontPage','Front Page','=UXSelectSection(0)'),@('uxBackPage','Back Page','=UXSelectSection(5)'),@('uxPageNotes','Draft notes','=UXSelectSection(7)'),@('uxPageReview','Review','=UXSelectSection(8)'),@('uxPageHistory','History','=UXSelectSection(9)'),@('uxPageValidation','Validation issues','=UXOpenValidation(False)'))){
  try{$app.DeleteControl($f.Name,$item[0])}catch{}
- PageControl $f 104 $item[0] 250 2850 2200 400 $item[1] $item[2]
+ #Stored beside the rail; UXFixedResize places each button at runtime.
+ PageControl $f 104 $item[0] 2850 2850 2200 400 $item[1] $item[2]
 }
 $f.Width=15000;$f.ScrollBars=3
 $app.DoCmd.Save(2,$f.Name);$app.DoCmd.Close(2,$f.Name,2)

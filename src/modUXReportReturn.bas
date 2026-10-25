@@ -61,6 +61,9 @@ Public Function UXRestoreReportList() As Boolean
             End If
         End If
     Next
+    'The requeried list has no scroll range until it processes its pending messages;
+    'restore state is already cleared, so this cannot re-enter the return.
+    DoEvents
     Call UXReportScroll(position)
     UXRestoreReportList = True
 End Function
