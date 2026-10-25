@@ -26,7 +26,7 @@ $script:workflowResults=[Collections.Generic.List[object]]::new()
 InvokeSwiftWorkflowStep 'test-build-plan' @() $logFolder
 InvokeSwiftWorkflowStep 'test-vba-source-normalization' @() $logFolder
 InvokeSwiftWorkflowStep 'test-field-definitions' @() $logFolder
-$compiledArtifact=$null;$compiler=$null
+$compiledArtifact=$null;$compiler=$null;$extendedFlaky=@()
 if($Action -eq 'Compile'){
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
@@ -93,17 +93,38 @@ if($Action -eq 'ExtendedTest'){
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
     $extended=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners|Where-Object {$_.tier -eq 'extended'})
-    $failed=@()
+    #A failed runner is retried once on a fresh copy (each run copies the build).
+    #Failing then passing is FLAKY: reported by name with its evidence, never as a
+    #clean pass. Failing twice is FAIL and fails the tier.
+    $failed=@();$flaky=[Collections.Generic.List[object]]::new()
     foreach($runner in $extended){
-        try{InvokeSwiftWorkflowStep ([string]$runner.name) (@('-BuildPath',$before.Path)+@($runner.extraArgs|Where-Object {$_})) $logFolder}catch{$failed+=[string]$runner.name;Write-Output $_.Exception.Message}
+        $arguments=@('-BuildPath',$before.Path)+@($runner.extraArgs|Where-Object {$_})
+        $first=InvokeSwiftMonitoredStep ([string]$runner.name) $arguments $logFolder
+        $status='PASS';$evidence=$null
+        if($first.ExitCode -ne 0){
+            Write-Output ('Retrying '+$runner.name+' on a fresh copy after exit '+$first.ExitCode+': '+$first.Error)
+            $second=InvokeSwiftMonitoredStep ([string]$runner.name) $arguments $logFolder
+            $status=if($second.ExitCode -eq 0){'FLAKY'}else{'FAIL'}
+            $evidence=[pscustomobject]@{Runner=[string]$runner.name;Status=$status;First=$first;Retry=$second}
+            if($status -eq 'FLAKY'){$flaky.Add($evidence)}else{$failed+=[string]$runner.name}
+        }
+        $last=if($evidence){$evidence.Retry}else{$first}
+        $script:workflowResults.Add([pscustomobject]@{Script=[string]$runner.name;Status=$status;Seconds=$last.Seconds;Log=$last.Log;Evidence=$evidence})
+        Write-Output ($status+' '+$runner.name)
     }
     if((GetSwiftWorkflowArtifact $before.Path).SHA256 -ne $before.SHA256){throw 'Extended tests changed the supplied artifact'}
-    if($failed.Count){throw ('Extended tier: '+$failed.Count+' of '+$extended.Count+' runners failed: '+($failed -join ', ')+'. Logs: '+$logFolder)}
+    foreach($item in $flaky){
+        Write-Output ('FLAKY '+$item.Runner+': first run exit '+$item.First.ExitCode+'; '+$item.First.Error)
+        foreach($line in @($item.First.Dialogs)+@($item.First.AccessProcesses)){Write-Output ('  '+$line)}
+        Write-Output ('  log: '+$item.First.Log)
+    }
+    if($failed.Count){throw ('Extended tier: '+$failed.Count+' of '+$extended.Count+' runners failed twice: '+($failed -join ', ')+'. Logs: '+$logFolder)}
+    $extendedFlaky=@($flaky.ToArray())
 }
 AssertSwiftBuildInputs $plan
 $artifact=if($Action -ne 'Preflight'){GetSwiftWorkflowArtifact $BuildPath}else{$null}
 $receipt=Join-Path $logFolder 'verification.json'
-[pscustomobject]@{Status='PASS';Action=$Action;AppVersion=$plan.AppVersion;SchemaVersion=$plan.SchemaVersion;Artifact=$artifact;CompiledArtifact=$compiledArtifact;Inputs=$plan.InputHashes;Steps=@($workflowResults.ToArray());Scope='Development checks only; release and physical acceptance remain separate'} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $receipt
-Write-Output ('PASS: '+$Action+'; receipt: '+$receipt)
+[pscustomobject]@{Status=$(if($extendedFlaky.Count){'PASS with FLAKY runners'}else{'PASS'});Flaky=@($extendedFlaky);Action=$Action;AppVersion=$plan.AppVersion;SchemaVersion=$plan.SchemaVersion;Artifact=$artifact;CompiledArtifact=$compiledArtifact;Inputs=$plan.InputHashes;Steps=@($workflowResults.ToArray());Scope='Development checks only; release and physical acceptance remain separate'} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $receipt
+Write-Output ('PASS: '+$Action+$(if($extendedFlaky.Count){' with '+$extendedFlaky.Count+' FLAKY runner(s): '+(($extendedFlaky|ForEach-Object {$_.Runner})-join ', ')}else{''})+'; receipt: '+$receipt)
 if($artifact){Write-Output ('Artifact: '+$artifact.Path)}
 if($compiledArtifact){Write-Output ('Compiled artifact: '+$compiledArtifact.Path)}

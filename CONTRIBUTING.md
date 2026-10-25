@@ -54,6 +54,14 @@ and tier. Runners in the `extended` tier take only `-BuildPath` (plus any listed
 from release-check). A new runner must be added there, or `test-build-plan.ps1`
 fails; a runner whose feature is removed is deleted with it.
 
+`ExtendedTest` closes VBA error dialogs in the Access sessions a runner starts
+(OK for compile errors, End for run-time errors), so a dialog fails the step
+instead of hanging the tier; each runner is stopped after 45 minutes. A runner
+that fails is retried once on a fresh copy. Passing on the retry is reported as
+**FLAKY**, by name, with the first run's error, dialog text and Access processes,
+in the output and the receipt; it is never a clean pass, so investigate it.
+Failing twice fails the tier.
+
 The trait suite was restored and modernized: it preserves current service,
 rollback and recovery checks without retired checklist UI or a duplicated
 catalogue loop. Current report-tools/narrative/cleanup harnesses cover long
