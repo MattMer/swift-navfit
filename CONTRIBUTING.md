@@ -47,6 +47,18 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Provenance viewer | test-provenance.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
 | NAVFIT/PDF exchange | Applicable adapter/group export/return/local-PDF suites and authorized synthetic/reference fixtures |
 
+Further focused runners that pass on a fresh 0.44.0-dev blank with only
+`-BuildPath` (24 Oct 2026); run the ones matching the area you changed:
+
+| Area | Runners |
+| --- | --- |
+| Report editor and pages | test-page-switch, test-page-width, test-pending-cells, test-navigation-context, test-visual, test-ux-date-pickers, test-ux-block-tools |
+| Traits and narratives | test-trait-events, test-trait-queue, test-trait-summary, test-narratives |
+| Revisions, defaults and readiness | test-revision-compare, test-recursive-defaults, test-ux-global-defaults, test-readiness, test-rules |
+| Groups, directory and lists | test-group-correctness, test-rs-directory, test-table-sort, test-ux-grid-reads, test-ux-work-refresh |
+| Import and dates | test-bulk-workspace-import, test-native-dates, test-pdf-counseling-status, test-engine-import (about 16 minutes; includes a legacy-VBA benchmark) |
+| Feedback and resources | test-ux-feedback, test-ux-navywriter, test-ux-resource-tools |
+
 The trait suite was restored and modernized: it preserves current service,
 rollback and recovery checks without retired checklist UI or a duplicated
 catalogue loop. Current report-tools/narrative/cleanup harnesses cover long
