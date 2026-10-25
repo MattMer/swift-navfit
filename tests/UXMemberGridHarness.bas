@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     n = n + 1
 End Sub
 Public Function TestUXMemberGrid() As String
-    Dim id As Long, g As Long, emptyGroup As Long, rev As Long, rows As Access.Form
+    Dim id As Long, g As Long, emptyGroup As Long, rev As Long, rows As Access.Form, changes As Object
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC MEMBER GRID", "Tester"
     id = CommitDraft(0, "EVAL", "Member grid", "Synthetic member", #1/1/2026#, #9/30/2026#, "", "Test", "")
@@ -24,12 +24,20 @@ Public Function TestUXMemberGrid() As String
     Check Screen.ActiveForm.Name = "frmUXComparison", "Return did not select member grid"
     Check rows!ReportID = id, "Return lost selected member"
     Check CurrentRevision(id) <> rev, "Report return did not save pending values"
+    ' Returning reloads the member row at the saved revision, so its cells stay editable.
+    Check rows!RevisionID = CurrentRevision(id) And Not rows!AssignmentRecommendationA.Locked And Not rows!AssignmentRecommendationB.Locked, "Return did not refresh the member row"
+    ' A save made outside the open grid leaves the row stale; its career cells lock.
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add "Title", "Changed outside the grid"
+    CommitSavedFields id, CurrentRevision(id), changes, "Saved outside the member grid"
+    Check UXGridCurrent(True), "Row lock refresh failed"
     Check rows!AssignmentRecommendationA.Locked And rows!AssignmentRecommendationB.Locked, "Stale career fields not visibly locked"
     UXCloseComparison
     emptyGroup = CreateSummaryGroup("Empty group", "EVAL", "E5")
     Forms!frmUXGroups!lstGroups = emptyGroup
     Check UXOpenGroupMembers(), "Empty group member grid failed"
-    Check Not CurrentProject.AllForms("frmUXComparison").IsLoaded And Forms!frmMajorWorkbench!lstReports.ListCount = 0, "Empty group displayed unrelated members"
+    ' An empty group opens the same Members surface with no rows and an explicit status.
+    Check Forms!frmUXComparison!uxGroupContext = emptyGroup And Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF, "Empty group displayed unrelated members"
+    Check InStr(Forms!frmUXComparison!lblStatus.Caption, "No reports in this summary group") = 1, "Empty group status missing"
     TestUXMemberGrid = "PASS: " & n & " member-grid entry and return assertions": Exit Function
 Failed:
     TestUXMemberGrid = "FAIL after " & n & ": " & Err.Number & " " & Err.Description

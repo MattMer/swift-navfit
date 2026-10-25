@@ -35,7 +35,7 @@ Public Function SavedFields(ByVal reportID As Long) As Object
     AssertReportCache reportID
     Set db = CurrentDb
     Set values = CreateObject("Scripting.Dictionary")
-    Dim head As Long, value As Variant
+    Dim head As Long, value As Variant, block28Recorded As Boolean
     head = ReportHeadRevision(reportID)
     For Each key In DraftFieldKeys(): values.Add CStr(key), Null: Next
     Set r = db.OpenRecordset("SELECT FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & head, dbOpenSnapshot)
@@ -44,9 +44,13 @@ Public Function SavedFields(ByVal reportID As Long) As Object
         If Not r!IsNullValue Then value = r!ValueText.Value
         If (key = "PeriodStart" Or key = "PeriodEnd") And Not IsNull(value) Then value = DateSerial(CLng(Left$(value, 4)), CLng(Mid$(value, 6, 2)), CLng(Right$(value, 2)))
         If values.Exists(CStr(key)) Then values(CStr(key)) = value
+        If key = "CommandEmployment" Then block28Recorded = True
         r.MoveNext
     Loop
     r.Close
+    ' Revisions saved before Block 28 existed carry its native imported value as a
+    ' read-only projection, so exports and later saves do not clear it.
+    If Not block28Recorded Then values("CommandEmployment") = StoredBlock28(reportID)
     Set SavedFields = values
 End Function
 Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As Variant

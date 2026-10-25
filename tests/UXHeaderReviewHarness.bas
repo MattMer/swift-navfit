@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     n = n + 1
 End Sub
 Public Function TestUXHeaderReview() As String
-    Dim id As Long, template As Long, run As Long, other As Long, c As Access.Control
+    Dim id As Long, template As Long, run As Long, other As Long, c As Access.Control, name As Variant
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC HEADER REVIEW", "Reviewer"
     id = CommitDraft(0, "EVAL", "Header review", "Synthetic member", #1/1/2026#, #9/30/2026#, "", "Test", "")
@@ -17,7 +17,8 @@ Public Function TestUXHeaderReview() As String
     Check Forms!frmEditor!uxReviewAccept.FontBold, "Assigned accept is not primary"
     Check UXHeaderReview("Accept", "Step checked"), "Header accept failed: " & Forms!frmEditor!uxError.Caption
     Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Accepted", "Accept not recorded"
-    Check Not CurrentProject.AllForms("frmUXReview").IsLoaded, "Hidden review adapter remained open"
+    ' The retired review window is gone; header actions run through the report's embedded review panel.
+    Check UXToolsView() = "Review" And UXToolsAvailable(), "Header action did not use the embedded review panel"
     Check CurrentProject.AllForms("frmEditor").IsLoaded, "Report disappeared"
     Check Forms!frmEditor!uxReviewApproval.Enabled, "Accepted route approval not enabled"
     Check Forms!frmEditor!uxReviewApproval.FontBold, "Final approval is not primary"
@@ -34,11 +35,13 @@ Public Function TestUXHeaderReview() As String
     Call UXHeaderReviewState
     Check Not Forms!frmEditor!uxReviewAccept.Enabled And InStr(Forms!frmEditor!uxReviewAccept.ControlTipText, "Stale review") > 0, "Stale action not visibly disabled"
     Check Not UXHeaderReview("Accept", "Cannot accept stale values"), "Stale route accepted"
-    Check InStr(Forms!frmEditor!uxError.Caption, "Needs restart") > 0, "Stale next action missing"
+    ' The refusal and its next action show in the review panel the header action opened.
+    Check UXToolsView() = "Review" And InStr(UXReviewForm()!lblStatus.Caption, "start a new route for current values") > 0, "Stale next action missing"
     Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Rejected action changed route"
     Check UXResizeEditor(9000, 7000), "Compact layout failed"
-    For Each c In Forms!frmEditor.Controls
-        If Left$(c.Name, 8) = "uxReview" Then Check c.Visible And c.Left + c.Width < IIf(UXFixedEnabled(), Forms!frmEditor.Width, 9000), "Header clipped: " & c.Name
+    For Each name In Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
+        Set c = Forms!frmEditor.Controls(name)
+        Check c.Visible And c.Left + c.Width < IIf(UXFixedEnabled(), Forms!frmEditor.Width, 9000), "Header clipped: " & c.Name
     Next
     TestUXHeaderReview = "PASS: " & n & " header review assertions": Exit Function
 Failed:

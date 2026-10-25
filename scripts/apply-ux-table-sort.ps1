@@ -1,7 +1,9 @@
 . (Join-Path $PSScriptRoot 'access-properties.ps1')
 if(-not $script:swiftManagedBuild){foreach($m in @('modTableSort','modUXTraitGrid','modUXSeniorTable','modUXViewport')){$app.LoadFromText(5,$m,(Join-Path $root ('src/'+$m+'.bas')))}}
 $coverage=@()
-foreach($screen in @($app.CurrentProject.AllForms|ForEach-Object {$_.Name})){
+#Retired forms are removed later in the build; leave them out of the coverage record.
+$retired=@($swiftBuildPlan.Manifest.retiredForms.PSObject.Properties.Name)
+foreach($screen in @($app.CurrentProject.AllForms|ForEach-Object {$_.Name}|Where-Object {$retired -notcontains $_})){
  $app.DoCmd.OpenForm($screen,1);$f=$app.Forms.Item($screen)
  $lists=@($f.Controls|Where-Object {$_.ControlType -eq 110 -and $_.ColumnCount -gt 1})
  $custom=$false

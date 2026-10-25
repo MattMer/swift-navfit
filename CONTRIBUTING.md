@@ -52,12 +52,17 @@ Further focused runners that pass on a fresh 0.44.0-dev blank with only
 
 | Area | Runners |
 | --- | --- |
-| Report editor and pages | test-page-switch, test-page-width, test-pending-cells, test-navigation-context, test-visual, test-ux-date-pickers, test-ux-block-tools |
+| Report editor and pages | test-page-switch, test-page-width, test-pending-cells, test-navigation-context, test-visual, test-ux-date-pickers, test-ux-block-tools, test-ux-shell, test-ux-surface, test-narrative-layout, test-ux-admin-feedback, test-ux-help |
 | Traits and narratives | test-trait-events, test-trait-queue, test-trait-summary, test-narratives |
 | Revisions, defaults and readiness | test-revision-compare, test-recursive-defaults, test-ux-global-defaults, test-readiness, test-rules |
-| Groups, directory and lists | test-group-correctness, test-rs-directory, test-table-sort, test-ux-grid-reads, test-ux-work-refresh |
-| Import and dates | test-bulk-workspace-import, test-native-dates, test-pdf-counseling-status, test-engine-import (about 16 minutes; includes a legacy-VBA benchmark) |
+| Groups, directory and lists | test-group-correctness, test-rs-directory, test-table-sort, test-ux-grid-reads, test-ux-work-refresh, test-ux-member-grid, test-ux-prior-grid, test-o3-cells, test-ux-group-reads, verify-table-sort-bindings |
+| Review, notes and My Work | test-routing, test-ux-review-return, test-ux-header-review, test-report-notes, test-ux-work-inclusion |
+| Import, export and dates | test-ux-export-names, test-bulk-workspace-import, test-native-dates, test-pdf-counseling-status, test-engine-import (about 16 minutes; includes a legacy-VBA benchmark) |
 | Feedback and resources | test-ux-feedback, test-ux-navywriter, test-ux-resource-tools |
+| Build pipeline | test-build-finalization, test-build-property-bindings |
+
+verify-table-sort-bindings reads the `build/r115-sort-coverage.json` written by
+the most recent build in the same checkout, so run it after building that blank.
 
 The trait suite was restored and modernized: it preserves current service,
 rollback and recovery checks without retired checklist UI or a duplicated

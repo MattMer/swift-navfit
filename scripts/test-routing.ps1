@@ -12,6 +12,10 @@ try {
     $result=$app.Eval('TestRouting()')
     if(-not $result.StartsWith('PASS:')) {throw $result}
     $app.CloseCurrentDatabase(); $app.OpenCurrentDatabase($scratch,$true)
+    #A reopened workspace asks for this session's contributor before any change (C03).
+    if(-not $app.Eval('CurrentProject.AllForms("frmContributorStart").IsLoaded') -or $app.Eval('HasActiveContributor()')){throw 'Reopen did not ask for a contributor'}
+    $app.Forms.Item('frmContributorStart').Controls.Item('cboContributor').Value=[int]$app.Eval('DLookup("ActiveProfileID","Workspace","WorkspaceID=1")')
+    if(-not $app.Eval('AcceptContributorStartup()')){throw 'Contributor choice after reopen failed'}
     if(-not $app.Eval('OpenMyWork()')) {throw 'My Work reopen failed'}
     $db=$app.CurrentDb(); $counts=@{}
     foreach($name in @('ReviewTask','ReviewTaskEvent')) {$r=$db.OpenRecordset('SELECT Count(*) FROM ['+$name+']'); $counts[$name]=$r.Fields.Item(0).Value; $r.Close(); if($counts[$name] -eq 0){throw 'Routing did not persist'}}

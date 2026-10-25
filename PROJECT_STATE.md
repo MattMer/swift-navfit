@@ -162,8 +162,6 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   PDF preview popup visuals.
 - No one has tested on a target (Navy-managed) workstation.
 - Legacy harness gaps that reproduce on unchanged baselines:
-  - `GroupReadHarness` stops after 153 checks because its deliberate cache
-    divergence is now correctly rejected.
   - RSCompletion's `Draft notes hidden` assertion fails, so that suite runs
     with `-AccountingOnly`.
   - The decision, report-people and party-name runners use `-PersistenceOnly`

@@ -29,9 +29,11 @@ Public Function TestReportNotes() As String
     SwitchContributor other
     Check RejectPost(guid, version), "Another contributor posted draft"
     SwitchContributor author
+    ' Posted notes are report messages; the compatibility result is the negated MessageID.
     note = PostReportNote(guid, version)
-    Check DLookup("NoteText", "ReportNote", "NoteID=" & note) = "Revised local explanation", "Posted body changed"
-    Check DLookup("ContributorName", "ReportNote", "NoteID=" & note) = "First contributor", "Attribution incorrect"
+    Check note < 0, "Post returned a legacy NoteID"
+    Check Nz(DLookup("MessageBody", "ReportMessage", "MessageID=" & -note), "") = "Revised local explanation", "Posted body changed"
+    Check Nz(DLookup("ContributorName", "ReportMessage", "MessageID=" & -note), "") = "First contributor", "Attribution incorrect"
     Check DCount("*", "ReportNoteDraft") = 0, "Posted checkpoint not cleared"
     Check CurrentRevision(id) = rev, "Note posting changed report revision"
     Check RejectPost(guid, version), "Posted note duplicated"
@@ -43,7 +45,7 @@ Public Function TestReportNotes() As String
     Check DLookup("NoteText", "ReportNoteDraft", "DraftGuid=" & QuoteSQL(guid)) = "Recovery survives editor shutdown", "Recovery body missing"
     CurrentDb.Execute "UPDATE Report SET IsArchived=True WHERE ReportID=" & id, dbFailOnError
     Check RejectPost(guid, version), "Archived report accepted new note"
-    Check DCount("*", "ReportNote", "ReportID=" & id) = 2, "Rejected actions changed committed entries"
+    Check DCount("*", "ReportNote", "ReportID=" & id) = 1 And DCount("*", "ReportMessage", "ReportID=" & id) = 1, "Rejected actions changed committed entries"
     Check DLookup("DraftNotes", "Report", "ReportID=" & id) = "Original legacy notes", "Legacy saved field changed"
     TestReportNotes = "PASS: " & n & " attributed notes/checkpoint assertions": Exit Function
 Failed:
