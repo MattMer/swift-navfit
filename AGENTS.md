@@ -141,9 +141,9 @@ the checks you will run. Keep it brief.
 ## Cleanup
 
 Deleting confirmed-obsolete tracked files is the normal path, and git history is
-how you recover them. [PROPOSED_PURGE/](PROPOSED_PURGE/) is a review area for
-uncertain, untracked or binary items: record each item's original path, reason
-and hash, and never run anything from inside it.
+how you recover them. For uncertain, untracked or binary items, list each item's
+path, reason and hash for the user and ask before deleting. Don't keep a holding
+folder in the repository.
 
 ## Releases (explicit request only)
 

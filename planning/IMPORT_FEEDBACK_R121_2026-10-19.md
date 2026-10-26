@@ -1,9 +1,0 @@
-# Import feedback and bulk selection - r121b
-
-Swift workspace import now paints a timestamped activity log immediately after Import is pressed, then reports source/destination checks, table copy counts, every 100 copied/verified records in larger tables, relationship restoration, compatibility finalization, and commit or failure. The current stage also appears in the Access status bar. The log keeps its most recent activity if it becomes large. The operation remains synchronous; users should keep Access open until the final result. It does not report a fabricated percentage.
-
-Import and Close are disabled while transferring, the native form unload is guarded, and a second Apply is rejected. Progress repaints without DoEvents so unrelated UI handlers cannot execute inside the import transaction. Logging is inactive for non-UI migrations, and the migration engine calls its optional display helper dynamically so retained older templates remain usable. Existing exact-field verification, source hash checks, blank-target guard and transaction rollback remain authoritative. The screen restores Close after either success or failure and offers retry after failure.
-
-The NAVFIT98A group import screen now has Select all for import and Clear selection. All listed groups and their reports are selected together. Both actions invalidate the previous preview and disable Apply. A fresh preview still checks source fingerprints, prior imports and unresolved/incompatible paygrades; selection does not fabricate missing grades or bypass validation.
-
-Native verification is recorded in IMPORT_FEEDBACK_R121_VERIFICATION.json. Physical visual checks are deferred at the user's request. Earlier releases and the original populated r116 workspace are preserved. Intermediate r121 artifacts were not published; r121b is the current verified delivery.

@@ -196,7 +196,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
 
 - Release-specific binary assemblers and the duplicate preview builder. Use the
   manifest build and [build-ux-admin-demo.ps1](scripts/build-ux-admin-demo.ps1).
-  Quarantined items are listed in [PROPOSED_PURGE/README.md](PROPOSED_PURGE/README.md).
+  The retired items are in git history.
 - Mandatory conversation resolve/reopen. Retired standalone help/review/checklist
   screens and the Reports Folder-tools screen. Folder data and services remain.
 - Treating browser prototype behavior as a production implementation.

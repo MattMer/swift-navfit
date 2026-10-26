@@ -702,8 +702,8 @@ release. Create a Demo with [build-ux-admin-demo.ps1](../scripts/build-ux-admin-
 using a current blank template and new output path; see the
 [Demo build guide](../planning/UX_DEMO_BUILD_GUIDE.md). This builder verifies the
 blank, seeds synthetic data and runs focused Demo/startup checks. Other feature
-suites remain change-specific; the duplicate build-preview entry point is held
-in PROPOSED_PURGE. Record historical fixture limitations: blank old fixtures do not
+suites remain change-specific; the duplicate build-preview entry point was
+retired. Record historical fixture limitations: blank old fixtures do not
 prove populated historical workflows. Logs/receipts are in `build/workflow`.
 Physical display, accessibility and printed fit require separate acceptance.
 

@@ -70,9 +70,8 @@ rollback and recovery checks without retired checklist UI or a duplicated
 catalogue loop. Current report-tools/narrative/cleanup harnesses cover long
 messages, snippet pending/save behavior, failed folder batches and journal state.
 The standalone review-comment suite, historical foundations runner and old tools
-bundle are held in [PROPOSED_PURGE](PROPOSED_PURGE/README.md). Their retired UI,
-resolve/reopen and source-fixture assumptions are not current acceptance gates;
-the originals remain available as evidence. Current adapter/engine suites retain
+bundle were retired; git history keeps them. Their retired UI, resolve/reopen and
+source-fixture assumptions are not current acceptance gates. Current adapter/engine suites retain
 native import-capture coverage; this consolidation does not claim every legacy
 API/fixture assertion was rerun. The provenance viewer owns a synthetic fixture.
 Legacy benchmark fixtures may still be active test inputs; trace callers before removal.
