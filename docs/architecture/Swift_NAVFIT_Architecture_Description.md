@@ -74,6 +74,7 @@ The full AV-1 is [views/AV-1.md](views/AV-1.md).
 | Historical import (every prior schema) | Every schema 1–34 imports through the production path | `scripts/test-swift-data-import.ps1` |
 | Extended regression tier | All runners pass on the current build | `scripts/develop.ps1 -Action ExtendedTest` |
 | Printed fit of PDF output | Not yet performed | Backlog H01 |
+| DevSecOps practice | 52 activities done, 27 partial, 5 gaps, 14 command-owned, 20 not applicable | [DevSecOps alignment matrix](DevSecOps_Alignment.md) |
 
 #### Rationale for key decisions
 
@@ -187,4 +188,4 @@ Each view is a separate file under [views/](views/):
 
 - Formal DoDAF conformance (DM2/PES) isn't attempted (section 2.4).
 - Screen-reader acceptance and printed fit are not yet performed (section 1.3).
-- An SBOM, threat model and DevSecOps alignment matrix are backlog M10 steps 3–4.
+- The [DevSecOps alignment matrix](DevSecOps_Alignment.md) maps every guidebook activity to Swift's practice. Its five gaps (SBOM, dependency checking, threat model, manual security test of file imports, developmental cyber tests) are backlog M10 step 4.
