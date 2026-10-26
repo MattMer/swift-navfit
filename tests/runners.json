@@ -9,7 +9,7 @@
   {
    "name": "test-architecture-views",
    "area": "Build and source",
-   "tier": "extended"
+   "tier": "core"
   },
   {
    "name": "test-accessibility",
