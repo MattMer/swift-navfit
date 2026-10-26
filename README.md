@@ -86,15 +86,18 @@ Optional source links, such as NavyWriter, open an external website only when se
 
 ### Test builds for trying the current version
 
-The [**v0.46.0-dev pre-release**](https://github.com/MattMer/swift-navfit/releases/tag/v0.46.0-dev) has two files built from current source (app 0.46.0-dev, schema 35) for anyone helping test:
+The [**v0.47.0-dev pre-release**](https://github.com/MattMer/swift-navfit/releases/tag/v0.47.0-dev) has two files built from current source (app 0.47.0-dev, schema 35) for anyone helping test:
 
-- **Swift_NAVFIT_Demo_0.46.0-dev.accdb:** a workspace filled with synthetic members, reports and groups. Start here.
-- **Swift_NAVFIT_Blank_0.46.0-dev.accdb:** an empty workspace, for trying first-time setup.
+- **Swift_NAVFIT_Demo_0.47.0-dev.accdb:** a workspace filled with synthetic members, reports and groups. Start here.
+- **Swift_NAVFIT_Blank_0.47.0-dev.accdb:** an empty workspace, for trying first-time setup.
 
 To test:
 
 1. Download a file, keep the original, and open a copy in desktop Access. These are unsigned development builds: choose **Enable Content** when Access asks, then pick or add a contributor.
-2. Try what's new: the [midterm counseling tracker](docs/Swift_NAVFIT_User_Guide.md#85-track-midterm-counseling) (member history and **My Work → Counseling**) and [Mark signed](docs/Swift_NAVFIT_User_Guide.md#44-mark-a-report-signed) with the reopen-for-correction prompt and draft disposal.
+2. Try what's new:
+   - the [midterm counseling tracker](docs/Swift_NAVFIT_User_Guide.md#85-track-midterm-counseling): member history, **My Work → Counseling**, and blocks 30–31 filled when a report is created for the member;
+   - [Mark signed](docs/Swift_NAVFIT_User_Guide.md#44-mark-a-report-signed): per report, for a whole summary group, or by completing a group, with the reopen-for-correction prompt;
+   - the report message log in **Report tools → Notes and replies**, the Reports list's Rate column and rank filter, and the outlined blocks on the report pages.
 3. Report problems with the screen, what you clicked, what you expected, what happened and any error text. Never put real personnel data into a test build or a report.
 
 These test builds passed the standard development checks, but they are not a verified release: printed fit, Acrobat-free workstations, signing and accessibility are still untested. Don't use them for real reports yet.
@@ -108,7 +111,7 @@ Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2Z
 3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
 4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
 
-**Source and downloads can differ.** Current development source is **0.46.0-dev / schema 35**, matching the v0.46.0-dev test builds above. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged.
+**Source and downloads can differ.** Current development source is **0.47.0-dev / schema 35**, matching the v0.47.0-dev test builds above. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged.
 
 Development backup/restore now supports the current schema and retains ACCDB/ACCDE
 extensions, saved values and recovery checkpoints. Existing destinations and
