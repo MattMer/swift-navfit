@@ -15,7 +15,7 @@ Begin Form
     Bottom =13245
     Caption ="My Work - local review assignments"
     OnActivate ="=UXSortActivate(\"frmMyWork\")"
-    OnResize ="=UXHelpResize(\"frmMyWork\",\"UXWorkLayout()\")"
+    OnResize ="=UXHelpResize(\"frmMyWork\",\"UXResizeWorkspace(\"\"frmMyWork\"\")\")"
     OnLoad ="=UXLoadMyWork()"
     FilterOnLoad =0
     AllowLayoutView =0
@@ -1535,7 +1535,7 @@ Begin Form
                     BorderColor =13285543
                     Name ="lstWork"
                     RowSourceType ="Table/Query"
-                    ColumnWidths ="0;0;0;0;0;3000;1600;1700;1100;1500;2200"
+                    ColumnWidths ="0;0;0;0;0;2828;1515;1616;1010;1414;1717"
                     AfterUpdate ="=UXWorkSelection()"
                     OnDblClick ="=UXWorkOpen()"
                     FontName ="Segoe UI"

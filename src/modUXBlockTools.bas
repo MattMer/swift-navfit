@@ -1,6 +1,7 @@
 Attribute VB_Name = "modUXBlockTools"
 Option Explicit
 Private blockSection As Long
+Private laidOut As String, laidForm As Access.Form
 Public Function UXBlockRefresh() As Boolean
     Dim f As Access.Form, key As Variant
     Set f = Forms!frmUXBulk!uxBlocks.Form
@@ -53,10 +54,15 @@ Public Function UXBlockLayout(ByVal section As Long) As Boolean
         End If
     Next
     f.Width = usable + 300: f.Section(acDetail).Height = y + rowHeight + 200
+    Set laidForm = f: laidOut = section & "|" & kind & "|" & usable
     UXBlockLayout = True
 End Function
+' A resize reflows the fields only when the usable width (or section or report
+' type) changed; every reflow hides and repositions every field.
 Public Function UXBlockResize() As Boolean
-    If CurrentProject.AllForms("frmUXBulk").IsLoaded Then UXBlockResize = UXBlockLayout(blockSection)
+    If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
+    If laidForm Is Forms!frmUXBulk!uxBlocks.Form And laidOut = blockSection & "|" & Nz(Forms!frmUXBulk!uxKind, "EVAL") & "|" & (Forms!frmUXBulk!uxBlocks.Width - 700) Then UXBlockResize = True: Exit Function
+    UXBlockResize = UXBlockLayout(blockSection)
 End Function
 Public Function UXDefaultsStamp(ByVal groupID As Long) As String
     Dim r As DAO.Recordset, db As DAO.Database, result As String

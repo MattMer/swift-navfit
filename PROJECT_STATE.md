@@ -88,6 +88,15 @@ import and print-ready PDF output.
   - Report notes are one running message log per report (author and time,
     oldest first) with direct posting and no private drafts. Earlier replies and
     drafts remain stored and importable.
+- **Workspace screens** (Reports, Summary groups, My Work, Resources, Settings
+  and their siblings) resize through `UXResizeWorkspace`:
+  - Narrower than the design, everything scales, and below `UX_COMPACT_WIDTH`
+    the rail becomes a drop-down.
+  - Wider than the design, only lists, subforms, wide text boxes and wide
+    captions stretch, list columns keep their proportions, and content stops at
+    16,500 twips.
+  - Widths are capped at Access's 31,680-twip form limit.
+  - Pop-up dialogs stay resizable.
 - **Entry points:**
   - Startup runs [AutoExec.txt](src/AutoExec.txt) → `SwiftAppStartup` → setup or
     contributor choice → application shell.

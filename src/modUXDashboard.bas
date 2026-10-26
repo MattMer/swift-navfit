@@ -192,7 +192,6 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     If mode = "Notes" Then UXMyWorkNotes
     If mode = "Counseling" Then UXMyWorkCounseling
     If mode = "Assignments" Then Call UXLoadWorkQueue
-    Call UXWorkLayout
 End Function
 Public Function UXChooseAssignmentReport() As Boolean
     Dim id As Long

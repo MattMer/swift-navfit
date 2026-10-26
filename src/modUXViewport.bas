@@ -4,8 +4,17 @@ Private layouts As Object
 Private viewportBusy As Boolean
 Private viewportError As String
 Private layoutPasses As Long
-' Widest content area a workspace stretches to (twips right of the rail); wider
-' windows leave a right margin instead of over-long rows.
+' Workspace geometry, in twips. Controls left of UX_RAIL_EDGE belong to the
+' navigation rail; content starts at UX_CONTENT_LEFT (UX_COMPACT_LEFT when the
+' window is narrower than UX_COMPACT_WIDTH and the rail becomes a drop-down).
+' Content is designed UX_DESIGN_WIDTH wide and stretches to MAX_CONTENT_WIDTH;
+' wider windows leave a right margin instead of over-long rows.
+Public Const UX_RAIL_EDGE As Long = 2450
+Public Const UX_CONTENT_LEFT As Long = 2850
+Public Const UX_COMPACT_LEFT As Long = 250
+Public Const UX_COMPACT_WIDTH As Long = 12000
+Public Const UX_DESIGN_WIDTH As Long = 10450
+Private Const UX_RIGHT_MARGIN As Long = 350
 Private Const MAX_CONTENT_WIDTH As Long = 16500
 ' Access rejects form and control positions past 22 inches; a maximized window on
 ' a 2560-pixel or scaled 4K screen is wider than that.
@@ -74,7 +83,9 @@ Public Sub UXRestoreViewport(ByVal f As Access.Form)
         Set geometry = state("Geometry")
         For Each c In f.Controls
             If geometry.Exists(c.Name) Then
-                v = geometry(c.Name): c.Left = v(0): c.Top = v(1): c.Width = v(2): c.Height = v(3)
+                v = geometry(c.Name)
+                If c.ControlType = acListBox And c.Width <> v(2) Then UXScaleColumns c, c.Width, v(2)
+                c.Left = v(0): c.Top = v(1): c.Width = v(2): c.Height = v(3)
             End If
         Next
         f.Section(acDetail).Height = state("Height")
@@ -106,16 +117,29 @@ Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal e
             End If
         End If
     Next
-    x = v(0) - 2850: w = v(2)
+    x = v(0) - UX_CONTENT_LEFT: w = v(2)
     If total > 0 Then
         x = x + CLng(extra * before / total)
         If v(4) Then w = w + CLng(extra * v(2) / total)
     End If
 End Sub
+' Keep a list's columns in proportion when the list changes width. Screens set
+' their own column mixes (for example the Reports column views), so scale the
+' current widths rather than restoring design ones.
+Private Sub UXScaleColumns(ByVal c As Access.Control, ByVal oldWidth As Long, ByVal newWidth As Long)
+    Dim parts As Variant, i As Long, sizes As String
+    If oldWidth <= 0 Or Len(c.ColumnWidths) = 0 Then Exit Sub
+    parts = Split(c.ColumnWidths, ";")
+    For i = 0 To UBound(parts)
+        If i > 0 Then sizes = sizes & ";"
+        If Len(parts(i)) > 0 Then sizes = sizes & CLng(Val(parts(i)) * newWidth / oldWidth)
+    Next
+    c.ColumnWidths = sizes
+End Sub
 Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, state As Object, geometry As Object, old As Access.Form
     Dim width As Long, height As Long, left As Long, available As Long, baseWidth As Long, bottom As Long, ratio As Double, v As Variant, compact As Boolean
-    Dim x As Long, w As Long, painted As Boolean, extra As Long
+    Dim x As Long, w As Long, painted As Boolean, extra As Long, oldWidth As Long
     If viewportBusy Then Exit Function
     On Error GoTo Failed
     Set f = Forms(formName)
@@ -133,11 +157,11 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     End If
     If Not layouts.Exists(formName) Then
         Set state = CreateObject("Scripting.Dictionary"): Set geometry = CreateObject("Scripting.Dictionary")
-        baseWidth = 10450
+        baseWidth = UX_DESIGN_WIDTH
         For Each c In f.Controls
-            If c.Left >= 2450 And c.Name <> "cmdWindowHelp" And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
+            If c.Left >= UX_RAIL_EDGE And c.Name <> "cmdWindowHelp" And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
                 geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height, UXElastic(c))
-                If c.Visible And c.Left + c.Width - 2850 > baseWidth Then baseWidth = c.Left + c.Width - 2850
+                If c.Visible And c.Left + c.Width - UX_CONTENT_LEFT > baseWidth Then baseWidth = c.Left + c.Width - UX_CONTENT_LEFT
             End If
         Next
         state.Add "Form", f: state.Add "Geometry", geometry: state.Add "Width", baseWidth: state.Add "Height", f.Section(acDetail).Height
@@ -150,13 +174,14 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
             GoTo Finished
         End If
     End If
-    compact = (width < 12000): left = IIf(compact, 250, 2850): available = width - left - 350
+    compact = (width < UX_COMPACT_WIDTH): left = IIf(compact, UX_COMPACT_LEFT, UX_CONTENT_LEFT): available = width - left - UX_RIGHT_MARGIN
     ratio = available / state("Width")
     'Each geometry write repaints; hold painting until the whole pass is done.
     f.Painting = False: painted = True
     UXNavigationLayout f, compact, width
-    UXVisualSet f!uxContext, "Left", IIf(compact, 2950, 2850): UXVisualSet f!uxContext, "Top", 200
-    UXVisualSet f!uxContext, "Width", width - f!uxContext.Left - 350
+    'Compact: the context line follows the 2,500-twip navigation drop-down.
+    UXVisualSet f!uxContext, "Left", IIf(compact, UX_COMPACT_LEFT + 2700, UX_CONTENT_LEFT): UXVisualSet f!uxContext, "Top", 200
+    UXVisualSet f!uxContext, "Width", width - f!uxContext.Left - UX_RIGHT_MARGIN
     bottom = 0
     'Narrower than the design: scale everything. Wider: only elastic controls grow.
     If ratio > 1 Then extra = IIf(available > MAX_CONTENT_WIDTH, MAX_CONTENT_WIDTH, available) - state("Width")
@@ -167,11 +192,15 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
             If ratio > 1 Then
                 UXElasticPlace geometry, v, extra, x, w: x = x + left
             Else
-                x = left + CLng((v(0) - 2850) * ratio): w = CLng(v(2) * ratio)
+                x = left + CLng((v(0) - UX_CONTENT_LEFT) * ratio): w = CLng(v(2) * ratio)
                 If w < 200 Then w = 200
             End If
             If x + w > width - 250 Then w = width - 250 - x
+            'Scale list columns by the width Access actually applied, so a refused
+            'write never compounds the columns on the next pass.
+            oldWidth = c.Width
             UXVisualSet c, "Left", x: UXVisualSet c, "Width", w
+            If c.ControlType = acListBox And c.Width <> oldWidth Then UXScaleColumns c, oldWidth, c.Width
             UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3)
             If c.Visible And c.Top + c.Height > bottom Then bottom = c.Top + c.Height
         End If

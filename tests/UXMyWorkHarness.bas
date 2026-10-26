@@ -115,8 +115,9 @@ Public Function TestUXMyWork() As String
     f!lstWork = "Assignment:" & task: Call UXWorkSelection
     Check Not f!cmdAccept.Enabled, "Local approval assignment decision enabled"
     For Each width In Array(9000, 14000, 20000)
-        Check UXWorkLayout(CLng(width), 10000), "Inbox resize failed"
+        Check UXResizeWorkspace("frmMyWork", CLng(width), 10000), "Inbox resize failed"
         Check f!lstWork.Left + f!lstWork.Width < CLng(width), "Inbox horizontal bounds"
+        Check ColumnTotal(f!lstWork.ColumnWidths) <= f!lstWork.Width, "Inbox columns wider than the list at " & width & ": " & f!lstWork.ColumnWidths & " in " & f!lstWork.Width
     Next
     Call ArchiveDraft(id, True)
     Call CheckCount
@@ -142,4 +143,8 @@ Public Function TestUXMyWork() As String
     Exit Function
 Failed:
     TestUXMyWork = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+Private Function ColumnTotal(ByVal widths As String) As Long
+    Dim part As Variant
+    For Each part In Split(widths, ";"): ColumnTotal = ColumnTotal + Val(part): Next
 End Function

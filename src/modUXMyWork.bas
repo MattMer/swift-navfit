@@ -216,27 +216,6 @@ Public Function UXWorkBack() As Boolean
  Forms!frmMyWork.SetFocus
  UXWorkBack = True
 End Function
-Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal height As Long = 0) As Boolean
-    Dim f As Access.Form, size As Long, parts As Variant, part As Variant, columns As String
-    If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
-    Set f = Forms!frmMyWork
-    If Not UXHasControl(f, "lstWork") Then Exit Function
-    Call UXResizeWorkspace("frmMyWork", width, height)
-    If UXHasControl(f, "uxContributor") And IIf(width > 0, width, f.InsideWidth) < 12000 Then
-        f!uxContributorLabel.Left = f!lstWork.Left: f!uxContributorLabel.Top = f!lstWork.Top - 1550
-        f!uxContributorLabel.Width = f!lstWork.Width
-        f!uxContributor.Left = f!lstWork.Left: f!uxContributor.Top = f!lstWork.Top - 1200
-        f!uxContributor.Width = f!lstWork.Width
-        f!chkAll.Top = f!lstWork.Top - 700: f!lblAll.Top = f!chkAll.Top
-        f!uxWorkStatus.Top = f!lstWork.Top - 350: f!uxWorkStatus.Height = 300
-    End If
-    size = f!lstWork.Width - 350: columns = "0;0;0;0;0"
-    For Each part In Array(0.28, 0.15, 0.16, 0.1, 0.14, 0.17)
-        columns = columns & ";" & CLng(size * CDbl(part))
-    Next
-    If f!lstWork.ColumnWidths <> columns Then f!lstWork.ColumnWidths = columns
-    UXWorkLayout = True
-End Function
 'Counseling tab: members overdue, due this month, due within 60 days, needing a
 'rank/rate, or with a worksheet disposition due after detachment.
 Public Function UXMyWorkCounseling() As Boolean
