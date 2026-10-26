@@ -18,13 +18,50 @@ Public Function SwiftFailure(ByVal module As String, ByVal procedure As String, 
 End Function
 
 Public Function SwiftRedact(ByVal text As String) As String
-    Dim pattern As Object
-    Set pattern = CreateObject("VBScript.RegExp")
-    pattern.Global = True
+    Dim i As Long, last As Long, digits As Long, result As String
     'Identifiers may be compact, hyphenated or space-separated. Deliberately
     'redact long digit sequences too; logs do not need full personal identifiers.
-    pattern.pattern = "[0-9]([ -]?[0-9]){8,}"
-    SwiftRedact = pattern.Replace(text, "[identifier redacted]")
+    'A run is 9 or more digits, each optionally preceded by one space or hyphen.
+    'Plain VBA: Microsoft is retiring VBScript, which provided RegExp.
+    i = 1
+    Do While i <= Len(text)
+        If IsDigitAt(text, i) Then
+            last = DigitRunEnd(text, i, digits)
+            If digits >= 9 Then result = result & "[identifier redacted]" Else result = result & Mid$(text, i, last - i + 1)
+            i = last + 1
+        Else
+            result = result & Mid$(text, i, 1): i = i + 1
+        End If
+    Loop
+    SwiftRedact = result
+End Function
+' Longest run of consecutive digits in text (no separators).
+Public Function LongestDigitRun(ByVal text As String) As Long
+    Dim i As Long, run As Long
+    For i = 1 To Len(text)
+        If IsDigitAt(text, i) Then run = run + 1 Else run = 0
+        If run > LongestDigitRun Then LongestDigitRun = run
+    Next
+End Function
+Public Function IsDigitAt(ByVal text As String, ByVal i As Long) As Boolean
+    Dim c As String
+    If i < 1 Or i > Len(text) Then Exit Function
+    c = Mid$(text, i, 1): IsDigitAt = (c >= "0" And c <= "9")
+End Function
+' From a digit at start, the end of a run in which each further digit may follow
+' one space or hyphen; digits returns how many digits the run holds.
+Private Function DigitRunEnd(ByVal text As String, ByVal start As Long, ByRef digits As Long) As Long
+    Dim k As Long, c As String
+    digits = 1: k = start
+    Do
+        If IsDigitAt(text, k + 1) Then
+            k = k + 1: digits = digits + 1
+        Else
+            c = Mid$(text, k + 1, 1)
+            If (c = " " Or c = "-") And IsDigitAt(text, k + 2) Then k = k + 2: digits = digits + 1 Else Exit Do
+        End If
+    Loop
+    DigitRunEnd = k
 End Function
 
 Public Function SwiftFailureText(ByVal context As Object) As String

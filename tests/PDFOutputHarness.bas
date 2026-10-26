@@ -277,6 +277,10 @@ Public Function TestPDFBoundaries(ByVal root As String) As String
  selected(CStr(id)) = True: folder = PDFOutputGenerate(root, selected, "Individual PDFs", False)
  Check CurrentRevision(id) = before And DLookup("IsArchived", "Report", "ReportID=" & id), "Archived output changed state"
  Check PDFOutputSafePart("name1234567890suffix") = "nameIDsuffix", "Embedded identifier exposed in filename"
+ 'Plain-VBA matching (no VBScript); expected values are the former RegExp results.
+ Check PDFOutputSafePart("123 45 6789") = "ID" And PDFOutputSafePart("12345678901") = "ID1", "Spaced or eleven-digit identifier exposed"
+ Check PDFOutputSafePart("123-456-7890") = "123-456-7890", "Phone-shaped number changed"
+ Check PDFOutputSafePart("lpt1.txt") = "_lpt1.txt" And PDFOutputSafePart("COM0") = "COM0" And PDFOutputSafePart("Console") = "Console", "Device-name protection differs"
  Set other = CreateObject("Scripting.Dictionary")
  For Each key In Array("Last", "First", "Middle", "Guid"): other(CStr(key)) = seed(key): Next
  seed("Last") = "SAME": seed("First") = "ALPHA": seed("Middle") = "A": seed("Guid") = "A"

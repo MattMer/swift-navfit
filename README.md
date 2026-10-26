@@ -101,90 +101,40 @@ For command reviewers, the ISSM and anyone assessing Swift NAVFIT for use:
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-### Test builds for trying the current version
+### Current release: 0.49.0
 
-The [**v0.48.0-dev pre-release**](https://github.com/MattMer/swift-navfit/releases/tag/v0.48.0-dev) has two files built from current source (app 0.48.0-dev, schema 35) for anyone helping test:
+[**Swift NAVFIT 0.49.0**](https://github.com/MattMer/swift-navfit/releases/tag/v0.49.0) (schema 35) passed the full release gate on 26 October 2026. The release page lists each file's SHA-256 hash.
 
-- **Swift_NAVFIT_Demo_0.48.0-dev.accdb:** a workspace filled with synthetic members, reports and groups. Start here.
-- **Swift_NAVFIT_Blank_0.48.0-dev.accdb:** an empty workspace, for trying first-time setup.
+- **Swift_NAVFIT_Blank_0.49.0.accdb:** an empty workspace for a command. Start real work here.
+- **Swift_NAVFIT_Demo_0.49.0.accdb:** synthetic members, reports and groups for practice. Never put real data in it.
 
-To test:
+> **Four acceptance checks are still untested:**
+> 1. printed fit against the official forms;
+> 2. screen-reader (NVDA/JAWS) use;
+> 3. a workstation without Adobe Acrobat;
+> 4. a Navy-managed workstation under its normal Office policy.
+>
+> The files are also unsigned: choose **Enable Content** when Access asks.
 
-1. Download a file, keep the original, and open a copy in desktop Access. These are unsigned development builds: choose **Enable Content** when Access asks, then pick or add a contributor.
-2. Try what's new:
-   - the [midterm counseling tracker](docs/Swift_NAVFIT_User_Guide.md#85-track-midterm-counseling): member history, **My Work → Counseling**, and blocks 30–31 filled when a report is created for the member;
-   - [Mark signed](docs/Swift_NAVFIT_User_Guide.md#44-mark-a-report-signed): per report, for a whole summary group, or by completing a group, with the reopen-for-correction prompt;
-   - the report message log in **Report tools → Notes and replies**, the Reports list's Rate column and rank filter, and the outlined blocks on the report pages;
-   - [accessibility](docs/Swift_NAVFIT_User_Guide.md#34-accessibility): every field has a screen-reader name, and Swift follows Windows contrast themes;
-   - window resizing: lists widen on large screens while buttons keep their size, and very wide or maximized windows no longer freeze Access.
-3. Report problems with the screen, what you clicked, what you expected, what happened and any error text. Never put real personnel data into a test build or a report.
+To start:
 
-These test builds passed the standard development checks, but they are not a verified release: printed fit, Acrobat-free workstations, signing and screen-reader use are still untested. Don't use them for real reports yet.
+1. Download the Blank (or the Demo to practice), keep the original, and open a copy in desktop Access. Choose **Enable Content**.
+2. Complete command and contributor setup. Swift asks you to [choose your contributor at every launch](docs/Contributor_Startup.md).
+3. Create or select a summary group, add members and reports, and use My Work for local review. The top-right **?** opens help for the current window, and the [user guide](docs/Swift_NAVFIT_User_Guide.md) covers every procedure.
+4. **Upgrading from an earlier Swift workspace:**
+   1. Open a copy of the new Blank.
+   2. Choose **Settings & Help → Import data from a previous Swift NAVFIT version**. Every earlier schema imports, and every value is verified before commit.
+   3. Close and reopen the workspace.
 
-### Last verified release
+   Never overwrite an existing workspace with a Blank.
 
-Current verified r128 files: [Blank](https://drive.google.com/file/d/17YWFTI4N2ZbDG04K-qAddWQz7bEM1kjO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/10NEFdhRhJQ9xC_baxNifrRgs4SR4noUg/view?usp=drivesdk), app 0.27.1-dev / schema 27. Every initialized launch now requires an explicit contributor choice or add-and-continue. See the [startup procedure](docs/Contributor_Startup.md) and [r128 verification scope](planning/CONTRIBUTOR_STARTUP_R128_2026-10-21.md). Current-schema transfer/rollback checks pass; historical-output retesting was waived by the user for this delivery. Reviewed duplicate merging and local PDF extraction remain available.
+### Development pre-releases
 
-1. Choose a blank workspace for a new command, or a synthetic demo for practice, from the [available releases](https://github.com/MattMer/swift-navfit/releases).
-2. Keep a working copy and open it in desktop Access. Complete command and contributor setup. Current source asks you to [choose your contributor at every launch](docs/Contributor_Startup.md).
-3. Create or select a summary group, add members/reports, and use My Work for local review. The top-right **?** opens help for the current window.
-4. To carry an older Swift workspace forward, open a **new blank build** and choose **Import data from a previous Swift NAVFIT version**. Preview the source, import, then close and reopen the destination. Never overwrite an existing workspace with a blank distribution.
+Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-navfit/releases) are test builds of work in progress. They aren't verified releases.
 
-**Source and downloads can differ.** Current development source is **0.48.0-dev / schema 35**, matching the v0.48.0-dev test builds above. The earlier `v0.29.0-dev` tag and published r128 downloads remain unchanged.
+### Earlier releases
 
-Development backup/restore now supports the current schema and retains ACCDB/ACCDE
-extensions, saved values and recovery checkpoints. Existing destinations and
-verification files are preserved. Cancelling an import/return preview rejects a
-stale live token instead of deleting another contributor's or a newer saved preview.
-Workspace-import previews require Resume after reopening. My Work avoids a redundant
-return refresh, and native export failures retain the original error, separate
-cleanup details and whether files were already published.
-PDF imports and NAVFIT returns also distinguish committed data from rollback or
-an uncertain outcome. Finalization errors preserve saved data and prevent accidental
-re-Apply. Members/My Work checks require the critical controls and action bindings.
-Workspace import distinguishes a confirmed rollback from a failure after data was
-committed. A committed import with a finalization error requires closing/reopening
-the workspace and disables re-Apply. Import/return/PDF screens also have stronger
-required-control and action-binding checks.
-
-H01 development adds **Create PDF** in a report and **Preview / create PDFs** in
-a summary group. Choose saved values or captured current drafts, a protected export
-folder, and combined, individual or Both output. **Preview printed pages** opens
-Access print preview before generation. Group packets put the summary first, then
-reports alphabetically by last name, with each report's additional pages together.
-Findings, incomplete values and report status do not block output. Overflow continues
-on labelled pages; a single-line value that cannot fit is marked `*`, with its full
-value on an additional page. Export creates a new dated folder and preserves pending edits;
-it does not sign or approve reports. Fields without stored source values remain
-blank. Physical print acceptance and Acrobat-absent workstation testing are pending;
-the existing published downloads do not yet contain this feature.
-
-Chief reports now have three authored performance-comment entries for each trait
-in blocks 33–39, saved independently of the selected rating. PDF output separates
-these comments from the catalogue grade explanation and boxed numeric mark, and
-uses field-specific typography and measured wrapping. The native renderer's
-trait-34 grade-4/5 six-point fallback for the template's 6.5-point wording remains
-a documented acceptance difference; see [current scope](planning/PROJECT_STATE_HISTORY.md#h01-chief-comments-and-print-fidelity-corrections).
-
-M02 adds **Resume saved preview** and **Cancel saved preview** to returned-report,
-structured-PDF and workspace imports. Reviewed choices survive resets/restarts;
-Resume rechecks the source and target before showing them again. Apply remains
-explicit, and stale inputs require a fresh preview. Closing retains the saved
-preview; Cancel removes it without changing report data.
-
-M03 batches folder, directory-history and group/RSCA reads while retaining live
-write checks and the same displayed values. This is a development performance
-change; the published downloads remain unchanged.
-
-Current development implements backlog C05–C10:
-
-- Relational summary-group completion and RSCA accounting, authoritative saved revisions, and a versioned field catalogue with typed dates and explicit unknown/conflicting legacy states.
-- A consistent audit timeline with stable event identities and operation correlation, while retaining domain histories and guarded undo. Current notes/replies use one conversation service; legacy history and private drafts remain preserved.
-- One workspace navigation list and direct generation of current report tools, preserving pending edits, contextual help, required context hosts and fixed Front/Back geometry.
-
-The fresh development build passes compile/reopen, installed-source/binding verification, blank-data checks and the standard development suite. Another 1,988 focused assertions and actual schema-21–29 imports pass, including exact original-field verification, source hashes, late rollback/retry and reopen. Schemas 1–20 were not retested; existing UI verification gaps and physical/accessibility/printing acceptance remain separate. See [current implementation and verification scope](planning/PROJECT_STATE_HISTORY.md#c08c10-audit-conversations-and-navigation) and the [producer/consumer and navigation audit](planning/CONSOLIDATION_PLAN.md#c08c10-producer-consumer-and-navigation-audit).
-
-The latest local demo adds a group with **zero member-report findings** and another with **three deliberate report issues**. Both retain roster-completeness and provisional-capacity reminders. Recent development also adds wider Front/Back viewing areas, contextual help, consistent colors, and faster page switching; see [recent changes](planning/RECENT_DEVELOPMENT.md).
+r128 (app 0.27.1-dev, schema 27) remains available: [Blank](https://drive.google.com/file/d/17YWFTI4N2ZbDG04K-qAddWQz7bEM1kjO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/10NEFdhRhJQ9xC_baxNifrRgs4SR4noUg/view?usp=drivesdk). Its workspaces import into 0.49.0.
 
 ## Important boundaries
 

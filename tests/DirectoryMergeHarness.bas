@@ -56,6 +56,7 @@ Public Function TestDirectoryMerge() As String
     c = SaveDirectoryMember(0, 0, "Taylor Morgan", "MORGAN, TAYLOR", "IT2", "000000006")
     Check a <> b And b <> c, "Surname auto-merged people"
     Check DirectorySurname("Casey O'Neil", "O'NEIL, CASEY") = DirectorySurname("Casey Oneil", "ONEIL, CASEY"), "Surname normalization"
+    Check LongestDigitRun("ab1234567890") = 10 And LongestDigitRun("12-345") = 3 And LongestDigitRun("") = 0, "Digit run length"
     Check RejectPreview(b, c), "Conflicting profile SSNs accepted"
     Check RejectPreview(b, a), "SSN-owning source lost survivor preference"
     Check RejectPreview(a, a) And RejectPreview(a, 999999), "Invalid pair accepted"
@@ -89,7 +90,9 @@ Public Function TestDirectoryMerge() As String
     DirectoryCreationContext 0
     db.Execute "UPDATE Report SET MemberDoDID='0000000002' WHERE ReportID=" & otherReport, dbFailOnError
     Check RejectPreview(a, b), "Conflicting report DoD IDs accepted"
-    db.Execute "UPDATE Report SET MemberDoDID=Null WHERE ReportID=" & otherReport, dbFailOnError
+    'Restore both injected cache values: a cache that disagrees with the saved
+    'revision is (correctly) refused by workspace import in the release gate.
+    db.Execute "UPDATE Report SET MemberDoDID=Null WHERE ReportID IN (" & report & "," & otherReport & ")", dbFailOnError
     db.Execute "UPDATE Report SET MemberSSN='000000006' WHERE ReportID=" & report, dbFailOnError
     Check RejectPreview(a, b), "Conflicting linked report SSN accepted"
     db.Execute "UPDATE Report SET MemberSSN=Null WHERE ReportID=" & report, dbFailOnError

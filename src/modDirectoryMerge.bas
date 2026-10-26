@@ -4,7 +4,7 @@ Option Explicit
 
 'Candidate signal only. ReportName is Last, First; display names are First Last.
 Public Function DirectorySurname(ByVal fullName As Variant, ByVal reportName As Variant) As String
-    Dim s As String, pos As Long, re As Object
+    Dim s As String, pos As Long
     s = Trim$(Nz(reportName, "")): pos = InStr(s, ",")
     If pos > 0 Then
         s = Left$(s, pos - 1)
@@ -12,8 +12,7 @@ Public Function DirectorySurname(ByVal fullName As Variant, ByVal reportName As 
         s = Trim$(Nz(fullName, "")): pos = InStrRev(s, " ")
         If pos > 0 Then s = Mid$(s, pos + 1)
     End If
-    Set re = CreateObject("VBScript.RegExp"): re.Global = True: re.Pattern = "[ .'-]"
-    DirectorySurname = UCase$(re.Replace(s, ""))
+    DirectorySurname = UCase$(Replace(Replace(Replace(Replace(s, " ", ""), ".", ""), "'", ""), "-", ""))
 End Function
 
 Public Function DirectoryMergeStamp(ByVal sourceID As Long, ByVal targetID As Long) As String
@@ -121,12 +120,11 @@ End Sub
 
 Public Function ApplyDirectoryMerge(ByVal sourceID As Long, ByVal targetID As Long, ByVal expectedStamp As String, ByVal reason As String) As Long
     Dim db As DAO.Database, w As DAO.Workspace, r As DAO.Recordset, parent As DAO.Recordset
-    Dim trans As Boolean, actor As Long, operation As Long, id As Long, failure As Long, message As String, re As Object
+    Dim trans As Boolean, actor As Long, operation As Long, id As Long, failure As Long, message As String
     On Error GoTo Failed
     Call MergeEditorGuard: actor = MajorAuthor(): reason = Trim$(reason)
     If Len(reason) = 0 Or Len(reason) > 255 Then Err.Raise vbObjectError + 9110, "ApplyDirectoryMerge", "Enter a review reason of 1 to 255 characters. Do not enter identifiers."
-    Set re = CreateObject("VBScript.RegExp"): re.Pattern = "[0-9]{9,}": re.Global = True
-    If re.Test(Replace(Replace(Replace(reason, "-", ""), " ", ""), ".", "")) Then Err.Raise vbObjectError + 9111, "ApplyDirectoryMerge", "Keep SSNs and DoD IDs out of the review reason."
+    If LongestDigitRun(Replace(Replace(Replace(reason, "-", ""), " ", ""), ".", "")) >= 9 Then Err.Raise vbObjectError + 9111, "ApplyDirectoryMerge", "Keep SSNs and DoD IDs out of the review reason."
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter WHERE MemberID IN (" & sourceID & "," & targetID & ")", dbFailOnError
     If Len(expectedStamp) <> 64 Or PreviewDirectoryMerge(sourceID, targetID) <> expectedStamp Then Err.Raise vbObjectError + 9112, "ApplyDirectoryMerge", "The preview is stale. Preview the members and their links again."

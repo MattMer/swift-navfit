@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.48.0-dev | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest published Blank/Demo | r128 = 0.27.1-dev | 27 | Published 21 Oct 2026 to the Drive folder in [Development_Workflow.md](docs/Development_Workflow.md). Nothing newer is published. |
-| Latest source tag | `v0.29.0-dev` | 29 | Source checkpoint only; no binary published from it. |
+| Development source | 0.49.0 | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.49.0 | 35 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.49.0), 26 Oct 2026. Full release gate passed, including schemas 1–35. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.49.0` | 35 | The release commit. Earlier: `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the Drive folder in [Development_Workflow.md](docs/Development_Workflow.md). |
 
 ## Purpose and boundaries
 

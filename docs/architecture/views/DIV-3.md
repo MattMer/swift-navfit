@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 35, application 0.48.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 35, application 0.49.0. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 

@@ -2,16 +2,19 @@ param([Parameter(Mandatory=$true)][string]$TemplatePath,
 [string]$Schema20Path,
 [Alias("Schema21Path")][string]$SourceWorkspacePath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-if(-not $Schema20Path){$Schema20Path=Join-Path $root 'output/Swift_NAVFIT_0.21.0-major-foundations.accdb'}
 $folder=Join-Path $root ('build/tests/upgrade-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
-$source=Join-Path $folder 'synthetic schema20.accdb';Copy-Item -LiteralPath $Schema20Path -Destination $source
-$app=New-Object -ComObject Access.Application
-try{$app.AutomationSecurity=1;$app.OpenCurrentDatabase($source,$true)
-if($app.Eval('DLookup("SchemaVersion","AppMetadata")') -ne 20){throw 'Fixture must be a real schema-20 distribution'}
-$app.LoadFromText(5,'MajorHarness',(Join-Path $root 'tests/MajorHarness.bas'))
-$result=$app.Eval('TestMajor()');if(-not $result.StartsWith('PASS:')){throw $result}
-$app.DoCmd.DeleteObject(5,'MajorHarness');$app.CloseCurrentDatabase()
-}finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+$source=Join-Path $folder 'synthetic schema20.accdb'
+#The populated schema-20 source is generated from tests/historical-schemas by the
+#import matrix's own builder; old release files are not needed (AGENTS.md).
+if($Schema20Path){Copy-Item -LiteralPath $Schema20Path -Destination $source}
+else{
+ $made=& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'test-swift-data-import.ps1') -BuildPath $TemplatePath -Schemas 20 -FixturePath $source 2>&1
+ if($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $source)){throw ('Schema-20 fixture could not be generated: '+($made -join ' '))}
+}
+$checkDAO=New-Object -ComObject DAO.DBEngine.120;$checkDB=$checkDAO.OpenDatabase($source,$false,$true)
+try{$r=$checkDB.OpenRecordset('SELECT SchemaVersion FROM AppMetadata',4);$v=[int]$r.Fields.Item(0).Value;$r.Close();$reports=[int]$checkDB.OpenRecordset('SELECT Count(*) FROM Report',4).Fields.Item(0).Value}finally{$checkDB.Close()}
+if($v -ne 20 -or $reports -lt 1){throw 'Fixture must be a populated schema-20 workspace'}
+$result='populated synthetic schema-20 source with '+$reports+' reports'
 $migrationDAO=New-Object -ComObject DAO.DBEngine.120;$migrationDB=$migrationDAO.OpenDatabase([IO.Path]::GetFullPath($TemplatePath),$false,$true)
 try{$migrationRows=$migrationDB.OpenRecordset('SELECT SchemaVersion FROM AppMetadata',4);$targetSchema=[int]$migrationRows.Fields.Item(0).Value;$migrationRows.Close()}finally{$migrationDB.Close()}
 $sourceHash=(Get-FileHash -LiteralPath $source).Hash;$templateHash=(Get-FileHash -LiteralPath $TemplatePath).Hash

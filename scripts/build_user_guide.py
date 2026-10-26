@@ -44,14 +44,36 @@ def inline(text):
 
 
 class GuideDoc(SimpleDocTemplate):
+    """Records the page each chapter starts on, for the contents table."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.chapter_pages = []
+
     def afterFlowable(self, flowable):
-        if isinstance(flowable, Paragraph) and flowable.style.name == 'Chapter':
-            title = flowable.getPlainText()
-            self.canv.bookmarkPage('chapter' + str(self.page))
-            self.canv.addOutlineEntry(title, 'chapter' + str(self.page), 0)
+        if isinstance(flowable, Paragraph) and flowable.style.name in ('Chapter', 'Cover'):
+            self.chapter_pages.append(self.page)
+            if flowable.style.name == 'Chapter':
+                title = flowable.getPlainText()
+                self.canv.bookmarkPage('chapter' + str(self.page))
+                self.canv.addOutlineEntry(title, 'chapter' + str(self.page), 0)
 
 
 def build(source, output):
+    """Render twice: the first pass measures where each chapter starts, the
+    second fills those page numbers into the contents table."""
+    pages = render(source, output, None)
+    final = render(source, output, pages)
+    if final != pages:
+        raise RuntimeError(f'Chapter pages moved between passes: {pages} then {final}')
+    reader = PdfReader(output)
+    for n, page in enumerate(reader.pages):
+        if len(page.extract_text()) < 80:
+            raise RuntimeError(f'Unexpected sparse or blank page {n + 1}')
+    print(f'PASS: {len(reader.pages)} pages, {len(pages)} chapters on their own pages, '
+          f'contents page numbers and text extraction; {output}')
+
+
+def render(source, output, chapter_pages):
     regular, bold = font_setup()
     styles = {
         'body': ParagraphStyle('Body', fontName=regular, fontSize=9.5, leading=13.2,
@@ -68,8 +90,17 @@ def build(source, output):
         'step': ParagraphStyle('Step', fontName=regular, fontSize=9.5, leading=13.2,
                                textColor=INK, leftIndent=21, firstLineIndent=-19,
                                spaceAfter=7),
+        'bullet': ParagraphStyle('Bullet', fontName=regular, fontSize=9.5, leading=13.2,
+                                 textColor=INK, leftIndent=21, bulletIndent=8, spaceAfter=4),
+        'bullet2': ParagraphStyle('Bullet2', fontName=regular, fontSize=9.5, leading=13.2,
+                                  textColor=INK, leftIndent=39, bulletIndent=26, spaceAfter=4),
     }
-    chapters = source.read_text(encoding='utf-8').split('\n---\n')
+    text_source = source.read_text(encoding='utf-8')
+    version = re.search(r'^Version ([^|\n]+)\|', text_source, re.M)
+    product = re.search(r'^For Swift NAVFIT ([^|\n]+)\|', text_source, re.M)
+    header = 'Version ' + (version.group(1).strip() if version else '?') + \
+        ('  |  ' + product.group(1).strip() if product else '')
+    chapters = text_source.split('\n---\n')
     story = []
     width = 6.95 * inch
     for index, chapter in enumerate(chapters):
@@ -89,10 +120,17 @@ def build(source, output):
                     if not all(re.fullmatch(r'[:\- ]+', c) for c in cells):
                         rows.append(cells)
                     i += 1
-                if len(rows[0]) == 3:
+                if len(rows[0]) == 2:
+                    widths = [width * .32, width * .68]
+                elif len(rows[0]) == 3:
                     widths = [width * .12, width * .77, width * .11]
                 else:
-                    widths = [width * .32, width * .68]
+                    widths = [width / len(rows[0])] * len(rows[0])
+                if index == 1 and chapter_pages:
+                    #Contents: chapter N starts where the (N + 1)th rendered chapter does.
+                    for row in rows[1:]:
+                        if row[0].isdigit() and int(row[0]) + 1 < len(chapter_pages):
+                            row[2] = str(chapter_pages[int(row[0]) + 1])
                 formatted = []
                 for rn, row in enumerate(rows):
                     items = []
@@ -129,10 +167,19 @@ def build(source, output):
                 story.append(Paragraph(inline(line[3:]), styles['sub']))
             elif re.match(r'^\d+\. ', line):
                 story.append(Paragraph(inline(line), styles['step']))
+            elif re.match(r'^\s*- ', lines[i]):
+                nested = len(lines[i]) - len(lines[i].lstrip()) >= 2
+                text = [line[2:]]
+                while i + 1 < len(lines) and lines[i + 1].strip() and not re.match(
+                        r'^\s*(#|\||\d+\. |- )', lines[i + 1]):
+                    i += 1
+                    text.append(lines[i].strip())
+                story.append(Paragraph(inline(' '.join(text)), styles['bullet2' if nested else 'bullet'],
+                                       bulletText='\u2022'))
             else:
                 text = [line]
                 while i + 1 < len(lines) and lines[i + 1].strip() and not re.match(
-                        r'^(#|\||\d+\. )', lines[i + 1].strip()):
+                        r'^(#|\||\d+\. |- )', lines[i + 1].strip()):
                     i += 1
                     text.append(lines[i].strip())
                 story.append(Paragraph(inline(' '.join(text)), styles['body']))
@@ -148,7 +195,7 @@ def build(source, output):
         canvas.setFillColor(NAVY)
         canvas.drawString(doc.leftMargin, h - 32, 'SWIFT NAVFIT  /  USER GUIDE')
         canvas.setFont(regular, 8)
-        canvas.drawRightString(w - doc.rightMargin, h - 32, 'Version 1.1  |  r126')
+        canvas.drawRightString(w - doc.rightMargin, h - 32, header)
         canvas.setStrokeColor(colors.HexColor('#CCD8E0'))
         canvas.line(doc.leftMargin, 43, w - doc.rightMargin, 43)
         canvas.setFillColor(INK)
@@ -162,16 +209,11 @@ def build(source, output):
                    leftMargin=.775 * inch, rightMargin=.775 * inch,
                    topMargin=.78 * inch, bottomMargin=.76 * inch,
                    title='Swift NAVFIT User Guide', author='Swift NAVFIT Project',
-                   subject='Operating procedures for Swift NAVFIT r126')
+                   subject='Operating procedures for Swift NAVFIT ' + (product.group(1).strip() if product else ''))
     doc.build(story, onFirstPage=furniture, onLaterPages=furniture)
-    reader = PdfReader(output)
-    if len(reader.pages) != len(chapters):
-        raise RuntimeError(f'Expected {len(chapters)} pages; got {len(reader.pages)}. Review overflow and contents.')
-    for n, page in enumerate(reader.pages):
-        text = page.extract_text()
-        if len(text) < 200:
-            raise RuntimeError(f'Unexpected sparse or blank page {n + 1}')
-    print(f'PASS: {len(reader.pages)} pages, chapter boundaries and text extraction; {output}')
+    if len(doc.chapter_pages) != len(chapters):
+        raise RuntimeError(f'Expected {len(chapters)} titled sections; found {len(doc.chapter_pages)}')
+    return doc.chapter_pages
 
 
 if __name__ == '__main__':

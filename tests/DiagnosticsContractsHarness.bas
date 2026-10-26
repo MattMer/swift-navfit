@@ -48,6 +48,9 @@ Public Function TestDiagnosticsContracts() As String
     checks = 0
     Set context = SwiftFailure("TestModule", "TestProcedure", "Write", 12345, "Synthetic 123-45-6789 / 123456789 / 123 45 6789 / 1234567890", "Native source", "Active")
     Check context("Description") Like "Synthetic*", "Original description retained in owned memory"
+    'Plain-VBA redaction (no VBScript); expected values are the former RegExp results.
+    Check SwiftRedact("call 555 123 4567 now") = "call [identifier redacted] now" And SwiftRedact("1-2-3-4-5-6-7-8-9") = "[identifier redacted]", "Separated identifier not redacted"
+    Check SwiftRedact("12345678") = "12345678" And SwiftRedact("123  456789") = "123  456789", "Short or broken digit runs redacted"
     Check InStr(SwiftFailureText(context), "123-45-6789") = 0 And InStr(SwiftFailureText(context), "123456789") = 0 And InStr(SwiftFailureText(context), "123 45 6789") = 0, "Identifiers redacted from diagnostics"
     Set workspace = DBEngine.CreateWorkspace("SyntheticDiagnostics", "admin", "", dbUseJet)
     SwiftRollback workspace, context

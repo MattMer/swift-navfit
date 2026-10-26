@@ -47,10 +47,18 @@ Public Function PDFOutputText(ByVal fields As Object, ByVal key As String) As St
     If fields.Exists(key) Then PDFOutputText = Nz(fields(key), "")
 End Function
 Public Function PDFOutputSafePart(ByVal value As String, Optional ByVal limit As Long = 48) As String
-    Dim re As Object, i As Long, c As String, result As String
-    Set re = CreateObject("VBScript.RegExp"): re.Global = True
-    re.Pattern = "[0-9]{10}|[0-9]{3}[- ]?[0-9]{2}[- ]?[0-9]{4}"
-    value = re.Replace(value, "ID")
+    Dim i As Long, n As Long, c As String, result As String, masked As String
+    'SSN-shaped and ten-digit identifiers never reach a file name.
+    i = 1
+    Do While i <= Len(value)
+        n = IdentifierLength(value, i)
+        If n > 0 Then
+            masked = masked & "ID": i = i + n
+        Else
+            masked = masked & Mid$(value, i, 1): i = i + 1
+        End If
+    Loop
+    value = masked
     For i = 1 To Len(value)
         c = Mid$(value, i, 1)
         If AscW(c) >= 32 Or AscW(c) < 0 Then
@@ -64,9 +72,43 @@ Public Function PDFOutputSafePart(ByVal value As String, Optional ByVal limit As
         result = Left$(result, Len(result) - 1)
     Loop
     If result = "" Then result = "Unspecified"
-    re.Pattern = "^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$": re.IgnoreCase = True
-    If re.Test(result) Then result = "_" & result
+    If ReservedDeviceName(result) Then result = "_" & result
     PDFOutputSafePart = result
+End Function
+' Length of an identifier starting at i, else 0: ten digits, or 3-2-4 digits with
+' an optional space or hyphen between groups (the former VBScript pattern
+' "[0-9]{10}|[0-9]{3}[- ]?[0-9]{2}[- ]?[0-9]{4}").
+Private Function IdentifierLength(ByVal text As String, ByVal i As Long) As Long
+    Dim k As Long, part As Variant
+    If DigitsAt(text, i, 10) Then IdentifierLength = 10: Exit Function
+    k = i
+    For Each part In Array(3, 2, 4)
+        If part <> 3 And (Mid$(text, k, 1) = "-" Or Mid$(text, k, 1) = " ") Then
+            If DigitsAt(text, k + 1, CLng(part)) Then k = k + 1
+        End If
+        If Not DigitsAt(text, k, CLng(part)) Then Exit Function
+        k = k + part
+    Next
+    IdentifierLength = k - i
+End Function
+Private Function DigitsAt(ByVal text As String, ByVal i As Long, ByVal count As Long) As Boolean
+    Dim k As Long
+    If i < 1 Or i + count - 1 > Len(text) Then Exit Function
+    For k = i To i + count - 1
+        If Not IsDigitAt(text, k) Then Exit Function
+    Next
+    DigitsAt = True
+End Function
+' Windows reserved device names (CON, PRN, AUX, NUL, COM1-9, LPT1-9), with or without an extension.
+Private Function ReservedDeviceName(ByVal name As String) As Boolean
+    Dim base As String, dot As Long
+    dot = InStr(name, ".")
+    If dot > 0 Then base = UCase$(Left$(name, dot - 1)) Else base = UCase$(name)
+    Select Case base
+        Case "CON", "PRN", "AUX", "NUL": ReservedDeviceName = True
+        Case Else
+            If Len(base) = 4 And (Left$(base, 3) = "COM" Or Left$(base, 3) = "LPT") Then ReservedDeviceName = (Right$(base, 1) >= "1" And Right$(base, 1) <= "9")
+    End Select
 End Function
 Private Function ShortIdentity(ByVal identity As String) As String
     ShortIdentity = Left$(Replace(Replace(Replace(identity, "{", ""), "}", ""), "-", ""), 8)

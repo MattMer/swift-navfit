@@ -108,7 +108,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Build | REQUIRED | Done | `scripts/develop.ps1 -Action Build` from the manifest |
 | Build configuration control and audit | REQUIRED | Done | Manifest input hashes in each receipt; the input-drift guard; `test-build-plan` (inventory, dependencies, identity) |
 | Component test | REQUIRED | Done | As in Develop |
-| Dependency vulnerability checking | REQUIRED | Partial | The SBOM lists every run-time dependency; all are Windows or Office components patched through the Navy's Microsoft update channel. Watch item: `VBScript.RegExp` (VBScript deprecation). No automated vulnerability feed is checked. |
+| Dependency vulnerability checking | REQUIRED | Partial | The SBOM lists every run-time dependency; all are Windows or Office components patched through the Navy's Microsoft update channel. The VBScript dependency was removed in 0.49.0. No automated vulnerability feed is checked. |
 | Functional test | REQUIRED | Done | As in Develop |
 | Integration test | REQUIRED | Done | End-to-end workflow runners (`test-ux-workflows`, NAVFIT exchange, PDF output) |
 | Regression test (includes smoke tests) | REQUIRED | Done | `smoke-test`; BuildAndTest every build; ExtendedTest weekly and before every release |

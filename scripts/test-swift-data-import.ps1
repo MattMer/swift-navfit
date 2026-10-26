@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$Schemas,[string]$CurrentSchemaPath,[switch]$CurrentFixturesOnly,[switch]$SkipKeptReleases)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$Schemas,[string]$CurrentSchemaPath,[switch]$CurrentFixturesOnly,[switch]$SkipKeptReleases,[string]$FixturePath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
@@ -267,6 +267,15 @@ function CompareTransfer([string]$source,[string]$target){
  return $checked
 }
 
+#-FixturePath writes the seeded synthetic source for one historical schema and
+#stops, so other runners (test-workspace-upgrade) need no old release files.
+if($FixturePath){
+ if(@($requested).Count -ne 1 -or $requested[0] -ge $current){throw '-FixturePath needs exactly one historical schema in -Schemas'}
+ $entry=@($catalogue|Where-Object {$_.schema -eq $requested[0]})[0]
+ if(-not $entry){throw ('tests/historical-schemas has no definition for schema '+$requested[0])}
+ [void](NewFixture $requested[0] $entry $FixturePath);[void](SeedFixture $FixturePath $requested[0])
+ Write-Output ('PASS: synthetic schema '+$requested[0]+' source written to '+$FixturePath);return
+}
 $fixtures=[ordered]@{}
 foreach($schema in ($requested|Sort-Object -Unique)){
  if($schema -lt 1 -or $schema -gt $current){throw ('Schema '+$schema+' is outside 1-'+$current)}

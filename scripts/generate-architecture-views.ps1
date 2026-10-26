@@ -81,7 +81,6 @@ $purpose=@{
  'Scripting.Dictionary'='In-memory keyed collections'
  'Scripting.FileSystemObject'='File and folder checks'
  'Shell.Application'='Opens a generated PDF in the default viewer'
- 'VBScript.RegExp'='Pattern matching (name normalization, SSN masking, PDF text). Watch item: Microsoft has announced the deprecation of VBScript.'
 }
 foreach($k in $com.Keys){if(-not $purpose.ContainsKey($k)){throw ('Undocumented COM dependency '+$k+': add its purpose in generate-architecture-views.ps1')}}
 $images=@(Get-ChildItem (Join-Path $root 'src/pdf-templates') -Filter '*.png'|Sort-Object Name|ForEach-Object {[pscustomobject]@{Name=$_.Name;Hash=(Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()}})

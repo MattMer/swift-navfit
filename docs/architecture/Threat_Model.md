@@ -108,7 +108,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | --- | --- | --- |
 | 1 | Sign releases (section 5) | S2, T2, E1 |
 | 2 | *Done:* `test-malformed-imports` runs 55 malformed and control inputs against the PDF, RUAD CSV and NAVFIT98A importers. No importer defects were found. A CSV with invalid UTF-8 or a NUL character loads, with the bad bytes replaced, and is shown in the preview before anything is applied. | D1, T3, T4 |
-| 3 | Replace the 4 `VBScript.RegExp` uses before Microsoft disables VBScript by default ([SBOM](SBOM.md) watch item). One is the SSN filter in output file names (`PDFOutputSafePart`). | I2 and future availability |
+| 3 | *Done in 0.49.0:* the 4 `VBScript.RegExp` uses (including the SSN filter in output file names) are plain VBA. Before replacing them, a side-by-side run of old and new code on 20,000 random strings and 22 edge cases matched exactly; the harnesses keep the expected values. | I2 and future availability |
 | 4 | Set `ProhibitDTD` and `resolveExternals` explicitly on every XML parser, for consistency | E3 (defense in depth) |
 | 5 | Measure workspace growth on a large synthetic binder; document compact-and-repair and archiving guidance | D3 |
 | 6 | Optional: an integrity hash over each saved revision, checked on load, to detect direct table edits | T1 |
