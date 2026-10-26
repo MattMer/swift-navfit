@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.47.0-dev | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.48.0-dev | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest published Blank/Demo | r128 = 0.27.1-dev | 27 | Published 21 Oct 2026 to the Drive folder in [Development_Workflow.md](docs/Development_Workflow.md). Nothing newer is published. |
 | Latest source tag | `v0.29.0-dev` | 29 | Source checkpoint only; no binary published from it. |
 
