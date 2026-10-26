@@ -13,16 +13,15 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =14
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Confirm saved report member identity"
     OnActivate ="=UXVisualEvent(\"frmUXConfirmIdentity\",\"\")"
     OnResize ="=UXHelpResize(\"frmUXConfirmIdentity\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -252,25 +251,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4750
-                    Width =12600
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReason"
-                    Caption ="Reason for confirming this is the same person"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4750
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =5100
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -294,6 +274,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4750
+                            Width =12600
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReason"
+                            Caption ="Reason for confirming this is the same person"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4750
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =5100
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -391,25 +392,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3650
-                    Width =12600
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMember"
-                    Caption ="Directory member - choose the correct person"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3650
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =4000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -438,6 +420,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3650
+                            Width =12600
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMember"
+                            Caption ="Directory member - choose the correct person"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3650
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =4000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

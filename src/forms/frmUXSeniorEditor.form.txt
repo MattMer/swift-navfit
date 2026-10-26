@@ -11,8 +11,8 @@ Begin Form
     ScrollBars =0
     Width =15850
     ItemSuffix =71
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Reporting senior record"
     OnActivate ="=UXVisualEvent(\"frmUXSeniorEditor\",\"UXLoadContext()\")"
     OnResize ="=UXHelpResize(\"frmUXSeniorEditor\",\"UXResizeWorkspace(\"\"frmUXSeniorEditor\"\""
@@ -20,7 +20,6 @@ Begin Form
     OnLoad ="=RSLoadSeniorEditor()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -512,25 +511,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2866
-                    Top =1650
-                    Width =9954
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTitle"
-                    Caption ="Record name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =1650
-                    LayoutCachedWidth =12820
-                    LayoutCachedHeight =1950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -555,6 +535,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2866
+                            Top =1650
+                            Width =9954
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTitle"
+                            Caption ="Record name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =1650
+                            LayoutCachedWidth =12820
+                            LayoutCachedHeight =1950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -718,26 +719,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =3300
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorName"
-                    Caption ="Reporting Senior (Last, FI MI)"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =3750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =93
                     TextFontFamily =34
@@ -763,26 +744,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8001
-                    Top =3300
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorGrade"
-                    Caption ="Grade"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =3750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorName"
+                            Caption ="Reporting Senior (Last, FI MI)"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -809,26 +792,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4350
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorDesignator"
-                    Caption ="Desig"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =4800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8001
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorGrade"
+                            Caption ="Grade"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -855,26 +840,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8001
-                    Top =4350
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorTitle"
-                    Caption ="Title"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =4800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4350
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorDesignator"
+                            Caption ="Desig"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =4800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -901,26 +888,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =5400
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorUIC"
-                    Caption ="UIC"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =5850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8001
+                            Top =4350
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorTitle"
+                            Caption ="Title"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =4800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -947,26 +936,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8001
-                    Top =5400
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorSSN"
-                    Caption ="SSN"
-                    FontName ="Segoe UI"
-                    Tag ="SR:0"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =5850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =5400
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorUIC"
+                            Caption ="UIC"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =5850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -993,26 +984,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =2866
-                    Top =3300
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorAddress1"
-                    Caption ="Address line 1"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =3750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8001
+                            Top =5400
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorSSN"
+                            Caption ="SSN"
+                            FontName ="Segoe UI"
+                            Tag ="SR:0"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =5850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1039,26 +1032,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8001
-                    Top =3300
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorAddress2"
-                    Caption ="Address line 2"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =3750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2866
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorAddress1"
+                            Caption ="Address line 1"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1085,26 +1080,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4350
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorCity"
-                    Caption ="City"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =4800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8001
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorAddress2"
+                            Caption ="Address line 2"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1131,26 +1128,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8001
-                    Top =4350
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorState"
-                    Caption ="State / region"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =4800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4350
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorCity"
+                            Caption ="City"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =4800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1177,26 +1176,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =2866
-                    Top =5400
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorZip"
-                    Caption ="ZIP / postal code"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =5850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8001
+                            Top =4350
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorState"
+                            Caption ="State / region"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =4800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1223,26 +1224,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8001
-                    Top =5400
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorPhone"
-                    Caption ="Phone"
-                    FontName ="Segoe UI"
-                    Tag ="SR:1"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =5850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2866
+                            Top =5400
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorZip"
+                            Caption ="ZIP / postal code"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =5850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1269,26 +1272,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =2866
-                    Top =3300
-                    Width =4740
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRSReportingSeniorDSN"
-                    Caption ="DSN"
-                    FontName ="Segoe UI"
-                    Tag ="SR:2"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =3750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8001
+                            Top =5400
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorPhone"
+                            Caption ="Phone"
+                            FontName ="Segoe UI"
+                            Tag ="SR:1"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =5850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1315,6 +1320,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2866
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorDSN"
+                            Caption ="DSN"
+                            FontName ="Segoe UI"
+                            Tag ="SR:2"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1416,26 +1443,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =2866
-                    Top =3250
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboPaygrade"
-                    Caption ="Evaluated paygrade"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =3250
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =3550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     Visible = NotDefault
@@ -1464,26 +1471,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8001
-                    Top =3250
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtAsOf"
-                    Caption ="As-of date (YYYY-MM-DD)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =3250
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =3550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2866
+                            Top =3250
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboPaygrade"
+                            Caption ="Evaluated paygrade"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =3550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1511,26 +1520,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4050
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtRSCA"
-                    Caption ="Historical RSCA"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4050
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =4350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8001
+                            Top =3250
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtAsOf"
+                            Caption ="As-of date (YYYY-MM-DD)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =3550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1556,26 +1567,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =8001
-                    Top =4050
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtTraitCount"
-                    Caption ="Previous graded trait count (not reports)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =4050
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =4350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4050
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtRSCA"
+                            Caption ="Historical RSCA"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4050
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =4350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1601,26 +1614,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4850
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtTraitSum"
-                    Caption ="Exact trait sum (optional)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4850
-                    LayoutCachedWidth =7606
-                    LayoutCachedHeight =5150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =8001
+                            Top =4050
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtTraitCount"
+                            Caption ="Previous graded trait count (not reports)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =4050
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =4350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1646,26 +1661,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =8001
-                    Top =4850
-                    Width =4740
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtSource"
-                    Caption ="Source / note"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8001
-                    LayoutCachedTop =4850
-                    LayoutCachedWidth =12741
-                    LayoutCachedHeight =5150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4850
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtTraitSum"
+                            Caption ="Exact trait sum (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4850
+                            LayoutCachedWidth =7606
+                            LayoutCachedHeight =5150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1691,6 +1708,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =8001
+                            Top =4850
+                            Width =4740
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtSource"
+                            Caption ="Source / note"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =4850
+                            LayoutCachedWidth =12741
+                            LayoutCachedHeight =5150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault

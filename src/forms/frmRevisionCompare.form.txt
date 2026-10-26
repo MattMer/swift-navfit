@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =0
     Width =13800
     ItemSuffix =17
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Compare saved revisions"
     OnActivate ="=UXSortActivate(\"frmRevisionCompare\")"
     OnResize ="=UXHelpResize(\"frmRevisionCompare\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -230,25 +229,27 @@ Begin Form
                     LayoutCachedTop =1850
                     LayoutCachedWidth =750
                     LayoutCachedHeight =2200
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =850
-                    Top =1850
-                    Width =4500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblChangedOnly"
-                    Caption ="Changed fields only"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =850
-                    LayoutCachedTop =1850
-                    LayoutCachedWidth =5350
-                    LayoutCachedHeight =2200
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =850
+                            Top =1850
+                            Width =4500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblChangedOnly"
+                            Caption ="Changed fields only"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =850
+                            LayoutCachedTop =1850
+                            LayoutCachedWidth =5350
+                            LayoutCachedHeight =2200
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ListBox
                     OverlapFlags =85

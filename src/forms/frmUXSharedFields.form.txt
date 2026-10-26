@@ -11,13 +11,12 @@ Begin Form
     ScrollBars =2
     Width =10450
     ItemSuffix =207
-    Right =15300
+    Right =19725
     Bottom =13245
     Caption ="Shared blocks"
     OnActivate ="=UXVisualEvent(\"frmUXSharedFields\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -164,25 +163,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelPeriodStart"
-                    Caption ="From"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =93
                     TextFontFamily =34
@@ -210,25 +190,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelPeriodEnd"
-                    Caption ="To"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelPeriodStart"
+                            Caption ="From"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -257,25 +239,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelUnitUIC"
-                    Caption ="Unit ID Code (UIC)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelPeriodEnd"
+                            Caption ="To"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -303,25 +287,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelShipStation"
-                    Caption ="Ship/Station"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelUnitUIC"
+                            Caption ="Unit ID Code (UIC)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -349,25 +335,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelObservationStatus"
-                    Caption ="Not Observed Report (NOB)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelShipStation"
+                            Caption ="Ship/Station"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -386,25 +374,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelPromotionStatus"
-                    Caption ="Promotion Status"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelObservationStatus"
+                            Caption ="Not Observed Report (NOB)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
@@ -435,25 +425,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorName"
-                    Caption ="Reporting Senior (Last, FI MI)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelPromotionStatus"
+                            Caption ="Promotion Status"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -481,25 +473,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorGrade"
-                    Caption ="Grade"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorName"
+                            Caption ="Reporting Senior (Last, FI MI)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -527,25 +521,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorDesignator"
-                    Caption ="Desig"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorGrade"
+                            Caption ="Grade"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -573,25 +569,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorTitle"
-                    Caption ="Title"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorDesignator"
+                            Caption ="Desig"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -619,25 +617,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorUIC"
-                    Caption ="UIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorTitle"
+                            Caption ="Title"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -665,25 +665,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelOccasionPeriodic"
-                    Caption ="Periodic"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorUIC"
+                            Caption ="UIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -702,25 +704,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelOccasionDetachment"
-                    Caption ="Detachment of Individual"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelOccasionPeriodic"
+                            Caption ="Periodic"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -739,25 +743,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelOccasionFrocking"
-                    Caption ="Detachment of Reporting Senior"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelOccasionDetachment"
+                            Caption ="Detachment of Individual"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -776,25 +782,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelOccasionSpecial"
-                    Caption ="Special"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelOccasionFrocking"
+                            Caption ="Detachment of Reporting Senior"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -813,25 +821,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportRegular"
-                    Caption ="Regular"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelOccasionSpecial"
+                            Caption ="Special"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -850,25 +860,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportConcurrent"
-                    Caption ="Concurrent"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportRegular"
+                            Caption ="Regular"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -887,25 +899,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportOperationalCommander"
-                    Caption ="Ops Cdr"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportConcurrent"
+                            Caption ="Concurrent"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -924,25 +938,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelPrimaryDuty"
-                    Caption ="Primary duty abbreviation"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportOperationalCommander"
+                            Caption ="Ops Cdr"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -970,25 +986,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelDutyDescription"
-                    Caption ="Primary/Collateral/Watchstanding Duties/PFA"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelPrimaryDuty"
+                            Caption ="Primary duty abbreviation"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1016,25 +1034,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelComponentActive"
-                    Caption ="ACT"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelDutyDescription"
+                            Caption ="Primary/Collateral/Watchstanding Duties/PFA"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -1053,25 +1073,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelComponentTAR"
-                    Caption ="TAR"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelComponentActive"
+                            Caption ="ACT"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -1090,25 +1112,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelComponentInactive"
-                    Caption ="INACT"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelComponentTAR"
+                            Caption ="TAR"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -1127,25 +1151,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelComponentATADSW"
-                    Caption ="AT/ADOS"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelComponentInactive"
+                            Caption ="INACT"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     TripleState = NotDefault
@@ -1164,25 +1190,27 @@ Begin Form
                     LayoutCachedTop =500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =860
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelDateReported"
-                    Caption ="Date Reported"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelComponentATADSW"
+                            Caption ="AT/ADOS"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1211,25 +1239,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReadinessSummary"
-                    Caption ="Physical Readiness"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelDateReported"
+                            Caption ="Date Reported"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1257,25 +1287,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReadinessDetail"
-                    Caption ="Physical Readiness - result"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReadinessSummary"
+                            Caption ="Physical Readiness"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1303,25 +1335,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReadinessDate"
-                    Caption ="Physical Readiness - date"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReadinessDetail"
+                            Caption ="Physical Readiness - result"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1350,25 +1384,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelBilletSubcategory"
-                    Caption ="Billet Subcategory (if any)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReadinessDate"
+                            Caption ="Physical Readiness - date"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1396,25 +1432,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorSSN"
-                    Caption ="SSN"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelBilletSubcategory"
+                            Caption ="Billet Subcategory (if any)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1442,25 +1480,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorAddress1"
-                    Caption ="Address line 1"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorSSN"
+                            Caption ="SSN"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1488,25 +1528,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorAddress2"
-                    Caption ="Address line 2"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorAddress1"
+                            Caption ="Address line 1"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1534,25 +1576,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorCity"
-                    Caption ="City"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorAddress2"
+                            Caption ="Address line 2"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1580,25 +1624,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorState"
-                    Caption ="State / region"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorCity"
+                            Caption ="City"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1626,25 +1672,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorZip"
-                    Caption ="ZIP / postal code"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorState"
+                            Caption ="State / region"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1672,25 +1720,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorPhone"
-                    Caption ="Phone"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorZip"
+                            Caption ="ZIP / postal code"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1718,25 +1768,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorDSN"
-                    Caption ="DSN"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorPhone"
+                            Caption ="Phone"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1764,25 +1816,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorLastName"
-                    Caption ="Reporting senior last name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorDSN"
+                            Caption ="DSN"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1810,25 +1864,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorFirstInitial"
-                    Caption ="Reporting senior first initial"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorLastName"
+                            Caption ="Reporting senior last name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1856,25 +1912,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelReportingSeniorMiddleInitial"
-                    Caption ="Reporting senior middle initial(s)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorFirstInitial"
+                            Caption ="Reporting senior first initial"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1902,25 +1960,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =150
-                    Top =150
-                    Width =3000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="labelCommandEmployment"
-                    Caption ="Command employment and command achievements"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =150
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =3150
-                    LayoutCachedHeight =450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelReportingSeniorMiddleInitial"
+                            Caption ="Reporting senior middle initial(s)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1948,6 +2008,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =150
+                            Top =150
+                            Width =3000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelCommandEmployment"
+                            Caption ="Command employment and command achievements"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =150
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =3150
+                            LayoutCachedHeight =450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
             End
         End

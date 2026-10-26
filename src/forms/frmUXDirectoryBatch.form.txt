@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =21
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Create reports from command members"
     OnActivate ="=UXSortActivate(\"frmUXDirectoryBatch\")"
     OnResize ="=UXHelpResize(\"frmUXDirectoryBatch\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -230,6 +229,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =7000
+                            Top =1000
+                            Width =2800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblFrom"
+                            Caption ="Report from date"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =7000
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =9800
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -256,6 +276,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =10200
+                            Top =1000
+                            Width =2800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTo"
+                            Caption ="Report to date"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =10200
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ListBox
                     OverlapFlags =85
@@ -468,63 +509,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =7000
-                    Top =1000
-                    Width =2800
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblFrom"
-                    Caption ="Report from date"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =7000
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =9800
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =10200
-                    Top =1000
-                    Width =2800
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTo"
-                    Caption ="Report to date"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =10200
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2130
-                    Width =2000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRankFilter"
-                    Caption ="Filter by rank/rate"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2130
-                    LayoutCachedWidth =2400
-                    LayoutCachedHeight =2480
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -554,6 +538,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2130
+                            Width =2000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRankFilter"
+                            Caption ="Filter by rank/rate"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2130
+                            LayoutCachedWidth =2400
+                            LayoutCachedHeight =2480
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

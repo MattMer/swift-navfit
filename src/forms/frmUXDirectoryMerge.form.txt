@@ -19,9 +19,9 @@ Begin Form
     Width =14500
     DatasheetFontHeight =11
     ItemSuffix =17
-    Left =3330
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     DatasheetGridlinesColor =15263976
     Caption ="Review possible duplicate Sailors"
@@ -40,7 +40,6 @@ Begin Form
     ForeThemeColorIndex =0
     AlternateBackThemeColorIndex =1
     AlternateBackShade =95.0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -210,40 +209,6 @@ Begin Form
                     LayoutCachedHeight =950
                     ThemeFontIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =300
-                    Top =1000
-                    Width =6700
-                    Height =350
-                    FontSize =10
-                    Name ="lblSource"
-                    Caption ="Original member - archive after moving links"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =300
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =7000
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =7500
-                    Top =1000
-                    Width =6700
-                    Height =350
-                    FontSize =10
-                    Name ="lblTarget"
-                    Caption ="Surviving member - keep this profile"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =7500
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =14200
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -267,6 +232,25 @@ Begin Form
                     LayoutCachedWidth =7000
                     LayoutCachedHeight =1830
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =1000
+                            Width =6700
+                            Height =350
+                            FontSize =10
+                            Name ="lblSource"
+                            Caption ="Original member - archive after moving links"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =7000
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -291,24 +275,25 @@ Begin Form
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =1830
                     ThemeFontIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =300
-                    Top =1900
-                    Width =13900
-                    Height =350
-                    FontSize =10
-                    Name ="lblCandidates"
-                    Caption ="Possible surname matches - double-click to choose a survivor, or use the survivo"
-                        "r list for changed names"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =300
-                    LayoutCachedTop =1900
-                    LayoutCachedWidth =14200
-                    LayoutCachedHeight =2250
-                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =7500
+                            Top =1000
+                            Width =6700
+                            Height =350
+                            FontSize =10
+                            Name ="lblTarget"
+                            Caption ="Surviving member - keep this profile"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =7500
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =14200
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
@@ -334,6 +319,26 @@ Begin Form
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =3400
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =1900
+                            Width =13900
+                            Height =350
+                            FontSize =10
+                            Name ="lblCandidates"
+                            Caption ="Possible surname matches - double-click to choose a survivor, or use the survivo"
+                                "r list for changed names"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =1900
+                            LayoutCachedWidth =14200
+                            LayoutCachedHeight =2250
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -381,23 +386,6 @@ Begin Form
                     LayoutCachedHeight =7450
                     ThemeFontIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =300
-                    Top =7550
-                    Width =13900
-                    Height =350
-                    FontSize =10
-                    Name ="lblReason"
-                    Caption ="Why are these profiles the same Sailor? Required; do not include SSNs or DoD IDs"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =300
-                    LayoutCachedTop =7550
-                    LayoutCachedWidth =14200
-                    LayoutCachedHeight =7900
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -416,6 +404,25 @@ Begin Form
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =8450
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =7550
+                            Width =13900
+                            Height =350
+                            FontSize =10
+                            Name ="lblReason"
+                            Caption ="Why are these profiles the same Sailor? Required; do not include SSNs or DoD IDs"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =7550
+                            LayoutCachedWidth =14200
+                            LayoutCachedHeight =7900
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Enabled = NotDefault
@@ -447,24 +454,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =300
-                    Top =9200
-                    Width =13900
-                    Height =350
-                    FontSize =10
-                    Name ="lblHistory"
-                    Caption ="Merge history - undo restores original links only if no later changes affect the"
-                        " members"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =300
-                    LayoutCachedTop =9200
-                    LayoutCachedWidth =14200
-                    LayoutCachedHeight =9550
-                    ThemeFontIndex =-1
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =85
@@ -488,6 +477,26 @@ Begin Form
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =10900
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =9200
+                            Width =13900
+                            Height =350
+                            FontSize =10
+                            Name ="lblHistory"
+                            Caption ="Merge history - undo restores original links only if no later changes affect the"
+                                " members"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =9200
+                            LayoutCachedWidth =14200
+                            LayoutCachedHeight =9550
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

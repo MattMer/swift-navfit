@@ -142,25 +142,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2100
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboOutcome"
-                    Caption ="Outcome"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2100
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =2450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -189,25 +170,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1500
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtDate"
-                    Caption ="Counseling date"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1500
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =1850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2100
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboOutcome"
+                            Caption ="Outcome"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2100
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =2450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -233,25 +216,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3900
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboDisposition"
-                    Caption ="Worksheet after detachment"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3900
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =4250
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1500
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtDate"
+                            Caption ="Counseling date"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1500
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =1850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -280,6 +265,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3900
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboDisposition"
+                            Caption ="Worksheet after detachment"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3900
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =4250
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -305,6 +311,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            Left =400
+                            Top =2700
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            Name ="lbltxtCounselor"
+                            Caption ="Counselor (block 31)"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2700
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =3050
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -455,34 +477,6 @@ Begin Form
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =1250
                 End
-                Begin Label
-                    OverlapFlags =85
-                    Left =400
-                    Top =2700
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    Name ="lbltxtCounselor"
-                    Caption ="Counselor (block 31)"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2700
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =3050
-                End
-                Begin Label
-                    OverlapFlags =85
-                    Left =400
-                    Top =3300
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    Name ="lbltxtReason"
-                    Caption ="Reason not performed (block 31)"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3300
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =3650
-                End
                 Begin ComboBox
                     AutoExpand = NotDefault
                     TabStop = NotDefault
@@ -535,6 +529,22 @@ Begin Form
                     GridlineThemeColorIndex =0
                     GridlineTint =0.0
                     GridlineShade =0.0
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            Left =400
+                            Top =3300
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            Name ="lbltxtReason"
+                            Caption ="Reason not performed (block 31)"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =3650
+                        End
+                    End
                 End
             End
         End

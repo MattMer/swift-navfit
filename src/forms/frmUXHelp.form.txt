@@ -12,16 +12,15 @@ Begin Form
     ScrollBars =0
     Width =13400
     ItemSuffix =6
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Swift NAVFIT workspace guide"
     OnActivate ="=UXVisualEvent(\"frmUXHelp\",\"\")"
     OnLoad ="=UXLoadHelp()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -141,25 +140,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1100
-                    Width =3500
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTopics"
-                    Caption ="Choose a workflow"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1100
-                    LayoutCachedWidth =3900
-                    LayoutCachedHeight =1400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ListBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -186,25 +166,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =4200
-                    Top =1100
-                    Width =8700
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblGuide"
-                    Caption ="How to use this workspace"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4200
-                    LayoutCachedTop =1100
-                    LayoutCachedWidth =12900
-                    LayoutCachedHeight =1400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1100
+                            Width =3500
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTopics"
+                            Caption ="Choose a workflow"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1100
+                            LayoutCachedWidth =3900
+                            LayoutCachedHeight =1400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -231,6 +213,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =4200
+                            Top =1100
+                            Width =8700
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblGuide"
+                            Caption ="How to use this workspace"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4200
+                            LayoutCachedTop =1100
+                            LayoutCachedWidth =12900
+                            LayoutCachedHeight =1400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

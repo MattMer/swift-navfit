@@ -13,9 +13,9 @@ Begin Form
     ScrollBars =2
     Width =17200
     ItemSuffix =39
-    Left =3330
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Mark report signed"
     OnActivate ="=UXVisualEvent(\"frmUXSignoff\",\"\")"
@@ -153,25 +153,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1500
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtSignedOn"
-                    Caption ="Date signed"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1500
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =1850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -196,6 +177,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1500
+                            Width =4100
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtSignedOn"
+                            Caption ="Date signed"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1500
+                            LayoutCachedWidth =4500
+                            LayoutCachedHeight =1850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -379,43 +381,45 @@ Begin Form
                     GridlineThemeColorIndex =0
                     GridlineTint =0.0
                     GridlineShade =0.0
-                End
-                Begin Label
-                    OverlapFlags =85
-                    Left =5000
-                    Top =2150
-                    Width =7600
-                    Height =400
-                    BorderColor =16777215
-                    ForeColor =16777215
-                    Name ="lblDispose"
-                    Caption ="Dispose of drafts now (superseded draft versions, recovery and unposted note dra"
-                        "fts)"
-                    FontName ="Aptos Display"
-                    LeftPadding =0
-                    TopPadding =0
-                    RightPadding =0
-                    BottomPadding =0
-                    GridlineColor =16777215
-                    GridlineWidthLeft =0
-                    GridlineWidthTop =0
-                    GridlineWidthRight =0
-                    GridlineWidthBottom =0
-                    LayoutCachedLeft =5000
-                    LayoutCachedTop =2150
-                    LayoutCachedWidth =12600
-                    LayoutCachedHeight =2550
-                    ThemeFontIndex =0
-                    BackThemeColorIndex =0
-                    BackTint =0.0
-                    BackShade =0.0
-                    BorderTint =0.0
-                    BorderShade =0.0
-                    ForeTint =0.0
-                    ForeShade =0.0
-                    GridlineThemeColorIndex =0
-                    GridlineTint =0.0
-                    GridlineShade =0.0
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            Left =5000
+                            Top =2150
+                            Width =7600
+                            Height =400
+                            BorderColor =16777215
+                            ForeColor =16777215
+                            Name ="lblDispose"
+                            Caption ="Dispose of drafts now (superseded draft versions, recovery and unposted note dra"
+                                "fts)"
+                            FontName ="Aptos Display"
+                            LeftPadding =0
+                            TopPadding =0
+                            RightPadding =0
+                            BottomPadding =0
+                            GridlineColor =16777215
+                            GridlineWidthLeft =0
+                            GridlineWidthTop =0
+                            GridlineWidthRight =0
+                            GridlineWidthBottom =0
+                            LayoutCachedLeft =5000
+                            LayoutCachedTop =2150
+                            LayoutCachedWidth =12600
+                            LayoutCachedHeight =2550
+                            ThemeFontIndex =0
+                            BackThemeColorIndex =0
+                            BackTint =0.0
+                            BackShade =0.0
+                            BorderTint =0.0
+                            BorderShade =0.0
+                            ForeTint =0.0
+                            ForeShade =0.0
+                            GridlineThemeColorIndex =0
+                            GridlineTint =0.0
+                            GridlineShade =0.0
+                        End
+                    End
                 End
             End
         End

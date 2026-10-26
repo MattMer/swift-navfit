@@ -11,8 +11,8 @@ Begin Form
     ScrollBars =2
     Width =18100
     ItemSuffix =32
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     OnUnload ="=CloseReviewFile()"
     Caption ="NAVFIT source review"
     OnClose ="=CloseReviewFile()"
@@ -20,7 +20,6 @@ Begin Form
     OnResize ="=UXHelpResize(\"frmImportReview\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -348,25 +347,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =5500
-                    Width =4700
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblImportMember"
-                    Caption ="Local member display name (optional)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5500
-                    LayoutCachedWidth =5100
-                    LayoutCachedHeight =5850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -391,6 +371,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =5500
+                            Width =4700
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblImportMember"
+                            Caption ="Local member display name (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5500
+                            LayoutCachedWidth =5100
+                            LayoutCachedHeight =5850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Enabled = NotDefault

@@ -12,9 +12,9 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =25
-    Left =3330
-    Top =1980
-    Right =21855
+    Left =5235
+    Top =1530
+    Right =24960
     Bottom =14775
     Caption ="Import or refresh command RUAD"
     OnActivate ="=UXSortActivate(\"frmUXRUADImport\")"
@@ -22,7 +22,6 @@ Begin Form
     OnLoad ="=RUADReset()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -345,25 +344,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =6100
-                    Top =2500
-                    Width =1800
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblAction"
-                    Caption ="Selected row action"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6100
-                    LayoutCachedTop =2500
-                    LayoutCachedWidth =7900
-                    LayoutCachedHeight =2800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -392,25 +372,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =9200
-                    Top =2500
-                    Width =3700
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMatch"
-                    Caption ="Explicit existing member match"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =9200
-                    LayoutCachedTop =2500
-                    LayoutCachedWidth =12900
-                    LayoutCachedHeight =2800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =6100
+                            Top =2500
+                            Width =1800
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblAction"
+                            Caption ="Selected row action"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6100
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =7900
+                            LayoutCachedHeight =2800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -440,6 +422,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =9200
+                            Top =2500
+                            Width =3700
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMatch"
+                            Caption ="Explicit existing member match"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =9200
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =12900
+                            LayoutCachedHeight =2800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     OverlapFlags =85

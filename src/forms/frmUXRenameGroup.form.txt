@@ -13,9 +13,9 @@ Begin Form
     ScrollBars =0
     Width =13200
     ItemSuffix =9
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Rename summary group"
     OnActivate ="=UXVisualEvent(\"frmUXRenameGroup\",\"\")"
@@ -23,7 +23,6 @@ Begin Form
     OnLoad ="=UXLoadRenameGroup()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -165,25 +164,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1100
-                    Width =9000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblName"
-                    Caption ="Group name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1100
-                    LayoutCachedWidth =9400
-                    LayoutCachedHeight =1400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -207,6 +187,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1100
+                            Width =9000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblName"
+                            Caption ="Group name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1100
+                            LayoutCachedWidth =9400
+                            LayoutCachedHeight =1400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Default = NotDefault

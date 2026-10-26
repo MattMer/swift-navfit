@@ -13,16 +13,15 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =28
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Structured names"
     OnActivate ="=UXVisualEvent(\"frmPartyNames\",\"\")"
     OnResize ="=UXHelpResize(\"frmPartyNames\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -200,25 +199,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2100
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMemberFirstName"
-                    Caption ="Member first name (27)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2100
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =2500
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -241,25 +221,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2950
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMemberMiddleInitial"
-                    Caption ="Member middle initial(s) (3)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2950
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =3350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2100
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMemberFirstName"
+                            Caption ="Member first name (27)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2100
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =2500
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -284,25 +266,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3800
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMemberLastName"
-                    Caption ="Member last name (27)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3800
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =4200
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2950
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMemberMiddleInitial"
+                            Caption ="Member middle initial(s) (3)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2950
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =3350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -327,25 +311,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4650
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMemberSuffix"
-                    Caption ="Member suffix (10)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4650
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =5050
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3800
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMemberLastName"
+                            Caption ="Member last name (27)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3800
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =4200
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -370,25 +356,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =5850
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReportingSeniorLastName"
-                    Caption ="Reporting senior last name (18)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5850
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =6250
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4650
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMemberSuffix"
+                            Caption ="Member suffix (10)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4650
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =5050
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -413,25 +401,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =6700
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReportingSeniorFirstInitial"
-                    Caption ="Reporting senior first initial (1)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =6700
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =7100
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =5850
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReportingSeniorLastName"
+                            Caption ="Reporting senior last name (18)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5850
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =6250
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -456,25 +446,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =7550
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReportingSeniorMiddleInitial"
-                    Caption ="Reporting senior middle initial(s) (3)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =7550
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =7950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =6700
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReportingSeniorFirstInitial"
+                            Caption ="Reporting senior first initial (1)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =6700
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =7100
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -499,25 +491,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =8750
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblCounselorLastName"
-                    Caption ="Counselor last name (20)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =8750
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =9150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =7550
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReportingSeniorMiddleInitial"
+                            Caption ="Reporting senior middle initial(s) (3)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =7550
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =7950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -542,25 +536,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =9600
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblCounselorFirstInitial"
-                    Caption ="Counselor first initial (1)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =9600
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =10000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =8750
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCounselorLastName"
+                            Caption ="Counselor last name (20)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =8750
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =9150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -585,25 +581,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =10450
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblCounselorMiddleInitial"
-                    Caption ="Counselor middle initial(s) (3)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =10450
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =10850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =9600
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCounselorFirstInitial"
+                            Caption ="Counselor first initial (1)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =9600
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =10000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -628,6 +626,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =10450
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCounselorMiddleInitial"
+                            Caption ="Counselor middle initial(s) (3)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =10450
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =10850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

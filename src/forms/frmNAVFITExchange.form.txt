@@ -10,15 +10,14 @@ Begin Form
     ScrollBars =0
     Width =13400
     ItemSuffix =41
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     OnUnload ="=UXCloseNAVFITExport()"
     Caption ="Export summary group to NAVFIT98A"
     OnActivate ="=UXSortActivate(\"frmNAVFITExchange\")"
     OnResize ="=UXHelpResize(\"frmNAVFITExchange\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -191,22 +190,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Width =500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReport"
-                    Caption ="Saved report"
-                    FontName ="Segoe UI"
-                    LayoutCachedWidth =500
-                    LayoutCachedHeight =350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     Visible = NotDefault
@@ -231,22 +214,24 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Width =500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtTemplate"
-                    Caption ="Verified blank NAVFIT template"
-                    FontName ="Segoe UI"
-                    LayoutCachedWidth =500
-                    LayoutCachedHeight =350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Width =500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReport"
+                            Caption ="Saved report"
+                            FontName ="Segoe UI"
+                            LayoutCachedWidth =500
+                            LayoutCachedHeight =350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -270,6 +255,24 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Width =500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtTemplate"
+                            Caption ="Verified blank NAVFIT template"
+                            FontName ="Segoe UI"
+                            LayoutCachedWidth =500
+                            LayoutCachedHeight =350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -309,25 +312,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2350
-                    Width =2900
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtExportPath"
-                    Caption ="Export directory"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2350
-                    LayoutCachedWidth =3300
-                    LayoutCachedHeight =2700
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -354,6 +338,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2350
+                            Width =2900
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtExportPath"
+                            Caption ="Export directory"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2350
+                            LayoutCachedWidth =3300
+                            LayoutCachedHeight =2700
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -394,22 +399,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Width =500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtReturned"
-                    Caption ="Returned NAVFIT file"
-                    FontName ="Segoe UI"
-                    LayoutCachedWidth =500
-                    LayoutCachedHeight =350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     Visible = NotDefault
                     TabStop = NotDefault
@@ -432,6 +421,24 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Width =500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtReturned"
+                            Caption ="Returned NAVFIT file"
+                            FontName ="Segoe UI"
+                            LayoutCachedWidth =500
+                            LayoutCachedHeight =350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -471,22 +478,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Width =500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtBaseline"
-                    Caption ="Original Swift baseline"
-                    FontName ="Segoe UI"
-                    LayoutCachedWidth =500
-                    LayoutCachedHeight =350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     Visible = NotDefault
                     TabStop = NotDefault
@@ -509,6 +500,24 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Width =500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtBaseline"
+                            Caption ="Original Swift baseline"
+                            FontName ="Segoe UI"
+                            LayoutCachedWidth =500
+                            LayoutCachedHeight =350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -855,25 +864,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1750
-                    Width =12600
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblGroup"
-                    Caption ="Summary group"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1750
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =2200
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     Visible = NotDefault
@@ -903,6 +893,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1750
+                            Width =12600
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblGroup"
+                            Caption ="Summary group"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1750
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =2200
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     Visible = NotDefault

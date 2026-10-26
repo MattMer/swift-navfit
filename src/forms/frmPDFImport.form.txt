@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =24
-    Right =15300
+    Right =19725
     Bottom =13245
     OnUnload ="=PDFClearPreview(False)"
     Caption ="Import structured PDF"
@@ -20,7 +20,6 @@ Begin Form
     OnLoad ="=UXPDFStart()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -211,25 +210,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3000
-                    Width =5500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblIdentifier"
-                    Caption ="Combined identifier interpretation"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3000
-                    LayoutCachedWidth =5900
-                    LayoutCachedHeight =3350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -259,6 +239,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3000
+                            Width =5500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblIdentifier"
+                            Caption ="Combined identifier interpretation"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3000
+                            LayoutCachedWidth =5900
+                            LayoutCachedHeight =3350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     OverlapFlags =85
@@ -275,44 +276,27 @@ Begin Form
                     LayoutCachedTop =3500
                     LayoutCachedWidth =700
                     LayoutCachedHeight =3800
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =850
-                    Top =3500
-                    Width =12100
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblLegacy"
-                    Caption ="Legacy compatibility: allow DoDID mapping for older source files"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =850
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =12950
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4050
-                    Width =4000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTarget"
-                    Caption ="Merge into draft (leave blank to create new)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4050
-                    LayoutCachedWidth =4400
-                    LayoutCachedHeight =4400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =850
+                            Top =3500
+                            Width =12100
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblLegacy"
+                            Caption ="Legacy compatibility: allow DoDID mapping for older source files"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =850
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =12950
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -342,25 +326,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4550
-                    Width =4000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMergeMode"
-                    Caption ="Existing-draft merge mode"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4400
-                    LayoutCachedHeight =4900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4050
+                            Width =4000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTarget"
+                            Caption ="Merge into draft (leave blank to create new)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4050
+                            LayoutCachedWidth =4400
+                            LayoutCachedHeight =4400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -391,6 +377,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4550
+                            Width =4000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMergeMode"
+                            Caption ="Existing-draft merge mode"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4400
+                            LayoutCachedHeight =4900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

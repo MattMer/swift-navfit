@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =16
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Choose group members"
     OnActivate ="=UXSortActivate(\"frmUXMembers\")"
     OnResize ="=UXHelpResize(\"frmUXMembers\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -186,25 +185,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =5100
-                    Width =12600
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNote"
-                    Caption ="Membership / exception note"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5100
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =5450
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -228,6 +208,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =5100
+                            Width =12600
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNote"
+                            Caption ="Membership / exception note"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5100
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =5450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

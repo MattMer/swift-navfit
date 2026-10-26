@@ -11,8 +11,8 @@ Begin Form
     ScrollBars =0
     Width =20380
     ItemSuffix =119
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Groups, reviewed changes and meetings"
     OnActivate ="=UXSortActivate(\"frmMajorWorkbench\")"
     OnResize ="=UXHelpResize(\"frmMajorWorkbench\",\"UXResizeWorkspace(\"\"frmMajorWorkbench\"\""
@@ -20,7 +20,6 @@ Begin Form
     OnLoad ="=UXLoadWorkbench()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -256,27 +255,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4100
-                    Width =1422
-                    Height =500
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTitle"
-                    Caption ="Group / route / meeting title"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4100
-                    LayoutCachedWidth =4288
-                    LayoutCachedHeight =4600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =95
                     TextFontFamily =34
@@ -301,6 +279,29 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4100
+                            Width =1422
+                            Height =500
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTitle"
+                            Caption ="Group / route / meeting title"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4100
+                            LayoutCachedWidth =4288
+                            LayoutCachedHeight =4600
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -360,27 +361,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =4800
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboGroup"
-                    Caption ="Group"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =4800
-                    LayoutCachedWidth =4288
-                    LayoutCachedHeight =5150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =95
@@ -409,27 +389,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =5400
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboSnapshot"
-                    Caption ="Frozen roster"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =4288
-                    LayoutCachedHeight =5750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =4800
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboGroup"
+                            Caption ="Group"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =4800
+                            LayoutCachedWidth =4288
+                            LayoutCachedHeight =5150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -460,27 +442,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2880
-                    Top =12000
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboBatch"
-                    Caption ="Change batch"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =12000
-                    LayoutCachedWidth =4302
-                    LayoutCachedHeight =12350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =5400
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboSnapshot"
+                            Caption ="Frozen roster"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =4288
+                            LayoutCachedHeight =5750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -511,27 +495,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =10512
-                    Top =10680
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboTemplate"
-                    Caption ="Route template"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =10512
-                    LayoutCachedTop =10680
-                    LayoutCachedWidth =11934
-                    LayoutCachedHeight =11030
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2880
+                            Top =12000
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboBatch"
+                            Caption ="Change batch"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =12000
+                            LayoutCachedWidth =4302
+                            LayoutCachedHeight =12350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -562,27 +548,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =87
-                    TextFontFamily =34
-                    Left =11088
-                    Top =12120
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboRun"
-                    Caption ="Review route"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =11088
-                    LayoutCachedTop =12120
-                    LayoutCachedWidth =12510
-                    LayoutCachedHeight =12470
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =10512
+                            Top =10680
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboTemplate"
+                            Caption ="Route template"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =10512
+                            LayoutCachedTop =10680
+                            LayoutCachedWidth =11934
+                            LayoutCachedHeight =11030
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -613,27 +601,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =2880
-                    Top =12240
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboMeeting"
-                    Caption ="Meeting"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =12240
-                    LayoutCachedWidth =4302
-                    LayoutCachedHeight =12590
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =87
+                            TextFontFamily =34
+                            Left =11088
+                            Top =12120
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboRun"
+                            Caption ="Review route"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =11088
+                            LayoutCachedTop =12120
+                            LayoutCachedWidth =12510
+                            LayoutCachedHeight =12470
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -664,27 +654,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2880
-                    Top =13440
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboProposal"
-                    Caption ="Proposal"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =13440
-                    LayoutCachedWidth =4302
-                    LayoutCachedHeight =13790
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =2880
+                            Top =12240
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboMeeting"
+                            Caption ="Meeting"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =12240
+                            LayoutCachedWidth =4302
+                            LayoutCachedHeight =12590
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -715,27 +707,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2880
-                    Top =14740
-                    Width =1422
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblcboFolder"
-                    Caption ="Default folder"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =14740
-                    LayoutCachedWidth =4302
-                    LayoutCachedHeight =15090
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2880
+                            Top =13440
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboProposal"
+                            Caption ="Proposal"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =13440
+                            LayoutCachedWidth =4302
+                            LayoutCachedHeight =13790
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -766,27 +760,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2880
-                    Top =15340
-                    Width =1264
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblField"
-                    Caption ="Field / default scope"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =15340
-                    LayoutCachedWidth =4144
-                    LayoutCachedHeight =15690
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2880
+                            Top =14740
+                            Width =1422
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboFolder"
+                            Caption ="Default folder"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =14740
+                            LayoutCachedWidth =4302
+                            LayoutCachedHeight =15090
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -818,6 +814,29 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2880
+                            Top =15340
+                            Width =1264
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblField"
+                            Caption ="Field / default scope"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =15340
+                            LayoutCachedWidth =4144
+                            LayoutCachedHeight =15690
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -850,27 +869,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2880
-                    Top =15940
-                    Width =1264
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblValue"
-                    Caption ="Proposed value"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =15940
-                    LayoutCachedWidth =4144
-                    LayoutCachedHeight =16290
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     Visible = NotDefault
                     ScrollBars =2
@@ -897,6 +895,29 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2880
+                            Top =15940
+                            Width =1264
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblValue"
+                            Caption ="Proposed value"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =15940
+                            LayoutCachedWidth =4144
+                            LayoutCachedHeight =16290
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     Visible = NotDefault
@@ -914,48 +935,29 @@ Begin Form
                     LayoutCachedTop =19320
                     LayoutCachedWidth =12402
                     LayoutCachedHeight =19670
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =11965
-                    Top =15940
-                    Width =711
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNull"
-                    Caption ="Clear to null"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =11965
-                    LayoutCachedTop =15940
-                    LayoutCachedWidth =12676
-                    LayoutCachedHeight =16290
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =18080
-                    Width =1264
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNote"
-                    Caption ="Reason / attestation / decision"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =18080
-                    LayoutCachedWidth =4130
-                    LayoutCachedHeight =18730
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =11965
+                            Top =15940
+                            Width =711
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNull"
+                            Caption ="Clear to null"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =11965
+                            LayoutCachedTop =15940
+                            LayoutCachedWidth =12676
+                            LayoutCachedHeight =16290
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     ScrollBars =2
@@ -982,6 +984,29 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2866
+                            Top =18080
+                            Width =1264
+                            Height =650
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNote"
+                            Caption ="Reason / attestation / decision"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =18080
+                            LayoutCachedWidth =4130
+                            LayoutCachedHeight =18730
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     Visible = NotDefault

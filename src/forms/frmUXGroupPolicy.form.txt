@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =16
-    Right =15300
+    Right =19725
     Bottom =13245
     Caption ="Summary-group policy review"
     OnActivate ="=UXVisualEvent(\"frmUXGroupPolicy\",\"\")"
@@ -19,7 +19,6 @@ Begin Form
     OnLoad ="=UXLoadGroupPolicy()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -192,25 +191,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1000
-                    Width =6000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblUIC"
-                    Caption ="UIC / command grouping choice"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =6400
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -237,26 +217,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2000
-                    Width =12600
-                    Height =500
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblBasis"
-                    Caption ="Officer category basis: confirm Active or Reserve from personnel records; block "
-                        "5 alone does not establish this."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2000
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =2500
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1000
+                            Width =6000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblUIC"
+                            Caption ="UIC / command grouping choice"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =6400
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -285,26 +266,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3200
-                    Width =12600
-                    Height =500
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNote"
-                    Caption ="Review basis and UIC authority. Dual-hatted grouping requires the applicable fla"
-                        "g-officer/SNDL authority; this app does not certify it."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3200
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =3700
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2000
+                            Width =12600
+                            Height =500
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblBasis"
+                            Caption ="Officer category basis: confirm Active or Reserve from personnel records; block "
+                                "5 alone does not establish this."
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2000
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =2500
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     ScrollBars =2
@@ -330,6 +313,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3200
+                            Width =12600
+                            Height =500
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNote"
+                            Caption ="Review basis and UIC authority. Dual-hatted grouping requires the applicable fla"
+                                "g-officer/SNDL authority; this app does not certify it."
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3200
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =3700
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     OverlapFlags =85
@@ -344,27 +349,29 @@ Begin Form
                     LayoutCachedTop =5050
                     LayoutCachedWidth =700
                     LayoutCachedHeight =5350
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =850
-                    Top =5000
-                    Width =12150
-                    Height =750
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblComplete"
-                    Caption ="I reviewed the complete eligible command roster for this group. This records a l"
-                        "ocal statement; it does not waive findings. Recheck after saved-report or member"
-                        "ship changes."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =850
-                    LayoutCachedTop =5000
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =5750
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =850
+                            Top =5000
+                            Width =12150
+                            Height =750
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblComplete"
+                            Caption ="I reviewed the complete eligible command roster for this group. This records a l"
+                                "ocal statement; it does not waive findings. Recheck after saved-report or member"
+                                "ship changes."
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =850
+                            LayoutCachedTop =5000
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =5750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault

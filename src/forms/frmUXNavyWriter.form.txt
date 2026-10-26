@@ -11,15 +11,14 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =21
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="NavyWriter examples catalog"
     OnActivate ="=UXSortActivate(\"frmUXNavyWriter\")"
     OnResize ="=UXHelpResize(\"frmUXNavyWriter\",\"\")"
     OnLoad ="=UXLoadNavyWriter()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -202,44 +201,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1650
-                    Width =6300
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblSearch"
-                    Caption ="Search narrative sources"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1650
-                    LayoutCachedWidth =6700
-                    LayoutCachedHeight =1950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =7200
-                    Top =1650
-                    Width =2700
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRate"
-                    Caption ="Rate / rating"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =7200
-                    LayoutCachedTop =1650
-                    LayoutCachedWidth =9900
-                    LayoutCachedHeight =1950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1650
+                            Width =6300
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblSearch"
+                            Caption ="Search narrative sources"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1650
+                            LayoutCachedWidth =6700
+                            LayoutCachedHeight =1950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -269,6 +251,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =7200
+                            Top =1650
+                            Width =2700
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRate"
+                            Caption ="Rate / rating"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =7200
+                            LayoutCachedTop =1650
+                            LayoutCachedWidth =9900
+                            LayoutCachedHeight =1950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -337,25 +340,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4900
-                    Width =12600
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblBody"
-                    Caption ="Preview and adapt the example"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =5250
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     ScrollBars =2
                     OverlapFlags =85
@@ -380,6 +364,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4900
+                            Width =12600
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblBody"
+                            Caption ="Preview and adapt the example"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4900
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =5250
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault

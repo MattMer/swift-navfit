@@ -13,16 +13,15 @@ Begin Form
     ScrollBars =2
     Width =13200
     ItemSuffix =86
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Command member profile"
     OnActivate ="=UXVisualEvent(\"frmUXMemberEditor\",\"\")"
     OnResize ="=UXHelpResize(\"frmUXMemberEditor\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -122,25 +121,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1000
-                    Width =5500
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtName"
-                    Caption ="NAME / Member display name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =5900
-                    LayoutCachedHeight =1320
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -163,25 +143,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6200
-                    Top =1000
-                    Width =5500
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtReportName"
-                    Caption ="Official report name (27 characters)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6200
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =1320
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1000
+                            Width =5500
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtName"
+                            Caption ="NAME / Member display name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =5900
+                            LayoutCachedHeight =1320
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -206,25 +188,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1900
-                    Width =2700
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtRank"
-                    Caption ="Report rank/rate (5 characters)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1900
-                    LayoutCachedWidth =3100
-                    LayoutCachedHeight =2220
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6200
+                            Top =1000
+                            Width =5500
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtReportName"
+                            Caption ="Official report name (27 characters)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6200
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =1320
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -249,25 +233,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =3450
-                    Top =1900
-                    Width =2700
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtSSN"
-                    Caption ="SSN (nine digits, or unentered)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =3450
-                    LayoutCachedTop =1900
-                    LayoutCachedWidth =6150
-                    LayoutCachedHeight =2220
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1900
+                            Width =2700
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtRank"
+                            Caption ="Report rank/rate (5 characters)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1900
+                            LayoutCachedWidth =3100
+                            LayoutCachedHeight =2220
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -292,6 +278,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =3450
+                            Top =1900
+                            Width =2700
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtSSN"
+                            Caption ="SSN (nine digits, or unentered)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =3450
+                            LayoutCachedTop =1900
+                            LayoutCachedWidth =6150
+                            LayoutCachedHeight =2220
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -488,25 +495,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =400
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel0"
-                    Caption ="CUI"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =93
                     TextFontFamily =34
@@ -531,25 +519,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =4250
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel1"
-                    Caption ="RUIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =400
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel0"
+                            Caption ="CUI"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -575,25 +565,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8100
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel2"
-                    Caption ="RESERVE UNIT"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =4250
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel1"
+                            Caption ="RUIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -619,25 +611,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =400
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel3"
-                    Caption ="RESERVE ACTIVITY AND LOC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8100
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel2"
+                            Caption ="RESERVE UNIT"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -664,25 +658,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =4250
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel4"
-                    Caption ="ST"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =400
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel3"
+                            Caption ="RESERVE ACTIVITY AND LOC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -708,25 +704,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8100
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel5"
-                    Caption ="UIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =4250
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel4"
+                            Caption ="ST"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -752,25 +750,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =400
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel6"
-                    Caption ="NRC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8100
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel5"
+                            Caption ="UIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -796,25 +796,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =4250
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel7"
-                    Caption ="NRA"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =400
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel6"
+                            Caption ="NRC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -840,25 +842,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =8100
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel8"
-                    Caption ="RPC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =4250
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel7"
+                            Caption ="NRA"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =93
@@ -884,25 +888,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel9"
-                    Caption ="RATE/RANK"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8100
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel8"
+                            Caption ="RPC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -928,25 +934,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel11"
-                    Caption ="RFAS Asgmt"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel9"
+                            Caption ="RATE/RANK"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -972,25 +980,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel12"
-                    Caption ="E/O"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel11"
+                            Caption ="RFAS Asgmt"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1016,25 +1026,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8100
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel13"
-                    Caption ="SELRES TYPE"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel12"
+                            Caption ="E/O"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1060,25 +1072,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel14"
-                    Caption ="BIN"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8100
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel13"
+                            Caption ="SELRES TYPE"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1104,25 +1118,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8100
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel15"
-                    Caption ="RFAS"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel14"
+                            Caption ="BIN"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1148,25 +1164,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel16"
-                    Caption ="REQ DESG/REQ RTING"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8100
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel15"
+                            Caption ="RFAS"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1192,25 +1210,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel17"
-                    Caption ="PNOBC/PNEC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel16"
+                            Caption ="REQ DESG/REQ RTING"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1236,25 +1256,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel18"
-                    Caption ="DESG"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel17"
+                            Caption ="PNOBC/PNEC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1280,25 +1302,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel19"
-                    Caption ="NOBC/NEC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel18"
+                            Caption ="DESG"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1324,25 +1348,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8100
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel20"
-                    Caption ="AUIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel19"
+                            Caption ="NOBC/NEC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1368,25 +1394,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel21"
-                    Caption ="TRUIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8100
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel20"
+                            Caption ="AUIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1412,25 +1440,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel22"
-                    Caption ="UMUIC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel21"
+                            Caption ="TRUIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1456,25 +1486,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =400
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel23"
-                    Caption ="MOB ACTIVITY"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel22"
+                            Caption ="UMUIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1500,25 +1532,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =4250
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel24"
-                    Caption ="MOB BILLET"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =400
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel23"
+                            Caption ="MOB ACTIVITY"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1544,25 +1578,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =8100
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel25"
-                    Caption ="PRD"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =4250
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel24"
+                            Caption ="MOB BILLET"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1589,25 +1625,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =8100
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel26"
-                    Caption ="IMS"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =8100
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel25"
+                            Caption ="PRD"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -1633,25 +1671,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =400
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel27"
-                    Caption ="MAS (A)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8100
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel26"
+                            Caption ="IMS"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1677,25 +1717,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =4250
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel28"
-                    Caption ="MAS (M)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =400
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel27"
+                            Caption ="MAS (A)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1721,25 +1763,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =8100
-                    Top =4550
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel29"
-                    Caption ="MAS (T)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =4250
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel28"
+                            Caption ="MAS (M)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1765,25 +1809,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =400
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel30"
-                    Caption ="ABSC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =8100
+                            Top =4550
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel29"
+                            Caption ="MAS (T)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1809,25 +1855,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =4250
-                    Top =5600
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel31"
-                    Caption ="RBSC"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =5600
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =6000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =400
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel30"
+                            Caption ="ABSC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1853,25 +1901,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =400
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel32"
-                    Caption ="ADDRESS"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =4000
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =4250
+                            Top =5600
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel31"
+                            Caption ="RBSC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =6000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1897,25 +1947,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =4250
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel33"
-                    Caption ="PHONE"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =4250
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =7850
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =400
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel32"
+                            Caption ="ADDRESS"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =4000
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1941,25 +1993,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =8100
-                    Top =3500
-                    Width =3600
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="ruadLabel34"
-                    Caption ="NROWS Email"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =3500
-                    LayoutCachedWidth =11700
-                    LayoutCachedHeight =3900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =4250
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel33"
+                            Caption ="PHONE"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =4250
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =7850
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =247
@@ -1985,6 +2039,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =8100
+                            Top =3500
+                            Width =3600
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="ruadLabel34"
+                            Caption ="NROWS Email"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =11700
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

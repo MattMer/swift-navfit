@@ -13,16 +13,15 @@ Begin Form
     ScrollBars =0
     Width =13200
     ItemSuffix =23
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Add report to summary group"
     OnActivate ="=UXVisualEvent(\"frmUXGroupReport\",\"\")"
     OnResize ="=UXHelpResize(\"frmUXGroupReport\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -161,25 +160,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2500
-                    Width =11000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblMember"
-                    Caption ="Choose an existing command member, or enter a new member below"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2500
-                    LayoutCachedWidth =11400
-                    LayoutCachedHeight =2800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -208,25 +188,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =3600
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtName"
-                    Caption ="Member display name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =3600
-                    LayoutCachedWidth =5700
-                    LayoutCachedHeight =3920
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2500
+                            Width =11000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblMember"
+                            Caption ="Choose an existing command member, or enter a new member below"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =11400
+                            LayoutCachedHeight =2800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -251,25 +233,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6100
-                    Top =3600
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtOfficial"
-                    Caption ="Official report name (27 characters)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6100
-                    LayoutCachedTop =3600
-                    LayoutCachedWidth =11400
-                    LayoutCachedHeight =3920
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3600
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtName"
+                            Caption ="Member display name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3600
+                            LayoutCachedWidth =5700
+                            LayoutCachedHeight =3920
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -294,25 +278,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4500
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtRank"
-                    Caption ="Rank/rate matching group paygrade"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =5700
-                    LayoutCachedHeight =4820
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6100
+                            Top =3600
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtOfficial"
+                            Caption ="Official report name (27 characters)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6100
+                            LayoutCachedTop =3600
+                            LayoutCachedWidth =11400
+                            LayoutCachedHeight =3920
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -337,25 +323,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6100
-                    Top =4500
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtSSN"
-                    Caption ="SSN (nine digits, or unentered)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6100
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =11400
-                    LayoutCachedHeight =4820
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4500
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtRank"
+                            Caption ="Rank/rate matching group paygrade"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4500
+                            LayoutCachedWidth =5700
+                            LayoutCachedHeight =4820
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -380,25 +368,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =5400
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtFrom"
-                    Caption ="14. From"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =5700
-                    LayoutCachedHeight =5720
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6100
+                            Top =4500
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtSSN"
+                            Caption ="SSN (nine digits, or unentered)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6100
+                            LayoutCachedTop =4500
+                            LayoutCachedWidth =11400
+                            LayoutCachedHeight =4820
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -424,25 +414,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6100
-                    Top =5400
-                    Width =5300
-                    Height =320
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtTo"
-                    Caption ="15. To"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6100
-                    LayoutCachedTop =5400
-                    LayoutCachedWidth =11400
-                    LayoutCachedHeight =5720
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =5400
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtFrom"
+                            Caption ="14. From"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =5700
+                            LayoutCachedHeight =5720
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -468,6 +460,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6100
+                            Top =5400
+                            Width =5300
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtTo"
+                            Caption ="15. To"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6100
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =11400
+                            LayoutCachedHeight =5720
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -592,25 +605,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1650
-                    Width =2000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRankFilter"
-                    Caption ="Filter by rank/rate"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1650
-                    LayoutCachedWidth =2400
-                    LayoutCachedHeight =2000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -639,6 +633,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1650
+                            Width =2000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRankFilter"
+                            Caption ="Filter by rank/rate"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1650
+                            LayoutCachedWidth =2400
+                            LayoutCachedHeight =2000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

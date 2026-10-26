@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =0
     Width =13800
     ItemSuffix =24
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Retained import provenance"
     OnActivate ="=UXSortActivate(\"frmProvenance\")"
     OnResize ="=UXHelpResize(\"frmProvenance\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -258,25 +257,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =3100
-                    Top =4200
-                    Width =1800
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRow"
-                    Caption ="Source row (optional)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =3100
-                    LayoutCachedTop =4200
-                    LayoutCachedWidth =4900
-                    LayoutCachedHeight =4550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -300,25 +280,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6500
-                    Top =4200
-                    Width =1500
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblSearch"
-                    Caption ="Field name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6500
-                    LayoutCachedTop =4200
-                    LayoutCachedWidth =8000
-                    LayoutCachedHeight =4550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =3100
+                            Top =4200
+                            Width =1800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRow"
+                            Caption ="Source row (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =3100
+                            LayoutCachedTop =4200
+                            LayoutCachedWidth =4900
+                            LayoutCachedHeight =4550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -343,6 +325,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6500
+                            Top =4200
+                            Width =1500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblSearch"
+                            Caption ="Field name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6500
+                            LayoutCachedTop =4200
+                            LayoutCachedWidth =8000
+                            LayoutCachedHeight =4550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -429,24 +432,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =8000
-                    Width =12600
-                    Height =600
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblValue"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =8000
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =8600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
@@ -472,6 +457,26 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =8000
+                            Width =12600
+                            Height =600
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblValue"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =8000
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =8600
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

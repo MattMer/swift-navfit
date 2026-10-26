@@ -12,13 +12,12 @@ Begin Form
     BorderStyle =0
     Width =13200
     ItemSuffix =36
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Report review"
     OnClose ="=UXWorkChanged()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -263,26 +262,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =200
-                    Top =1350
-                    Width =5300
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTemplate"
-                    Caption ="Review route template"
-                    FontName ="Segoe UI"
-                    Tag ="ROUTE"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =1350
-                    LayoutCachedWidth =5500
-                    LayoutCachedHeight =1650
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =93
@@ -310,6 +289,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =200
+                            Top =1350
+                            Width =5300
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTemplate"
+                            Caption ="Review route template"
+                            FontName ="Segoe UI"
+                            Tag ="ROUTE"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =1350
+                            LayoutCachedWidth =5500
+                            LayoutCachedHeight =1650
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -352,26 +353,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =200
-                    Top =2300
-                    Width =11800
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblRun"
-                    Caption ="Current and previous review routes"
-                    FontName ="Segoe UI"
-                    Tag ="ROUTE"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =2300
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =2600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =93
@@ -401,6 +382,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =200
+                            Top =2300
+                            Width =11800
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRun"
+                            Caption ="Current and previous review routes"
+                            FontName ="Segoe UI"
+                            Tag ="ROUTE"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =2300
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =2600
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =93
@@ -479,26 +482,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =200
-                    Top =6000
-                    Width =11800
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNote"
-                    Caption ="Decision note / local approval note / reopening reason"
-                    FontName ="Segoe UI"
-                    Tag ="ROUTE"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =6000
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =6300
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     ScrollBars =2
                     OverlapFlags =93
@@ -524,6 +507,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =200
+                            Top =6000
+                            Width =11800
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNote"
+                            Caption ="Decision note / local approval note / reopening reason"
+                            FontName ="Segoe UI"
+                            Tag ="ROUTE"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =6000
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =6300
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -891,25 +896,6 @@ Begin Form
                     LayoutCachedHeight =520
                     ThemeFontIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =200
-                    Top =750
-                    Width =11800
-                    Height =500
-                    FontSize =10
-                    Name ="lblAssignments"
-                    Caption ="Assigned reviews - use saved revisions; only the assigned reviewer can accept or"
-                        " return."
-                    FontName ="Segoe UI"
-                    Tag ="ASSIGNMENT"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =750
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =1250
-                    ThemeFontIndex =-1
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =247
@@ -935,6 +921,27 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =3150
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =200
+                            Top =750
+                            Width =11800
+                            Height =500
+                            FontSize =10
+                            Name ="lblAssignments"
+                            Caption ="Assigned reviews - use saved revisions; only the assigned reviewer can accept or"
+                                " return."
+                            FontName ="Segoe UI"
+                            Tag ="ASSIGNMENT"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =750
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =1250
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -958,24 +965,6 @@ Begin Form
                     LayoutCachedHeight =5050
                     ThemeFontIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =200
-                    Top =5250
-                    Width =11800
-                    Height =350
-                    FontSize =10
-                    Name ="lblAssignmentNote"
-                    Caption ="Decision note - required when returning; separate from shared report notes"
-                    FontName ="Segoe UI"
-                    Tag ="ASSIGNMENT"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =5250
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =5600
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault
                     ScrollBars =2
@@ -997,6 +986,26 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =7000
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =200
+                            Top =5250
+                            Width =11800
+                            Height =350
+                            FontSize =10
+                            Name ="lblAssignmentNote"
+                            Caption ="Decision note - required when returning; separate from shared report notes"
+                            FontName ="Segoe UI"
+                            Tag ="ASSIGNMENT"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =5250
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =5600
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     Width =13800
     ItemSuffix =24
-    Right =18525
+    Right =19725
     Bottom =13245
     Caption ="Operations and import undo"
     OnActivate ="=UXSortActivate(\"frmOperations\")"
@@ -19,7 +19,6 @@ Begin Form
     OnLoad ="=LoadOperations()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -212,25 +211,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =6600
-                    Width =12600
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReceipts"
-                    Caption ="Import receipts - Swift report / source report / time / undone"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =6600
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =7050
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ListBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -257,6 +237,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =6600
+                            Width =12600
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReceipts"
+                            Caption ="Import receipts - Swift report / source report / time / undone"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =6600
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =7050
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -702,19 +703,6 @@ Begin Form
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
                 End
-                Begin Label
-                    OverlapFlags =85
-                    Left =400
-                    Top =12500
-                    Width =12600
-                    Height =350
-                    Name ="lblAudit"
-                    Caption ="Report activity - domain evidence and operation correlation"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =12500
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =12850
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =85
@@ -735,6 +723,21 @@ Begin Form
                     LayoutCachedTop =13000
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =15500
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            Left =400
+                            Top =12500
+                            Width =12600
+                            Height =350
+                            Name ="lblAudit"
+                            Caption ="Report activity - domain evidence and operation correlation"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =12500
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =12850
+                        End
+                    End
                 End
             End
         End

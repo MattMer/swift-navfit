@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =0
     Width =13800
     ItemSuffix =14
-    Right =15300
+    Right =19725
     Bottom =13245
     Caption ="Review incoming official narrative"
     OnActivate ="=UXVisualEvent(\"frmReconcile\",\"\")"
     OnResize ="=UXHelpResize(\"frmReconcile\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -255,44 +254,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2450
-                    Width =6000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblCurrent"
-                    Caption ="Current Swift narrative"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2450
-                    LayoutCachedWidth =6400
-                    LayoutCachedHeight =2800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6950
-                    Top =2450
-                    Width =6000
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblIncoming"
-                    Caption ="Incoming NAVFIT narrative"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6950
-                    LayoutCachedTop =2450
-                    LayoutCachedWidth =12950
-                    LayoutCachedHeight =2800
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
@@ -318,6 +279,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2450
+                            Width =6000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCurrent"
+                            Caption ="Current Swift narrative"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2450
+                            LayoutCachedWidth =6400
+                            LayoutCachedHeight =2800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -344,6 +326,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6950
+                            Top =2450
+                            Width =6000
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblIncoming"
+                            Caption ="Incoming NAVFIT narrative"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6950
+                            LayoutCachedTop =2450
+                            LayoutCachedWidth =12950
+                            LayoutCachedHeight =2800
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

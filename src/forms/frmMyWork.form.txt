@@ -411,26 +411,28 @@ Begin Form
                     LayoutCachedTop =2500
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =2800
-                End
-                Begin Label
-                    OverlapFlags =95
-                    TextFontFamily =34
-                    Left =3300
-                    Top =2500
-                    Width =7300
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblAll"
-                    Caption ="Show all contributors and completed history"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =3300
-                    LayoutCachedTop =2500
-                    LayoutCachedWidth =10600
-                    LayoutCachedHeight =2900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            TextFontFamily =34
+                            Left =3300
+                            Top =2500
+                            Width =7300
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblAll"
+                            Caption ="Show all contributors and completed history"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =3300
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =10600
+                            LayoutCachedHeight =2900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =95
@@ -549,26 +551,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =2850
-                    Top =4300
-                    Width =4800
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReviewer"
-                    Caption ="Assign to reviewer"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =4300
-                    LayoutCachedWidth =7650
-                    LayoutCachedHeight =4650
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =255
@@ -597,26 +579,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =8100
-                    Top =4300
-                    Width =5200
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblDue"
-                    Caption ="Due date (optional)"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =8100
-                    LayoutCachedTop =4300
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =4650
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =2850
+                            Top =4300
+                            Width =4800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReviewer"
+                            Caption ="Assign to reviewer"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =4300
+                            LayoutCachedWidth =7650
+                            LayoutCachedHeight =4650
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =255
@@ -644,26 +628,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2850
-                    Top =7270
-                    Width =10450
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNotes"
-                    Caption ="Assignment instructions or outcome notes (return requires a reason)"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =7270
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =7570
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =8100
+                            Top =4300
+                            Width =5200
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblDue"
+                            Caption ="Due date (optional)"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =8100
+                            LayoutCachedTop =4300
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =4650
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault
@@ -691,6 +677,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =2850
+                            Top =7270
+                            Width =10450
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNotes"
+                            Caption ="Assignment instructions or outcome notes (return requires a reason)"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =7270
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =7570
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =255
@@ -1359,26 +1367,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =2850
-                    Top =2500
-                    Width =10450
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxAssignCaption"
-                    Caption ="Choose a saved report"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =2500
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =2850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =223
@@ -1408,6 +1396,28 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =2850
+                            Top =2500
+                            Width =10450
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxAssignCaption"
+                            Caption ="Choose a saved report"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =2850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -1534,25 +1544,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =9072
-                    Top =960
-                    Width =4000
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxContributorLabel"
-                    Caption ="Active contributor"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =9072
-                    LayoutCachedTop =960
-                    LayoutCachedWidth =13072
-                    LayoutCachedHeight =1260
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -1582,6 +1573,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =9072
+                            Top =960
+                            Width =4000
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxContributorLabel"
+                            Caption ="Active contributor"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =9072
+                            LayoutCachedTop =960
+                            LayoutCachedWidth =13072
+                            LayoutCachedHeight =1260
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -1651,24 +1663,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =2850
-                    Top =2650
-                    Width =10450
-                    Height =550
-                    FontSize =10
-                    Name ="lblReportNotes"
-                    Caption ="Conversations across this workspace - independent of review tasks"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =2650
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =3200
-                    ThemeFontIndex =-1
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =255
@@ -1694,6 +1688,26 @@ Begin Form
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =7100
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =2850
+                            Top =2650
+                            Width =10450
+                            Height =550
+                            FontSize =10
+                            Name ="lblReportNotes"
+                            Caption ="Conversations across this workspace - independent of review tasks"
+                            FontName ="Segoe UI"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =2650
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =3200
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =255
@@ -1981,22 +1995,24 @@ Begin Form
                     LayoutCachedTop =3200
                     LayoutCachedWidth =3150
                     LayoutCachedHeight =3500
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    Left =3300
-                    Top =3150
-                    Width =7300
-                    Height =400
-                    FontSize =10
-                    Name ="lblCounselingAll"
-                    Caption ="Show every active member"
-                    Tag ="MWX:body"
-                    LayoutCachedLeft =3300
-                    LayoutCachedTop =3150
-                    LayoutCachedWidth =10600
-                    LayoutCachedHeight =3550
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            Left =3300
+                            Top =3150
+                            Width =7300
+                            Height =400
+                            FontSize =10
+                            Name ="lblCounselingAll"
+                            Caption ="Show every active member"
+                            Tag ="MWX:body"
+                            LayoutCachedLeft =3300
+                            LayoutCachedTop =3150
+                            LayoutCachedWidth =10600
+                            LayoutCachedHeight =3550
+                        End
+                    End
                 End
                 Begin ListBox
                     Visible = NotDefault

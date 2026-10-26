@@ -13,16 +13,15 @@ Begin Form
     ScrollBars =0
     Width =13800
     ItemSuffix =9
-    Left =6555
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Duty descriptions"
     OnActivate ="=UXVisualEvent(\"frmContextDuties\",\"\")"
     OnResize ="=UXHelpResize(\"frmContextDuties\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -143,25 +142,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1900
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblPrimaryDuty"
-                    Caption ="Primary duty (14)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1900
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =2300
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -184,25 +164,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =2750
-                    Width =5000
-                    Height =400
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblDutyDescription"
-                    Caption ="Duty description"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =2750
-                    LayoutCachedWidth =5400
-                    LayoutCachedHeight =3150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1900
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblPrimaryDuty"
+                            Caption ="Primary duty (14)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1900
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =2300
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault
@@ -229,6 +211,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2750
+                            Width =5000
+                            Height =400
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblDutyDescription"
+                            Caption ="Duty description"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2750
+                            LayoutCachedWidth =5400
+                            LayoutCachedHeight =3150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

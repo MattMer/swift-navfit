@@ -11,8 +11,8 @@ Begin Form
     ScrollBars =2
     Width =15850
     ItemSuffix =34
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Review route templates"
     OnActivate ="=UXVisualEvent(\"frmUXRouteTemplates\",\"UXLoadContext()\")"
     OnResize ="=UXHelpResize(\"frmUXRouteTemplates\",\"UXResizeWorkspace(\"\"frmUXResources\"\""
@@ -20,7 +20,6 @@ Begin Form
     OnLoad ="=UXLoadRouteTemplates()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -599,25 +598,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =4550
-                    Width =1800
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblTitle"
-                    Caption ="Template name"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =4550
-                    LayoutCachedWidth =4650
-                    LayoutCachedHeight =4850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =87
                     TextFontFamily =34
@@ -641,6 +621,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2850
+                            Top =4550
+                            Width =1800
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblTitle"
+                            Caption ="Template name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =4550
+                            LayoutCachedWidth =4650
+                            LayoutCachedHeight =4850
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -798,25 +799,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =6250
-                    Width =10450
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblInstructions"
-                    Caption ="Reviewer instructions"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =6250
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =6550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
@@ -840,6 +822,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2850
+                            Top =6250
+                            Width =10450
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblInstructions"
+                            Caption ="Reviewer instructions"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =6250
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =6550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

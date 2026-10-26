@@ -330,24 +330,6 @@ Begin Form
                     LayoutCachedHeight =3850
                     ThemeFontIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =200
-                    Top =850
-                    Width =11800
-                    Height =300
-                    FontSize =10
-                    Name ="lblConversation"
-                    Caption ="Messages"
-                    FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =850
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =1150
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     Locked = NotDefault
                     TabStop = NotDefault
@@ -372,24 +354,26 @@ Begin Form
                     LayoutCachedHeight =4700
                     BackThemeColorIndex =-1
                     ThemeFontIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    Left =200
-                    Top =4100
-                    Width =3900
-                    Height =300
-                    FontSize =10
-                    Name ="lblDrafts"
-                    Caption ="Your unfinished notes - not posted"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =4100
-                    LayoutCachedWidth =4100
-                    LayoutCachedHeight =4400
-                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =200
+                            Top =850
+                            Width =11800
+                            Height =300
+                            FontSize =10
+                            Name ="lblConversation"
+                            Caption ="Messages"
+                            FontName ="Segoe UI"
+                            Tag ="VIEW:Notes"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =850
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =1150
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin ListBox
                     Visible = NotDefault
@@ -413,6 +397,26 @@ Begin Form
                     LayoutCachedWidth =4100
                     LayoutCachedHeight =6200
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =200
+                            Top =4100
+                            Width =3900
+                            Height =300
+                            FontSize =10
+                            Name ="lblDrafts"
+                            Caption ="Your unfinished notes - not posted"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =4100
+                            LayoutCachedWidth =4100
+                            LayoutCachedHeight =4400
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -856,25 +860,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    Left =200
-                    Top =200
-                    Width =11800
-                    Height =500
-                    FontSize =10
-                    Name ="lblCalculations"
-                    Caption ="Trait calculations - pending editor values, saved values, and summary-group basi"
-                        "s"
-                    FontName ="Segoe UI"
-                    Tag ="VIEW:Calculations"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =200
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =700
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
@@ -896,6 +881,27 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =6650
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =200
+                            Top =200
+                            Width =11800
+                            Height =500
+                            FontSize =10
+                            Name ="lblCalculations"
+                            Caption ="Trait calculations - pending editor values, saved values, and summary-group basi"
+                                "s"
+                            FontName ="Segoe UI"
+                            Tag ="VIEW:Calculations"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =200
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =700
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =223

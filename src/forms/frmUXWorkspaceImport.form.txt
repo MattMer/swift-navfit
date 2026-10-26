@@ -6,7 +6,7 @@ Begin Form
     ScrollBars =2
     Width =13000
     ItemSuffix =10
-    Right =15300
+    Right =19725
     Bottom =13245
     OnUnload ="[Event Procedure]"
     Caption ="Import previous Swift NAVFIT workspace"
@@ -15,7 +15,6 @@ Begin Form
     OnLoad ="=UXWorkspacePreviewStart()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -274,23 +273,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =350
-                    Top =4350
-                    Width =12200
-                    Height =350
-                    FontSize =10
-                    Name ="lblProgress"
-                    Caption ="Import activity - progress appears here after you start"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =350
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =12550
-                    LayoutCachedHeight =4700
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
@@ -312,6 +294,25 @@ Begin Form
                     LayoutCachedWidth =12550
                     LayoutCachedHeight =7150
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =350
+                            Top =4350
+                            Width =12200
+                            Height =350
+                            FontSize =10
+                            Name ="lblProgress"
+                            Caption ="Import activity - progress appears here after you start"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =350
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =12550
+                            LayoutCachedHeight =4700
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

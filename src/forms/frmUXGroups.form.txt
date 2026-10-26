@@ -11,15 +11,14 @@ Begin Form
     ScrollBars =2
     Width =19960
     ItemSuffix =31
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Summary groups"
     OnActivate ="=UXVisualEvent(\"frmUXGroups\",\"UXLoadGroups()\")"
     OnResize ="=UXHelpResize(\"frmUXGroups\",\"UXResizeWorkspace(\"\"frmUXGroups\"\")\")"
     OnLoad ="=UXLoadGroups()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -651,25 +650,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =2350
-                    Width =2200
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxFilterLabel"
-                    Caption ="Archive status"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =2350
-                    LayoutCachedWidth =5050
-                    LayoutCachedHeight =2650
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -700,6 +680,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2850
+                            Top =2350
+                            Width =2200
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxFilterLabel"
+                            Caption ="Archive status"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =2350
+                            LayoutCachedWidth =5050
+                            LayoutCachedHeight =2650
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -897,25 +898,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =8650
-                    Width =1755
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxStateLabel"
-                    Caption ="Local group status"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =8650
-                    LayoutCachedWidth =4605
-                    LayoutCachedHeight =9000
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
@@ -943,6 +925,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2850
+                            Top =8650
+                            Width =1755
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxStateLabel"
+                            Caption ="Local group status"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =8650
+                            LayoutCachedWidth =4605
+                            LayoutCachedHeight =9000
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

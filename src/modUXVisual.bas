@@ -18,7 +18,7 @@ Public Function UXColor(ByVal role As String) As Long
   Case "SuccessInk": UXColor = RGB(31, 101, 68)
   Case "Help": UXColor = RGB(238, 232, 250)
   Case "HelpInk": UXColor = RGB(99, 61, 136)
-  Case "Muted": UXColor = RGB(100, 116, 133)
+  Case "Muted": UXColor = RGB(86, 100, 116)
   Case Else: UXColor = RGB(255, 255, 255)
  End Select
 End Function

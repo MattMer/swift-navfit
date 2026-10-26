@@ -11,15 +11,14 @@ Begin Form
     ScrollBars =0
     Width =16000
     ItemSuffix =47
-    Right =18525
-    Bottom =12795
+    Right =19725
+    Bottom =13245
     Caption ="Swift NAVFIT"
     OnActivate ="=UXVisualEvent(\"frmHome\",\"UXDashboardRefresh()\")"
     OnResize ="=UXHelpResize(\"frmHome\",\"UXResizeWorkspace(\"\"frmHome\"\")\")"
     OnLoad ="=LoadHome()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -783,25 +782,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =4770
-                    Width =10450
-                    Height =400
-                    FontSize =16
-                    ForeColor =4205854
-                    Name ="uxRecentCaption"
-                    Caption ="Recent reports"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =4770
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =5170
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =85
@@ -831,6 +811,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2850
+                            Top =4770
+                            Width =10450
+                            Height =400
+                            FontSize =16
+                            ForeColor =4205854
+                            Name ="uxRecentCaption"
+                            Caption ="Recent reports"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =4770
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =5170
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -945,25 +946,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =215
-                    TextFontFamily =34
-                    Left =7800
-                    Top =850
-                    Width =5500
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxContributorLabel"
-                    Caption ="Active contributor"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =7800
-                    LayoutCachedTop =850
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =1150
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =215
@@ -992,6 +974,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =7800
+                            Top =850
+                            Width =5500
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxContributorLabel"
+                            Caption ="Active contributor"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =7800
+                            LayoutCachedTop =850
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =1150
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =215

@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     Width =15850
     ItemSuffix =28
-    Right =15300
+    Right =19725
     Bottom =13245
     Caption ="Group PSG RSCA"
     OnActivate ="=UXVisualEvent(\"frmUXGroupRSCA\",\"UXLoadContext()\")"
@@ -19,7 +19,6 @@ Begin Form
     OnLoad ="=RSLoadGroupCalculator()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -467,25 +466,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2866
-                    Top =1800
-                    Width =9954
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblSenior"
-                    Caption ="Reporting senior record"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =1800
-                    LayoutCachedWidth =12820
-                    LayoutCachedHeight =2100
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -514,25 +494,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2866
-                    Top =2950
-                    Width =9954
-                    Height =300
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblBaseline"
-                    Caption ="Historical RSCA baseline for this group paygrade"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =2950
-                    LayoutCachedWidth =12820
-                    LayoutCachedHeight =3250
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2866
+                            Top =1800
+                            Width =9954
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblSenior"
+                            Caption ="Reporting senior record"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =1800
+                            LayoutCachedWidth =12820
+                            LayoutCachedHeight =2100
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -562,6 +544,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =2866
+                            Top =2950
+                            Width =9954
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblBaseline"
+                            Caption ="Historical RSCA baseline for this group paygrade"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =2950
+                            LayoutCachedWidth =12820
+                            LayoutCachedHeight =3250
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CheckBox
                     OverlapFlags =85
@@ -579,25 +582,27 @@ Begin Form
                     LayoutCachedTop =4250
                     LayoutCachedWidth =3142
                     LayoutCachedHeight =4600
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =3222
-                    Top =4250
-                    Width =9480
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblExcludes"
-                    Caption ="These reports have not yet been included in the selected BOL totals."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =3222
-                    LayoutCachedTop =4250
-                    LayoutCachedWidth =12702
-                    LayoutCachedHeight =4900
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =3222
+                            Top =4250
+                            Width =9480
+                            Height =650
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblExcludes"
+                            Caption ="These reports have not yet been included in the selected BOL totals."
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =3222
+                            LayoutCachedTop =4250
+                            LayoutCachedWidth =12702
+                            LayoutCachedHeight =4900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
