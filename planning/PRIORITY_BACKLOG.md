@@ -271,17 +271,21 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
 | Performance | Local disk | Network latency. Batched reads (M03) and caching matter more. Define offline behavior. |
 | Security | Folder permissions on approved storage (C01) | SharePoint permissions, plus authorization of the tenant and site for PII/CUI. Decide whether SSNs are stored there at all. |
 
-**Open decisions (product owner and ISSM):**
-- Which SharePoint environment (for example DoD365) is approved for this PII/CUI,
-  and whether SSNs may be stored in it or must stay local.
-- The provisioning mechanism: Access's own SharePoint list creation, or
-  REST/Graph calls from VBA (authentication under modern sign-in), or a script
-  that a site owner runs.
-- Offline behavior in shared mode: read-only, cached, or unavailable.
-- Whether moving a command from local to shared mode is supported in both
-  directions, and who may do it.
-- Whether contributor attribution becomes the authenticated SharePoint identity
-  in shared mode.
+**Decisions (product owner, 26 Oct 2026):**
+
+| Topic | Decision |
+| --- | --- |
+| Environment | DoD365 SharePoint Online, the command's site |
+| SSNs | Stored in SharePoint if the ISSM approves; otherwise shared mode keeps them out |
+| Offline | Read-only cache: users can view cached data but not save until reconnected |
+| Attribution | In shared mode, the contributor is the signed-in account; local mode keeps the startup profile choice |
+| Moving between modes | Both directions (local to shared, shared to local), each through the verified import into an empty target |
+| Provisioning | From inside Swift's setup screen, using the method the research spike proves reliable on DoD365 |
+| Who may set up or migrate | SharePoint site owners (list-management rights); Swift checks those permissions first |
+
+**Still open (needs the ISSM):**
+- Confirmation that the command's DoD365 site is authorized for this PII/CUI.
+- Whether SSNs may be stored there. Until approved, plan for the no-SSN variant.
 
 **Design notes for planning:**
 - A **storage-provider layer** behind one interface, so the editor, validation,
