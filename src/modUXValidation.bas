@@ -237,6 +237,7 @@ Public Function UXValidationLayout() As Boolean
     Dim f As Access.Form, width As Long, height As Long
     On Error GoTo Finished
     Set f = Forms!frmUXValidation: width = f.InsideWidth - 800: height = f.InsideHeight
+    If width > UX_MAX_FORM_WIDTH - 1000 Then width = UX_MAX_FORM_WIDTH - 1000
     If width < 4500 Then Exit Function
     f!lblHeading.Width = width - 750: f!lblBasis.Width = width: f!lblCount.Width = width - 2700
     f!cmdWindowHelp.Left = width - 100

@@ -4,6 +4,12 @@ Private layouts As Object
 Private viewportBusy As Boolean
 Private viewportError As String
 Private layoutPasses As Long
+' Widest content area a workspace stretches to (twips right of the rail); wider
+' windows leave a right margin instead of over-long rows.
+Private Const MAX_CONTENT_WIDTH As Long = 16500
+' Access rejects form and control positions past 22 inches; a maximized window on
+' a 2560-pixel or scaled 4K screen is wider than that.
+Public Const UX_MAX_FORM_WIDTH As Long = 31680
 Public Function UXViewportPasses() As Long
     UXViewportPasses = layoutPasses
 End Function
@@ -75,10 +81,41 @@ Public Sub UXRestoreViewport(ByVal f As Access.Form)
     End If
     layouts.Remove f.Name
 End Sub
+' Controls that use extra width: lists, subforms, wide text boxes and wide
+' captions or outlines. Buttons, combo boxes and short inputs keep their size.
+Private Function UXElastic(ByVal c As Access.Control) As Boolean
+    Select Case c.ControlType
+        Case acListBox, acSubform: UXElastic = True
+        Case acTextBox: UXElastic = (c.Width >= 4000)
+        Case acLabel, acRectangle: UXElastic = (c.Width >= 6000)
+    End Select
+End Function
+' Share the extra width among the elastic controls beside v (sharing rows, not
+' overlapping it horizontally), in proportion to their design widths. Controls to
+' their right move over by the share they pass. Returns the offset from the rail.
+Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal extra As Long, ByRef x As Long, ByRef w As Long)
+    Dim key As Variant, p As Variant, total As Double, before As Double
+    If v(4) Then total = v(2)
+    For Each key In geometry.Keys
+        p = geometry(key)
+        If p(4) And p(1) < v(1) + v(3) And v(1) < p(1) + p(3) Then
+            If p(0) + p(2) <= v(0) Then
+                total = total + p(2): before = before + p(2)
+            ElseIf p(0) >= v(0) + v(2) Then
+                total = total + p(2)
+            End If
+        End If
+    Next
+    x = v(0) - 2850: w = v(2)
+    If total > 0 Then
+        x = x + CLng(extra * before / total)
+        If v(4) Then w = w + CLng(extra * v(2) / total)
+    End If
+End Sub
 Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, state As Object, geometry As Object, old As Access.Form
     Dim width As Long, height As Long, left As Long, available As Long, baseWidth As Long, bottom As Long, ratio As Double, v As Variant, compact As Boolean
-    Dim x As Long, w As Long, painted As Boolean
+    Dim x As Long, w As Long, painted As Boolean, extra As Long
     If viewportBusy Then Exit Function
     On Error GoTo Failed
     Set f = Forms(formName)
@@ -87,6 +124,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     If viewportWidth > 0 Then width = viewportWidth
     If viewportHeight > 0 Then height = viewportHeight
     If width < 4000 Or height < 2000 Then Exit Function
+    If width > UX_MAX_FORM_WIDTH Then width = UX_MAX_FORM_WIDTH
     viewportBusy = True: viewportError = ""
     If layouts Is Nothing Then Set layouts = CreateObject("Scripting.Dictionary")
     If layouts.Exists(formName) Then
@@ -98,7 +136,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
         baseWidth = 10450
         For Each c In f.Controls
             If c.Left >= 2450 And c.Name <> "cmdWindowHelp" And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
-                geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height)
+                geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height, UXElastic(c))
                 If c.Visible And c.Left + c.Width - 2850 > baseWidth Then baseWidth = c.Left + c.Width - 2850
             End If
         Next
@@ -120,11 +158,18 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     UXVisualSet f!uxContext, "Left", IIf(compact, 2950, 2850): UXVisualSet f!uxContext, "Top", 200
     UXVisualSet f!uxContext, "Width", width - f!uxContext.Left - 350
     bottom = 0
+    'Narrower than the design: scale everything. Wider: only elastic controls grow.
+    If ratio > 1 Then extra = IIf(available > MAX_CONTENT_WIDTH, MAX_CONTENT_WIDTH, available) - state("Width")
+    If extra < 0 Then extra = 0
     For Each c In f.Controls
         If geometry.Exists(c.Name) Then
             v = geometry(c.Name)
-            x = left + CLng((v(0) - 2850) * ratio): w = CLng(v(2) * ratio)
-            If w < 200 Then w = 200
+            If ratio > 1 Then
+                UXElasticPlace geometry, v, extra, x, w: x = x + left
+            Else
+                x = left + CLng((v(0) - 2850) * ratio): w = CLng(v(2) * ratio)
+                If w < 200 Then w = 200
+            End If
             If x + w > width - 250 Then w = width - 250 - x
             UXVisualSet c, "Left", x: UXVisualSet c, "Width", w
             UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3)
@@ -144,6 +189,8 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     layoutPasses = layoutPasses + 1
     UXResizeWorkspace = True
 Finished:
+    'A failure here must not resume into Finished again: that looped forever.
+    On Error GoTo CleanupFailed
     If Not f Is Nothing Then
         UXSortHeaders f
         UXWindowHelpLayout f.Name, width
@@ -156,4 +203,7 @@ Failed:
     viewportError = "Viewport " & formName & ": " & Err.Number & " " & Err.Description
     Debug.Print viewportError
     Resume Finished
+CleanupFailed:
+    If Len(viewportError) = 0 Then viewportError = "Viewport cleanup " & formName & ": " & Err.Number & " " & Err.Description: Debug.Print viewportError
+    Resume Next
 End Function

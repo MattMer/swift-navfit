@@ -83,6 +83,7 @@ Public Function UXWindowHelpLayout(ByVal formName As String, Optional ByVal view
     width = viewportWidth
     If width = 0 Then width = f.InsideWidth
     If width < 1500 Then width = f.Width
+    If width > UX_MAX_FORM_WIDTH Then width = UX_MAX_FORM_WIDTH
     UXVisualSet f!cmdWindowHelp, "Left", width - 800: UXVisualSet f!cmdWindowHelp, "Top", 150
     UXVisualSet f!cmdWindowHelp, "Width", 500: UXVisualSet f!cmdWindowHelp, "Height", 400
     If UXHasControl(f, "uxContext") Then

@@ -19,6 +19,10 @@ Public Function TestVisual() As String
   Next
   Check f!cmdWindowHelp.BackColor = UXColor("Help"), "Help palette missing"
   Check UXResizeWorkspace(CStr(name), 9000, 7000), "Compact resize failed"
+  ' A maximized window on a 2560-pixel or scaled 4K screen is wider than Access's
+  ' 22-inch limit; this used to loop forever in the resize cleanup.
+  Check UXResizeWorkspace(CStr(name), 36000, 9000) And Len(UXViewportFailure()) = 0, "Very wide resize failed: " & UXViewportFailure()
+  Check f!cmdWindowHelp.Left + f!cmdWindowHelp.Width <= UX_MAX_FORM_WIDTH, "Help button placed past the form width limit"
   Check f!cmdWindowHelp.ForeColor = UXColor("HelpInk"), "Resize lost help palette"
   DoCmd.Close acForm, CStr(name), acSaveNo
  Next

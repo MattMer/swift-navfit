@@ -404,6 +404,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     If viewportWidth > 0 Then width = viewportWidth
     If viewportHeight > 0 Then height = viewportHeight
     If width < 4000 Or height < 2000 Then GoTo Finished
+    If width > UX_MAX_FORM_WIDTH Then width = UX_MAX_FORM_WIDTH
     compact = (width < 12000 Or height < 7500)
     If surfaceSection = 5 And width - 7050 < UXNarrativeWidth(Nz(f!cboKind, "EVAL")) Then compact = True
     UXNavigationLayout f, compact, width
