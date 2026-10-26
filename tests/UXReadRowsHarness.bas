@@ -100,9 +100,9 @@ Public Function TestUXReadRows() As String
     For Each preset In Array("Drafting", "Dates", "History")
         SaveLibraryView CStr(preset): RefreshLibrary
         Check f!lstReports.ListCount = 3, "Preset omitted report"
-        Check f!lstReports.ColumnCount = 9, "Preset column shape"
+        Check f!lstReports.ColumnCount = 10 And f!lstReports.Column(4, 0) = "Rate", "Preset column shape"
         For rows = 1 To 2
-            Check SameFieldValue(f!lstReports.Column(6, rows), UXTableITA(CLng(f!lstReports.Column(0, rows)))), "Displayed ITA mismatch"
+            Check SameFieldValue(f!lstReports.Column(7, rows), UXTableITA(CLng(f!lstReports.Column(0, rows)))), "Displayed ITA mismatch"
         Next
     Next
     f!uxStatusFilter = "Local approval": RefreshLibrary

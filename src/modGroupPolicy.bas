@@ -33,7 +33,9 @@ Public Function GroupWorkflow(ByVal groupID As Long) As String
     GroupWorkflow = GroupPolicyValue(groupID, "Workflow")
     If Len(GroupWorkflow) = 0 Then GroupWorkflow = "Initialized"
 End Function
-Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByVal state As String)
+'Completing with a signed date marks every draft or approved member report signed
+'in the same transaction; leaving Completed reopens the group's signed reports.
+Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByVal state As String, Optional ByVal signedOn As Variant = Null)
     Dim w As DAO.Workspace, db As DAO.Database, d As Object, old As String, op As Long, failure As Long, message As String, author As Long
     author = MajorAuthor()
     If state <> "Initialized" And state <> "In-Work" And state <> "Ready for Signature" And state <> "Completed" Then Err.Raise vbObjectError + 6810, "modGroupPolicy.SetGroupWorkflow", "Choose a supported group status."
@@ -48,9 +50,16 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     If state = "Completed" Then RSPostGroupCompletion groupID, d
     db.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & groupID, dbFailOnError
     db.Execute "INSERT INTO GroupLifecycle (GroupID,WorkflowState,ChangedBy,ChangedAt) VALUES (" & groupID & "," & QuoteSQL(state) & "," & author & ",Now())", dbFailOnError
+    Dim reportsChanged As Long, outcome As String
+    outcome = "Local group status changed; member report states unchanged."
+    If state = "Completed" And old <> "Completed" And Not IsNull(signedOn) Then
+        reportsChanged = MarkGroupReportsSigned(groupID, CDate(signedOn)): outcome = "Group completed; " & reportsChanged & " member reports marked signed " & Format$(signedOn, "yyyy-mm-dd") & "."
+    ElseIf old = "Completed" And state <> "Completed" Then
+        reportsChanged = ReopenGroupReports(groupID, "Group reopened from Completed to " & state): outcome = "Group reopened; " & reportsChanged & " signed member reports reopened for correction."
+    End If
     db.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     op = BeginOperation("Change group workflow", "Group " & groupID & "; BEFORE: " & old & "; AFTER: " & state)
-    FinishOperation op, "Completed", "Local group status changed; member report states unchanged."
+    FinishOperation op, "Completed", outcome
     w.CommitTrans: Exit Sub
 Failed:
     Dim swiftPrimary As Object

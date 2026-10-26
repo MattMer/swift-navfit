@@ -113,10 +113,24 @@ Failed:
     If committed Then message = "Move completed; the display update failed. Reopen Reports to inspect the saved membership. " & message
     Forms!frmUXMoveGroup!lblStatus.Caption = message
 End Function
-Public Function UXSetGroupWorkflow() As Boolean
+'Completing asks for the signed date (the reports are marked signed with it);
+'leaving Completed confirms that the signed reports reopen. decision answers
+'the reopen question for tests.
+Public Function UXSetGroupWorkflow(Optional ByVal decision As Long = 0) As Boolean
+    Dim group As Long, state As String, old As String, signed As Long
     On Error GoTo Failed
     With Forms!frmUXGroups
-        SetGroupWorkflow CLng(Nz(!lstGroups, 0)), Nz(!uxStateStamp, ""), Nz(!uxGroupState, "")
+        group = CLng(Nz(!lstGroups, 0)): state = Nz(!uxGroupState, "")
+        old = GroupWorkflow(group)
+        If state = "Completed" And old <> "Completed" Then
+            UXSetGroupWorkflow = UXSignoffOpenGroup(group, True, Nz(!uxStateStamp, "")): Exit Function
+        End If
+        signed = GroupSignedCount(group)
+        If old = "Completed" And state <> "Completed" And signed > 0 Then
+            If decision = 0 Then decision = MsgBox("Reopening this group reopens its " & signed & " signed reports for correction. Continue?", vbYesNo + vbQuestion + vbDefaultButton2, "Reopen group")
+            If decision <> vbYes Then Exit Function
+        End If
+        SetGroupWorkflow group, Nz(!uxStateStamp, ""), state
     End With
     UXGroupList
     UXSetGroupWorkflow = True: Exit Function

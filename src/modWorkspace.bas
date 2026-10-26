@@ -122,6 +122,7 @@ Public Function RefreshLibrary() As Boolean
         If filter <> "All" Then sql = sql & " AND FormKind=" & QuoteSQL(filter)
         filter = Nz(f!uxStatusFilter, "All")
         If filter <> "All" Then sql = sql & " AND UXReportRowCell(ReportID,1)=" & QuoteSQL(filter)
+        If UXHasControl(f, "cboRankFilter") Then sql = sql & UXMemberRankWhere(Nz(f!cboRankFilter, "All ranks/rates"))
     End If
     term = Replace(Trim$(Nz(f!txtSearch, "")), "'", "''")
     If Len(term) > 0 Then sql = sql & " AND (InStr(1,Nz([Title],''),'" & term & "',1)>0 OR InStr(1,Nz([MemberName],''),'" & term & "',1)>0 OR InStr(1,Nz([OfficialName],''),'" & term & "',1)>0)"

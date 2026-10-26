@@ -72,7 +72,9 @@ Public Function TestCounseling() As String
     blank = Member("Synthetic No Rank", "")
     Check CounselingMemberStatus(blank, #10/5/2026#)("Status") = "Enter rank/rate", "Missing rank not reported"
     chief = Member("Synthetic Master Chief", "ITCM")
-    Check InStr(CounselingMemberStatus(chief, #10/5/2026#)("Note"), "No Regular periodic report") = 1, "E-9 exemption note missing"
+    Check CounselingMemberStatus(chief, #10/5/2026#)("Status") = "Not scheduled" And InStr(CounselingMemberStatus(chief, #10/5/2026#)("Note"), "No Regular periodic report") = 1, "E-9 still shown as due after NAVADMIN 132/26"
+    Check CounselingMemberStatus(chief, #2/10/2026#)("Status") <> "Not scheduled", "E-9 exempted before 3 Jun 2026"
+    Check CounselingMemberStatus(Member("Synthetic CWO5", "CWO5"), #10/5/2026#)("Status") = "Not scheduled", "CWO5 still shown as due"
 
     stage = "save rules"
     Check Rejected(e5, #9/20/2026#, "Done", "EXAMPLE, C", ""), "Unknown outcome accepted"
@@ -81,7 +83,6 @@ Public Function TestCounseling() As String
     Check Rejected(e5, #9/20/2026#, "Not performed", "", ""), "Not performed without reason accepted"
     Check Rejected(e5, Date + 1, "Completed", "EXAMPLE, C", ""), "Future date accepted"
     Check Rejected(e5, #9/20/2026#, "Completed", "EXAMPLE, C", "", "Shredded", Date), "Unknown disposition accepted"
-    Check Rejected(e5, #9/20/2026#, "Completed", "EXAMPLE, C", "", "Destroyed", Null), "Disposition without date accepted"
     Check DCount("*", "MemberCounseling") = 0, "Rejected save left a row"
     On Error Resume Next
     CurrentDb.Execute "INSERT INTO MemberCounseling (CounselingGuid,MemberID,CounseledOn,Outcome,VersionCounter,CreatedBy,ModifiedBy) VALUES ('{X}'," & e5 & ",#2026-09-20#,'Completed',1,1,1)", dbFailOnError
@@ -146,13 +147,14 @@ Public Function TestCounseling() As String
     Check UXCounselingOpen(True), "Counseling editor did not open"
     Set f = Forms!frmUXCounselingEditor
     f!txtDate = #10/1/2026#: f!cboOutcome = "Not performed": UXCounselingOutcome
-    Check Not f!txtCounselor.Enabled And f!txtReason.Enabled, "Outcome did not switch block 31 input"
-    f!txtReason = "ILLNESS"
+    Check Not f!txtCounselor.Enabled And f!cboReason.Enabled, "Outcome did not switch block 31 input"
+    Check f!cboReason.ListCount >= 5 And Not f!cboReason.LimitToList And Not UXHasControl(f, "txtDispositionOn"), "Reason list or disposition date field wrong"
+    f!cboReason = "FAMILY EMERGENCY"
     Check UXCounselingSave(), "Editor save failed"
     Check Forms!frmUXMemberHistory!lstCounseling.ListCount = 2, "History did not refresh"
     Forms!frmUXMemberHistory!lstCounseling = DMax("CounselingID", "MemberCounseling")
     Check UXCounselingOpen(False), "Edit did not open"
-    Check Forms!frmUXCounselingEditor!txtReason = "ILLNESS", "Edit lost values"
+    Check Forms!frmUXCounselingEditor!cboReason = "FAMILY EMERGENCY", "Typed reason not kept"
     Forms!frmUXCounselingEditor!txtDate = Null
     Check Not UXCounselingSave() And Len(Forms!frmUXCounselingEditor!lblStatus.Caption) > 0, "Missing date accepted"
     UXDirectoryClose "frmUXCounselingEditor"
@@ -164,9 +166,11 @@ Public Function TestCounseling() As String
     Check Forms!frmMyWork!lstCounseling.Visible And Not Forms!frmMyWork!lstWork.Visible, "Counseling tab did not switch views"
     found = False
     For i = 0 To Forms!frmMyWork!lstCounseling.ListCount - 1
-        If CLng(Forms!frmMyWork!lstCounseling.ItemData(i)) = blank Then found = (Forms!frmMyWork!lstCounseling.Column(3, i) = "Enter rank/rate")
+        If CLng(Forms!frmMyWork!lstCounseling.ItemData(i)) = blank Then found = True
     Next
-    Check found, "Member without rank not listed"
+    Check Not found, "Member without a grade/rate listed in My Work"
+    Check InStr(Forms!frmMyWork!sort_lstCounseling_1.Caption, "Member") = 1 And InStr(Forms!frmMyWork!sort_lstCounseling_3.Caption, "Status") = 1, "Counseling columns lack headings: " & Forms!frmMyWork!sort_lstCounseling_1.Caption
+    Forms!frmMyWork!chkCounselingAll = True: UXMyWorkCounseling
     Forms!frmMyWork!lstCounseling = blank
     Check UXMyWorkCounselingRecord() And CurrentProject.AllForms("frmUXCounselingEditor").IsLoaded, "Record from My Work failed"
     UXDirectoryClose "frmUXCounselingEditor"
@@ -183,8 +187,21 @@ Public Function TestCounseling() As String
     LinkReportDirectoryMember second, e5, CurrentRevision(second), CLng(DLookup("VersionCounter", "CommandMember", "MemberID=" & e5)), "Synthetic identity"
     Check CounselingDispositionDue(e5), "Disposition not due after detachment"
     Check InStr(CounselingWorkRows(True, #10/25/2026#), "Worksheet disposition due") > 0, "My Work did not list the disposition"
-    Call SaveCounseling(id, 2, e5, #9/21/2026#, "Completed", "EXAMPLE, D", "", "Given to member", #10/20/2026#)
-    Check Not CounselingDispositionDue(e5), "Recorded disposition still due"
+    Call SaveCounseling(id, 2, e5, #9/21/2026#, "Completed", "EXAMPLE, D", "", "Given to member", Null)
+    Check Not CounselingDispositionDue(e5) And DLookup("DispositionOn", "MemberCounseling", "CounselingID=" & id) = Date, "Disposition not recorded with today's date"
+
+    stage = "creation default"
+    other = Member("Synthetic New Report", "IT2")
+    Call SaveCounseling(0, 0, other, #4/10/2026#, "Completed", "EXAMPLE, F", "", "", Null)
+    Set s = CreateObject("Scripting.Dictionary"): s("PeriodStart") = #9/16/2025#: s("PeriodEnd") = #9/15/2026#: s("CounselingDate") = Null: s("CounselorName") = Null
+    CounselingCreationDefaults s, other
+    Check s("CounselingDate") = "2026-04-10" And s("CounselorName") = "EXAMPLE, F", "New report did not start with the recorded session: " & s("CounselingDate")
+    s("CounselingDate") = "2026-09-30": s("CounselorName") = "TYPED, BY USER"
+    CounselingCreationDefaults s, other
+    Check s("CounselingDate") = "2026-09-30" And s("CounselorName") = "TYPED, BY USER", "Creation default replaced an entered value"
+    s("CounselingDate") = Null: s("CounselorName") = Null: s("ReportConcurrent") = "Yes"
+    CounselingCreationDefaults s, other
+    Check IsNull(s("CounselingDate")), "Concurrent report got a counseling default"
 
     stage = "merge"
     source = Member("Synthetic Duplicate", "IT2"): target = Member("Synthetic Survivor", "IT2")

@@ -28,7 +28,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 | 2 | Open and set up a workspace | 4 |
 | 3 | Navigate the application | 5 |
 | 4 | Create, edit, and save reports | 6 |
-| 5 | Add notes and replies | 7 |
+| 5 | Add messages to a report | 7 |
 | 6 | Check validation and calculations | 8 |
 | 7 | Use revision history and recover work | 9 |
 | 8 | Manage command members and prior evaluations | 10 |
@@ -118,8 +118,8 @@ Do not overwrite the old file with a new Blank. Open a separate new Blank and us
 ## 2.4 Change the active contributor
 
 1. Finish or save report work and close the report editor.
-2. Open **My Work**, then the contributor controls.
-3. Add the contributor if needed, or select the existing name and switch contributors.
+2. Open **My Work**, then **Contributors**.
+3. Double-click a name in the list (or select it and choose **Switch contributor**), or add a new contributor.
 4. Confirm the displayed active name before posting notes or recording review decisions.
 
 Contributor switching is guarded while report work is open. Do not bypass the guard by editing tables or creating a duplicate profile to impersonate another person.
@@ -201,7 +201,7 @@ Locally approved or archived reports are read-only. Reopen local approval with a
 When the official report has been signed outside Swift, record it so the workspace keeps the signed copy for the reporting senior's binder.
 
 1. Save any pending edits. Mark signed records the saved version.
-2. Choose **Mark signed** in the report header, or **Mark selected report signed** in a summary group's Members view.
+2. Choose **Mark signed** in the report header. In a summary group's Members view, choose **Mark selected report signed** for one report or **Mark all reports signed** for the whole group.
 3. Enter the date it was signed. To remove the drafts now, select **Dispose of drafts now** (see below).
 4. Choose **Mark signed**.
 
@@ -213,6 +213,10 @@ The report becomes read only and its list status shows **Signed**. Mark signed i
 - **No:** the field stays unchanged.
 
 The Members grid asks the same question. Shared-field and default changes skip signed reports and say how many they skipped.
+
+**Completing a summary group.** Setting a group to **Completed** asks for the date its reports were signed and marks every draft or locally approved report in the group signed on that date. Setting a completed group back to another status reopens its signed reports for correction after you confirm.
+
+**Finding signed reports.** In Reports, choose **Signed** in **Local review status**. The list also has a **Rate** column and a **Rank / rate** filter.
 
 **Disposing of drafts.** BUPERSINST 1610.10H says drafts should be destroyed once the report is signed. **Dispose of drafts**, on the History page of a signed report or when you mark it signed, removes:
 
@@ -228,43 +232,22 @@ Signed reports are kept: FITREPs and CHIEFEVALs for at least 5 years, and EVALs 
 
 ---
 
-# 5. Add notes and replies
+# 5. Add messages to a report
 
-## 5.1 Purpose and screen areas
+## 5.1 Purpose
 
-Report notes are shared communication among people working in the same authoritative workspace. They are independent of approval and report revisions. There is no resolve/reopen requirement. Posting a note does not accept a review step, unlock a report, or change its saved revision.
+Each report has one running message log that everyone working in the workspace can read and add to, like a message board. Messages stay with the report permanently, independent of review, approval and signing, so once a report is done you can look back at what was said. Posting a message never changes the report's values or its status.
 
-| Area | What it shows |
-| --- | --- |
-| Conversations - all contributors | Existing conversation roots, contributor, and posting time. |
-| Selected conversation and replies | Full text of the selected conversation and its replies. |
-| Your unfinished notes - not posted | Your private saved drafts for this report. |
-| Writing area | A new note, a reply, or a resumed private draft. |
-
-## 5.2 Post a new note
+## 5.2 Post a message
 
 1. Open the saved report and choose **Report tools > Notes and replies**.
-2. Read existing conversations to avoid duplicating the discussion.
-3. Choose **Write a new note** and enter your message.
-4. Check the active contributor name, then choose **Post note / reply**.
-5. Confirm the note appears in the shared conversation list and reading area.
+2. Read the log. Messages appear oldest first, each with who posted it and when.
+3. Type in the message box. The caption shows the contributor you are posting as.
+4. Choose **Post message**. It is added to the log straight away.
 
-## 5.3 Reply to a conversation
-
-1. Select a conversation in the left list and read its full text on the right.
-2. Choose **Reply to conversation**.
-3. Enter the reply and choose **Post note / reply**.
-
-The reply stays with its selected conversation even if you save the unfinished reply and resume it later. Conversations remain usable after local approval or later report revisions.
-
-## 5.4 Keep or discard unfinished text
-
-Choose **Save draft** in the notes area to keep a private unfinished note. This is different from the report's Save draft button. Select an item under **Your unfinished notes - not posted**, then choose **Continue selected draft** to resume it. **Discard draft** deliberately removes that private checkpoint. Refreshing or changing views does not post the text.
-
-Draft checkpoint failures block navigation that would lose the note. Unposted drafts remain private to their contributor profile; that privacy is an application convention, not authentication. Old notes, comments, replies, and attribution are retained when upgrading.
+There are no private drafts. If you start typing and then leave the report, Swift asks you to post or clear the message first. Messages, replies and drafts from earlier versions are kept when upgrading; earlier replies appear in the log in time order, and old unposted drafts can still be recovered from **Unposted notes** on the Overview.
 
 ---
-
 # 6. Check validation and calculations
 
 ## 6.1 Review report findings
@@ -363,20 +346,20 @@ In the summary-group trait table, **Prior ITA** and **Prior Promotion** are read
 
 BUPERSINST 1610.10H chapter 18 sets a midterm counseling month for each paygrade; a new schedule takes effect 1 January 2027. Swift uses the member's grade/rate from the directory to show when each member is due.
 
-1. Open **My Work > Counseling** to see members who are overdue, due this month, due within 60 days, missing a grade/rate, or whose worksheet disposition is due. Select **Show every active member** to see everyone.
+1. Open **My Work > Counseling** to see members who are overdue, due this month, due within 60 days, or whose worksheet disposition is due. Select **Show every active member** to see everyone. Members without a grade/rate are not scheduled; enter it in the command member directory.
 2. Select a member and choose **Record counseling for selected member**, or open the member's history and choose **Record counseling**.
 3. Enter the date and choose the outcome:
    - **Completed:** enter the counselor exactly as block 31 of the report will show it.
-   - **Not performed:** enter a brief reason, such as TEMADD or ILLNESS.
+   - **Not performed:** choose a common reason such as TEMADD or ILLNESS, or type your own.
 4. Save. The record appears in the member's history with the schedule status.
 
 A session held earlier or later than the scheduled month still counts for that cycle. Archive a record entered in error; it is kept but no longer counts.
 
-When you open the member's next Regular report, **Report tools > Validation** shows a finding if blocks 30–31 don't match the record. Select it and choose **Use recorded counseling in blocks 30-31**. Swift fills in the date and counselor, NOT PERF with the reason, or NOT REQ when no session falls in the report period. These are unsaved edits: save the report to keep them. A session already entered on another of the member's reports is not offered again.
+When you create a report for the member (from the directory or a summary group), blocks 30–31 start with the recorded session in the report's period: the date and counselor, or NOT PERF and the reason. You can change them, and Swift never replaces values already entered. A session already entered on another of the member's reports is not used again. For an existing report, **Report tools > Validation** shows a finding when blocks 30–31 differ from the record; select it and choose **Use recorded counseling in blocks 30-31**.
 
-The signed worksheet stays on paper; Swift records the session, not the signature. After the member has a Detachment of Individual report, record whether the worksheet was **Given to member** or **Destroyed**, as chapter 18 requires.
+The signed worksheet stays on paper; Swift records the session, not the signature. After the member has a Detachment of Individual report, record whether the worksheet was **Given to member** or **Destroyed**, as chapter 18 requires; Swift notes the date itself.
 
-Master chiefs and CWO5s have no Regular periodic report, but counseling is still scheduled for them.
+Master chiefs and CWO5s have no Regular periodic report since 3 June 2026, so Swift does not show them as due.
 
 **Expected result:** Each member's counseling is recorded once, appears on the right report, and the worksheet's final disposition is noted.
 
@@ -525,6 +508,8 @@ Once all steps are accepted on current values, the final reviewer records **Loca
 3. Choose **Open selected work** to open that report's appropriate **Review steps** view and selected route or assignment.
 4. Use **Back to My Work** when finished; it returns focus to the existing My Work tab. **Open report** opens the report for normal report work.
 
+Accept and return decisions, with their notes, are made inside the report from its header, not in My Work. Review routes are optional: a report can be saved and marked signed without one.
+
 The review queue includes current assigned reviews, current ordered-route steps, ready local approvals, and requester actions for stale work. Future route steps are not actionable yet. Assignment due dates appear when supplied; routes do not acquire invented due dates.
 
 ## 13.2 Assign a saved revision
@@ -540,7 +525,7 @@ Acceptance records that assignment's outcome. It is not ordered-route final appr
 
 ## 13.3 Read conversations separately
 
-Choose My Work's **Report notes** tab to browse workspace conversations, then **Open selected report conversation**. It opens the report's Notes and replies view. Notes are not unresolved approval tasks and need not be closed to complete a review.
+Choose My Work's **Report notes** tab to browse workspace conversations, then **Open selected report conversation**. It opens the report's message log. Messages are not approval tasks and need not be closed to complete a review.
 
 Use the completed/all-history controls to inspect older review work. A changed report can make historical work stale without deleting its original decision. If an action is disabled, check active contributor, current saved revision, archive state, local approval, and route step before retrying.
 

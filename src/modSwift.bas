@@ -395,6 +395,7 @@ End Function
 Public Function LoadLibrary() As Boolean
     RefreshFolders
     If IsNull(Forms!frmLibrary!cboArchive) Then Forms!frmLibrary!cboArchive = "Active"
+    If UXHasControl(Forms!frmLibrary, "cboRankFilter") Then UXMemberRankChoices Forms!frmLibrary, "Report"
     Call RefreshLibrary()
     LoadLibrary = True
 End Function

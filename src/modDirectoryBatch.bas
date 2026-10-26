@@ -62,6 +62,7 @@ Public Function ApplyDirectoryReports(Optional ByRef outcome As String = "") As 
         For Each field In UXSharedKeys(): values(CStr(field)) = UXEffectiveDefault(pendingGroup, CStr(field)): Next
         values("FormKind") = kind: values("PeriodStart") = fromDate: values("PeriodEnd") = toDate
         values("OfficialName") = r!ReportName: values("RankRate") = r!RankRate: values("MemberSSN") = r!MemberSSN
+        CounselingCreationDefaults values, CLng(key)
         DirectoryCreationContext CLng(key)
         id = CommitDraft(0, kind, kind & " - " & r!FullName, r!FullName, fromDate, toDate, "", "Create from command directory", values("OfficialComments"), _
             FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _

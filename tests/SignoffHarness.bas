@@ -149,9 +149,54 @@ Public Function TestSignoff() As String
     Check Not ReportIsSigned(other) And SavedFields(other)("Trait33") = "3.0", "Grid reopen did not save"
     DoCmd.Close acForm, "frmUXComparison"
 
-    TestSignoff = "PASS: " & checks & " mark signed, lock, reopen prompt, save refusal, bulk skip, draft disposal and grid assertions": Exit Function
+    stage = "group signing"
+    Dim g As Long, r1 As Long, r2 As Long, senior As Object, sid As Long
+    'Completion posts RSCA accounting, so the reports carry a senior and marks.
+    Set senior = CreateObject("Scripting.Dictionary")
+    For Each key In RSSeniorKeys(): senior.Add CStr(key), Null: Next
+    senior("ReportingSeniorSSN") = "000000001": senior("ReportingSeniorName") = "SYNTHETIC"
+    sid = RSSaveSenior(0, "Synthetic senior", senior)
+    r1 = AccountedReport(senior, "Group sign one", "IT2"): r2 = AccountedReport(senior, "Group sign two", "")
+    g = CreateSummaryGroup("Group signing", "EVAL", "E5"): AddGroupMember g, r1, "E5": AddGroupMember g, r2, "E5"
+    RSSetGroupBaseline g, sid, RSAddBaseline(sid, "E5", #12/31/2025#, 4.2, 100, 420, "Synthetic baseline"), True
+    Check MarkGroupReportsSigned(g, #10/9/2026#) = 2 And ReportIsSigned(r1) And ReportIsSigned(r2), "Mark all reports signed failed"
+    Check MarkGroupReportsSigned(g, #10/9/2026#) = 0, "Already signed reports marked again"
+    Check ReopenGroupReports(g, "Test reopen") = 2 And Not ReportIsSigned(r1), "Group reopen failed"
+    SetGroupWorkflow g, GroupStamp(g), "Completed", #10/10/2026#
+    Check ReportIsSigned(r1) And ReportIsSigned(r2) And DLookup("SignedOn", "ReportSignoff", "SignoffID=" & ReportCurrentSignoff(r2)) = #10/10/2026#, "Completing the group did not sign its reports on the given date"
+    SetGroupWorkflow g, GroupStamp(g), "In-Work"
+    Check Not ReportIsSigned(r1) And Not ReportIsSigned(r2), "Reopening the completed group left reports signed"
+    SetGroupWorkflow g, GroupStamp(g), "Completed"
+    Check Not ReportIsSigned(r1), "Completing without a signed date signed reports"
+    SetGroupWorkflow g, GroupStamp(g), "In-Work"
+    Check UXSignoffOpenGroup(g, False), "Group dialog did not open"
+    Forms!frmUXSignoff!txtSignedOn = #10/11/2026#
+    If Not UXSignoffSave(True) Then Check False, "Group dialog save failed: " & Forms!frmUXSignoff!lblStatus.Caption
+    Check ReportIsSigned(r1) And ReportIsSigned(r2) And GroupWorkflow(g) = "In-Work", "Group dialog did not sign reports, or changed the group status"
+
+    stage = "reports list"
+    DoCmd.OpenForm "frmLibrary"
+    Forms!frmLibrary!uxStatusFilter = "Signed": RefreshLibrary
+    Check Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads) = DCount("*", "Report", "WorkflowState='Signed' AND IsArchived=False"), "Signed filter wrong"
+    Forms!frmLibrary!uxStatusFilter = "All": Forms!frmLibrary!cboRankFilter = "E5": RefreshLibrary
+    Check Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads) = 1 And Forms!frmLibrary!lstReports.Column(4, Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = "IT2", "Rank filter or Rate column wrong"
+    Call UXClearReportFilters
+    Check Forms!frmLibrary!cboRankFilter = "All ranks/rates", "Clear filters kept the rank filter"
+    DoCmd.Close acForm, "frmLibrary"
+
+    TestSignoff = "PASS: " & checks & " mark signed, lock, reopen prompt, save refusal, bulk skip, draft disposal, grid, group signing and reports list assertions": Exit Function
 Failed:
     TestSignoff = "FAIL at " & stage & " after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+Private Function AccountedReport(ByVal senior As Object, ByVal title As String, ByVal rank As String) As Long
+    Dim f As Object, key As Variant
+    AccountedReport = CommitDraft(0, "EVAL", title, title, #9/16/2025#, #9/15/2026#, "", "Test")
+    Set f = CreateObject("Scripting.Dictionary")
+    For Each key In senior.Keys: f.Add CStr(key), senior(key): Next
+    f.Add "ObservationStatus", "Observed"
+    For Each key In TraitKeys(): f.Add CStr(key), "4.0": Next
+    If rank <> "" Then f.Add "RankRate", rank
+    CommitSavedFields AccountedReport, CurrentRevision(AccountedReport), f, "Synthetic accounting fixture"
 End Function
 Private Function ImportReceiptFor(ByVal id As Long) As Long
     Dim r As DAO.Recordset

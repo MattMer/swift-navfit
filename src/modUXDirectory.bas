@@ -109,11 +109,13 @@ Public Function UXDirectoryBatchOpen() As Boolean
     Forms!frmUXDirectoryBatch!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
     UXDirectoryBatchOpen = True
 End Function
-Public Sub UXMemberRankChoices(ByVal f As Access.Form)
+'Rank/rate filter choices: paygrades first, then exact ranks/rates, from the
+'member directory or (source "Report") the saved reports.
+Public Sub UXMemberRankChoices(ByVal f As Access.Form, Optional ByVal source As String = "CommandMember")
     Dim db As DAO.Database, r As DAO.Recordset, grades As Object, grade As String, key As Variant
     Set db = CurrentDb: Set grades = CreateObject("Scripting.Dictionary")
     f!cboRankFilter.RowSourceType = "Value List": f!cboRankFilter.RowSource = "All ranks/rates;Unentered"
-    Set r = db.OpenRecordset("SELECT DISTINCT RankRate FROM CommandMember WHERE IsArchived=False AND RankRate Is Not Null AND RankRate<>'' ORDER BY RankRate", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT DISTINCT RankRate FROM [" & source & "] WHERE IsArchived=False AND RankRate Is Not Null AND RankRate<>'' ORDER BY RankRate", dbOpenSnapshot)
     Do While Not r.EOF
         grade = ValidationWornPaygrade(CStr(r!RankRate))
         If grade <> "" Then grades(grade) = True
@@ -246,19 +248,20 @@ Public Function UXCounselingOpen(Optional ByVal createNew As Boolean = True, Opt
     f!lblMember.Caption = Nz(MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & counselingMember), "")
     f!cboOutcome.RowSourceType = "Value List": f!cboOutcome.RowSource = """" & COUNSELING_COMPLETED & """;""" & COUNSELING_NOT_PERFORMED & """"
     f!cboDisposition.RowSourceType = "Value List": f!cboDisposition.RowSource = """Given to member"";""Destroyed"""
+    f!cboReason.RowSourceType = "Value List": f!cboReason.RowSource = CounselingReasonChoices()
     f!cboOutcome = COUNSELING_COMPLETED: f!txtDate = Date
     If counselingID > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & counselingID, dbOpenSnapshot)
         counselingVersion = r!VersionCounter: counselingMember = r!MemberID
-        f!txtDate = r!CounseledOn: f!cboOutcome = r!Outcome: f!txtCounselor = r!CounselorName: f!txtReason = r!NotPerformedReason
-        f!cboDisposition = r!WorksheetDisposition: f!txtDispositionOn = r!DispositionOn: r.Close
+        f!txtDate = r!CounseledOn: f!cboOutcome = r!Outcome: f!txtCounselor = r!CounselorName: f!cboReason = r!NotPerformedReason
+        f!cboDisposition = r!WorksheetDisposition: r.Close
     End If
     UXCounselingOutcome: UXCounselingOpen = True
 End Function
 Public Function UXCounselingOutcome() As Boolean
     Dim f As Access.Form, completed As Boolean
     Set f = Forms!frmUXCounselingEditor: completed = (Nz(f!cboOutcome, "") = COUNSELING_COMPLETED)
-    f!txtCounselor.Enabled = completed: f!txtReason.Enabled = Not completed
+    f!txtCounselor.Enabled = completed: f!cboReason.Enabled = Not completed
     f!lblStatus.Caption = IIf(completed, "The counselor is typed into block 31 of the next Regular report; the member signs the worksheet itself.", "NOT PERF goes in block 30 and this reason in block 31 of the next Regular report.")
     UXCounselingOutcome = True
 End Function
@@ -267,7 +270,7 @@ Public Function UXCounselingSave() As Boolean
     On Error GoTo Failed
     Set f = Forms!frmUXCounselingEditor
     If Not IsDate(f!txtDate) Then Err.Raise vbObjectError + 9510, "modUXDirectory.UXCounselingSave", "Enter the counseling date."
-    Call SaveCounseling(counselingID, counselingVersion, counselingMember, CDate(f!txtDate), Nz(f!cboOutcome, ""), Nz(f!txtCounselor, ""), Nz(f!txtReason, ""), Nz(f!cboDisposition, ""), f!txtDispositionOn)
+    Call SaveCounseling(counselingID, counselingVersion, counselingMember, CDate(f!txtDate), Nz(f!cboOutcome, ""), Nz(f!txtCounselor, ""), Nz(f!cboReason, ""), Nz(f!cboDisposition, ""), Null)
     DoCmd.Close acForm, f.Name
     UXCounselingRefresh
     UXCounselingSave = True: Exit Function

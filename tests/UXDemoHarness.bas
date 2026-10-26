@@ -66,7 +66,7 @@ Public Function TestUXDemo() As String
     DoCmd.Close acForm, "frmUXComparison", acSaveNo
     stage = "my work": DoCmd.OpenForm "frmMyWork"
     Check Forms!frmMyWork!lstTasks.ListCount = 2, "Demo assigned work list incorrect"
-    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!cboContributor.ListCount = 2, "Demo contributor switching unavailable"
+    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!lstContributors.ListCount = 2, "Demo contributor switching unavailable"
     TestUXDemo = "PASS: " & checks & " populated native demo assertions": Exit Function
 Failed:
     TestUXDemo = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description

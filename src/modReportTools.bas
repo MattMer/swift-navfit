@@ -66,13 +66,13 @@ Public Function UXToolsCheckpoint(Optional ByVal closing As Boolean = False) As 
   Set r = UXReviewForm()
   If Len(Nz(r!txtNote, "")) > 0 Or Len(Nz(r!txtAssignmentNote, "")) > 0 Then Err.Raise 5, "modReportTools.UXToolsCheckpoint", "Record or clear the unfinished review decision note before leaving this report."
  End If
+ 'Messages post directly; there are no private drafts. Leaving with typed text asks
+ 'for it to be posted or cleared. A legacy draft resumed from recovery keeps saving.
  text = MessageText()
- If Nz(f!txtReportID, 0) > 0 And (Len(text) > 0 Or Nz(f!txtDraftVersion, 0) > 0) Then
-  If text <> Nz(f!txtDraftSaved, "") Or Nz(f!txtDraftVersion, 0) = 0 Then
-   If Len(Nz(f!txtDraftGuid, "")) = 0 Then f!txtDraftGuid = NewIdentity()
-   f!txtDraftVersion = SaveReportMessageDraft(f!txtDraftGuid, f!txtReportID, Nz(f!txtDraftVersion, 0), text, Nz(f!txtDraftParent, 0))
-   f!txtDraftSaved = text
-  End If
+ If Nz(f!txtDraftVersion, 0) > 0 And Nz(f!txtReportID, 0) > 0 Then
+  If text <> Nz(f!txtDraftSaved, "") Then f!txtDraftVersion = SaveReportMessageDraft(f!txtDraftGuid, f!txtReportID, Nz(f!txtDraftVersion, 0), text, Nz(f!txtDraftParent, 0)): f!txtDraftSaved = text
+ ElseIf closing And Len(Trim$(text)) > 0 Then
+  Err.Raise 5, "modReportTools.UXToolsCheckpoint", "Post or clear your message before leaving this report."
  End If
  draftTick = Now: UXToolsCheckpoint = True: Exit Function
 Failed:
@@ -96,22 +96,23 @@ Public Function UXMessageRefresh() As Boolean
  f!txtMessage.Locked = Not editable
  f!cmdNew.Enabled = editable: f!cmdReply.Enabled = editable And Not IsNull(f!lstMessages): f!cmdPost.Enabled = editable
  f!cmdKeepDraft.Enabled = editable: f!cmdDiscardDraft.Enabled = editable: f!cmdResume.Enabled = editable
- f!lblNoteStatus.Caption = "Notes are shared communication, independent of approval. Replies can continue after report changes or local approval. Your unposted drafts stay private."
+ f!lblCompose.Caption = "New message as " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & MajorAuthor()), "the current contributor")
+ f!lblNoteStatus.Caption = "Messages stay with this report, independent of review or approval, and can continue after it is signed."
  If id = 0 Then f!lblNoteStatus.Caption = "Save this report once before posting notes."
  UXMessageRead: UXMessageRefresh = True
 End Function
 Public Function UXMessageRead() As Boolean
  Dim f As Access.Form, rows As DAO.Recordset, id As Long, text As String, parents As Object
- Set f = UXToolsForm(): id = Nz(f!lstMessages, 0)
- Set parents = ReportMessageParents(Nz(f!txtReportID, 0))
+ 'One running log, oldest first: every message and reply with its author and time.
+ Set f = UXToolsForm()
  Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReportMessage WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY CreatedAt,MessageID", dbOpenSnapshot)
  Do While Not rows.EOF
-  If id > 0 Then
-   If ReportMessageMapRoot(CLng(rows!MessageID), parents) = id Then text = text & rows!ContributorName & " / " & Nz(Format(rows!CreatedAt, "yyyy-mm-dd hh:nn"), "") & vbCrLf & Nz(rows!MessageBody, "") & vbCrLf & vbCrLf
-  End If
+  text = text & rows!ContributorName & "  " & Nz(Format(rows!CreatedAt, "yyyy-mm-dd hh:nn"), "") & vbCrLf & Nz(rows!MessageBody, "") & vbCrLf & vbCrLf
   rows.MoveNext
  Loop
- rows.Close: f!txtConversation = text: UXMessageRead = True
+ rows.Close
+ If text = "" Then text = "No messages yet."
+ f!txtConversation = text: UXMessageRead = True
 End Function
 Public Function UXMessageBegin(ByVal reply As Boolean) As Boolean
  Dim f As Access.Form, parent As Long
@@ -126,8 +127,13 @@ Public Function UXMessagePost() As Boolean
  Dim f As Access.Form, id As Long
  On Error GoTo Failed
  Set f = UXToolsForm()
- If Not UXToolsCheckpoint() Then Exit Function
- id = PostReportMessageDraft(Nz(f!txtDraftGuid, ""), Nz(f!txtDraftVersion, 0))
+ If Len(Trim$(MessageText())) = 0 Then f!lblNoteStatus.Caption = "Type a message first.": Exit Function
+ If Nz(f!txtDraftVersion, 0) > 0 Then
+  If Not UXToolsCheckpoint() Then Exit Function
+  id = PostReportMessageDraft(Nz(f!txtDraftGuid, ""), Nz(f!txtDraftVersion, 0))
+ Else
+  id = AddReportMessage(Nz(f!txtReportID, 0), MessageText(), Nz(f!txtDraftParent, 0))
+ End If
  f!txtMessage = Null: f!txtDraftSaved = Null: f!txtDraftVersion = 0: f!txtDraftParent = 0: f!txtDraftGuid = NewIdentity()
  If Not IsNull(DLookup("ParentMessageID", "ReportMessage", "MessageID=" & id)) Then id = DLookup("ParentMessageID", "ReportMessage", "MessageID=" & id)
  f!lstMessages = id: UXMessageRefresh

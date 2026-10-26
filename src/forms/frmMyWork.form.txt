@@ -10,8 +10,8 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =76
-    Right =18525
+    ItemSuffix =77
+    Right =19725
     Bottom =13245
     Caption ="My Work - local review assignments"
     OnActivate ="=UXSortActivate(\"frmMyWork\")"
@@ -218,7 +218,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
-                    Top =4750
+                    Top =5000
                     Width =10450
                     Height =1600
                     FontSize =10
@@ -230,9 +230,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =4750
+                    LayoutCachedTop =5000
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =6350
+                    LayoutCachedHeight =6600
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -288,35 +288,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin ComboBox
-                    LimitToList = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    ColumnCount =2
-                    Left =2850
-                    Top =2900
-                    Width =7000
-                    Height =450
-                    FontSize =10
-                    TabIndex =23
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="cboContributor"
-                    RowSourceType ="Table/Query"
-                    ColumnWidths ="0;3500"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =2900
-                    LayoutCachedWidth =9850
-                    LayoutCachedHeight =3350
-                    ThemeFontIndex =-1
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin CommandButton
                     OverlapFlags =93
                     TextFontFamily =34
@@ -325,7 +296,7 @@ Begin Form
                     Width =3200
                     Height =450
                     FontSize =10
-                    TabIndex =24
+                    TabIndex =23
                     ForeColor =4205854
                     Name ="cmdSwitch"
                     Caption ="Switch contributor"
@@ -363,11 +334,11 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =3850
+                    Top =4350
                     Width =7000
                     Height =450
                     FontSize =10
-                    TabIndex =25
+                    TabIndex =24
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtContributor"
@@ -375,9 +346,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3850
+                    LayoutCachedTop =4350
                     LayoutCachedWidth =9850
-                    LayoutCachedHeight =4300
+                    LayoutCachedHeight =4800
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -387,11 +358,11 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =10100
-                    Top =3850
+                    Top =4350
                     Width =3200
                     Height =450
                     FontSize =10
-                    TabIndex =26
+                    TabIndex =25
                     ForeColor =4205854
                     Name ="cmdAdd"
                     Caption ="Add contributor"
@@ -400,9 +371,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =10100
-                    LayoutCachedTop =3850
+                    LayoutCachedTop =4350
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =4300
+                    LayoutCachedHeight =4800
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -513,7 +484,7 @@ Begin Form
                     Width =10450
                     Height =1350
                     FontSize =10
-                    TabIndex =27
+                    TabIndex =26
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstTasks"
@@ -560,7 +531,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =255
+                    OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
                     Top =3550
@@ -579,7 +550,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =95
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =4300
@@ -600,7 +571,7 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    OverlapFlags =223
+                    OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -609,7 +580,7 @@ Begin Form
                     Width =4800
                     Height =450
                     FontSize =10
-                    TabIndex =28
+                    TabIndex =27
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboReviewer"
@@ -628,7 +599,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =95
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =8100
                     Top =4300
@@ -648,7 +619,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =223
+                    OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =8100
@@ -656,7 +627,7 @@ Begin Form
                     Width =5200
                     Height =450
                     FontSize =10
-                    TabIndex =29
+                    TabIndex =28
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDue"
@@ -729,7 +700,7 @@ Begin Form
                     Width =10450
                     Height =500
                     FontSize =10
-                    TabIndex =30
+                    TabIndex =29
                     ForeColor =4205854
                     Name ="cmdAssign"
                     Caption ="Assign saved revision"
@@ -934,7 +905,7 @@ Begin Form
                     Width =3397
                     Height =550
                     FontSize =10
-                    TabIndex =31
+                    TabIndex =30
                     ForeColor =4205854
                     Name ="cmdHome"
                     Caption ="Home"
@@ -1410,7 +1381,7 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -1419,7 +1390,7 @@ Begin Form
                     Width =10450
                     Height =450
                     FontSize =10
-                    TabIndex =32
+                    TabIndex =31
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxAssignReport"
@@ -1619,7 +1590,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =33
+                    TabIndex =32
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"
@@ -1657,7 +1628,7 @@ Begin Form
                     Width =1980
                     Height =500
                     FontSize =10
-                    TabIndex =34
+                    TabIndex =33
                     ForeColor =4205854
                     Name ="uxWorkNotesTab"
                     Caption ="Report notes"
@@ -1709,7 +1680,7 @@ Begin Form
                     Width =10450
                     Height =3700
                     FontSize =10
-                    TabIndex =35
+                    TabIndex =34
                     Name ="lstReportNotes"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;0;3200;1700;3500;1800"
@@ -1732,7 +1703,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =36
+                    TabIndex =35
                     ForeColor =4205854
                     Name ="cmdOpenReportNote"
                     Caption ="Open selected report conversation"
@@ -1764,7 +1735,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =37
+                    TabIndex =36
                     ForeColor =4205854
                     Name ="cmdRefreshReportNotes"
                     Caption ="Refresh report notes"
@@ -1948,7 +1919,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =100
                     Height =100
-                    TabIndex =38
+                    TabIndex =37
                     Name ="uxSortActivateOriginal"
                     DefaultValue ="\"=UXVisualEvent(\"\"frmMyWork\"\",\"\"UXWorkChanged()\"\")\""
 
@@ -1962,7 +1933,7 @@ Begin Form
                     Width =1980
                     Height =500
                     FontSize =10
-                    TabIndex =39
+                    TabIndex =38
                     Name ="uxWorkCounselingTab"
                     Caption ="Counseling"
                     OnClick ="=UXMyWorkMode(\"Counseling\")"
@@ -1979,7 +1950,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     Left =2850
                     Top =2550
                     Width =10450
@@ -2001,7 +1972,7 @@ Begin Form
                     Width =300
                     Height =300
                     ColumnOrder =0
-                    TabIndex =40
+                    TabIndex =39
                     Name ="chkCounselingAll"
                     AfterUpdate ="=UXMyWorkCounseling()"
                     Tag ="MWX:body"
@@ -2030,7 +2001,7 @@ Begin Form
                 Begin ListBox
                     Visible = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =247
+                    OverlapFlags =255
                     IMESentenceMode =3
                     ColumnCount =7
                     Left =2850
@@ -2039,7 +2010,7 @@ Begin Form
                     Height =3100
                     ColumnOrder =0
                     FontSize =10
-                    TabIndex =41
+                    TabIndex =40
                     Name ="lstCounseling"
                     RowSourceType ="Value List"
                     ColumnWidths ="0;3300;1100;2000;1100;1400;1500"
@@ -2053,7 +2024,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2070,7 +2041,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2087,7 +2058,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2104,7 +2075,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2121,7 +2092,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2138,7 +2109,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2155,7 +2126,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =223
                     Left =2850
                     Top =3650
                     Width =800
@@ -2178,7 +2149,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =42
+                    TabIndex =41
                     Name ="cmdCounselingRecord"
                     Caption ="Record counseling for selected member"
                     OnClick ="=UXMyWorkCounselingRecord()"
@@ -2203,7 +2174,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =43
+                    TabIndex =42
                     Name ="cmdCounselingMember"
                     Caption ="Open member history"
                     OnClick ="=UXMyWorkCounselingMember()"
@@ -2219,6 +2190,30 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                     Overlaps =1
+                End
+                Begin ListBox
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =2850
+                    Top =2900
+                    Width =7000
+                    Height =1300
+                    ColumnOrder =0
+                    FontSize =10
+                    TabIndex =43
+                    Name ="lstContributors"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;6800"
+                    OnDblClick ="=ContributorUI(\"Switch\")"
+                    Tag ="MWX:body"
+                    ControlTipText ="Double-click a contributor, or select one and choose Switch contributor."
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =9850
+                    LayoutCachedHeight =4200
                 End
             End
         End

@@ -10,7 +10,7 @@ Begin Form
     BorderStyle =0
     Width =12400
     ItemSuffix =44
-    Right =18525
+    Right =19725
     Bottom =13245
     OnActivate ="=UXSortActivate(\"frmReportTools\")"
     FilterOnLoad =0
@@ -277,8 +277,7 @@ Begin Form
                     Height =600
                     FontSize =10
                     Name ="lblNoteIntro"
-                    Caption ="Report notes and replies - shared communication, independent of review or approv"
-                        "al."
+                    Caption ="Messages about this report from everyone who works on it, oldest first."
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
                     LayoutCachedLeft =200
@@ -288,6 +287,7 @@ Begin Form
                     ThemeFontIndex =-1
                 End
                 Begin Label
+                    Visible = NotDefault
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =200
@@ -298,7 +298,6 @@ Begin Form
                     Name ="lblConversations"
                     Caption ="Conversations - all contributors"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
                     LayoutCachedLeft =200
                     LayoutCachedTop =850
                     LayoutCachedWidth =4100
@@ -307,6 +306,7 @@ Begin Form
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
+                    Visible = NotDefault
                     OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
@@ -323,7 +323,6 @@ Begin Form
                     AfterUpdate ="=UXMessageRead()"
                     FontName ="Segoe UI"
                     OnMouseDown ="[Event Procedure]"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =1250
@@ -332,18 +331,18 @@ Begin Form
                     ThemeFontIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
-                    Left =4300
+                    Left =200
                     Top =850
-                    Width =7700
+                    Width =11800
                     Height =300
                     FontSize =10
                     Name ="lblConversation"
-                    Caption ="Selected conversation and replies"
+                    Caption ="Messages"
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
-                    LayoutCachedLeft =4300
+                    LayoutCachedLeft =200
                     LayoutCachedTop =850
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =1150
@@ -356,10 +355,10 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =4300
-                    Top =1250
-                    Width =7700
-                    Height =2600
+                    Left =200
+                    Top =1200
+                    Width =11800
+                    Height =3500
                     FontSize =10
                     TabIndex =8
                     BackColor =15985893
@@ -367,15 +366,16 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
 
-                    LayoutCachedLeft =4300
-                    LayoutCachedTop =1250
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =1200
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =3850
+                    LayoutCachedHeight =4700
                     BackThemeColorIndex =-1
                     ThemeFontIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =93
+                    Visible = NotDefault
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =200
                     Top =4100
@@ -385,7 +385,6 @@ Begin Form
                     Name ="lblDrafts"
                     Caption ="Your unfinished notes - not posted"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
                     LayoutCachedLeft =200
                     LayoutCachedTop =4100
                     LayoutCachedWidth =4100
@@ -393,6 +392,7 @@ Begin Form
                     ThemeFontIndex =-1
                 End
                 Begin ListBox
+                    Visible = NotDefault
                     OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
@@ -407,7 +407,6 @@ Begin Form
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;2400;1400"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =4850
@@ -416,6 +415,7 @@ Begin Form
                     ThemeFontIndex =-1
                 End
                 Begin CommandButton
+                    Visible = NotDefault
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =200
@@ -429,7 +429,6 @@ Begin Form
                     Caption ="Continue selected draft"
                     OnClick ="=UXMessageResume()"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =6350
@@ -448,7 +447,8 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
-                    OverlapFlags =93
+                    Visible = NotDefault
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =4300
                     Top =4100
@@ -461,7 +461,6 @@ Begin Form
                     Caption ="Write a new note"
                     OnClick ="=UXMessageBegin(False)"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =4300
                     LayoutCachedTop =4100
@@ -480,7 +479,8 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
-                    OverlapFlags =93
+                    Visible = NotDefault
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =8100
                     Top =4100
@@ -493,7 +493,6 @@ Begin Form
                     Caption ="Reply to conversation"
                     OnClick ="=UXMessageBegin(True)"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =4100
@@ -514,63 +513,63 @@ Begin Form
                 Begin Label
                     OverlapFlags =93
                     TextFontFamily =34
-                    Left =4300
-                    Top =4700
-                    Width =7700
+                    Left =200
+                    Top =4900
+                    Width =11800
                     Height =300
                     FontSize =10
                     Name ="lblCompose"
                     Caption ="Write a new report note"
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
-                    LayoutCachedLeft =4300
-                    LayoutCachedTop =4700
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =4900
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =5000
+                    LayoutCachedHeight =5200
                     ThemeFontIndex =-1
                 End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault
                     ScrollBars =2
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =4300
-                    Top =5100
-                    Width =7700
-                    Height =1600
+                    Left =200
+                    Top =5250
+                    Width =9300
+                    Height =1400
                     FontSize =10
                     TabIndex =13
                     Name ="txtMessage"
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
 
-                    LayoutCachedLeft =4300
-                    LayoutCachedTop =5100
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =6700
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =5250
+                    LayoutCachedWidth =9500
+                    LayoutCachedHeight =6650
                     ThemeFontIndex =-1
                 End
                 Begin CommandButton
                     OverlapFlags =93
                     TextFontFamily =34
-                    Left =4300
-                    Top =6900
-                    Width =2350
+                    Left =9700
+                    Top =5250
+                    Width =2300
                     Height =450
                     FontSize =10
                     TabIndex =14
                     ForeColor =4205854
                     Name ="cmdPost"
-                    Caption ="Post note / reply"
+                    Caption ="Post message"
                     OnClick ="=UXMessagePost()"
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
 
-                    LayoutCachedLeft =4300
-                    LayoutCachedTop =6900
-                    LayoutCachedWidth =6650
-                    LayoutCachedHeight =7350
+                    LayoutCachedLeft =9700
+                    LayoutCachedTop =5250
+                    LayoutCachedWidth =12000
+                    LayoutCachedHeight =5700
                     ForeThemeColorIndex =-1
                     UseTheme =0
                     Gradient =0
@@ -584,6 +583,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
+                    Visible = NotDefault
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =6800
@@ -597,7 +597,6 @@ Begin Form
                     Caption ="Save draft"
                     OnClick ="=UXMessageKeep()"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =6800
                     LayoutCachedTop =6900
@@ -616,6 +615,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
+                    Visible = NotDefault
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =9300
@@ -629,7 +629,6 @@ Begin Form
                     Caption ="Discard draft"
                     OnClick ="=UXMessageDiscard()"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =9300
                     LayoutCachedTop =6900
@@ -648,6 +647,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
+                    Visible = NotDefault
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =200
@@ -661,7 +661,6 @@ Begin Form
                     Caption ="Refresh conversations"
                     OnClick ="=UXMessageRefresh()"
                     FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =6900
@@ -680,10 +679,10 @@ Begin Form
                     Overlaps =1
                 End
                 Begin Label
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =200
-                    Top =7600
+                    Top =6900
                     Width =11800
                     Height =700
                     FontSize =10
@@ -691,9 +690,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
                     LayoutCachedLeft =200
-                    LayoutCachedTop =7600
+                    LayoutCachedTop =6900
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =8300
+                    LayoutCachedHeight =7600
                     ThemeFontIndex =-1
                 End
                 Begin Label

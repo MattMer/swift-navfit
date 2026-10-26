@@ -83,6 +83,11 @@ import and print-ready PDF output.
   - **Mark signed** sets `WorkflowState` to `Signed`, so every save path refuses
     changes. In the editor and group grid the first edit asks whether to reopen
     the report for correction; bulk defaults skip signed reports and list them.
+    Completing a summary group asks for one signed date and marks its reports
+    signed; leaving Completed reopens them.
+  - Report notes are one running message log per report (author and time,
+    oldest first) with direct posting and no private drafts. Earlier replies and
+    drafts remain stored and importable.
 - **Entry points:**
   - Startup runs [AutoExec.txt](src/AutoExec.txt) → `SwiftAppStartup` → setup or
     contributor choice → application shell.
@@ -122,7 +127,7 @@ import and print-ready PDF output.
 | M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). |
 | M07 | Accessibility | Labels/focus preparation only. Attended acceptance not started. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
-| Mark signed | Record a signature made outside Swift; read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
+| Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
 | Counseling | Midterm counseling tracker: chapter 18 schedule by paygrade (current and 2027 tables), records in member history, My Work tab, blocks 30–31 carry-over through Report tools, worksheet disposition after detachment | Dev (schema 34). Printing a pre-filled worksheet is deferred. |
 
 Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md).

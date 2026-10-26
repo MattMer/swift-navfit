@@ -9,7 +9,7 @@ Option Explicit
 'empties superseded revisions but keeps every signed revision, all conversations,
 'reviews, group history and accounting, and records what it removed.
 Private testDecision As Long, testReason As String, testUsed As Boolean
-Private signoffReport As Long, signoffRevision As Long
+Private signoffReport As Long, signoffRevision As Long, signoffGroup As Long, signoffCompleting As Boolean, signoffStamp As String
 
 Public Function ReportIsSigned(ByVal reportID As Long) As Boolean
     ReportIsSigned = (Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & reportID), "") = "Signed")
@@ -187,7 +187,7 @@ Public Function UXSignoffOpen(Optional ByVal reportID As Long = 0) As Boolean
         If Nz(Forms!frmEditor!txtReportID, 0) = reportID And EditorHasPending() Then Err.Raise vbObjectError + 9631, "modSignoff.UXSignoffOpen", "Save or discard pending edits first. Mark signed records the saved version."
     End If
     If ReportIsSigned(reportID) Then Err.Raise vbObjectError + 9602, "modSignoff.UXSignoffOpen", "This report is already marked signed."
-    signoffReport = reportID: signoffRevision = CurrentRevision(reportID)
+    signoffReport = reportID: signoffRevision = CurrentRevision(reportID): signoffGroup = 0
     DoCmd.OpenForm "frmUXSignoff": Set f = Forms!frmUXSignoff
     f!lblReport.Caption = UXMemberLabel(reportID) & " | " & Nz(MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & reportID), "") & " | saved revision " & Nz(MajorScalar("SELECT RevisionNumber FROM ReportRevision WHERE RevisionID=" & signoffRevision), "")
     f!txtSignedOn = Date: f!chkDispose = False
@@ -205,6 +205,9 @@ Public Function UXSignoffSave(Optional ByVal confirmedDisposal As Boolean = Fals
     If dispose And Not confirmedDisposal Then
         If MsgBox("Dispose of this report's drafts now? Superseded draft revisions, recovery checkpoints, unposted note drafts and imported source values are removed. The signed version, conversations, reviews and accounting stay. This cannot be undone, and existing backups and exports still hold the drafts.", vbYesNo + vbExclamation + vbDefaultButton2, "Dispose of drafts") <> vbYes Then dispose = False
     End If
+    If signoffGroup > 0 Then
+        UXSignoffSave = UXSignoffSaveGroup(CDate(f!txtSignedOn), dispose): Exit Function
+    End If
     Call MarkReportSigned(signoffReport, signoffRevision, CDate(f!txtSignedOn))
     If dispose Then Call DisposeReportDrafts(signoffReport)
     DoCmd.Close acForm, f.Name
@@ -212,6 +215,24 @@ Public Function UXSignoffSave(Optional ByVal confirmedDisposal As Boolean = Fals
     UXSignoffSave = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
+End Function
+Private Function UXSignoffSaveGroup(ByVal signedOn As Date, ByVal dispose As Boolean) As Boolean
+    Dim r As DAO.Recordset, before As String, marked As Long, id As Variant, ids As New Collection
+    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & signoffGroup & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved')", dbOpenSnapshot)
+    Do While Not r.EOF: ids.Add CLng(r!ReportID): r.MoveNext: Loop
+    r.Close
+    If signoffCompleting Then
+        SetGroupWorkflow signoffGroup, signoffStamp, "Completed", signedOn
+    Else
+        marked = MarkGroupReportsSigned(signoffGroup, signedOn)
+    End If
+    If dispose Then
+        For Each id In ids: Call DisposeReportDrafts(CLng(id)): Next
+    End If
+    DoCmd.Close acForm, "frmUXSignoff"
+    If CurrentProject.AllForms("frmUXGroups").IsLoaded Then UXGroupList
+    If CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXGridLoad
+    UXSignoffSaveGroup = True
 End Function
 Public Function UXDisposeDrafts(Optional ByVal reportID As Long = 0, Optional ByVal confirmed As Boolean = False) As Boolean
     On Error GoTo Failed
@@ -238,3 +259,58 @@ Private Sub UXSignoffRefresh(ByVal reportID As Long)
     End If
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXGridLoad
 End Sub
+
+'--- Summary groups ------------------------------------------------------------
+'Mark every active draft or approved report in a group signed on one date.
+'Already signed reports are left as they are. Returns the number marked.
+Public Function MarkGroupReportsSigned(ByVal groupID As Long, ByVal signedOn As Date) As Long
+    Dim r As DAO.Recordset, w As DAO.Workspace
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)) > 0 And EditorHasPending() Then Err.Raise vbObjectError + 9640, "modSignoff.MarkGroupReportsSigned", "Save or discard pending edits in the open report first."
+    End If
+    Set w = DBEngine.Workspaces(0): w.BeginTrans
+    On Error GoTo Failed
+    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.CurrentRevisionID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved') ORDER BY r.ReportID", dbOpenSnapshot)
+    Do While Not r.EOF
+        Call MarkReportSigned(r!ReportID, r!CurrentRevisionID, signedOn)
+        MarkGroupReportsSigned = MarkGroupReportsSigned + 1: r.MoveNext
+    Loop
+    r.Close
+    w.CommitTrans: Exit Function
+Failed:
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modSignoff", "MarkGroupReportsSigned", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")
+    SwiftRollback w, swiftPrimary
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
+    On Error GoTo 0: SwiftRaise swiftPrimary
+End Function
+Public Function ReopenGroupReports(ByVal groupID As Long, ByVal reason As String) As Long
+    Dim r As DAO.Recordset, ids As New Collection, id As Variant
+    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.WorkflowState='Signed'", dbOpenSnapshot)
+    Do While Not r.EOF: ids.Add CLng(r!ReportID): r.MoveNext: Loop
+    r.Close
+    For Each id In ids: Call ReopenSignedReport(CLng(id), reason): Next
+    ReopenGroupReports = ids.Count
+End Function
+Public Function GroupSignedCount(ByVal groupID As Long) As Long
+    GroupSignedCount = Nz(MajorScalar("SELECT Count(*) FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.WorkflowState='Signed'"), 0)
+End Function
+Public Function GroupSignableCount(ByVal groupID As Long) As Long
+    GroupSignableCount = Nz(MajorScalar("SELECT Count(*) FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved')"), 0)
+End Function
+'Open the Mark signed dialog for a whole group. completing: the dialog also sets the
+'group to Completed (stamp is the group list's state stamp).
+Public Function UXSignoffOpenGroup(ByVal groupID As Long, ByVal completing As Boolean, Optional ByVal stamp As String = "") As Boolean
+    Dim f As Access.Form
+    On Error GoTo Failed
+    If groupID = 0 Then Err.Raise vbObjectError + 9641, "modSignoff.UXSignoffOpenGroup", "Select a summary group."
+    If Not completing And GroupSignableCount(groupID) = 0 Then Err.Raise vbObjectError + 9642, "modSignoff.UXSignoffOpenGroup", "Every report in this group is already signed or archived."
+    signoffReport = 0: signoffRevision = 0: signoffGroup = groupID: signoffCompleting = completing: signoffStamp = stamp
+    DoCmd.OpenForm "frmUXSignoff": Set f = Forms!frmUXSignoff
+    f!lblReport.Caption = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & groupID), "Summary group") & " | " & GroupSignableCount(groupID) & " reports to mark signed"
+    f!txtSignedOn = Date: f!chkDispose = False
+    f!lblStatus.Caption = IIf(completing, "Completing this group marks all of its draft and approved reports signed on this date. Reopening the group later reopens them.", "Marks all of this group's draft and approved reports signed on this date. Already signed reports are unchanged.")
+    UXSignoffOpenGroup = True: Exit Function
+Failed:
+    MsgBox Err.Description, vbExclamation, "Mark signed"
+End Function

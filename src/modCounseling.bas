@@ -56,7 +56,9 @@ Public Function CounselingMemberStatus(ByVal memberID As Long, Optional ByVal as
     rank = Nz(MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & memberID), "")
     grade = ValidationWornPaygrade(rank)
     If grade = "" Then result("Status") = "Enter rank/rate": Set CounselingMemberStatus = result: Exit Function
-    If grade = "E9" Or grade = "W5" Then result("Note") = "No Regular periodic report; counseling is still scheduled."
+    'Since NAVADMIN 132/26 (3 Jun 2026) E-9 and CWO5 have no Regular periodic report;
+    'the command does not track their midterm counseling as due.
+    If (grade = "E9" Or grade = "W5") And asOf >= #6/3/2026# Then result("Status") = "Not scheduled": result("Note") = "No Regular periodic report.": Set CounselingMemberStatus = result: Exit Function
     Set due = CounselingDueMonths(grade, DateAdd("yyyy", -3, asOf), DateAdd("yyyy", 2, asOf))
     If due.Count = 0 Then result("Status") = "Not scheduled": Set CounselingMemberStatus = result: Exit Function
     monthStart = DateSerial(Year(asOf), Month(asOf), 1)
@@ -111,7 +113,8 @@ Public Function SaveCounseling(ByVal counselingID As Long, ByVal expectedVersion
     If outcome = COUNSELING_NOT_PERFORMED Then counselor = ""
     If outcome = COUNSELING_COMPLETED Then reason = ""
     If disposition <> "" And disposition <> "Given to member" And disposition <> "Destroyed" Then Err.Raise vbObjectError + 9503, "modCounseling.SaveCounseling", "Choose Given to member or Destroyed for the worksheet."
-    If disposition <> "" And Not IsDate(dispositionOn) Then Err.Raise vbObjectError + 9503, "modCounseling.SaveCounseling", "Enter the date the worksheet was given or destroyed."
+    'The disposition date is recorded automatically; nobody needs to enter it.
+    If disposition <> "" And Not IsDate(dispositionOn) Then dispositionOn = Date
     If disposition = "" Then dispositionOn = Null
     If DateValue(counseledOn) > Date Then Err.Raise vbObjectError + 9504, "modCounseling.SaveCounseling", "The counseling date cannot be in the future."
     If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 9505, "modCounseling.SaveCounseling", "Choose an active command member."
@@ -140,6 +143,10 @@ Failed:
     SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
+'Common block 31 reasons; any other brief reason may be typed.
+Public Function CounselingReasonChoices() As String
+    CounselingReasonChoices = """TEMADD"";""ILLNESS"";""LEAVE"";""DEPLOYED"";""HOSPITALIZED"";""SEE COMMENT"""
+End Function
 Public Function ArchiveCounseling(ByVal counselingID As Long, ByVal expectedVersion As Long) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, op As Long
     Set w = DBEngine.Workspaces(0): w.BeginTrans
@@ -167,7 +174,7 @@ Public Function CounselingWorkRows(Optional ByVal includeAll As Boolean = False,
     Do While Not r.EOF
         Set s = CounselingMemberStatus(r!MemberID, asOf): status = s("Status")
         If CounselingDispositionDue(r!MemberID) Then status = "Worksheet disposition due"
-        If includeAll Or status = "Overdue" Or status = "Due this month" Or status = "Due soon" Or status = "Enter rank/rate" Or status = "Worksheet disposition due" Then
+        If includeAll Or status = "Overdue" Or status = "Due this month" Or status = "Due soon" Or status = "Worksheet disposition due" Then
             If rows <> "" Then rows = rows & ";"
             rows = rows & r!MemberID & ";" & ListText(r!FullName) & ";" & ListText(Nz(r!RankRate, "")) & ";" & status & ";" & IIf(IsNull(s("DueMonth")), "", Format$(Nz(s("DueMonth"), Date), "yyyy-mm")) & ";" & IIf(IsNull(s("LastCounseled")), "", Format$(Nz(s("LastCounseled"), Date), "yyyy-mm-dd")) & ";" & ListText(s("Note"))
         End If
@@ -195,6 +202,23 @@ Public Function CounselingSuggestion(ByVal f As Object, ByVal reportID As Long) 
     records = Nz(MajorScalar("SELECT Count(*) FROM MemberCounseling WHERE MemberID=" & memberID & " AND IsArchived=False"), 0)
     If records = 0 Then Exit Function
     fromDate = CDate(FieldText(f, "PeriodStart")): toDate = CDate(FieldText(f, "PeriodEnd"))
+    Set s = CounselingMatch(memberID, fromDate, toDate, reportID)
+    If s Is Nothing Then
+        Set s = CreateObject("Scripting.Dictionary")
+        s("CounselingID") = 0: s("CounselingDate") = "NOT REQ": s("CounselorName") = ""
+        s("Message") = "No counseling is recorded for this member in this report period."
+    End If
+    existing = FieldText(f, "CounselingDate")
+    If existing = s("CounselingDate") And FieldText(f, "CounselorName") = Nz(s("CounselorName"), "") Then Exit Function
+    'NOT REQ is only offered for an empty block 30; any entry there is deliberate.
+    If s("CounselingDate") = "NOT REQ" And existing <> "" Then Exit Function
+    Set CounselingSuggestion = s
+End Function
+'The member's recorded session for a report period: the latest completed session
+'not already entered on another of the member's saved reports, else a session
+'recorded as not performed. Nothing when neither exists.
+Private Function CounselingMatch(ByVal memberID As Long, ByVal fromDate As Date, ByVal toDate As Date, ByVal reportID As Long) As Object
+    Dim s As Object, r As DAO.Recordset, dateText As String
     Set s = CreateObject("Scripting.Dictionary")
     Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberCounseling WHERE MemberID=" & memberID & " AND IsArchived=False AND CounseledOn>=" & SQLDate(fromDate) & " AND CounseledOn<=" & SQLDate(toDate) & " ORDER BY CounseledOn DESC", dbOpenSnapshot)
     Do While Not r.EOF
@@ -212,16 +236,22 @@ Public Function CounselingSuggestion(ByVal f As Object, ByVal reportID As Long) 
         r.MoveNext
     Loop
     r.Close
-    If s.Count = 0 Then
-        s("CounselingID") = 0: s("CounselingDate") = "NOT REQ": s("CounselorName") = ""
-        s("Message") = "No counseling is recorded for this member in this report period."
-    End If
-    existing = FieldText(f, "CounselingDate")
-    If existing = s("CounselingDate") And FieldText(f, "CounselorName") = Nz(s("CounselorName"), "") Then Exit Function
-    'NOT REQ is only offered for an empty block 30; any entry there is deliberate.
-    If s("CounselingDate") = "NOT REQ" And existing <> "" Then Exit Function
-    Set CounselingSuggestion = s
+    If s.Count > 0 Then Set CounselingMatch = s
 End Function
+'New reports for a member start with blocks 30-31 from the recorded session in
+'their period. Entered values are never replaced, and Concurrent-only or
+'Operational Commander reports are left blank.
+Public Sub CounselingCreationDefaults(ByVal values As Object, ByVal memberID As Long)
+    Dim s As Object
+    If memberID = 0 Then Exit Sub
+    If Not IsDate(FieldText(values, "PeriodStart")) Or Not IsDate(FieldText(values, "PeriodEnd")) Then Exit Sub
+    If FieldText(values, "CounselingDate") <> "" Or FieldText(values, "CounselorName") <> "" Then Exit Sub
+    If FieldText(values, "ReportOperationalCommander") = "Yes" Then Exit Sub
+    If FieldText(values, "ReportConcurrent") = "Yes" And FieldText(values, "ReportRegular") <> "Yes" Then Exit Sub
+    Set s = CounselingMatch(memberID, CDate(FieldText(values, "PeriodStart")), CDate(FieldText(values, "PeriodEnd")), 0)
+    If s Is Nothing Then Exit Sub
+    values("CounselingDate") = s("CounselingDate"): values("CounselorName") = s("CounselorName")
+End Sub
 Private Function FieldText(ByVal f As Object, ByVal key As String) As String
     If f.Exists(key) Then FieldText = Trim$(Nz(f(key), ""))
 End Function

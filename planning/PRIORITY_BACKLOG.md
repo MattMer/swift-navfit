@@ -213,6 +213,22 @@ and the [source/consumer audit](CONSOLIDATION_PLAN.md#m04m06-source-and-consumer
 M04–M06 did not implement H01's Chief performance-comment/rendering corrections or
 H02. H02 is implemented separately above; no release is published.
 
+## User review of 0.46.0-dev (25 Oct 2026)
+
+Decisions from the user's manual review. Items marked *in development* are being built; the rest are open.
+
+| Area | Decision |
+| --- | --- |
+| Counseling | Descriptive column headings; "Reason not performed" offers common reasons and accepts typed ones; no disposition date to enter; members without a grade/rate stay out of My Work; E-9 and CWO5 are not shown as due; a report created for a member starts with blocks 30–31 from the recorded session, never replacing entered values. *In development.* The pre-filled worksheet is not wanted for now. |
+| Mark signed | Prompt and optional reason confirmed; dispose-of-drafts stays unticked; local approval not required. A group can mark all its reports signed; completing a group asks for one signed date and marks its reports signed; reopening a completed group reopens them. Reports list gets a Signed filter. *In development.* |
+| Reports list | Rate column and rank filter. *In development.* |
+| My Work | Contributors as a list; no Decision note in My review work (decisions are made in the report); review routes optional. *In development.* |
+| Notes and replies | A running message log with author and time, a text box and Post; no conversation selector and no drafts. Existing replies and drafts stay in the data. *In development.* |
+| Report editor | Boxes around grouped blocks (5, 10–13, 16–19); block 29 description across the available width; Mark signed drawn as a button. *In development.* |
+| M01 | An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify normal-security launch. |
+| Workspace location | Chosen and secured by each command in its approved PII location. |
+| M07 | Keyboard order confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. |
+
 ## Low
 
 | ID | Work | Scope and completion criteria |

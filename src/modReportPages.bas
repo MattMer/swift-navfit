@@ -167,6 +167,34 @@ Failed:
  UXFixedSelect = False
  Resume Finished
 End Function
+'Outline grouped blocks as the printed form does: component (5), occasion (10-13)
+'and report type (16-19). Each box surrounds the visible fields and their labels.
+Private Sub UXFixedGroupBoxes(ByVal f As Access.Form)
+ Dim groups As Variant, keys As Variant, key As Variant, i As Long, c As Access.Control, l As Access.Control, x1 As Long, y1 As Long, x2 As Long, y2 As Long, found As Boolean
+ groups = Array("ComponentActive,ComponentTAR,ComponentInactive,ComponentATADSW", "OccasionPeriodic,OccasionDetachment,OccasionFrocking,OccasionSpecial", "ObservationStatus,ReportRegular,ReportConcurrent,ReportOperationalCommander")
+ For i = 0 To UBound(groups)
+  If UXHasControl(f, "uxGroupBox" & i) Then
+   found = False: x1 = 0: y1 = 0: x2 = 0: y2 = 0
+   For Each key In Split(groups(i), ",")
+    If Len(UXFieldControl(CStr(key))) > 0 Then
+     Set c = f.Controls(UXFieldControl(CStr(key))): Set l = f.Controls("label" & key)
+     If c.Visible Then
+      If Not found Then x1 = c.Left: y1 = c.Top: x2 = c.Left + c.Width: y2 = c.Top + c.Height: found = True
+      If l.Left < x1 Then x1 = l.Left
+      If c.Left < x1 Then x1 = c.Left
+      If l.Top < y1 Then y1 = l.Top
+      If c.Top < y1 Then y1 = c.Top
+      If l.Left + l.Width > x2 Then x2 = l.Left + l.Width
+      If c.Left + c.Width > x2 Then x2 = c.Left + c.Width
+      If c.Top + c.Height > y2 Then y2 = c.Top + c.Height
+      If l.Top + l.Height > y2 Then y2 = l.Top + l.Height
+     End If
+    End If
+   Next
+   If found Then Place f, "uxGroupBox" & i, x1 - 70, y1 - 60, x2 - x1 + 140, y2 - y1 + 120 Else f.Controls("uxGroupBox" & i).Visible = False
+  End If
+ Next
+End Sub
 Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
  Dim f As Access.Form, row As Variant, parts As Variant, key As String, kind As String, c As Access.Control, y As Long, bottom As Long, trait As Boolean, order As Long
  Set f = Forms!frmEditor!uxFieldSurface.Form: kind = Nz(Forms!frmEditor!cboKind, "EVAL")
@@ -226,6 +254,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
   End If
  Next
  f.Width = 12200: f.ScrollBars = 3
+ UXFixedGroupBoxes f
  If f!uxTraitGuidance.Visible Then
   For Each row In ReportPageRows(kind, page)
    key = Split(CStr(row), "|")(0)

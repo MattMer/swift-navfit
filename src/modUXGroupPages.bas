@@ -35,6 +35,7 @@ Public Function UXMemberAction(ByVal action As String) As Boolean
     If action = "Open" Then UXMemberAction = UXGridOpenReport(): Exit Function
     If action = "Validation" Then UXMemberAction = UXOpenValidation(True, id): Exit Function
     If action = "Blocks" Then UXMemberAction = UXStartGroupBulk(False, False, id): Exit Function
+    If action = "SignedGroup" Then UXMemberAction = UXSignoffOpenGroup(id, False): Exit Function
     If action = "Signed" Then
         If Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF Then Err.Raise vbObjectError + 9633, "modUXGroupPages.UXMemberAction", "Select a member report first."
         UXMemberAction = UXSignoffOpen(CLng(Forms!frmUXComparison!uxTraitGrid.Form!ReportID)): Exit Function
@@ -212,6 +213,8 @@ Public Function CreateGroupDraft(ByVal groupID As Long, ByVal groupBaseline As S
     For Each key In DraftFieldKeys(): values.Add CStr(key), Null: Next
     For Each key In UXSharedKeys(): values(CStr(key)) = UXEffectiveDefault(groupID, CStr(key)): Next
     values("OfficialName") = official: values("RankRate") = rank: values("MemberSSN") = IIf(ssn = "", Null, ssn)
+    If Not IsNull(startDate) And Not IsNull(endDate) Then values("PeriodStart") = startDate: values("PeriodEnd") = endDate
+    CounselingCreationDefaults values, memberID
     DirectoryCreationContext memberID
     id = CommitDraft(0, kind, kind & " - " & name, name, startDate, endDate, "", "Create from summary group", values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _

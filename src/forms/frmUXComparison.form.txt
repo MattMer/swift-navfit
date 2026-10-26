@@ -10,8 +10,8 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15850
-    ItemSuffix =62
-    Right =18525
+    ItemSuffix =63
+    Right =19725
     Bottom =13245
     OnUnload ="[Event Procedure]"
     Caption ="Summary group"
@@ -2040,6 +2040,36 @@ Begin Form
                     PressedForeShade =0.0
                     WebImagePaddingRight =-1
                     WebImagePaddingBottom =-1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =247
+                    Left =6350
+                    Top =7800
+                    Width =3300
+                    Height =500
+                    TabIndex =42
+                    Name ="uxMarkGroupSigned"
+                    Caption ="Mark all reports signed"
+                    OnClick ="=UXMemberAction(\"SignedGroup\")"
+                    Tag ="GroupMemberAction"
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    BackStyle =0
+
+                    LayoutCachedLeft =6350
+                    LayoutCachedTop =7800
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =8300
+                    Alignment =0
+                    Gradient =0
+                    OldBorderStyle =0
                     Overlaps =1
                 End
             End

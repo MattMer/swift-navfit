@@ -11,14 +11,13 @@ Begin Form
     ScrollBars =2
     BorderStyle =0
     Width =13200
-    ItemSuffix =309
-    Right =15300
+    ItemSuffix =312
+    Right =19725
     Bottom =13245
     Caption ="Report section"
     OnActivate ="=UXVisualEvent(\"frmUXEditorFields\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -35,6 +34,18 @@ Begin Form
             BorderTint =50.0
             ForeThemeColorIndex =0
             ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Rectangle
+            SpecialEffect =3
+            BackStyle =0
+            BorderLineStyle =0
+            BorderColor =10921638
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
             GridlineThemeColorIndex =1
             GridlineShade =65.0
         End
@@ -131,6 +142,45 @@ Begin Form
             BackColor =16513012
             Name ="Detail"
             Begin
+                Begin Rectangle
+                    Visible = NotDefault
+                    SpecialEffect =0
+                    BorderWidth =1
+                    OverlapFlags =247
+                    Width =500
+                    Height =300
+                    BorderColor =10526880
+                    Name ="uxGroupBox0"
+                    LayoutCachedWidth =500
+                    LayoutCachedHeight =300
+                    BorderThemeColorIndex =-1
+                End
+                Begin Rectangle
+                    Visible = NotDefault
+                    SpecialEffect =0
+                    BorderWidth =1
+                    OverlapFlags =247
+                    Width =500
+                    Height =300
+                    BorderColor =10526880
+                    Name ="uxGroupBox1"
+                    LayoutCachedWidth =500
+                    LayoutCachedHeight =300
+                    BorderThemeColorIndex =-1
+                End
+                Begin Rectangle
+                    Visible = NotDefault
+                    SpecialEffect =0
+                    BorderWidth =1
+                    OverlapFlags =247
+                    Width =500
+                    Height =300
+                    BorderColor =10526880
+                    Name ="uxGroupBox2"
+                    LayoutCachedWidth =500
+                    LayoutCachedHeight =300
+                    BorderThemeColorIndex =-1
+                End
                 Begin Label
                     Visible = NotDefault
                     OverlapFlags =93
@@ -155,7 +205,7 @@ Begin Form
                     Locked = NotDefault
                     TabStop = NotDefault
                     OldBorderStyle =0
-                    OverlapFlags =85
+                    OverlapFlags =93
                     TextFontFamily =34
                     IMESentenceMode =3
                     Width =20
@@ -6849,7 +6899,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =18
                     Left =180
                     Top =100

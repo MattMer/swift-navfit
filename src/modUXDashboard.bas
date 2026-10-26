@@ -171,11 +171,12 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
         If Left$(c.Tag, 4) = "MWX:" Then c.Visible = False
     Next
     Select Case mode
-        Case "Contributors": names = Array("cboContributor", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
+        Case "Contributors": names = Array("lstContributors", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
         Case "Notes": names = Array("lblReportNotes", "lstReportNotes", "cmdOpenReportNote", "cmdRefreshReportNotes")
         Case "Counseling": names = Array("lblCounselingScope", "chkCounselingAll", "lblCounselingAll", "lstCounseling", "cmdCounselingRecord", "cmdCounselingMember")
         Case "Assign": names = Array("uxAssignReport", "uxAssignCaption", "lblAssignment", "lblReviewer", "cboReviewer", "lblDue", "txtDue", "lblNotes", "txtNotes", "cmdAssign")
-        Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstWork", "uxWorkStatus", "cmdOpenWork", "txtHistory", "lblNotes", "txtNotes", "cmdAccept", "cmdReturn", "cmdCancel", "cmdDraft")
+        'Accept and return decisions (and their notes) are made inside the report.
+        Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstWork", "uxWorkStatus", "cmdOpenWork", "txtHistory", "cmdDraft")
     End Select
     For Each name In names: f.Controls(CStr(name)).Visible = True: Next
     f!lblNotes.Caption = IIf(mode = "Assign", "Assignment instructions", "Decision note (required when returning a report)")
@@ -258,6 +259,7 @@ Public Function UXClearReportFilters() As Boolean
     With Forms!frmLibrary
         !txtSearch = Null: !cboArchive = "Active": !lstFolders = 0: !uxFolderFilter = 0
         !uxTypeFilter = "All": !uxStatusFilter = "All"
+        If UXHasControl(Forms!frmLibrary, "cboRankFilter") Then !cboRankFilter = "All ranks/rates"
     End With
     UXClearReportFilters = RefreshLibrary()
 End Function

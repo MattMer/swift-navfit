@@ -99,10 +99,14 @@ Public Function UXHeaderReviewState() As Boolean
     ElseIf routeState = "Accepted" Then
         primary = "uxReviewSetup": nextAction = "Waiting for the final reviewer to record local approval."
     Else
-        primary = "uxReviewSetup": nextAction = "Next: Choose a route in Review setup. Local review is separate from submission."
+        'Review routes are optional: a report with no route points at signing instead.
+        If UXHasControl(f, "uxMarkSigned") Then
+            If f!uxMarkSigned.Enabled Then primary = "uxMarkSigned"
+        End If
+        nextAction = "Next: Mark signed once the report is signed. A review route is optional (Review setup)."
     End If
     f!uxLocked.Caption = nextAction: f!uxLocked.ControlTipText = reason
-    For Each action In Array("cmdSave", "uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
+    For Each action In Array("cmdSave", "uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval", "uxMarkSigned")
         With f.Controls(action)
             .FontBold = (.Name = primary And .Enabled)
             ' Semantic colors are owned by UXApplyVisual below.

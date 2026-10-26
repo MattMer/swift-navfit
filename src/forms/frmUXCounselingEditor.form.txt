@@ -12,10 +12,10 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =17200
-    ItemSuffix =37
-    Left =3330
+    ItemSuffix =38
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Record counseling"
     OnActivate ="=UXVisualEvent(\"frmUXCounselingEditor\",\"\")"
@@ -119,7 +119,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =7000
+            Height =6400
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -238,51 +238,6 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =4500
-                    Width =4100
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lbltxtDispositionOn"
-                    Caption ="Given or destroyed on"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =4500
-                    LayoutCachedHeight =4850
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4600
-                    Top =4500
-                    Width =8000
-                    Height =450
-                    FontSize =10
-                    TabIndex =5
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="txtDispositionOn"
-                    Format ="yyyy-mm-dd"
-                    FontName ="Segoe UI"
-                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
-
-                    LayoutCachedLeft =4600
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =12600
-                    LayoutCachedHeight =4950
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
                     Top =3900
                     Width =4100
                     Height =350
@@ -355,7 +310,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5200
+                    Top =4600
                     Width =12600
                     Height =700
                     FontSize =10
@@ -364,9 +319,9 @@ Begin Form
                     Caption =" "
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5200
+                    LayoutCachedTop =4600
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =5900
+                    LayoutCachedHeight =5300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -374,11 +329,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6100
+                    Top =5500
                     Width =6000
                     Height =500
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =5
                     ForeColor =16777215
                     Name ="cmdSave"
                     Caption ="Save counseling record"
@@ -386,9 +341,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6100
+                    LayoutCachedTop =5500
                     LayoutCachedWidth =6400
-                    LayoutCachedHeight =6600
+                    LayoutCachedHeight =6000
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -413,11 +368,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6700
-                    Top =6100
+                    Top =5500
                     Width =6300
                     Height =500
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =6
                     ForeColor =4205854
                     Name ="cmdCancel"
                     Caption ="Cancel"
@@ -425,9 +380,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6700
-                    LayoutCachedTop =6100
+                    LayoutCachedTop =5500
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6600
+                    LayoutCachedHeight =6000
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -455,7 +410,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =8
+                    TabIndex =7
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"
@@ -528,23 +483,58 @@ Begin Form
                     LayoutCachedWidth =4500
                     LayoutCachedHeight =3650
                 End
-                Begin TextBox
+                Begin ComboBox
+                    AutoExpand = NotDefault
+                    TabStop = NotDefault
+                    AllowAutoCorrect = NotDefault
+                    RowSourceTypeInt =1
+                    OldBorderStyle =0
                     OverlapFlags =85
-                    IMESentenceMode =3
+                    BackStyle =0
+                    DecimalPlaces =0
                     Left =4600
                     Top =3300
                     Width =8000
                     Height =450
                     ColumnOrder =0
-                    FontSize =10
                     TabIndex =3
-                    Name ="txtReason"
-                    ControlTipText ="For example TEMADD or ILLNESS, 20 characters or fewer."
+                    BorderColor =16777215
+                    ForeColor =16777215
+                    Name ="cboReason"
+                    RowSourceType ="Value List"
+                    RowSource ="\"TEMADD\";\"ILLNESS\";\"LEAVE\";\"DEPLOYED\";\"HOSPITALIZED\";\"SEE COMMENT\""
+                    FontName ="Aptos Display"
+                    ControlTipText ="Choose a common reason or type a brief one (20 characters or fewer)."
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    AllowValueListEdits =0
+                    AggregateType =0
+                    InheritValueList =0
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =3300
                     LayoutCachedWidth =12600
                     LayoutCachedHeight =3750
+                    ThemeFontIndex =0
+                    BackThemeColorIndex =0
+                    BackTint =0.0
+                    BackShade =0.0
+                    BorderThemeColorIndex =0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    ForeThemeColorIndex =0
+                    ForeTint =0.0
+                    ForeShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
                 End
             End
         End

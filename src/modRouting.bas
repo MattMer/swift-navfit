@@ -133,8 +133,8 @@ Public Function LoadMyWork(Optional ByVal refreshQueue As Boolean = True) As Boo
         Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
     End If
     Forms!frmMyWork!lblProfile.Caption = "Active contributor: " & DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid) & ". Profiles are attribution, not authentication."
-    Forms!frmMyWork!cboContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName": Forms!frmMyWork!cboContributor.Requery
-    Forms!frmMyWork!cboReviewer.RowSource = Forms!frmMyWork!cboContributor.RowSource: Forms!frmMyWork!cboReviewer.Requery
+    Forms!frmMyWork!lstContributors.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName": Forms!frmMyWork!lstContributors.Requery
+    Forms!frmMyWork!cboReviewer.RowSource = Forms!frmMyWork!lstContributors.RowSource: Forms!frmMyWork!cboReviewer.Requery
     sql = "SELECT t.TaskID,UXIdentity(r.OfficialName,r.MemberName) & ' | ' & r.FormKind & ' | ' & Nz(Format(r.PeriodEnd,'yyyy-mm-dd'),'No period') AS [Member and report],p.DisplayName AS Reviewer,t.TaskState AS [Review step],t.DueDate AS [Due date],IIf(t.RevisionID=r.CurrentRevisionID,'Current','Stale') AS [Saved version],r.IsArchived FROM (ReviewTask AS t INNER JOIN Report AS r ON t.ReportID=r.ReportID) INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID"
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
     Forms!frmMyWork!lstTasks.RowSource = sql & " ORDER BY t.TaskID DESC": Forms!frmMyWork!lstTasks.Requery
@@ -166,7 +166,8 @@ Public Function ContributorUI(ByVal action As String) As Boolean
         Call AddContributor(Nz(Forms!frmMyWork!txtContributor, ""))
         Forms!frmMyWork!txtContributor = Null
     Else
-        Call SwitchContributor(Nz(Forms!frmMyWork!cboContributor, 0))
+        If IsNull(Forms!frmMyWork!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
+        Call SwitchContributor(Nz(Forms!frmMyWork!lstContributors, 0))
     End If
     Call LoadMyWork(): ContributorUI = True: Exit Function
 Failed:

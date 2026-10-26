@@ -10,9 +10,9 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15114
-    ItemSuffix =49
-    Right =18525
-    Bottom =12795
+    ItemSuffix =51
+    Right =19725
+    Bottom =13245
     Caption ="Report workspace"
     OnTimer ="=UXFinishReportReturn()"
     OnActivate ="=UXVisualEvent(\"frmLibrary\",\"UXLoadContext()\")"
@@ -20,7 +20,6 @@ Begin Form
     OnLoad ="=LoadLibrary()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -1115,7 +1114,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="uxStatusFilter"
                     RowSourceType ="Value List"
-                    RowSource ="All;Draft;In review;Review needs restart;Local approval;Returned"
+                    RowSource ="All;Draft;In review;Review needs restart;Local approval;Signed;Returned"
                     AfterUpdate ="=RefreshLibrary()"
                     DefaultValue ="\"All\""
                     FontName ="Segoe UI"
@@ -1218,7 +1217,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =8928
                     Top =1440
@@ -1291,6 +1290,42 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =247
+                    Left =8925
+                    Top =1450
+                    Width =2590
+                    Height =300
+                    FontSize =10
+                    Name ="lblcboRankFilter"
+                    Caption ="Rank / rate"
+                    LayoutCachedLeft =8925
+                    LayoutCachedTop =1450
+                    LayoutCachedWidth =11515
+                    LayoutCachedHeight =1750
+                End
+                Begin ComboBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =247
+                    IMESentenceMode =3
+                    Left =8925
+                    Top =1750
+                    Width =2590
+                    Height =450
+                    ColumnOrder =0
+                    FontSize =10
+                    TabIndex =25
+                    Name ="cboRankFilter"
+                    RowSourceType ="Value List"
+                    RowSource ="\"All ranks/rates\""
+                    AfterUpdate ="=RefreshLibrary()"
+                    ControlTipText ="Show reports for one paygrade or rank/rate."
+
+                    LayoutCachedLeft =8925
+                    LayoutCachedTop =1750
+                    LayoutCachedWidth =11515
+                    LayoutCachedHeight =2200
                 End
             End
         End

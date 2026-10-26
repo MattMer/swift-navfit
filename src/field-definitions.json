@@ -7089,15 +7089,15 @@
           "key": "PrimaryDuty",
           "x": 180,
           "y": 7930,
-          "w": 5720,
+          "w": 2400,
           "h": 360,
           "trait": false
         },
         {
           "key": "DutyDescription",
-          "x": 6060,
+          "x": 2740,
           "y": 7930,
-          "w": 5720,
+          "w": 9040,
           "h": 950,
           "trait": false
         },
@@ -7602,15 +7602,15 @@
           "key": "PrimaryDuty",
           "x": 180,
           "y": 7930,
-          "w": 5720,
+          "w": 2400,
           "h": 360,
           "trait": false
         },
         {
           "key": "DutyDescription",
-          "x": 6060,
+          "x": 2740,
           "y": 7930,
-          "w": 5720,
+          "w": 9040,
           "h": 950,
           "trait": false
         },
@@ -8276,15 +8276,15 @@
           "key": "PrimaryDuty",
           "x": 180,
           "y": 7930,
-          "w": 5720,
+          "w": 2400,
           "h": 360,
           "trait": false
         },
         {
           "key": "DutyDescription",
-          "x": 6060,
+          "x": 2740,
           "y": 7930,
-          "w": 5720,
+          "w": 9040,
           "h": 950,
           "trait": false
         },

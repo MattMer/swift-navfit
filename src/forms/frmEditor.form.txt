@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     Width =15450
     ItemSuffix =319
-    Right =18525
+    Right =19725
     Bottom =13245
     TimerInterval =1000
     OnUnload ="[Event Procedure]"
@@ -7743,7 +7743,6 @@ Begin Form
                     GridlineWidthTop =0
                     GridlineWidthRight =0
                     GridlineWidthBottom =0
-                    BackStyle =0
 
                     LayoutCachedLeft =12100
                     LayoutCachedTop =450
@@ -7762,7 +7761,6 @@ Begin Form
                     BackThemeColorIndex =0
                     BackTint =0.0
                     BackShade =0.0
-                    OldBorderStyle =0
                     BorderColor =16777215
                     BorderThemeColorIndex =0
                     BorderTint =0.0

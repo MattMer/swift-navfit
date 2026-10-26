@@ -53,14 +53,9 @@ Public Function TestReportTools() As String
  Check p!txtView = "Notes" And p!txtMessage.Visible, "Notes view not embedded"
  Check Len(Nz(f!uxError.Caption, "")) = 0, "Notes error: " & f!uxError.Caption
  Check InStr(p!txtConversation, "Reply after approval") > 0, "Conversation missing reply"
- Check Not UXSortNativeHeader("frmReportTools", "lstMessages", 100, 1000), "Conversation body click was treated as a sort header"
- Check UXMessageRead(), "Embedded conversation selection failed"
- Check UXSortList("frmReportTools", "lstMessages", 1), "Embedded conversation sort failed"
- Check InStr(p!txtConversation, "Reply after approval") > 0, "Conversation sort lost selected thread"
- Check UXMessageBegin(True), "Begin reply failed"
- p!txtMessage = "Private reply checkpoint": Check UXMessageKeep(), "Save private reply failed"
- guid = p!txtDraftGuid
- Check DLookup("ParentMessageID", "ReportNoteDraft", "DraftGuid=" & QuoteSQL(guid)) = root, "Draft reply parent lost"
+ Check UXMessageRead() And InStr(p!txtConversation, "Reply after approval") > 0, "Message log missing a reply"
+ Check Not p!lstMessages.Visible And Not p!lstDrafts.Visible And Not p!cmdReply.Visible And Not p!cmdKeepDraft.Visible, "Conversation selector or draft controls still shown"
+ p!txtMessage = "Board message from the reviewer"
  For Each v In Array("Validation", "Calculations", "Review", "Notes")
   stage = "view " & v
   f!uxError.Caption = ""
@@ -68,9 +63,11 @@ Public Function TestReportTools() As String
   Check p!txtView = v, "Wrong embedded view"
   Check Len(Nz(f!uxError.Caption, "")) = 0, "View error: " & f!uxError.Caption
  Next
- Check p!txtMessage = "Private reply checkpoint", "Tab switch lost unsent text"
+ Check p!txtMessage = "Board message from the reviewer", "Tab switch lost unsent text"
+ Check DCount("*", "ReportNoteDraft", "ReportID=" & id & " AND NoteText='Board message from the reviewer'") = 0, "Typed text was saved as a draft"
  Check UXMessagePost(), "Posting failed: " & p!lblNoteStatus.Caption
- Check DCount("*", "ReportNoteDraft", "DraftGuid=" & QuoteSQL(guid)) = 0, "Posted checkpoint retained"
+ Check DCount("*", "ReportMessage", "ReportID=" & id & " AND MessageBody='Board message from the reviewer'") = 1 And IsNull(p!txtMessage), "Post did not add exactly one message"
+ Check InStr(p!txtConversation, "Board message from the reviewer") > InStr(p!txtConversation, "Reply after approval"), "Message log not oldest first: board=" & InStr(p!txtConversation, "Board message from the reviewer") & " reply=" & InStr(p!txtConversation, "Reply after approval") & " len=" & Len(Nz(p!txtConversation, "")) & " rows=" & DCount("*", "ReportMessage", "ReportID=" & id) & " reread=" & UXMessageRead() & " after=" & InStr(p!txtConversation, "Board message from the reviewer") & " len2=" & Len(Nz(p!txtConversation, ""))
  stage = "validation popup"
  Check UXOpenValidation(), "Popup open failed"
  Check Forms!frmUXValidation.PopUp And Not Forms!frmUXValidation.Modal, "Validation is not modeless popup"
