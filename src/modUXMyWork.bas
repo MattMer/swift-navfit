@@ -234,7 +234,7 @@ Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal he
     For Each part In Array(0.28, 0.15, 0.16, 0.1, 0.14, 0.17)
         columns = columns & ";" & CLng(size * CDbl(part))
     Next
-    f!lstWork.ColumnWidths = columns
+    If f!lstWork.ColumnWidths <> columns Then f!lstWork.ColumnWidths = columns
     UXWorkLayout = True
 End Function
 'Counseling tab: members overdue, due this month, due within 60 days, needing a

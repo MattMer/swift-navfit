@@ -83,15 +83,14 @@ Public Function UXWindowHelpLayout(ByVal formName As String, Optional ByVal view
     width = viewportWidth
     If width = 0 Then width = f.InsideWidth
     If width < 1500 Then width = f.Width
-    With f!cmdWindowHelp
-        .Left = width - 800: .Top = 150: .Width = 500: .Height = 400
-    End With
+    UXVisualSet f!cmdWindowHelp, "Left", width - 800: UXVisualSet f!cmdWindowHelp, "Top", 150
+    UXVisualSet f!cmdWindowHelp, "Width", 500: UXVisualSet f!cmdWindowHelp, "Height", 400
     If UXHasControl(f, "uxContext") Then
-        f!uxContext.Width = f!cmdWindowHelp.Left - f!uxContext.Left - 150
+        UXVisualSet f!uxContext, "Width", f!cmdWindowHelp.Left - f!uxContext.Left - 150
     End If
     For Each c In f.Controls
         If c.ControlType = acLabel And c.Top < 550 And c.Left < f!cmdWindowHelp.Left And c.Left + c.Width > f!cmdWindowHelp.Left Then
-            c.Width = f!cmdWindowHelp.Left - c.Left - 150
+            UXVisualSet c, "Width", f!cmdWindowHelp.Left - c.Left - 150
         End If
     Next
     UXWindowHelpLayout = True

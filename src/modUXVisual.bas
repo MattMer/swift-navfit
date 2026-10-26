@@ -177,6 +177,7 @@ Private Sub UXVisualSections(ByVal f As Access.Form)
  Next
 End Sub
 ' Avoid redundant Access property writes and their invalidation/repaint cost.
-Private Sub UXVisualSet(ByVal target As Object, ByVal property As String, ByVal value As Variant)
+' Layout code (viewport, sort headers, help button) uses it for geometry too.
+Public Sub UXVisualSet(ByVal target As Object, ByVal property As String, ByVal value As Variant)
  If target.Properties(property).Value <> value Then target.Properties(property).Value = value
 End Sub

@@ -116,7 +116,8 @@ Public Function RSTableResize() As Boolean
  On Error GoTo Finished
  Set f = Forms!frmUXSeniorEditor!uxRSCATable.Form: width = f.InsideWidth - 350
  If width < 3000 Or f.Tag = CStr(width) Then Exit Function
- ratio = width / 10000
+ 'Shrink to fit a narrow window; never stretch the numeric columns past their design.
+ ratio = width / 10000: If ratio > 1 Then ratio = 1
  For Each grade In RSTableGrades()
   f.Controls("grade" & grade).Left = 100 * ratio: f.Controls("grade" & grade).Width = 800 * ratio
   f.Controls("avg" & grade).Left = 1000 * ratio: f.Controls("avg" & grade).Width = 1600 * ratio

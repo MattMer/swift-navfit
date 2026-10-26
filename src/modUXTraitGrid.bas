@@ -517,7 +517,8 @@ Public Function UXGridViewport() As Boolean
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     UXResizeWorkspace "frmUXComparison"
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
-    usable = Forms!frmUXComparison!uxTraitGrid.Width - 350: ratio = usable / 17050
+    'Shrink columns to fit a narrow window; wider windows leave the designed widths.
+    usable = Forms!frmUXComparison!uxTraitGrid.Width - 350: ratio = usable / 17050: If ratio > 1 Then ratio = 1
     For Each c In f.Controls
         If InStr(c.Tag, ":") > 0 Then
             v = Split(c.Tag, ":"): c.Left = CLng(v(0) * ratio): c.Width = CLng(v(1) * ratio)

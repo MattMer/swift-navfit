@@ -24,9 +24,9 @@ Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, 
     Set origin = Screen.ActiveForm
     Set active = f.ActiveControl
     On Error GoTo 0
-    If compact Then f!uxCompactNav.Visible = True
+    If compact Then UXVisualSet f!uxCompactNav, "Visible", True
     For i = 0 To 5
-        If Not compact Then f.Controls("uxNav" & i).Visible = True
+        If Not compact Then UXVisualSet f.Controls("uxNav" & i), "Visible", True
     Next
     If Not active Is Nothing Then
     If compact And active.Parent.Name = f.Name Then
@@ -43,9 +43,9 @@ Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, 
         If origin.Name <> f.Name Then origin.SetFocus
     End If
     On Error GoTo 0
-    f!uxCompactNav.Visible = compact
-    f!uxRail.Visible = Not compact: f!uxBrand.Visible = Not compact: f!uxNavCaption.Visible = Not compact
-    For i = 0 To 5: f.Controls("uxNav" & i).Visible = Not compact: Next
+    UXVisualSet f!uxCompactNav, "Visible", compact
+    UXVisualSet f!uxRail, "Visible", Not compact: UXVisualSet f!uxBrand, "Visible", Not compact: UXVisualSet f!uxNavCaption, "Visible", Not compact
+    For i = 0 To 5: UXVisualSet f.Controls("uxNav" & i), "Visible", Not compact: Next
     If compact Then
         Select Case f.Name
             Case "frmEditor", "frmLibrary": f!uxCompactNav = "frmLibrary"
@@ -78,6 +78,7 @@ End Sub
 Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, state As Object, geometry As Object, old As Access.Form
     Dim width As Long, height As Long, left As Long, available As Long, baseWidth As Long, bottom As Long, ratio As Double, v As Variant, compact As Boolean
+    Dim x As Long, w As Long, painted As Boolean
     If viewportBusy Then Exit Function
     On Error GoTo Failed
     Set f = Forms(formName)
@@ -113,30 +114,32 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     End If
     compact = (width < 12000): left = IIf(compact, 250, 2850): available = width - left - 350
     ratio = available / state("Width")
+    'Each geometry write repaints; hold painting until the whole pass is done.
+    f.Painting = False: painted = True
     UXNavigationLayout f, compact, width
-    f!uxContext.Left = IIf(compact, 2950, 2850): f!uxContext.Top = 200
-    f!uxContext.Width = width - f!uxContext.Left - 350
+    UXVisualSet f!uxContext, "Left", IIf(compact, 2950, 2850): UXVisualSet f!uxContext, "Top", 200
+    UXVisualSet f!uxContext, "Width", width - f!uxContext.Left - 350
     bottom = 0
     For Each c In f.Controls
         If geometry.Exists(c.Name) Then
             v = geometry(c.Name)
-            c.Left = left + CLng((v(0) - 2850) * ratio)
-            c.Width = CLng(v(2) * ratio)
-            If c.Width < 200 Then c.Width = 200
-            If c.Left + c.Width > width - 250 Then c.Width = width - 250 - c.Left
-            c.Top = v(1): c.Height = v(3)
+            x = left + CLng((v(0) - 2850) * ratio): w = CLng(v(2) * ratio)
+            If w < 200 Then w = 200
+            If x + w > width - 250 Then w = width - 250 - x
+            UXVisualSet c, "Left", x: UXVisualSet c, "Width", w
+            UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3)
             If c.Visible And c.Top + c.Height > bottom Then bottom = c.Top + c.Height
         End If
     Next
     'Keep authored row grouping and readable font sizes. Vertical scrolling is
     'the fallback for shorter windows; horizontal scrolling is never required.
-    f.ScrollBars = 2: f.Width = width - 100
+    UXVisualSet f, "ScrollBars", 2: UXVisualSet f, "Width", width - 100
     UXPositionGroupFooter f
     If UXHasControl(f, "uxCurrentExport") Then
         If f!uxCurrentExport.Visible Then bottom = f!uxCurrentExport.Top + f!uxCurrentExport.Height
     End If
-    f!uxRail.Height = bottom + 300
-    f.Section(acDetail).Height = bottom + 300
+    UXVisualSet f!uxRail, "Height", bottom + 300
+    UXVisualSet f.Section(acDetail), "Height", bottom + 300
     state("AppliedWidth") = width: state("AppliedHeight") = height
     layoutPasses = layoutPasses + 1
     UXResizeWorkspace = True
@@ -145,6 +148,7 @@ Finished:
         UXSortHeaders f
         UXWindowHelpLayout f.Name, width
         UXApplyVisual f
+        If painted Then f.Painting = True
     End If
     viewportBusy = False
     Exit Function

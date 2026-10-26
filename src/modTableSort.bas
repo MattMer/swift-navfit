@@ -2,6 +2,7 @@ Attribute VB_Name = "modTableSort"
 Option Explicit
 Private states As Object
 Private headersBusy As Boolean
+Private headings As Object
 Private Declare PtrSafe Function GetFocus Lib "user32" () As LongPtr
 Private Declare PtrSafe Function GetScrollPos Lib "user32" (ByVal hwnd As LongPtr, ByVal bar As Long) As Long
 Private Declare PtrSafe Function GetDpiForWindow Lib "user32" (ByVal hwnd As LongPtr) As Long
@@ -177,6 +178,24 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
 Fallback:
  Heading = "Column " & (column + 1)
 End Function
+'A SQL list's heading needs a temporary QueryDef; reuse it until the row source changes.
+Private Function CachedHeading(ByVal f As Access.Form, ByVal c As Access.Control, ByVal column As Long) As String
+ Dim key As String
+ If c.RowSourceType = "Value List" Then CachedHeading = Heading(f, c, column): Exit Function
+ If headings Is Nothing Then Set headings = CreateObject("Scripting.Dictionary")
+ key = f.Name & "|" & c.Name & "|" & column & "|" & c.RowSource
+ If Not headings.Exists(key) Then headings.Add key, Heading(f, c, column)
+ CachedHeading = headings(key)
+End Function
+Private Function SameWidths(ByVal current As String, ByVal wanted As String) As Boolean
+ Dim a As Variant, b As Variant, i As Long
+ a = Split(current, ";"): b = Split(wanted, ";")
+ If UBound(a) <> UBound(b) Then Exit Function
+ For i = 0 To UBound(a)
+  If Abs(Val(a(i)) - Val(b(i))) > 2 Then Exit Function
+ Next
+ SameWidths = True
+End Function
 'Custom headings for lists that did not expose native headers. Their original
 'Value List data stays intact; no first data row is consumed as a heading.
 Public Function UXSortHeaders(ByVal f As Access.Form) As Boolean
@@ -207,16 +226,19 @@ Public Function UXSortHeaders(ByVal f As Access.Form) As Boolean
     sizes = sizes & size
     If UXHasControl(f, "sort_" & c.Name & "_" & column) Then
      Set h = f.Controls("sort_" & c.Name & "_" & column)
-     h.Visible = c.Visible And size > 0
+     UXVisualSet h, "Visible", (c.Visible And size > 0)
      If size > 0 Then
-      h.Left = x: h.Top = c.Top - 330: h.Width = size: h.Height = 300
-      h.Caption = Heading(f, c, column)
-      h.ControlTipText = "Click to sort ascending; click again for descending."
+      UXVisualSet h, "Left", x: UXVisualSet h, "Top", c.Top - 330: UXVisualSet h, "Width", size: UXVisualSet h, "Height", 300
+      UXVisualSet h, "Caption", CachedHeading(f, c, column)
+      UXVisualSet h, "ControlTipText", "Click to sort ascending; click again for descending."
      End If
     End If
     x = x + size
    Next
-   If total > 0 And UXHasControl(f, "sort_" & c.Name & "_0") Then c.ColumnWidths = sizes
+   'Rewriting ColumnWidths redraws the list; rescaling may drift by a twip or two.
+   If total > 0 And UXHasControl(f, "sort_" & c.Name & "_0") Then
+    If Not SameWidths(c.ColumnWidths, sizes) Then c.ColumnWidths = sizes
+   End If
    End If
   End If
  Next
