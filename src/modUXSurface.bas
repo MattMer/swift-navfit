@@ -445,7 +445,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f!lblSaved.Left = contentLeft: f!lblSaved.Top = footer - 400: f!lblSaved.Width = contentWidth
     f!cmdClose.Left = contentLeft: f!cmdClose.Top = footer: f!cmdClose.Height = 500
     f!cmdSave.Left = width - 2850: f!cmdSave.Top = footer: f!cmdSave.Height = 500
-    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 2501670
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = UXColor("Ink")
     f!uxDirty.Left = contentLeft + 2600: f!uxDirty.Top = footer: f!uxDirty.Width = contentWidth - 5500
     f!lblRecovery.Left = contentLeft: f!lblRecovery.Top = footer + 650: f!lblRecovery.Width = contentWidth
     If surfaceSection = 8 Then
@@ -470,7 +470,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
     f.Section(acDetail).Height = height - 100
 Render:
     Call UXHeaderReviewLayout(compact, width)
-    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = 2501670
+    f!cmdSave.Caption = "Save draft": f!cmdSave.ForeColor = UXColor("Ink")
     If Not UXSurfaceSection(surfaceSection, Not f!cmdSave.Enabled) Then GoTo Finished
     'Reflow hides controls temporarily. Restore the original field and caret,
     'including raw text still being typed, without committing a revision.

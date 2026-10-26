@@ -35,7 +35,7 @@ Public Function UXToolsRefresh() As Boolean
   With Forms!frmEditor.Controls(name)
    active = (CStr(name) = "cmdComments" And selectedView = "Notes") Or (CStr(name) = "cmdRoute" And selectedView = "Review") Or (CStr(name) = "cmdChecklist" And selectedView = "Validation") Or (CStr(name) = "cmdCalculations" And selectedView = "Calculations")
    .FontBold = active: .BackColor = IIf(active, UXColor("Primary"), UXColor("Neutral"))
-   .ForeColor = IIf(active, vbWhite, UXColor("Ink"))
+   .ForeColor = IIf(active, UXColor("White"), UXColor("Ink"))
   End With
  Next
  Select Case selectedView

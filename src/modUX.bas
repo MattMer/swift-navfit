@@ -296,7 +296,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
         For Each c In f.Controls
             If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = section)
             If c.Name Like "uxSection#" Then
-                c.BackColor = IIf(c.Name = "uxSection" & section, 5948108, 12121599)
+                c.BackColor = UXColor(IIf(c.Name = "uxSection" & section, "Active", "Neutral"))
                 c.FontBold = (c.Name = "uxSection" & section)
             End If
         Next

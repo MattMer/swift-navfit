@@ -1,7 +1,38 @@
 Attribute VB_Name = "modUXVisual"
 Option Explicit
 Private painting As Boolean
+' Section 508 503.2: under a Windows high-contrast theme every role maps to a
+' system color, so the user's theme decides color and contrast.
+Private Declare PtrSafe Function SystemParametersInfoW Lib "user32" (ByVal action As Long, ByVal param As Long, ByRef value As Any, ByVal winIni As Long) As Long
+Private Type HighContrastInfo
+ size As Long
+ flags As Long
+ scheme As LongPtr
+End Type
+Private contrastKnown As Boolean, contrastOn As Boolean, contrastTest As Variant
+Public Function UXHighContrast() As Boolean
+ Dim info As HighContrastInfo
+ If Not IsEmpty(contrastTest) Then UXHighContrast = contrastTest: Exit Function
+ info.size = LenB(info)
+ If SystemParametersInfoW(&H42, info.size, info, 0) <> 0 Then UXHighContrast = ((info.flags And 1) = 1)
+End Function
+' Test hook: True or False forces the theme; no argument asks Windows again.
+Public Function UXHighContrastTestMode(Optional ByVal value As Variant) As Boolean
+ If IsMissing(value) Then contrastTest = Empty Else contrastTest = CBool(value)
+ contrastOn = UXHighContrast(): contrastKnown = True
+ UXHighContrastTestMode = contrastOn
+End Function
 Public Function UXColor(ByVal role As String) As Long
+ If Not contrastKnown Then contrastOn = UXHighContrast(): contrastKnown = True
+ If contrastOn Then
+  Select Case role
+   Case "Rail", "Primary", "Active": UXColor = &H8000000D  ' Highlight
+   Case "White": UXColor = &H8000000E                      ' HighlightText
+   Case "Ink", "Muted", "Border", "WarningInk", "ErrorInk", "SuccessInk", "HelpInk": UXColor = &H80000008  ' WindowText
+   Case Else: UXColor = &H80000005                         ' Window
+  End Select
+  Exit Function
+ End If
  Select Case role
   Case "Canvas": UXColor = RGB(244, 247, 251)
   Case "Ink": UXColor = RGB(30, 45, 64)
@@ -31,7 +62,9 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
  If painting Then Exit Function
  painting = True
  On Error GoTo Finished
+ contrastOn = UXHighContrast(): contrastKnown = True
  UXVisualSet f.Section(acDetail), "BackColor", UXColor("Canvas")
+ If contrastOn Then UXVisualSections f
  Select Case f.Name
   Case "frmLibrary", "frmEditor": active = 1
   Case "frmUXGroups", "frmMajorWorkbench", "frmUXComparison", "frmUXBulk", "frmUXGroupRSCA", "frmUXNewGroup", "frmUXGroupReport": active = 2
@@ -71,7 +104,7 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
     UXVisualSet c, "HoverForeColor", UXColor(tone): UXVisualSet c, "PressedForeColor", UXColor(tone)
    Case acLabel
     UXVisualSet c, "ForeColor", UXColor("Ink")
-    If key = "uxbrand" Or key = "uxnavcaption" Then UXVisualSet c, "ForeColor", RGB(255, 255, 255)
+    If key = "uxbrand" Or key = "uxnavcaption" Then UXVisualSet c, "ForeColor", UXColor("White")
     If key = "uxerror" Or key Like "err*" Or key = "uxdirty" Or key = "lblsaved" Or key = "lblrecovery" Or key Like "*status" Or key = "uxscope" Or key = "uxlocked" Then
      role = UXStatusRole(c.Caption, key): tone = "Ink"
      If Len(role) > 0 Then tone = role & "Ink"
@@ -80,13 +113,19 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
      UXVisualSet c, "ForeColor", UXColor(tone)
     End If
    Case acRectangle
-    If key = "uxrail" Then UXVisualSet c, "BackStyle", 1: UXVisualSet c, "BackColor", UXColor("Rail"): UXVisualSet c, "BorderColor", UXColor("Rail")
+    If key = "uxrail" Then
+     UXVisualSet c, "BackStyle", 1: UXVisualSet c, "BackColor", UXColor("Rail"): UXVisualSet c, "BorderColor", UXColor("Rail")
+    ElseIf contrastOn Then
+     UXVisualSet c, "BorderColor", UXColor("Border"): UXVisualSet c, "BackColor", UXColor("Canvas")
+    End If
    Case acTextBox, acComboBox, acListBox
     If f.Name = "frmUXTraitRows" And (key = "priorita" Or key = "priorpromotion") Then
      UXVisualSet c, "BackColor", UXColor("Neutral"): UXVisualSet c, "ForeColor", UXColor("Muted"): UXVisualSet c, "BorderColor", UXColor("Border")
-    ElseIf f.CurrentView = 0 Or c.ControlType = acListBox Then
-     UXVisualSet c, "BackColor", RGB(255, 255, 255): UXVisualSet c, "ForeColor", UXColor("Ink"): UXVisualSet c, "BorderColor", UXColor("Border")
+    ElseIf f.CurrentView = 0 Or c.ControlType = acListBox Or contrastOn Then
+     UXVisualSet c, "BackColor", UXColor("Field"): UXVisualSet c, "ForeColor", UXColor("Ink"): UXVisualSet c, "BorderColor", UXColor("Border")
     End If
+   Case acCheckBox, acOptionGroup, acLine
+    If contrastOn Then UXVisualSet c, "BorderColor", UXColor("Border")
   End Select
  Next
  If f.Name = "frmEditor" Then
@@ -129,6 +168,14 @@ Public Function UXStatusRole(ByVal caption As String, ByVal key As String) As St
  End If
 End Function
 
+' Header and footer sections are optional; only high contrast repaints them.
+Private Sub UXVisualSections(ByVal f As Access.Form)
+ Dim part As Long
+ On Error Resume Next
+ For part = acHeader To acFooter
+  UXVisualSet f.Section(part), "BackColor", UXColor("Canvas")
+ Next
+End Sub
 ' Avoid redundant Access property writes and their invalidation/repaint cost.
 Private Sub UXVisualSet(ByVal target As Object, ByVal property As String, ByVal value As Variant)
  If target.Properties(property).Value <> value Then target.Properties(property).Value = value
