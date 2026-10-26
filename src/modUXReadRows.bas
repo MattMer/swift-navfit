@@ -213,6 +213,8 @@ Public Sub UXPrepareReportRows()
             row(1) = "Archived"
         ElseIf Nz(r!WorkflowState, "Draft") = "Approved" Then
             row(1) = "Local approval"
+        ElseIf Nz(r!WorkflowState, "Draft") = "Signed" Then
+            row(1) = "Signed"
         End If
         rows.Add CStr(r!ReportID), row: r.MoveNext
     Loop

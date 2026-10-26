@@ -41,6 +41,7 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  Place f, "uxReport", 250, 550, 8700, 650
  Place f, "uxTypeCaption", 9500, 500, 1200, 300
  If UXHasControl(f, "uxCreatePDF") Then Place f, "uxCreatePDF", 10800, 450, 1200, 400
+ If UXHasControl(f, "uxMarkSigned") Then Place f, "uxMarkSigned", 12100, 450, 1500, 400
  Place f, "cboKind", 9500, 850, 2500, 350
  Place f, "uxITA", 250, 1250, 5500, 350
  Place f, "uxSGA", 5800, 1250, 6200, 350
@@ -78,6 +79,7 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
   f!uxReviewCommentGuide.Visible = False
  ElseIf sheet = 9 Then
   Place f, "cmdCompare", 250, 4150, 2800, 450: Place f, "cmdRestore", 3250, 4150, 2800, 450
+  If UXHasControl(f, "cmdDisposeDrafts") Then Place f, "cmdDisposeDrafts", 6250, 4150, 3300, 450
   Place f, "lstRevisions", 250, 4750, 11800, body - 700
  End If
  If sheet = 0 Then
@@ -91,7 +93,7 @@ Failed:
  arranging = False: f!uxError.Caption = "Layout: " & Err.Description
 End Function
 Public Function UXFixedSelect(ByVal section As Long) As Boolean
- Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, id As Long, parentPaint As Boolean, surfacePaint As Boolean, paintHeld As Boolean
+ Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, signed As Boolean, id As Long, parentPaint As Boolean, surfacePaint As Boolean, paintHeld As Boolean
  On Error GoTo Failed
  If Not UXToolsCheckpoint() Then Exit Function
  UXFlushSurface
@@ -122,14 +124,17 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  id = Nz(f!txtReportID, 0): Set db = CurrentDb
  If id > 0 Then
   Set r = db.OpenRecordset("SELECT IsArchived,WorkflowState FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
-  locked = r!IsArchived Or r!WorkflowState <> "Draft": r.Close
+  'A signed report keeps its fields open: the first edit asks to reopen it.
+  locked = r!IsArchived Or (r!WorkflowState <> "Draft" And r!WorkflowState <> "Signed")
+  signed = (r!WorkflowState = "Signed"): r.Close
  End If
  For Each c In f.Controls
   If c.Name Like "uxSection#" Then c.Visible = False
   If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = sheet)
  Next
- f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
- f!uxLocked.Caption = IIf(locked, "Read only. Reopen local approval or recover the report to edit.", "")
+ f!cmdSave.Enabled = Not locked And Not signed: f!cboKind.Locked = locked Or signed
+ If UXHasControl(f, "cmdDisposeDrafts") Then f!cmdDisposeDrafts.Enabled = signed
+ f!uxLocked.Caption = IIf(locked, "Read only. Reopen local approval or recover the report to edit.", IIf(signed, SignedReportCaption(id), ""))
  Select Case sheet
   Case 0: f!uxSection.Caption = "Front Page"
   Case 1: f!uxSection.Caption = "Back Page"

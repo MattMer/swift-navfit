@@ -64,7 +64,7 @@ Public Function UXWindowHelp(ByVal formName As String) As Boolean
 End Function
 Public Function UXWindowHelpTopic(ByVal formName As String) As Long
     Select Case formName
-        Case "frmEditor", "frmReportingSenior", "frmMemberDetails", "frmServiceDetails", "frmDecisionDetails", "frmReportPeople", "frmPartyNames", "frmRevisionCompare": UXWindowHelpTopic = 1
+        Case "frmEditor", "frmReportingSenior", "frmMemberDetails", "frmServiceDetails", "frmDecisionDetails", "frmReportPeople", "frmPartyNames", "frmRevisionCompare", "frmUXSignoff": UXWindowHelpTopic = 1
         Case "frmLibrary", "frmBulkFolders", "frmProvenance": UXWindowHelpTopic = 2
         Case "frmUXGroups", "frmMajorWorkbench", "frmUXBulk", "frmUXComparison", "frmUXSharedFields", "frmUXNewGroup", "frmUXMoveGroup", "frmUXRenameGroup", "frmUXGroupPolicy", "frmUXMembers", "frmUXGroupReport", "frmUXNewReport": UXWindowHelpTopic = 3
         Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXGroupRSCA", "frmUXSeniorHistory": UXWindowHelpTopic = 4
@@ -124,6 +124,8 @@ Public Function UXWindowHelpIntro(ByVal formName As String) As String
             UXWindowHelpIntro = "Import and exchange: choose the source, inspect the before/after preview, then apply deliberately. Changed sources or saved targets require a fresh preview. Keep the export baseline for return reconciliation."
         Case "frmUXReview", "frmReviewComments"
             UXWindowHelpIntro = "Review: decisions use saved values and require the assigned contributor. Enter a decision note. Stale routes need the requester to restart them. Local approval is separate from group status and official submission."
+        Case "frmUXSignoff"
+            UXWindowHelpIntro = "Mark signed: record the date the official report was signed outside Swift. The saved version becomes the signed copy and the report turns read only; editing a field later asks whether to reopen it for correction. Disposing of drafts removes superseded draft versions, recovery checkpoints, unposted note drafts and imported source values; the signed version and every conversation stay."
         Case "frmEditor"
             UXWindowHelpIntro = "Report editor: Front and Back preserve pending edits. Save draft commits a revision; recovery only checkpoints unsaved work. Opening or closing this guide leaves your report and pending values in place."
         Case "frmUXSettings"

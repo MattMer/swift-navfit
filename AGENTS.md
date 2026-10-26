@@ -53,6 +53,12 @@ plans, but they never silently override the product invariants below.
     Work on copies.
   - Blank builds stay blank, and Demos contain only synthetic data. Never put
     personnel data in tracked fixtures or send it to external services.
+  - Report history is never deleted, with one exception: draft disposal that the
+    user confirms after Mark signed (BUPERSINST 1610.10H, enclosure (2)
+    Introduction paragraph 7a). It keeps every signed revision, all
+    conversations, reviews, group history and accounting, and records what it
+    removed. Final reports are kept; the workspace is the command's reporting
+    senior binder.
 
 ## Permissions
 

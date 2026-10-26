@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 34,
+  "SchemaVersion": 35,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -47,7 +47,9 @@
     "AuditEvent",
     "WizardPreview",
     "MemberCounseling",
-    "DirectoryMergeCounseling"
+    "DirectoryMergeCounseling",
+    "ReportSignoff",
+    "DraftDisposal"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -252,7 +254,13 @@
     "ALTER TABLE MemberCounseling ADD CONSTRAINT FK_MemberCounseling_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
     "CREATE TABLE DirectoryMergeCounseling (MergeID LONG NOT NULL, CounselingID LONG NOT NULL, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME, CONSTRAINT PK_DirectoryMergeCounseling PRIMARY KEY (MergeID,CounselingID))",
     "ALTER TABLE DirectoryMergeCounseling ADD CONSTRAINT FK_DirectoryMergeCounseling_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
-    "ALTER TABLE DirectoryMergeCounseling ADD CONSTRAINT FK_DirectoryMergeCounseling_CounselingID FOREIGN KEY (CounselingID) REFERENCES MemberCounseling (CounselingID)"
+    "ALTER TABLE DirectoryMergeCounseling ADD CONSTRAINT FK_DirectoryMergeCounseling_CounselingID FOREIGN KEY (CounselingID) REFERENCES MemberCounseling (CounselingID)",
+    "CREATE TABLE ReportSignoff (SignoffID COUNTER PRIMARY KEY, SignoffGuid TEXT(38) NOT NULL, ReportID LONG NOT NULL, SignedRevisionID LONG NOT NULL, SignedOn DATETIME NOT NULL, PriorState TEXT(20) NOT NULL, MarkedBy LONG NOT NULL, MarkedAt DATETIME NOT NULL, ReopenedBy LONG, ReopenedAt DATETIME, ReopenReason TEXT(255))",
+    "CREATE UNIQUE INDEX UX_ReportSignoff_Guid ON ReportSignoff (SignoffGuid)",
+    "CREATE INDEX IX_ReportSignoff_Report ON ReportSignoff (ReportID,MarkedAt)",
+    "CREATE TABLE DraftDisposal (DisposalID COUNTER PRIMARY KEY, DisposalGuid TEXT(38) NOT NULL, ReportID LONG NOT NULL, SignoffID LONG NOT NULL, DisposedBy LONG NOT NULL, DisposedAt DATETIME NOT NULL, RevisionsCleared LONG NOT NULL, ValueRowsRemoved LONG NOT NULL, ChangeRowsRemoved LONG NOT NULL, RecoveryRemoved LONG NOT NULL, NoteDraftsRemoved LONG NOT NULL, RawValuesRemoved LONG NOT NULL)",
+    "CREATE UNIQUE INDEX UX_DraftDisposal_Guid ON DraftDisposal (DisposalGuid)",
+    "ALTER TABLE DraftDisposal ADD CONSTRAINT FK_DraftDisposal_SignoffID FOREIGN KEY (SignoffID) REFERENCES ReportSignoff (SignoffID)"
   ],
   "Queries": [
     {

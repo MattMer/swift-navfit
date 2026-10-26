@@ -77,10 +77,14 @@ Public Function UXHeaderReviewState() As Boolean
         End If
         r.Close
         If state = "Approved" Then reason = "Locally approved: reopen approval with a reason before editing. Official submission is separate."
+        If state = "Signed" Then reason = "Marked signed outside Swift: the first edit asks whether to reopen it for correction."
         If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then reason = "Recover this archived report before reviewing or reopening approval."
     End If
+    If UXHasControl(f, "uxMarkSigned") Then f!uxMarkSigned.Enabled = id > 0 And (state = "Draft" Or state = "Approved") And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Not EditorHasPending()
     If id > 0 And Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then
         nextAction = "Archived report. Recover it from Reports to continue."
+    ElseIf state = "Signed" Then
+        nextAction = SignedReportCaption(id)
     ElseIf id = 0 Or (EditorHasPending() And f!cmdSave.Enabled) Then
         primary = "cmdSave": nextAction = "Next: Save draft; review uses saved values."
     ElseIf f!uxReviewApproval.Enabled Then

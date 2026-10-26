@@ -16,6 +16,8 @@ Public Function UXReportState(ByVal reportID As Long) As String
     Dim revision As Long, routes As DAO.Recordset
     If Nz(DLookup("IsArchived", "Report", "ReportID=" & reportID), False) Then UXReportState = "Archived": Exit Function
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Approved" Then UXReportState = "Local approval": Exit Function
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Signed" Then UXReportState = "Signed": Exit Function
+    If DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Not Null") > 0 And DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Null") = 0 Then UXReportState = "Reopened for correction": Exit Function
     revision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending' AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function
     If DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted') AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function

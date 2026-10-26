@@ -35,6 +35,10 @@ Public Function UXMemberAction(ByVal action As String) As Boolean
     If action = "Open" Then UXMemberAction = UXGridOpenReport(): Exit Function
     If action = "Validation" Then UXMemberAction = UXOpenValidation(True, id): Exit Function
     If action = "Blocks" Then UXMemberAction = UXStartGroupBulk(False, False, id): Exit Function
+    If action = "Signed" Then
+        If Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF Then Err.Raise vbObjectError + 9633, "modUXGroupPages.UXMemberAction", "Select a member report first."
+        UXMemberAction = UXSignoffOpen(CLng(Forms!frmUXComparison!uxTraitGrid.Form!ReportID)): Exit Function
+    End If
     If action <> "Members" And action <> "Policy" Then Err.Raise 5, "modUXGroupPages.UXMemberAction", "Unknown member action."
     If Not CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then DoCmd.OpenForm "frmMajorWorkbench", , , , , acHidden, "ContextOnly"
     Forms!frmMajorWorkbench.Visible = False

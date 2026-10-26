@@ -65,6 +65,7 @@
     "src/modRouting.bas",
     "src/modSavedReadiness.bas",
     "src/modServiceDetails.bas",
+    "src/modSignoff.bas",
     "src/modSnippets.bas",
     "src/modSummaryGroups.bas",
     "src/modSwift.bas",
@@ -264,6 +265,7 @@
     "frmUXSeniors",
     "frmUXSettings",
     "frmUXSharedFields",
+    "frmUXSignoff",
     "frmUXTraitRows",
     "frmUXValidation",
     "frmUXWorkspaceImport"

@@ -1,0 +1,423 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    Modal = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =2
+    Width =17200
+    ItemSuffix =39
+    Left =3330
+    Top =1530
+    Right =21855
+    Bottom =14775
+    Caption ="Mark report signed"
+    OnActivate ="=UXVisualEvent(\"frmUXSignoff\",\"\")"
+    OnResize ="=UXHelpResize(\"frmUXSignoff\",\"\")"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Aptos"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin CheckBox
+            BorderLineStyle =0
+            LabelX =230
+            LabelY =-30
+            BorderColor =10921638
+            GridlineColor =10921638
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Aptos"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ComboBox
+            AddColon = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =2102279
+            FontName ="Aptos"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =2
+            ForeShade =50.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =4900
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =12800
+                    Height =500
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Mark report signed"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =750
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1500
+                    Width =4100
+                    Height =350
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lbltxtSignedOn"
+                    Caption ="Date signed"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1500
+                    LayoutCachedWidth =4500
+                    LayoutCachedHeight =1850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4600
+                    Top =1500
+                    Width =8000
+                    Height =450
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSignedOn"
+                    Format ="yyyy-mm-dd"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+
+                    LayoutCachedLeft =4600
+                    LayoutCachedTop =1500
+                    LayoutCachedWidth =12600
+                    LayoutCachedHeight =1950
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2900
+                    Width =12600
+                    Height =900
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblStatus"
+                    Caption =" "
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =3800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =4000
+                    Width =6000
+                    Height =500
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =16777215
+                    Name ="cmdSave"
+                    Caption ="Mark signed"
+                    OnClick ="=UXSignoffSave()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =4000
+                    LayoutCachedWidth =6400
+                    LayoutCachedHeight =4500
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6700
+                    Top =4000
+                    Width =6300
+                    Height =500
+                    FontSize =10
+                    TabIndex =3
+                    ForeColor =4205854
+                    Name ="cmdCancel"
+                    Caption ="Cancel"
+                    OnClick ="=UXDirectoryClose(\"frmUXSignoff\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6700
+                    LayoutCachedTop =4000
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =4500
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =215
+                    Left =13000
+                    Top =150
+                    Width =500
+                    Height =400
+                    FontWeight =700
+                    TabIndex =4
+                    ForeColor =8928611
+                    Name ="cmdWindowHelp"
+                    Caption ="?"
+                    OnClick ="=UXWindowHelp(\"frmUXSignoff\")"
+                    ControlTipText ="Help for this window"
+
+                    LayoutCachedLeft =13000
+                    LayoutCachedTop =150
+                    LayoutCachedWidth =13500
+                    LayoutCachedHeight =550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =16443630
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =16443630
+                    HoverThemeColorIndex =-1
+                    PressedColor =16443630
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =8928611
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =8928611
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    Left =400
+                    Top =850
+                    Width =12600
+                    Height =400
+                    FontSize =10
+                    Name ="lblReport"
+                    Caption =" "
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =850
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =1250
+                End
+                Begin CheckBox
+                    TabStop = NotDefault
+                    OverlapFlags =85
+                    OldBorderStyle =0
+                    Left =4600
+                    Top =2200
+                    Width =300
+                    Height =300
+                    ColumnOrder =0
+                    TabIndex =1
+                    BorderColor =16777215
+                    Name ="chkDispose"
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    AggregateType =0
+
+                    LayoutCachedLeft =4600
+                    LayoutCachedTop =2200
+                    LayoutCachedWidth =4900
+                    LayoutCachedHeight =2500
+                    BorderThemeColorIndex =0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
+                End
+                Begin Label
+                    OverlapFlags =85
+                    Left =5000
+                    Top =2150
+                    Width =7600
+                    Height =400
+                    BorderColor =16777215
+                    ForeColor =16777215
+                    Name ="lblDispose"
+                    Caption ="Dispose of drafts now (superseded draft versions, recovery and unposted note dra"
+                        "fts)"
+                    FontName ="Aptos Display"
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    LayoutCachedLeft =5000
+                    LayoutCachedTop =2150
+                    LayoutCachedWidth =12600
+                    LayoutCachedHeight =2550
+                    ThemeFontIndex =0
+                    BackThemeColorIndex =0
+                    BackTint =0.0
+                    BackShade =0.0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    ForeTint =0.0
+                    ForeShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
+                End
+            End
+        End
+    End
+End

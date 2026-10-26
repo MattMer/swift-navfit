@@ -427,6 +427,11 @@
    "tier": "extended"
   },
   {
+   "name": "test-signoff",
+   "area": "Report editor and pages",
+   "tier": "extended"
+  },
+  {
    "name": "test-swift-data-import",
    "area": "Import and transfer",
    "tier": "release"

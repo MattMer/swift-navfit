@@ -38,6 +38,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Traits | test-traits.ps1 for persistence, rollback, legacy restore and fresh-session recovery; test-trait-catalogue.ps1 for exact text/source version/hash; fixed-page/report-tools checks cover current UI |
 | Service/counseling/readiness fields | test-service-details.ps1; src/service-reference.json suggestions require source fidelity, not policy-rule claims |
 | Assignment/retention/member statement | test-decision-details.ps1; persistence, raw recovery and native bounds |
+| Mark signed / draft disposal | test-signoff.ps1; lock and save refusal on every route, reopen prompt (editor and grid), bulk skip, disposal removes only drafts (signed revisions, conversations, groups kept), restore/compare refusal and fresh-session persistence |
 | Counseling | test-counseling.ps1; schedule by paygrade and date, status, record rules, carry-over to blocks 30–31, My Work and history screens, disposition, member merge/undo and fresh-session persistence |
 | Report people | test-report-people.ps1; all 13 fields, revisions, restore, rollback and fresh-process recovery |
 | Structured names | test-party-names.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |

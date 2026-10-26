@@ -109,6 +109,8 @@ Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     If surfaceBusy Then Exit Function
     Dim f As Access.Form, name As String, hadError As Boolean
     Set f = Surface(): name = UXFieldControl(key)
+    'A signed report asks before the first change; No puts the field back.
+    If Not UXSignedEditGuard() Then UXSurfaceRestoreField key: Exit Function
     Forms!frmEditor.Controls(name) = UXSurfaceCanonical(key, f.Controls(name).Value)
     'The printed Yes/No boxes edit one response. Preserve an imported conflict until
     'the contributor deliberately selects a box, then clear its opposite atomically.
@@ -206,6 +208,19 @@ Public Function UXSurfaceErrorSelected() As Boolean
 End Function
 ' Synchronize the visible section from the unbound buffer while preserving active
 ' typed text; the busy flag prevents recursive surface updates.
+'Show one field's buffer value again, including the active control.
+Public Sub UXSurfaceRestoreField(ByVal key As String)
+    Dim c As Access.Control, value As Variant
+    Set c = Surface().Controls(UXFieldControl(key)): value = Forms!frmEditor.Controls(c.Name).Value
+    surfaceBusy = True
+    On Error Resume Next
+    If UXFieldFlag(key) Then
+        If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
+    Else
+        c.Value = value
+    End If
+    surfaceBusy = False
+End Sub
 Public Function UXSurfaceRefresh() As Boolean
     Dim f As Access.Form, c As Access.Control, key As String, value As Variant, active As String
     If surfaceBusy Or Not UXSurfaceAvailable() Then Exit Function

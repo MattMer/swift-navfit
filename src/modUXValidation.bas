@@ -86,6 +86,12 @@ End Function
 ' Handle textbox OnChange without validating on every keystroke. Field exit and the
 ' dirty timer flush the checks; active text remains available to recovery.
 Public Function UXLiveTyped() As Boolean
+    'First keystroke in a signed report: ask to reopen, or undo the keystroke.
+    If Not UXSignedEditGuard() Then
+        On Error Resume Next
+        Screen.ActiveControl.Undo
+        Exit Function
+    End If
     Call UXEditorChanged()
     UXLiveTyped = True
 End Function

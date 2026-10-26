@@ -22,7 +22,7 @@ End Function
 ' Build an in-memory plan; close every read cursor before any transaction writes.
 Public Function RecursiveDefaultPlan(ByVal groupID As Long, ByVal defaults As Boolean, ByVal reportsCSV As String, ByVal key As String, ByVal value As Variant) As Object
  Dim plan As Object, groups As New Collection, reports As New Collection, values As Object, changes As Object, valid As Object
- Dim db As DAO.Database, r As DAO.Recordset, sql As String, ids As Object, item As Variant, csv As String, signature As String, approvals As Long, known As Boolean
+ Dim db As DAO.Database, r As DAO.Recordset, sql As String, ids As Object, item As Variant, csv As String, signature As String, approvals As Long, known As Boolean, signed As Long
  For Each item In UXSharedKeys(): If key = item Then known = True
  Next
  If Not known Then Err.Raise vbObjectError + 8200, "modUXRecursiveDefaults.RecursiveDefaultPlan", "This field is not a shared report block."
@@ -59,16 +59,21 @@ Public Function RecursiveDefaultPlan(ByVal groupID As Long, ByVal defaults As Bo
    Set values = SavedFields(r!ReportID)
    signature = signature & r!ReportID & ":" & r!CurrentRevisionID & ":" & r!WorkflowState & "|"
    If Not SameFieldValue(values(key), value) Then
-    If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.RecursiveDefaultPlan", "A report is locked; no recursive changes were applied."
-    reports.Add Array(CLng(r!ReportID), CLng(r!CurrentRevisionID), CStr(r!WorkflowState))
-    If r!WorkflowState = "Approved" Then approvals = approvals + 1
+    'Signed reports are part of the binder: skip them and say so.
+    If r!WorkflowState = "Signed" Then
+     signed = signed + 1
+    Else
+     If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.RecursiveDefaultPlan", "A report is locked; no recursive changes were applied."
+     reports.Add Array(CLng(r!ReportID), CLng(r!CurrentRevisionID), CStr(r!WorkflowState))
+     If r!WorkflowState = "Approved" Then approvals = approvals + 1
+    End If
    End If
   End If
   r.MoveNext
  Loop
  r.Close
  Set plan = CreateObject("Scripting.Dictionary")
- plan.Add "Groups", groups: plan.Add "Reports", reports: plan.Add "Approvals", approvals
+ plan.Add "Groups", groups: plan.Add "Reports", reports: plan.Add "Approvals", approvals: plan.Add "SignedSkipped", signed
  plan.Add "GroupID", groupID: plan.Add "Defaults", defaults: plan.Add "CSV", reportsCSV
  plan.Add "Key", key: plan.Add "Value", value: plan.Add "Signature", signature
  Set RecursiveDefaultPlan = plan
@@ -83,6 +88,7 @@ Public Function RecursiveDefaultConfirmation(ByVal plan As Object) As String
  value = Nz(plan("Value"), "(blank)"): If value = "" Then value = "(blank)"
  RecursiveDefaultConfirmation = "Apply " & UXFieldCaption(plan("Key"), Nz(Forms!frmUXBulk!uxKind, "EVAL")) & " = " & value & " recursively to " & scope & " and " & plan("Reports").Count & " existing reports?" & vbCrLf & vbCrLf & "Existing customized values for this field will be replaced. Archived items are excluded."
  If plan("Approvals") > 0 Then RecursiveDefaultConfirmation = RecursiveDefaultConfirmation & vbCrLf & plan("Approvals") & " locally approved reports will return to In-Work; previous approvals stay in history."
+ If plan("SignedSkipped") > 0 Then RecursiveDefaultConfirmation = RecursiveDefaultConfirmation & vbCrLf & plan("SignedSkipped") & " signed reports are skipped; reopen one in the editor to correct it."
 End Function
 ' Defaults, approval reopening and report revisions commit together or all roll back.
 Public Sub ApplyRecursiveDefault(ByVal plan As Object, ByVal allowReopen As Boolean)
@@ -127,7 +133,7 @@ Public Function UXConfirmBlockChange(ByVal key As String, Optional ByVal decisio
  DoCmd.Hourglass True
  ApplyRecursiveDefault plan, True
  confirmedValues(key) = c.Value
- Forms!frmUXBulk!uxStatus.Caption = "Saved changes to " & plan("Reports").Count & " existing reports; " & plan("Approvals") & " local approvals reopened."
+ Forms!frmUXBulk!uxStatus.Caption = "Saved changes to " & plan("Reports").Count & " existing reports; " & plan("Approvals") & " local approvals reopened." & IIf(plan("SignedSkipped") > 0, " " & plan("SignedSkipped") & " signed reports skipped.", "")
  UXConfirmBlockChange = True
 Finished:
  Call UXSharedScope(key)
@@ -162,7 +168,7 @@ End Function
 ' not a screen, button or separate user requirement.
 Public Function UXConfirmReportFields(ByVal groupID As Long, ByVal fields As Object, ByVal reason As String, Optional ByVal decision As VbMsgBoxResult = 0) As Boolean
  Dim db As DAO.Database, r As DAO.Recordset, targets As New Collection, values As Object, key As Variant, changed As Boolean, csv As String, approved As Long
- Dim item As Variant, w As DAO.Workspace, trans As Boolean, batch As Long, failure As Long, message As String
+ Dim item As Variant, w As DAO.Workspace, trans As Boolean, batch As Long, failure As Long, message As String, signed As Long
  On Error GoTo Failed
  If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 8202, "modUXRecursiveDefaults.UXConfirmReportFields", "Recover this group first."
  If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 8201, "modUXRecursiveDefaults.UXConfirmReportFields", "Close the report editor first."
@@ -173,6 +179,7 @@ Public Function UXConfirmReportFields(ByVal groupID As Long, ByVal fields As Obj
   For Each key In fields.Keys
    If Not SameFieldValue(values(key), fields(key)) Then changed = True
   Next
+  If changed And r!WorkflowState = "Signed" Then signed = signed + 1: changed = False
   If changed Then
    If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.UXConfirmReportFields", "A group report is locked."
    targets.Add Array(CLng(r!ReportID), CLng(r!CurrentRevisionID), CStr(r!WorkflowState))
@@ -186,6 +193,7 @@ Public Function UXConfirmReportFields(ByVal groupID As Long, ByVal fields As Obj
  If targets.Count = 0 Then UXConfirmReportFields = True: Exit Function
  message = reason & " for " & targets.Count & " reports? Existing values in these fields will be replaced."
  If approved > 0 Then message = message & vbCrLf & approved & " locally approved reports will return to In-Work; approvals remain in history."
+ If signed > 0 Then message = message & vbCrLf & signed & " signed reports are skipped."
  If decision = 0 Then decision = MsgBox(message, vbYesNo + vbQuestion + vbDefaultButton2, "Apply to group members?")
  If decision <> vbYes Then Exit Function
  Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
@@ -208,7 +216,7 @@ End Function
 
 ' Scope is advisory before editing; the existing confirmation recomputes exact changes.
 Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
- Dim db As DAO.Database, r As DAO.Recordset, sql As String, title As String, count As Long, approved As Long, locked As Long, message As String, groups As Long, applies As Boolean
+ Dim db As DAO.Database, r As DAO.Recordset, sql As String, title As String, count As Long, approved As Long, locked As Long, message As String, groups As Long, applies As Boolean, signedCount As Long
  On Error GoTo Failed
  If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
  If Not UXHasControl(Forms!frmUXBulk, "uxScope") Then Exit Function
@@ -232,7 +240,8 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
   If applies Then
    count = count + 1
    If r!WorkflowState = "Approved" Then approved = approved + 1
-   If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then locked = locked + 1
+   If r!WorkflowState = "Signed" Then signedCount = signedCount + 1
+   If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" And r!WorkflowState <> "Signed" Then locked = locked + 1
   End If
   r.MoveNext
  Loop
@@ -240,6 +249,7 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
  message = "Scope: " & title & "; " & count & " active reports, " & approved & " locally approved."
  message = message & " Custom values may be replaced; changed approvals reopen after confirmation. Archived items excluded."
  If locked > 0 Then message = message & " " & locked & " locked reports may block changes."
+ If signedCount > 0 Then message = message & " " & signedCount & " signed reports are skipped."
  Forms!frmUXBulk!uxScope.Caption = message: Forms!frmUXBulk!uxScope.ControlTipText = Left$(message, 255)
  UXSharedScope = True: Exit Function
 Failed:

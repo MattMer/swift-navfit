@@ -9,9 +9,9 @@ Begin Form
     DividingLines = NotDefault
     DefaultView =0
     Width =15450
-    ItemSuffix =317
+    ItemSuffix =319
     Right =18525
-    Bottom =12795
+    Bottom =13245
     TimerInterval =1000
     OnUnload ="[Event Procedure]"
     Caption ="Draft editor"
@@ -22,7 +22,6 @@ Begin Form
     OnLoad ="=LoadEditor()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -4050,7 +4049,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin Label
-                    OverlapFlags =85
+                    OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
                     Top =300
@@ -7697,7 +7696,7 @@ Begin Form
                     LayoutCachedHeight =11800
                 End
                 Begin CommandButton
-                    OverlapFlags =215
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =13400
                     Top =450
@@ -7719,6 +7718,139 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    TabStop = NotDefault
+                    OverlapFlags =215
+                    Left =12100
+                    Top =450
+                    Width =1500
+                    Height =400
+                    TabIndex =172
+                    ForeColor =16777215
+                    Name ="uxMarkSigned"
+                    Caption ="Mark signed"
+                    OnClick ="=UXSignoffOpen()"
+                    FontName ="Aptos Display"
+                    ControlTipText ="Record that the saved report was signed outside Swift and lock it."
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    BackStyle =0
+
+                    LayoutCachedLeft =12100
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =13600
+                    LayoutCachedHeight =850
+                    Alignment =0
+                    ForeTint =0.0
+                    ForeShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
+                    UseTheme =0
+                    Shape =0
+                    Gradient =0
+                    BackColor =16777215
+                    BackThemeColorIndex =0
+                    BackTint =0.0
+                    BackShade =0.0
+                    OldBorderStyle =0
+                    BorderColor =16777215
+                    BorderThemeColorIndex =0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    ThemeFontIndex =0
+                    HoverColor =16777215
+                    HoverThemeColorIndex =0
+                    HoverTint =0.0
+                    HoverShade =0.0
+                    PressedColor =16777215
+                    PressedThemeColorIndex =0
+                    PressedTint =0.0
+                    PressedShade =0.0
+                    HoverForeColor =16777215
+                    HoverForeTint =0.0
+                    HoverForeShade =0.0
+                    PressedForeColor =16777215
+                    PressedForeTint =0.0
+                    PressedForeShade =0.0
+                    WebImagePaddingRight =-1
+                    WebImagePaddingBottom =-1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    TabStop = NotDefault
+                    OverlapFlags =255
+                    Left =6250
+                    Top =4150
+                    Width =3300
+                    Height =450
+                    TabIndex =173
+                    ForeColor =16777215
+                    Name ="cmdDisposeDrafts"
+                    Caption ="Dispose of drafts"
+                    OnClick ="=UXDisposeDrafts()"
+                    FontName ="Aptos Display"
+                    Tag ="LOCAL:9"
+                    ControlTipText ="After signing: remove superseded drafts. Signed versions and conversations stay."
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    BackStyle =0
+
+                    LayoutCachedLeft =6250
+                    LayoutCachedTop =4150
+                    LayoutCachedWidth =9550
+                    LayoutCachedHeight =4600
+                    Alignment =0
+                    ForeTint =0.0
+                    ForeShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
+                    UseTheme =0
+                    Shape =0
+                    Gradient =0
+                    BackColor =16777215
+                    BackThemeColorIndex =0
+                    BackTint =0.0
+                    BackShade =0.0
+                    OldBorderStyle =0
+                    BorderColor =16777215
+                    BorderThemeColorIndex =0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    ThemeFontIndex =0
+                    HoverColor =16777215
+                    HoverThemeColorIndex =0
+                    HoverTint =0.0
+                    HoverShade =0.0
+                    PressedColor =16777215
+                    PressedThemeColorIndex =0
+                    PressedTint =0.0
+                    PressedShade =0.0
+                    HoverForeColor =16777215
+                    HoverForeTint =0.0
+                    HoverForeShade =0.0
+                    PressedForeColor =16777215
+                    PressedForeTint =0.0
+                    PressedForeShade =0.0
+                    WebImagePaddingRight =-1
+                    WebImagePaddingBottom =-1
                     Overlaps =1
                 End
             End

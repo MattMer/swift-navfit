@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.45.0-dev | 34 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.46.0-dev | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest published Blank/Demo | r128 = 0.27.1-dev | 27 | Published 21 Oct 2026 to the Drive folder in [Development_Workflow.md](docs/Development_Workflow.md). Nothing newer is published. |
 | Latest source tag | `v0.29.0-dev` | 29 | Source checkpoint only; no binary published from it. |
 
@@ -69,6 +69,9 @@ import and print-ready PDF output.
   - `WizardPreview` stages recoverable import previews.
   - `MemberCounseling` holds midterm counseling sessions per member;
     `DirectoryMergeCounseling` lets a member merge move and undo them.
+  - `ReportSignoff` records each Mark signed and reopening; `DraftDisposal`
+    records each draft disposal. A disposed draft keeps its `ReportRevision` row
+    (`ValuesDisposed`) so every link to it stays valid.
 - **Report editor:**
   - Uses an unbound buffer with fixed Front/Back NAVPERS geometry.
   - All seven traits stay together on the editing Front Page, and Chief reports
@@ -77,6 +80,9 @@ import and print-ready PDF output.
   - Resizing changes the viewport, not the field layout.
   - Pending values survive page changes, failed saves, VBA reset and restart
     through recovery checkpoints.
+  - **Mark signed** sets `WorkflowState` to `Signed`, so every save path refuses
+    changes. In the editor and group grid the first edit asks whether to reopen
+    the report for correction; bulk defaults skip signed reports and list them.
 - **Entry points:**
   - Startup runs [AutoExec.txt](src/AutoExec.txt) → `SwiftAppStartup` → setup or
     contributor choice → application shell.
@@ -116,6 +122,7 @@ import and print-ready PDF output.
 | M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). |
 | M07 | Accessibility | Labels/focus preparation only. Attended acceptance not started. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
+| Mark signed | Record a signature made outside Swift; read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
 | Counseling | Midterm counseling tracker: chapter 18 schedule by paygrade (current and 2027 tables), records in member history, My Work tab, blocks 30–31 carry-over through Report tools, worksheet disposition after detachment | Dev (schema 34). Printing a pre-filled worksheet is deferred. |
 
 Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md).
@@ -127,16 +134,16 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 1–34.**
+- **The importer accepts source schemas 1–35.**
   [modMigration.bas:17](src/modMigration.bas) hard-codes the upper bound, and
   [modWorkspaceImport.bas](src/modWorkspaceImport.bas) checks
   `SCHEMA_VERSION`. Raise the literal whenever the schema changes. The target
-  must be schema 21–34.
+  must be schema 21–35.
 - Test evidence (local receipts; see history file):
 
   | Source schemas | Last verified | Scope |
   | --- | --- | --- |
-  | 1–34 | 0.45.0-dev, 25 Oct 2026 | Seeded synthetic source per schema (both schema-27 variants) and populated kept releases for 21–27; production import, independent exact comparison, guards. |
+  | 1–35 | 0.46.0-dev, 25 Oct 2026 | Seeded synthetic source per schema (both schema-27 variants) and populated kept releases for 21–27; production import, independent exact comparison, guards. |
   | 21–29 | 0.29.0-dev, 22 Oct 2026 | Actual retained-schema audit/message matrix. |
   | 28–33 | 0.40.0-dev, 23 Oct 2026 | Actual retained-schema matrix; populated 30–33 major transfers. |
 

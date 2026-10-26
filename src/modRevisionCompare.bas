@@ -66,6 +66,7 @@ Public Function OpenRevisionComparison(ByVal reportID As Long, ByVal older As Lo
     Dim r As DAO.Recordset, recorded As Boolean, ignored As Variant, key As Variant
     If newer = 0 Then newer = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
     If older = 0 Or newer = 0 Then Err.Raise vbObjectError + 802, "modRevisionCompare.OpenRevisionComparison", "Select a saved revision first."
+    If RevisionValuesDisposed(older) Or RevisionValuesDisposed(newer) Then Err.Raise vbObjectError + 806, "modRevisionCompare.OpenRevisionComparison", "That draft's contents were disposed of after signing, so it cannot be compared. Signed revisions remain comparable."
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & older), 0) <> reportID Or Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & newer), 0) <> reportID Then Err.Raise vbObjectError + 803, "modRevisionCompare.OpenRevisionComparison", "Both revisions must belong to this report."
     'Validate before displaying a new comparison; no writes or editor saves occur.
     For Each key In DraftFieldKeys()

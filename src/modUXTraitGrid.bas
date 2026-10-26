@@ -248,7 +248,7 @@ Public Function UXGridLockReason(ByVal id As Long, ByVal revision As Long, Optio
         If state(2) <> revision Then UXGridLockReason = "Saved report changed - reopen comparison": Exit Function
     End If
     If state(0) Then UXGridLockReason = "Archived - recover report to edit": Exit Function
-    If state(1) <> "Draft" And state(1) <> "Approved" Then UXGridLockReason = "Review lock - reopen report"
+    If state(1) <> "Draft" And state(1) <> "Approved" And state(1) <> "Signed" Then UXGridLockReason = "Review lock - reopen report"
 End Function
 ' Apply cached row locks and contextual status on row focus; avoid whole-group queries.
 Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) As Boolean
@@ -401,7 +401,12 @@ Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As
         groupID = Nz(DLookup("GroupID", "GroupSnapshot", "SnapshotID=" & snapshot), 0)
     End If
     saving = True
-    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Signed" Then
+        If reopenDecision = 0 Then reopenDecision = MsgBox("This report was marked signed. Reopen it for correction and save this change? The signed version stays in history.", vbYesNo + vbQuestion + vbDefaultButton2, "Reopen signed report")
+        If reopenDecision <> vbYes Then
+            f.Undo: saving = False: UXGridEdit = False: Exit Function
+        End If
+    ElseIf Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then
         If reopenDecision = 0 Then reopenDecision = MsgBox("This report has a local approval. Set it back to In-Work and save this change? The approval will remain in history.", vbYesNo + vbQuestion, "Reopen approved report")
         If reopenDecision <> vbYes Then
             f.Undo: saving = False: UXGridEdit = False: Exit Function
@@ -415,6 +420,7 @@ Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As
     w.BeginTrans: started = True
     stage = "Reopen local approval"
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then ReopenApprovedReport reportID, "Contributor changed " & key & " in group members"
+    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Signed" Then ReopenSignedReport reportID, "Group members change to " & key
     stage = "Save report revision"
     Call CommitSavedFields(reportID, expectedRevision, changes, "Automatic group member cell save: " & key)
     revision = CurrentRevision(reportID)

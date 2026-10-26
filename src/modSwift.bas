@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.45.0-dev"
-Public Const SCHEMA_VERSION As Long = 34
+Public Const APP_VERSION As String = "0.46.0-dev"
+Public Const SCHEMA_VERSION As Long = 35
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -319,6 +319,7 @@ End Function
 
 Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
     If Nz(DLookup("ReportID", "ReportRevision", "RevisionID=" & revisionID), 0) <> reportID Then Err.Raise vbObjectError + 115, "modSwift.RestoreDraft", "Revision belongs to another report."
+    If RevisionValuesDisposed(revisionID) Then Err.Raise vbObjectError + 116, "modSwift.RestoreDraft", "This draft's contents were disposed of after signing. Only signed and current revisions can be restored."
     RestoreDraft = CommitDraft(reportID, RevisionValue(revisionID, "FormKind"), Nz(RevisionValue(revisionID, "Title"), ""), Nz(RevisionValue(revisionID, "MemberName"), ""), RevisionValue(revisionID, "PeriodStart"), RevisionValue(revisionID, "PeriodEnd"), Nz(RevisionValue(revisionID, "DraftNotes"), ""), "Restore revision " & revisionID, NarrativeRevisionValue(revisionID), AdministrationFromRevision(revisionID), TraitsFromRevision(revisionID), AssessmentFromRevision(revisionID), PromotionStatusFromRevision(revisionID), ReportingSeniorFromRevision(revisionID), ReportContextFromRevision(revisionID), MemberDetailsFromRevision(revisionID), ServiceDetailsFromRevision(revisionID), DecisionDetailsFromRevision(revisionID), ReportPeopleFromRevision(revisionID), PartyNamesFromRevision(revisionID), Block28FromRevision(revisionID), RevisionFields(revisionID))
 End Function
 
@@ -462,7 +463,7 @@ End Function
 Private Sub RefreshRevisions()
     Dim f As Form
     Set f = Forms!frmEditor
-    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber, CommittedAt, Reason FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
+    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber, CommittedAt, IIf(Nz(ValuesDisposed,False),'[Draft contents disposed] ','') & Reason AS RevisionNote FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
     f!lstRevisions.Requery
 End Sub
 

@@ -10,9 +10,9 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15850
-    ItemSuffix =61
+    ItemSuffix =62
     Right =18525
-    Bottom =12795
+    Bottom =13245
     OnUnload ="[Event Procedure]"
     Caption ="Summary group"
     OnClose ="=UXGridClose()"
@@ -22,7 +22,6 @@ Begin Form
     OnLoad ="=UXLoadComparison()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -1976,6 +1975,72 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    TabStop = NotDefault
+                    OverlapFlags =247
+                    Left =2850
+                    Top =7800
+                    Width =3300
+                    Height =500
+                    TabIndex =41
+                    ForeColor =16777215
+                    Name ="uxMarkSignedMember"
+                    Caption ="Mark selected report signed"
+                    OnClick ="=UXMemberAction(\"Signed\")"
+                    FontName ="Aptos Display"
+                    Tag ="GroupMemberAction"
+                    LeftPadding =0
+                    TopPadding =0
+                    RightPadding =0
+                    BottomPadding =0
+                    GridlineColor =16777215
+                    GridlineWidthLeft =0
+                    GridlineWidthTop =0
+                    GridlineWidthRight =0
+                    GridlineWidthBottom =0
+                    BackStyle =0
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =7800
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =8300
+                    Alignment =0
+                    ForeTint =0.0
+                    ForeShade =0.0
+                    GridlineThemeColorIndex =0
+                    GridlineTint =0.0
+                    GridlineShade =0.0
+                    UseTheme =0
+                    Shape =0
+                    Gradient =0
+                    BackColor =16777215
+                    BackThemeColorIndex =0
+                    BackTint =0.0
+                    BackShade =0.0
+                    OldBorderStyle =0
+                    BorderColor =16777215
+                    BorderThemeColorIndex =0
+                    BorderTint =0.0
+                    BorderShade =0.0
+                    ThemeFontIndex =0
+                    HoverColor =16777215
+                    HoverThemeColorIndex =0
+                    HoverTint =0.0
+                    HoverShade =0.0
+                    PressedColor =16777215
+                    PressedThemeColorIndex =0
+                    PressedTint =0.0
+                    PressedShade =0.0
+                    HoverForeColor =16777215
+                    HoverForeTint =0.0
+                    HoverForeShade =0.0
+                    PressedForeColor =16777215
+                    PressedForeTint =0.0
+                    PressedForeShade =0.0
+                    WebImagePaddingRight =-1
+                    WebImagePaddingBottom =-1
+                    Overlaps =1
                 End
             End
         End

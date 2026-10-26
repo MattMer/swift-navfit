@@ -196,6 +196,36 @@ Page changes preserve pending report values without creating revisions. Leaving 
 
 Locally approved or archived reports are read-only. Reopen local approval with a reason, or recover an archived report, before editing. Notes can continue after local approval; archived reports remain read-only for notes too.
 
+## 4.4 Mark a report signed
+
+When the official report has been signed outside Swift, record it so the workspace keeps the signed copy for the reporting senior's binder.
+
+1. Save any pending edits. Mark signed records the saved version.
+2. Choose **Mark signed** in the report header, or **Mark selected report signed** in a summary group's Members view.
+3. Enter the date it was signed. To remove the drafts now, select **Dispose of drafts now** (see below).
+4. Choose **Mark signed**.
+
+The report becomes read only and its list status shows **Signed**. Mark signed is not an official signature or submission.
+
+**Correcting a signed report.** Start editing any field. Swift asks whether to reopen the report for correction:
+
+- **Yes:** enter an optional reason. The report reopens as a draft, your edit continues, and the reopening is recorded with its reason. Save, and when the corrected report is re-signed, mark it signed again. Both signed versions stay in its history.
+- **No:** the field stays unchanged.
+
+The Members grid asks the same question. Shared-field and default changes skip signed reports and say how many they skipped.
+
+**Disposing of drafts.** BUPERSINST 1610.10H says drafts should be destroyed once the report is signed. **Dispose of drafts**, on the History page of a signed report or when you mark it signed, removes:
+
+- the contents of superseded draft versions (the version rows stay, marked **[Draft contents disposed]**),
+- recovery checkpoints and unposted note drafts,
+- imported source values.
+
+It keeps every signed version, all conversations, reviews, group membership and RSCA accounting. Disposal can't be undone, and existing backups and exports still contain the drafts. A disposed draft can't be restored or compared.
+
+Signed reports are kept: FITREPs and CHIEFEVALs for at least 5 years, and EVALs for at least 2 years after the report's end date.
+
+**Expected result:** The binder holds each signed report and its conversations; corrections are deliberate and recorded.
+
 ---
 
 # 5. Add notes and replies
