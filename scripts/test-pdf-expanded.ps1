@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$FixturePath)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-if(-not $FixturePath){$FixturePath=Join-Path $root 'output/pdf/r85'}
+if(-not $FixturePath){. (Join-Path $PSScriptRoot 'test-pdf-fixtures.ps1');$FixturePath=NewSwiftPdfFixtures 'expanded'}
 $FixturePath=[IO.Path]::GetFullPath($FixturePath)
 $scratch=Join-Path $root ('build/tests/pdf-expanded-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch

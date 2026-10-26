@@ -61,7 +61,7 @@ def create(directory):
                 row.update(templateHash=digest(packets['template']), dataHash=digest(data))
         manifest.append(row)
     for kind, filename in SOURCES.items():
-        source = ROOT / filename; before = digest(source.read_bytes())
+        source = ROOT / 'FORMS_REFERENCES_TEMPLATES' / filename; before = digest(source.read_bytes())
         with pikepdf.open(source) as pdf:
             arr = pdf.Root.AcroForm.XFA
             packets = {str(arr[i]): arr[i + 1].read_bytes() for i in range(0, len(arr), 2)}
@@ -77,7 +77,7 @@ def create(directory):
     for method in ['dynamic', 'fixed', 'stored', 'plain']:
         record('classic-' + method, classic(template, good, method), 'EVAL', good)
     def rewrite(name, **options):
-        with pikepdf.open(ROOT / SOURCES['EVAL'] if name == 'linear' else directory / 'classic-dynamic.pdf') as pdf:
+        with pikepdf.open(ROOT / 'FORMS_REFERENCES_TEMPLATES' / SOURCES['EVAL'] if name == 'linear' else directory / 'classic-dynamic.pdf') as pdf:
             destination = directory / ('temp-' + name + '.pdf')
             pdf.save(destination, **options)
         result = destination.read_bytes(); destination.unlink(); return result
@@ -101,7 +101,7 @@ def create(directory):
         raw = dest.read_bytes(); dest.unlink()
         record(label, raw, rejection='duplicate XFA' if label == 'duplicate-xfa' else 'No supported XFA')
 
-    with pikepdf.open(ROOT / SOURCES['EVAL']) as pdf:
+    with pikepdf.open(ROOT / 'FORMS_REFERENCES_TEMPLATES' / SOURCES['EVAL']) as pdf:
         a = pdf.Root.AcroForm.XFA
         original_data = {str(a[i]): a[i + 1].read_bytes() for i in range(0, len(a), 2)}['datasets']
     record('linearized', rewrite('linear', linearize=True), 'EVAL', original_data)

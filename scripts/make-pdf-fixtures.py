@@ -1,27 +1,23 @@
 """Fill supplied XFA datasets with synthetic values; preserve interactive form packets."""
+import argparse
 from pathlib import Path
 import hashlib
 import json
 import xml.etree.ElementTree as ET
 import pikepdf
+from make_pdf_sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "output" / "pdf"
-SOURCES = {
-    "EVAL": "E1-E6 EVAL BLANK NAVPERS 1616-26 05-2025_Final.pdf",
-    "CHIEFEVAL": "CHIEF EVAL BLANK 1616-27 05-2025_Final.pdf",
-    "FITREP": "W2-O6 FITREP NAVPERS 1610-2 05-2025_Final.pdf",
-}
 
 def packets(pdf):
     xfa = pdf.Root["/AcroForm"]["/XFA"]
     return {str(xfa[i]): (i + 1, xfa[i + 1].read_bytes()) for i in range(0, len(xfa), 2)}
 
-def create():
+def create(OUTPUT):
     OUTPUT.mkdir(parents=True, exist_ok=True)
     manifest = []
     for kind, filename in SOURCES.items():
-        source = ROOT / filename
+        source = ROOT / "FORMS_REFERENCES_TEMPLATES" / filename
         before = hashlib.sha256(source.read_bytes()).hexdigest()
         target = OUTPUT / f"synthetic-{kind.lower()}.pdf"
         if target.exists():
@@ -68,4 +64,5 @@ def create():
     print("PASS: three interactive XFA datasets verified; source PDFs unchanged")
 
 if __name__ == "__main__":
-    create()
+    parser = argparse.ArgumentParser(); parser.add_argument("--output", type=Path, required=True)
+    create(parser.parse_args().output.resolve())

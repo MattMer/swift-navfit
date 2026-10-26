@@ -161,8 +161,7 @@
   {
    "name": "test-import-rank",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Needs output/pdf fixtures that no longer exist."
+   "tier": "extended"
   },
   {
    "name": "test-import-review",
@@ -198,8 +197,7 @@
   {
    "name": "test-member-psg",
    "area": "Groups, directory and members",
-   "tier": "pending",
-   "note": "Needs output/pdf fixtures that no longer exist."
+   "tier": "extended"
   },
   {
    "name": "test-narrative-layout",
@@ -279,14 +277,18 @@
   {
    "name": "test-pdf-expanded",
    "area": "NAVFIT and PDF exchange",
-   "tier": "pending",
-   "note": "Needs output/pdf/r85 fixtures that no longer exist."
+   "tier": "extended"
+  },
+  {
+   "name": "test-pdf-fixtures",
+   "area": "NAVFIT and PDF exchange",
+   "tier": "helper",
+   "note": "Dot-sourced by PDF runners to generate synthetic PDF fixtures (needs the .venv with pikepdf)."
   },
   {
    "name": "test-pdf-import",
    "area": "Import and transfer",
-   "tier": "pending",
-   "note": "Needs output/pdf fixtures that no longer exist."
+   "tier": "extended"
   },
   {
    "name": "test-pdf-output",
@@ -539,11 +541,7 @@
   {
    "name": "test-ux-import-flow",
    "area": "Import and transfer",
-   "tier": "extended",
-   "note": "PDF half waits for synthetic PDF fixtures (pikepdf).",
-   "extraArgs": [
-    "-SkipPDF"
-   ]
+   "tier": "extended"
   },
   {
    "name": "test-ux-member-grid",

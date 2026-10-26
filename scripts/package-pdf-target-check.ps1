@@ -1,8 +1,8 @@
-param([string]$OutputPath='D:\Development\Swift NAVFIT\output\pdf\Swift_NAVFIT_Local_PDF_Check_r126.zip',
+param([string]$OutputPath=(Join-Path $PSScriptRoot '..\build\pdf-target-check\Swift_NAVFIT_Local_PDF_Check.zip'),
  [string]$FixtureDirectory)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-if(-not $FixtureDirectory){$FixtureDirectory=Join-Path $root 'build/tests/pdf-local-expanded'}
-$OutputPath=[IO.Path]::GetFullPath($OutputPath)
+if(-not $FixtureDirectory){. (Join-Path $PSScriptRoot 'test-pdf-fixtures.ps1');$FixtureDirectory=NewSwiftPdfFixtures 'expanded'}
+$OutputPath=[IO.Path]::GetFullPath($OutputPath);[void](New-Item -ItemType Directory -Force -Path (Split-Path $OutputPath))
 if(Test-Path -LiteralPath $OutputPath){throw "Refusing to overwrite $OutputPath"}
 $stage=Join-Path $root ('build/tests/pdf-target-kit-'+[guid]::NewGuid())
 foreach($directory in @('scripts','tests','output/pdf/r126')){[void](New-Item -ItemType Directory -Force -Path (Join-Path $stage $directory))}

@@ -8,11 +8,8 @@ import pikepdf
 from make_pdf_sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "output/pdf/r85"
-
-def create(output=None):
-    global OUT
-    if output is not None: OUT = Path(output).resolve()
+def create(output):
+    OUT = Path(output).resolve()
     OUT.mkdir(parents=True, exist_ok=True)
     mapping = json.loads((ROOT / "src/pdf-field-map.json").read_text())
     manifest = []
@@ -75,5 +72,5 @@ def create(output=None):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output')
+    parser.add_argument('--output', required=True)
     create(parser.parse_args().output)

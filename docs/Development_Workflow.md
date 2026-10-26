@@ -72,6 +72,22 @@ Tasks explicitly use `powershell.exe`, preserving the tested COM host even when
 the interactive terminal uses PowerShell 7. Do not run Access builds through WSL.
 Python and other available tools may be used where they are a better fit; do not introduce dependencies or parallel toolchains without justification.
 
+The PDF runners generate their synthetic fixtures with pikepdf, a development
+tool only (the application has no Python dependency). Create the git-ignored
+environment once at the repository root:
+
+```bash
+C:/Python312/python.exe -m venv .venv
+```
+
+```bash
+.venv/Scripts/python.exe -m pip install pikepdf==10.17.0
+```
+
+[test-pdf-fixtures.ps1](../scripts/test-pdf-fixtures.ps1) then fills the blank
+NAVPERS forms in `FORMS_REFERENCES_TEMPLATES/` (read only) into a new
+`build/tests` folder for each run.
+
 Workspace recommendations are in [extensions.json](../.vscode/extensions.json):
 
 - Microsoft PowerShell: script navigation, diagnostics and script debugging.

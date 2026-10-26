@@ -46,7 +46,7 @@ Public Function TestUXImportFlow(ByVal source As String, ByVal pdfPath As String
     DoCmd.OpenForm "frmPDFImport"
     before = DCount("*", "Report")
     Check Not Forms!frmPDFImport!cmdImport.Enabled, "PDF Apply enabled before choose"
-    Check Forms!frmPDFImport.OnUnload = "=PDFClearPreview()", "Native PDF close retains preview"
+    Check Forms!frmPDFImport.OnUnload = "=PDFClearPreview(False)", "Native PDF close retains preview"
     Check Forms!frmPDFImport!cmdPreview.TabIndex < Forms!frmPDFImport!cmdImport.TabIndex, "PDF tab order skips preview"
     Check InStr(Forms!frmPDFImport!cboIdentifier.RowSource, "DoDID") = 0, "Legacy ID exposed by default"
     Check UXChoosePDFFile(pdfPath), "PDF choose failed"
