@@ -303,12 +303,45 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
   management rights; daily use needs contribute rights), schema version and
   front-end compatibility.
 
+**Testing strategy (product owner, 26 Oct 2026):** SharePoint has no container
+image and no open-source implementation of its list protocol, so testing uses
+three layers:
+
+1. **Simulated SharePoint provider, every build, no cost.** A test-only provider
+   on local Access tables that behaves like SharePoint Lists:
+   - no transactions across lists;
+   - relationships, validation rules and most unique constraints not enforced;
+   - its own item IDs;
+   - the 5,000-item view threshold and per-list index limits;
+   - optional throttling;
+   - injected failures: provisioning cut off at step N, a write dropped midway,
+     a concurrent edit by another user.
+
+   The same suite runs against the Local and Simulated providers in the extended
+   tier. It covers idempotent saves, recovery, resumable provisioning,
+   version and compatibility checks, conflicts and integrity checks. It can't
+   cover Access's SharePoint connector or sign-in.
+2. **A small commercial Microsoft 365 tenant for the connector.** Business Basic
+   (trial or monthly), which runs the same SharePoint Online code as DoD365, apart
+   from sovereign-cloud endpoints and the command's sign-in policies. It hosts the
+   phase-1 research spike and a manual-tier runner against a dedicated test site.
+   Synthetic data only.
+3. **A DoD365 sandbox site for final acceptance.** A separate test site or
+   subsite on the command's DoD365 with synthetic data only, requested from the
+   site owner or ISSM. It is the only place to prove DoD365 sign-in and
+   conditional-access policies.
+
+Not chosen: a local SharePoint Server Subscription Edition lab. Its 180-day trial
+needs Windows Server, SQL Server and a domain controller (16 GB+ RAM), and it
+differs from SharePoint Online in sign-in and limits.
+
 **Phasing:**
 1. A research spike on a synthetic test site: linked-list behavior in Access,
    write atomicity and recovery, list limits, the provisioning API, sign-in.
    Record the findings and decisions here.
-2. The storage-provider layer in local mode only, with no behavior change. The
-   full extended tier must pass unchanged.
+2. The storage-provider layer in local mode only, with no behavior change, plus
+   the simulated SharePoint provider (testing layer 1). The full extended tier
+   must pass unchanged.
 3. The setup/settings screen (requirement 1), showing local mode.
 4. SharePoint discovery, version and compatibility checks, and permission checks
    (requirements 2 and 4).
