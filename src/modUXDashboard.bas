@@ -171,6 +171,7 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     Select Case mode
         Case "Contributors": names = Array("cboContributor", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
         Case "Notes": names = Array("lblReportNotes", "lstReportNotes", "cmdOpenReportNote", "cmdRefreshReportNotes")
+        Case "Counseling": names = Array("lblCounselingScope", "chkCounselingAll", "lblCounselingAll", "lstCounseling", "cmdCounselingRecord", "cmdCounselingMember")
         Case "Assign": names = Array("uxAssignReport", "uxAssignCaption", "lblAssignment", "lblReviewer", "cboReviewer", "lblDue", "txtDue", "lblNotes", "txtNotes", "cmdAssign")
         Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstWork", "uxWorkStatus", "cmdOpenWork", "txtHistory", "lblNotes", "txtNotes", "cmdAccept", "cmdReturn", "cmdCancel", "cmdDraft")
     End Select
@@ -181,10 +182,12 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
         f!uxAssignReport.Requery
     End If
     f!uxWorkNotesTab.FontBold = (mode = "Notes")
+    If UXHasControl(f, "uxWorkCounselingTab") Then f!uxWorkCounselingTab.FontBold = (mode = "Counseling")
     f!uxWorkTab0.FontBold = (mode = "Assignments"): f!uxWorkTab1.FontBold = (mode = "Assign"): f!uxWorkTab2.FontBold = (mode = "Contributors")
     UXResizeWorkspace f.Name
     UXMyWorkMode = True
     If mode = "Notes" Then UXMyWorkNotes
+    If mode = "Counseling" Then UXMyWorkCounseling
     If mode = "Assignments" Then Call UXLoadWorkQueue
     Call UXWorkLayout
 End Function

@@ -237,3 +237,29 @@ Public Function UXWorkLayout(Optional ByVal width As Long = 0, Optional ByVal he
     f!lstWork.ColumnWidths = columns
     UXWorkLayout = True
 End Function
+'Counseling tab: members overdue, due this month, due within 60 days, needing a
+'rank/rate, or with a worksheet disposition due after detachment.
+Public Function UXMyWorkCounseling() As Boolean
+    Dim f As Access.Form, rows As String
+    If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
+    Set f = Forms!frmMyWork
+    If Not UXHasControl(f, "lstCounseling") Then Exit Function
+    rows = CounselingWorkRows(Nz(f!chkCounselingAll, False))
+    f!lstCounseling.RowSourceType = "Value List": f!lstCounseling.RowSource = rows
+    f!lblCounselingScope.Caption = IIf(rows = "", "No counseling needs attention. ", "") & "Midterm counseling follows the BUPERSINST 1610.10H chapter 18 schedule by paygrade. Select a member to record a session or open their history."
+    UXMyWorkCounseling = True
+End Function
+Private Function UXMyWorkCounselingMemberID() As Long
+    If IsNull(Forms!frmMyWork!lstCounseling) Then Forms!frmMyWork!lblCounselingScope.Caption = "Select a member first.": Exit Function
+    UXMyWorkCounselingMemberID = CLng(Forms!frmMyWork!lstCounseling)
+End Function
+Public Function UXMyWorkCounselingRecord() As Boolean
+    Dim member As Long
+    member = UXMyWorkCounselingMemberID(): If member = 0 Then Exit Function
+    UXMyWorkCounselingRecord = UXCounselingOpen(True, member)
+End Function
+Public Function UXMyWorkCounselingMember() As Boolean
+    Dim member As Long
+    member = UXMyWorkCounselingMemberID(): If member = 0 Then Exit Function
+    UXMyWorkCounselingMember = UXDirectoryHistoryFor(member)
+End Function

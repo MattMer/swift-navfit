@@ -90,6 +90,11 @@
    "tier": "core"
   },
   {
+   "name": "test-counseling",
+   "area": "Groups, directory and members",
+   "tier": "extended"
+  },
+  {
    "name": "test-decision-details",
    "area": "Workflow and validation",
    "tier": "extended",

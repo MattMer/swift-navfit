@@ -48,6 +48,12 @@ End Function
 Private Function Surface() As Access.Form
     Set Surface = Forms!frmEditor!uxFieldSurface.Form
 End Function
+'Enter a value as if typed into its visible field: the pending buffer, inline
+'validation and recovery checkpoint follow the normal edit path. Nothing is saved.
+Public Function UXSurfaceSetValue(ByVal key As String, ByVal value As Variant) As Boolean
+    Surface().Controls(UXFieldControl(key)).Value = value
+    UXSurfaceSetValue = UXSurfaceEdited(key)
+End Function
 Public Function UXSurfaceAvailable() As Boolean
     On Error GoTo Missing
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function

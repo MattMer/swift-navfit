@@ -46,8 +46,12 @@ Public Function TestContextHelp() As String
    Check f!cmdWindowHelp.Left = 9000 - 800, "Compact help did not follow resize"
    Check f!cmdWindowHelp.Left > 0 And f!cmdWindowHelp.Left + 500 <= f.InsideWidth, "Compact help clipped"
   End If
-  CloseHelp: DoCmd.Close acForm, CStr(name), acSaveNo
+  Call CloseHelp: DoCmd.Close acForm, CStr(name), acSaveNo
  Next
+ DoCmd.OpenForm "frmUXCounselingEditor"
+ Check UXWindowHelp("frmUXCounselingEditor") And Forms!frmUXHelp!lstTopics = UXWindowHelpTopic("frmUXMemberHistory"), "Counseling editor help topic wrong"
+ Check InStr(Forms!frmUXHelp!txtGuide, "Counseling records follow the chapter 18 schedule") > 0, "Counseling help guidance missing"
+ Call CloseHelp: DoCmd.Close acForm, "frmUXCounselingEditor", acSaveNo
  TestContextHelp = "PASS: " & n & " context help, buffer preservation and layout assertions": Exit Function
 Failed:
  TestContextHelp = "FAIL after " & n & ": " & Err.Number & " " & Err.Description

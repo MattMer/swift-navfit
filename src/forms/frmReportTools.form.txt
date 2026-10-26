@@ -9,13 +9,12 @@ Begin Form
     ScrollBars =2
     BorderStyle =0
     Width =12400
-    ItemSuffix =43
+    ItemSuffix =44
     Right =18525
-    Bottom =12795
+    Bottom =13245
     OnActivate ="=UXSortActivate(\"frmReportTools\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -1110,6 +1109,33 @@ Begin Form
 
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
+                End
+                Begin CommandButton
+                    Enabled = NotDefault
+                    OverlapFlags =223
+                    Left =200
+                    Top =7500
+                    Width =11800
+                    Height =450
+                    FontSize =10
+                    TabIndex =27
+                    Name ="cmdApplyCounseling"
+                    Caption ="Use recorded counseling in blocks 30-31"
+                    OnClick ="=UXToolsApplyCounseling()"
+                    Tag ="VIEW:Validation"
+                    ControlTipText ="Enters the member's recorded counseling as unsaved edits. Save the report to kee"
+                        "p them."
+
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =7500
+                    LayoutCachedWidth =12000
+                    LayoutCachedHeight =7950
+                    Gradient =0
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
                 End
             End
         End

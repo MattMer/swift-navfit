@@ -2,6 +2,7 @@ Attribute VB_Name = "modUXDirectory"
 Option Explicit
 Private memberID As Long, memberVersion As Long
 Private historyMember As Long, priorID As Long, priorVersion As Long
+Private counselingID As Long, counselingVersion As Long, counselingMember As Long
 Public Function UXDirectoryLoad() As Boolean
     Dim f As Access.Form, term As String
     RepairPDFDirectoryLinks
@@ -59,7 +60,9 @@ Public Function UXHistoryLoad() As Boolean
         If historyText <> "" Then historyText = historyText & ";"
         id = r!ReportID: historyText = historyText & CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
     Loop: r.Close
-    f!lstHistory.RowSource = historyText: UXHistoryLoad = True
+    f!lstHistory.RowSource = historyText
+    UXHistoryCounselingLoad
+    UXHistoryLoad = True
 End Function
 Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boolean
     Dim f As Access.Form, r As DAO.Recordset
@@ -210,4 +213,88 @@ Public Function UXHistoryApplyIdentity() As Boolean
     DoCmd.Close acForm, f.Name: UXHistoryLoad: UXHistoryApplyIdentity = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
+End Function
+'Counseling list: id;date;outcome;counselor or reason;worksheet. The status line
+'shows the schedule state for the member.
+Public Function UXHistoryCounselingLoad() As Boolean
+    Dim f As Access.Form, r As DAO.Recordset, rows As String, s As Object
+    Set f = Forms!frmUXMemberHistory
+    If Not UXHasControl(f, "lstCounseling") Then Exit Function
+    f!lstCounseling.RowSourceType = "Value List"
+    Set r = CurrentDb.OpenRecordset("SELECT CounselingID,CounseledOn,Outcome,CounselorName,NotPerformedReason,WorksheetDisposition FROM MemberCounseling WHERE MemberID=" & historyMember & " AND IsArchived=False ORDER BY CounseledOn DESC", dbOpenSnapshot)
+    Do While Not r.EOF
+        If rows <> "" Then rows = rows & ";"
+        rows = rows & r!CounselingID & ";" & Format$(r!CounseledOn, "yyyy-mm-dd") & ";" & r!Outcome & ";""" & Replace(Nz(r!CounselorName, r!NotPerformedReason), """", "'") & """;" & Nz(r!WorksheetDisposition, "")
+        r.MoveNext
+    Loop
+    r.Close
+    f!lstCounseling.RowSource = rows
+    Set s = CounselingMemberStatus(historyMember)
+    f!lblCounselingStatus.Caption = "Counseling: " & s("Status") & IIf(IsNull(s("DueMonth")), "", " (" & Format$(Nz(s("DueMonth"), Date), "mmmm yyyy") & ")") & IIf(s("Note") = "", "", ". " & s("Note"))
+    UXHistoryCounselingLoad = True
+End Function
+Public Function UXCounselingOpen(Optional ByVal createNew As Boolean = True, Optional ByVal member As Long = 0) As Boolean
+    Dim f As Access.Form, r As DAO.Recordset
+    counselingID = 0: counselingVersion = 0
+    If member > 0 Then historyMember = member
+    counselingMember = historyMember
+    If Not createNew Then
+        If IsNull(Forms!frmUXMemberHistory!lstCounseling) Then Forms!frmUXMemberHistory!lblStatus.Caption = "Select a counseling record to edit.": Exit Function
+        counselingID = CLng(Forms!frmUXMemberHistory!lstCounseling)
+    End If
+    DoCmd.OpenForm "frmUXCounselingEditor": Set f = Forms!frmUXCounselingEditor
+    f!lblMember.Caption = Nz(MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & counselingMember), "")
+    f!cboOutcome.RowSourceType = "Value List": f!cboOutcome.RowSource = """" & COUNSELING_COMPLETED & """;""" & COUNSELING_NOT_PERFORMED & """"
+    f!cboDisposition.RowSourceType = "Value List": f!cboDisposition.RowSource = """Given to member"";""Destroyed"""
+    f!cboOutcome = COUNSELING_COMPLETED: f!txtDate = Date
+    If counselingID > 0 Then
+        Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & counselingID, dbOpenSnapshot)
+        counselingVersion = r!VersionCounter: counselingMember = r!MemberID
+        f!txtDate = r!CounseledOn: f!cboOutcome = r!Outcome: f!txtCounselor = r!CounselorName: f!txtReason = r!NotPerformedReason
+        f!cboDisposition = r!WorksheetDisposition: f!txtDispositionOn = r!DispositionOn: r.Close
+    End If
+    UXCounselingOutcome: UXCounselingOpen = True
+End Function
+Public Function UXCounselingOutcome() As Boolean
+    Dim f As Access.Form, completed As Boolean
+    Set f = Forms!frmUXCounselingEditor: completed = (Nz(f!cboOutcome, "") = COUNSELING_COMPLETED)
+    f!txtCounselor.Enabled = completed: f!txtReason.Enabled = Not completed
+    f!lblStatus.Caption = IIf(completed, "The counselor is typed into block 31 of the next Regular report; the member signs the worksheet itself.", "NOT PERF goes in block 30 and this reason in block 31 of the next Regular report.")
+    UXCounselingOutcome = True
+End Function
+Public Function UXCounselingSave() As Boolean
+    Dim f As Access.Form
+    On Error GoTo Failed
+    Set f = Forms!frmUXCounselingEditor
+    If Not IsDate(f!txtDate) Then Err.Raise vbObjectError + 9510, "modUXDirectory.UXCounselingSave", "Enter the counseling date."
+    Call SaveCounseling(counselingID, counselingVersion, counselingMember, CDate(f!txtDate), Nz(f!cboOutcome, ""), Nz(f!txtCounselor, ""), Nz(f!txtReason, ""), Nz(f!cboDisposition, ""), f!txtDispositionOn)
+    DoCmd.Close acForm, f.Name
+    UXCounselingRefresh
+    UXCounselingSave = True: Exit Function
+Failed:
+    f!lblStatus.Caption = Err.Description
+End Function
+Public Function UXCounselingArchive(Optional ByVal confirmed As Boolean = False) As Boolean
+    Dim id As Long, version As Variant
+    On Error GoTo Failed
+    If IsNull(Forms!frmUXMemberHistory!lstCounseling) Then Forms!frmUXMemberHistory!lblStatus.Caption = "Select a counseling record to archive.": Exit Function
+    id = CLng(Forms!frmUXMemberHistory!lstCounseling)
+    If Not confirmed Then
+        If MsgBox("Archive the selected counseling record? It is retained but no longer counts toward the schedule or report suggestions.", vbYesNo + vbQuestion + vbDefaultButton2, "Archive counseling record") <> vbYes Then Exit Function
+    End If
+    version = MajorScalar("SELECT VersionCounter FROM MemberCounseling WHERE CounselingID=" & id)
+    UXCounselingArchive = ArchiveCounseling(id, CLng(Nz(version, 0)))
+    UXCounselingRefresh
+    Exit Function
+Failed:
+    Forms!frmUXMemberHistory!lblStatus.Caption = Err.Description
+End Function
+Private Sub UXCounselingRefresh()
+    If CurrentProject.AllForms("frmUXMemberHistory").IsLoaded Then UXHistoryCounselingLoad
+    If CurrentProject.AllForms("frmMyWork").IsLoaded Then UXMyWorkCounseling
+End Sub
+'Open the history of the member selected in My Work, so its record can be added.
+Public Function UXDirectoryHistoryFor(ByVal member As Long) As Boolean
+    historyMember = member
+    DoCmd.OpenForm "frmUXMemberHistory": UXHistoryLoad: UXDirectoryHistoryFor = True
 End Function

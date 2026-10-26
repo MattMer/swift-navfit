@@ -39,6 +39,23 @@ Public Function DirectoryMergeStamp(ByVal sourceID As Long, ByVal targetID As Lo
         Loop
         r.Close
     Next
+    'Counseling joins the fingerprint only when present, so merges recorded before
+    'counseling records existed keep their original fingerprint and remain undoable.
+    If Nz(MajorScalar("SELECT Count(*) FROM MemberCounseling WHERE MemberID IN (" & ids & ")"), 0) > 0 Then
+        text = text & "TABLE;": Set r = db.OpenRecordset("SELECT * FROM MemberCounseling WHERE MemberID IN (" & ids & ") ORDER BY CounselingID", dbOpenSnapshot)
+        Do While Not r.EOF
+            For Each field In r.Fields
+                If IsNull(field.Value) Then
+                    text = text & "N;"
+                Else
+                    If field.Type = dbDate Then v = CStr(CDbl(field.Value)) Else v = CStr(field.Value)
+                    text = text & Len(v) & ":" & v & ";"
+                End If
+            Next
+            text = text & "ROW;": r.MoveNext
+        Loop
+        r.Close
+    End If
     DirectoryMergeStamp = SourceTextHash(text)
 End Function
 
@@ -93,11 +110,11 @@ End Function
 
 Private Sub MergeEditorGuard()
     Dim name As Variant
-    For Each name In Array("frmEditor", "frmUXMemberEditor", "frmUXPriorEditor")
+    For Each name In Array("frmEditor", "frmUXMemberEditor", "frmUXPriorEditor", "frmUXCounselingEditor")
         'AllForms names are enumerated: older UI generations may lack a prior editor.
         Dim form As Access.AccessObject
         For Each form In CurrentProject.AllForms
-            If form.Name = name And form.IsLoaded Then Err.Raise vbObjectError + 9109, "MergeEditorGuard", "Close report, member and prior-evaluation editors before changing directory links. Pending entries remain in their editor."
+            If form.Name = name And form.IsLoaded Then Err.Raise vbObjectError + 9109, "MergeEditorGuard", "Close report, member, prior-evaluation and counseling editors before changing directory links. Pending entries remain in their editor."
         Next
     Next
 End Sub
@@ -126,6 +143,8 @@ Public Function ApplyDirectoryMerge(ByVal sourceID As Long, ByVal targetID As Lo
     db.Execute "INSERT INTO DirectoryMergePrior (MergeID,PriorID,ModifiedBy,ModifiedAt) SELECT " & id & ",PriorID,ModifiedBy,ModifiedAt FROM PriorEvaluation WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE MemberReport SET MemberID=" & targetID & ",MatchSource='Reviewed directory merge',UpdatedBy=" & actor & ",UpdatedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE PriorEvaluation SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
+    db.Execute "INSERT INTO DirectoryMergeCounseling (MergeID,CounselingID,ModifiedBy,ModifiedAt) SELECT " & id & ",CounselingID,ModifiedBy,ModifiedAt FROM MemberCounseling WHERE MemberID=" & sourceID, dbFailOnError
+    db.Execute "UPDATE MemberCounseling SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET IsArchived=True WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID IN (" & sourceID & "," & targetID & ")", dbFailOnError
     parent.Edit: parent!AfterFingerprint = DirectoryMergeStamp(sourceID, targetID): parent.Update: parent.Close
@@ -168,6 +187,13 @@ Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
     Set rows = db.OpenRecordset("SELECT * FROM DirectoryMergePrior WHERE MergeID=" & mergeID, dbOpenSnapshot)
     Do While Not rows.EOF
         Set item = db.OpenRecordset("SELECT * FROM PriorEvaluation WHERE PriorID=" & rows!PriorID, dbOpenDynaset)
+        item.Edit: item!MemberID = sourceID: item!VersionCounter = item!VersionCounter + 1
+        item!ModifiedBy = rows!ModifiedBy: item!ModifiedAt = rows!ModifiedAt: item.Update: item.Close: rows.MoveNext
+    Loop
+    rows.Close
+    Set rows = db.OpenRecordset("SELECT * FROM DirectoryMergeCounseling WHERE MergeID=" & mergeID, dbOpenSnapshot)
+    Do While Not rows.EOF
+        Set item = db.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & rows!CounselingID, dbOpenDynaset)
         item.Edit: item!MemberID = sourceID: item!VersionCounter = item!VersionCounter + 1
         item!ModifiedBy = rows!ModifiedBy: item!ModifiedAt = rows!ModifiedAt: item.Update: item.Close: rows.MoveNext
     Loop

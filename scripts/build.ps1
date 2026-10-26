@@ -113,6 +113,7 @@ try {
     $swiftBaseDatabase.TableDefs('GroupCompletion').ValidationRule = '[TraitCount]>=0 And [TraitSum]>=0'
     $swiftBaseDatabase.TableDefs('GroupLifecycle').ValidationRule = "[WorkflowState] In ('Initialized','In-Work','Ready for Signature','Completed') Or ([LegacyState] Is Not Null And [WorkflowState]=[LegacyState])"
     $swiftBaseDatabase.TableDefs('GroupCompletionReport').ValidationRule = '([RevisionID] Is Null And [RevisionOwnerReportID] Is Null And [TraitCount] Is Null And [TraitSum] Is Null) Or ([RevisionID] Is Not Null And [RevisionOwnerReportID]=[ReportID] And [TraitCount]>=0 And [TraitSum]>=[TraitCount] And [TraitSum]<=5*[TraitCount])'
+    $swiftBaseDatabase.TableDefs('MemberCounseling').ValidationRule = "[Outcome] In ('Completed','Not performed') And ([Outcome]<>'Completed' Or ([CounselorName] Is Not Null And [NotPerformedReason] Is Null)) And ([Outcome]<>'Not performed' Or [NotPerformedReason] Is Not Null) And (([WorksheetDisposition] Is Null And [DispositionOn] Is Null) Or ([WorksheetDisposition] In ('Given to member','Destroyed') And [DispositionOn] Is Not Null))"
     for($ti=0;$ti -lt $swiftBaseDatabase.TableDefs.Count;$ti++) {
         $table=$swiftBaseDatabase.TableDefs.Item($ti)
         if($table.Name.StartsWith('MSys')) {continue}

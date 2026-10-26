@@ -171,12 +171,18 @@ Public Function UXToolsValidation() As Boolean
  Set f = UXToolsForm(): Set values = EditorPendingFields(): Set findings = ValidateLiveFields(values, Nz(Forms!frmEditor!txtReportID, 0))
  f!lstFindings.RowSource = "": f!lstFindings.RowSourceType = "Value List"
  For Each item In findings
-  i = i + 1: f!lstFindings.AddItem i & ";" & Replace(item("Label"), ";", ",") & ";" & item("Severity") & ";" & Replace(Left$(item("Message"), 140), ";", ",")
+  i = i + 1: f!lstFindings.AddItem i & ";" & FindingColumn(item("Label")) & ";" & FindingColumn(item("Severity")) & ";" & FindingColumn(Left$(item("Message"), 140))
  Next
  f!lblValidation.Caption = i & " findings - includes pending report edits. Save remains available for incomplete drafts."
  f!txtEvidence = "No findings from implemented checks."
+ If UXHasControl(f, "cmdApplyCounseling") Then f!cmdApplyCounseling.Enabled = False
  If i > 0 Then f!lstFindings = 0 + f!lstFindings.ItemData(0): UXToolsFinding
  UXToolsValidation = True
+End Function
+'Value lists also split on commas, so each column is quoted (labels such as
+'"Name (Last, First MI Suffix)" and messages contain commas).
+Private Function FindingColumn(ByVal value As Variant) As String
+ FindingColumn = """" & Replace(Replace(Nz(value, ""), ";", ","), """", "'") & """"
 End Function
 Public Function UXToolsFinding() As Boolean
  Dim item As Object
@@ -184,6 +190,7 @@ Public Function UXToolsFinding() As Boolean
  If IsNull(UXToolsForm()!lstFindings) Then Exit Function
  Set item = findings(CLng(UXToolsForm()!lstFindings))
  UXToolsForm()!txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
+ If UXHasControl(UXToolsForm(), "cmdApplyCounseling") Then UXToolsForm()!cmdApplyCounseling.Enabled = (item("Code") = "COUNSEL-RECORD")
  UXToolsFinding = True
 End Function
 Public Function UXToolsFindingOpen() As Boolean
@@ -276,3 +283,18 @@ End Function
 Public Sub UXToolsSetNotes()
  selectedView = "Notes"
 End Sub
+'Enter the member's recorded counseling into blocks 30-31 as pending edits. The
+'contributor still saves the report; discarding leaves the record unused.
+Public Function UXToolsApplyCounseling() As Boolean
+ Dim s As Object
+ On Error GoTo Failed
+ Set s = CounselingSuggestion(EditorPendingFields(), Nz(Forms!frmEditor!txtReportID, 0))
+ If s Is Nothing Then UXToolsForm()!lblValidation.Caption = "Blocks 30-31 already match the recorded counseling.": Exit Function
+ Call UXSurfaceSetValue("CounselingDate", s("CounselingDate"))
+ Call UXSurfaceSetValue("CounselorName", IIf(Nz(s("CounselorName"), "") = "", Null, s("CounselorName")))
+ UXToolsValidation
+ UXToolsForm()!lblValidation.Caption = "Blocks 30-31 now show the recorded counseling as unsaved edits. Save the report to keep them."
+ UXToolsApplyCounseling = True: Exit Function
+Failed:
+ UXToolsForm()!lblValidation.Caption = "Recorded counseling was not applied: " & Err.Description
+End Function

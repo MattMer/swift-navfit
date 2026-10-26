@@ -10,16 +10,15 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =62
+    ItemSuffix =76
     Right =18525
-    Bottom =12795
+    Bottom =13245
     Caption ="My Work - local review assignments"
     OnActivate ="=UXSortActivate(\"frmMyWork\")"
     OnResize ="=UXHelpResize(\"frmMyWork\",\"UXWorkLayout()\")"
     OnLoad ="=UXLoadMyWork()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -1276,7 +1275,7 @@ Begin Form
                     TextFontFamily =34
                     Left =2850
                     Top =1850
-                    Width =3200
+                    Width =1980
                     Height =500
                     FontSize =10
                     ForeColor =4205854
@@ -1287,7 +1286,7 @@ Begin Form
 
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1850
-                    LayoutCachedWidth =6050
+                    LayoutCachedWidth =4830
                     LayoutCachedHeight =2350
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1312,9 +1311,9 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =6350
+                    Left =4967
                     Top =1850
-                    Width =3200
+                    Width =1980
                     Height =500
                     FontSize =10
                     TabIndex =1
@@ -1324,9 +1323,9 @@ Begin Form
                     OnClick ="=UXMyWorkMode(\"Assign\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =6350
+                    LayoutCachedLeft =4967
                     LayoutCachedTop =1850
-                    LayoutCachedWidth =9550
+                    LayoutCachedWidth =6947
                     LayoutCachedHeight =2350
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1350,11 +1349,11 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
-                    OverlapFlags =93
+                    OverlapFlags =85
                     TextFontFamily =34
-                    Left =9850
+                    Left =7084
                     Top =1850
-                    Width =3200
+                    Width =1980
                     Height =500
                     FontSize =10
                     TabIndex =2
@@ -1364,9 +1363,9 @@ Begin Form
                     OnClick ="=UXMyWorkMode(\"Contributors\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =9850
+                    LayoutCachedLeft =7084
                     LayoutCachedTop =1850
-                    LayoutCachedWidth =13050
+                    LayoutCachedWidth =9064
                     LayoutCachedHeight =2350
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1651,12 +1650,12 @@ Begin Form
                     WebImagePaddingBottom =1
                 End
                 Begin CommandButton
-                    OverlapFlags =215
+                    OverlapFlags =85
                     TextFontFamily =34
-                    Left =11000
-                    Top =1900
-                    Width =2300
-                    Height =450
+                    Left =9201
+                    Top =1850
+                    Width =1980
+                    Height =500
                     FontSize =10
                     TabIndex =34
                     ForeColor =4205854
@@ -1665,9 +1664,9 @@ Begin Form
                     OnClick ="=UXMyWorkMode(\"Notes\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =11000
-                    LayoutCachedTop =1900
-                    LayoutCachedWidth =13300
+                    LayoutCachedLeft =9201
+                    LayoutCachedTop =1850
+                    LayoutCachedWidth =11181
                     LayoutCachedHeight =2350
                     ForeThemeColorIndex =-1
                     UseTheme =0
@@ -1701,7 +1700,7 @@ Begin Form
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =6
@@ -1726,7 +1725,7 @@ Begin Form
                     ThemeFontIndex =-1
                 End
                 Begin CommandButton
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =7500
@@ -1758,7 +1757,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =8200
                     Top =7500
@@ -1923,7 +1922,7 @@ Begin Form
                 End
                 Begin Label
                     FontUnderline = NotDefault
-                    OverlapFlags =247
+                    OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -1955,6 +1954,271 @@ Begin Form
 
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    Left =11318
+                    Top =1850
+                    Width =1980
+                    Height =500
+                    FontSize =10
+                    TabIndex =39
+                    Name ="uxWorkCounselingTab"
+                    Caption ="Counseling"
+                    OnClick ="=UXMyWorkMode(\"Counseling\")"
+
+                    LayoutCachedLeft =11318
+                    LayoutCachedTop =1850
+                    LayoutCachedWidth =13298
+                    LayoutCachedHeight =2350
+                    Gradient =0
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    Left =2850
+                    Top =2550
+                    Width =10450
+                    Height =550
+                    FontSize =10
+                    Name ="lblCounselingScope"
+                    Caption ="Midterm counseling"
+                    Tag ="MWX:body"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =3100
+                End
+                Begin CheckBox
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3200
+                    Width =300
+                    Height =300
+                    ColumnOrder =0
+                    TabIndex =40
+                    Name ="chkCounselingAll"
+                    AfterUpdate ="=UXMyWorkCounseling()"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3200
+                    LayoutCachedWidth =3150
+                    LayoutCachedHeight =3500
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =3300
+                    Top =3150
+                    Width =7300
+                    Height =400
+                    FontSize =10
+                    Name ="lblCounselingAll"
+                    Caption ="Show every active member"
+                    Tag ="MWX:body"
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =3150
+                    LayoutCachedWidth =10600
+                    LayoutCachedHeight =3550
+                End
+                Begin ListBox
+                    Visible = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =247
+                    IMESentenceMode =3
+                    ColumnCount =7
+                    Left =2850
+                    Top =4000
+                    Width =10450
+                    Height =3100
+                    ColumnOrder =0
+                    FontSize =10
+                    TabIndex =41
+                    Name ="lstCounseling"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;3300;1100;2000;1100;1400;1500"
+                    OnDblClick ="=UXMyWorkCounselingRecord()"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =4000
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =7100
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_0"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",0)"
+                    Tag ="SORT:lstCounseling:0"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_1"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",1)"
+                    Tag ="SORT:lstCounseling:1"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_2"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",2)"
+                    Tag ="SORT:lstCounseling:2"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_3"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",3)"
+                    Tag ="SORT:lstCounseling:3"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_4"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",4)"
+                    Tag ="SORT:lstCounseling:4"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_5"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",5)"
+                    Tag ="SORT:lstCounseling:5"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    Left =2850
+                    Top =3650
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_lstCounseling_6"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",6)"
+                    Tag ="SORT:lstCounseling:6"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3650
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =3950
+                End
+                Begin CommandButton
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    Left =2850
+                    Top =7300
+                    Width =5100
+                    Height =450
+                    FontSize =10
+                    TabIndex =42
+                    Name ="cmdCounselingRecord"
+                    Caption ="Record counseling for selected member"
+                    OnClick ="=UXMyWorkCounselingRecord()"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =7300
+                    LayoutCachedWidth =7950
+                    LayoutCachedHeight =7750
+                    Gradient =0
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    Left =8200
+                    Top =7300
+                    Width =5100
+                    Height =450
+                    FontSize =10
+                    TabIndex =43
+                    Name ="cmdCounselingMember"
+                    Caption ="Open member history"
+                    OnClick ="=UXMyWorkCounselingMember()"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =8200
+                    LayoutCachedTop =7300
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =7750
+                    Gradient =0
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
                 End
             End
         End

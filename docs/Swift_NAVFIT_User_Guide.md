@@ -329,6 +329,27 @@ In the summary-group trait table, **Prior ITA** and **Prior Promotion** are read
 
 **Expected result:** Reusable member information supports current report creation, while historical evaluation data remains distinguishable from current saved report values.
 
+## 8.5 Track midterm counseling
+
+BUPERSINST 1610.10H chapter 18 sets a midterm counseling month for each paygrade; a new schedule takes effect 1 January 2027. Swift uses the member's grade/rate from the directory to show when each member is due.
+
+1. Open **My Work > Counseling** to see members who are overdue, due this month, due within 60 days, missing a grade/rate, or whose worksheet disposition is due. Select **Show every active member** to see everyone.
+2. Select a member and choose **Record counseling for selected member**, or open the member's history and choose **Record counseling**.
+3. Enter the date and choose the outcome:
+   - **Completed:** enter the counselor exactly as block 31 of the report will show it.
+   - **Not performed:** enter a brief reason, such as TEMADD or ILLNESS.
+4. Save. The record appears in the member's history with the schedule status.
+
+A session held earlier or later than the scheduled month still counts for that cycle. Archive a record entered in error; it is kept but no longer counts.
+
+When you open the member's next Regular report, **Report tools > Validation** shows a finding if blocks 30–31 don't match the record. Select it and choose **Use recorded counseling in blocks 30-31**. Swift fills in the date and counselor, NOT PERF with the reason, or NOT REQ when no session falls in the report period. These are unsaved edits: save the report to keep them. A session already entered on another of the member's reports is not offered again.
+
+The signed worksheet stays on paper; Swift records the session, not the signature. After the member has a Detachment of Individual report, record whether the worksheet was **Given to member** or **Destroyed**, as chapter 18 requires.
+
+Master chiefs and CWO5s have no Regular periodic report, but counseling is still scheduled for them.
+
+**Expected result:** Each member's counseling is recorded once, appears on the right report, and the worksheet's final disposition is noted.
+
 ---
 
 # 9. Create and manage summary groups

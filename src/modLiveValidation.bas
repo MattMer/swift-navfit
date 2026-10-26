@@ -44,6 +44,7 @@ Public Function ValidationPolicyReference(ByVal code As String) As String
         Case "JUSTIFY-TRAITS": page = "13-3": pdfPage = 125: locator = "paragraph 13-4a-b": excerpt = "Specifically substantiate all 1.0 grades and when three or more traits are evaluated 2.0."
         Case "JUSTIFY-ADVERSE": page = "13-3": pdfPage = 125: locator = "paragraph 13-4c(1)": excerpt = "Substantiate any promotion recommendation of Significant Problems and any recommendation against retention."
         Case "REGULAR-LENGTH": page = "3-1": pdfPage = 70: locator = "paragraph 3-2": excerpt = "may not cover more than 15 months without PERS-32 approval."
+        Case "COUNSEL-RECORD": page = "1-13": pdfPage = 42: locator = "paragraph 1-2, DATE COUNSELED, block 30": excerpt = "A mid-term counseling session should be documented only once on the report for the period in which it occurred."
         Case Else
             If Left$(code, 4) = "APP-" Then ValidationPolicyReference = "Application rule - no Navy policy citation applies." Else ValidationPolicyReference = ExpandedPolicyReference(code)
             Exit Function
@@ -93,6 +94,7 @@ Private Sub VPolicyDetails(ByVal findings As Collection, ByVal f As Object, ByVa
     End If
     If value = "NOT PERF" And VText(f, "CounselorName") = "" Then VAdd findings, f, id, "CounselorName", "Incomplete draft", "COUNSELOR", "Explain why counseling was not performed, or enter SEE COMMENT and explain in comments."
     If UCase$(VText(f, "CounselorName")) = "SEE COMMENT" And VText(f, "OfficialComments") = "" Then VAdd findings, f, id, "OfficialComments", "Incomplete draft", "COUNSELOR", "SEE COMMENT requires an explanation in the comments block."
+    CounselingFindings findings, f, id
     End If
     If observed And VText(f, "FormKind") <> "CHIEFEVAL" And UXFieldApplies("AssignmentRecommendationA", VText(f, "FormKind")) And VText(f, "PromotionRecommendation") <> "NOB" And VText(f, "AssignmentRecommendationA") = "" Then VAdd findings, f, id, "AssignmentRecommendationA", "Incomplete draft", "CAREER-PRESENT", "Enter the first career recommendation, or NA / NONE if appropriate. The second recommendation is optional."
     partial = observed And VText(f, "PromotionRecommendation") = "NOB"

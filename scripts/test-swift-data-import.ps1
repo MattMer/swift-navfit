@@ -89,6 +89,11 @@ $domains=@{
  'AuditEvent.TaskEventSourceID'={[DBNull]::Value}
  'AuditEvent.JournalSourceID'={[DBNull]::Value}
  'AuditEvent.MessageSourceID'={[DBNull]::Value}
+ 'MemberCounseling.Outcome'={param($i) @('Completed','Not performed')[$i % 2]}
+ 'MemberCounseling.CounselorName'={param($i) if($i % 2){[DBNull]::Value}else{'EXAMPLE, C'}}
+ 'MemberCounseling.NotPerformedReason'={param($i) if($i % 2){'TEMADD'}else{[DBNull]::Value}}
+ 'MemberCounseling.WorksheetDisposition'={param($i) if($i % 3 -eq 0){'Given to member'}else{[DBNull]::Value}}
+ 'MemberCounseling.DispositionOn'={param($i) if($i % 3 -eq 0){[datetime]'2026-10-20'}else{[DBNull]::Value}}
 }
 #Tables that copy identity from another table without a relationship to it.
 $seedAfter=@{AuditActor='UserProfile'}

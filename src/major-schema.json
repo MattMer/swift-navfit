@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 33,
+  "SchemaVersion": 34,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -45,7 +45,9 @@
     "GroupLifecycle",
     "AuditActor",
     "AuditEvent",
-    "WizardPreview"
+    "WizardPreview",
+    "MemberCounseling",
+    "DirectoryMergeCounseling"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -243,7 +245,14 @@
     "ALTER TABLE WizardPreview ADD CONSTRAINT FK_WizardPreview_Report FOREIGN KEY (TargetReportID) REFERENCES Report (ReportID)",
     "ALTER TABLE WizardPreview ADD CONSTRAINT FK_WizardPreview_Revision FOREIGN KEY (ExpectedRevisionID) REFERENCES ReportRevision (RevisionID)",
     "CREATE UNIQUE INDEX UX_WizardPreview_OwnerKind ON WizardPreview (WizardKind,OwnerProfileID)",
-    "CREATE TABLE TraitDefinition (FormKind TEXT(12) NOT NULL, BlockNumber LONG NOT NULL, Mark TEXT(8) NOT NULL, CatalogueVersion LONG NOT NULL, TraitTitle LONGTEXT NOT NULL, DescriptionText LONGTEXT, SourceName TEXT(255) NOT NULL, SourceSHA256 TEXT(64) NOT NULL, SourceTraitID LONG NOT NULL, CONSTRAINT PK_TraitDefinition PRIMARY KEY (FormKind,BlockNumber,Mark,CatalogueVersion))"
+    "CREATE TABLE TraitDefinition (FormKind TEXT(12) NOT NULL, BlockNumber LONG NOT NULL, Mark TEXT(8) NOT NULL, CatalogueVersion LONG NOT NULL, TraitTitle LONGTEXT NOT NULL, DescriptionText LONGTEXT, SourceName TEXT(255) NOT NULL, SourceSHA256 TEXT(64) NOT NULL, SourceTraitID LONG NOT NULL, CONSTRAINT PK_TraitDefinition PRIMARY KEY (FormKind,BlockNumber,Mark,CatalogueVersion))",
+    "CREATE TABLE MemberCounseling (CounselingID COUNTER PRIMARY KEY, CounselingGuid TEXT(38) NOT NULL, MemberID LONG NOT NULL, CounseledOn DATETIME NOT NULL, Outcome TEXT(14) NOT NULL, CounselorName TEXT(20), NotPerformedReason TEXT(20), WorksheetDisposition TEXT(20), DispositionOn DATETIME, IsArchived BIT, VersionCounter LONG NOT NULL, CreatedBy LONG NOT NULL, CreatedAt DATETIME, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME)",
+    "CREATE UNIQUE INDEX UX_MemberCounseling_Guid ON MemberCounseling (CounselingGuid)",
+    "CREATE INDEX IX_MemberCounseling_MemberDate ON MemberCounseling (MemberID,CounseledOn)",
+    "ALTER TABLE MemberCounseling ADD CONSTRAINT FK_MemberCounseling_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "CREATE TABLE DirectoryMergeCounseling (MergeID LONG NOT NULL, CounselingID LONG NOT NULL, ModifiedBy LONG NOT NULL, ModifiedAt DATETIME, CONSTRAINT PK_DirectoryMergeCounseling PRIMARY KEY (MergeID,CounselingID))",
+    "ALTER TABLE DirectoryMergeCounseling ADD CONSTRAINT FK_DirectoryMergeCounseling_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
+    "ALTER TABLE DirectoryMergeCounseling ADD CONSTRAINT FK_DirectoryMergeCounseling_CounselingID FOREIGN KEY (CounselingID) REFERENCES MemberCounseling (CounselingID)"
   ],
   "Queries": [
     {
