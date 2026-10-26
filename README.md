@@ -80,6 +80,23 @@ The workspace uses the Windows file/folder access controls and storage protectio
 
 Optional source links, such as NavyWriter, open an external website only when selected; report contents are not included in those links. Microsoft Access/Office and any cloud synchronization configured for the containing folder operate under their own settings, independently of Swift.
 
+## Architecture, security and accessibility documentation
+
+For command reviewers, the ISSM and anyone assessing Swift NAVFIT for use:
+
+- **[Architecture description](docs/architecture/Swift_NAVFIT_Architecture_Description.md)**, aligned with the DoD Architecture Framework (DoDAF) 2.02 and structured per ISO/IEC/IEEE 42010:
+  - stakeholders, concerns and the viewpoints chosen for a standalone desktop application, with reasons for the ones left out;
+  - 14 fit-for-purpose views: overview, operational concept, activities, rules, state transitions, data models, interfaces, functions, measures, schema evolution and standards.
+
+  Five of the views are generated from the source and a fresh build, and a test fails if any of them drifts. The description is DoDAF-*aligned*, not certified conformant: formal conformance requires DoD architecture tooling (DM2/PES exchange).
+- **[DevSecOps alignment matrix](docs/architecture/DevSecOps_Alignment.md):** every activity in the DoD Enterprise DevSecOps Guidebook, marked as done (with evidence), partial, command-owned or not applicable. No gaps remain.
+- **[Software bill of materials](docs/architecture/SBOM.md)** (also in [CycloneDX](docs/architecture/sbom.cdx.json)), generated from the build. Swift uses no third-party runtime libraries; everything it calls is part of Windows or Microsoft Office.
+- **[Threat model](docs/architecture/Threat_Model.md):** STRIDE over Swift's assets, trust boundaries and file interfaces, the mitigations in the code, recommendations, and the code-signing plan. Every importer is tested against 55 generated malformed and control inputs.
+- **Section 508 accessibility:**
+  - automated checks for contrast, screen-reader names and Windows contrast themes;
+  - the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md);
+  - [user guide section 3.4](docs/Swift_NAVFIT_User_Guide.md#34-accessibility).
+
 ## Try Swift NAVFIT
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
@@ -207,6 +224,7 @@ Start with [current architecture and support boundaries](PROJECT_STATE.md), then
 ## Guides and project status
 
 - [Swift NAVFIT User Guide - PDF](docs/Swift_NAVFIT_User_Guide.pdf) and [editable online edition](docs/Swift_NAVFIT_User_Guide.md)
+- [Architecture description (DoDAF 2.02)](docs/architecture/Swift_NAVFIT_Architecture_Description.md), [DevSecOps alignment](docs/architecture/DevSecOps_Alignment.md), [SBOM](docs/architecture/SBOM.md) and [threat model](docs/architecture/Threat_Model.md)
 
 - [Recent development and verification](planning/RECENT_DEVELOPMENT.md)
 - [Current project state](PROJECT_STATE.md), [release history](planning/CURRENT_STATE.md), and [priority backlog](planning/PRIORITY_BACKLOG.md)

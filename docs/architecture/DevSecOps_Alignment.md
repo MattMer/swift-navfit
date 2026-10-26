@@ -34,13 +34,13 @@ Counted over the 118 assessed rows below (activities repeated across phases coun
 
 | Status | Activities |
 | --- | --- |
-| Done | 54 |
-| Partial | 28 |
-| Gap | 2 |
+| Done | 55 |
+| Partial | 29 |
+| Gap | 0 |
 | Command | 14 |
 | N/A | 20 |
 
-**The two gaps:** a manual security test of the file-import code and developmental cyber testing. Both start with the malformed-input tests the [threat model](Threat_Model.md) recommends. The SBOM and threat model are done ([SBOM](SBOM.md), [threat model](Threat_Model.md)), and dependency checking is partial (inventory only). Most
+**No gaps remain.** The SBOM, threat model and malformed-input tests of every file importer are done ([SBOM](SBOM.md), [threat model](Threat_Model.md), `test-malformed-imports`). Dependency checking is partial (inventory only), and developmental cyber testing is partial (no independent penetration test). Most
 **Partial** rows are static security analysis (no mature security scanner exists
 for VBA), single-maintainer review, and acceptance on a Navy-managed workstation.
 
@@ -127,7 +127,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Database security test | PREFERRED | Partial | Validation rules and constraints are tested. PII protection relies on folder permissions (decision C01). No database security scanner. |
 | Dynamic application security test (DAST) | PREFERRED | N/A | No web or network application to probe |
 | Interactive application security test (IAST) | PREFERRED | N/A | Same reason |
-| Manual security test | REQUIRED | Gap | Malformed-input tests of the file importers ([threat model](Threat_Model.md) recommendation 2) |
+| Manual security test | REQUIRED | Done | `test-malformed-imports` (extended tier): 55 generated malformed and control inputs against the PDF, RUAD CSV and NAVFIT98A importers. Each must be rejected cleanly within 20 seconds, with no rows written, the source unchanged and no temporary files left. |
 | Performance test | PREFERRED | Partial | M09 benchmarks are recorded in commit messages. No standing performance runner. |
 | Regression test | REQUIRED | Done | As in Build |
 | Service security test | REQUIRED | N/A | No services |
@@ -141,7 +141,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
 | Artifacts replication | PREFERRED | Partial | GitHub releases, plus the Drive folder for verified releases |
-| Developmental cyber tests | PREFERRED | Gap | Scoped by the [threat model](Threat_Model.md); starts with the malformed-input tests |
+| Developmental cyber tests | PREFERRED | Partial | Malformed-input testing of every file importer (`test-malformed-imports`). No penetration testing by an independent cyber team. |
 | Operational readiness test | REQUIRED | Partial | `release-check.ps1` gates releases. Printed fit, an Acrobat-free workstation and signed launch are still open. |
 | Release go / no-go decision | REQUIRED | Done | Releases happen only on the product owner's explicit request, after `release-check` |
 | User story review and demonstration | PREFERRED | Done | Product-owner review rounds with screenshots (for example M09 before and after) |

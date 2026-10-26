@@ -235,6 +235,11 @@
    "tier": "extended"
   },
   {
+   "name": "test-malformed-imports",
+   "area": "Import and transfer",
+   "tier": "extended"
+  },
+  {
    "name": "test-navfit-adapter",
    "area": "NAVFIT and PDF exchange",
    "tier": "extended"

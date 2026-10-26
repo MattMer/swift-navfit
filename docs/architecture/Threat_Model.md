@@ -65,7 +65,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | --- | --- | --- | --- |
 | T1 | Someone with file access edits tables directly in Access, bypassing Swift's rules | Table validation rules and relationships enforce structure even outside Swift. Revisions are append-only through Swift, and folder permissions limit who can open the file. Direct edits are not cryptographically detectable. | P, C |
 | T2 | A modified release file carries changed or malicious VBA | Published SHA-256 hashes; download only from the GitHub release. Planned: a signed VBA project or signed package, with the publisher trusted by group policy (section 5). | P |
-| T3 | A crafted import (NAVFIT98A, older workspace) injects bad values | Imported databases are opened read-only through DAO and their code is never run. Values are mapped, previewed and verified against the source before commit. A blank-target rule prevents silent merges. | M |
+| T3 | A crafted import (NAVFIT98A, older workspace) injects bad values | Imported databases are opened read-only through DAO and their code is never run. Field names, types and sizes are checked against the NAVFIT98A schema; tables, queries and code objects outside it are rejected. Values are mapped, previewed and verified against the source before commit. A blank-target rule prevents silent merges. Malformed databases are tested by `test-malformed-imports`. | M |
 | T4 | A crafted PDF manipulates report values | Structured import shows a preview before commit and keeps provenance. Only mapped fields are read. | M |
 | T5 | Official templates or rule packs drift from the official sources | Templates are hashed (NAVFIT blank checked before every export; page images in the [SBOM](SBOM.md)). Rule packs cite their source, and the architecture view check fails on drift. | M |
 
@@ -88,7 +88,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 
 | ID | Threat | Mitigation | Status |
 | --- | --- | --- | --- |
-| D1 | A crafted or corrupt PDF hangs or exhausts memory during import | The PDF decompressor limits decoded size (4 MB) and Huffman tree size, and malformed streams fail cleanly. | P (no fuzz testing yet) |
+| D1 | A crafted or corrupt PDF hangs or exhausts memory during import | The reader limits file size (30 MB), decoded size (4 MB), nesting depth, tokens, packets and the revision chain, and detects cycles. `test-malformed-imports` covers a 64 MB decompression bomb, deep nesting, an xref cycle and a reference loop. | M |
 | D2 | Very wide windows froze Access (fixed in 0.48.0-dev) | Widths are capped at Access's form limit, and a cleanup failure no longer loops. A regression check covers it. | M |
 | D3 | The workspace grows toward Access's 2 GB file limit over years | Not yet measured. | Open (see section 4) |
 | D4 | A failed save or crash loses work | Transactional saves, recovery checkpoints and verified backups, covered by forced-shutdown and late-rollback tests. | M |
@@ -107,7 +107,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | Priority | Action | Closes |
 | --- | --- | --- |
 | 1 | Sign releases (section 5) | S2, T2, E1 |
-| 2 | Malformed-input tests for the PDF importer (truncated, oversized and recursive streams) and for the CSV and NAVFIT98A importers. This is the matrix's "manual security test" gap. | D1, T3, T4 |
+| 2 | *Done:* `test-malformed-imports` runs 55 malformed and control inputs against the PDF, RUAD CSV and NAVFIT98A importers. No importer defects were found. A CSV with invalid UTF-8 or a NUL character loads, with the bad bytes replaced, and is shown in the preview before anything is applied. | D1, T3, T4 |
 | 3 | Replace the 4 `VBScript.RegExp` uses before Microsoft disables VBScript by default ([SBOM](SBOM.md) watch item). One is the SSN filter in output file names (`PDFOutputSafePart`). | I2 and future availability |
 | 4 | Set `ProhibitDTD` and `resolveExternals` explicitly on every XML parser, for consistency | E3 (defense in depth) |
 | 5 | Measure workspace growth on a large synthetic binder; document compact-and-repair and archiving guidance | D3 |

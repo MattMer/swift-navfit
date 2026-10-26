@@ -74,7 +74,8 @@ The full AV-1 is [views/AV-1.md](views/AV-1.md).
 | Historical import (every prior schema) | Every schema 1–34 imports through the production path | `scripts/test-swift-data-import.ps1` |
 | Extended regression tier | All runners pass on the current build | `scripts/develop.ps1 -Action ExtendedTest` |
 | Printed fit of PDF output | Not yet performed | Backlog H01 |
-| DevSecOps practice | 54 activities done, 28 partial, 2 gaps, 14 command-owned, 20 not applicable | [DevSecOps alignment matrix](DevSecOps_Alignment.md) |
+| DevSecOps practice | 55 activities done, 29 partial, 0 gaps, 14 command-owned, 20 not applicable | [DevSecOps alignment matrix](DevSecOps_Alignment.md) |
+| Malformed file input | 55 of 55 malformed and control inputs handled cleanly | `test-malformed-imports` |
 | Threat model | STRIDE over 5 assets, 5 trust boundaries and 6 interfaces; 6 recommendations | [Threat model](Threat_Model.md) |
 | Software bill of materials | Generated from the build; no third-party runtime libraries | [SBOM](SBOM.md), [CycloneDX](sbom.cdx.json) |
 
@@ -190,5 +191,5 @@ Each view is a separate file under [views/](views/):
 
 - Formal DoDAF conformance (DM2/PES) isn't attempted (section 2.4).
 - Screen-reader acceptance and printed fit are not yet performed (section 1.3).
-- The [DevSecOps alignment matrix](DevSecOps_Alignment.md) maps every guidebook activity to Swift's practice. Two gaps remain: malformed-input security testing of the file importers, and developmental cyber testing.
-- The [threat model](Threat_Model.md) lists six recommendations, led by code signing (section 5 of the threat model) and malformed-input testing.
+- The [DevSecOps alignment matrix](DevSecOps_Alignment.md) maps every guidebook activity to Swift's practice. No gaps remain. Developmental cyber testing is partial: there has been no independent penetration test.
+- The [threat model](Threat_Model.md) lists six recommendations. Malformed-input testing is done; code signing (threat model section 5) leads the rest.
