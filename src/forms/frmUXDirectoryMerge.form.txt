@@ -18,7 +18,7 @@ Begin Form
     GridY =24
     Width =14500
     DatasheetFontHeight =11
-    ItemSuffix =17
+    ItemSuffix =18
     Left =5235
     Top =1530
     Right =24960
@@ -368,7 +368,7 @@ Begin Form
                     Locked = NotDefault
                     EnterKeyBehavior = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =300
@@ -385,6 +385,22 @@ Begin Form
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =7450
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =300
+                            Top =4050
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Merge preview"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =4050
+                            LayoutCachedWidth =315
+                            LayoutCachedHeight =4065
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85

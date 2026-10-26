@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =21
+    ItemSuffix =23
     Right =19725
     Bottom =13245
     Caption ="Create reports from command members"
@@ -158,25 +158,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =400
-                    Top =1000
-                    Width =12600
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblChoose"
-                    Caption ="Choose summary group and report period"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =1350
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =85
@@ -203,6 +184,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =400
+                            Top =1000
+                            Width =12600
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblChoose"
+                            Caption ="Choose summary group and report period"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =1350
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -299,7 +301,7 @@ Begin Form
                     End
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     MultiSelect =1
                     IMESentenceMode =3
@@ -325,6 +327,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =3050
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstMembers"
+                            Caption ="Members"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3050
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =3065
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -368,7 +386,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -390,6 +408,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =6050
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Preview"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =6050
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =6065
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault

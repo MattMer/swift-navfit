@@ -9,7 +9,7 @@ Begin Form
     DividingLines = NotDefault
     DefaultView =0
     Width =15450
-    ItemSuffix =319
+    ItemSuffix =325
     Right =19725
     Bottom =13245
     TimerInterval =1000
@@ -264,6 +264,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =9300
+                            Top =1050
+                            Width =1550
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxTypeCaption"
+                            Caption ="Report type"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =9300
+                            LayoutCachedTop =1050
+                            LayoutCachedWidth =10850
+                            LayoutCachedHeight =1400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -583,6 +604,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Left =5250
+                            Top =4800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstRevisions"
+                            Caption ="Revision history"
+                            LayoutCachedLeft =5250
+                            LayoutCachedTop =4800
+                            LayoutCachedWidth =5265
+                            LayoutCachedHeight =4815
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -4129,7 +4167,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ComboBox
-                    OverlapFlags =95
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -4155,6 +4193,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =11350
+                            Top =1950
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxGroup"
+                            Caption ="Summary group"
+                            LayoutCachedLeft =11350
+                            LayoutCachedTop =1950
+                            LayoutCachedWidth =11365
+                            LayoutCachedHeight =1965
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =93
@@ -6846,6 +6900,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =5250
+                            Top =3150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxSeniorRecord"
+                            Caption ="Reporting senior record"
+                            LayoutCachedLeft =5250
+                            LayoutCachedTop =3150
+                            LayoutCachedWidth =5265
+                            LayoutCachedHeight =3165
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -6927,25 +6998,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =9300
-                    Top =1050
-                    Width =1550
-                    Height =350
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="uxTypeCaption"
-                    Caption ="Report type"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =9300
-                    LayoutCachedTop =1050
-                    LayoutCachedWidth =10850
-                    LayoutCachedHeight =1400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin Subform
                     OverlapFlags =255
                     OldBorderStyle =0
@@ -6990,6 +7042,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Left =5250
+                            Top =3200
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxErrorList"
+                            Caption ="Validation errors"
+                            LayoutCachedLeft =5250
+                            LayoutCachedTop =3200
+                            LayoutCachedWidth =5265
+                            LayoutCachedHeight =3215
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -7023,6 +7092,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -7057,6 +7143,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =2650
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactSection"
+                            Caption ="Report section"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =2650
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =2665
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =223

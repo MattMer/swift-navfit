@@ -2,7 +2,9 @@ param([Parameter(Mandatory=$true)][string]$BuildPath)
 # Section 508 / WCAG 2.0 AA checks that can be automated:
 #  - text contrast of every color pair UXApplyVisual uses (1.4.3, 4.5:1);
 #  - every user-facing input control has a linked label (1.3.1, 4.1.2), which is
-#    what a screen reader announces;
+#    what a screen reader announces. Link the visible label (LabelName); where
+#    there is none, attach a 15x15-twip label named "an<Control>" whose caption
+#    is the spoken name;
 #  - every command button has a name (caption or ScreenTip) (4.1.2).
 # Known gaps live in tests/accessibility-gaps.json with a reason each; the list
 # may only shrink. Screen-reader behavior itself still needs a person to verify.
@@ -27,7 +29,7 @@ $gaps=Get-Content (Join-Path $root 'tests/accessibility-gaps.json') -Raw|Convert
 $known=@{};foreach($p in $gaps.labels.PSObject.Properties){$known[$p.Name]=$p.Value};foreach($p in $gaps.buttons.PSObject.Properties){$known[$p.Name]=$p.Value}
 $retired=@((Get-Content (Join-Path $root 'scripts/build-manifest.json') -Raw|ConvertFrom-Json).retiredForms.PSObject.Properties.Name)
 $scratch=Join-Path $root ('build/tests/accessibility-'+[guid]::NewGuid()+'.accdb');Copy-Item -LiteralPath $BuildPath -Destination $scratch
-$app=New-Object -ComObject Access.Application;$missing=[Collections.Generic.List[string]]::new();$labelled=0;$buttons=0
+$app=New-Object -ComObject Access.Application;$missing=[Collections.Generic.List[string]]::new();$labelled=0;$buttons=0;$names=0
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
  for($wait=0;$wait -lt 30 -and $app.Forms.Count -eq 0;$wait++){Start-Sleep -Milliseconds 100}
@@ -36,6 +38,11 @@ try{
   $app.DoCmd.OpenForm($name,1);$f=$app.Forms.Item($name)
   foreach($c in $f.Controls){
    $tag=[string]$c.Tag
+   if($c.ControlType -eq 100 -and $c.Name -clike 'an*' -and $c.Width -le 30){
+    #Name label: an attached caption only a screen reader uses; it must stay out of sight.
+    $names++;Check ($c.Height -le 30 -and ([string]$c.Caption).Trim() -ne '' -and $c.Parent.Name -ne $name -and $c.Visible -eq $c.Parent.Visible) ('Name label is oversized, empty, unattached or shown apart from its control: '+$name+'.'+$c.Name)
+    continue
+   }
    #Technical controls nobody reads: 100-twip state holders, focus/sort helpers,
    #the editor's hidden buffer and the bulk screen's hidden mirrors.
    if(($c.Width -le 120 -and $c.Height -le 120) -or $c.Name -like 'uxSortActivate*' -or $c.Name -eq 'uxFocusAnchor' -or $tag -eq 'BUFFER' -or $tag.StartsWith('BLX:')){continue}
@@ -53,4 +60,4 @@ try{
 $unexpected=@($missing|Where-Object {-not $known.ContainsKey($_)});$fixed=@($known.Keys|Where-Object {$missing -notcontains $_})
 Check ($unexpected.Count -eq 0) ('Controls without an accessible name: '+($unexpected -join ', '))
 Check ($fixed.Count -eq 0) ('Known accessibility gap is fixed; remove it from tests/accessibility-gaps.json: '+($fixed -join ', '))
-Write-Output ('PASS: '+$checks+' checks; 12 color pairs at 4.5:1 or better; '+$labelled+' labelled input controls; '+$buttons+' named buttons; '+$known.Count+' known gaps listed')
+Write-Output ('PASS: '+$checks+' checks; 12 color pairs at 4.5:1 or better; '+$labelled+' labelled input controls ('+$names+' by name labels); '+$buttons+' named buttons; '+$known.Count+' known gaps listed')

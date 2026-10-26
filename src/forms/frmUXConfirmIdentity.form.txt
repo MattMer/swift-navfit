@@ -12,7 +12,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =14
+    ItemSuffix =15
     Left =5235
     Top =1530
     Right =24960
@@ -145,7 +145,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -166,6 +166,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1000
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Identity comparison"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1000
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1015
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault

@@ -10,8 +10,8 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =27
-    Right =18525
+    ItemSuffix =29
+    Right =19725
     Bottom =13245
     Caption ="Member evaluation and counseling history"
     OnActivate ="=UXSortActivate(\"frmUXMemberHistory\")"
@@ -177,7 +177,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =6
@@ -201,6 +201,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstHistory"
+                            Caption ="Report history"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2515
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -575,7 +591,7 @@ Begin Form
                 End
                 Begin ListBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     IMESentenceMode =3
                     ColumnCount =5
                     Left =400
@@ -594,9 +610,25 @@ Begin Form
                     LayoutCachedTop =8800
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =10400
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =8800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstCounseling"
+                            Caption ="Counseling history"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =8800
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =8815
+                        End
+                    End
                 End
                 Begin Label
-                    OverlapFlags =85
+                    OverlapFlags =93
                     Left =400
                     Top =8450
                     Width =800
@@ -612,7 +644,7 @@ Begin Form
                     LayoutCachedHeight =8750
                 End
                 Begin Label
-                    OverlapFlags =215
+                    OverlapFlags =223
                     Left =400
                     Top =8450
                     Width =800
@@ -628,7 +660,7 @@ Begin Form
                     LayoutCachedHeight =8750
                 End
                 Begin Label
-                    OverlapFlags =215
+                    OverlapFlags =223
                     Left =400
                     Top =8450
                     Width =800
@@ -644,7 +676,7 @@ Begin Form
                     LayoutCachedHeight =8750
                 End
                 Begin Label
-                    OverlapFlags =215
+                    OverlapFlags =223
                     Left =400
                     Top =8450
                     Width =800

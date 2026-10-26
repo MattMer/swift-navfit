@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     BorderStyle =0
     Width =13200
-    ItemSuffix =36
+    ItemSuffix =40
     Right =19725
     Bottom =13245
     Caption ="Report review"
@@ -454,11 +454,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =200
+                            Top =4300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstSteps"
+                            Caption ="Route steps"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =4300
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =4315
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =6200
@@ -481,6 +497,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =6200
+                            Top =4300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtStep"
+                            Caption ="Step details"
+                            LayoutCachedLeft =6200
+                            LayoutCachedTop =4300
+                            LayoutCachedWidth =6215
+                            LayoutCachedHeight =4315
+                        End
+                    End
                 End
                 Begin TextBox
                     ScrollBars =2
@@ -895,6 +927,22 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =520
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =200
+                            Top =100
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboReviewMode"
+                            Caption ="Review mode"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =100
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =115
+                        End
+                    End
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
@@ -964,6 +1012,22 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =5050
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =200
+                            Top =3350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtAssignmentHistory"
+                            Caption ="Assignment history"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =3350
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =3365
+                        End
+                    End
                 End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault

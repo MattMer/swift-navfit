@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15114
-    ItemSuffix =51
+    ItemSuffix =54
     Right =19725
     Bottom =13245
     Caption ="Report workspace"
@@ -214,6 +214,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =2866
+                            Top =1500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstFolders"
+                            Caption ="Folders"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =1500
+                            LayoutCachedWidth =2881
+                            LayoutCachedHeight =1515
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -340,6 +357,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =3250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstReports"
+                            Caption ="Reports"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =3265
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =93
@@ -1016,7 +1049,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                     Begin
                         Begin Label
-                            OverlapFlags =93
+                            OverlapFlags =223
                             TextFontFamily =34
                             Left =2850
                             Top =1400
@@ -1249,6 +1282,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin Label
                     Visible = NotDefault

@@ -51,7 +51,7 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Check Not Forms!frmNAVFITExchange!cmdResumeReturn.Visible And Not Forms!frmNAVFITExchange!cmdCancelReturn.Visible, "Export exposes saved-return actions"
     Check Not Forms!frmNAVFITExchange!txtExportPath.Locked And Forms!frmNAVFITExchange!txtExportPath.TabStop And Forms!frmNAVFITExchange!txtExportPath.AfterUpdate = "=UXPreviewNAVFITGroup()", "Export directory cannot be entered by keyboard with a refreshed preview"
     For Each c In Forms!frmNAVFITExchange.Controls
-        If c.Visible Then Check InStr("|lblHeading|lblScope|lblGroup|lbltxtExportPath|txtExportPath|cmdtxtExportPath|cmdExportGroup|txtStatus|cmdBack|cmdWindowHelp|", "|" & c.Name & "|") > 0, "Export exposes an unrelated control: " & c.Name
+        If c.Visible Then Check InStr("|lblHeading|lblScope|lblGroup|lbltxtExportPath|txtExportPath|cmdtxtExportPath|cmdExportGroup|txtStatus|antxtStatus|cmdBack|cmdWindowHelp|", "|" & c.Name & "|") > 0, "Export exposes an unrelated control: " & c.Name
     Next
     file = source & ".ui-export.accdb"
     Call NAVFITExportReport(id, file, template)

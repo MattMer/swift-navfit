@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =24
+    ItemSuffix =25
     Right =19725
     Bottom =13245
     OnUnload ="=PDFClearPreview(False)"
@@ -480,7 +480,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -502,6 +502,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =5800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="PDF preview"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5800
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =5815
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

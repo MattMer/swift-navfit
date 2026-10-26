@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =24
+    ItemSuffix =27
     Right =19725
     Bottom =13245
     Caption ="Retained import provenance"
@@ -206,7 +206,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -228,11 +228,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1750
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtContext"
+                            Caption ="Source context"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1750
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1765
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -256,6 +272,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =4200
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboTable"
+                            Caption ="Source table"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4200
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =4215
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -405,7 +437,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =7
@@ -431,6 +463,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =5650
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstFields"
+                            Caption ="Fields"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5650
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =5665
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault

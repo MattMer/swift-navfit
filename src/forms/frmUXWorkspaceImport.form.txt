@@ -5,7 +5,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13000
-    ItemSuffix =10
+    ItemSuffix =11
     Right =19725
     Bottom =13245
     OnUnload ="[Event Procedure]"
@@ -117,7 +117,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =350
@@ -138,6 +138,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =350
+                            Top =1200
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Import preview"
+                            LayoutCachedLeft =350
+                            LayoutCachedTop =1200
+                            LayoutCachedWidth =365
+                            LayoutCachedHeight =1215
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

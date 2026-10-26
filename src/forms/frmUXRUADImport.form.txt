@@ -11,7 +11,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =25
+    ItemSuffix =28
     Left =5235
     Top =1530
     Right =24960
@@ -195,7 +195,7 @@ Begin Form
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -217,6 +217,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPath"
+                            Caption ="RUAD CSV file"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1350
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1365
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -317,7 +333,7 @@ Begin Form
                 End
                 Begin ListBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =5
@@ -343,6 +359,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =3250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstRows"
+                            Caption ="RUAD rows"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =3265
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -458,32 +490,34 @@ Begin Form
                     LayoutCachedTop =3450
                     LayoutCachedWidth =6350
                     LayoutCachedHeight =3700
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6480
-                    Top =3390
-                    Width =6500
-                    Height =500
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblReplace"
-                    Caption ="Use incoming RUAD values for manually changed roster fields (core identity field"
-                        "s stay unchanged)"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6480
-                    LayoutCachedTop =3390
-                    LayoutCachedWidth =12980
-                    LayoutCachedHeight =3890
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6480
+                            Top =3390
+                            Width =6500
+                            Height =500
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReplace"
+                            Caption ="Use incoming RUAD values for manually changed roster fields (core identity field"
+                                "s stay unchanged)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6480
+                            LayoutCachedTop =3390
+                            LayoutCachedWidth =12980
+                            LayoutCachedHeight =3890
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     EnterKeyBehavior = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =6100
@@ -505,6 +539,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =6100
+                            Top =4100
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtDetails"
+                            Caption ="Row details"
+                            LayoutCachedLeft =6100
+                            LayoutCachedTop =4100
+                            LayoutCachedWidth =6115
+                            LayoutCachedHeight =4115
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

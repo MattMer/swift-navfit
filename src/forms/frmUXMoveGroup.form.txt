@@ -12,10 +12,10 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13200
-    ItemSuffix =10
-    Left =6555
+    ItemSuffix =12
+    Left =5235
     Top =1530
-    Right =21855
+    Right =24960
     Bottom =14775
     Caption ="Move report to summary group"
     OnActivate ="=UXVisualEvent(\"frmUXMoveGroup\",\"\")"
@@ -23,7 +23,6 @@ Begin Form
     OnLoad ="=UXLoadMoveGroup()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -184,7 +183,7 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -209,6 +208,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboGroup"
+                            Caption ="Destination summary group"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1500
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1515
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -291,7 +306,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -313,6 +328,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2900
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Preview"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2900
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2915
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

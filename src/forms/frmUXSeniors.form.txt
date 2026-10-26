@@ -10,8 +10,8 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15850
-    ItemSuffix =18
-    Right =15300
+    ItemSuffix =20
+    Right =19725
     Bottom =13245
     Caption ="Reporting seniors"
     OnActivate ="=UXVisualEvent(\"frmUXSeniors\",\"UXLoadContext()\")"
@@ -19,7 +19,6 @@ Begin Form
     OnLoad ="=RSLoadDirectory()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -451,7 +450,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =3
@@ -477,6 +476,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2866
+                            Top =2700
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstSeniors"
+                            Caption ="Reporting seniors"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =2700
+                            LayoutCachedWidth =2881
+                            LayoutCachedHeight =2715
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -644,6 +659,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

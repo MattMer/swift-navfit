@@ -7,14 +7,13 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =10100
-    ItemSuffix =100
-    Right =18525
-    Bottom =12795
+    ItemSuffix =172
+    Right =19725
+    Bottom =13245
     OnActivate ="=UXVisualEvent(\"frmUXRSCATable\",\"\")"
     OnResize ="=RSTableResize()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -164,7 +163,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -188,9 +187,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE1"
+                            Caption ="E1 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =500
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =515
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -215,9 +230,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE1"
+                            Caption ="E1 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =500
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =515
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -242,6 +273,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE1"
+                            Caption ="E1 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =500
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =515
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -263,7 +310,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -288,9 +335,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =890
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE2"
+                            Caption ="E2 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =890
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =905
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -315,9 +378,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =890
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE2"
+                            Caption ="E2 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =890
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =905
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -342,6 +421,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =890
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE2"
+                            Caption ="E2 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =890
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =905
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -363,7 +458,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -388,9 +483,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =1280
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE3"
+                            Caption ="E3 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =1280
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =1295
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -415,9 +526,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =1280
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE3"
+                            Caption ="E3 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =1280
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =1295
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -442,6 +569,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =1280
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE3"
+                            Caption ="E3 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =1280
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =1295
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -463,7 +606,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -488,9 +631,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =1670
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE4"
+                            Caption ="E4 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =1670
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =1685
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -515,9 +674,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =1670
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE4"
+                            Caption ="E4 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =1670
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =1685
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -542,6 +717,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =1670
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE4"
+                            Caption ="E4 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =1670
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =1685
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -563,7 +754,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -588,9 +779,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =2060
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE5"
+                            Caption ="E5 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =2060
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =2075
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -615,9 +822,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =2060
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE5"
+                            Caption ="E5 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =2060
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =2075
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -642,6 +865,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =2060
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE5"
+                            Caption ="E5 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =2060
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =2075
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -663,7 +902,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -688,9 +927,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =2450
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE6"
+                            Caption ="E6 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =2450
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =2465
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -715,9 +970,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =2450
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE6"
+                            Caption ="E6 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =2450
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =2465
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -742,6 +1013,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =2450
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE6"
+                            Caption ="E6 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =2450
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =2465
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -763,7 +1050,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -788,9 +1075,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =2840
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE7"
+                            Caption ="E7 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =2840
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =2855
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -815,9 +1118,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =2840
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE7"
+                            Caption ="E7 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =2840
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =2855
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -842,6 +1161,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =2840
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE7"
+                            Caption ="E7 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =2840
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =2855
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -863,7 +1198,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -888,9 +1223,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =3230
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE8"
+                            Caption ="E8 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =3230
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =3245
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -915,9 +1266,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =3230
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE8"
+                            Caption ="E8 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =3230
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =3245
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -942,6 +1309,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =3230
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE8"
+                            Caption ="E8 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =3230
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =3245
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -963,7 +1346,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -988,9 +1371,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =3620
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgE9"
+                            Caption ="E9 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =3620
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =3635
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1015,9 +1414,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =3620
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountE9"
+                            Caption ="E9 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =3620
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =3635
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1042,6 +1457,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =3620
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateE9"
+                            Caption ="E9 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =3620
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =3635
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1063,7 +1494,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1088,9 +1519,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =4010
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgW1"
+                            Caption ="W1 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =4010
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =4025
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1115,9 +1562,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =4010
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountW1"
+                            Caption ="W1 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =4010
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =4025
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1142,6 +1605,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =4010
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateW1"
+                            Caption ="W1 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =4010
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =4025
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1163,7 +1642,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1188,9 +1667,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =4400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgW2"
+                            Caption ="W2 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =4400
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =4415
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1215,9 +1710,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =4400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountW2"
+                            Caption ="W2 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =4400
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =4415
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1242,6 +1753,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =4400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateW2"
+                            Caption ="W2 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =4400
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =4415
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1263,7 +1790,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1288,9 +1815,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =4790
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgW3"
+                            Caption ="W3 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =4790
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =4805
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1315,9 +1858,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =4790
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountW3"
+                            Caption ="W3 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =4790
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =4805
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1342,6 +1901,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =4790
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateW3"
+                            Caption ="W3 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =4790
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =4805
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1363,7 +1938,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1388,9 +1963,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =5180
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgW4"
+                            Caption ="W4 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =5180
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =5195
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1415,9 +2006,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =5180
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountW4"
+                            Caption ="W4 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =5180
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =5195
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1442,6 +2049,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =5180
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateW4"
+                            Caption ="W4 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =5180
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =5195
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1463,7 +2086,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1488,9 +2111,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =5570
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgW5"
+                            Caption ="W5 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =5570
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =5585
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1515,9 +2154,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =5570
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountW5"
+                            Caption ="W5 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =5570
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =5585
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1542,6 +2197,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =5570
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateW5"
+                            Caption ="W5 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =5570
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =5585
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1563,7 +2234,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1588,9 +2259,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =5960
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO1"
+                            Caption ="O1 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =5960
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =5975
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1615,9 +2302,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =5960
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO1"
+                            Caption ="O1 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =5960
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =5975
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1642,6 +2345,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =5960
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO1"
+                            Caption ="O1 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =5960
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =5975
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1663,7 +2382,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1688,9 +2407,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =6350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO2"
+                            Caption ="O2 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =6350
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =6365
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1715,9 +2450,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =6350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO2"
+                            Caption ="O2 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =6350
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =6365
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1742,6 +2493,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =6350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO2"
+                            Caption ="O2 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =6350
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =6365
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1763,7 +2530,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1788,9 +2555,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =6740
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO3"
+                            Caption ="O3 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =6740
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =6755
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1815,9 +2598,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =6740
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO3"
+                            Caption ="O3 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =6740
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =6755
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1842,6 +2641,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =6740
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO3"
+                            Caption ="O3 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =6740
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =6755
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1863,7 +2678,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1888,9 +2703,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =7130
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO4"
+                            Caption ="O4 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =7130
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =7145
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -1915,9 +2746,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =7130
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO4"
+                            Caption ="O4 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =7130
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =7145
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -1942,6 +2789,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =7130
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO4"
+                            Caption ="O4 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =7130
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =7145
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -1963,7 +2826,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -1988,9 +2851,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =7520
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO5"
+                            Caption ="O5 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =7520
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =7535
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2015,9 +2894,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =7520
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO5"
+                            Caption ="O5 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =7520
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =7535
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2042,6 +2937,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =7520
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO5"
+                            Caption ="O5 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =7520
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =7535
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -2063,7 +2974,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -2088,9 +2999,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =7910
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO6"
+                            Caption ="O6 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =7910
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =7925
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2115,9 +3042,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =7910
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO6"
+                            Caption ="O6 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =7910
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =7925
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2142,6 +3085,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =7910
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO6"
+                            Caption ="O6 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =7910
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =7925
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -2163,7 +3122,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -2188,9 +3147,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =8300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO7"
+                            Caption ="O7 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =8300
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =8315
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2215,9 +3190,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =8300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO7"
+                            Caption ="O7 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =8300
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =8315
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2242,6 +3233,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =8300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO7"
+                            Caption ="O7 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =8300
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =8315
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -2263,7 +3270,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -2288,9 +3295,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =8690
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO8"
+                            Caption ="O8 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =8690
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =8705
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2315,9 +3338,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =8690
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO8"
+                            Caption ="O8 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =8690
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =8705
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2342,6 +3381,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =8690
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO8"
+                            Caption ="O8 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =8690
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =8705
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -2363,7 +3418,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -2388,9 +3443,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =9080
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO9"
+                            Caption ="O9 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =9080
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =9095
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2415,9 +3486,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =9080
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO9"
+                            Caption ="O9 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =9080
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =9095
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2442,6 +3529,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =9080
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO9"
+                            Caption ="O9 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =9080
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =9095
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -2463,7 +3566,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =1000
@@ -2488,9 +3591,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =1000
+                            Top =9470
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anavgO10"
+                            Caption ="O10 RSCA"
+                            LayoutCachedLeft =1000
+                            LayoutCachedTop =9470
+                            LayoutCachedWidth =1015
+                            LayoutCachedHeight =9485
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -2515,9 +3634,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =9470
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancountO10"
+                            Caption ="O10 previous graded traits"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =9470
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =9485
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5800
@@ -2542,6 +3677,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5800
+                            Top =9470
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="andateO10"
+                            Caption ="O10 as of date"
+                            LayoutCachedLeft =5800
+                            LayoutCachedTop =9470
+                            LayoutCachedWidth =5815
+                            LayoutCachedHeight =9485
+                        End
+                    End
                 End
             End
         End

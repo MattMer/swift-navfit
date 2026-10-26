@@ -10,16 +10,15 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =13
-    Right =18525
-    Bottom =12795
+    ItemSuffix =15
+    Right =19725
+    Bottom =13245
     Caption ="Command member directory"
     OnActivate ="=UXVisualEvent(\"frmUXDirectory\",\"\")"
     OnResize ="=UXHelpResize(\"frmUXDirectory\",\"\")"
     OnLoad ="=UXDirectoryLoad()"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -160,7 +159,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -182,6 +181,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1750
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtSearch"
+                            Caption ="Search members"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1750
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1765
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -224,7 +239,7 @@ Begin Form
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =5
@@ -251,6 +266,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstMembers"
+                            Caption ="Members"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2400
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2415
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

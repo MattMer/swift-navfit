@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =15850
-    ItemSuffix =34
+    ItemSuffix =39
     Right =19725
     Bottom =13245
     Caption ="Review route templates"
@@ -521,9 +521,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin ListBox
-                    OverlapFlags =87
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -549,10 +566,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =2850
+                            Top =1800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstTemplates"
+                            Caption ="Route templates"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =1800
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =1815
+                        End
+                    End
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
-                    OverlapFlags =87
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =3
@@ -578,6 +611,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =6650
+                            Top =1800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstSteps"
+                            Caption ="Route steps"
+                            LayoutCachedLeft =6650
+                            LayoutCachedTop =1800
+                            LayoutCachedWidth =6665
+                            LayoutCachedHeight =1815
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =93
@@ -645,7 +694,7 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -670,6 +719,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =5050
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboReviewer"
+                            Caption ="Reviewer"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =5050
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =5065
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -776,7 +841,7 @@ Begin Form
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
@@ -798,6 +863,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =5600
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtReviewers"
+                            Caption ="Reviewers"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =5600
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =5615
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85

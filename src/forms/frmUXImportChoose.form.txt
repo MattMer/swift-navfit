@@ -10,8 +10,8 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =17
-    Right =15300
+    ItemSuffix =18
+    Right =19725
     Bottom =13245
     Caption ="Import reports"
     OnActivate ="=UXVisualEvent(\"frmUXImportChoose\",\"UXLoadContext()\")"
@@ -19,7 +19,6 @@ Begin Form
         ")\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -611,6 +610,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

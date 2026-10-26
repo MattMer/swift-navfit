@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =24
+    ItemSuffix =26
     Right =19725
     Bottom =13245
     Caption ="Operations and import undo"
@@ -159,7 +159,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =4
@@ -184,11 +184,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstOperations"
+                            Caption ="Operations"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2350
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2365
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -210,6 +226,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =4400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtOutcome"
+                            Caption ="Outcome"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4400
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =4415
+                        End
+                    End
                 End
                 Begin ListBox
                     OverlapFlags =85

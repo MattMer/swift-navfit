@@ -11,15 +11,14 @@ Begin Form
     AllowAdditions = NotDefault
     ScrollBars =2
     Width =17050
-    ItemSuffix =34
-    Right =18525
-    Bottom =12795
+    ItemSuffix =49
+    Right =19725
+    Bottom =13245
     Caption ="Trait comparison"
     OnCurrent ="=UXGridCurrent()"
     OnActivate ="=UXVisualEvent(\"frmUXTraitRows\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -444,7 +443,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     TabStop = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =750
@@ -468,11 +467,27 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =750
+                            Top =30
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anMember"
+                            Caption ="Member"
+                            LayoutCachedLeft =750
+                            LayoutCachedTop =30
+                            LayoutCachedWidth =765
+                            LayoutCachedHeight =45
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     TabStop = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =750
@@ -496,6 +511,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =750
+                            Top =340
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anRowStatus"
+                            Caption ="Row status"
+                            LayoutCachedLeft =750
+                            LayoutCachedTop =340
+                            LayoutCachedWidth =765
+                            LayoutCachedHeight =355
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -568,7 +599,7 @@ Begin Form
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2900
@@ -595,10 +626,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2900
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait33"
+                            Caption ="Trait 33"
+                            LayoutCachedLeft =2900
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =2915
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =3720
@@ -625,10 +672,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =3720
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait34"
+                            Caption ="Trait 34"
+                            LayoutCachedLeft =3720
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =3735
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =4540
@@ -655,10 +718,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =4540
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait35"
+                            Caption ="Trait 35"
+                            LayoutCachedLeft =4540
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =4555
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5360
@@ -685,10 +764,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =5360
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait36"
+                            Caption ="Trait 36"
+                            LayoutCachedLeft =5360
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =5375
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =6180
@@ -715,10 +810,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =6180
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait37"
+                            Caption ="Trait 37"
+                            LayoutCachedLeft =6180
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =6195
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =7000
@@ -745,10 +856,26 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =7000
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait38"
+                            Caption ="Trait 38"
+                            LayoutCachedLeft =7000
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =7015
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =7820
@@ -775,11 +902,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =7820
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anTrait39"
+                            Caption ="Trait 39"
+                            LayoutCachedLeft =7820
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =7835
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     TabStop = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =8800
@@ -824,11 +967,27 @@ Begin Form
                         0x005b004900540041005d002c005b005000720069006f0072004900540041005d ,
                         0x0029003d002d003100000000000000000000fff0cf000000000000000000
                     End
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =8800
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anITA"
+                            Caption ="ITA"
+                            LayoutCachedLeft =8800
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =8815
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =9700
@@ -855,9 +1014,25 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =9700
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anPromotionRecommendation"
+                            Caption ="Promotion recommendation"
+                            LayoutCachedLeft =9700
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =9715
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =11150
@@ -882,9 +1057,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =11150
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anAssignmentRecommendationA"
+                            Caption ="Career recommendation 1"
+                            LayoutCachedLeft =11150
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =11165
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin TextBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =12550
@@ -909,6 +1100,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =12550
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anAssignmentRecommendationB"
+                            Caption ="Career recommendation 2"
+                            LayoutCachedLeft =12550
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =12565
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =247
@@ -954,7 +1161,7 @@ Begin Form
                     Enabled = NotDefault
                     Locked = NotDefault
                     TabStop = NotDefault
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =13950
@@ -979,12 +1186,28 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =13950
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anPriorITA"
+                            Caption ="Prior ITA"
+                            LayoutCachedLeft =13950
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =13965
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
                 Begin TextBox
                     Enabled = NotDefault
                     Locked = NotDefault
                     TabStop = NotDefault
-                    OverlapFlags =87
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =14950
@@ -1009,6 +1232,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =14950
+                            Top =40
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anPriorPromotion"
+                            Caption ="Prior promotion recommendation"
+                            LayoutCachedLeft =14950
+                            LayoutCachedTop =40
+                            LayoutCachedWidth =14965
+                            LayoutCachedHeight =55
+                        End
+                    End
                 End
             End
         End

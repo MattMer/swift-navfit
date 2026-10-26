@@ -9,7 +9,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13400
-    ItemSuffix =41
+    ItemSuffix =45
     Right =19725
     Bottom =13245
     OnUnload ="=UXCloseNAVFITExport()"
@@ -658,6 +658,19 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstChoices"
+                            Caption ="Returned report choices"
+                            LayoutCachedWidth =15
+                            LayoutCachedHeight =15
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -682,6 +695,19 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtDetail"
+                            Caption ="Returned report details"
+                            LayoutCachedWidth =15
+                            LayoutCachedHeight =15
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -763,7 +789,7 @@ Begin Form
                     Locked = NotDefault
                     TabStop = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -785,6 +811,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =3800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtStatus"
+                            Caption ="Exchange status"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3800
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =3815
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -928,6 +970,19 @@ Begin Form
 
                     LayoutCachedWidth =500
                     LayoutCachedHeight =350
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anchkPSG"
+                            Caption ="Include PSG"
+                            LayoutCachedWidth =15
+                            LayoutCachedHeight =15
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault

@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =17
+    ItemSuffix =18
     Right =19725
     Bottom =13245
     Caption ="Compare saved revisions"
@@ -252,7 +252,7 @@ Begin Form
                     End
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =3
@@ -278,42 +278,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4500
-                    Width =6000
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblOlder"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =6400
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6950
-                    Top =4500
-                    Width =6000
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblNewer"
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =6950
-                    LayoutCachedTop =4500
-                    LayoutCachedWidth =12950
-                    LayoutCachedHeight =4950
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2750
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstCompareFields"
+                            Caption ="Changed fields"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2750
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2765
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -340,6 +320,26 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =4500
+                            Width =6000
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblOlder"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4500
+                            LayoutCachedWidth =6400
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -366,6 +366,26 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6950
+                            Top =4500
+                            Width =6000
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNewer"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6950
+                            LayoutCachedTop =4500
+                            LayoutCachedWidth =12950
+                            LayoutCachedHeight =4950
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

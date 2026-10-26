@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15850
-    ItemSuffix =71
+    ItemSuffix =73
     Right =19725
     Bottom =13245
     Caption ="Reporting senior record"
@@ -1801,6 +1801,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =2850
+                            Top =3000
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstBaselines"
+                            Caption ="Baselines"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3000
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =3015
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -1973,6 +1990,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin Subform
                     OverlapFlags =247

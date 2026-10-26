@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =16
+    ItemSuffix =18
     Right =19725
     Bottom =13245
     Caption ="Choose group members"
@@ -159,7 +159,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     MultiSelect =2
                     IMESentenceMode =3
@@ -184,6 +184,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstReports"
+                            Caption ="Reports"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2250
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2265
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =85
@@ -368,7 +384,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -390,6 +406,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =6900
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtImpact"
+                            Caption ="Impact"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =6900
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =6915
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =215

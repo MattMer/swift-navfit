@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =77
+    ItemSuffix =84
     Right =19725
     Bottom =13245
     Caption ="My Work - local review assignments"
@@ -330,7 +330,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin TextBox
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
@@ -353,6 +353,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =4350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtContributor"
+                            Caption ="Contributor name"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =4350
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =4365
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -504,6 +520,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =2850
+                            Top =3350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstTasks"
+                            Caption ="Tasks"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3350
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =3365
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -531,6 +564,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =2850
+                            Top =5850
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtHistory"
+                            Caption ="Assignment history"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =5850
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =5865
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =93
@@ -1452,6 +1501,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
@@ -1484,6 +1550,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =3400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstWork"
+                            Caption ="My work"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3400
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =3415
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =255
@@ -2037,6 +2119,23 @@ Begin Form
                     LayoutCachedTop =4000
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =7100
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =2850
+                            Top =4000
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstCounseling"
+                            Caption ="Midterm counseling"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =4000
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =4015
+                        End
+                    End
                 End
                 Begin Label
                     Visible = NotDefault
@@ -2230,6 +2329,23 @@ Begin Form
                     LayoutCachedTop =2900
                     LayoutCachedWidth =9850
                     LayoutCachedHeight =4200
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =127
+                            Left =2850
+                            Top =2900
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstContributors"
+                            Caption ="Contributors"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =2900
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =2915
+                        End
+                    End
                 End
             End
         End

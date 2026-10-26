@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =21
+    ItemSuffix =23
     Right =19725
     Bottom =13245
     Caption ="NavyWriter examples catalog"
@@ -313,7 +313,7 @@ Begin Form
                     WebImagePaddingBottom =1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =4
@@ -339,6 +339,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2850
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstCatalog"
+                            Caption ="Catalog"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2850
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2865
+                        End
+                    End
                 End
                 Begin TextBox
                     ScrollBars =2
@@ -388,7 +404,7 @@ Begin Form
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -410,6 +426,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =7800
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtSource"
+                            Caption ="Source"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =7800
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =7815
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85

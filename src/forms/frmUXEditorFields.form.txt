@@ -11,7 +11,7 @@ Begin Form
     ScrollBars =2
     BorderStyle =0
     Width =13200
-    ItemSuffix =312
+    ItemSuffix =313
     Right =19725
     Bottom =13245
     Caption ="Report section"
@@ -146,7 +146,7 @@ Begin Form
                     Visible = NotDefault
                     SpecialEffect =0
                     BorderWidth =1
-                    OverlapFlags =247
+                    OverlapFlags =93
                     Width =500
                     Height =300
                     BorderColor =10526880
@@ -159,7 +159,7 @@ Begin Form
                     Visible = NotDefault
                     SpecialEffect =0
                     BorderWidth =1
-                    OverlapFlags =247
+                    OverlapFlags =223
                     Width =500
                     Height =300
                     BorderColor =10526880
@@ -172,7 +172,7 @@ Begin Form
                     Visible = NotDefault
                     SpecialEffect =0
                     BorderWidth =1
-                    OverlapFlags =247
+                    OverlapFlags =223
                     Width =500
                     Height =300
                     BorderColor =10526880
@@ -183,7 +183,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =400
                     Top =250
@@ -205,7 +205,7 @@ Begin Form
                     Locked = NotDefault
                     TabStop = NotDefault
                     OldBorderStyle =0
-                    OverlapFlags =93
+                    OverlapFlags =87
                     TextFontFamily =34
                     IMESentenceMode =3
                     Width =20
@@ -6703,7 +6703,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =200
@@ -6725,6 +6725,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =200
+                            Top =9500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxTraitGuidance"
+                            Caption ="Trait guidance"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =9500
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =9515
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =247
@@ -6899,7 +6915,7 @@ Begin Form
                 End
                 Begin Label
                     Visible = NotDefault
-                    OverlapFlags =255
+                    OverlapFlags =247
                     TextFontFamily =18
                     Left =180
                     Top =100

@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =13800
-    ItemSuffix =22
+    ItemSuffix =25
     Right =19725
     Bottom =13245
     Caption ="Import NAVFIT groups"
@@ -160,7 +160,7 @@ Begin Form
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -181,10 +181,26 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =950
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtSource"
+                            Caption ="Source file"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =950
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =965
+                        End
+                    End
                 End
                 Begin ListBox
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     MultiSelect =1
                     IMESentenceMode =3
@@ -211,6 +227,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstGroups"
+                            Caption ="NAVFIT groups"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2500
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2515
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -294,7 +326,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -316,6 +348,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =5700
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtPreview"
+                            Caption ="Preview"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5700
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =5715
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

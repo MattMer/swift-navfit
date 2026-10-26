@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =2
     Width =18100
-    ItemSuffix =32
+    ItemSuffix =38
     Right =19725
     Bottom =13245
     OnUnload ="=CloseReviewFile()"
@@ -182,7 +182,7 @@ Begin Form
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -204,9 +204,25 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =2150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtSource"
+                            Caption ="Source file"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2150
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =2165
+                        End
+                    End
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =4
@@ -231,6 +247,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =3250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstImportReports"
+                            Caption ="Reports in the source"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =3265
+                        End
+                    End
                 End
                 Begin ListBox
                     Visible = NotDefault
@@ -260,6 +292,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =5500
+                            Top =3250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstImportFields"
+                            Caption ="Import fields"
+                            LayoutCachedLeft =5500
+                            LayoutCachedTop =3250
+                            LayoutCachedWidth =5515
+                            LayoutCachedHeight =3265
+                        End
+                    End
                 End
                 Begin Label
                     Visible = NotDefault
@@ -285,7 +334,7 @@ Begin Form
                     Visible = NotDefault
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
@@ -307,6 +356,23 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =5500
+                            Top =5050
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtFieldValue"
+                            Caption ="Field value"
+                            LayoutCachedLeft =5500
+                            LayoutCachedTop =5050
+                            LayoutCachedWidth =5515
+                            LayoutCachedHeight =5065
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -453,7 +519,7 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =3
@@ -481,6 +547,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =8550
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboDestinationReport"
+                            Caption ="Destination report"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =8550
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =8565
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =85
@@ -625,6 +707,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =5500
+                            Top =2900
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxPreview"
+                            Caption ="Import preview"
+                            LayoutCachedLeft =5500
+                            LayoutCachedTop =2900
+                            LayoutCachedWidth =5515
+                            LayoutCachedHeight =2915
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

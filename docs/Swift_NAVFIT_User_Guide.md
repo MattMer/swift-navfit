@@ -158,6 +158,41 @@ The navigation rail shows the current destination. Stronger button emphasis indi
 
 In group traits, green ITA means higher than that sailor's prior ITA; yellow means lower. Equal values or no prior ITA receive no comparison highlight. Gray prior-value cells are references, not editable current marks.
 
+## 3.4 Accessibility
+
+Swift NAVFIT targets the Section 508 standard (WCAG 2.0 Level AA) for desktop software.
+
+**Keyboard.** Everything runs from the keyboard with standard Access keys:
+
+| Key | Action |
+| --- | --- |
+| Tab / Shift+Tab | Next or previous field. On report pages, fields follow NAVPERS block order. |
+| Enter or Space | Press the focused button. |
+| Space | Tick or clear the focused check box. |
+| Alt+Down Arrow | Open the focused drop-down list. |
+| Arrow keys | Move through a list or drop-down. |
+| Esc | Undo typing in the current field. On a report, **Undo pending changes** clears every unsaved edit. |
+
+**Screen readers.** Each field announces its label: the official block caption on report pages, or the visible caption elsewhere. Where a field has no visible label, it still announces a name:
+- trait cells announce their trait (for example "Trait 33");
+- RSCA table cells announce their paygrade and column (for example "E5 RSCA");
+- lists announce what they hold (for example "Reports").
+
+Buttons announce their caption. Status, issue and save messages are text, so they can be read as well as seen.
+
+**Color and contrast.**
+- Text meets a 4.5:1 contrast ratio against its background.
+- Color is never the only cue: status, findings and comparisons also show text.
+- With a Windows contrast theme on (**Settings > Accessibility > Contrast themes**), Swift uses the theme's colors instead of its own. Reopen any screen that was already open.
+
+**Magnification.** Swift's text doesn't grow with the Windows text-size setting. Use Windows Magnifier: **Windows key + Plus** zooms in, and **Windows key + Esc** turns it off. Resizing a Swift window changes what's visible, not the layout.
+
+**Known limits.**
+- Screen-reader acceptance testing with NVDA and JAWS is still in progress.
+- Printed and PDF output reproduces the official NAVPERS forms. It hasn't been checked for screen-reader tags.
+
+Report accessibility problems through **Settings & Help > Support and limitations**. Include the screen, the field, and the assistive technology you used.
+
 ---
 
 # 4. Create, edit, and save reports

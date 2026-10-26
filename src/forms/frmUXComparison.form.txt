@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =15850
-    ItemSuffix =63
+    ItemSuffix =67
     Right =19725
     Bottom =13245
     OnUnload ="[Event Procedure]"
@@ -888,7 +888,7 @@ Begin Form
                 Begin ComboBox
                     Visible = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2866
@@ -912,6 +912,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =2866
+                            Top =7500
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboPromotion"
+                            Caption ="Promotion recommendation"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =7500
+                            LayoutCachedWidth =2881
+                            LayoutCachedHeight =7515
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -984,6 +1001,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2866
+                            Top =3700
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstProposals"
+                            Caption ="Proposed marks"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =3700
+                            LayoutCachedWidth =2881
+                            LayoutCachedHeight =3715
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -1238,6 +1271,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin Subform
                     OverlapFlags =247
@@ -1299,6 +1349,23 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =95
+                            Left =2850
+                            Top =6400
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxProposalDetail"
+                            Caption ="Proposal details"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =6400
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =6415
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault

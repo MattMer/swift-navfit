@@ -10,7 +10,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =20380
-    ItemSuffix =119
+    ItemSuffix =128
     Right =19725
     Bottom =13245
     Caption ="Groups, reviewed changes and meetings"
@@ -254,6 +254,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2850
+                            Top =3000
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstReports"
+                            Caption ="Reports"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3000
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =3015
+                        End
+                    End
                 End
                 Begin TextBox
                     OverlapFlags =95
@@ -306,7 +322,7 @@ Begin Form
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =9344
@@ -331,11 +347,27 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =9344
+                            Top =4150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboKind"
+                            Caption ="Report type"
+                            LayoutCachedLeft =9344
+                            LayoutCachedTop =4150
+                            LayoutCachedWidth =9359
+                            LayoutCachedHeight =4165
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =11003
@@ -360,6 +392,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =11003
+                            Top =4150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboPaygrade"
+                            Caption ="Paygrade"
+                            LayoutCachedLeft =11003
+                            LayoutCachedTop =4150
+                            LayoutCachedWidth =11018
+                            LayoutCachedHeight =4165
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -842,7 +890,7 @@ Begin Form
                     LimitToList = NotDefault
                     Visible = NotDefault
                     RowSourceTypeInt =1
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2880
@@ -868,6 +916,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =2880
+                            Top =12600
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboScope"
+                            Caption ="Default scope"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =12600
+                            LayoutCachedWidth =2895
+                            LayoutCachedHeight =12615
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1032,7 +1097,7 @@ Begin Form
                 Begin ComboBox
                     LimitToList = NotDefault
                     Visible = NotDefault
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =2
@@ -1058,6 +1123,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =10080
+                            Top =18360
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="ancboReviewer"
+                            Caption ="Reviewer"
+                            LayoutCachedLeft =10080
+                            LayoutCachedTop =18360
+                            LayoutCachedWidth =10095
+                            LayoutCachedHeight =18375
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -1172,7 +1254,7 @@ Begin Form
                 Begin TextBox
                     Visible = NotDefault
                     Locked = NotDefault
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2880
@@ -1195,27 +1277,23 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =247
-                    TextFontFamily =34
-                    Left =8633
-                    Top =19530
-                    Width =1580
-                    Height =450
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblOrder"
-                    Caption ="Meeting order (report IDs)"
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =8633
-                    LayoutCachedTop =19530
-                    LayoutCachedWidth =10213
-                    LayoutCachedHeight =19980
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =2880
+                            Top =12960
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtReviewerNames"
+                            Caption ="Reviewer names"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =12960
+                            LayoutCachedWidth =2895
+                            LayoutCachedHeight =12975
+                        End
+                    End
                 End
                 Begin TextBox
                     Visible = NotDefault
@@ -1242,6 +1320,29 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =247
+                            TextFontFamily =34
+                            Left =8633
+                            Top =19530
+                            Width =1580
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblOrder"
+                            Caption ="Meeting order (report IDs)"
+                            FontName ="Segoe UI"
+                            Tag ="WBX:Hidden"
+                            LayoutCachedLeft =8633
+                            LayoutCachedTop =19530
+                            LayoutCachedWidth =10213
+                            LayoutCachedHeight =19980
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault
@@ -2355,6 +2456,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2880
+                            Top =14390
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstDetails"
+                            Caption ="Details"
+                            LayoutCachedLeft =2880
+                            LayoutCachedTop =14390
+                            LayoutCachedWidth =2895
+                            LayoutCachedHeight =14405
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -2382,6 +2499,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =2866
+                            Top =16580
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtDetail"
+                            Caption ="Detail"
+                            LayoutCachedLeft =2866
+                            LayoutCachedTop =16580
+                            LayoutCachedWidth =2881
+                            LayoutCachedHeight =16595
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
@@ -3065,7 +3198,7 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
                     Top =3000
@@ -3294,6 +3427,23 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =250
+                            Top =150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxCompactNav"
+                            Caption ="Workspace navigation"
+                            LayoutCachedLeft =250
+                            LayoutCachedTop =150
+                            LayoutCachedWidth =265
+                            LayoutCachedHeight =165
+                        End
+                    End
                 End
                 Begin CommandButton
                     Visible = NotDefault

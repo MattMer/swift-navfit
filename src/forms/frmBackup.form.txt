@@ -10,15 +10,14 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =9
-    Right =15300
+    ItemSuffix =10
+    Right =19725
     Bottom =13245
     Caption ="Verified workspace backup and restore"
     OnActivate ="=UXVisualEvent(\"frmBackup\",\"\")"
     OnResize ="=UXHelpResize(\"frmBackup\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -260,7 +259,7 @@ Begin Form
                 Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
@@ -282,6 +281,22 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =4150
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtResult"
+                            Caption ="Backup result"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =4150
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =4165
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85

@@ -9,7 +9,7 @@ Begin Form
     ScrollBars =2
     BorderStyle =0
     Width =12400
-    ItemSuffix =44
+    ItemSuffix =47
     Right =19725
     Bottom =13245
     OnActivate ="=UXSortActivate(\"frmReportTools\")"
@@ -329,12 +329,29 @@ Begin Form
                     LayoutCachedWidth =4100
                     LayoutCachedHeight =3850
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            Visible = NotDefault
+                            OverlapFlags =93
+                            Left =200
+                            Top =1250
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstMessages"
+                            Caption ="Message threads"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =1250
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =1265
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
                     TabStop = NotDefault
                     ScrollBars =2
-                    OverlapFlags =93
+                    OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =200
@@ -514,24 +531,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin Label
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =200
-                    Top =4900
-                    Width =11800
-                    Height =300
-                    FontSize =10
-                    Name ="lblCompose"
-                    Caption ="Write a new report note"
-                    FontName ="Segoe UI"
-                    Tag ="VIEW:Notes"
-                    LayoutCachedLeft =200
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =12000
-                    LayoutCachedHeight =5200
-                    ThemeFontIndex =-1
-                End
                 Begin TextBox
                     EnterKeyBehavior = NotDefault
                     ScrollBars =2
@@ -553,6 +552,26 @@ Begin Form
                     LayoutCachedWidth =9500
                     LayoutCachedHeight =6650
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =200
+                            Top =4900
+                            Width =11800
+                            Height =300
+                            FontSize =10
+                            Name ="lblCompose"
+                            Caption ="Write a new report note"
+                            FontName ="Segoe UI"
+                            Tag ="VIEW:Notes"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =4900
+                            LayoutCachedWidth =12000
+                            LayoutCachedHeight =5200
+                            ThemeFontIndex =-1
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =93
@@ -741,6 +760,22 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =3450
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =127
+                            Left =200
+                            Top =1300
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstFindings"
+                            Caption ="Validation findings"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =1300
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =1315
+                        End
+                    End
                 End
                 Begin TextBox
                     Locked = NotDefault
@@ -763,6 +798,22 @@ Begin Form
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =6600
                     ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =127
+                            Left =200
+                            Top =3700
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtEvidence"
+                            Caption ="Finding details"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =3700
+                            LayoutCachedWidth =215
+                            LayoutCachedHeight =3715
+                        End
+                    End
                 End
                 Begin CommandButton
                     OverlapFlags =223

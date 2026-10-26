@@ -10,15 +10,14 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13800
-    ItemSuffix =10
-    Right =18525
-    Bottom =12795
+    ItemSuffix =11
+    Right =19725
+    Bottom =13245
     Caption ="My unposted notes"
     OnActivate ="=UXSortActivate(\"frmUXNoteRecovery\")"
     OnResize ="=UXHelpResize(\"frmUXNoteRecovery\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
-    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -139,7 +138,7 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin ListBox
-                    OverlapFlags =85
+                    OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     ColumnCount =3
@@ -164,6 +163,22 @@ Begin Form
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            Left =400
+                            Top =1600
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anlstDrafts"
+                            Caption ="Unfinished notes"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1600
+                            LayoutCachedWidth =415
+                            LayoutCachedHeight =1615
+                        End
+                    End
                 End
                 Begin Label
                     OverlapFlags =85
