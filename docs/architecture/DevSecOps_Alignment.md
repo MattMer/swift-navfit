@@ -34,20 +34,13 @@ Counted over the 118 assessed rows below (activities repeated across phases coun
 
 | Status | Activities |
 | --- | --- |
-| Done | 52 |
-| Partial | 27 |
-| Gap | 5 |
+| Done | 54 |
+| Partial | 28 |
+| Gap | 2 |
 | Command | 14 |
 | N/A | 20 |
 
-**The five gaps:**
-- an SBOM and software composition analysis;
-- dependency vulnerability checking;
-- a threat model;
-- a manual security test of the file-import code;
-- developmental cyber testing.
-
-The first three are M10 step 4; the last two depend on the threat model. Most
+**The two gaps:** a manual security test of the file-import code and developmental cyber testing. Both start with the malformed-input tests the [threat model](Threat_Model.md) recommends. The SBOM and threat model are done ([SBOM](SBOM.md), [threat model](Threat_Model.md)), and dependency checking is partial (inventory only). Most
 **Partial** rows are static security analysis (no mature security scanner exists
 for VBA), single-maintainer review, and acceptance on a Navy-managed workstation.
 
@@ -58,8 +51,8 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
 | Test audit | REQUIRED | Done | Every `develop.ps1` run writes `build/workflow/<run>/verification.json` with each runner, its result, the artifact identity and input hashes. Commit messages record which suites ran and their counts. |
-| Mission-based cyber risk assessment | REQUIRED | Command | Owned by the command's ISSM. Swift supplies the architecture description, data model (DIV-3), interfaces (SV-1) and the planned threat model (M10 step 4). |
-| SBOM / software composition analysis | REQUIRED | Gap | M10 step 4: list the Office/Access platform, VBA type-library references and test-only tools (pikepdf). Swift ships no third-party runtime libraries. |
+| Mission-based cyber risk assessment | REQUIRED | Command | Owned by the command's ISSM. Swift supplies the architecture description, data model (DIV-3), interfaces (SV-1), [SBOM](SBOM.md) and [threat model](Threat_Model.md). |
+| SBOM / software composition analysis | REQUIRED | Done | [SBOM.md](SBOM.md) and CycloneDX [sbom.cdx.json](sbom.cdx.json), generated from a fresh build and the VBA source; `test-architecture-views` fails when they drift. No third-party runtime libraries. |
 | Software factory risk continuous monitoring | REQUIRED | N/A | No shared software factory; one repository with a local build and test pipeline. |
 
 ## Plan
@@ -81,7 +74,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | System design | REQUIRED | Done | This architecture description |
 | Test deployment | REQUIRED | Done | Blank and synthetic Demo test builds published as GitHub pre-releases with SHA-256 hashes |
 | Test plan | REQUIRED | Done | `tests/runners.json` (every runner, area and tier); CONTRIBUTING maps each kind of change to its checks; [screen-reader procedure](../Accessibility_Screen_Reader_Test.md) |
-| Threat modeling | PREFERRED | Gap | M10 step 4 |
+| Threat modeling | PREFERRED | Done | [Threat_Model.md](Threat_Model.md): STRIDE over assets, trust boundaries and interfaces, with prioritized recommendations |
 
 ## Develop
 
@@ -115,7 +108,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Build | REQUIRED | Done | `scripts/develop.ps1 -Action Build` from the manifest |
 | Build configuration control and audit | REQUIRED | Done | Manifest input hashes in each receipt; the input-drift guard; `test-build-plan` (inventory, dependencies, identity) |
 | Component test | REQUIRED | Done | As in Develop |
-| Dependency vulnerability checking | REQUIRED | Gap | M10 step 4 (with the SBOM). The platform, Office and Access, is patched through the Navy's Microsoft update channel. |
+| Dependency vulnerability checking | REQUIRED | Partial | The SBOM lists every run-time dependency; all are Windows or Office components patched through the Navy's Microsoft update channel. Watch item: `VBScript.RegExp` (VBScript deprecation). No automated vulnerability feed is checked. |
 | Functional test | REQUIRED | Done | As in Develop |
 | Integration test | REQUIRED | Done | End-to-end workflow runners (`test-ux-workflows`, NAVFIT exchange, PDF output) |
 | Regression test (includes smoke tests) | REQUIRED | Done | `smoke-test`; BuildAndTest every build; ExtendedTest weekly and before every release |
@@ -134,7 +127,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Database security test | PREFERRED | Partial | Validation rules and constraints are tested. PII protection relies on folder permissions (decision C01). No database security scanner. |
 | Dynamic application security test (DAST) | PREFERRED | N/A | No web or network application to probe |
 | Interactive application security test (IAST) | PREFERRED | N/A | Same reason |
-| Manual security test | REQUIRED | Gap | A manual review of the file-import parsers (NAVFIT98A, PDF, CSV, older workspaces), following the threat model |
+| Manual security test | REQUIRED | Gap | Malformed-input tests of the file importers ([threat model](Threat_Model.md) recommendation 2) |
 | Performance test | PREFERRED | Partial | M09 benchmarks are recorded in commit messages. No standing performance runner. |
 | Regression test | REQUIRED | Done | As in Build |
 | Service security test | REQUIRED | N/A | No services |
@@ -148,7 +141,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
 | Artifacts replication | PREFERRED | Partial | GitHub releases, plus the Drive folder for verified releases |
-| Developmental cyber tests | PREFERRED | Gap | Follows the threat model |
+| Developmental cyber tests | PREFERRED | Gap | Scoped by the [threat model](Threat_Model.md); starts with the malformed-input tests |
 | Operational readiness test | REQUIRED | Partial | `release-check.ps1` gates releases. Printed fit, an Acrobat-free workstation and signed launch are still open. |
 | Release go / no-go decision | REQUIRED | Done | Releases happen only on the product owner's explicit request, after `release-check` |
 | User story review and demonstration | PREFERRED | Done | Product-owner review rounds with screenshots (for example M09 before and after) |
@@ -205,7 +198,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
-| Asset inventory, including SBOMs | REQUIRED | Command | The command inventories its workstations and software. Swift's SBOM (M10 step 4) feeds it. |
+| Asset inventory, including SBOMs | REQUIRED | Command | The command inventories its workstations and software; Swift supplies its [SBOM](SBOM.md). |
 | Compliance monitoring (COTS) | REQUIRED | Command | STIG monitoring of Office and Access on command workstations |
 | Compliance monitoring (resources and services) | REQUIRED | N/A | No cloud resources or services |
 | Database monitoring and security auditing | PREFERRED | Partial | The audit history is viewable in the application (history, provenance, operations). No monitoring service. |

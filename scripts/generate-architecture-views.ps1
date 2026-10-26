@@ -16,7 +16,7 @@ function Table($head,$rows){
 #--- Read the build -------------------------------------------------------------
 $copy=Join-Path $root ('build/tests/architecture-'+[guid]::NewGuid()+'.accdb');Copy-Item -LiteralPath $BuildPath -Destination $copy
 $app=New-Object -ComObject Access.Application
-$tables=@();$relations=@();$packs=@();$rules=@();$meta=$null;$tableRules=@{}
+$tables=@();$relations=@();$packs=@();$rules=@();$meta=$null;$tableRules=@{};$refs=@();$navfitHash=''
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($copy,$true)
  foreach($open in @($app.Forms|ForEach-Object {$_.Name})){$app.DoCmd.Close(2,$open,2)}
@@ -48,21 +48,44 @@ try{
  while(-not $r.EOF){$packs+=[pscustomobject]@{ID=[int]$r.Fields.Item(0).Value;Name=[string]$r.Fields.Item(1).Value;Source=[string]$r.Fields.Item(2).Value;From=$r.Fields.Item(3).Value;To=$r.Fields.Item(4).Value};$r.MoveNext()};$r.Close()
  $r=$db.OpenRecordset('SELECT PackID,RuleCode,FieldKey,CheckKind,SourceLocator,Description,FormKind FROM RuleDefinition ORDER BY PackID,RuleCode',4)
  while(-not $r.EOF){$v=@(0..6|ForEach-Object {$r.Fields.Item($_).Value});$rules+=[pscustomobject]@{Pack=[int]$v[0];Code=[string]$v[1];Field=[string]$v[2];Kind=[string]$v[3];Locator=[string]$v[4];Text=[string]$v[5];Form=[string]$v[6]};$r.MoveNext()};$r.Close()
+ foreach($ref in $app.References){$refs+=[pscustomobject]@{Name=[string]$ref.Name;Guid=[string]$ref.Guid;Version=([string]$ref.Major+'.'+[string]$ref.Minor);BuiltIn=[bool]$ref.BuiltIn}}
+ $navfitHash=[string]$app.Eval('NAVFITTemplateHash()')
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);Start-Sleep -Milliseconds 500;Remove-Item -LiteralPath $copy -ErrorAction SilentlyContinue}
 $tables=@($tables|Sort-Object Name);$relations=@($relations|Sort-Object Child,Parent,Name)
 
 #--- Tracked sources ------------------------------------------------------------
-$catalogue=Get-Content (Join-Path $root 'src/field-definitions.json') -Raw|ConvertFrom-Json
-$runners=Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json
-$manifest=Get-Content (Join-Path $root 'scripts/build-manifest.json') -Raw|ConvertFrom-Json
+function ReadText($relative){return [IO.File]::ReadAllText((Join-Path $root $relative))}
+$catalogue=ReadText 'src/field-definitions.json'|ConvertFrom-Json
+$runners=ReadText 'tests/runners.json'|ConvertFrom-Json
+$manifest=ReadText 'scripts/build-manifest.json'|ConvertFrom-Json
 $modules=@($manifest.sourceModules).Count+@($manifest.generatedModules).Count
 $forms=@($manifest.forms).Count
-$references=@([regex]::Matches((Get-Content (Join-Path $root 'src/modValidationReferences.bas') -Raw),'Case "(VR-[A-Z-]+)": pdfPage = (\d+): page = "([^"]+)": locator = "([^"]+)"')|ForEach-Object {[pscustomobject]@{Code=$_.Groups[1].Value;Page=$_.Groups[3].Value;Locator=$_.Groups[4].Value}})
+$references=@([regex]::Matches((ReadText 'src/modValidationReferences.bas'),'Case "(VR-[A-Z-]+)": pdfPage = (\d+): page = "([^"]+)": locator = "([^"]+)"')|ForEach-Object {[pscustomobject]@{Code=$_.Groups[1].Value;Page=$_.Groups[3].Value;Locator=$_.Groups[4].Value}})
 $history=@(Get-ChildItem (Join-Path $root 'tests/historical-schemas') -Filter 'schema-*.sql'|Sort-Object Name|ForEach-Object {
  $text=Get-Content $_.FullName;$head=@{};foreach($l in $text){if($l -match '^-- (\w+): (.*)$' -and -not $head.ContainsKey($Matches[1])){$head[$Matches[1]]=$Matches[2]}}
  $names=@($text|ForEach-Object {if($_ -match '^CREATE TABLE \[?(\w+)\]?'){$Matches[1]}})
  [pscustomobject]@{Schema=$head['schema']+$(if($head['variant']){$head['variant']}else{''});Kind=$head['kind'];App=$(if($head['appVersion']){$head['appVersion']}elseif($head['release']){$head['release']}else{''});Tables=$names}
 })
+
+#SBOM inputs: Windows API declarations and late-bound COM classes in the VBA source.
+$source=@(Get-ChildItem (Join-Path $root 'src') -Filter '*.bas'|Sort-Object Name|ForEach-Object {[IO.File]::ReadAllText($_.FullName)}) -join $nl
+$apis=@{}
+foreach($m in [regex]::Matches($source,'Declare PtrSafe Function (\w+) Lib "(\w+)"(?: Alias "(\w+)")?')){
+ $lib=$m.Groups[2].Value.ToLower()+'.dll';$fn=if($m.Groups[3].Success){$m.Groups[3].Value}else{$m.Groups[1].Value}
+ if(-not $apis.ContainsKey($lib)){$apis[$lib]=New-Object 'System.Collections.Generic.SortedSet[string]'};[void]$apis[$lib].Add($fn)
+}
+$com=@{};foreach($m in [regex]::Matches($source,'CreateObject\("([^"]+)"\)')){$com[$m.Groups[1].Value]=1+[int]$com[$m.Groups[1].Value]}
+$purpose=@{
+ 'ADODB.Stream'='UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template)'
+ 'MSXML2.DOMDocument.6.0'='XML parsing and writing (PDF form data and exchange)'
+ 'Scripting.Dictionary'='In-memory keyed collections'
+ 'Scripting.FileSystemObject'='File and folder checks'
+ 'Shell.Application'='Opens a generated PDF in the default viewer'
+ 'VBScript.RegExp'='Pattern matching (name normalization, SSN masking, PDF text). Watch item: Microsoft has announced the deprecation of VBScript.'
+}
+foreach($k in $com.Keys){if(-not $purpose.ContainsKey($k)){throw ('Undocumented COM dependency '+$k+': add its purpose in generate-architecture-views.ps1')}}
+$images=@(Get-ChildItem (Join-Path $root 'src/pdf-templates') -Filter '*.png'|Sort-Object Name|ForEach-Object {[pscustomobject]@{Name=$_.Name;Hash=(Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()}})
+$devTools=@(@('Windows PowerShell 5.1','Build, test and release scripts'),@('Python 3 with pikepdf','Synthetic PDF test fixtures (scripts/test-pdf-fixtures.ps1)'),@('Python 3 with reportlab and pypdf','User guide PDF rendering (scripts/build_user_guide.py)'),@('git and GitHub CLI','Source control and pre-release publishing'))
 
 #--- Views ----------------------------------------------------------------------
 $generated='<!-- Generated by scripts/generate-architecture-views.ps1 from tracked source and a fresh build. Do not edit by hand. -->'
@@ -114,12 +137,33 @@ $out['SV-8.md']=($sv8 -join $nl).TrimEnd()
 $tiers=$runners|Group-Object tier|Sort-Object Name
 $facts=@('| Fact | Value |','| --- | --- |',('| Application version | '+$meta.App+' |'),('| Schema version | '+$meta.Schema+' |'),('| Tables / enforced relationships | '+$tables.Count+' / '+$relations.Count+' |'),('| Report fields in the catalogue | '+@($catalogue.fields).Count+' |'),('| VBA modules / forms | '+$modules+' / '+$forms+' |'),('| Validation rule packs / pack rules / expanded rules | '+$packs.Count+' / '+$rules.Count+' / '+$references.Count+' |')) -join $nl
 $counts=@('Test runners by tier (`tests/runners.json`):','',(Table @('Tier','Runners') @($tiers|ForEach-Object {,@($_.Name,$_.Count)}))) -join $nl
+$sb=@($generated,'','# Software bill of materials (SBOM)','',
+ ('Components Swift NAVFIT '+$meta.App+' uses at run time, from a fresh build and the VBA source. The same inventory is in CycloneDX 1.5 form in [sbom.cdx.json](sbom.cdx.json). Swift ships no third-party code libraries: everything it calls at run time is part of Windows or Microsoft Office.'),'',
+ '## Platform','','| Component | Supplier | Requirement |','| --- | --- | --- |','| Microsoft Access (desktop), VBA 7, ACE database engine | Microsoft | Desktop Access 2016 or later, including Microsoft 365. Access Runtime is not supported. |','',
+ '## VBA project references','',(Table @('Reference','Version','GUID','Built in') @($refs|Sort-Object Name|ForEach-Object {,@($_.Name,$_.Version,$_.Guid,$(if($_.BuiltIn){'yes'}else{''}))})),'',
+ '## Windows API functions (Declare)','',(Table @('Library','Functions') @($apis.Keys|Sort-Object|ForEach-Object {,@($_,(@($apis[$_]) -join ', '))})),'',
+ '## Late-bound COM classes (CreateObject)','',(Table @('Class','Uses','Purpose') @($com.Keys|Sort-Object|ForEach-Object {,@($_,$com[$_],$purpose[$_])})),'',
+ '## Embedded data','',(Table @('Item','Origin','SHA-256') (@(,@('NAVFIT98A blank database template','Supplied NAVFIT98A blank (FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb), checked against this hash before every export',$navfitHash.ToLower()))+@($images|ForEach-Object {,@(('src/pdf-templates/'+$_.Name),'Page image of the official NAVPERS form, used for PDF output',$_.Hash)}))),'',
+ '## Development and test tools (not shipped)','',(Table @('Tool','Used for') $devTools)) -join $nl
+$out['../SBOM.md']=$sb.TrimEnd()
+$cdx=[ordered]@{bomFormat='CycloneDX';specVersion='1.5';version=1
+ metadata=[ordered]@{component=[ordered]@{type='application';name='Swift NAVFIT';version=$meta.App}}
+ components=@(
+  @([ordered]@{type='platform';'bom-ref'='platform:access';name='Microsoft Access (desktop)';supplier=[ordered]@{name='Microsoft'};version='16.0';description='Desktop Access 2016 or later with VBA 7 and the ACE database engine; Access Runtime not supported'})+
+  @($refs|Sort-Object Name|ForEach-Object {[ordered]@{type='library';'bom-ref'=('vba-ref:'+$_.Name);name=$_.Name;version=$_.Version;properties=@([ordered]@{name='vba:guid';value=$_.Guid},[ordered]@{name='vba:builtIn';value=([string]$_.BuiltIn).ToLower()})}})+
+  @($apis.Keys|Sort-Object|ForEach-Object {[ordered]@{type='library';'bom-ref'=('winapi:'+$_);name=$_;supplier=[ordered]@{name='Microsoft'};description=('Windows API: '+(@($apis[$_]) -join ', '))}})+
+  @($com.Keys|Sort-Object|ForEach-Object {[ordered]@{type='library';'bom-ref'=('com:'+$_);name=$_;supplier=[ordered]@{name='Microsoft'};description=$purpose[$_];properties=@([ordered]@{name='swift:uses';value=[string]$com[$_]})}})+
+  @([ordered]@{type='file';'bom-ref'='data:navfit-blank';name='NAVFIT98A blank database template';hashes=@([ordered]@{alg='SHA-256';content=$navfitHash.ToLower()})})+
+  @($images|ForEach-Object {[ordered]@{type='file';'bom-ref'=('data:'+$_.Name);name=('src/pdf-templates/'+$_.Name);hashes=@([ordered]@{alg='SHA-256';content=$_.Hash})}})+
+  @($devTools|ForEach-Object {[ordered]@{type='application';'bom-ref'=('tool:'+$_[0]);name=$_[0];scope='excluded';description=$_[1]}})
+ )}
+$out['../sbom.cdx.json']=($cdx|ConvertTo-Json -Depth 10)
 $blocks=@{'AV-1.md'=@{facts=$facts};'SV-7.md'=@{counts=$counts}}
 
 #--- Write or check -------------------------------------------------------------
 $stale=@()
 foreach($name in $out.Keys){
- $path=Join-Path $views $name;$want=$out[$name]+$nl
+ $path=Join-Path $views $name;$want=($out[$name] -replace "`r`n","`n")+$nl
  $have=if(Test-Path $path){[IO.File]::ReadAllText($path) -replace "`r`n","`n"}else{''}
  if($have -ne $want){if($Check){$stale+=$name}else{[IO.File]::WriteAllText($path,$want)}}
 }

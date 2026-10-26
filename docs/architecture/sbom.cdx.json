@@ -1,0 +1,341 @@
+{
+    "bomFormat":  "CycloneDX",
+    "specVersion":  "1.5",
+    "version":  1,
+    "metadata":  {
+                     "component":  {
+                                       "type":  "application",
+                                       "name":  "Swift NAVFIT",
+                                       "version":  "0.48.0-dev"
+                                   }
+                 },
+    "components":  [
+                       {
+                           "type":  "platform",
+                           "bom-ref":  "platform:access",
+                           "name":  "Microsoft Access (desktop)",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "version":  "16.0",
+                           "description":  "Desktop Access 2016 or later with VBA 7 and the ACE database engine; Access Runtime not supported"
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "vba-ref:Access",
+                           "name":  "Access",
+                           "version":  "9.0",
+                           "properties":  [
+                                              {
+                                                  "name":  "vba:guid",
+                                                  "value":  "{4AFFC9A0-5F99-101B-AF4E-00AA003F0F07}"
+                                              },
+                                              {
+                                                  "name":  "vba:builtIn",
+                                                  "value":  "true"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "vba-ref:DAO",
+                           "name":  "DAO",
+                           "version":  "12.0",
+                           "properties":  [
+                                              {
+                                                  "name":  "vba:guid",
+                                                  "value":  "{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}"
+                                              },
+                                              {
+                                                  "name":  "vba:builtIn",
+                                                  "value":  "false"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "vba-ref:stdole",
+                           "name":  "stdole",
+                           "version":  "2.0",
+                           "properties":  [
+                                              {
+                                                  "name":  "vba:guid",
+                                                  "value":  "{00020430-0000-0000-C000-000000000046}"
+                                              },
+                                              {
+                                                  "name":  "vba:builtIn",
+                                                  "value":  "false"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "vba-ref:VBA",
+                           "name":  "VBA",
+                           "version":  "4.2",
+                           "properties":  [
+                                              {
+                                                  "name":  "vba:guid",
+                                                  "value":  "{000204EF-0000-0000-C000-000000000046}"
+                                              },
+                                              {
+                                                  "name":  "vba:builtIn",
+                                                  "value":  "true"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "winapi:advapi32.dll",
+                           "name":  "advapi32.dll",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Windows API: CryptAcquireContextW, CryptCreateHash, CryptDecrypt, CryptDestroyHash, CryptDestroyKey, CryptGetHashParam, CryptHashData, CryptImportKey, CryptReleaseContext, CryptSetKeyParam"
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "winapi:gdi32.dll",
+                           "name":  "gdi32.dll",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Windows API: CreateDCW, CreateFontW, DeleteDC, DeleteObject, GetDeviceCaps, GetTextExtentPoint32W, GetTextFaceW, GetTextMetricsW, SelectObject"
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "winapi:ole32.dll",
+                           "name":  "ole32.dll",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Windows API: CoCreateGuid, StringFromGUID2"
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "winapi:user32.dll",
+                           "name":  "user32.dll",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Windows API: GetDpiForWindow, GetFocus, GetScrollInfo, GetScrollPos, SendMessageA, SystemParametersInfoW"
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:ADODB.Stream",
+                           "name":  "ADODB.Stream",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template)",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "5"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:MSXML2.DOMDocument.6.0",
+                           "name":  "MSXML2.DOMDocument.6.0",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "XML parsing and writing (PDF form data and exchange)",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "12"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:Scripting.Dictionary",
+                           "name":  "Scripting.Dictionary",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "In-memory keyed collections",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "132"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:Scripting.FileSystemObject",
+                           "name":  "Scripting.FileSystemObject",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "File and folder checks",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "6"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:Shell.Application",
+                           "name":  "Shell.Application",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Opens a generated PDF in the default viewer",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "1"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
+                           "bom-ref":  "com:VBScript.RegExp",
+                           "name":  "VBScript.RegExp",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Pattern matching (name normalization, SSN masking, PDF text). Watch item: Microsoft has announced the deprecation of VBScript.",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "4"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:navfit-blank",
+                           "name":  "NAVFIT98A blank database template",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "dd3806e2daaae54b3f9b4ec07d59fb0654b46aadecedcff54f57dcc75167b2fa"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:CHIEFEVAL-1.png",
+                           "name":  "src/pdf-templates/CHIEFEVAL-1.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "9b9c141f56fba917f6efe7f3e4c7912097e6357164a95c8c1f7f44cf8c693809"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:CHIEFEVAL-2.png",
+                           "name":  "src/pdf-templates/CHIEFEVAL-2.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "5cb38b64636f6415789a757a666c7b02aac20f404bd7c33733e1d9195c8e2ac3"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:EVAL-1.png",
+                           "name":  "src/pdf-templates/EVAL-1.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "ed934dfde333383dfa33e364e88bba87f8414adbd68943f7f4acb18719c36815"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:EVAL-2.png",
+                           "name":  "src/pdf-templates/EVAL-2.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "df23c2d16981f23ecd434f1fe23c6ab17de1ccb265e3bf0c572c07808182a21f"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:FITREP-1.png",
+                           "name":  "src/pdf-templates/FITREP-1.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "3a9e0b254dcb8efa8a7efb21ef442634fc7252b153dae003aeaa34dd6037818f"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:FITREP-2.png",
+                           "name":  "src/pdf-templates/FITREP-2.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "c65b45e0e015e890c19bc0c135d733b37fba89fec5e492aa2e65cd82135aac46"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:SUMMARY-1.png",
+                           "name":  "src/pdf-templates/SUMMARY-1.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "6d417d2255c3400d5ef819e8cdecf6d2c367453c061cb76448db15b15a47f818"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "file",
+                           "bom-ref":  "data:SUMMARY-2.png",
+                           "name":  "src/pdf-templates/SUMMARY-2.png",
+                           "hashes":  [
+                                          {
+                                              "alg":  "SHA-256",
+                                              "content":  "4187d54e818ce76b074ee82a1c756c603e70eb28f448415b03d9d1b02aaac9af"
+                                          }
+                                      ]
+                       },
+                       {
+                           "type":  "application",
+                           "bom-ref":  "tool:Windows PowerShell 5.1",
+                           "name":  "Windows PowerShell 5.1",
+                           "scope":  "excluded",
+                           "description":  "Build, test and release scripts"
+                       },
+                       {
+                           "type":  "application",
+                           "bom-ref":  "tool:Python 3 with pikepdf",
+                           "name":  "Python 3 with pikepdf",
+                           "scope":  "excluded",
+                           "description":  "Synthetic PDF test fixtures (scripts/test-pdf-fixtures.ps1)"
+                       },
+                       {
+                           "type":  "application",
+                           "bom-ref":  "tool:Python 3 with reportlab and pypdf",
+                           "name":  "Python 3 with reportlab and pypdf",
+                           "scope":  "excluded",
+                           "description":  "User guide PDF rendering (scripts/build_user_guide.py)"
+                       },
+                       {
+                           "type":  "application",
+                           "bom-ref":  "tool:git and GitHub CLI",
+                           "name":  "git and GitHub CLI",
+                           "scope":  "excluded",
+                           "description":  "Source control and pre-release publishing"
+                       }
+                   ]
+}
