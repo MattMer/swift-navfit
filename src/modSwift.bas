@@ -75,20 +75,18 @@ Failed:
     SwiftRaise swiftPrimary
 End Function
 
-Private Sub Snapshot(ByVal ownedDB As DAO.Database, ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
-    Dim r As DAO.Recordset
-    Set r = ownedDB.OpenRecordset("RevisionValue", dbOpenDynaset)
+'Callers pass one append-only recordset per commit. A full dynaset reopened per field
+'costs time proportional to the table inside a transaction with pending inserts.
+Private Sub Snapshot(ByVal r As DAO.Recordset, ByVal revisionID As Long, ByVal fieldName As String, ByVal value As Variant)
     r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
-    r!ValueText = value: r!IsNullValue = IsNull(value): r.Update: r.Close
+    r!ValueText = value: r!IsNullValue = IsNull(value): r.Update
 End Sub
 
-Private Sub AppendChange(ByVal ownedDB As DAO.Database, ByVal revisionID As Long, ByVal fieldName As String, ByVal oldValue As Variant, ByVal newValue As Variant)
-    Dim r As DAO.Recordset
-    Set r = ownedDB.OpenRecordset("RevisionChange", dbOpenDynaset)
+Private Sub AppendChange(ByVal r As DAO.Recordset, ByVal revisionID As Long, ByVal fieldName As String, ByVal oldValue As Variant, ByVal newValue As Variant)
     r.AddNew: r!RevisionID = revisionID: r!FieldKey = fieldName
     r!OldValue = oldValue: r!NewValue = newValue
     r!OldIsNull = IsNull(oldValue): r!NewIsNull = IsNull(newValue)
-    r.Update: r.Close
+    r.Update
 End Sub
 
 Private Function FieldText(ByVal value As Variant) As Variant
@@ -106,7 +104,7 @@ End Function
 ' lock failures; invalidate editor context after a successful local save.
 Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
     Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0) As Long
-    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset
+    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset, snapshotRows As DAO.Recordset, changeRows As DAO.Recordset
     Dim keys As Variant, previous() As Variant, current() As Variant, i As Long
     Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
     If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, "modSwift.CommitDraft", "Choose EVAL, CHIEFEVAL, or FITREP."
@@ -257,12 +255,16 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
     rev!FieldDefinitionVersion = FIELD_DEFINITION_VERSION
     rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close: Set rev = Nothing
+    Set snapshotRows = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
+    Set changeRows = db.OpenRecordset("RevisionChange", dbOpenDynaset, dbAppendOnly)
     For i = 0 To UBound(keys)
-        Snapshot db, revisionID, CStr(keys(i)), current(i)
+        Snapshot snapshotRows, revisionID, CStr(keys(i)), current(i)
         If seq = 1 Or IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
-            AppendChange db, revisionID, CStr(keys(i)), previous(i), current(i)
+            AppendChange changeRows, revisionID, CStr(keys(i)), previous(i), current(i)
         End If
     Next
+    snapshotRows.Close: Set snapshotRows = Nothing
+    changeRows.Close: Set changeRows = Nothing
     'Keep the report write cursor alive through revision linking.
     'A second SQL update can contend with its uncommitted record lock.
     r.Edit: r!CurrentRevisionID = revisionID: r.Update
@@ -283,6 +285,8 @@ Failed:
     SwiftRollback w, swiftPrimary
     If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     If Not rev Is Nothing Then SwiftClose rev, swiftPrimary, "rev"
+    If Not snapshotRows Is Nothing Then SwiftClose snapshotRows, swiftPrimary, "snapshotRows"
+    If Not changeRows Is Nothing Then SwiftClose changeRows, swiftPrimary, "changeRows"
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function
