@@ -99,7 +99,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | --- | --- | --- | --- |
 | E1 | Enabling content runs code with the user's rights | Swift needs no administrator rights and makes no network calls. Planned signing narrows trust to one publisher instead of "enable all content" (section 5). | P |
 | E2 | `ShellExecute` on a crafted path runs something other than a PDF | Swift only opens the folder or file it just generated, named from sanitized parts (`PDFOutputSafePart`) with a fixed `.pdf` extension. | M |
-| E3 | XML external entities in imported data | Parsers that read imported XML set `ProhibitDTD` and `resolveExternals = False`. The remaining parsers read XML Swift stored itself or only build documents, and MSXML 6.0's defaults already prohibit DTDs. | M |
+| E3 | XML external entities in imported data | Every parser that loads XML, including XML Swift stored itself, sets `ProhibitDTD` and `resolveExternals = False`; the source check enforces it. Code that only builds documents never parses. | M |
 | E4 | A third-party library vulnerability | No third-party runtime libraries. Everything called is part of Windows or Office and patched through the command's Microsoft updates ([SBOM](SBOM.md)). | M, C |
 
 ## 4. Recommendations
@@ -109,7 +109,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | 1 | Sign releases (section 5) | S2, T2, E1 |
 | 2 | *Done:* `test-malformed-imports` runs 55 malformed and control inputs against the PDF, RUAD CSV and NAVFIT98A importers. No importer defects were found. A CSV with invalid UTF-8 or a NUL character loads, with the bad bytes replaced, and is shown in the preview before anything is applied. | D1, T3, T4 |
 | 3 | *Done in 0.49.0:* the 4 `VBScript.RegExp` uses (including the SSN filter in output file names) are plain VBA. Before replacing them, a side-by-side run of old and new code on 20,000 random strings and 22 edge cases matched exactly; the harnesses keep the expected values. | I2 and future availability |
-| 4 | Set `ProhibitDTD` and `resolveExternals` explicitly on every XML parser, for consistency | E3 (defense in depth) |
+| 4 | *Done:* every XML parser sets `ProhibitDTD` and `resolveExternals = False` before it loads. `check-vba-source.ps1` fails any `LoadXML` in a procedure that does not set both. | E3 (defense in depth) |
 | 5 | Measure workspace growth on a large synthetic binder; document compact-and-repair and archiving guidance | D3 |
 | 6 | Optional: an integrity hash over each saved revision, checked on load, to detect direct table edits | T1 |
 

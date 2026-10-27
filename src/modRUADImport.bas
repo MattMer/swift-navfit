@@ -108,7 +108,7 @@ Private Function RUADSourceValues(ByVal xml As Variant) As Object
     Dim doc As Object, d As Object, n As Object
     Set d = CreateObject("Scripting.Dictionary")
     If Len(Nz(xml, "")) > 0 Then
-        Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False
+        Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True
         If Not doc.LoadXML(CStr(xml)) Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADSourceValues", "Existing roster provenance cannot be read."
         For Each n In doc.SelectNodes("/RUAD/Source/Field"): d.Add CStr(n.getAttribute("key")), n.Text: Next
     End If
@@ -116,7 +116,7 @@ Private Function RUADSourceValues(ByVal xml As Variant) As Object
 End Function
 Private Function RUADSourceXML(ByVal data As Object) As String
     Dim doc As Object, node As Object, field As Object, key As Variant
-    Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False
+    Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True
     doc.LoadXML RUADEncode(data, CStr(data("NAME")))
     Set node = doc.createElement("Source"): node.setAttribute "path", sourcePath: node.setAttribute "importedAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
     For Each key In RUADKeys()

@@ -11,7 +11,7 @@ Public Function RUADDecode(ByVal xml As Variant) As Object
     Set d = CreateObject("Scripting.Dictionary")
     For Each key In RUADKeys(): d.Add CStr(key), Null: Next
     If Len(Nz(xml, "")) > 0 Then
-        Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False
+        Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True
         If Not doc.LoadXML(CStr(xml)) Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADDecode", "RUAD profile data could not be read. No changes saved."
         For Each n In doc.SelectNodes("/RUAD/Field")
             key = n.getAttribute("key")
@@ -44,7 +44,7 @@ Public Function RUADEncode(ByVal values As Object, ByVal memberName As String, O
     If Not IsMissing(provenance) Then
         If Len(Nz(provenance, "")) > 0 Then
             Dim sourceDoc As Object, sourceNode As Object
-            Set sourceDoc = CreateObject("MSXML2.DOMDocument.6.0"): sourceDoc.async = False
+            Set sourceDoc = CreateObject("MSXML2.DOMDocument.6.0"): sourceDoc.async = False: sourceDoc.resolveExternals = False: sourceDoc.setProperty "ProhibitDTD", True
             If Not sourceDoc.LoadXML(CStr(provenance)) Then Err.Raise vbObjectError + 7060, "modRUADProfiles.RUADEncode", "Existing RUAD provenance cannot be read."
             Set sourceNode = sourceDoc.SelectSingleNode("/RUAD/Source")
             If Not sourceNode Is Nothing Then parent.appendChild sourceNode.cloneNode(True)

@@ -22,9 +22,15 @@ foreach($file in $Path){
  if(-not ($lines|Where-Object {$_ -match '^\s*Option\s+Explicit\s*$'})){Report 'ERROR' $file 1 'Missing Option Explicit.';$errors++}
  $crlf=([regex]::Matches($text,"`r`n")).Count;$lf=([regex]::Matches($text,"(?<!`r)`n")).Count
  if($crlf -gt 0 -and $lf -gt 0){Report 'WARN' $file 0 ("Mixed line endings ($crlf CRLF, $lf LF); git normalizes on commit.");$warnings++}
- $run=0;$seen=@{}
+ $run=0;$seen=@{};$start=0
  for($n=0;$n -lt $lines.Count;$n++){
   $line=$lines[$n]
+  if($procedure.IsMatch($line)){$start=$n}
+  # Threat model E3: every XML parse refuses DTDs and external resources explicitly.
+  if($line -match '\.LoadXML\b'){
+   $body=$lines[$start..$n] -join "`n"
+   if($body -notmatch '\.resolveExternals\s*=\s*False' -or $body -notmatch '"ProhibitDTD",\s*True'){Report 'ERROR' $file ($n+1) 'LoadXML without resolveExternals = False and ProhibitDTD True earlier in the procedure.';$errors++}
+  }
   if($line.Length -gt 1023){Report 'ERROR' $file ($n+1) ("Line is $($line.Length) characters; VBA allows 1023.");$errors++}
   if($line.TrimEnd() -match '\s_$'){$run++;if($run -eq 25){Report 'ERROR' $file ($n+1) 'More than 24 line continuations in one statement.';$errors++}}else{$run=0}
   $m=$procedure.Match($line)

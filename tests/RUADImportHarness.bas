@@ -46,7 +46,7 @@ Public Function TestRUADImport(ByVal sample As String) As String
     For Each key In RUADKeys(): Check SameFieldValue(values(key), data(key)), "Column round trip " & key: Next
     Check IsNull(r!MemberSSN) And r!SourceKind = "RUAD", "Provisional identity"
     Check r!RankRate = data("DESG"), "Actual rate rather than billet requirement"
-    Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.LoadXML CStr(r!RUADData)
+    Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True: doc.LoadXML CStr(r!RUADData)
     Check doc.SelectNodes("/RUAD/Source/Field").Length = 35, "Source baseline"
     version = r!VersionCounter: r.Close
     values("PHONE") = "Manual contact"
