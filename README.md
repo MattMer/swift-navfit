@@ -134,7 +134,7 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 
 ### Earlier releases
 
-r128 (app 0.27.1-dev, schema 27) remains available: [Blank](https://drive.google.com/file/d/17YWFTI4N2ZbDG04K-qAddWQz7bEM1kjO/view?usp=drivesdk) and [synthetic Demo](https://drive.google.com/file/d/10NEFdhRhJQ9xC_baxNifrRgs4SR4noUg/view?usp=drivesdk). Its workspaces import into 0.49.0.
+r128 (app 0.27.1-dev, schema 27) workspaces import into 0.49.0.
 
 ## Important boundaries
 

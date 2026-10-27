@@ -38,7 +38,7 @@ Manual fixed-page visual inspection, actual header mouse interactions across dis
 
 Both final builds compile/start; the blank has 48 checked user-data tables empty and the demo contains nine synthetic reports. [Verification manifest](WORKSPACE_COMPAT_PAGES_R115_VERIFICATION.json) records exact local SHA256, byte sizes, source hashes, transfer fixtures and benchmark samples.
 
-- [Blank r115](https://drive.google.com/file/d/1lWyVjr-oAcKE59fQJZ24JZYak37o9CfE/view?usp=drivesdk).
-- [Synthetic demo r115](https://drive.google.com/file/d/1UNpW5NX8DxsgesiZ2C7_mSaq3uEsZgQN/view?usp=drivesdk).
+- Blank r115.
+- Synthetic demo r115.
 
 Drive metadata readback verified exact names, byte sizes and the established parent folder. No remote checksum was returned; sharing was not changed. Earlier files and user-edited workspaces remain untouched. GitHub was not pushed in this change.
