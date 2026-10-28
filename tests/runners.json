@@ -38,11 +38,6 @@
    "note": "Needs BuildPath, FixtureMapPath."
   },
   {
-   "name": "test-backup",
-   "area": "Backup and recovery",
-   "tier": "extended"
-  },
-  {
    "name": "test-batched-reads",
    "area": "Workspace and settings",
    "tier": "manual",
@@ -319,11 +314,6 @@
   {
    "name": "test-pending-cells",
    "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-persistence",
-   "area": "Backup and recovery",
    "tier": "extended"
   },
   {

@@ -21,4 +21,4 @@ flowchart LR
 | I3 | Structured PDF import | in | PDF (embedded form data) | Preview before commit; provenance retained | `test-pdf-import`, `test-pdf-counseling-status`, `test-malformed-imports` |
 | I4 | RUAD roster import | in | CSV | Match preview; manual-change protection | `test-ruad-import` (manual), `test-import-rank`, `test-malformed-imports` |
 | I5 | Earlier-workspace import | in | Access database, schemas 1–34 | Read-only DAO; source code never executed; every value verified before commit; blank target only | `test-swift-data-import`, `test-bulk-workspace-import` |
-| I6 | Backup and restore | out / in | Access database + JSON verification | Row-by-row verification; restore only into a blank workspace | `test-backup` |
+| I6 | Backup and restore | out / in | Access database + JSON verification | Row-by-row verification; restore only into a blank workspace | `test-recovery` |

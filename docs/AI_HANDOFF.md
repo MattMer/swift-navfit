@@ -39,8 +39,19 @@ bulk-workspace-import and engine-import PASS. Earlier the same day: recursive
 defaults 205 and signoff 63 PASS. Not run: extended tier, release gates,
 NAVFIT98A, physical printing. No Access sessions are left open.
 
+M08 baseline: ExtendedTest PASS, 100 steps, on the same build. Receipt
+build/workflow/20261028-105117-667ab856-6f5e-457c-bb0e-81e4fa4b09e7/verification.json.
+M08 consolidation and runner deletion are user-approved (28 Oct). Done, one
+commit per area: traits and narratives (test-traits, test-narratives); backup and
+recovery (test-recovery `-BuildPath [-InstallSource] [-CompiledPath]`). Suites use
+scripts/suite-common.ps1: every case runs on its own copy and any failure fails
+the suite. Codex can't write .git (index.lock) from its sandbox; Claude stages
+and commits.
+
 ## Exact next actions
 
-1. M08: consolidate runners per [tests/runners.json](../tests/runners.json) and the
-   backlog entry, starting with the stale `pending` runners it names.
+1. M08 area 3, Build and source: the case scripts move to scripts/cases/ and run
+   from two suites, test-source-contracts and verify-build-artifact, each with a
+   `-Tier extended` mode. Registry entries get `extendedArgs`, and develop.ps1
+   runs them in ExtendedTest. Then areas 4-9 in the plan order.
 2. Update this file at milestones and before stopping.

@@ -474,17 +474,19 @@ user content, or overwrite conflicting source definitions during import.
 
 ### Remote regression and accessibility preparation
 
-For backup/recovery changes, run [test-backup.ps1](../scripts/test-backup.ps1)
-with `-BuildPath <blank.accdb>` and optional `-CompiledPath <candidate.accde>`,
-and [test-recovery.ps1](../scripts/test-recovery.ps1) with `-BuildPath <blank.accdb>`.
-The backup runner covers a backup taken while the editor holds pending values
+For backup/recovery and typed-persistence changes, run the
+[test-recovery.ps1](../scripts/test-recovery.ps1) suite with
+`-BuildPath <blank.accdb>` and optional `-CompiledPath <candidate.accde>`.
+The backup case covers a backup taken while the editor holds pending values
 (it is checkpointed and closed, and Access stays open), literal filenames, the
 verification record and file hash, an independent row-by-row comparison, restore
 through the Settings & Help import with raw recovery fields, and rejection of
 existing output or evidence, missing folders, wrong extensions and linked tables.
 With `-CompiledPath` it also backs up an ACCDE workspace. `-InstallSource`
 prepares only its disposable copy; final verification omits it. Backup starts no
-other process.
+other process. The other two cases cover typed persistence, constraints and
+rollback, and fresh-session recovery, contributor selection, stale guards and
+automatic timer capture. Each case uses its own disposable copy.
 
 Use the existing focused runners for task-order and view regressions:
 

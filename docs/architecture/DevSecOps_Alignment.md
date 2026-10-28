@@ -88,7 +88,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Component test | PREFERRED | Done | Per-feature harnesses (`tests/*Harness.bas`) |
 | Database component test | REQUIRED | Done | Schema validation rules exercised by harnesses; `test-swift-data-import` |
 | Database development | PREFERRED | Done | Schema DDL and validation rules in the build; migration in `modMigration` |
-| Database functional test | PREFERRED | Done | Persistence, rollback and recovery runners (for example `test-traits`, `test-backup`) |
+| Database functional test | PREFERRED | Done | Persistence, rollback and recovery runners (for example `test-traits`, `test-recovery`) |
 | Documentation | REQUIRED | Done | User guide, PROJECT_STATE, architecture description |
 | Dynamic analysis | PREFERRED | Partial | Native runtime tests drive the real application through Access COM. No runtime instrumentation tool. |
 | Functional test | REQUIRED | Done | Core and extended runner tiers |
