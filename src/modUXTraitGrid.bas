@@ -120,7 +120,13 @@ Public Function UXGridLoad() As Boolean
     End If
     Set priorRows = PreviousMemberEvaluationBatch(reportSQL)
     Set savedValues = CreateObject("Scripting.Dictionary"): Set proposals = CreateObject("Scripting.Dictionary")
-    sql = "SELECT RevisionID,FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID In (" & revisionSQL & ") AND FieldKey In ('OfficialName','MemberName'"
+    'Joins, not RevisionID In (subquery): the engine scans RevisionValue for the latter.
+    If liveGroup > 0 Then
+        sql = "SELECT v.RevisionID,v.FieldKey,v.ValueText,v.IsNullValue FROM (GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID) INNER JOIN RevisionValue AS v ON r.CurrentRevisionID=v.RevisionID WHERE m.GroupID=" & liveGroup
+    Else
+        sql = "SELECT v.RevisionID,v.FieldKey,v.ValueText,v.IsNullValue FROM ComparisonMember AS c INNER JOIN RevisionValue AS v ON c.RevisionID=v.RevisionID WHERE c.SetID=" & CLng(Forms!frmUXComparison!txtMeeting)
+    End If
+    sql = sql & " AND v.FieldKey In ('OfficialName','MemberName'"
     If liveGroup = 0 Then sql = sql & ",'ObservationStatus','Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39','PromotionRecommendation','AssignmentRecommendationA','AssignmentRecommendationB'"
     Set p = db.OpenRecordset(sql & ")", dbOpenSnapshot)
     Do While Not p.EOF
@@ -178,6 +184,8 @@ Public Function UXGridLoad() As Boolean
                 Next
             Next
         End If
+        'Set the row ITA inside the cache transaction so the averages pass need not rewrite it.
+        cacheRows!ITA = UXGridRowITA(cacheRows)
         cacheRows!RowStatus = UXGridLockReason(id, r!RevisionID)
         If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable - saves automatically"
         cacheRows.Update: r.MoveNext
@@ -467,21 +475,27 @@ Failed:
     Forms!frmUXComparison!lblStatus.Caption = SwiftFailureText(swiftPrimary) & " Cell change was not saved."
 End Function
 ' Compute pending cache ITAs and the group trait average, excluding wholly NOB reports.
+Private Function UXGridRowTotals(ByVal r As DAO.Recordset, ByRef rowSum As Double) As Long
+    Dim block As Long, value As String
+    rowSum = 0
+    If Nz(r!ObservationStatus, "") = "NOB" Then Exit Function
+    For block = 33 To 39
+        value = Nz(r.Fields("Trait" & block), "")
+        If value <> "NOB" And Len(value) > 0 And IsNumeric(value) Then UXGridRowTotals = UXGridRowTotals + 1: rowSum = rowSum + CDbl(value)
+    Next
+End Function
+Private Function UXGridRowITA(ByVal r As DAO.Recordset) As String
+    Dim rowCount As Long, rowSum As Double
+    rowCount = UXGridRowTotals(r, rowSum)
+    If rowCount > 0 Then UXGridRowITA = Format$(rowSum / rowCount, "0.00") Else UXGridRowITA = "-"
+End Function
 ' Write an ITA cache row only when its formatted value changed.
 Public Function UXGridRefreshAverages() As Boolean
-    Dim r As DAO.Recordset, block As Long, count As Long, sum As Double, rowCount As Long, rowSum As Double, value As String, nob As Long
+    Dim r As DAO.Recordset, count As Long, sum As Double, rowCount As Long, rowSum As Double, nob As Long, average As String
     Set r = cacheDB.OpenRecordset("PendingTraits", dbOpenDynaset)
     Do While Not r.EOF
-        rowCount = 0: rowSum = 0
-        If Nz(r!ObservationStatus, "") <> "NOB" Then
-            For block = 33 To 39
-                value = Nz(r.Fields("Trait" & block), "")
-                If value <> "NOB" And Len(value) > 0 And IsNumeric(value) Then rowCount = rowCount + 1: rowSum = rowSum + CDbl(value)
-            Next
-        Else
-            nob = nob + 1
-        End If
-        Dim average As String
+        rowCount = UXGridRowTotals(r, rowSum)
+        If Nz(r!ObservationStatus, "") = "NOB" Then nob = nob + 1
         If rowCount > 0 Then average = Format$(rowSum / rowCount, "0.00") Else average = "-"
         If Nz(r!ITA, "") <> average Then
             r.Edit: r!ITA = average: r.Update

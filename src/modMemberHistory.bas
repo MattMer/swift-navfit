@@ -117,7 +117,7 @@ End Function
 Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Object
     Dim db As DAO.Database, r As DAO.Recordset, contexts As Object, candidates As Object, results As Object, computed As Object
     Dim context As Variant, item As Variant, first As Variant, id As Variant, memberSQL As String, sql As String, token As String
-    Dim list As Collection, result As Object, selected As Boolean, tied As Boolean
+    Dim list As Collection, result As Object, selected As Boolean, tied As Boolean, saved As DAO.Recordset
     Set db = CurrentDb: Set contexts = CreateObject("Scripting.Dictionary"): Set candidates = CreateObject("Scripting.Dictionary")
     Set results = CreateObject("Scripting.Dictionary"): Set computed = CreateObject("Scripting.Dictionary")
     Set r = db.OpenRecordset("SELECT r.ReportID,r.PeriodStart,m.MemberID,m.MatchState FROM Report AS r LEFT JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE r.ReportID In (" & reportSQL & ")", dbOpenSnapshot)
@@ -127,14 +127,15 @@ Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Obje
     Loop
     r.Close
     memberSQL = "SELECT MemberID FROM MemberReport WHERE MatchState='Confirmed' AND ReportID In (" & reportSQL & ")"
-    sql = "SELECT 'External' AS SourceKind,PriorID AS SourceID,MemberID,PeriodStart,PeriodEnd,PromotionRecommendation,SourceNote AS SourceDetail FROM PriorEvaluation WHERE IsArchived=False AND MemberID In (" & memberSQL & ")"
-    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,m.MemberID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,r.WorkflowState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MatchState='Confirmed' AND m.MemberID In (" & memberSQL & ") ORDER BY PeriodEnd DESC"
+    'Swift candidates carry what UXTableITA reads: observation status and head revision.
+    sql = "SELECT 'External' AS SourceKind,PriorID AS SourceID,MemberID,PeriodStart,PeriodEnd,PromotionRecommendation,SourceNote AS SourceDetail,Null AS Observation,0 AS HeadRevision FROM PriorEvaluation WHERE IsArchived=False AND MemberID In (" & memberSQL & ")"
+    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,m.MemberID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,r.WorkflowState,r.ObservationStatus,Nz(h.RevisionID,0) FROM (Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID) LEFT JOIN ReportHead AS h ON r.ReportID=h.ReportID WHERE m.MatchState='Confirmed' AND m.MemberID In (" & memberSQL & ") ORDER BY PeriodEnd DESC"
     Set r = db.OpenRecordset(sql, dbOpenSnapshot)
     Do While Not r.EOF
         token = CStr(r!MemberID)
         If Not candidates.Exists(token) Then Set list = New Collection: candidates.Add token, list
         Set list = candidates(token)
-        list.Add Array(r!SourceKind.Value, r!SourceID.Value, r!PeriodStart.Value, r!PeriodEnd.Value, r!PromotionRecommendation.Value, r!SourceDetail.Value)
+        list.Add Array(r!SourceKind.Value, r!SourceID.Value, r!PeriodStart.Value, r!PeriodEnd.Value, r!PromotionRecommendation.Value, r!SourceDetail.Value, r!Observation.Value, r!HeadRevision.Value)
         r.MoveNext
     Loop
     r.Close
@@ -161,7 +162,14 @@ Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Obje
             ElseIf selected Then
                 token = first(0) & ":" & first(1)
                 If Not computed.Exists(token) Then
-                    If first(0) = "External" Then computed(token) = PriorEvaluationITA(CLng(first(1))) Else computed(token) = UXTableITA(CLng(first(1)))
+                    If first(0) = "External" Then
+                        computed(token) = PriorEvaluationITA(CLng(first(1)))
+                    ElseIf CLng(first(7)) = 0 Then
+                        computed(token) = UXTableITA(CLng(first(1)))
+                    Else
+                        If saved Is Nothing Then Set saved = db.OpenRecordset("RevisionValue", dbOpenTable): saved.Index = "UX_RevisionValue"
+                        computed(token) = SavedTraitITA(saved, first(6), CLng(first(7)))
+                    End If
                 End If
                 result("ITA") = computed(token): result("Promotion") = Nz(first(4), "Unavailable")
                 result("Period") = Format$(first(2), "yyyy-mm-dd") & " to " & Format$(first(3), "yyyy-mm-dd")
@@ -170,5 +178,22 @@ Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Obje
         End If
         results.Add CStr(id), result
     Next
+    If Not saved Is Nothing Then saved.Close
     Set PreviousMemberEvaluationBatch = results
+End Function
+'UXTableITA for a known head revision, reading its saved traits by index seek.
+Private Function SavedTraitITA(ByVal saved As DAO.Recordset, ByVal observation As Variant, ByVal revisionID As Long) As String
+    Dim key As Variant, value As Variant, total As Double, count As Long
+    If Nz(observation, "") = "NOB" Then SavedTraitITA = "NOB": Exit Function
+    For Each key In TraitKeys()
+        saved.Seek "=", revisionID, CStr(key)
+        If saved.NoMatch Then SavedTraitITA = "Unavailable": Exit Function
+        If Not saved!IsNullValue Then
+            value = saved!ValueText.Value
+            If Not IsNull(value) Then
+                If value <> "" And value <> "NOB" Then total = total + Val(value): count = count + 1
+            End If
+        End If
+    Next
+    If count = 0 Then SavedTraitITA = "Unavailable" Else SavedTraitITA = Format$(total / count, "0.00")
 End Function

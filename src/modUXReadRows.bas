@@ -203,9 +203,9 @@ Private Sub ReadReportState(ByVal rows As Object, ByVal id As Long, ByVal state 
     row(1) = state: rows(CStr(id)) = row
 End Sub
 Public Sub UXPrepareReportRows()
-    Dim rows As Object, traits As Object, values As Object, stamps As Object, db As DAO.Database, r As DAO.Recordset
-    Dim row As Variant, id As Variant, key As Variant, value As Variant, total As Double, count As Long, complete As Boolean, fields As String
-    Set rows = ReadMap(): Set traits = ReadMap(): Set stamps = ReadMap(): Set db = CurrentDb
+    Dim rows As Object, stamps As Object, db As DAO.Database, r As DAO.Recordset, values As DAO.Recordset
+    Dim row As Variant, id As Variant, key As Variant, value As Variant, total As Double, count As Long, complete As Boolean
+    Set rows = ReadMap(): Set stamps = ReadMap(): Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT p.*,v.RevisionNumber FROM Report AS p LEFT JOIN ReportRevision AS v ON p.CurrentRevisionID=v.RevisionID", dbOpenSnapshot)
     Do While Not r.EOF
         row = Array(UXIdentity(r!OfficialName, r!MemberName), "Draft", "Unavailable", "", r!RevisionNumber.Value, Nz(r!CurrentRevisionID, 0), r!ObservationStatus.Value)
@@ -219,42 +219,31 @@ Public Sub UXPrepareReportRows()
         rows.Add CStr(r!ReportID), row: r.MoveNext
     Loop
     r.Close
-    For Each key In TraitKeys()
-        If Len(fields) > 0 Then fields = fields & ","
-        fields = fields & QuoteSQL(CStr(key))
-    Next
-    Set r = db.OpenRecordset("SELECT p.ReportID,v.FieldKey,v.ValueText,v.IsNullValue FROM Report AS p INNER JOIN RevisionValue AS v ON p.CurrentRevisionID=v.RevisionID WHERE v.FieldKey In (" & fields & ")", dbOpenSnapshot)
-    Do While Not r.EOF
-        id = CStr(r!ReportID)
-        If Not traits.Exists(id) Then traits.Add id, ReadMap()
-        Set values = traits(id)
-        If r!IsNullValue Then values(CStr(r!FieldKey)) = Null Else values(CStr(r!FieldKey)) = r!ValueText.Value
-        r.MoveNext
-    Loop
-    r.Close
+    'ITA comes from the saved revision, not the Report columns. Seek on the
+    '(RevisionID,FieldKey) index: a join scans RevisionValue as it grows.
+    Set values = db.OpenRecordset("RevisionValue", dbOpenTable): values.Index = "UX_RevisionValue"
     For Each id In rows.Keys
-        row = rows(id): total = 0: count = 0: complete = False
+        row = rows(id): total = 0: count = 0: complete = True
         If Nz(row(6), "") = "NOB" Then
             row(2) = "NOB"
         Else
             If row(5) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXPrepareReportRows", "Select a saved report."
-            If traits.Exists(id) Then
-                Set values = traits(id): complete = True
-                For Each key In TraitKeys()
-                    If Not values.Exists(CStr(key)) Then
-                        complete = False
-                    Else
-                        value = values(CStr(key))
-                        If Not IsNull(value) Then
-                            If value <> "" And value <> "NOB" Then total = total + Val(value): count = count + 1
-                        End If
+            For Each key In TraitKeys()
+                values.Seek "=", row(5), CStr(key)
+                If values.NoMatch Then
+                    complete = False
+                ElseIf Not values!IsNullValue Then
+                    value = values!ValueText.Value
+                    If Not IsNull(value) Then
+                        If value <> "" And value <> "NOB" Then total = total + Val(value): count = count + 1
                     End If
-                Next
-            End If
+                End If
+            Next
             If complete And count > 0 Then row(2) = Format$(total / count, "0.00")
         End If
         rows(id) = row
     Next
+    values.Close
     Set r = db.OpenRecordset("SELECT m.ReportID,g.Title FROM GroupMember AS m INNER JOIN SummaryGroup AS g ON m.GroupID=g.GroupID ORDER BY g.Title,g.GroupID", dbOpenSnapshot)
     Do While Not r.EOF
         id = CStr(r!ReportID)

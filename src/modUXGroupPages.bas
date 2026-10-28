@@ -4,22 +4,24 @@ Private createGroup As Long, createGroupStamp As String, createDefaultStamp As S
 Private createdReport As Long, createdReportGroup As Long
 'One live Members surface for new, empty and populated groups.
 Public Function UXShowGroupMembers(ByVal id As Long, Optional ByVal refresh As Boolean = False) As Boolean
+    Dim gridLoaded As Boolean
     If id <= 0 Then Exit Function
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
         If Not UXGridDrain() Then Exit Function
         If Nz(Forms!frmUXComparison!uxGroupContext, 0) = id And Nz(Forms!frmUXComparison!txtMeeting, 0) = 0 Then
-            If refresh Then UXGridLoad
+            If refresh Then UXGridLoad: gridLoaded = True
         Else
             If Not UXCloseComparison(False) Then Exit Function
         End If
     End If
     If CurrentProject.AllForms("frmMajorWorkbench").IsLoaded Then Forms!frmMajorWorkbench.Visible = False
-    If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id
+    If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id: gridLoaded = True
     Forms!frmUXComparison.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & id), "Summary group")
     Forms!frmUXComparison!lblHeading.Caption = Forms!frmUXComparison.Caption
     If UXHasControl(Forms!frmUXComparison, "uxGroupMeta") Then Forms!frmUXComparison!uxGroupMeta.Caption = Nz(MajorScalar("SELECT FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE GroupID=" & id), "") & " | " & PersistenceCount("GroupMember", "GroupID=" & id) & " members"
     If Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF Then Forms!frmUXComparison!lblStatus.Caption = "No reports in this summary group. Choose group members or add a report."
-    UXGroupTabState "frmUXComparison", 0
+    'A grid load just set the senior caption through its averages; skip a second PSG pass.
+    UXGroupTabState "frmUXComparison", 0, , gridLoaded
     UXGroupLocks Forms!frmUXComparison, id
     Forms!frmUXComparison.SetFocus
     UXShowGroupMembers = True
@@ -97,7 +99,7 @@ Failed:
     MsgBox Err.Description, vbExclamation, "Summary group"
 End Function
 ' Mark the active group tab and show group actions only when a group context exists.
-Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Optional ByVal preparedPSG As Object = Nothing) As Boolean
+Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Optional ByVal preparedPSG As Object = Nothing, Optional ByVal seniorCaptionCurrent As Boolean = False) As Boolean
     Dim i As Long, f As Access.Form
     Set f = Forms(screen)
     If page = 3 Then page = 0
@@ -111,7 +113,7 @@ Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Opti
     If UXHasControl(f, "uxCurrentExport") Then
         f!uxCurrentExport.Visible = (Nz(f!uxGroupContext, 0) > 0)
         f!uxCurrentSenior.Visible = f!uxCurrentExport.Visible: f!uxSeniorCaption.Visible = f!uxCurrentExport.Visible
-        If f!uxCurrentExport.Visible Then f!uxSeniorCaption.Caption = UXGroupSeniorCaption(CLng(f!uxGroupContext), preparedPSG)
+        If f!uxCurrentExport.Visible And Not seniorCaptionCurrent Then f!uxSeniorCaption.Caption = UXGroupSeniorCaption(CLng(f!uxGroupContext), preparedPSG)
     End If
     UXPositionGroupFooter f
     UXGroupTabState = True
