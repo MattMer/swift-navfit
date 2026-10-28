@@ -28,14 +28,18 @@ Public Function UXResetSnippetOrigin() As Boolean
     snippetReport = -1: UXResetSnippetOrigin = True
 End Function
 Public Function UXOverviewContributor() As Boolean
+    Dim message As String
     On Error GoTo Failed
     SwitchContributor CLng(Nz(Forms!frmHome!uxContributor, 0))
     LoadHome
     UXLoadContext
     UXOverviewContributor = True: Exit Function
 Failed:
-    Forms!frmHome!uxContributor = MajorAuthor()
-    Forms!frmHome!uxContributorStatus.Caption = Err.Description
+    'The contributor check sets its own handler, which clears Err; with no
+    'session contributor, MajorAuthor would raise inside this handler.
+    message = Err.Description
+    If HasActiveContributor() Then Forms!frmHome!uxContributor = MajorAuthor() Else Forms!frmHome!uxContributor = Null
+    Forms!frmHome!uxContributorStatus.Caption = message
 End Function
 Public Function UXUndoPending() As Boolean
     Dim id As Long
@@ -106,14 +110,17 @@ Public Function UXFeedbackCloseEditor() As Boolean
 End Function
 
 Public Function UXWorkContributor() As Boolean
+    Dim message As String
     On Error GoTo Failed
     SwitchContributor CLng(Nz(Forms!frmMyWork!uxContributor, 0))
     UXLoadContext
     UXLoadWorkQueue
     UXWorkContributor = True: Exit Function
 Failed:
-    Forms!frmMyWork!uxContributor = MajorAuthor()
-    Forms!frmMyWork!uxWorkStatus.Caption = Err.Description
+    'Capture before the contributor check, whose own handler clears Err.
+    message = Err.Description
+    If HasActiveContributor() Then Forms!frmMyWork!uxContributor = MajorAuthor() Else Forms!frmMyWork!uxContributor = Null
+    Forms!frmMyWork!uxWorkStatus.Caption = message
 End Function
 Public Function UXGroupRowOpen() As Boolean
     Dim id As Long

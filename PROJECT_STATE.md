@@ -1,10 +1,13 @@
 # Swift NAVFIT — current project state
 
-Updated 24 October 2026. This document describes what is true **now**:
+Updated 28 October 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
 newer verification detail belongs in commit messages, not here.
+
+Assistant continuity is maintained in [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md);
+verify it against the working tree and artifacts when resuming.
 
 ## Versions
 
@@ -35,8 +38,8 @@ import and print-ready PDF output.
 
 ## Architecture
 
-- **Source:** [src/](src/) holds 105 static VBA modules, JSON catalogues, the
-  AutoExec macro, PDF template images and the 67 forms as normalized Access text
+- **Source:** [src/](src/) holds 106 static VBA modules, JSON catalogues, the
+  AutoExec macro, PDF template images and the 69 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
   lists the modules, forms, generated modules, fingerprinted inputs and six
   resource stages.
@@ -133,7 +136,7 @@ import and print-ready PDF output.
 | M01 | Compiled ACCDE distribution | Unsigned dev candidate only. The compiled runner covers startup, import, saves and PDF output (report PDF and group packet) under trusted automation. Normal-security launch is unresolved and there is no signing certificate. |
 | M02 | Recoverable/owned import previews (Resume/Cancel) | Dev (schema 30); follow-ups through 0.44. |
 | M03 | Batched reads for folders, history, groups/RSCA, summary list | Dev. |
-| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). |
+| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Broader M04 inventory remains in the backlog. |
 | M07 | Accessibility (target: Section 508 / WCAG 2.0 AA) | Every input control has an accessible name: its visible label, or a 15-twip `an<Control>` name label that matches the control's visibility. Text contrast meets 4.5:1. test-accessibility guards names, contrast and button captions, with no known gaps. The attended NVDA/JAWS procedure is [docs/Accessibility_Screen_Reader_Test.md](docs/Accessibility_Screen_Reader_Test.md). Under a Windows high-contrast theme, the palette switches to system colors. No screen-reader acceptance. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
 | Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |

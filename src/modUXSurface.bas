@@ -210,28 +210,40 @@ End Function
 ' typed text; the busy flag prevents recursive surface updates.
 'Show one field's buffer value again, including the active control.
 Public Sub UXSurfaceRestoreField(ByVal key As String)
-    Dim c As Access.Control, value As Variant
+    Dim c As Access.Control, value As Variant, failure As Object
+    On Error GoTo Failed
     Set c = Surface().Controls(UXFieldControl(key)): value = Forms!frmEditor.Controls(c.Name).Value
     surfaceBusy = True
-    On Error Resume Next
     If UXFieldFlag(key) Then
         If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
     Else
         c.Value = value
     End If
     surfaceBusy = False
+    Exit Sub
+Failed:
+    Set failure = SwiftFailure("modUXSurface", "UXSurfaceRestoreField", "Restore field " & key, Err.Number, Err.Description, Err.Source)
+    surfaceBusy = False
+    On Error Resume Next
+    Forms!frmEditor!uxError.Caption = Left$("Could not restore field " & key & ". Buffer values are retained. " & SwiftRedact(CStr(failure("Description"))), 255)
+    Forms!frmEditor!uxError.ControlTipText = Left$(SwiftFailureText(failure), 255)
+    On Error GoTo 0
 End Sub
 Public Function UXSurfaceRefresh() As Boolean
-    Dim f As Access.Form, c As Access.Control, key As String, value As Variant, active As String
-    If surfaceBusy Or Not UXSurfaceAvailable() Then Exit Function
-    On Error GoTo Finished
+    Dim f As Access.Form, c As Access.Control, key As String, value As Variant, active As String, stage As String, failure As Object
+    If surfaceBusy Then UXSurfaceRefresh = True: Exit Function
+    If Not UXSurfaceAvailable() Then Exit Function
+    On Error GoTo Failed
+    stage = "Find field surface"
     Set f = Surface(): surfaceBusy = True
+    'No active control is normal while a form is opening. Only this probe is optional.
     On Error Resume Next
     If Screen.ActiveControl.Parent.Name = f.Name Then active = Screen.ActiveControl.Name
-    On Error GoTo Finished
+    On Error GoTo Failed
     For Each c In f.Controls
         If Left$(c.Tag, 5) = "SURF:" And c.Name <> active Then
-            key = Mid$(c.Tag, 6): value = Forms!frmEditor.Controls(c.Name).Value
+            key = Mid$(c.Tag, 6): stage = "Refresh field " & key
+            value = Forms!frmEditor.Controls(c.Name).Value
             If UXFieldFlag(key) Then
                 If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
             Else
@@ -239,10 +251,18 @@ Public Function UXSurfaceRefresh() As Boolean
             End If
         End If
     Next
+    stage = "Refresh narrative status"
     If UXHasControl(f, "uxNarrativeCount") Then Call UXNarrativeStatus()
     UXSurfaceRefresh = True
 Finished:
     surfaceBusy = False
+    Exit Function
+Failed:
+    Set failure = SwiftFailure("modUXSurface", "UXSurfaceRefresh", stage, Err.Number, Err.Description, Err.Source)
+    On Error Resume Next
+    Forms!frmEditor!uxError.Caption = Left$("Display refresh failed (" & stage & "). Pending values are retained. " & SwiftRedact(CStr(failure("Description"))), 255)
+    Forms!frmEditor!uxError.ControlTipText = Left$(SwiftFailureText(failure), 255)
+    Resume Finished
 End Function
 Public Function UXLayoutBand(ByVal key As String) As String
     Select Case key
@@ -380,7 +400,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     End If
     f.Section(acDetail).Height = top + 200
     Forms!frmEditor!uxFieldSurface.Visible = (section <= 7)
-    UXSurfaceRefresh
+    If Not UXSurfaceRefresh() Then Exit Function
     UXSurfaceSection = True
     Exit Function
 Failed:

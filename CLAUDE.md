@@ -1,5 +1,13 @@
 @AGENTS.md
 
+## Shared continuation
+
+Read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md) at startup and verify it against the
+actual working tree, versions and database state. Follow the shared handoff rules
+in AGENTS.md: preserve the other assistant's work, avoid repeating completed
+tasks, and update the handoff at milestones and before stopping with unfinished
+work, checks, Access ownership/closure and the exact next action.
+
 ## Claude Code notes
 
 - The Access Explorer MCP and the `swift_files` reader described in

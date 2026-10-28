@@ -94,9 +94,12 @@ Failed:
 End Function
 Public Function UXFixedSelect(ByVal section As Long) As Boolean
  Dim f As Access.Form, surface As Access.Form, c As Access.Control, r As DAO.Recordset, db As DAO.Database, locked As Boolean, signed As Boolean, id As Long, parentPaint As Boolean, surfacePaint As Boolean, paintHeld As Boolean
+ Dim stage As String, failure As Object
  On Error GoTo Failed
+ stage = "Save report tools"
  If Not UXToolsCheckpoint() Then Exit Function
- UXFlushSurface
+ stage = "Flush pending fields": UXFlushSurface
+ stage = "Find editor"
  Set f = Forms!frmEditor: Set surface = f!uxFieldSurface.Form
  parentPaint = f.Painting: surfacePaint = surface.Painting
  f!cmdClose.SetFocus
@@ -113,6 +116,7 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  'Hide the native child window before suspending parent painting. Otherwise
  'Access can leave its last notes page covering the parent's Review actions.
  If sheet >= 8 Then
+  stage = "Hide field surface"
   surface!uxFocusAnchor.SetFocus
   f!cmdClose.SetFocus
   For Each c In surface.Controls
@@ -121,6 +125,7 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
   f!uxFieldSurface.Visible = False
  End If
  f.Painting = False: surface.Painting = False: paintHeld = True
+ stage = "Read report state"
  id = Nz(f!txtReportID, 0): Set db = CurrentDb
  If id > 0 Then
   Set r = db.OpenRecordset("SELECT IsArchived,WorkflowState FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
@@ -128,6 +133,7 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
   locked = r!IsArchived Or (r!WorkflowState <> "Draft" And r!WorkflowState <> "Signed")
   signed = (r!WorkflowState = "Signed"): r.Close
  End If
+ stage = "Show page controls"
  For Each c In f.Controls
   If c.Name Like "uxSection#" Then c.Visible = False
   If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = sheet)
@@ -143,16 +149,20 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
   Case 9: f!uxSection.Caption = "History (local)"
  End Select
  If sheet < 2 Then
-  UXRenderFixedSheet sheet, locked
+  stage = "Render page fields": UXRenderFixedSheet sheet, locked
  ElseIf sheet = 7 Then
-  UXSurfaceSection 7, locked
+  stage = "Render notes": UXSurfaceSection 7, locked
  End If
  f!uxFrontPage.FontBold = (sheet = 0): f!uxBackPage.FontBold = (sheet = 1)
- UXFixedResize
+ stage = "Arrange layout"
+ If Not UXFixedResize() Then GoTo Finished
+ stage = "Refresh page"
  If sheet = 8 Then UXToolsRefresh
  If sheet = 7 Then UXSortHeaders Forms!frmEditor!uxFieldSurface.Form
- UXRefreshEditor
- UXHeaderReviewState
+ stage = "Refresh editor"
+ If Not UXRefreshEditor() Then GoTo Finished
+ stage = "Refresh review actions"
+ If Not UXHeaderReviewState() Then GoTo Finished
  f!uxFieldSurface.Visible = (sheet < 8)
  UXFixedSelect = True
 Finished:
@@ -162,8 +172,11 @@ Finished:
  End If
  Exit Function
 Failed:
+ 'Capture first: On Error and cleanup calls reset Err.
+ Set failure = SwiftFailure("modReportPages", "UXFixedSelect", stage, Err.Number, Err.Description, Err.Source)
  On Error Resume Next
- f!uxError.Caption = "Unable to open report page: " & Err.Number & " " & Err.Description
+ f!uxError.Caption = Left$("Unable to open report page (" & stage & "): " & SwiftRedact(CStr(failure("Description"))), 255)
+ f!uxError.ControlTipText = Left$(SwiftFailureText(failure), 255)
  UXFixedSelect = False
  Resume Finished
 End Function

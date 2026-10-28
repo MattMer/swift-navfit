@@ -123,6 +123,11 @@ Public Function UXHeaderReviewState() As Boolean
     UXApplyVisual f
     UXHeaderReviewState = True: Exit Function
 Failed:
+    'Report the failure instead of leaving review actions silently disabled.
+    Dim failure As Object
+    Set failure = SwiftFailure("modUXHeaderReview", "UXHeaderReviewState", "Refresh review actions", Err.Number, Err.Description, Err.Source)
     On Error Resume Next
     If Not r Is Nothing Then r.Close
+    f!uxError.Caption = Left$("Review actions unavailable: " & SwiftRedact(CStr(failure("Description"))), 255)
+    f!uxError.ControlTipText = Left$(SwiftFailureText(failure), 255)
 End Function

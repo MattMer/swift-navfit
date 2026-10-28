@@ -2,7 +2,7 @@ Attribute VB_Name = "modUXResourceTools"
 Option Explicit
 ' Editing tools flush queued cells; saved-value export preserves pending buffers.
 Public Function UXCurrentGroupTool(ByVal screen As String, ByVal action As String) As Boolean
- Dim id As Long
+ Dim id As Long, message As String
  On Error GoTo Failed
  id = Nz(Forms(screen)!uxGroupContext, 0): If id = 0 Then Exit Function
  If action <> "Export" Then If Not UXGridDrain() Then Exit Function
@@ -12,10 +12,12 @@ Public Function UXCurrentGroupTool(ByVal screen As String, ByVal action As Strin
  End Select
  Exit Function
 Failed:
+ 'UXHasControl sets its own handler, which clears Err.
+ message = Err.Description
  If UXHasControl(Forms(screen), "lblStatus") Then
-  Forms(screen)!lblStatus.Caption = Err.Description
+  Forms(screen)!lblStatus.Caption = message
  ElseIf UXHasControl(Forms(screen), "uxStatus") Then
-  Forms(screen)!uxStatus.Caption = Err.Description
+  Forms(screen)!uxStatus.Caption = message
  End If
 End Function
 Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPSG As Object = Nothing) As String

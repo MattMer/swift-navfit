@@ -312,13 +312,30 @@ is zero. Existing unrelated edits remain local; no commit, push or upload was ma
 | Required views and callbacks | `modUX` owns critical view contracts; canonical field metadata supplies editor control names. The existing installed verifier audits actual controls, literal references, form/report events and macro callbacks against installed source/generators. | Optional compatibility probes remain optional. Missing/renamed required controls and wrong callbacks fail explicitly; no parallel UI implementation or geometry change is introduced. |
 | Trait wording and provenance | The reviewed `trait-catalogue.json` seeds `TraitDefinition`; the existing generator emits identity/accessors instead of wording branches. Trait guidance, validation labels, revision comparison and existing PDF output use those accessors. | All 21 traits, general guidance, six mark entries and source references remain exact. Display-only title line-break removal remains deliberate. Catalogue descriptions are not authored Chief comments; H01 correction scope remains separate. |
 
-The source inventory started with 111 `On Error Resume Next` sites; 48 remain
-after removing redundant suppression around caught cleanup and narrowing focus/UI
-probes. The diagnostics runner writes every remaining site with module, procedure
+The original source inventory found 111 `On Error Resume Next` sites. The current
+inventory is generated from source rather than maintained as a fixed site count. The diagnostics runner writes every remaining site with module, procedure
 and line, plus raise/reused-code inventories, into its local evidence folder.
 Remaining scopes cover optional active-control/text/property lookups, best-effort
 owned resource/UI restoration, derived-cache teardown and noncritical progress
-painting. They do not authorize new swallowed domain writes. Native forced failures
+painting. They do not authorize new swallowed domain writes.
+
+The current surface handlers in [modUXSurface](../src/modUXSurface.bas) separate
+optional active-control lookup from required field assignment. Refresh/restore
+failures capture native number, description, source and field stage before
+best-effort feedback, release the busy state, and retain the buffer. Editor/page
+callers propagate failed refreshes instead of reporting success.
+
+The advisory shared-field scope (UXSharedScope) keeps its failure context in the
+banner tooltip and never raises into the confirmation that refreshes it after a
+commit. A display refresh failure after an editor save reports the committed
+outcome. Group opening keeps the original error source through screen restoration.
+
+Further M04 review targets are derived-cache teardown (UXGridClose) and importer
+progress/display cleanup.
+These still need fault diagnosis and focused checks before changes; optional
+focus/text/section probes are not defects merely because they suppress errors.
+
+Native forced failures
 exercise rollback, retry, cleanup failure, diagnostic redaction and UI outcome text.
 
 The older trait-retry harness failed after assertion 24 on both the unchanged

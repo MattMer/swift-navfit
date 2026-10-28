@@ -95,8 +95,10 @@ Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As B
     DoCmd.Echo True
     UXGroupNavigate = True: Exit Function
 Failed:
+    Dim message As String
+    message = Err.Description
     DoCmd.Echo True
-    MsgBox Err.Description, vbExclamation, "Summary group"
+    MsgBox message, vbExclamation, "Summary group"
 End Function
 ' Mark the active group tab and show group actions only when a group context exists.
 Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Optional ByVal preparedPSG As Object = Nothing, Optional ByVal seniorCaptionCurrent As Boolean = False) As Boolean

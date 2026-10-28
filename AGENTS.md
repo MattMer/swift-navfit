@@ -4,6 +4,18 @@ These rules apply to every coding agent (Claude Code, Codex or others) and to
 human contributors. Tool-specific notes belong in that tool's own file, such as
 [CLAUDE.md](CLAUDE.md).
 
+## Shared assistant handoff
+
+At the start of every continuation, read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md).
+Verify it against Git status/diffs, current versions and database artifacts before
+acting; it is a resumption record, not a replacement for product requirements.
+Preserve all existing work, regardless of assistant, and avoid repeating completed
+tasks. Update the same handoff after meaningful milestones and before stopping:
+record unfinished work, exact next actions/commands, checks and failures, and
+owned Access database/PID and safe closure state. Keep it concise, reference the
+backlog, and omit credentials, personnel data and sensitive report content.
+Manual assistant switching requires no private conversation history.
+
 ## Sources of truth
 
 - [PROJECT_STATE.md](PROJECT_STATE.md): current architecture, supported behavior,

@@ -45,6 +45,15 @@ Public Function TestRecursiveDefaults() As String
  Set f = Forms!frmUXBulk
  Check UXSharedScope(), "Scope banner failed before field selection"
  Check InStr(f!uxScope.Caption, "Scope: all ") = 1 And InStr(f!uxScope.Caption, "locally approved") > 0, "Scope banner missing counts or approval warning"
+ 'A malformed member list fails the advisory count; it must not raise or lose the cause.
+ stage = "Scope failure": TraceStage stage
+ 'Access accepts a trailing comma in IN lists; an unknown name fails the query.
+ Check UXBeginImmediateBlocks(0, False, "SyntheticBadMember"), "Scope failure raised into its caller"
+ Check Not UXSharedScope(), "Malformed scope falsely succeeded"
+ Set plan = SwiftLastFailureContext()
+ Check plan("Procedure") = "UXSharedScope" And plan("Stage") = "Count scope reports" And plan("Number") <> 0, "Scope failure lost its primary error or stage"
+ Check InStr(f!uxScope.Caption, "Scope unavailable.") = 1 And InStr(f!uxScope.ControlTipText, "UXSharedScope") > 0, "Scope failure diagnostic not visible"
+ Check UXBeginImmediateBlocks(0, True, "") And InStr(f!uxScope.Caption, "Scope: all ") = 1, "Scope retry failed after restoring context"
  For Each name In Array("cmdPreview", "cmdApply", "lstPreview", "txtFullValues", "txtGroupImpact", "lblReason", "txtReason")
   Check Not UXHasControl(f, CStr(name)), "Retired preview control remains: " & name
  Next

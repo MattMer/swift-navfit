@@ -400,7 +400,9 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
             If IsNull(raw) Or Len(Nz(raw, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (raw = "NOB") Else c.Value = (raw = "Yes")
         End If
     Next
-    If UXSurfaceAvailable() Then UXSurfaceRefresh
+    If UXSurfaceAvailable() Then
+        If Not UXSurfaceRefresh() Then Exit Function
+    End If
     If priorAlias <> f!uxAlias.Caption Then UXResizeEditor
     'First paint does not wait for full policy checks. The existing one-second
     'dirty timer runs them immediately after display; field exits still validate.
@@ -440,7 +442,14 @@ Public Function UXSaveEditor() As Boolean
         End If
     End If
     saved = SaveEditor(): UXSaveEditor = saved
-    UXRefreshEditor
+    If Not UXRefreshEditor() Then
+        'The surface reported its own failure before the save outcome was known.
+        Set context = SwiftLastFailureContext()
+        If Not context Is Nothing Then
+            If saved Then context("Transaction") = "Committed"
+            UXShowSaveError SwiftFailureText(context), saved
+        End If
+    End If
     Exit Function
 Failed:
     Set context = SwiftFailure("modUX", "UXSaveEditor", "Capture/refresh editor", Err.Number, Err.Description, Err.Source, IIf(saved, "Committed", "Not started"))
@@ -468,8 +477,13 @@ Public Function UXOpenGroup(Optional ByVal prepareOnly As Boolean = False) As Bo
     DoCmd.Echo True
     UXOpenGroup = True: Exit Function
 Failed:
+    Dim failure As Object
+    Set failure = SwiftFailure("modUX", "UXOpenGroup", "Open group context", Err.Number, Err.Description, IIf(Len(Err.Source) = 0, "modUX.UXOpenGroup", Err.Source))
+    On Error Resume Next
     DoCmd.Echo True
-    Err.Raise Err.Number, "UXOpenGroup", Err.Description
+    If Err.Number <> 0 Then SwiftCleanupError failure, "restore screen painting", Err.Number
+    On Error GoTo 0
+    Err.Raise CLng(failure("Number")), CStr(failure("Source")), CStr(failure("Description"))
 End Function
 ' Show the retained group tools for one mode and refresh their focused group context.
 Public Function UXWorkbenchMode(ByVal mode As String) As Boolean

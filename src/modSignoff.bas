@@ -247,17 +247,37 @@ Public Function UXDisposeDrafts(Optional ByVal reportID As Long = 0, Optional By
 Failed:
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = Err.Description Else MsgBox Err.Description, vbExclamation, "Dispose of drafts"
 End Function
+'The change is already committed, so a refresh failure is reported, not raised.
 Private Sub UXSignoffRefresh(ByVal reportID As Long)
-    On Error Resume Next
+    Dim stage As String, failure As Object
+    On Error GoTo Failed
+    stage = "Editor refresh"
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If Nz(Forms!frmEditor!txtReportID, 0) = reportID Then
             'Fields stay open when signed (the first edit asks), so only the actions change.
             Forms!frmEditor!cmdSave.Enabled = Not ReportIsSigned(reportID): Forms!frmEditor!cboKind.Locked = ReportIsSigned(reportID)
-            Call UXHeaderReviewState
+            If Not UXHeaderReviewState() Then
+                Set failure = SwiftLastFailureContext()
+                failure("Transaction") = "Committed"
+                GoTo RefreshFailed
+            End If
             Forms!frmEditor!uxLocked.Caption = SignedReportCaption(reportID)
         End If
     End If
+    stage = "Comparison refresh"
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXGridLoad
+    Exit Sub
+Failed:
+    Set failure = SwiftFailure("modSignoff", "UXSignoffRefresh", stage, Err.Number, Err.Description, Err.Source, "Committed")
+RefreshFailed:
+    On Error Resume Next
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then
+        Forms!frmEditor!uxError.Caption = Left$("Saved; " & LCase$(stage) & " failed. Reopen the report. " & SwiftRedact(CStr(failure("Description"))), 255)
+        Forms!frmEditor!uxError.ControlTipText = Left$(SwiftFailureText(failure), 255)
+    ElseIf CurrentProject.AllForms("frmUXComparison").IsLoaded Then
+        Forms!frmUXComparison!lblStatus.Caption = Left$("Saved; " & SwiftFailureText(failure), 255)
+    End If
+    If stage = "Editor refresh" And CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXGridLoad
 End Sub
 
 '--- Summary groups ------------------------------------------------------------

@@ -217,9 +217,11 @@ End Function
 ' Scope is advisory before editing; the existing confirmation recomputes exact changes.
 Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
  Dim db As DAO.Database, r As DAO.Recordset, sql As String, title As String, count As Long, approved As Long, locked As Long, message As String, groups As Long, applies As Boolean, signedCount As Long
+ Dim stage As String, scopeFailure As Object
  On Error GoTo Failed
  If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
  If Not UXHasControl(Forms!frmUXBulk, "uxScope") Then Exit Function
+ stage = "Count scope reports"
  Set db = CurrentDb
  If directDefaults Then
   sql = "SELECT DISTINCT r.ReportID,r.FormKind,r.WorkflowState FROM (Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID) INNER JOIN SummaryGroup AS g ON m.GroupID=g.GroupID WHERE r.IsArchived=False AND g.IsArchived=False"
@@ -245,7 +247,8 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
   End If
   r.MoveNext
  Loop
- r.Close
+ r.Close: Set r = Nothing
+ stage = "Show scope"
  message = "Scope: " & title & "; " & count & " active reports, " & approved & " locally approved."
  message = message & " Custom values may be replaced; changed approvals reopen after confirmation. Archived items excluded."
  If locked > 0 Then message = message & " " & locked & " locked reports may block changes."
@@ -253,8 +256,12 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
  Forms!frmUXBulk!uxScope.Caption = message: Forms!frmUXBulk!uxScope.ControlTipText = Left$(message, 255)
  UXSharedScope = True: Exit Function
 Failed:
+ Set scopeFailure = SwiftFailure("modUXRecursiveDefaults", "UXSharedScope", stage, Err.Number, Err.Description, Err.Source)
+ SwiftClose r, scopeFailure, "r"
+ 'Advisory only: never raise into the confirmation that called us after a commit.
  On Error Resume Next
- If Not r Is Nothing Then r.Close
- On Error GoTo 0
  Forms!frmUXBulk!uxScope.Caption = "Scope unavailable. Exact affected reports and approvals are checked before confirmation."
+ Forms!frmUXBulk!uxScope.ControlTipText = Left$(SwiftFailureText(scopeFailure), 255)
+ If Err.Number <> 0 Then SwiftCleanupError scopeFailure, "show scope feedback", Err.Number
+ On Error GoTo 0
 End Function
