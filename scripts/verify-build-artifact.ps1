@@ -71,10 +71,7 @@ Write-Output ('PASS: current artifact identity, compile, source and bindings; bl
 if($Tier -eq 'extended'){
     . (Join-Path $PSScriptRoot 'suite-common.ps1')
     foreach($case in @('test-build-property-bindings','test-build-cleanup','test-build-finalization')){
-        Invoke-SuiteCase $case {
-            & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ('cases/'+$case+'.ps1')) -BuildPath $artifactSnapshot.Path
-            if($LASTEXITCODE -ne 0){throw ($case+' exited '+$LASTEXITCODE)}
-        }
+        Invoke-CaseScript $case @('-BuildPath',$artifactSnapshot.Path)
     }
     Complete-SuiteRun 'artifact-contracts' $artifactSnapshot.Path $artifactSnapshot.SHA256
 }

@@ -38,6 +38,14 @@ function Invoke-HarnessCase([string]$Name,[string]$BuildPath,[string]$Module,[st
     }
 }
 
+# Run one case script from scripts/cases in its own Windows PowerShell process.
+function Invoke-CaseScript([string]$Name,[string[]]$Arguments=@()){
+    Invoke-SuiteCase $Name {
+        & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ('cases/'+$Name+'.ps1')) @Arguments
+        if($LASTEXITCODE -ne 0){throw ($Name+' exited '+$LASTEXITCODE)}
+    }
+}
+
 # Fail the suite if any case failed, after confirming the build was not changed.
 function Complete-SuiteRun([string]$Suite,[string]$BuildPath,[string]$BuildHash){
     if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $BuildHash){$script:suiteFailures+='suite changed its source artifact'}

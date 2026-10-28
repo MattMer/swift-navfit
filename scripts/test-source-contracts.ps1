@@ -6,13 +6,6 @@ param([string]$BuildPath,[ValidateSet('core','extended')][string]$Tier='core')
 # Each case is a script in scripts/cases, run in its own process.
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'suite-common.ps1')
-$cases=Join-Path $PSScriptRoot 'cases'
-function Invoke-CaseScript([string]$Name,[string[]]$Arguments=@()){
-    Invoke-SuiteCase $Name {
-        & powershell.exe -NoProfile -File (Join-Path $cases ($Name+'.ps1')) @Arguments
-        if($LASTEXITCODE -ne 0){throw ($Name+' exited '+$LASTEXITCODE)}
-    }
-}
 if(-not $BuildPath){
     Invoke-CaseScript 'test-build-plan'
     Invoke-CaseScript 'test-vba-source-normalization'
