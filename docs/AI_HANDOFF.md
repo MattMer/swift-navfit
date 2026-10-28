@@ -23,7 +23,7 @@ through cleanup in report pages, surface refresh/restore, editor save, signoff
 refresh, contributor switches, group open, shared-field scope, trait-grid
 load/close and workspace-import preview/progress/display. See the
 [M04 audit](../planning/CONSOLIDATION_PLAN.md#m04m06-source-and-consumer-audit).
-The remaining suppression inventory (written by test-diagnostics-contracts) is
+The remaining suppression inventory (written by scripts/cases/test-diagnostics-contracts.ps1) is
 optional probes and best-effort UI restoration; review another site only after
 reproducing a specific failure.
 

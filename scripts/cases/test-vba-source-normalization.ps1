@@ -1,5 +1,5 @@
 $ErrorActionPreference='Stop'
-. (Join-Path $PSScriptRoot 'vba-source-normalization.ps1')
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'vba-source-normalization.ps1')
 $checks=0
 function Check([bool]$ok,[string]$message){if(-not $ok){throw $message};$script:checks++}
 Check ((NormalizeSwiftVBA 'Call RefreshLibrary') -ceq (NormalizeSwiftVBA 'Call RefreshLibrary()')) 'Access empty Call parentheses differ'

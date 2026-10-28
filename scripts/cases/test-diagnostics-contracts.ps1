@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[switch]$PrepareOnly,[switch]$VerifyViews,[switch]$InstallViewContracts)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/diagnostics-contracts-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
 $hash=(Get-FileHash -LiteralPath $BuildPath).Hash
@@ -14,9 +14,9 @@ try{
   if(@($db.TableDefs|ForEach-Object {$_.Name}) -notcontains 'TraitDefinition'){
    $schema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw|ConvertFrom-Json
    $db.Execute(@($schema.SQL|Where-Object {$_ -like 'CREATE TABLE TraitDefinition *'})[0],128)
-   & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath (Join-Path $folder 'modTraitCatalogue.bas') -Application $app
+   & (Join-Path (Split-Path $PSScriptRoot -Parent) 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath (Join-Path $folder 'modTraitCatalogue.bas') -Application $app
   }else{
-   & (Join-Path $PSScriptRoot 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath (Join-Path $folder 'modTraitCatalogue.bas')
+   & (Join-Path (Split-Path $PSScriptRoot -Parent) 'write-trait-catalogue.ps1') -SourcePath (Join-Path $root 'src/trait-catalogue.json') -OutputPath (Join-Path $folder 'modTraitCatalogue.bas')
   }
   $app.LoadFromText(5,'modTraitCatalogue',(Join-Path $folder 'modTraitCatalogue.bas'))
   foreach($module in Get-ChildItem (Join-Path $root 'src') -Filter '*.bas'){$app.LoadFromText(5,$module.BaseName,$module.FullName)}
@@ -26,16 +26,16 @@ try{
  $app.LoadFromText(5,'DiagnosticsContractsHarness',(Join-Path $root 'tests/DiagnosticsContractsHarness.bas'))
  $app.DoCmd.RunCommand(126)
  if($VerifyViews){
-  . (Join-Path $PSScriptRoot 'build-plan.ps1')
-  $swiftBuildPlan=GetSwiftBuildPlan $root (Join-Path $PSScriptRoot 'build-manifest.json')
-  . (Join-Path $PSScriptRoot 'verify-built-application.ps1')
+  . (Join-Path (Split-Path $PSScriptRoot -Parent) 'build-plan.ps1')
+  $swiftBuildPlan=GetSwiftBuildPlan $root (Join-Path (Split-Path $PSScriptRoot -Parent) 'build-manifest.json')
+  . (Join-Path (Split-Path $PSScriptRoot -Parent) 'verify-built-application.ps1')
   $nativeViewFaults=0
   foreach($fault in @('renamed-control','wrong-callback')){
    $app.DoCmd.OpenForm('frmEditor',1);$editor=$app.Forms.Item('frmEditor');$save=$editor.Controls.Item('cmdSave');$originalBinding=[string]$save.OnClick
    if($fault -eq 'renamed-control'){$save.Name='SyntheticRenamedSave'}else{$save.OnClick='=CloseEditor()'}
    $app.DoCmd.Close(2,'frmEditor',1)
    $rejected=$false
-   try{. (Join-Path $PSScriptRoot 'verify-built-application.ps1')}
+   try{. (Join-Path (Split-Path $PSScriptRoot -Parent) 'verify-built-application.ps1')}
    catch{
     $expected=if($fault -eq 'renamed-control'){'*Required view control missing: frmEditor.cmdSave*'}else{'*Required view binding differs: frmEditor.cmdSave.OnClick*'}
     if($_.Exception.Message -notlike $expected){throw};$rejected=$true

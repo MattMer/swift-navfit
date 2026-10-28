@@ -26,8 +26,8 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Changed behavior | Focused checks / source contract |
 | --- | --- |
 | Any VBA module (`src/`, `tests/`) | check-vba-source.ps1 (a few seconds; no Access). It checks the module name, Option Explicit, ASCII-only text, the 1023-character line limit, the 24-continuation limit and duplicate procedures |
-| Build graph/source import | test-build-plan.ps1; test-vba-source-normalization.ps1; final installed-source/binding verification |
-| Retired routes/folders | test-build-cleanup.ps1; retain folder batch history and undo |
+| Build graph/source import | test-source-contracts.ps1 (build plan, runner inventory, VBA normalization, field definitions); final installed-source/binding verification |
+| Retired routes/folders | verify-build-artifact.ps1 -Tier extended (retired-route cleanup case); retain folder batch history and undo |
 | Report navigation, pending values and lifecycle | test-ux-workflows.ps1; test-compat-pages.ps1; real Unload, failed saves, recovery and stale previews |
 | Startup contributor attribution | test-contributor-startup.ps1 |
 | Conversations/report tools | test-report-tools.ps1; test-report-message-import.ps1 for transfer; no resolve/reopen requirement |
@@ -35,7 +35,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Retained-schema audit/conversation import | [test-audit-message-transfer.ps1](scripts/test-audit-message-transfer.ps1) -BuildPath <fresh blank> -FixtureMapPath <JSON schema-to-path map>; actual retained schema files on disposable copies, Settings import, exact original fields, late rollback, private/reply preservation, source hashes and reopen. Do not relabel fixtures or execute historical source VBA. |
 | My Work/help | test-ux-my-work.ps1; test-context-help.ps1 |
 | Form controls, labels or the visual palette | test-accessibility.ps1: 4.5:1 text contrast, a linked label on each input control, a name on each button. Every new input needs an accessible name: link its visible label (LabelName). Where there is none, such as a grid cell or a list under a heading, attach a 15x15-twip label named `an<Control>` whose caption is the spoken name. tests/accessibility-gaps.json is empty; adding to it needs a stated reason |
-| Schema, field catalogue, validation rule packs or states, runner inventory | test-architecture-views.ps1: the generated DoDAF views in docs/architecture/views must match the build. After an intended change, run generate-architecture-views.ps1 -BuildPath <fresh build> and commit the views |
+| Schema, field catalogue, validation rule packs or states, runner inventory | test-source-contracts.ps1 -BuildPath: the generated DoDAF views in docs/architecture/views must match the build. After an intended change, run generate-architecture-views.ps1 -BuildPath <fresh build> and commit the views |
 | File importers (PDF, RUAD CSV, NAVFIT98A) | test-malformed-imports.ps1: malformed and control inputs must be rejected cleanly or load, with no rows written, the source unchanged, state cleared and no temporary files. Add a case for any new parser limit or file format |
 | Directory merging/history | test-directory-merge.ps1; applicable directory transfer/release checks |
 | Traits and narratives | test-traits.ps1 (persistence, rollback, legacy restore, fresh-session recovery, exact catalogue text/source/hash and transfer, grid events, queue, summary, retry); test-narratives.ps1 (narrative snapshots, layout, NavyWriter); fixed-page/report-tools checks cover current UI |
@@ -47,7 +47,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Structured names | test-party-names.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |
 | Viewing area/identity | test-ux-responsive-identity.ps1; control geometry, active field/caret; not physical DPI acceptance |
 | Schema/import engine | [test-swift-data-import.ps1](scripts/test-swift-data-import.ps1) -BuildPath <fresh blank> imports a seeded synthetic source for every schema from 1 to the build's, built from the per-schema files in [tests/historical-schemas](tests/historical-schemas/README.md), plus populated kept releases in `output/`; -Schemas '1-7,20' narrows a focused run. Add test-workspace-upgrade.ps1 and test-engine-verification.ps1 as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
-| Canonical report definitions/revisions and typed persistence | test-field-definitions.ps1 (also with -BuildPath); test-recovery.ps1; test-persistence-transfer.ps1 -BuildPath <fresh blank> -LegacyTemplate <real schema-27 blank>; exact raw/null/status/choice preservation, catalogue field extension, revision/cache ownership, constraints and rollback |
+| Canonical report definitions/revisions and typed persistence | test-source-contracts.ps1 (static; -BuildPath -Tier extended adds native catalogue recovery); test-recovery.ps1; test-persistence-transfer.ps1 -BuildPath <fresh blank> -LegacyTemplate <real schema-27 blank>; exact raw/null/status/choice preservation, catalogue field extension, revision/cache ownership, constraints and rollback |
 | Summary-group completion/RSCA | test-rs-completion.ps1 -AccountingOnly; reconciliation, correction, duplicate/deletion/senior guards, cancelled legacy state and idempotent XML backfill. The default full suite also retains historical UI assertions; report any separate preexisting UI failure explicitly |
 | Provenance viewer | test-provenance.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
 | NAVFIT/PDF exchange | Applicable adapter/group export/return/local-PDF suites and authorized synthetic/reference fixtures |
@@ -56,7 +56,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 and tier. Runners in the `extended` tier take only `-BuildPath` (plus any listed
 `extraArgs`); run the ones for the area you changed, or the whole tier with
 `scripts/develop.ps1 -Action ExtendedTest -BuildPath <fresh blank>` (weekly, and
-from release-check). A new runner must be added there, or `test-build-plan.ps1`
+from release-check). A new runner must be added there, or `test-source-contracts.ps1`
 fails; a runner whose feature is removed is deleted with it.
 
 `ExtendedTest` closes VBA error dialogs in the Access sessions a runner starts

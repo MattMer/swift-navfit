@@ -1,14 +1,9 @@
 {
- "description": "Every test runner in scripts/ (test-*, verify-*, smoke-test), its feature area and when it runs. test-build-plan.ps1 fails if this list and scripts/ disagree. Tiers: core runs in every develop.ps1 Test/BuildAndTest; release runs from release-check.ps1; extended runs with develop.ps1 -Action ExtendedTest (weekly and before every release) with -BuildPath plus any extraArgs; manual needs other inputs (see note); helper is called by other scripts; pending fails today and is not run (see note).",
+ "description": "Every test runner in scripts/ (test-*, verify-*, smoke-test), its feature area and when it runs. test-source-contracts.ps1 (its build-plan case) fails if this list and scripts/ disagree. Suites run case scripts from scripts/cases, which are not listed. Tiers: core runs in every develop.ps1 Test/BuildAndTest; release runs from release-check.ps1; extended runs with develop.ps1 -Action ExtendedTest (weekly and before every release) with -BuildPath plus any extraArgs, and that action also reruns each core suite that has extendedArgs with those arguments; manual needs other inputs (see note); helper is called by other scripts; pending fails today and is not run (see note).",
  "runners": [
   {
    "name": "smoke-test",
    "area": "Workspace and settings",
-   "tier": "core"
-  },
-  {
-   "name": "test-architecture-views",
-   "area": "Build and source",
    "tier": "core"
   },
   {
@@ -42,26 +37,6 @@
    "area": "Workspace and settings",
    "tier": "manual",
    "note": "Needs BuildPath, BaselinePath."
-  },
-  {
-   "name": "test-build-cleanup",
-   "area": "Build and source",
-   "tier": "release"
-  },
-  {
-   "name": "test-build-finalization",
-   "area": "Build and source",
-   "tier": "extended"
-  },
-  {
-   "name": "test-build-plan",
-   "area": "Build and source",
-   "tier": "core"
-  },
-  {
-   "name": "test-build-property-bindings",
-   "area": "Build and source",
-   "tier": "extended"
   },
   {
    "name": "test-bulk-workspace-import",
@@ -109,11 +84,6 @@
    "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
   },
   {
-   "name": "test-diagnostics-contracts",
-   "area": "Build and source",
-   "tier": "extended"
-  },
-  {
    "name": "test-directory-batch",
    "area": "Groups, directory and members",
    "tier": "release"
@@ -147,11 +117,6 @@
    "name": "test-engine-verification",
    "area": "Import and transfer",
    "tier": "release"
-  },
-  {
-   "name": "test-field-definitions",
-   "area": "Build and source",
-   "tier": "core"
   },
   {
    "name": "test-group-correctness",
@@ -432,6 +397,12 @@
    "tier": "extended"
   },
   {
+   "name": "test-source-contracts",
+   "area": "Build and source",
+   "tier": "core",
+   "extendedArgs": ["-Tier", "extended"]
+  },
+  {
    "name": "test-swift-data-import",
    "area": "Import and transfer",
    "tier": "release"
@@ -624,11 +595,6 @@
    "tier": "core"
   },
   {
-   "name": "test-vba-source-normalization",
-   "area": "Build and source",
-   "tier": "core"
-  },
-  {
    "name": "test-visual",
    "area": "Report editor and pages",
    "tier": "extended"
@@ -646,7 +612,8 @@
   {
    "name": "verify-build-artifact",
    "area": "Build and source",
-   "tier": "core"
+   "tier": "core",
+   "extendedArgs": ["-RequireBlank", "-Tier", "extended"]
   },
   {
    "name": "verify-built-application",

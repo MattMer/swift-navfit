@@ -15,8 +15,7 @@ if($blank.Path -eq $demo.Path){throw 'Blank and Demo must be distinct files'}
 $logFolder=Join-Path $root ('build/workflow/release-'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $logFolder)
 $script:workflowResults=[Collections.Generic.List[object]]::new()
-InvokeSwiftWorkflowStep 'test-build-plan' @() $logFolder
-InvokeSwiftWorkflowStep 'test-vba-source-normalization' @() $logFolder
+InvokeSwiftWorkflowStep 'test-source-contracts' @() $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$blank.Path,'-RequireBlank') $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$demo.Path) $logFolder
 foreach($artifact in @($blank,$demo)){

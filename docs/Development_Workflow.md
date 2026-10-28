@@ -443,7 +443,7 @@ Run the focused checks before the final integrated build, then repeat without
 source installation against the exact final blank:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-diagnostics-contracts.ps1 -BuildPath "D:\path\blank.accdb" -VerifyViews
+powershell.exe -NoProfile -File scripts/cases/test-diagnostics-contracts.ps1 -BuildPath "D:\path\blank.accdb" -VerifyViews
 powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema30-blank.accdb"
 ```
 

@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$RequireBlank,[switch]$ForceNative)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$RequireBlank,[switch]$ForceNative,[ValidateSet('core','extended')][string]$Tier='core')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'build-plan.ps1')
@@ -66,3 +66,15 @@ try {
 if((GetSwiftWorkflowArtifact $artifactSnapshot.Path).SHA256 -ne $artifactSnapshot.SHA256){throw 'Artifact verification changed its source'}
 AssertSwiftBuildInputs $swiftBuildPlan
 Write-Output ('PASS: current artifact identity, compile, source and bindings; blank required: '+$RequireBlank.IsPresent+'; build verification reused: '+$reuseBuildVerification)
+# -Tier extended adds installed property bindings, retired-route cleanup and the
+# finalizer case (scripts/cases), each in its own process on its own copy.
+if($Tier -eq 'extended'){
+    . (Join-Path $PSScriptRoot 'suite-common.ps1')
+    foreach($case in @('test-build-property-bindings','test-build-cleanup','test-build-finalization')){
+        Invoke-SuiteCase $case {
+            & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ('cases/'+$case+'.ps1')) -BuildPath $artifactSnapshot.Path
+            if($LASTEXITCODE -ne 0){throw ($case+' exited '+$LASTEXITCODE)}
+        }
+    }
+    Complete-SuiteRun 'artifact-contracts' $artifactSnapshot.Path $artifactSnapshot.SHA256
+}

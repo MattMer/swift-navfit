@@ -49,7 +49,7 @@ fixed point: building it and exporting again gives the same files.
 - Catalogue changes include the form edit. `field-definitions.json` drives the
   generated runtime layout, but each field's control must exist on `frmEditor`
   and `frmUXEditorFields` (the report type is the one field the surface does not
-  edit). `test-field-definitions.ps1` fails without it.
+  edit). `test-source-contracts.ps1` (its field-definitions case) fails without it.
 
 ## Canonical report fields
 
@@ -78,9 +78,9 @@ receipt records the artifact hash, identity, input fingerprints, stage durations
 and structural results; it does not replace workflow, migration or physical
 acceptance tests.
 
-Run `scripts/test-build-plan.ps1` without Access for rejected plans, input
+Run `scripts/test-source-contracts.ps1` without Access for rejected plans, input
 drift, form normalization and the runner inventory, and
-`scripts/test-field-definitions.ps1` for catalogue and form-control agreement.
+its field-definitions case for catalogue and form-control agreement.
 Select other suites for the changed behavior; see [contributing](../CONTRIBUTING.md).
 
 Add a non-form resource as a manifest stage rather than a hidden nested build

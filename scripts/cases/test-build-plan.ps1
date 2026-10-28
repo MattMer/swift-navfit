@@ -1,6 +1,6 @@
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-. (Join-Path $PSScriptRoot 'build-plan.ps1')
-$manifestPath=Join-Path $PSScriptRoot 'build-manifest.json'
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'build-plan.ps1')
+$manifestPath=Join-Path (Split-Path $PSScriptRoot -Parent) 'build-manifest.json'
 $original=Get-Content $manifestPath -Raw
 $folder=Join-Path $root ('build/tests/build-plan-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $folder)
 $checks=0
@@ -33,10 +33,10 @@ $rejected=$false;try{AssertSwiftBuildInputs $plan}catch{$rejected=$_.Exception.M
 # The real entry point must reject an invalid plan before creating any database.
 $m=$original|ConvertFrom-Json;$m.stages[0].file='scripts/does-not-exist.ps1';$path=Join-Path $folder 'entry-rejection.json';$m|ConvertTo-Json -Depth 12|Set-Content $path
 $out=Join-Path $folder 'must-not-exist.accdb';$rejected=$false
-try{& (Join-Path $PSScriptRoot 'build.ps1') -ManifestPath $path -OutputPath $out}catch{$rejected=$_.Exception.Message -like '*Missing build dependency*'}
+try{& (Join-Path (Split-Path $PSScriptRoot -Parent) 'build.ps1') -ManifestPath $path -OutputPath $out}catch{$rejected=$_.Exception.Message -like '*Missing build dependency*'}
 Check ($rejected -and -not(Test-Path $out)) 'Preflight wrote an output before rejection'
 # Receipt invalidation is file-only; no fake Access application or database is run.
-. (Join-Path $PSScriptRoot 'workflow-common.ps1')
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'workflow-common.ps1')
 $plan=GetSwiftBuildPlan $root $manifestPath
 $artifact=[pscustomobject]@{Path=(Join-Path $folder 'receipt-fixture.accdb');SHA256=('A'*64)}
 $receiptPath=$artifact.Path+'.build.json'
@@ -94,13 +94,15 @@ Check ($missing.Count -eq 0) ('Remove these deleted runners from tests/runners.j
 Check (@($listed|Group-Object|Where-Object {$_.Count -gt 1}).Count -eq 0) 'tests/runners.json lists a runner twice'
 foreach($runner in $runners){
  Check ($runner.tier -in @('core','release','extended','manual','helper','pending') -and $runner.area) ('Runner needs an area and a known tier: '+$runner.name)
+ if($runner.extendedArgs){Check ($runner.tier -eq 'core') ('Only core suites take extendedArgs: '+$runner.name)}
  if($runner.tier -in @('manual','helper','pending')){Check ([bool]$runner.note) ('Runner needs a note explaining its tier: '+$runner.name)}
 }
-$developText=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'develop.ps1'))
+$developText=[IO.File]::ReadAllText((Join-Path (Split-Path $PSScriptRoot -Parent) 'develop.ps1'))
 $developRuns=@([regex]::Matches($developText,"'((?:test-|verify-)[a-z-]+|smoke-test)'")|ForEach-Object {$_.Groups[1].Value}|Sort-Object -Unique)
 $coreRunners=@($runners|Where-Object {$_.tier -eq 'core'}|ForEach-Object {[string]$_.name}|Sort-Object)
 Check (-not (Compare-Object $developRuns $coreRunners)) ('Core tier differs from what develop.ps1 runs: '+((Compare-Object $developRuns $coreRunners|ForEach-Object {$_.InputObject})-join ', '))
-$scriptText=($scripts|ForEach-Object {[IO.File]::ReadAllText($_.FullName)})-join "`n"
+#Suites run case scripts from scripts/cases; harnesses loaded there are wired too.
+$scriptText=(@($scripts)+@(Get-ChildItem (Join-Path $root 'scripts/cases') -Filter '*.ps1')|ForEach-Object {[IO.File]::ReadAllText($_.FullName)})-join "`n"
 $orphans=@(Get-ChildItem (Join-Path $root 'tests') -Filter '*.bas'|Where-Object {$scriptText -notmatch [regex]::Escape($_.BaseName)}|ForEach-Object {$_.Name})
 Check ($orphans.Count -eq 0) ('No script loads these harnesses; remove them or wire them to a runner: '+($orphans -join ', '))
 Write-Output ('PASS: '+$checks+' build-plan preflight, dependency, identity, input-drift and runner-inventory checks')

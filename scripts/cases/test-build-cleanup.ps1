@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $hash=(Get-FileHash -LiteralPath $BuildPath -Algorithm SHA256).Hash
 $scratch=Join-Path $root ('build/tests/build-cleanup-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch

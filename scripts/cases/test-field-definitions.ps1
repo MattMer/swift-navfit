@@ -1,6 +1,6 @@
 param([string]$BuildPath)
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $catalogue=Get-Content (Join-Path $root 'src/field-definitions.json') -Raw|ConvertFrom-Json
 $fields=@($catalogue.fields|Sort-Object ordinal)
 $checks=0
@@ -94,8 +94,8 @@ if($BuildPath){
         [void]$app.Eval('CommitDraft(0,"EVAL","Catalogue extension","Synthetic",Null,Null,"")')
         # Exercise the production metadata generators against a disposable catalogue.
         $root=$fixture;$script:swiftManagedBuild=$true
-        . (Join-Path $PSScriptRoot 'apply-ux-field-catalogue.ps1')
-        . (Join-Path $PSScriptRoot 'apply-ux-surface-catalogue.ps1')
+        . (Join-Path (Split-Path $PSScriptRoot -Parent) 'apply-ux-field-catalogue.ps1')
+        . (Join-Path (Split-Path $PSScriptRoot -Parent) 'apply-ux-surface-catalogue.ps1')
         $root=$projectRoot
         $app.DoCmd.OpenForm('frmEditor',1)
         foreach($field in @($extra,$extraDate)){

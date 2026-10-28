@@ -23,9 +23,7 @@ if($Action -in @('Build','BuildAndTest')){
 $logFolder=Join-Path $root ('build/workflow/'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $logFolder)
 $script:workflowResults=[Collections.Generic.List[object]]::new()
-InvokeSwiftWorkflowStep 'test-build-plan' @() $logFolder
-InvokeSwiftWorkflowStep 'test-vba-source-normalization' @() $logFolder
-InvokeSwiftWorkflowStep 'test-field-definitions' @() $logFolder
+InvokeSwiftWorkflowStep 'test-source-contracts' @() $logFolder
 $compiledArtifact=$null;$compiler=$null;$extendedFlaky=@()
 if($Action -eq 'Compile'){
     $before=GetSwiftWorkflowArtifact $BuildPath
@@ -81,18 +79,20 @@ if($Action -in @('Test','BuildAndTest')){
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
     InvokeSwiftWorkflowStep 'test-report-tools' @('-BuildPath',$before.Path,'-SeedDemo') $logFolder
-    foreach($suite in @('test-contributor-startup','smoke-test','test-compat-pages','test-ux-workflows','test-directory-merge','test-architecture-views')){
+    foreach($suite in @('test-contributor-startup','smoke-test','test-compat-pages','test-ux-workflows','test-directory-merge')){
         InvokeSwiftWorkflowStep $suite @('-BuildPath',$before.Path) $logFolder
     }
+    InvokeSwiftWorkflowStep 'test-source-contracts' @('-BuildPath',$before.Path) $logFolder
     $after=GetSwiftWorkflowArtifact $before.Path
     if($after.SHA256 -ne $before.SHA256){throw 'Development tests changed the supplied artifact'}
 }
 if($Action -eq 'ExtendedTest'){
-    #The extended tier in tests/runners.json, run weekly and before every release.
+    #The extended tier in tests/runners.json, run weekly and before every release:
+    #extended runners, plus core suites run again with their extendedArgs.
     #Every runner runs even after a failure, so one run reports the whole tier.
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
-    $extended=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners|Where-Object {$_.tier -eq 'extended'})
+    $extended=@((Get-Content (Join-Path $root 'tests/runners.json') -Raw|ConvertFrom-Json).runners|Where-Object {$_.tier -eq 'extended' -or $_.extendedArgs})
     #A failed runner is retried once on a fresh copy (each run copies the build).
     #Failing then passing is FLAKY: reported by name with its evidence, never as a
     #clean pass. Failing twice is FAIL and fails the tier.

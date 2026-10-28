@@ -1,8 +1,8 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 #The finalizer re-checks the build inputs, so load the plan exactly as build.ps1 does.
-. (Join-Path $PSScriptRoot 'build-plan.ps1')
-$swiftBuildPlan=GetSwiftBuildPlan $root (Join-Path $PSScriptRoot 'build-manifest.json')
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'build-plan.ps1')
+$swiftBuildPlan=GetSwiftBuildPlan $root (Join-Path (Split-Path $PSScriptRoot -Parent) 'build-manifest.json')
 $swiftBuildTrace=[Collections.Generic.List[object]]::new()
 $OutputPath=Join-Path $root ('build/tests/finalization-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $OutputPath

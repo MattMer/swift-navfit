@@ -118,7 +118,7 @@ the checks you will run. Keep it brief.
 - Fixtures are generated from tracked definitions, or kept small and synthetic in
   the repository. Never depend on files outside it or on old outputs.
 - [tests/runners.json](tests/runners.json) lists every runner with its area and
-  tier. `test-build-plan.ps1` fails if a runner or harness is missing from it or
+  tier. `scripts/cases/test-build-plan.ps1` (run by `test-source-contracts`) fails if a runner or harness is missing from it or
   orphaned. Run `scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`
   weekly; release-check runs it too.
 
