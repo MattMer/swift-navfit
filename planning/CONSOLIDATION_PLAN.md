@@ -330,8 +330,11 @@ banner tooltip and never raises into the confirmation that refreshes it after a
 commit. A display refresh failure after an editor save reports the committed
 outcome. Group opening keeps the original error source through screen restoration.
 
-Further M04 review targets are derived-cache teardown (UXGridClose) and importer
-progress/display cleanup.
+The trait-grid cache close (UXGridClose) reports a cache file it cannot delete,
+which holds report values, and keeps its path so a later close retries; grid load
+failures keep their original error through cache cleanup. The workspace importer
+keeps the primary error through preview cleanup, and records progress-painting and
+display-restoration failures as secondary without failing the import.
 These still need fault diagnosis and focused checks before changes; optional
 focus/text/section probes are not defects merely because they suppress errors.
 

@@ -304,8 +304,16 @@ Public Function SeedWizardMigrationSource(ByVal folder As String, ByVal template
 Failed:
  SeedWizardMigrationSource = "FAIL: " & Err.Number & ": " & Err.Description
 End Function
+Private Function RejectedWorkspaceContext(ByVal path As String, ByVal hash As String) As Object
+ On Error GoTo Rejected
+ Call ImportSwiftWorkspaceData(path, hash)
+ Exit Function
+Rejected:
+ Set RejectedWorkspaceContext = SwiftLastFailureContext()
+End Function
 Public Function TestWizardMigration(ByVal path As String, ByVal expectedStage As String) As String
  Dim db As DAO.Database, rows As Collection, saved As Object, hash As String, count As Long
+ Dim expectedFailure As Object, actualFailure As Object, key As Variant, progressBinding As String, restoreProgress As Boolean
  On Error GoTo Failed
  Check SwitchContributor(CLng(DMin("UserProfileID", "UserProfile"))), "Bootstrap confirmation failed"
  hash = SourceFileHash(path)
@@ -320,13 +328,35 @@ Public Function TestWizardMigration(ByVal path As String, ByVal expectedStage As
  db.Execute "UPDATE Workspace SET CommandName='SYNTHETIC BOOTSTRAP'", dbFailOnError
  Check UXResumeSwiftWorkspace(), "Restored setup could not resume deliberately"
  db.TableDefs("WizardPreview").Fields("ChoiceXML").ValidationRule = "='FORCED LATE REJECTION'"
+ 'Establish the native primary independently of UI faults, on the same target.
+ Set expectedFailure = RejectedWorkspaceContext(path, hash)
+ Check Not expectedFailure Is Nothing, "Late rejection did not produce native diagnostics"
+ Check expectedFailure("Transaction") = "Rolled back", "Direct late rejection did not confirm rollback"
+ progressBinding = Forms!frmUXWorkspaceImport!txtProgress.ControlSource: restoreProgress = True
+ 'A calculated textbox rejects progress assignments without production test hooks.
+ Forms!frmUXWorkspaceImport!txtProgress.ControlSource = "='Synthetic progress paint failure'"
  Check Not UXApplySwiftWorkspace(), "Late staged-row failure was accepted"
+ Set actualFailure = SwiftLastFailureContext()
+ For Each key In Array("Number", "Description", "Source", "Stage", "Transaction")
+  Check actualFailure(key) = expectedFailure(key), "Progress/cleanup replaced primary " & key
+ Next
+ Check InStr(actualFailure("Cleanup"), "Paint progress (") > 0, "Optional progress failure was not recorded as secondary"
+ Check InStr(Forms!frmUXWorkspaceImport!lblStatus.Caption, "Diagnostic: " & actualFailure("Identity")) > 0, "Primary import diagnostic missing from feedback"
+ Check Not UXWorkspaceImportBusy() And Not Forms!frmUXWorkspaceImport.Modal, "Failed import left UI locked"
+ Check Forms!frmUXWorkspaceImport!cmdApply.Enabled And Forms!frmUXWorkspaceImport!cmdClose.Enabled, "Confirmed rollback did not restore retry/close"
  Check DCount("*", "Report") = 0, "Late failure did not roll back copied reports"
  Check DLookup("CommandName", "Workspace") = "SYNTHETIC BOOTSTRAP", "Late failure replaced bootstrap"
  Check DCount("*", "WizardPreview", "WizardKind='WorkspaceImport'") = 1, "Late failure lost the import descriptor"
  db.TableDefs("WizardPreview").Fields("ChoiceXML").ValidationRule = "": db.Close
  Check UXResumeSwiftWorkspace(), "Workspace preview could not resume after rollback"
+ 'Keep painting broken during retry: optional display faults must not fail data import.
  Check UXApplySwiftWorkspace(), "Workspace staged import retry failed"
+ Set actualFailure = SwiftLastFailureContext()
+ Check actualFailure("Transaction") = "Committed", "Retry display diagnostic lost committed outcome"
+ Check InStr(actualFailure("Cleanup"), "Paint progress (") > 0, "Retry did not exercise optional paint failure"
+ Check Not UXWorkspaceImportBusy() And Not Forms!frmUXWorkspaceImport.Modal, "Retry left importer busy/modal"
+ Check Not Forms!frmUXWorkspaceImport!cmdApply.Enabled And Forms!frmUXWorkspaceImport!cmdClose.Enabled, "Committed retry left wrong action state"
+ Forms!frmUXWorkspaceImport!txtProgress.ControlSource = progressBinding: restoreProgress = False
  Check DCount("*", "Report") = 1 And DCount("*", "ReportRevision") = 3, "Migration changed report history"
  Check SourceFileHash(path) = hash, "Workspace import changed source bytes"
  Check SwitchContributor(CLng(DMin("UserProfileID", "UserProfile"))), "Imported contributor confirmation failed"
@@ -338,6 +368,9 @@ Public Function TestWizardMigration(ByVal path As String, ByVal expectedStage As
  TestWizardMigration = "PASS: " & checks & " staged-state migration, late rollback and retry checks": Exit Function
 Failed:
  TestWizardMigration = "FAIL: " & Err.Number & ": " & Err.Description
+ On Error Resume Next
+ If restoreProgress Then Forms!frmUXWorkspaceImport!txtProgress.ControlSource = progressBinding
+ On Error GoTo 0
 End Function
 Public Function PrepareWorkspaceResume(ByVal path As String) As Boolean
  ConfigureWorkspace "SYNTHETIC BOOTSTRAP", "Bootstrap tester"

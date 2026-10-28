@@ -68,7 +68,10 @@ Private Sub UXGridPendingActions()
     End With
 End Sub
 ' Release the separate cache workspace and temporary file only when no pending cells remain.
+' The cache holds report values, so a file that survives is reported and its path kept
+' for a later close to retry; closing the derived cursors stays best effort.
 Public Function UXGridClose() As Boolean
+    Dim failure As Object
     If UXGridPendingCount() > 0 Then Exit Function
     loading = True
     On Error Resume Next
@@ -78,10 +81,18 @@ Public Function UXGridClose() As Boolean
     Set cacheDB = Nothing
     If Not cacheWorkspace Is Nothing Then cacheWorkspace.Close
     Set cacheWorkspace = Nothing
+    Err.Clear
     saving = False: Set queuedCells = Nothing
-    If Len(cachePath) > 0 Then Kill cachePath
     If Len(cachePath) > 0 Then
+        Kill cachePath
+        If Err.Number <> 0 Then Set failure = SwiftFailure("modUXTraitGrid", "UXGridClose", "Delete trait cache", Err.Number, Err.Description, Err.Source)
+        Err.Clear
         If Len(Dir$(cachePath)) = 0 Then cachePath = ""
+    End If
+    On Error GoTo 0
+    If Len(cachePath) > 0 Then
+        If failure Is Nothing Then Set failure = SwiftFailure("modUXTraitGrid", "UXGridClose", "Delete trait cache", vbObjectError + 4816, "The comparison cache file could not be removed.", "modUXTraitGrid.UXGridClose")
+        Exit Function
     End If
     UXGridClose = True
 End Function
@@ -89,7 +100,7 @@ End Function
 ' Use a separate DAO workspace to avoid locking the report save transaction; cached row
 ' state serves display-time guards. Refuse reload while unsaved queue values exist.
 Public Function UXGridLoad() As Boolean
-    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object, priorRows As Object, savedValues As Object, proposals As Object, entries As Collection, entry As Variant, reportSQL As String, revisionSQL As String, trans As Boolean, failure As Long, message As String, savedValue As Variant, memberLabel As String
+    Dim f As Access.Form, r As DAO.Recordset, p As DAO.Recordset, db As DAO.Database, sql As String, block As Long, id As Long, kind As String, previous As Object, priorRows As Object, savedValues As Object, proposals As Object, entries As Collection, entry As Variant, reportSQL As String, revisionSQL As String, trans As Boolean, loadFailure As Object, savedValue As Variant, memberLabel As String
     Call UXAssertView(UX_MEMBERS_VIEW): Call UXAssertView(UX_TRAIT_ROWS_VIEW)
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUXTraitGrid.UXGridLoad", "Retry or discard pending cells before refreshing the comparison."
     On Error GoTo Failed
@@ -211,18 +222,19 @@ Public Function UXGridLoad() As Boolean
     Call UXGridCurrent: Call UXGridViewport: UXGridLoad = True
     Exit Function
 Failed:
-    failure = Err.Number: message = Err.Description
+    Set loadFailure = SwiftFailure("modUXTraitGrid", "UXGridLoad", "Build comparison cache", Err.Number, Err.Description, IIf(Len(Err.Source) = 0, "modUXTraitGrid.UXGridLoad", Err.Source), IIf(trans, "Active", "Not started"))
     Resume CleanFailed
 CleanFailed:
+    If trans Then SwiftRollback cacheWorkspace, loadFailure
+    SwiftClose r, loadFailure, "r": SwiftClose p, loadFailure, "p"
     On Error Resume Next
-    If trans Then cacheWorkspace.Rollback
-    If Not r Is Nothing Then r.Close
-    If Not p Is Nothing Then p.Close
     Set f.Recordset = Nothing
-    Call UXGridClose
-    loading = False
+    If Err.Number <> 0 Then SwiftCleanupError loadFailure, "detach grid", Err.Number
     On Error GoTo 0
-    Err.Raise failure, "UXGridLoad", message
+    If Not UXGridClose() Then SwiftCleanupError loadFailure, "remove comparison cache", vbObjectError + 4816
+    Call SwiftFailureText(loadFailure) 'the load failure, not the cache cleanup, stays the last failure
+    loading = False
+    Err.Raise CLng(loadFailure("Number")), CStr(loadFailure("Source")), CStr(loadFailure("Description"))
 End Function
 Private Function UXGridSavedValue(ByVal values As Object, ByVal revision As Long, ByVal key As String) As Variant
     Dim token As String

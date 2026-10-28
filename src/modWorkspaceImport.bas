@@ -3,6 +3,7 @@ Option Explicit
 Private importPath As String, importHash As String
 Private importing As Boolean, importStarted As Date, progressText As String, lastProgressPaint As Single
 Private pulseBusy As Boolean, enabledBefore As Object, modalBefore As Boolean
+Private displayFailure As Object
 'Durable descriptors contain fingerprints and reviewed choices, never executable
 'source content. Live extracted values are rebuilt only by deliberate Resume.
 Private workspacePreview As Object
@@ -124,38 +125,50 @@ Failed:
  MsgBox Err.Description, vbExclamation, "Import Swift NAVFIT data"
 End Function
 Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
- Dim reader As DAO.Workspace, source As DAO.Database, r As DAO.Recordset, table As DAO.TableDef, text As String, version As Long, message As String
+ Dim reader As DAO.Workspace, source As DAO.Database, r As DAO.Recordset, table As DAO.TableDef, text As String, version As Long, stage As String, failure As Object
  On Error GoTo Failed
  If importing Then Exit Function
  importPath = "": importHash = "": Set workspacePreview = Nothing
+ stage = "Open preview source"
  If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "Choose a different Swift NAVFIT file."
  Set reader = DBEngine.CreateWorkspace("SwiftImportPreview", "admin", "", dbUseJet)
  Set source = reader.OpenDatabase(path, False, True)
- Set r = source.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot): version = r!SchemaVersion: r.Close
+ stage = "Read source schema"
+ Set r = source.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot): version = r!SchemaVersion: r.Close: Set r = Nothing
  If version < 1 Or version > SCHEMA_VERSION Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This source version is not supported by the current app. No data was changed."
  text = "Source: " & path & vbCrLf & "Schema " & version & " -> " & SCHEMA_VERSION & vbCrLf & vbCrLf
  For Each table In source.TableDefs
   If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
+   stage = "Count preview table " & table.Name
    Set r = source.OpenRecordset("SELECT Count(*) AS N FROM [" & table.Name & "]", dbOpenSnapshot)
-   text = text & table.Name & ": " & r!n & " rows" & vbCrLf: r.Close
+   text = text & table.Name & ": " & r!n & " rows" & vbCrLf: r.Close: Set r = Nothing
   End If
  Next
- source.Close: reader.Close
+ stage = "Close preview source"
+ source.Close: Set source = Nothing
+ reader.Close: Set reader = Nothing
+ stage = "Open preview display"
  DoCmd.OpenForm "frmUXWorkspaceImport"
  importHash = SourceFileHash(path): importPath = path
  Dim choices As Object, token As String
  Set choices = CreateObject("Scripting.Dictionary")
  choices.Add "TargetStamp", WizardWorkspaceStamp()
+ stage = "Save preview descriptor"
  token = WizardPreviewSave("WorkspaceImport", path, importHash, "", "", 0, 0, choices)
  Set workspacePreview = WizardPreviewLoad("WorkspaceImport")
+ stage = "Show preview"
  Forms!frmUXWorkspaceImport!txtPreview = text & vbCrLf & "All workspace data is copied, including revisions, reviews, members, defaults, recovery, history and import provenance. Source code/forms are not imported. Use a new blank app; this does not merge independent workspaces. Initial setup contributor details in an otherwise blank app will be replaced by the source workspace."
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = True
  UXPreviewSwiftWorkspace = True: Exit Function
 Failed:
- message = Err.Description
- On Error Resume Next: If Not source Is Nothing Then source.Close
- If Not reader Is Nothing Then reader.Close
- MsgBox "Unable to preview: " & message, vbExclamation, "Import Swift NAVFIT data"
+ Set failure = CaptureWorkspaceImportFailure("UXPreviewSwiftWorkspace", stage, Err.Number, Err.Description, Err.Source, "Not started")
+ SwiftClose r, failure, "preview recordset"
+ SwiftClose source, failure, "preview database"
+ SwiftClose reader, failure, "preview workspace"
+ On Error Resume Next
+ MsgBox "Unable to preview: " & SwiftFailureText(failure), vbExclamation, "Import Swift NAVFIT data"
+ If Err.Number <> 0 Then SwiftCleanupError failure, "show preview failure", Err.Number
+ On Error GoTo 0
 End Function
 Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As String, Optional ByRef transactionOutcome As String = "") As String
  Dim result As String, failure As Long, message As String, source As String, cause As Object
@@ -182,23 +195,39 @@ End Function
 Public Sub WorkspaceImportProgress(ByVal message As String, Optional ByVal forcePaint As Boolean = False)
  'Keep every log entry, but bound expensive control updates to four per second.
  'The modal importer disables actions; guarded pulses process repaint/window events.
- Dim elapsed As Single
+ Dim elapsed As Single, stage As String, active As String
  If Not importing Then Exit Sub
- On Error Resume Next
+ On Error GoTo Failed
+ stage = "Build progress text"
  progressText = progressText & Format$(Now, "hh:nn:ss") & "  " & message & vbCrLf
  If Len(progressText) > 28000 Then progressText = Right$(progressText, 24000)
  elapsed = Timer - lastProgressPaint
  If elapsed < 0 Then elapsed = elapsed + 86400!
  If Not forcePaint And elapsed < 0.25! Then Exit Sub
  lastProgressPaint = Timer
+ stage = "Paint progress"
  With Forms!frmUXWorkspaceImport
   !txtProgress = progressText
-  If Screen.ActiveControl.Name = "txtProgress" Then !txtProgress.SelStart = Len(progressText)
+  'No active control is a legitimate optional probe, not an import failure.
+  On Error Resume Next
+  active = Screen.ActiveControl.Name
+  Err.Clear
+  On Error GoTo Failed
+  If active = "txtProgress" Then !txtProgress.SelStart = Len(progressText)
   !lblStatus.Caption = "Import in progress - " & DateDiff("s", importStarted, Now) & " seconds elapsed. Please wait; keep Access open."
   .Repaint
  End With
+PaintStatus:
+ stage = "Paint status bar"
  SysCmd acSysCmdSetStatus, message
+Pulse:
  WorkspaceImportPulse
+ Exit Sub
+Failed:
+ RecordImportDisplayError displayFailure, stage, Err.Number, Err.Description, Err.Source
+ 'Painting is advisory. Keep status and event pulses working after a paint fault.
+ If stage = "Paint status bar" Then Resume Pulse
+ Resume PaintStatus
 End Sub
 Public Sub WorkspaceImportPulse()
  'Only the modal, action-disabled importer can receive user input during a yield.
@@ -224,44 +253,97 @@ End Sub
 Public Function UXWorkspaceImportBusy() As Boolean
  UXWorkspaceImportBusy = importing
 End Function
-Private Sub FinishImportDisplay()
- On Error Resume Next
+Private Sub RecordImportDisplayError(ByRef failure As Object, ByVal step As String, ByVal number As Long, ByVal description As String, ByVal source As String, Optional ByVal outcome As String = "Unknown", Optional ByVal procedure As String = "WorkspaceImportProgress")
+ If number = 0 Then Exit Sub
+ If failure Is Nothing Then Set failure = SwiftFailure("modWorkspaceImport", procedure, step, number, description, source, outcome)
+ SwiftCleanupError failure, step, number
+End Sub
+Private Function CaptureWorkspaceImportFailure(ByVal procedure As String, ByVal stage As String, ByVal number As Long, ByVal description As String, ByVal source As String, ByVal outcome As String) As Object
+ Dim cause As Object
+ Set cause = SwiftLastFailureContext()
+ 'Only reuse a context explicitly carried by this error, never stale diagnostics.
+ If Not cause Is Nothing Then
+  If cause("Number") = number And InStr(description, "Diagnostic: " & cause("Identity")) > 0 Then
+   Set CaptureWorkspaceImportFailure = cause: Exit Function
+  End If
+ End If
+ Set CaptureWorkspaceImportFailure = SwiftFailure("modWorkspaceImport", procedure, stage, number, description, source, outcome)
+End Function
+Private Sub FinishImportDisplay(ByRef failure As Object, ByVal outcome As String)
  Dim name As Variant
+ 'Release in-memory guards independently of optional UI restoration.
+ importing = False: pulseBusy = False
  If Not enabledBefore Is Nothing Then
   For Each name In enabledBefore.Keys
+   On Error Resume Next
    Forms!frmUXWorkspaceImport.Controls(CStr(name)).Enabled = enabledBefore(name)
+   If Err.Number <> 0 Then RecordImportDisplayError failure, "restore import action " & CStr(name), Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+   On Error GoTo 0
   Next
  End If
+ On Error Resume Next
  Forms!frmUXWorkspaceImport.Modal = modalBefore
- importing = False
+ If Err.Number <> 0 Then RecordImportDisplayError failure, "restore import modality", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+ On Error GoTo 0
  Set enabledBefore = Nothing
+ On Error Resume Next
  DoCmd.Hourglass False
+ If Err.Number <> 0 Then RecordImportDisplayError failure, "clear import hourglass", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+ On Error GoTo 0
+ On Error Resume Next
  SysCmd acSysCmdClearStatus
+ If Err.Number <> 0 Then RecordImportDisplayError failure, "clear import status bar", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+ On Error GoTo 0
+ On Error Resume Next
  Forms!frmUXWorkspaceImport!cmdClose.Enabled = True
+ If Err.Number <> 0 Then RecordImportDisplayError failure, "enable import close", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+ On Error GoTo 0
+ On Error Resume Next
  Forms!frmUXWorkspaceImport.Repaint
+ If Err.Number <> 0 Then RecordImportDisplayError failure, "repaint finished import", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
+ On Error GoTo 0
+ If Not failure Is Nothing Then
+  failure("Transaction") = outcome
+  Call SwiftFailureText(failure)
+ End If
 End Sub
 Public Function UXApplySwiftWorkspace() As Boolean
- Dim result As String, message As String, outcome As String, status As String, safeRetry As Boolean
+ Dim result As String, message As String, outcome As String, status As String, safeRetry As Boolean, stage As String
+ Dim failure As Object
  If importing Then Exit Function
+ Set displayFailure = Nothing
  outcome = "Not started"
  On Error GoTo Failed
+ stage = "Validate preview"
  If workspacePreview Is Nothing Then Err.Raise 5, "modWorkspaceImport.UXApplySwiftWorkspace", "Preview ownership was reset. Use Resume saved preview before Apply."
  WizardPreviewCheck "WorkspaceImport", workspacePreview("StageGuid")
  If importPath = "" Then Err.Raise 5, "modWorkspaceImport.UXApplySwiftWorkspace", "Choose and preview a previous Swift file first."
  importStarted = Now: progressText = "": lastProgressPaint = 0: importing = True
+ stage = "Lock import display"
  Forms!frmUXWorkspaceImport!txtProgress.SetFocus
  LockImportDisplay
  DoCmd.Hourglass True
  WorkspaceImportProgress "Import started. Copying workspace data, then verifying every original field in database-engine batches.", True
+ stage = "Import workspace data"
  result = ImportSwiftWorkspaceData(importPath, importHash, outcome)
+ stage = "Show committed import"
  WorkspaceImportProgress "Import committed successfully.", True
  Forms!frmUXWorkspaceImport!lblStatus.Caption = result & ". Close and reopen this app to load the imported workspace."
  importPath = "": importHash = "": Set workspacePreview = Nothing: UXApplySwiftWorkspace = True
- FinishImportDisplay
+ FinishImportDisplay displayFailure, outcome
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
  Exit Function
 Failed:
- message = Err.Description
+ 'Capture before any progress painting, control access or cleanup can replace Err.
+ Set failure = CaptureWorkspaceImportFailure("UXApplySwiftWorkspace", stage, Err.Number, Err.Description, Err.Source, outcome)
+ If Not displayFailure Is Nothing Then
+  If Len(displayFailure("Cleanup")) > 0 Then
+   If Len(failure("Cleanup")) > 0 Then failure("Cleanup") = failure("Cleanup") & "; "
+   failure("Cleanup") = failure("Cleanup") & displayFailure("Cleanup")
+  End If
+ End If
+ Set displayFailure = failure
+ message = SwiftFailureText(failure)
  Select Case outcome
  Case "Committed"
   status = "Import data was committed; finalization failed. Close and reopen this workspace before continuing. " & message
@@ -276,9 +358,16 @@ Failed:
   status = "Import stopped; rollback could not be confirmed. Inspect saved data before retrying. " & message
  End Select
  WorkspaceImportProgress status, True
+ On Error Resume Next
  Forms!frmUXWorkspaceImport!lblStatus.Caption = status & " Source data is unchanged."
- FinishImportDisplay
+ If Err.Number <> 0 Then SwiftCleanupError failure, "show import failure", Err.Number
+ On Error GoTo 0
+ FinishImportDisplay displayFailure, outcome
+ On Error Resume Next
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = (safeRetry And importPath <> "")
+ If Err.Number <> 0 Then SwiftCleanupError failure, "restore import retry", Err.Number
+ On Error GoTo 0
+ Call SwiftFailureText(failure)
 End Function
 Public Function UXResumeSwiftWorkspace() As Boolean
  Dim saved As Object

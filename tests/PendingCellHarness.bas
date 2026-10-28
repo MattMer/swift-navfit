@@ -72,8 +72,14 @@ Public Function TestPendingCells() As String
  Set f = Forms!frmUXComparison!uxTraitGrid.Form
  SelectRow first: Check SameFieldValue(f!Trait35.Value, MajorRevisionValue(CurrentRevision(first), "Trait35")), "Discard retained rejected field: displayed=" & Nz(f!Trait35, "<null>") & "; saved=" & Nz(MajorRevisionValue(CurrentRevision(first), "Trait35"), "<null>")
  SelectRow second: Check SameFieldValue(f!Trait36.Value, MajorRevisionValue(CurrentRevision(second), "Trait36")), "Discard retained later unsaved field"
+ 'A read-only cache file cannot be deleted: report it and keep its path for retry.
+ path = UXGridCacheFile(): SetAttr path, vbReadOnly
  Check UXCloseComparison(), "Close after discard failed"
  Check Not CurrentProject.AllForms("frmUXComparison").IsLoaded, "Close after discard left form open"
+ Check Len(Dir$(path)) > 0 And UXGridCacheFile() = path, "Undeletable cache path was forgotten"
+ Check SwiftLastFailureContext()("Procedure") = "UXGridClose" And SwiftLastFailureContext()("Stage") = "Delete trait cache" And SwiftLastFailureContext()("Number") <> 0, "Cache removal failure lost its diagnostic"
+ SetAttr path, vbNormal
+ Check UXGridClose() And UXGridCacheFile() = "", "Cache removal retry failed"
  Check Len(Dir$(path)) = 0, "Closed cache was not removed"
  Check SwitchContributor(otherProfile), "Contributor blocked after pending edits cleared"
  TestPendingCells = "PASS: " & checks & " pending-cell preservation, partial save, retry, database failure, native close cancellation, discard and attribution assertions": Exit Function
