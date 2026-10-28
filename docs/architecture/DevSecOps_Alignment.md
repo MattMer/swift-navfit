@@ -111,19 +111,19 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Dependency vulnerability checking | REQUIRED | Partial | The SBOM lists every run-time dependency; all are Windows or Office components patched through the Navy's Microsoft update channel. The VBScript dependency was removed in 0.49.0. No automated vulnerability feed is checked. |
 | Functional test | REQUIRED | Done | As in Develop |
 | Integration test | REQUIRED | Done | End-to-end workflow runners (`test-ux-workflows`, NAVFIT exchange, PDF output) |
-| Regression test (includes smoke tests) | REQUIRED | Done | `smoke-test`; BuildAndTest every build; ExtendedTest weekly and before every release |
+| Regression test (includes smoke tests) | REQUIRED | Done | `test-workspace-startup`; BuildAndTest every build; ExtendedTest weekly and before every release |
 | Release packaging | REQUIRED | Done | Blank and Demo builders; `test-compiled-distribution` checks a compiled ACCDE candidate |
 | Software integration test | REQUIRED | Done | Same as the integration test |
 | Static application security test and scan | REQUIRED | Partial | As in static analysis |
 | Store artifacts | REQUIRED | Done | GitHub releases with SHA-256 hashes; verified releases also on the project Drive folder |
-| System test | PREFERRED | Done | `test-ux-demo` on a populated Demo; startup under normal Office security and with content enabled |
+| System test | PREFERRED | Done | `test-workspace-startup -Tier extended -DemoPath <demo>`; startup under normal Office security and with content enabled |
 
 ## Test
 
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
 | API security tests | REQUIRED | N/A | No APIs |
-| Compliance scan | REQUIRED | Partial | Section 508 automated checks (`test-accessibility`). Workstation STIG compliance belongs to the command. |
+| Compliance scan | REQUIRED | Partial | Section 508 automated checks (`test-workspace-presentation`). Workstation STIG compliance belongs to the command. |
 | Database security test | PREFERRED | Partial | Validation rules and constraints are tested. PII protection relies on folder permissions (decision C01). No database security scanner. |
 | Dynamic application security test (DAST) | PREFERRED | N/A | No web or network application to probe |
 | Interactive application security test (IAST) | PREFERRED | N/A | Same reason |

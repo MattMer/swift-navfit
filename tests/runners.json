@@ -2,12 +2,17 @@
  "description": "Every test runner in scripts/ (test-*, verify-*, smoke-test), its feature area and when it runs. test-source-contracts.ps1 (its build-plan case) fails if this list and scripts/ disagree. Suites run case scripts from scripts/cases, which are not listed. Tiers: core runs in every develop.ps1 Test/BuildAndTest; release runs from release-check.ps1; extended runs with develop.ps1 -Action ExtendedTest (weekly and before every release) with -BuildPath plus any extraArgs, and that action also reruns each core suite that has extendedArgs with those arguments; manual needs other inputs (see note); helper is called by other scripts; pending fails today and is not run (see note).",
  "runners": [
   {
-   "name": "smoke-test",
+   "name": "test-workspace-startup",
    "area": "Workspace and settings",
-   "tier": "core"
+   "tier": "core",
+   "note": "Extended adds normal startup; populated demo case needs -DemoPath, otherwise SKIP.",
+   "extendedArgs": [
+    "-Tier",
+    "extended"
+   ]
   },
   {
-   "name": "test-accessibility",
+   "name": "test-workspace-presentation",
    "area": "Workspace and settings",
    "tier": "extended"
   },
@@ -22,21 +27,16 @@
    "tier": "extended"
   },
   {
-   "name": "test-audit-conversations-navigation",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
    "name": "test-audit-message-transfer",
    "area": "Import and transfer",
    "tier": "manual",
    "note": "Needs BuildPath, FixtureMapPath."
   },
   {
-   "name": "test-batched-reads",
+   "name": "test-workspace-read-performance",
    "area": "Workspace and settings",
-   "tier": "manual",
-   "note": "Needs BuildPath, BaselinePath."
+   "tier": "extended",
+   "note": "test-batched-reads is stale (retired frmBulkFolders); manual only with -IncludeStaleBatchedReads -BaselinePath. Other cases run with -BuildPath."
   },
   {
    "name": "test-bulk-workspace-import",
@@ -44,9 +44,13 @@
    "tier": "extended"
   },
   {
-   "name": "test-compat-pages",
+   "name": "test-report-pages",
    "area": "Report editor and pages",
-   "tier": "core"
+   "tier": "core",
+   "extendedArgs": [
+    "-Tier",
+    "extended"
+   ]
   },
   {
    "name": "test-compiled-distribution",
@@ -54,20 +58,10 @@
    "tier": "core"
   },
   {
-   "name": "test-context-help",
-   "area": "Report editor and pages",
-   "tier": "release"
-  },
-  {
    "name": "test-contributor-context",
    "area": "Report editor and pages",
    "tier": "helper",
    "note": "Shared contributor-selection helper loaded by other runners."
-  },
-  {
-   "name": "test-contributor-startup",
-   "area": "Workspace and settings",
-   "tier": "core"
   },
   {
    "name": "test-counseling",
@@ -180,11 +174,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-native-dates",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
    "name": "test-native-group-discovery",
    "area": "Groups, directory and members",
    "tier": "extended"
@@ -216,23 +205,13 @@
    "tier": "extended"
   },
   {
-   "name": "test-navigation-context",
+   "name": "test-report-navigation",
    "area": "Report editor and pages",
    "tier": "extended"
   },
   {
    "name": "test-o3-cells",
    "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-page-switch",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-page-width",
-   "area": "Report editor and pages",
    "tier": "extended"
   },
   {
@@ -277,20 +256,10 @@
    "note": "Called by package-pdf-target-check.ps1 on a target computer."
   },
   {
-   "name": "test-pending-cells",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
    "name": "test-persistence-transfer",
    "area": "Import and transfer",
    "tier": "manual",
    "note": "Needs BuildPath, LegacyTemplate."
-  },
-  {
-   "name": "test-preview-launch",
-   "area": "Report editor and pages",
-   "tier": "release"
   },
   {
    "name": "test-promotion-status",
@@ -298,7 +267,7 @@
    "tier": "extended"
   },
   {
-   "name": "test-provenance",
+   "name": "test-workspace-resources",
    "area": "Workspace and settings",
    "tier": "extended"
   },
@@ -318,7 +287,7 @@
    "tier": "extended"
   },
   {
-   "name": "test-report-context",
+   "name": "test-report-field-tools",
    "area": "Report editor and pages",
    "tier": "extended"
   },
@@ -326,11 +295,6 @@
    "name": "test-report-message-import",
    "area": "Import and transfer",
    "tier": "release"
-  },
-  {
-   "name": "test-report-notes",
-   "area": "Report editor and pages",
-   "tier": "extended"
   },
   {
    "name": "test-report-people",
@@ -342,23 +306,18 @@
    "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
   },
   {
-   "name": "test-report-tools",
+   "name": "test-report-review-history",
    "area": "Report editor and pages",
-   "tier": "core"
+   "tier": "core",
+   "extendedArgs": [
+    "-Tier",
+    "extended",
+    "-SeedDemo"
+   ]
   },
   {
    "name": "test-reporting-senior",
    "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-revision-compare",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-routing",
-   "area": "Report editor and pages",
    "tier": "extended"
   },
   {
@@ -392,11 +351,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-signoff",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
    "name": "test-source-contracts",
    "area": "Build and source",
    "tier": "core",
@@ -406,11 +360,6 @@
    "name": "test-swift-data-import",
    "area": "Import and transfer",
    "tier": "release"
-  },
-  {
-   "name": "test-table-sort",
-   "area": "Workspace and settings",
-   "tier": "extended"
   },
   {
    "name": "test-traits",
@@ -424,48 +373,13 @@
    "note": "Needs SourcePath, CandidatePath."
   },
   {
-   "name": "test-ux-admin-feedback",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-block-tools",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-date-pickers",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-demo",
-   "area": "Workspace and settings",
-   "tier": "release"
-  },
-  {
    "name": "test-ux-directory",
    "area": "Groups, directory and members",
    "tier": "release"
   },
   {
-   "name": "test-ux-export-names",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-feedback",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
    "name": "test-ux-global-defaults",
    "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-grid-reads",
-   "area": "Workspace and settings",
    "tier": "extended"
   },
   {
@@ -487,16 +401,6 @@
   {
    "name": "test-ux-group-reads",
    "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-header-review",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-help",
-   "area": "Workspace and settings",
    "tier": "extended"
   },
   {
@@ -525,53 +429,8 @@
    "tier": "extended"
   },
   {
-   "name": "test-ux-organization",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-performance",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
    "name": "test-ux-prior-grid",
    "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-read-rows",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-resource-tools",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-responsive-identity",
-   "area": "Workspace and settings",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-review-return",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-shell",
-   "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-startup",
-   "area": "Workspace and settings",
-   "tier": "release"
-  },
-  {
-   "name": "test-ux-surface",
-   "area": "Report editor and pages",
    "tier": "extended"
   },
   {
@@ -593,11 +452,6 @@
    "name": "test-ux-workflows",
    "area": "Workflow and validation",
    "tier": "core"
-  },
-  {
-   "name": "test-visual",
-   "area": "Report editor and pages",
-   "tier": "extended"
   },
   {
    "name": "test-wizard-state",
@@ -632,11 +486,6 @@
    "area": "NAVFIT and PDF exchange",
    "tier": "manual",
    "note": "Needs BeforePath, AfterPath, EvidencePath."
-  },
-  {
-   "name": "verify-table-sort-bindings",
-   "area": "Workspace and settings",
-   "tier": "extended"
   },
   {
    "name": "verify-ux-immediate-defaults",

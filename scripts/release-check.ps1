@@ -18,9 +18,9 @@ $script:workflowResults=[Collections.Generic.List[object]]::new()
 InvokeSwiftWorkflowStep 'test-source-contracts' @() $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$blank.Path,'-RequireBlank') $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$demo.Path) $logFolder
+InvokeSwiftWorkflowStep 'test-workspace-startup' @('-BuildPath',$blank.Path,'-Tier','extended','-DemoPath',$demo.Path) $logFolder
 foreach($artifact in @($blank,$demo)){
-    InvokeSwiftWorkflowStep 'test-ux-startup' @('-BuildPath',$artifact.Path) $logFolder
-    InvokeSwiftWorkflowStep 'test-preview-launch' @('-BuildPath',$artifact.Path) $logFolder
+    InvokeSwiftWorkflowStep 'test-report-navigation' @('-BuildPath',$artifact.Path) $logFolder
 }
 $directoryArguments=@('-BlankPath',$blank.Path,'-DemoPath',$demo.Path)
 if($CurrentFixturesOnly){$directoryArguments+='-CurrentFixturesOnly'}
@@ -31,7 +31,7 @@ if($migration.Status -ne 'PASS' -or (Compare-Object $expectedSchemas @($migratio
 foreach($guard in @('Rollback','ChangedSourceRejected','PopulatedTargetRejected','UnknownTableRejected','FutureSchemaRejected','UIEntryPointTested')){
     if($migration.$guard -ne $true){throw ('Missing release migration guard: '+$guard)}
 }
-foreach($suite in @('test-contributor-startup','test-compat-pages','test-ux-workflows','test-group-exit')){
+foreach($suite in @('test-workspace-startup','test-report-pages','test-ux-workflows','test-group-exit')){
     InvokeSwiftWorkflowStep $suite @('-BuildPath',$blank.Path) $logFolder
 }
 InvokeSwiftWorkflowStep 'test-engine-verification' @('-BuildPath',$blank.Path,'-SourcePath',$demo.Path) $logFolder

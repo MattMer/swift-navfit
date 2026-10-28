@@ -87,3 +87,12 @@ Add a non-form resource as a manifest stage rather than a hidden nested build
 call, and declare its inputs. Any source or input change during a build
 invalidates its receipt; rebuild from the final source. Keep old release
 binaries and populated workspaces untouched.
+
+Workspace startup checks run through `scripts/test-workspace-startup.ps1`
+(core by default; `-Tier extended -DemoPath <demo>` adds startup/demo cases).
+Report compatibility runs through `scripts/test-report-pages.ps1`, and report
+tools through `scripts/test-report-review-history.ps1 -SeedDemo`; both accept
+`-Tier extended`. Other workspace/report suites are scheduled by
+`tests/runners.json`; see the parameters in
+[Development_Workflow.md](../docs/Development_Workflow.md#workspace-and-report-suites-m08).
+Their unchanged case bodies live in `scripts/cases/` and use suite-common.ps1.

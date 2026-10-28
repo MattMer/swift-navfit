@@ -252,12 +252,13 @@ the skipped unhandled-error proof. The default still requires the supervised err
 
 ### Batched read verification (M03)
 
-Use [test-batched-reads.ps1](../scripts/test-batched-reads.ps1) for native output,
+The stale batched-read case opens retired frmBulkFolders; run it only explicitly with
+`-IncludeStaleBatchedReads -BaselinePath`. Use [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for native output,
 guard and performance proof before the final fresh build, then repeat without
 `-InstallSource` against the exact final artifact:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-batched-reads.ps1 -BuildPath "D:\path\candidate-blank.accdb" -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
+powershell.exe -NoProfile -File scripts/test-workspace-read-performance.ps1 -BuildPath "D:\path\candidate-blank.accdb" -IncludeStaleBatchedReads -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
 ```
 
 It owns sequential disposable copies, seeds synthetic data, copies it through the
@@ -271,10 +272,10 @@ reuses an unchanged synthetic benchmark fixture through production import, avoid
 repeated seeding; its command marker/row counts and source hash are checked. Do
 not use a populated operational workspace as benchmark data.
 
-Run [test-ux-read-rows.ps1](../scripts/test-ux-read-rows.ps1) for Reports
+Run [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for Reports
 prepared-row equivalence, sorting/filtering and null/NOB/missing-field cases,
 [test-ux-my-work.ps1](../scripts/test-ux-my-work.ps1) for My Work behavior, and
-[test-ux-performance.ps1](../scripts/test-ux-performance.ps1) for refresh/state
+[test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for refresh/state
 invariants. Deliberate cache divergence must reject writes; restore the exact
 synthetic values before testing unrelated mutations. The benchmark accepts up to
 1,000 reports plus 1,000 prior evaluations; same-version comparisons measure
@@ -360,7 +361,7 @@ acceptance or printed-fit claim. Actual serialization/capacity limits still fail
 without truncation/coercion; readiness findings do not require acknowledgement.
 
 For editor navigation/trait changes after a VBA reset, run the existing focused
-runner with `scripts/test-compat-pages.ps1 -BuildPath <blank> -EditorReset`.
+runner with `scripts/test-report-pages.ps1 -BuildPath <blank> -EditorReset`.
 It resets the real VBA project between preparation and verification, then checks
 authored Chief comments, original revision guards, raw invalid-value recovery,
 and return to the same summary group. A successful recovery checkpoint permits
@@ -386,7 +387,7 @@ counts after reopening. No fault hooks are shipped in application source.
 For the summary-list M03 read optimization, use the existing lifecycle runner:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-ux-group-lifecycle.ps1 -BuildPath "D:\path\candidate.accdb" -BaselinePath "D:\path\baseline.accdb" -GroupListBenchmark -Groups 40 -Members 10 -Trials 5
+powershell.exe -NoProfile -File scripts/test-ux-group-lifecycle.ps1 -BuildPath "D:\path\candidate.accdb" -IncludeStaleBatchedReads -BaselinePath "D:\path\baseline.accdb" -GroupListBenchmark -Groups 40 -Members 10 -Trials 5
 ```
 
 It compares all eight displayed cells and order for All/Active/Archived, covers
@@ -404,8 +405,8 @@ native runners sequentially on disposable copies:
 ```powershell
 powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb"
 powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb" -AdversarialPreviews
-powershell.exe -NoProfile -File scripts/test-ux-organization.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-ux-organization.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
+powershell.exe -NoProfile -File scripts/test-workspace-resources.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-workspace-resources.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
 powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb"
 powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
 ```
@@ -495,7 +496,7 @@ powershell.exe -NoProfile -File scripts/test-ux-validation.ps1 -BuildPath "D:\pa
 powershell.exe -NoProfile -File scripts/test-major-ui.ps1 -BuildPath "D:\path\blank.accdb"
 powershell.exe -NoProfile -File scripts/test-live-members.ps1 -BuildPath "D:\path\blank.accdb"
 powershell.exe -NoProfile -File scripts/test-group-exit.ps1 -BuildPath "D:\path\blank.accdb" -TaskOrders
-powershell.exe -NoProfile -File scripts/test-compat-pages.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-report-pages.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
 The six task orders alternate PDF preview, saved NAVFIT export and read-only
@@ -785,3 +786,25 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#how-to-work) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
 
 These working defaults allow justified debugging, native testing and broader validation. They do not relax mandatory session ownership, data protection, source/artifact verification or release requirements.
+
+### Workspace and report suites (M08)
+
+All eight suites take `-BuildPath <fresh blank>`. Core suites
+`test-workspace-startup`, `test-report-pages` and `test-report-review-history`
+run their core cases by default; `-Tier extended` adds the other cases.
+Startup's demo case also needs `-DemoPath <populated synthetic demo>`; without
+it the suite prints SKIP. Review-history takes `-SeedDemo` for a blank build
+(as develop and its registry extendedArgs supply), and optional `-FixturePath`
+for the report-notes output copy. Pages forwards `-EntryLabelsOnly`,
+`-InstallSource` and `-EditorReset` to the compatibility case.
+
+Extended-only suites run all build-only cases: `test-workspace-resources`
+(optional `-DisplayFaultOnly`), `test-workspace-presentation` (optional
+`-UseWorkingSource`), `test-workspace-read-performance`,
+`test-report-field-tools` and `test-report-navigation`.
+Read-performance skips the unchanged stale batched-read case unless both
+`-IncludeStaleBatchedReads` and `-BaselinePath` are supplied; it forwards
+`-InstallSource`, `-Size` (500), `-Trials` (5), and `-DataSourcePath` there.
+Each missing prerequisite prints SKIP, not a case PASS. Focused manual commands
+may use `scripts/cases/<case>.ps1`; `test-contributor-context.ps1` remains a
+shared library in scripts/.

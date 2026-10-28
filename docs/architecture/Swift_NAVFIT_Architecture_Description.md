@@ -69,7 +69,7 @@ The full AV-1 is [views/AV-1.md](views/AV-1.md).
 
 | Evaluation | Result | Where |
 | --- | --- | --- |
-| Section 508 / WCAG 2.0 AA (automated) | 12 contrast pairs at 4.5:1 or better; every input and button named; Windows contrast themes followed | `scripts/test-accessibility.ps1`; conformance report draft |
+| Section 508 / WCAG 2.0 AA (automated) | 12 contrast pairs at 4.5:1 or better; every input and button named; Windows contrast themes followed | `scripts/test-workspace-presentation.ps1`; conformance report draft |
 | Section 508 (screen reader, attended) | Not yet performed | [Screen-reader test](../Accessibility_Screen_Reader_Test.md) |
 | Historical import (every prior schema) | Every schema 1–34 imports through the production path | `scripts/test-swift-data-import.ps1` |
 | Extended regression tier | All runners pass on the current build | `scripts/develop.ps1 -Action ExtendedTest` |

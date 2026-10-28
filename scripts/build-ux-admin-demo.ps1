@@ -26,7 +26,7 @@ try {
  $app.DoCmd.RunCommand(126);$app.CloseCurrentDatabase()
 } finally {$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
 if((Get-FileHash -LiteralPath $TemplatePath).Hash -ne $sourceHash){throw 'Demo build changed its source template'}
-foreach($suite in @('test-ux-demo','test-preview-launch')){
+foreach($suite in @('cases/test-ux-demo','cases/test-preview-launch')){
  & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ($suite+'.ps1')) -BuildPath $OutputPath
  if($LASTEXITCODE -ne 0){throw ($suite+' failed; demo is not verified')}
 }

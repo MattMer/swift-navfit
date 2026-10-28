@@ -48,10 +48,29 @@ scripts/suite-common.ps1: every case runs on its own copy and any failure fails
 the suite. Codex can't write .git (index.lock) from its sandbox; Claude stages
 and commits.
 
+## M08 continuation (28 October)
+
+Workspace/settings: 19 runners -> four workspace suites. Report editor/pages:
+22 runners -> four report suites; test-contributor-context stays a top-level
+helper. Case scripts moved to scripts/cases with only script-root substitutions.
+Registry, develop/release/directory/demo callers and current docs updated.
+ExtendedTest now passes registry extendedArgs; review-history includes -SeedDemo.
+Startup core needs a blank; extended demo coverage needs optional -DemoPath
+(populated synthetic Demo), otherwise prints SKIP. Stale batched-reads remains
+unchanged, manual only with -IncludeStaleBatchedReads and -BaselinePath.
+
+Checks: static test-source-contracts PASS (all three cases), git diff --check
+PASS; all 41 moved bodies match HEAD apart from script-root paths; 11 stubbed
+suite dispatch checks PASS. No native verification performed. Codex launched no
+Access, owns no database/PID, and has nothing to close. git mv was denied by the
+read-only index; plain moves used. Nothing staged, committed or pushed.
+
 ## Exact next actions
 
-1. M08 area 3, Build and source: the case scripts move to scripts/cases/ and run
-   from two suites, test-source-contracts and verify-build-artifact, each with a
-   `-Tier extended` mode. Registry entries get `extendedArgs`, and develop.ps1
-   runs them in ExtendedTest. Then areas 4-9 in the plan order.
-2. Update this file at milestones and before stopping.
+1. User runs native suites on disposable artifacts, including startup with
+   `powershell.exe -NoProfile -File scripts/test-workspace-startup.ps1 -BuildPath <blank> -Tier extended -DemoPath <demo>`.
+   Run `powershell.exe -NoProfile -File scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`
+   for scheduled coverage; the optional demo and stale cases are explicitly skipped
+   without their inputs. Do not interpret static checks as native coverage.
+2. Review/commit workspace and report areas separately (shared support files need
+   hunk staging); then continue remaining M08 areas in backlog order.

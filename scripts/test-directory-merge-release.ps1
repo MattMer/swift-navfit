@@ -11,9 +11,10 @@ function NativeCheck([string]$script,[string[]]$arguments){
 }
 NativeCheck 'test-directory-merge' @('-BuildPath',$BlankPath)
 $fixture=(Get-Content (Join-Path $root 'build/directory-merge-verification.json') -Raw|ConvertFrom-Json).Fixture
-foreach($script in @('test-directory-history','test-directory-batch','test-ux-directory','test-context-help','smoke-test')){NativeCheck $script @('-BuildPath',$BlankPath)}
+foreach($script in @('test-directory-history','test-directory-batch','test-ux-directory','test-report-navigation')){NativeCheck $script @('-BuildPath',$BlankPath)}
 NativeCheck 'verify-build-artifact' @('-BuildPath',$BlankPath,'-RequireBlank','-Tier','extended')
-foreach($script in @('test-ux-demo','test-report-tools')){NativeCheck $script @('-BuildPath',$DemoPath)}
+NativeCheck 'test-workspace-startup' @('-BuildPath',$BlankPath,'-Tier','extended','-DemoPath',$DemoPath)
+NativeCheck 'test-report-review-history' @('-BuildPath',$DemoPath)
 if(-not $CurrentFixturesOnly){NativeCheck 'test-workspace-upgrade' @('-TemplatePath',$BlankPath,'-SourceWorkspacePath',$DemoPath)}
 NativeCheck 'test-directory-merge-transfer' @('-TemplatePath',$BlankPath,'-SourcePath',$fixture)
 if($CurrentFixturesOnly){

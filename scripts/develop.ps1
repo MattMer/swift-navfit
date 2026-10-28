@@ -78,8 +78,8 @@ if($Action -in @('Build','BuildAndTest')){InvokeSwiftWorkflowStep 'build' @('-Ou
 if($Action -in @('Test','BuildAndTest')){
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
-    InvokeSwiftWorkflowStep 'test-report-tools' @('-BuildPath',$before.Path,'-SeedDemo') $logFolder
-    foreach($suite in @('test-contributor-startup','smoke-test','test-compat-pages','test-ux-workflows','test-directory-merge')){
+    InvokeSwiftWorkflowStep 'test-report-review-history' @('-BuildPath',$before.Path,'-SeedDemo') $logFolder
+    foreach($suite in @('test-workspace-startup','test-report-pages','test-ux-workflows','test-directory-merge')){
         InvokeSwiftWorkflowStep $suite @('-BuildPath',$before.Path) $logFolder
     }
     InvokeSwiftWorkflowStep 'test-source-contracts' @('-BuildPath',$before.Path) $logFolder
@@ -98,7 +98,7 @@ if($Action -eq 'ExtendedTest'){
     #clean pass. Failing twice is FAIL and fails the tier.
     $failed=@();$flaky=[Collections.Generic.List[object]]::new()
     foreach($runner in $extended){
-        $arguments=@('-BuildPath',$before.Path)+@($runner.extraArgs|Where-Object {$_})
+        $arguments=@('-BuildPath',$before.Path)+@($runner.extraArgs|Where-Object {$_})+@($runner.extendedArgs|Where-Object {$_})
         $first=InvokeSwiftMonitoredStep ([string]$runner.name) $arguments $logFolder
         $status='PASS';$evidence=$null
         if($first.ExitCode -ne 0){
