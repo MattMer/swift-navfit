@@ -215,11 +215,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-narrative-layout",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
    "name": "test-narratives",
    "area": "Traits and narratives",
    "tier": "extended"
@@ -457,26 +452,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-trait-catalogue",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
-   "name": "test-trait-events",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
-   "name": "test-trait-queue",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
-   "name": "test-trait-summary",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
    "name": "test-traits",
    "area": "Traits and narratives",
    "tier": "extended"
@@ -589,11 +564,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-ux-navywriter",
-   "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
    "name": "test-ux-organization",
    "area": "Workspace and settings",
    "tier": "extended"
@@ -641,11 +611,6 @@
   {
    "name": "test-ux-surface",
    "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-trait-retry",
-   "area": "Traits and narratives",
    "tier": "extended"
   },
   {

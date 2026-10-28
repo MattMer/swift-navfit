@@ -301,7 +301,7 @@ against the exact final blank without `-InstallSource`:
 
 ```powershell
 powershell.exe -NoProfile -File scripts/test-major.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\schema31-blank.accdb" -OlderPath "D:\path\schema30-blank.accdb"
-powershell.exe -NoProfile -File scripts/test-ux-trait-retry.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
 The major runner owns sequential disposable sessions and checks existing batch,
@@ -444,7 +444,7 @@ source installation against the exact final blank:
 
 ```powershell
 powershell.exe -NoProfile -File scripts/test-diagnostics-contracts.ps1 -BuildPath "D:\path\blank.accdb" -VerifyViews
-powershell.exe -NoProfile -File scripts/test-trait-catalogue.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema30-blank.accdb"
+powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema30-blank.accdb"
 ```
 
 The diagnostics runner owns disposable copies and tests original/cleanup error
