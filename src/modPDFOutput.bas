@@ -8,6 +8,8 @@ Private printPages As Collection
 Private cachePath As String, outputFailure As String
 Private exporting As Boolean
 Private previewFolder As String
+'Text slots and background the open print report last showed ("*" = unknown).
+Private shownSlots As Long, shownBackground As String
 Private Type PDFExtent
     Width As Long
     Height As Long
@@ -227,7 +229,10 @@ Public Function PDFOutputReportOpen(ByVal report As Access.Report) As Boolean
     If job Is Nothing Then Err.Raise vbObjectError + 9100, "modPDFOutput.PDFOutputReportOpen", "PDF preview expired. Refresh it before generating."
     If cachePath = "" Or printPages Is Nothing Then Err.Raise 5, "modPDFOutput.PDFOutputReportOpen", "PDF page cache is unavailable."
     sql = "SELECT * FROM PDFPage IN '" & Replace(cachePath, "'", "''") & "' ORDER BY PageNo"
-    report.RecordSource = sql: PDFOutputReportOpen = True: Exit Function
+    report.RecordSource = sql
+    'A new report instance starts from its design, so the first page resets every control.
+    shownSlots = PDF_OUTPUT_SLOTS: shownBackground = "*"
+    PDFOutputReportOpen = True: Exit Function
 Failed:
     outputFailure = "Open print report: " & Err.Number & " " & Err.Description
 End Function
@@ -238,11 +243,19 @@ Public Function PDFOutputFormat(ByVal report As Access.Report) As Boolean
     If report.HasData = 0 Then Exit Function
     Set page = printPages(CLng(report!txtPageNo))
     stage = "reset controls"
-    For Each name In PDFPrintBackgrounds()
-        report.Controls("bg_" & name).Visible = False
-    Next
-    For i = 1 To PDF_OUTPUT_SLOTS: report.Controls("v" & Format$(i, "000")).Visible = False: Next
+    'Hide only what the previous page showed; resetting all 340 slots on every
+    'page dominated packet time.
+    If shownBackground = "*" Then
+        For Each name In PDFPrintBackgrounds()
+            report.Controls("bg_" & name).Visible = False
+        Next
+    ElseIf shownBackground <> "" And shownBackground <> page("Background") Then
+        report.Controls("bg_" & shownBackground).Visible = False
+    End If
+    For i = page("Slots").Count + 1 To shownSlots: report.Controls("v" & Format$(i, "000")).Visible = False: Next
     If page("Background") <> "" Then report.Controls("bg_" & page("Background")).Visible = True
+    shownBackground = page("Background")
+    If shownSlots < page("Slots").Count Then shownSlots = page("Slots").Count
     For Each slot In page("Slots")
         used = used + 1: Set c = report.Controls("v" & Format$(used, "000"))
         stage = "slot " & used & " on page " & report.CurrentRecord
@@ -253,8 +266,10 @@ Public Function PDFOutputFormat(ByVal report As Access.Report) As Boolean
         c.FontBold = slot(9)
         c.BackStyle = IIf(slot(8), 1, 0): c.BackColor = vbWhite: c.Visible = True
     Next
+    shownSlots = used
     PDFOutputFormat = True: Exit Function
 Failed:
+    shownSlots = PDF_OUTPUT_SLOTS: shownBackground = "*"
     If outputFailure = "" Then outputFailure = "Format PDF page (" & stage & "): " & Err.Number & " " & Err.Description
 End Function
 Private Sub ClosePrintReport()
