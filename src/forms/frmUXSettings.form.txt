@@ -14,7 +14,7 @@ Begin Form
     Right =19725
     Bottom =13245
     Caption ="Settings & Help"
-    OnActivate ="=UXVisualEvent(\"frmUXSettings\",\"UXLoadContext()\")"
+    OnActivate ="=UXVisualEvent(\"frmUXSettings\",\"UXSettingsActivate()\")"
     OnResize ="=UXHelpResize(\"frmUXSettings\",\"UXResizeWorkspace(\"\"frmUXSettings\"\")\")"
     FilterOnLoad =0
     AllowLayoutView =0
@@ -106,7 +106,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =8350
+            Height =9000
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -806,7 +806,25 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
-            End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =8200
+                    Width =9950
+                    Height =600
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxWorkspaceSize"
+                    Caption ="Workspace file size"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8200
+                    LayoutCachedWidth =12800
+                    LayoutCachedHeight =8800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End            End
         End
     End
 End

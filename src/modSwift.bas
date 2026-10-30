@@ -545,7 +545,7 @@ Failed:
 End Function
 
 Public Function LoadSupport() As Boolean
-    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & "NAVFIT adapter: 75 mapped saved values; 128 native columns retained; report/group export and guarded return preview; verify files in NAVFIT98A" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
+    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & WorkspaceSizeText(WorkspaceFileBytes()) & vbCrLf & "NAVFIT adapter: 75 mapped saved values; 128 native columns retained; report/group export and guarded return preview; verify files in NAVFIT98A" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
     LoadSupport = True
 End Function
 

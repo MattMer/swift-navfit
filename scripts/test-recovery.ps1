@@ -59,6 +59,13 @@ try {
  $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($source,$true)
  if($InstallSource){$app.LoadFromText(5,'modBackupUI',(Join-Path $root 'src/modBackupUI.bas'))}
  $app.LoadFromText(5,'BackupHarness',(Join-Path $root 'tests/BackupHarness.bas'));$app.DoCmd.RunCommand(126)
+ #Workspace size against the 2 GB Access limit (L03): below and at the 1.5 GB warning.
+ AssertBackup ($app.Eval('WorkspaceSizeText(1048576)') -like 'Workspace file: 1.0 MB of the 2 GB Access limit (0%).') 'Workspace size text below the warning differs'
+ AssertBackup (($app.Eval('WorkspaceSizeText(1610612736)') -like 'Warning: * 1.50 GB of the 2 GB Access limit.*') -and -not $app.Eval('WorkspaceSizeNearLimit(1610612735)')) 'Workspace size warning threshold differs'
+ $app.DoCmd.OpenForm('frmUXSettings');[void]$app.Eval('UXSettingsActivate()')
+ AssertBackup ($app.Eval('Forms!frmUXSettings!uxWorkspaceSize.Caption') -like 'Workspace file: * MB of the 2 GB Access limit (*%).') 'Settings & Help does not show the workspace size'
+ AssertBackup ($app.Eval('WorkspaceFileBytes()') -eq (Get-Item -LiteralPath $source).Length) 'Workspace size differs from the file on disk'
+ $app.DoCmd.Close(2,'frmUXSettings',2)
  $result=$app.Eval('PrepareBackupCheckpoint()');AssertBackup ($result -like 'PASS:*') $result
  AssertBackup ([bool]$app.Eval('CurrentProject.AllForms("frmEditor").IsLoaded')) 'Editor was not open with pending values'
  $evidence=$app.Eval('TryWorkspaceBackup('+(Quote $backup)+')')

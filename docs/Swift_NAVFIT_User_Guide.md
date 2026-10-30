@@ -676,6 +676,12 @@ A backup holds the data, not the application. To restore, open a new blank Swift
 
 Check the restored workspace before replacing the authoritative working file, and keep older backups until then. A backup can predate later report changes; report History is the better tool when only one earlier report revision is needed.
 
+## 17.3 Watch the workspace size
+
+Microsoft Access cannot grow a database file past 2 GB. **Settings & Help** shows the workspace file's size against that limit, and from 1.5 GB it shows a warning in bold. A command saving reports at a typical pace has years of room; a synthetic 4,700-report workspace with 10,340 saves is about 272 MB.
+
+When the warning appears, write a verified backup and plan to start a new blank workspace for new reports. Keep the full workspace and its backups as the record of earlier reports; nothing in it is deleted. Swift does not yet copy the member directory, reporting seniors or RSCA baselines into a new workspace on its own; re-enter or import those you still need.
+
 ---
 
 # 18. Troubleshooting and status reference

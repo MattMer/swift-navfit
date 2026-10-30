@@ -4,6 +4,31 @@ Option Explicit
 'Backups are verified data files written inside Access: no helper process, so
 'endpoint rules that block Office child processes do not stop them. Restore is
 'the Settings & Help import into a new blank workspace, which reads any backup.
+'Access stops a database at 2 GB; Settings & Help warns from 1.5 GB (L03).
+Private Const WorkspaceLimitBytes As Double = 2147483648#
+Private Const WorkspaceWarnBytes As Double = 1610612736#
+Public Function WorkspaceFileBytes() As Double
+    'FileLen reports an open file's size from before it was opened.
+    WorkspaceFileBytes = CreateObject("Scripting.FileSystemObject").GetFile(CurrentProject.FullName).Size
+End Function
+Public Function WorkspaceSizeNearLimit(ByVal bytes As Double) As Boolean
+    WorkspaceSizeNearLimit = (bytes >= WorkspaceWarnBytes)
+End Function
+Public Function WorkspaceSizeText(ByVal bytes As Double) As String
+    If WorkspaceSizeNearLimit(bytes) Then
+        WorkspaceSizeText = "Warning: this workspace file is " & Format$(bytes / 1073741824#, "0.00") & " GB of the 2 GB Access limit. Back it up and start a new workspace soon; see the workspace guide."
+    Else
+        WorkspaceSizeText = "Workspace file: " & Format$(bytes / 1048576#, "0.0") & " MB of the 2 GB Access limit (" & Format$(bytes / WorkspaceLimitBytes, "0%") & ")."
+    End If
+End Function
+Public Function UXSettingsActivate() As Boolean
+    Dim bytes As Double
+    UXSettingsActivate = UXLoadContext()
+    bytes = WorkspaceFileBytes()
+    With Forms!frmUXSettings!uxWorkspaceSize
+        .Caption = WorkspaceSizeText(bytes): .FontBold = WorkspaceSizeNearLimit(bytes)
+    End With
+End Function
 Public Function GuidedWorkspaceBackup() As Boolean
     Dim folder As Object, destination As String, evidence As String
     On Error GoTo Failed
