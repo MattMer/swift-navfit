@@ -102,6 +102,8 @@ try{
  CheckMajorResult 'TestMajor()'
  CheckMajorResult 'TestMajorRevisionAliases(True)'
  CheckMajorResult 'TestMajorAliasViews()'
+ #Imports must end with the current build's relationships; an older source's set differs.
+ $db=$app.CurrentDb();$currentRelations=RelationSignatures $db;$db.Close()
  CloseMajorSession
  $templates=@($candidate)+@($LegacyPath,$OlderPath|Where-Object {$_})
  $index=0
@@ -125,7 +127,9 @@ try{
   $db=$app.CurrentDb();$db.TableDefs.Item('MeetingProposal').Fields.Item('ProposalState').ValidationRule='';$db.Close()
   if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$source+'")') -or -not $app.Eval('UXApplySwiftWorkspace()')){throw 'Settings import apply failed'}
   AssertMajorSchema
-  $db=$app.CurrentDb();if(Compare-Object $sourceRelations (RelationSignatures $db)){throw 'Imported relationship semantics differ'};$db.Close()
+  $db=$app.CurrentDb();$targetRelations=RelationSignatures $db;$db.Close()
+  if(Compare-Object $currentRelations $targetRelations){throw 'Imported workspace lost or changed current relationships'}
+  if($version -eq $currentSchema -and (Compare-Object $sourceRelations $targetRelations)){throw 'Imported relationship semantics differ'}
   CheckMajorResult 'TestMajorRevisionAliases()'
   if($ChiefComments){CheckMajorResult ('VerifyChiefTransfer('+ $version +',"'+$nativeFixture+'","'+$oldExport+'","'+(Join-Path $folder ('target-export-'+$index+'.accdb'))+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")')}
   $repeat=[string]$app.Eval('MigrateWorkspace("'+$source+'")')
