@@ -50,13 +50,8 @@ loaded an instrumented modReportPages copy into a disposable build copy.
 
 1. Editor page-layout cache is done (b5e7e54); editor open stays about 1.1 s by
    user decision. The slow fourth open only happens back to back (see M03).
-2. L03: step 1 (size display and warning) done in 55f6451. Step 2 awaits the
-   user's decision: removing `seq = 1 Or` at the RevisionChange test in
-   CommitDraft (modSwift) stops first-save empty-to-empty rows, but also lets
-   the NAVFIT98A Chief-comment export guard (modNAVFITAdapter) protect
-   never-filled comments on new reports, and widens the Block 28 Achievements
-   fallback (modSwift) to newly imported reports. If approved, add assertions to
-   PersistenceHarness, NAVFITGuardHarness and UXAdminFeedbackHarness
-   (CheckLegacyBlock28), and run the native-return, adapter, Chief and Block 28 cases.
+2. L03 steps 1-2 done (size warning; no first-save empty-to-empty change rows).
+   Step 3 (sparse revision values, schema change) is next only if the user
+   schedules it.
 3. Optional: diagnose the test-import-engine 3059 flake.
 4. Update this file at milestones and before stopping.

@@ -91,6 +91,7 @@ Failed:
     DecodeFailure = Err.Description
 End Function
 Public Function TestNAVFITGuards(ByVal directory As String, ByVal template As String) As String
+    Dim chiefID As Long, nativeComments As Object, row As Variant, parts As Variant
     Dim file As String, baseline As String, bad As String, db As DAO.Database, changes As Object, rows As Collection, receipt As Long, revision As Long, raw As Long, oldValue As Variant, field As DAO.Field, columns As String, selected As String, source As String, missing As String, values As Object, decoded As Object, record As DAO.Recordset, id As Long, key As Variant
     On Error GoTo Failed
     file = directory & "\guard.accdb": baseline = file & ".swift-baseline.accdb"
@@ -159,6 +160,48 @@ Public Function TestNAVFITGuards(ByVal directory As String, ByVal template As St
     record.Close: db.Close
     Set rows = NAVFITPreviewReturned(file, file & ".swift-baseline.accdb")
     Check NAVFITApplyReturned() = id, "New draft baseline return failed"
+    Set values = SavedFields(id): values("FormKind") = "CHIEFEVAL"
+    Set nativeComments = CreateObject("Scripting.Dictionary")
+    For Each row In NAVFITMapRows("CHIEFEVAL")
+        parts = Split(row, "|")
+        If parts(0) Like "Trait##Comment#" Then
+            values(parts(0)) = Null: nativeComments.Add parts(0), parts(1)
+        End If
+    Next
+    chiefID = NAVFITCommitFields(0, values, "Synthetic Chief member", "New Chief comment guard")
+    revision = CurrentRevision(chiefID)
+    Check DCount("*", "RevisionChange", "RevisionID=" & revision & " AND FieldKey Like 'Trait##Comment#'") = 0, "New Chief logged untouched null comments"
+    bad = directory & "\chief-comment-guard.accdb": FileCopy file, bad
+    Set db = DBEngine.OpenDatabase(bad)
+    Set record = db.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenDynaset)
+    record.Edit
+    For Each key In nativeComments.Keys
+        record.Fields(nativeComments(key)).Value = "Synthetic native " & key
+    Next
+    record.Update
+    Set values = SavedFields(chiefID)
+    record.Edit: NAVFITWriteFields record, values, revision: record.Update
+    For Each key In nativeComments.Keys
+        Check SameFieldValue(record.Fields(nativeComments(key)).Value, "Synthetic native " & key), "Untouched Chief comment erased: " & key
+    Next
+    Set changes = CreateObject("Scripting.Dictionary")
+    changes.Add "Trait33Comment1", "Synthetic authored Chief comment"
+    changes.Add "Trait33Comment2", "Synthetic comment before clear"
+    Call CommitSavedFields(chiefID, revision, changes, "Author Chief comments")
+    Set changes = CreateObject("Scripting.Dictionary")
+    changes.Add "Trait33Comment2", Null: changes.Add "Trait33Comment3", ""
+    Call CommitSavedFields(chiefID, CurrentRevision(chiefID), changes, "Clear Chief comments")
+    Set values = SavedFields(chiefID)
+    record.Edit: NAVFITWriteFields record, values, CurrentRevision(chiefID): record.Update
+    Check SameFieldValue(record.Fields(nativeComments("Trait33Comment1")).Value, "Synthetic authored Chief comment"), "Authored Chief comment did not overwrite native text"
+    Check IsNull(record.Fields(nativeComments("Trait33Comment2")).Value), "Logged Chief clear did not overwrite native text"
+    Check SameFieldValue(record.Fields(nativeComments("Trait33Comment3")).Value, ""), "Explicit empty Chief comment did not overwrite native text"
+    For Each key In nativeComments.Keys
+        If key <> "Trait33Comment1" And key <> "Trait33Comment2" And key <> "Trait33Comment3" Then
+            Check SameFieldValue(record.Fields(nativeComments(key)).Value, "Synthetic native " & key), "Chief save erased an untouched native comment: " & key
+        End If
+    Next
+    record.Close: db.Close
     CheckExportDiagnostics id, directory, template
     TestNAVFITGuards = "PASS: " & checks & " NAVFIT stale/hash/identity/lock/undo and export diagnostic guards": Exit Function
 Failed:

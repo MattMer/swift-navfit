@@ -97,9 +97,7 @@ Private Sub CheckLegacyBlock28()
     Dim id As Long, revision As Long, receipt As Long, db As DAO.Database, r As DAO.Recordset, values As Object
     id = CommitDraft(0, "EVAL", "Legacy source", "Synthetic legacy member", Null, Null, "")
     revision = CurrentRevision(id): Set db = CurrentDb
-    db.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
-    db.Execute "DELETE FROM RevisionChange WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
-    db.Execute "UPDATE ReportRevision SET SnapshotSchema=23, FieldDefinitionVersion=Null WHERE RevisionID=" & revision, dbFailOnError
+    Check DCount("*", "RevisionChange", "RevisionID=" & revision & " AND FieldKey='CommandEmployment'") = 0, "New report logged untouched Block 28"
     Set r = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     r.AddNew: r!ReceiptGuid = NewIdentity(): r!SourceHash = String$(64, "0"): r!ExternalReportID = 42: r!ReportID = id
     r!AuthorProfileID = MajorAuthor(): r!ImportedAt = Now(): r!AdapterVersion = "navfit-full-v1/local-CStr": r!IsUndone = False
@@ -109,6 +107,14 @@ Private Sub CheckLegacyBlock28()
     r!FieldOrdinal = 1: r!FieldKey = "Achievements": r!DAOType = 12: r!RawValue = "Wrong folder default": r!IsNullValue = False: r.Update
     r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 42
     r!FieldOrdinal = 1: r!FieldKey = "Achievements": r!DAOType = 12: r!RawValue = "Original native command achievements": r!IsNullValue = False: r.Update: r.Close
+    'A current first revision records Block 28 in its snapshot, so the native value is not projected.
+    Check IsNull(StoredBlock28(id)), "New report projected retained native Block 28"
+    Set values = SavedFields(id)
+    Check IsNull(values("CommandEmployment")), "New report export used retained native Block 28"
+    Check IsNull(Block28FromRevision(revision)), "New revision invented projected Block 28 snapshot text"
+    db.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
+    db.Execute "DELETE FROM RevisionChange WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
+    db.Execute "UPDATE ReportRevision SET SnapshotSchema=23, FieldDefinitionVersion=Null WHERE RevisionID=" & revision, dbFailOnError
     Check StoredBlock28(id) = "Original native command achievements", "Legacy Block 28 projection used wrong source row"
     Set values = SavedFields(id)
     Check values("CommandEmployment") = "Original native command achievements", "Export values omitted legacy Block 28 provenance"

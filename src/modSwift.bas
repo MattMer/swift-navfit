@@ -259,7 +259,9 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Set changeRows = db.OpenRecordset("RevisionChange", dbOpenDynaset, dbAppendOnly)
     For i = 0 To UBound(keys)
         Snapshot snapshotRows, revisionID, CStr(keys(i)), current(i)
-        If seq = 1 Or IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
+        'A first save starts from Null, so fields left empty log nothing (L03); the
+        'snapshot above still records every field.
+        If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
             AppendChange changeRows, revisionID, CStr(keys(i)), previous(i), current(i)
         End If
     Next
@@ -599,6 +601,11 @@ Public Function StoredBlock28(ByVal reportID As Long) As Variant
     StoredBlock28 = DLookup("CommandEmployment", "Report", "ReportID=" & reportID)
     If Not IsNull(StoredBlock28) Then Exit Function
     Set r = db.OpenRecordset("SELECT c.RevisionChangeID FROM RevisionChange AS c INNER JOIN ReportRevision AS v ON c.RevisionID=v.RevisionID WHERE v.ReportID=" & reportID & " AND c.FieldKey='CommandEmployment'", dbOpenSnapshot)
+    If Not r.EOF Then r.Close: Exit Function
+    r.Close
+    'Only reports whose first revision predates Block 28 use the native value. Since
+    'L03 a first save no longer logs an empty Block 28, so check its snapshot too.
+    Set r = db.OpenRecordset("SELECT TOP 1 v.FieldKey FROM RevisionValue AS v WHERE v.FieldKey='CommandEmployment' AND v.RevisionID=(SELECT Min(RevisionID) FROM ReportRevision WHERE ReportID=" & reportID & ")", dbOpenSnapshot)
     If Not r.EOF Then r.Close: Exit Function
     r.Close
     receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")

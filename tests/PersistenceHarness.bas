@@ -80,6 +80,11 @@ Public Function TestPersistence() As String
     Check rev = DLookup("CurrentRevisionID", "Report", "ReportID=" & a), "Head/cache pointer differs"
     Check DCount("*", "RevisionDate", "RevisionID=" & rev & " AND DateState='Missing'") = 5, "Null date facts were not retained"
     Check DCount("*", "RevisionChoice", "RevisionID=" & rev & " AND ChoiceValue='Unspecified'") = 2, "Missing choices were not represented"
+    'A first save logs only fields it fills; the snapshot still holds every field (L03).
+    Check DCount("*", "RevisionValue", "RevisionID=" & rev) = UBound(DraftFieldKeys()) + 1, "First-save snapshot is incomplete"
+    Check DCount("*", "RevisionChange", "RevisionID=" & rev & " AND OldIsNull AND NewIsNull") = 0, "First save logged empty-to-empty changes"
+    Check DCount("*", "RevisionChange", "RevisionID=" & rev) = DCount("*", "RevisionValue", "RevisionID=" & rev & " AND Not IsNullValue"), "First save did not log every filled field"
+    Check DCount("*", "RevisionChange", "RevisionID=" & rev & " AND OldIsNull AND Not NewIsNull") > 0, "First save logged no filled fields"
     Check RejectSQL("UPDATE ReportHead SET RevisionID=" & CurrentRevision(b) & " WHERE ReportID=" & a), "Cross-report revision accepted"
     Check RejectSQL("UPDATE Report SET FormKind='OTHER' WHERE ReportID=" & a), "Unsupported new report kind accepted"
     Check RejectSQL("UPDATE Report SET WorkflowState='OTHER' WHERE ReportID=" & a), "Unsupported new workflow accepted"
