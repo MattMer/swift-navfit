@@ -423,6 +423,7 @@ Public Function LoadEditor() As Boolean
     Set ownedDB = CurrentDb
     Dim f As Form, r As DAO.Recordset, id As Long, block As Long, seniorKey As Variant
     Call UXAssertView(UX_EDITOR_VIEW)
+    UXFixedForgetLayout
     Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
     f!cboKind = "EVAL"
     If id > 0 Then

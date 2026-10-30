@@ -1,7 +1,13 @@
 Attribute VB_Name = "modReportPages"
 Option Explicit
 Private sheet As Long, renders As Long, arranging As Boolean
+'Field keys whose page layout is already applied in this editor session, for placedKind.
+Private placedKeys As Object, placedKind As String
 Private Const ReportLeft As Long = 2600
+'Forget applied field layouts: the editor reopened or another layout moved the fields.
+Public Sub UXFixedForgetLayout()
+ Set placedKeys = Nothing
+End Sub
 Public Function UXFixedEnabled() As Boolean
  If CurrentProject.AllForms("frmEditor").IsLoaded Then UXFixedEnabled = UXHasControl(Forms!frmEditor, "uxFrontPage")
 End Function
@@ -216,11 +222,27 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
   If c.Name <> "uxFocusAnchor" And c.Visible Then c.Visible = False
  Next
  renders = renders + 1
+ 'A field's geometry and fonts depend only on report type and key, so a page
+ 'shown again in this session only needs its fields reshown, locked and validated.
+ If placedKeys Is Nothing Or placedKind <> kind Then Set placedKeys = CreateObject("Scripting.Dictionary"): placedKind = kind
  For Each row In ReportPageRows(kind, page)
   parts = Split(CStr(row), "|"): key = parts(0): y = CLng(parts(2))
   If key = "@guidance" Then
    If f.Section(acDetail).Height < y + CLng(parts(4)) + 200 Then f.Section(acDetail).Height = y + CLng(parts(4)) + 200
    Place f, "uxTraitGuidance", CLng(parts(1)), y, CLng(parts(3)), CLng(parts(4))
+  ElseIf placedKeys.Exists(key) Then
+   Set c = f.Controls(UXFieldControl(key))
+   f.Controls("label" & key).Visible = True: c.Visible = True
+   c.Locked = locked Or Not UXFieldApplies(key, kind)
+   If kind = "CHIEFEVAL" And IsTraitKey(key) Then
+    With f.Controls("uxChiefGuidance" & Mid$(key, 6))
+     .Caption = CatalogueTraitDescription(kind, CLng(Mid$(key, 6)), Nz(Forms!frmEditor.Controls("cbo" & key), "")): .Visible = True
+    End With
+   End If
+   If key = "OfficialComments" Then f!uxNarrativeCount.Visible = True: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
+   UXSurfaceValidate key
+   bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
+   If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
   Else
    trait = IsTraitKey(key)
    Place f, "label" & key, CLng(parts(1)), y, CLng(parts(3)), 340
@@ -264,6 +286,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    UXSurfaceValidate key
    bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
    If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
+   placedKeys(key) = True
   End If
  Next
  f.Width = 12200: f.ScrollBars = 3

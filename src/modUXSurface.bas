@@ -313,6 +313,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     On Error GoTo Failed
     Dim f As Access.Form, c As Access.Control, key As Variant, kind As String, row As Long, slot As Long, top As Long, x As Long, multi As Boolean, applicable As Boolean, tabOrder As Long, columns As Long, cellWidth As Long, usableWidth As Long, band As String, priorBand As String, rowHeight As Long, fieldWidth As Long, flag As Boolean
     Set f = Surface(): surfaceSection = section: kind = Nz(Forms!frmEditor!cboKind, "EVAL")
+    UXFixedForgetLayout
     'Access keeps a subform's last focused field even when focus leaves the
     'parent. Move to a permanent anchor before hiding any section controls.
     usableWidth = Forms!frmEditor!uxFieldSurface.Width - 800
