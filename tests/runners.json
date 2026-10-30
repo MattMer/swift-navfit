@@ -17,12 +17,7 @@
    "tier": "extended"
   },
   {
-   "name": "test-administration",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-assessment",
+   "name": "test-report-field-persistence",
    "area": "Workflow and validation",
    "tier": "extended"
   },
@@ -36,7 +31,7 @@
    "name": "test-workspace-read-performance",
    "area": "Workspace and settings",
    "tier": "extended",
-   "note": "test-batched-reads is stale (retired frmBulkFolders); manual only with -IncludeStaleBatchedReads -BaselinePath. Other cases run with -BuildPath."
+   "note": "The test-batched-reads case (baseline/candidate read equivalence and timings) also runs when -BaselinePath names an earlier build. Other cases run with -BuildPath."
   },
   {
    "name": "test-bulk-workspace-import",
@@ -64,38 +59,19 @@
    "note": "Shared contributor-selection helper loaded by other runners."
   },
   {
-   "name": "test-counseling",
+   "name": "test-member-profiles",
    "area": "Groups, directory and members",
    "tier": "extended"
   },
   {
-   "name": "test-decision-details",
-   "area": "Workflow and validation",
-   "tier": "extended",
-   "extraArgs": [
-    "-PersistenceOnly"
+   "name": "test-directory-management",
+   "area": "Groups, directory and members",
+   "tier": "core",
+   "extendedArgs": [
+    "-Tier",
+    "extended"
    ],
-   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
-  },
-  {
-   "name": "test-directory-batch",
-   "area": "Groups, directory and members",
-   "tier": "release"
-  },
-  {
-   "name": "test-directory-history",
-   "area": "Groups, directory and members",
-   "tier": "release"
-  },
-  {
-   "name": "test-directory-merge",
-   "area": "Groups, directory and members",
-   "tier": "core"
-  },
-  {
-   "name": "test-directory-merge-release",
-   "area": "Groups, directory and members",
-   "tier": "release"
+   "note": "Core: merge. Extended adds directory cases; data comparison needs -SourcePath -CandidatePath. Release: -Tier release -BlankPath -DemoPath [-CurrentFixturesOnly]."
   },
   {
    "name": "test-directory-merge-transfer",
@@ -113,14 +89,9 @@
    "tier": "release"
   },
   {
-   "name": "test-group-correctness",
+   "name": "test-summary-groups",
    "area": "Groups, directory and members",
    "tier": "extended"
-  },
-  {
-   "name": "test-group-exit",
-   "area": "Groups, directory and members",
-   "tier": "release"
   },
   {
    "name": "test-import-commit",
@@ -138,44 +109,24 @@
    "tier": "extended"
   },
   {
-   "name": "test-live-members",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
    "name": "test-local-pdf",
    "area": "NAVFIT and PDF exchange",
    "tier": "manual",
    "note": "Needs BuildPath, FixturePath."
   },
   {
-   "name": "test-major",
+   "name": "test-work-review",
    "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-major-ui",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-member-details",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-member-psg",
-   "area": "Groups, directory and members",
-   "tier": "extended"
+   "tier": "core",
+   "extendedArgs": [
+    "-Tier",
+    "extended"
+   ],
+   "note": "Core: workflows. Extended adds major/UI, work queues and wizard state; test-major LegacyPath behavior is unchanged."
   },
   {
    "name": "test-narratives",
    "area": "Traits and narratives",
-   "tier": "extended"
-  },
-  {
-   "name": "test-native-group-discovery",
-   "area": "Groups, directory and members",
    "tier": "extended"
   },
   {
@@ -213,15 +164,6 @@
    "name": "test-o3-cells",
    "area": "NAVFIT and PDF exchange",
    "tier": "extended"
-  },
-  {
-   "name": "test-party-names",
-   "area": "Groups, directory and members",
-   "tier": "extended",
-   "extraArgs": [
-    "-PersistenceOnly"
-   ],
-   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
   },
   {
    "name": "test-pdf-counseling-status",
@@ -262,19 +204,15 @@
    "note": "Needs BuildPath, LegacyTemplate."
   },
   {
-   "name": "test-promotion-status",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
    "name": "test-workspace-resources",
    "area": "Workspace and settings",
    "tier": "extended"
   },
   {
-   "name": "test-readiness",
+   "name": "test-report-validation",
    "area": "Workflow and validation",
-   "tier": "extended"
+   "tier": "extended",
+   "note": "Policy verification needs explicit -InstructionPath; optional -InstructionTextPath is passed through, otherwise its existing default applies."
   },
   {
    "name": "test-recovery",
@@ -282,9 +220,10 @@
    "tier": "extended"
   },
   {
-   "name": "test-recursive-defaults",
+   "name": "test-field-defaults",
    "area": "Workflow and validation",
-   "tier": "extended"
+   "tier": "extended",
+   "note": "Immediate-defaults verification needs -BlankPath -DemoPath, otherwise SKIP. Historical receipt assertions remain unchanged."
   },
   {
    "name": "test-report-field-tools",
@@ -297,15 +236,6 @@
    "tier": "release"
   },
   {
-   "name": "test-report-people",
-   "area": "Groups, directory and members",
-   "tier": "extended",
-   "extraArgs": [
-    "-PersistenceOnly"
-   ],
-   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
-  },
-  {
    "name": "test-report-review-history",
    "area": "Report editor and pages",
    "tier": "core",
@@ -316,21 +246,7 @@
    ]
   },
   {
-   "name": "test-reporting-senior",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-rs-completion",
-   "area": "Groups, directory and members",
-   "tier": "extended",
-   "extraArgs": [
-    "-AccountingOnly"
-   ],
-   "note": "Documented mode; the full suite keeps retired UI assertions (see PROJECT_STATE known gaps)."
-  },
-  {
-   "name": "test-rs-directory",
+   "name": "test-reporting-senior-accounting",
    "area": "Groups, directory and members",
    "tier": "extended"
   },
@@ -339,16 +255,6 @@
    "area": "Import and transfer",
    "tier": "manual",
    "note": "Needs BuildPath, SamplePath."
-  },
-  {
-   "name": "test-rules",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-service-details",
-   "area": "Workflow and validation",
-   "tier": "extended"
   },
   {
    "name": "test-source-contracts",
@@ -373,89 +279,13 @@
    "note": "Needs SourcePath, CandidatePath."
   },
   {
-   "name": "test-ux-directory",
-   "area": "Groups, directory and members",
-   "tier": "release"
-  },
-  {
-   "name": "test-ux-global-defaults",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-group-directory",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-group-directory-data",
-   "area": "Groups, directory and members",
-   "tier": "manual",
-   "note": "Needs SourcePath, CandidatePath."
-  },
-  {
-   "name": "test-ux-group-lifecycle",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-group-reads",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
    "name": "test-ux-import-flow",
    "area": "Import and transfer",
    "tier": "extended"
   },
   {
-   "name": "test-ux-member-grid",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-my-work",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-native-groups",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
    "name": "test-ux-navfit",
    "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-prior-grid",
-   "area": "Groups, directory and members",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-validation",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-work-inclusion",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-work-refresh",
-   "area": "Workflow and validation",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-workflows",
-   "area": "Workflow and validation",
-   "tier": "core"
-  },
-  {
-   "name": "test-wizard-state",
-   "area": "Workflow and validation",
    "tier": "extended"
   },
   {
@@ -486,18 +316,6 @@
    "area": "NAVFIT and PDF exchange",
    "tier": "manual",
    "note": "Needs BeforePath, AfterPath, EvidencePath."
-  },
-  {
-   "name": "verify-ux-immediate-defaults",
-   "area": "Workflow and validation",
-   "tier": "manual",
-   "note": "Needs BlankPath, DemoPath."
-  },
-  {
-   "name": "verify-validation-policy",
-   "area": "Workflow and validation",
-   "tier": "manual",
-   "note": "No Access or build; run when validation citations or the BUPERSINST source change."
   }
  ]
 }

@@ -203,7 +203,7 @@ For M02 preview changes, use the focused native runner before the final integrat
 build, then repeat against the unchanged final artifact:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-wizard-state.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema29-blank.accdb" -PDFPath "D:\path\synthetic-filled-eval.pdf"
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\verified-schema29-blank.accdb" -PDFPath "D:\path\synthetic-filled-eval.pdf"
 ```
 
 `-InstallSource` installs changed services on an existing schema-30-or-newer
@@ -252,13 +252,12 @@ the skipped unhandled-error proof. The default still requires the supervised err
 
 ### Batched read verification (M03)
 
-The stale batched-read case opens retired frmBulkFolders; run it only explicitly with
-`-IncludeStaleBatchedReads -BaselinePath`. Use [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for native output,
+The batched-read case runs when `-BaselinePath` names a build from before the change. Use [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for native output,
 guard and performance proof before the final fresh build, then repeat without
 `-InstallSource` against the exact final artifact:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-workspace-read-performance.ps1 -BuildPath "D:\path\candidate-blank.accdb" -IncludeStaleBatchedReads -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
+powershell.exe -NoProfile -File scripts/test-workspace-read-performance.ps1 -BuildPath "D:\path\candidate-blank.accdb" -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
 ```
 
 It owns sequential disposable copies, seeds synthetic data, copies it through the
@@ -274,7 +273,7 @@ not use a populated operational workspace as benchmark data.
 
 Run [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for Reports
 prepared-row equivalence, sorting/filtering and null/NOB/missing-field cases,
-[test-ux-my-work.ps1](../scripts/test-ux-my-work.ps1) for My Work behavior, and
+[test-work-review.ps1](../scripts/test-work-review.ps1) `-Tier extended` for My Work behavior, and
 [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for refresh/state
 invariants. Deliberate cache divergence must reject writes; restore the exact
 synthetic values before testing unrelated mutations. The benchmark accepts up to
@@ -301,7 +300,7 @@ Use the existing major-workflow runner before the integrated build, then repeat
 against the exact final blank without `-InstallSource`:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-major.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\schema31-blank.accdb" -OlderPath "D:\path\schema30-blank.accdb"
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\schema31-blank.accdb" -OlderPath "D:\path\schema30-blank.accdb"
 powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
@@ -374,10 +373,50 @@ number/identity, separate cleanup details, redacted diagnostics and truthful
 publication state. Existing published/pending files are recovery evidence, not
 permission to overwrite them; a retry must preserve their bytes and saved revisions.
 
+### M08 groups and workflow suites
+
+All suites take `-BuildPath` except directory release mode, which takes
+`-BlankPath -DemoPath`. Core suites default to `-Tier core`; registry
+`extendedArgs` selects `-Tier extended` during ExtendedTest. The six other
+suites are registered extended and run all their cases. Cases remain in
+`scripts/cases/` with their original assertions and defaults. Only explicitly
+bound optional parameters are passed to cases that accept them. The common
+runner supports named parameters through built-in CLIXML for the array-valued
+`-VerifiedSuites`; ordinary argument-list calls keep their existing invocation.
+
+| Suite | Cases by tier | Optional pass-through parameters |
+| --- | --- | --- |
+| `test-directory-management` | core: test-directory-merge. extended: core plus test-directory-batch, test-directory-history, test-ux-directory, test-ux-group-directory, test-ux-group-directory-data | `-DisplayFaultOnly -AdversarialPreviews -SourcePath -CandidatePath -AllowDemoSeed`; `-Tier release -BlankPath -DemoPath [-CurrentFixturesOnly]` runs the former directory release orchestration |
+| `test-member-profiles` | extended: test-member-details, test-party-names, test-report-people, test-promotion-status, test-member-psg, test-counseling, test-ux-prior-grid | `-PersistenceOnly` (party names and report people only; registry supplies it) |
+| `test-summary-groups` | extended: test-group-correctness, test-group-exit, test-live-members, test-native-group-discovery, test-ux-group-lifecycle, test-ux-group-reads, test-ux-member-grid, test-ux-native-groups | `-TaskOrders -InstallSource -GroupListBenchmark -BaselinePath -Groups -Members -Trials -DataSourcePath -AdversarialPreviews` |
+| `test-reporting-senior-accounting` | extended: test-reporting-senior, test-rs-directory, test-rs-completion | none |
+| `test-report-field-persistence` | extended: test-administration, test-assessment, test-decision-details, test-service-details | `-PersistenceOnly` (decision details only; registry supplies it) |
+| `test-field-defaults` | extended: test-recursive-defaults, verify-ux-immediate-defaults | `-BlankPath -DemoPath -Candidate -VerifiedAssertions -VerifiedSuites` (immediate-defaults verification only) |
+| `test-report-validation` | extended: test-rules, test-readiness, test-ux-validation, verify-validation-policy | `-InstallSource -InstructionPath -InstructionTextPath` |
+| `test-work-review` | core: test-ux-workflows. extended: core plus test-major, test-major-ui, test-ux-my-work, test-ux-work-inclusion, test-ux-work-refresh, test-wizard-state | `-ChiefComments -InstallSource -LegacyPath -OlderPath -PDFPath -CrossWorkflowOnly -ApplyFaultsOnly -SkipUnhandledFailure` |
+
+Without the required optional inputs, suites print
+`SKIP: test-ux-group-directory-data needs -SourcePath -CandidatePath`,
+`SKIP: verify-ux-immediate-defaults needs -BlankPath -DemoPath`, or
+`SKIP: verify-validation-policy needs -InstructionPath`. Policy text uses the
+case's existing default unless `-InstructionTextPath` is supplied. Benchmark
+and legacy branches keep their original input handling; in particular,
+`test-major -LegacyPath` retains its known stale check. The immediate-defaults
+case retains its historical table/version assertions and receipt behavior.
+
+Directory release mode retains the original sequence: merge; history, batch,
+UX directory and report navigation; extended artifact verification; extended
+startup with the Demo; report review/history on the Demo; workspace upgrade
+unless current fixtures only; directory merge transfer; Swift data import with
+the same fixture restriction. The merge fixture is still read from
+`build/directory-merge-verification.json`; the orchestration still writes
+`build/directory-merge-release-verification.json` with test logs. Failed cases
+fail the suite and cannot produce a successful release receipt.
+
 ### Diagnostics, view contracts and trait data (M04–M06)
 
 Directory-batch preview/failure checks use the existing
-`scripts/test-directory-batch.ps1 -BuildPath <blank>` and its
+`scripts/test-directory-management.ps1 -Tier extended -BuildPath <blank>` and its
 `-AdversarialPreviews` mode. The latter isolates each case in a new owned Access
 controller, injects postcommit/display faults only into disposable copies, tests
 an explicitly simulated uncertain outcome, and executes a real VBE reset. Require
@@ -387,7 +426,7 @@ counts after reopening. No fault hooks are shipped in application source.
 For the summary-list M03 read optimization, use the existing lifecycle runner:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-ux-group-lifecycle.ps1 -BuildPath "D:\path\candidate.accdb" -IncludeStaleBatchedReads -BaselinePath "D:\path\baseline.accdb" -GroupListBenchmark -Groups 40 -Members 10 -Trials 5
+powershell.exe -NoProfile -File scripts/test-summary-groups.ps1 -BuildPath "D:\path\candidate.accdb" -BaselinePath "D:\path\baseline.accdb" -GroupListBenchmark -Groups 40 -Members 10 -Trials 5
 ```
 
 It compares all eight displayed cells and order for All/Active/Archived, covers
@@ -403,12 +442,12 @@ For M02/M04/M05 preview ownership and group-import outcomes, use the existing
 native runners sequentially on disposable copies:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-ux-native-groups.ps1 -BuildPath "D:\path\blank.accdb" -AdversarialPreviews
+powershell.exe -NoProfile -File scripts/test-summary-groups.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-summary-groups.ps1 -BuildPath "D:\path\blank.accdb" -AdversarialPreviews
 powershell.exe -NoProfile -File scripts/test-workspace-resources.ps1 -BuildPath "D:\path\blank.accdb"
 powershell.exe -NoProfile -File scripts/test-workspace-resources.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
-powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-directory-merge.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
+powershell.exe -NoProfile -File scripts/test-directory-management.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-directory-management.ps1 -BuildPath "D:\path\blank.accdb" -DisplayFaultOnly
 ```
 
 These check actual contributor switching, fresh review after failure/reopen,
@@ -492,10 +531,10 @@ automatic timer capture. Each case uses its own disposable copy.
 Use the existing focused runners for task-order and view regressions:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-ux-validation.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-major-ui.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-live-members.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-group-exit.ps1 -BuildPath "D:\path\blank.accdb" -TaskOrders
+powershell.exe -NoProfile -File scripts/test-report-validation.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-summary-groups.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-summary-groups.ps1 -BuildPath "D:\path\blank.accdb" -TaskOrders
 powershell.exe -NoProfile -File scripts/test-report-pages.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
@@ -645,8 +684,8 @@ copy; production upgrade remains fresh-build plus Settings & Help import.
 Retain the related focused gates:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-major.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\schema32-blank.accdb" -OlderPath "D:\path\schema31-blank.accdb" -ChiefComments
-powershell.exe -NoProfile -File scripts/test-ux-workflows.ps1 -BuildPath "D:\path\blank.accdb" -ChiefComments
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\schema32-blank.accdb" -OlderPath "D:\path\schema31-blank.accdb" -ChiefComments
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -ChiefComments
 powershell.exe -NoProfile -File scripts/test-pdf-expanded.ps1 -BuildPath "D:\path\blank.accdb" -FixturePath "D:\path\synthetic-xfa-fixtures"
 ```
 
@@ -771,7 +810,7 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 
 1. **Search once, inspect selectively.** Start with targeted source searches and read only the relevant ranges. Avoid repeatedly reading unchanged files or reopening previously inspected source without a specific reason.
 
-2. **Reuse established test runners.** Use existing focused runners as the preferred mechanism for stateful Access behavior testing, including context setup, pending edits, saves, recovery and return paths. Select the relevant suite from [CONTRIBUTING.md](../CONTRIBUTING.md), such as [group-exit](../scripts/test-group-exit.ps1) or [group lifecycle](../scripts/test-ux-group-lifecycle.ps1). Prefer a narrowly scoped extension or parameter of that runner when coverage is missing, rather than recreating LoadFromText/compile/Eval/Quit wrappers or adding a parallel harness.
+2. **Reuse established test runners.** Use existing focused runners as the preferred mechanism for stateful Access behavior testing, including context setup, pending edits, saves, recovery and return paths. Select the relevant suite from [CONTRIBUTING.md](../CONTRIBUTING.md), such as [group-exit](../scripts/test-summary-groups.ps1) or [group lifecycle](../scripts/test-summary-groups.ps1). Prefer a narrowly scoped extension or parameter of that runner when coverage is missing, rather than recreating LoadFromText/compile/Eval/Quit wrappers or adding a parallel harness.
 
 3. **Use MCP where it provides native value.** Prefer Access Explorer for suitable installed-object inspection, VBA references, control properties and native callback discovery when the operation fits its verified scope. Retain COM and existing runners where they provide capabilities or reliability that the enabled MCP does not. An advertised schema is not verification, static syntax checks are not compilation, and SQL must not be assumed to invoke Swift VBA or establish UI context. Do not use MCP merely to replace efficient source searches or enable additional execution permissions to bypass a capability gap.
 
@@ -802,8 +841,7 @@ Extended-only suites run all build-only cases: `test-workspace-resources`
 (optional `-DisplayFaultOnly`), `test-workspace-presentation` (optional
 `-UseWorkingSource`), `test-workspace-read-performance`,
 `test-report-field-tools` and `test-report-navigation`.
-Read-performance skips the unchanged stale batched-read case unless both
-`-IncludeStaleBatchedReads` and `-BaselinePath` are supplied; it forwards
+Read-performance runs the batched-read case only with `-BaselinePath`; it forwards
 `-InstallSource`, `-Size` (500), `-Trials` (5), and `-DataSourcePath` there.
 Each missing prerequisite prints SKIP, not a case PASS. Focused manual commands
 may use `scripts/cases/<case>.ps1`; `test-contributor-context.ps1` remains a

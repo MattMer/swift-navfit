@@ -82,6 +82,15 @@ Run `scripts/test-source-contracts.ps1` without Access for rejected plans, input
 drift, form normalization and the runner inventory, and
 its field-definitions case for catalogue and form-control agreement.
 Select other suites for the changed behavior; see [contributing](../CONTRIBUTING.md).
+Groups/directory/members and workflow/validation use eight public suites with
+unchanged case bodies in `scripts/cases/`; their parameters and tier membership
+are in the [suite reference](../docs/Development_Workflow.md#m08-groups-and-workflow-suites).
+`develop.ps1` calls directory-management and work-review in core mode, and
+ExtendedTest uses their registry `extendedArgs`. `release-check.ps1` invokes
+directory-management with `-Tier release -BlankPath -DemoPath` (plus optional
+`-CurrentFixturesOnly`), work-review core and summary-groups. Directory release
+orchestration retains both directory verification receipts and its dependent
+import/transfer, blank/demo and source-hash checks.
 
 Add a non-form resource as a manifest stage rather than a hidden nested build
 call, and declare its inputs. Any source or input change during a build

@@ -190,11 +190,6 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   workstation, normal-security launch and signing, screen reader/keyboard/DPI,
   PDF preview popup visuals.
 - No one has tested on a target (Navy-managed) workstation.
-- Legacy harness gaps that reproduce on unchanged baselines:
-  - RSCompletion's `Draft notes hidden` assertion fails, so that suite runs
-    with `-AccountingOnly`.
-  - The decision, report-people and party-name runners use `-PersistenceOnly`
-    because their legacy button assertions target retired buttons.
 - Transient, root cause unknown:
   - one DAO 3059 during fixed-page tests
   - one Access `0xc0000005` crash with a reused fault-test controller

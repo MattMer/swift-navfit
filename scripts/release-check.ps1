@@ -22,16 +22,16 @@ InvokeSwiftWorkflowStep 'test-workspace-startup' @('-BuildPath',$blank.Path,'-Ti
 foreach($artifact in @($blank,$demo)){
     InvokeSwiftWorkflowStep 'test-report-navigation' @('-BuildPath',$artifact.Path) $logFolder
 }
-$directoryArguments=@('-BlankPath',$blank.Path,'-DemoPath',$demo.Path)
+$directoryArguments=@('-Tier','release','-BlankPath',$blank.Path,'-DemoPath',$demo.Path)
 if($CurrentFixturesOnly){$directoryArguments+='-CurrentFixturesOnly'}
-InvokeSwiftWorkflowStep 'test-directory-merge-release' $directoryArguments $logFolder
+InvokeSwiftWorkflowStep 'test-directory-management' $directoryArguments $logFolder
 $migration=Get-Content (Join-Path $root 'build/r115-data-import-verification.json') -Raw | ConvertFrom-Json
 $expectedSchemas=if($CurrentFixturesOnly){@($plan.SchemaVersion)}else{@(1..$plan.SchemaVersion)}
 if($migration.Status -ne 'PASS' -or (Compare-Object $expectedSchemas @($migration.Fixtures|ForEach-Object {[int]$_.Schema}|Sort-Object -Unique))){throw 'Requested schema coverage is incomplete'}
 foreach($guard in @('Rollback','ChangedSourceRejected','PopulatedTargetRejected','UnknownTableRejected','FutureSchemaRejected','UIEntryPointTested')){
     if($migration.$guard -ne $true){throw ('Missing release migration guard: '+$guard)}
 }
-foreach($suite in @('test-workspace-startup','test-report-pages','test-ux-workflows','test-group-exit')){
+foreach($suite in @('test-workspace-startup','test-report-pages','test-work-review','test-summary-groups')){
     InvokeSwiftWorkflowStep $suite @('-BuildPath',$blank.Path) $logFolder
 }
 InvokeSwiftWorkflowStep 'test-engine-verification' @('-BuildPath',$blank.Path,'-SourcePath',$demo.Path) $logFolder

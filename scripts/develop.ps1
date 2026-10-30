@@ -79,7 +79,7 @@ if($Action -in @('Test','BuildAndTest')){
     $before=GetSwiftWorkflowArtifact $BuildPath
     InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$before.Path,'-RequireBlank') $logFolder
     InvokeSwiftWorkflowStep 'test-report-review-history' @('-BuildPath',$before.Path,'-SeedDemo') $logFolder
-    foreach($suite in @('test-workspace-startup','test-report-pages','test-ux-workflows','test-directory-merge')){
+    foreach($suite in @('test-workspace-startup','test-report-pages','test-work-review','test-directory-management')){
         InvokeSwiftWorkflowStep $suite @('-BuildPath',$before.Path) $logFolder
     }
     InvokeSwiftWorkflowStep 'test-source-contracts' @('-BuildPath',$before.Path) $logFolder

@@ -8,7 +8,7 @@ not needed. Commits need the user's approval; pushes have not been requested.
 
 ## State
 
-- Branch main, ahead of origin/main by the M04 commits (not pushed).
+- Branch main, 7 commits ahead of origin/main through e32874d (not pushed).
   APP_VERSION 0.49.0 / SCHEMA_VERSION 35 ([modSwift](../src/modSwift.bas)).
 - Claude and Codex both work here. Claude Code has the Codex plugin
   (openai/codex-plugin-cc, codex-cli 0.165.0, ChatGPT sign-in). Claude delegates
@@ -50,14 +50,14 @@ and commits.
 
 ## M08 continuation (28 October)
 
-Workspace/settings: 19 runners -> four workspace suites. Report editor/pages:
+Committed in e32874d: workspace/settings: 19 runners -> four workspace suites. Report editor/pages:
 22 runners -> four report suites; test-contributor-context stays a top-level
 helper. Case scripts moved to scripts/cases with only script-root substitutions.
 Registry, develop/release/directory/demo callers and current docs updated.
 ExtendedTest now passes registry extendedArgs; review-history includes -SeedDemo.
 Startup core needs a blank; extended demo coverage needs optional -DemoPath
-(populated synthetic Demo), otherwise prints SKIP. Stale batched-reads remains
-unchanged, manual only with -IncludeStaleBatchedReads and -BaselinePath.
+(populated synthetic Demo), otherwise prints SKIP. Batched reads is fixed (the retired
+folder-display case is removed) and runs when -BaselinePath is given.
 
 Checks: static test-source-contracts PASS (all three cases), git diff --check
 PASS; all 41 moved bodies match HEAD apart from script-root paths; 11 stubbed
@@ -65,12 +65,45 @@ suite dispatch checks PASS. No native verification performed. Codex launched no
 Access, owns no database/PID, and has nothing to close. git mv was denied by the
 read-only index; plain moves used. Nothing staged, committed or pushed.
 
+## M08 groups and workflow continuation (28 October)
+
+User-approved tasks A/B implemented, uncommitted: registry confirmed 25 groups/
+directory/member and 18 workflow/validation runners -> eight suites. Forty-two
+case bodies moved to scripts/cases unchanged except `$PSScriptRoot` parent
+substitution. Directory merge release orchestration is now directory-management
+`-Tier release -BlankPath -DemoPath [-CurrentFixturesOnly]`; both directory
+receipts and the dependent gate sequence remain. Core directory-management and
+work-review have registry extendedArgs. Optional directory data, immediate-defaults
+and policy inputs print SKIP when absent. Original defaults and stale major
+LegacyPath checks remain. See the suite matrix in Development_Workflow.md.
+
+Updated develop/release callers, registry (text edits), CONTRIBUTING, development
+workflow, architecture alignment and BUILD_PIPELINE. suite-common adds optional
+NamedArguments for typed array forwarding of immediate-defaults VerifiedSuites;
+existing positional calls retain their process invocation. The other agent owns
+ONLY tests/ReadBenchmarkHarness.bas and scripts/cases/test-batched-reads.ps1;
+those existing edits were left untouched.
+
+Checks: test-source-contracts PASS (3 static cases); 42 moved-body comparisons
+PASS; 106 synthetic dispatch/forwarding, release-mode orchestration/receipt,
+failure-aggregation, real child-process typed-argument and parser checks PASS.
+The temporary check lives under ignored build/tests/m08-dispatch-check.ps1;
+it runs no native case. git diff --check PASS. No native verification, develop,
+Access launch, stage, commit or push. Codex owns no database/PID; nothing to close.
+APP_VERSION 0.49.0 / schema 35 and the named 100430 development artifact remain.
+
 ## Exact next actions
 
-1. User runs native suites on disposable artifacts, including startup with
-   `powershell.exe -NoProfile -File scripts/test-workspace-startup.ps1 -BuildPath <blank> -Tier extended -DemoPath <demo>`.
-   Run `powershell.exe -NoProfile -File scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`
-   for scheduled coverage; the optional demo and stale cases are explicitly skipped
-   without their inputs. Do not interpret static checks as native coverage.
-2. Review/commit workspace and report areas separately (shared support files need
-   hunk staging); then continue remaining M08 areas in backlog order.
+1. Review tasks A/B changes and run user-authorized native suites on disposable
+   artifacts. Core: `powershell.exe -NoProfile -File scripts/test-directory-management.ps1 -BuildPath <blank>`
+   and `powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath <blank>`.
+   Add `-Tier extended` for their extended cases; run the other six suites with
+   `-BuildPath <blank>` and optional inputs from the development-workflow matrix.
+   The registered persistence modes include `-PersistenceOnly` where documented.
+   Do not interpret static or synthetic dispatch checks as native coverage.
+2. When explicitly authorized, run `powershell.exe -NoProfile -File scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`.
+   Optional manual inputs are skipped unless supplied; major's known stale
+   LegacyPath check and the historical immediate-defaults assertions are unchanged.
+3. No commit was requested for tasks A/B. Review and commit only with approval,
+   keeping the other agent's benchmark edits separate. Then continue remaining
+   M08 areas in planning/PRIORITY_BACKLOG.md. No release/publish is authorized.

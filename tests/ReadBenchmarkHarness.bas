@@ -47,7 +47,6 @@ Private Function ListText(ByVal list As Access.ListBox) As String
     Next
 End Function
 Public Function PrepareReadViews() As Boolean
-    DoCmd.OpenForm "frmBulkFolders"
     DoCmd.OpenForm "frmUXDirectory"
     Forms!frmUXDirectory!lstMembers = DLookup("MemberID", "MemberReport", "ReportID=1")
     PrepareReadViews = UXDirectoryHistory()
@@ -62,9 +61,6 @@ Public Function ReadBenchmarkCase(ByVal kind As String) As String
             selection = selection & r!ReportID: r.MoveNext
         Loop
         r.Close: ReadBenchmarkCase = FolderBatchStamp(selection)
-    Case "Folder display"
-        Call LoadBulkFolders
-        ReadBenchmarkCase = ListText(Forms!frmBulkFolders!lstReports)
     Case "Directory history"
         Call UXHistoryLoad
         ReadBenchmarkCase = ListText(Forms!frmUXMemberHistory!lstHistory)

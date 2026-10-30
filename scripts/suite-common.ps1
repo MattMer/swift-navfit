@@ -39,9 +39,20 @@ function Invoke-HarnessCase([string]$Name,[string]$BuildPath,[string]$Module,[st
 }
 
 # Run one case script from scripts/cases in its own Windows PowerShell process.
-function Invoke-CaseScript([string]$Name,[string[]]$Arguments=@()){
+function Invoke-CaseScript([string]$Name,[string[]]$Arguments=@(),[hashtable]$NamedArguments=@{}){
     Invoke-SuiteCase $Name {
-        & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ('cases/'+$Name+'.ps1')) @Arguments
+        $casePath=Join-Path $PSScriptRoot ('cases/'+$Name+'.ps1')
+        if($NamedArguments.Count){
+            # Windows PowerShell -File cannot pass array-valued parameters. Keep
+            # their types through built-in CLIXML and splat them in the child.
+            if($Arguments.Count){throw 'Use either Arguments or NamedArguments'}
+            $payload=[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes([Management.Automation.PSSerializer]::Serialize($NamedArguments)))
+            $command='$caseParameters=[Management.Automation.PSSerializer]::Deserialize([Text.Encoding]::Unicode.GetString([Convert]::FromBase64String("'+$payload+'"))); & '+"'"+$casePath.Replace("'","''")+"'"+' @caseParameters'
+            $encoded=[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
+            & powershell.exe -NoProfile -EncodedCommand $encoded
+        }else{
+            & powershell.exe -NoProfile -File $casePath @Arguments
+        }
         if($LASTEXITCODE -ne 0){throw ($Name+' exited '+$LASTEXITCODE)}
     }
 }

@@ -110,7 +110,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Component test | REQUIRED | Done | As in Develop |
 | Dependency vulnerability checking | REQUIRED | Partial | The SBOM lists every run-time dependency; all are Windows or Office components patched through the Navy's Microsoft update channel. The VBScript dependency was removed in 0.49.0. No automated vulnerability feed is checked. |
 | Functional test | REQUIRED | Done | As in Develop |
-| Integration test | REQUIRED | Done | End-to-end workflow runners (`test-ux-workflows`, NAVFIT exchange, PDF output) |
+| Integration test | REQUIRED | Done | End-to-end workflow runners (`test-work-review`, NAVFIT exchange, PDF output) |
 | Regression test (includes smoke tests) | REQUIRED | Done | `test-workspace-startup`; BuildAndTest every build; ExtendedTest weekly and before every release |
 | Release packaging | REQUIRED | Done | Blank and Demo builders; `test-compiled-distribution` checks a compiled ACCDE candidate |
 | Software integration test | REQUIRED | Done | Same as the integration test |
@@ -191,7 +191,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Performance tests | PREFERRED | Partial | As in Test |
 | Persistent cyber operations tests | AS REQUIRED | Command | Operational environment |
 | Roll forward / roll back | PREFERRED | Done | Transactional saves with tested late rollback; verified backup and restore; import of every earlier schema |
-| Sustainability and chaos testing | PREFERRED | Partial | Failure tests: forced Access shutdown during editing (`test-ux-workflows`) and late-rollback injection in the import and persistence runners. No random failure injection. |
+| Sustainability and chaos testing | PREFERRED | Partial | Failure tests: forced Access shutdown during editing (`test-work-review`) and late-rollback injection in the import and persistence runners. No random failure injection. |
 | User evaluation / feedback | REQUIRED | Done | As in Deploy |
 
 ## Monitor

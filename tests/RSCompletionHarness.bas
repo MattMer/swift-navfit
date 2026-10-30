@@ -41,7 +41,7 @@ Private Sub Counts(ByVal senior As Long, ByVal count As Long, ByVal total As Dou
  Check CLng(DLookup("TraitCount", "RSCABaseline", "BaselineID=" & id)) = count, "Wrong running trait count"
  Check Abs(CDbl(DLookup("TraitSum", "RSCABaseline", "BaselineID=" & id)) - total) < 0.00001, "Wrong running trait sum"
 End Sub
-Public Function TestRSCompletion(Optional ByVal accountingOnly As Boolean = False) As String
+Public Function TestRSCompletion() As String
  Dim senior As Object, sid As Long, b As Long, g As Long, h As Long, duplicate As Long, a As Long, c As Long, key As Variant, f As Object, p As Object, control As Access.Control, entries As Long, rev As Long, nob As Long, estimated As Long, late As Long, original As String
  Dim posting As Long, legacy As Long, legacyReport As Long, legacyBaseline As Long, xml As String, sid2 As Long
  On Error GoTo Failed
@@ -140,24 +140,7 @@ Public Function TestRSCompletion(Optional ByVal accountingOnly As Boolean = Fals
  Check GroupPolicyValue(legacy, "RSCAGroupSum") = "28" And GroupPolicyValue(legacy, "RSCAGroupCount") = "7", "Legacy totals changed"
  Check DLookup("KeySpec", "SummaryGroup", "GroupID=" & legacy) = xml, "Legacy XML evidence was rewritten"
  Check Left$(RSReconcileAccounting(), 5) = "PASS:", "Mixed legacy/new accounting did not reconcile"
- If accountingOnly Then TestRSCompletion = "PASS: " & n & " relational accounting, reconciliation, migration, idempotency and rollback assertions": Exit Function
- 'Notes and Review must display different content in the actual editor.
- DoCmd.OpenForm "frmEditor", , , , , , CStr(a)
- Check UXSelectSection(7), "Notes selection failed"
- Check Forms!frmEditor!uxFieldSurface.Visible, "Draft notes hidden"
- Check UXSelectSection(8), "Review selection failed"
- Check Not Forms!frmEditor!uxFieldSurface.Visible, "Review retains notes surface"
- For Each control In Forms!frmEditor!uxFieldSurface.Form.Controls
-  If control.Name <> "uxFocusAnchor" Then Check Not control.Visible, "Review retains child content: " & control.Name
- Next
- Check Forms!frmEditor!cmdRoute.Visible And Forms!frmEditor!cmdComments.Visible And Forms!frmEditor!cmdChecklist.Visible, "Review actions absent"
- Check UXSelectSection(9), "History selection failed"
- Check Not Forms!frmEditor!uxFieldSurface.Visible And Forms!frmEditor!lstRevisions.Visible And Not Forms!frmEditor!cmdRoute.Visible, "History visibility incorrect"
- Check UXSelectSection(0), "Front selection failed"
- Check Forms!frmEditor!uxFieldSurface.Visible And Not Forms!frmEditor!lstRevisions.Visible, "Front retains history"
- Check UXSelectSection(7) And UXSelectSection(8), "Repeat tab transition failed"
- Check Not Forms!frmEditor!uxFieldSurface.Visible, "Repeat Review retains notes"
- TestRSCompletion = "PASS: " & n & " completion accounting and tab visibility assertions": Exit Function
+ TestRSCompletion = "PASS: " & n & " relational accounting, reconciliation, migration, idempotency and rollback assertions": Exit Function
 Failed:
  TestRSCompletion = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
 End Function

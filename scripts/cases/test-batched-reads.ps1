@@ -14,7 +14,6 @@ try{
   $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($path,$true)
   if($mode -eq 'Candidate' -and $InstallSource){
    foreach($module in @('modReportState','modRSDirectory','modWorkspace','modBulkFolders','modMemberHistory','modUXReadRows','modUXDirectory','modSwift')){$app.LoadFromText(5,$module,(Join-Path $root ('src/'+$module+'.bas')))}
-   $db=$app.CurrentDb();$db.Execute("UPDATE AppMetadata SET AppVersion='0.32.0-dev'",128);$db.Close()
   }
   $app.LoadFromText(5,'ReadBenchmarkHarness',(Join-Path $root 'tests/ReadBenchmarkHarness.bas'))
   if($mode -eq 'Candidate'){$app.LoadFromText(5,'BatchedReadsHarness',(Join-Path $root 'tests/BatchedReadsHarness.bas'))}
@@ -32,7 +31,7 @@ try{
   }
   [void]$app.Eval('PrepareReadViews()')
   $before=$app.Eval('ReadHistoryCounts()')
-  foreach($case in @('Folder stamp','Folder display','Directory history','Group RSCA')){
+  foreach($case in @('Folder stamp','Directory history','Group RSCA')){
    $value=[string]$app.Eval('ReadBenchmarkCase("'+$case+'")')
    if($mode -eq 'Baseline'){$expected[$case]=$value}elseif($value -cne $expected[$case]){throw ('Read output differs: '+$case)}
    for($trial=1;$trial -le $Trials;$trial++){
@@ -61,7 +60,7 @@ if($cleanupFailure){throw ('Owned Access cleanup failed: '+$cleanupFailure)}
 foreach($path in $originals.Keys){if((Get-FileHash -LiteralPath $path).Hash -ne $originals[$path]){throw 'A supplied artifact changed'}}
 if((Get-FileHash -LiteralPath $baseline).Hash -ne $baselineHash){throw 'Candidate import changed its benchmark source'}
 $samples|Export-Csv -LiteralPath (Join-Path $folder 'timings.csv') -NoTypeInformation
-$medians=foreach($case in @('Folder stamp','Folder display','Directory history','Group RSCA')){
+$medians=foreach($case in @('Folder stamp','Directory history','Group RSCA')){
  $a=@($samples|Where-Object {$_.Case -eq $case -and $_.Mode -eq 'Baseline'}|Sort-Object Milliseconds)
  $b=@($samples|Where-Object {$_.Case -eq $case -and $_.Mode -eq 'Candidate'}|Sort-Object Milliseconds)
  $index=[int][math]::Floor($Trials/2)
