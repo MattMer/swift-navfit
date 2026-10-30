@@ -48,8 +48,9 @@ loaded an instrumented modReportPages copy into a disposable build copy.
 
 ## Exact next actions
 
-1. Waiting on the user: editor option 1 (cache each control's applied layout per
-   editor session so page revisits skip the writes) or option 2 (bake the Front
-   Page layout into the form design). Then L03 workspace size headroom.
-2. Optional: diagnose the test-import-engine 3059 flake (old-VBA benchmark).
-3. Update this file at milestones and before stopping.
+1. Editor page-layout cache is done (b5e7e54); editor open stays about 1.1 s by
+   user decision. Open lead: the fourth consecutive editor open took 12-13 s in
+   both profiles.
+2. L03 workspace size headroom only when the user schedules it.
+3. Optional: diagnose the test-import-engine 3059 flake.
+4. Update this file at milestones and before stopping.
