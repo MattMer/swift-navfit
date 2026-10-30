@@ -125,7 +125,7 @@ $ov6a+='## Expanded rules with verified citations';$ov6a+='';$ov6a+='From `src/m
 $ov6a+=(Table @('Rule','Printed page','Locator') @($references|Sort-Object Code|ForEach-Object {,@($_.Code,$_.Page,$_.Locator)}))
 $out['OV-6a.md']=($ov6a -join $nl).TrimEnd()
 
-$sv8=@($generated,'','# SV-8 Systems Evolution','',('Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-swift-data-import`). Changes are additive: tables are added, never removed or renamed.'),'')
+$sv8=@($generated,'','# SV-8 Systems Evolution','',('Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-workspace-migration`). Changes are additive: tables are added, never removed or renamed.'),'')
 $prev=@();$rows=@()
 foreach($h in $history){$added=@($h.Tables|Where-Object {$prev -notcontains $_}|Sort-Object);$rows+=,@($h.Schema,$h.Kind,$h.App,$h.Tables.Count,$(if($prev.Count -eq 0){'(first captured)'}elseif($added.Count){$added -join ', '}else{'-'}));$prev=$h.Tables}
 $current=@($tables.Name);$added=@($current|Where-Object {$prev -notcontains $_}|Sort-Object)

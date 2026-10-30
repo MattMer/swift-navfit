@@ -5,7 +5,7 @@ param([Parameter(Mandatory=$true)][string]$BuildPath)
 # Each malformed case must be rejected with a message within 20 seconds, with
 # no rows written, the source unchanged, importer state cleared and no temp
 # files left. Control cases must load.
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $run=Join-Path $root ('build/tests/malformed-'+[guid]::NewGuid());New-Item -ItemType Directory -Path $run|Out-Null
 $latin=[Text.Encoding]::GetEncoding(28591)
 function Bytes([string]$s){return ,$latin.GetBytes($s)}

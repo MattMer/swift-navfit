@@ -22,10 +22,10 @@
    "tier": "extended"
   },
   {
-   "name": "test-audit-message-transfer",
+   "name": "test-workspace-migration",
    "area": "Import and transfer",
-   "tier": "manual",
-   "note": "Needs BuildPath, FixtureMapPath."
+   "tier": "release",
+   "note": "Release migration matrix and upgrade; -Cases selects focused cases. Manual persistence needs -LegacyTemplate (a schema-27 blank); audit needs -FixtureMapPath; messages need -DemoPath; directory transfer needs -SourcePath."
   },
   {
    "name": "test-workspace-read-performance",
@@ -34,9 +34,10 @@
    "note": "The test-batched-reads case (baseline/candidate read equivalence and timings) also runs when -BaselinePath names an earlier build. Other cases run with -BuildPath."
   },
   {
-   "name": "test-bulk-workspace-import",
+   "name": "test-import-engine",
    "area": "Import and transfer",
-   "tier": "extended"
+   "tier": "extended",
+   "note": "Extended: bulk and engine import. -Tier release: engine verification; optional -SourcePath, -InstallSource, -CommitFaults."
   },
   {
    "name": "test-report-pages",
@@ -74,45 +75,21 @@
    "note": "Core: merge. Extended adds directory cases; data comparison needs -SourcePath -CandidatePath. Release: -Tier release -BlankPath -DemoPath [-CurrentFixturesOnly]."
   },
   {
-   "name": "test-directory-merge-transfer",
-   "area": "Import and transfer",
-   "tier": "release"
-  },
-  {
-   "name": "test-engine-import",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
-   "name": "test-engine-verification",
-   "area": "Import and transfer",
-   "tier": "release"
-  },
-  {
    "name": "test-summary-groups",
    "area": "Groups, directory and members",
    "tier": "extended"
   },
   {
-   "name": "test-import-commit",
+   "name": "test-external-import",
    "area": "Import and transfer",
-   "tier": "extended"
+   "tier": "extended",
+   "note": "RUAD case needs -SamplePath; optional -SourcePath and -SkipPDF."
   },
   {
-   "name": "test-import-rank",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
-   "name": "test-import-review",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
-   "name": "test-local-pdf",
+   "name": "test-pdf-reading",
    "area": "NAVFIT and PDF exchange",
-   "tier": "manual",
-   "note": "Needs BuildPath, FixturePath."
+   "tier": "extended",
+   "note": "Local PDF needs -LocalFixturePath; expanded fixtures are generated when absent."
   },
   {
    "name": "test-work-review",
@@ -130,49 +107,20 @@
    "tier": "extended"
   },
   {
-   "name": "test-malformed-imports",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
-   "name": "test-navfit-adapter",
+   "name": "test-navfit-exchange",
    "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-navfit-group-export",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
+   "tier": "extended",
+   "note": "Field coverage runs only with -VerifyFieldCoverage; optional -OutputPath."
   },
   {
    "name": "test-navfit-native-return",
    "area": "NAVFIT and PDF exchange",
    "tier": "manual",
-   "note": "Needs WorkspacePath, ReturnedPath, ReportID."
-  },
-  {
-   "name": "test-navfit-upgrade",
-   "area": "Import and transfer",
-   "tier": "extended"
+   "note": "Manual return needs -WorkspacePath -ReturnedPath -ReportID; comparison needs -BeforePath -AfterPath -EvidencePath."
   },
   {
    "name": "test-report-navigation",
    "area": "Report editor and pages",
-   "tier": "extended"
-  },
-  {
-   "name": "test-o3-cells",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-pdf-counseling-status",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-pdf-expanded",
-   "area": "NAVFIT and PDF exchange",
    "tier": "extended"
   },
   {
@@ -182,26 +130,9 @@
    "note": "Dot-sourced by PDF runners to generate synthetic PDF fixtures (needs the .venv with pikepdf)."
   },
   {
-   "name": "test-pdf-import",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
    "name": "test-pdf-output",
    "area": "NAVFIT and PDF exchange",
    "tier": "extended"
-  },
-  {
-   "name": "test-pdf-target-computer",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "helper",
-   "note": "Called by package-pdf-target-check.ps1 on a target computer."
-  },
-  {
-   "name": "test-persistence-transfer",
-   "area": "Import and transfer",
-   "tier": "manual",
-   "note": "Needs BuildPath, LegacyTemplate."
   },
   {
    "name": "test-workspace-resources",
@@ -231,11 +162,6 @@
    "tier": "extended"
   },
   {
-   "name": "test-report-message-import",
-   "area": "Import and transfer",
-   "tier": "release"
-  },
-  {
    "name": "test-report-review-history",
    "area": "Report editor and pages",
    "tier": "core",
@@ -251,21 +177,10 @@
    "tier": "extended"
   },
   {
-   "name": "test-ruad-import",
-   "area": "Import and transfer",
-   "tier": "manual",
-   "note": "Needs BuildPath, SamplePath."
-  },
-  {
    "name": "test-source-contracts",
    "area": "Build and source",
    "tier": "core",
    "extendedArgs": ["-Tier", "extended"]
-  },
-  {
-   "name": "test-swift-data-import",
-   "area": "Import and transfer",
-   "tier": "release"
   },
   {
    "name": "test-traits",
@@ -279,21 +194,6 @@
    "note": "Needs SourcePath, CandidatePath."
   },
   {
-   "name": "test-ux-import-flow",
-   "area": "Import and transfer",
-   "tier": "extended"
-  },
-  {
-   "name": "test-ux-navfit",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "extended"
-  },
-  {
-   "name": "test-workspace-upgrade",
-   "area": "Import and transfer",
-   "tier": "release"
-  },
-  {
    "name": "verify-build-artifact",
    "area": "Build and source",
    "tier": "core",
@@ -304,18 +204,6 @@
    "area": "Build and source",
    "tier": "helper",
    "note": "Structural verifier called by build.ps1 and verify-build-artifact."
-  },
-  {
-   "name": "verify-navfit-field-coverage",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "manual",
-   "note": "Run when src/navfit-field-map.json changes; regenerates planning/evidence/navfit/field-coverage.json from the protected NAVFIT references (read-only)."
-  },
-  {
-   "name": "verify-navfit-native-roundtrip",
-   "area": "NAVFIT and PDF exchange",
-   "tier": "manual",
-   "note": "Needs BeforePath, AfterPath, EvidencePath."
   }
  ]
 }

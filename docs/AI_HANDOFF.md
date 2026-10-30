@@ -1,6 +1,6 @@
 # Shared AI handoff
 
-Updated 28 October 2026. Read this at startup, then verify Git status/diffs,
+Updated 30 October 2026. Read this at startup, then verify Git status/diffs,
 versions and artifacts. Requirements remain in [PROJECT_STATE](../PROJECT_STATE.md),
 [backlog](../planning/PRIORITY_BACKLOG.md), [AGENTS](../AGENTS.md) and the
 [development workflow](Development_Workflow.md). Private conversation history is
@@ -8,13 +8,51 @@ not needed. Commits need the user's approval; pushes have not been requested.
 
 ## State
 
-- Branch main, 7 commits ahead of origin/main through e32874d (not pushed).
+- Branch main; latest observed commit 3bdf657 (M08 major relationship check).
   APP_VERSION 0.49.0 / SCHEMA_VERSION 35 ([modSwift](../src/modSwift.bas)).
 - Claude and Codex both work here. Claude Code has the Codex plugin
   (openai/codex-plugin-cc, codex-cli 0.165.0, ChatGPT sign-in). Claude delegates
   contained pieces (reviews, one-module fixes) to Codex and runs native Access
   checks itself. Codex works without launching Access while Claude runs builds;
   `develop.ps1` aborts if a build input changes mid-build.
+
+## Current M08 continuation: NAVFIT/PDF and import (30 October)
+
+User-approved tasks A/B implemented, uncommitted: confirmed 13 NAVFIT/PDF and
+18 import/transfer registry entries. Seven suites replace 29 moved case scripts;
+PDF fixtures remains a top-level helper, user-data-equivalence a separate manual
+runner. Full parameters and case tiers are in the
+[NAVFIT/PDF/import matrix](Development_Workflow.md#navfit-pdf-and-import-suites-m08).
+No core cases in these areas: develop's registry dispatch needs no source edit or
+new extendedArgs. Release-check, directory release orchestration and the target
+PDF kit use the suites; per-case directory logs and the r115 migration receipt
+writer/read sequence remain intact. Registry and current docs/generator updated.
+
+Moved bodies match their prior source with only script-root substitutions,
+except workspace-upgrade's internal schema-20 builder path now includes cases/.
+Persistence-transfer's known stale schema-28 requirement and all fixture logic
+remain unchanged. Existing test-major work was not edited; it was independently
+committed as 3bdf657 while this task ran.
+
+Checks: test-source-contracts PASS (all 3 static cases); 29 moved-body comparisons
+PASS with the one caller-path exception above; 595 synthetic dispatch, parameter,
+failure aggregation and parser checks PASS; literal script-path checks PASS;
+git diff --check PASS. Target-kit ZIP layout/README check PASS with synthetic
+marker files only (no PDF extraction). Scratch dispatch checker:
+`build/tests/m08-exchange-dispatch-check.ps1` (ignored, no native calls).
+No Access/native runner, develop, build, release gate, commit or push was run.
+APP_VERSION 0.49.0 / schema 35 unchanged. Codex owns no Access database/PID and
+has nothing to close. Native suite behavior and target-computer execution are
+unverified; architecture view generation was not run because it reads Access.
+
+Next actions: review the suite matrix and changes. Recheck statically with
+`powershell.exe -NoProfile -File scripts/test-source-contracts.ps1` and
+`git diff --check`. When separately authorized, run the applicable native suites
+on disposable artifacts, preserving release sequencing and manual prerequisites.
+Do not fix the stale persistence fixture as part of this restructuring. No commit
+is authorized. Earlier continuation sections below are historical verification;
+their previously uncommitted groups/workflow work is now in c046872. Continue
+remaining M08 areas from planning/PRIORITY_BACKLOG.md after this review.
 
 ## M04: done in development
 

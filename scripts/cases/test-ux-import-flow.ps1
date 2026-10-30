@@ -1,12 +1,12 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$SkipPDF)
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $scratch=Join-Path $root ('build/tests/ux-import-flow-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
-$navfit=Join-Path $root ('build/tests/ux-import-flow-source-'+[guid]::NewGuid()+'.accdb'); & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $navfit
+$navfit=Join-Path $root ('build/tests/ux-import-flow-source-'+[guid]::NewGuid()+'.accdb'); & (Join-Path (Split-Path $PSScriptRoot -Parent) 'make-navfit-full-fixture.ps1') -DestinationPath $navfit
 $sourceHash=(Get-FileHash -LiteralPath $navfit).Hash
 $pdf=''
-$pdfHash=$null;if(-not $SkipPDF){. (Join-Path $PSScriptRoot 'test-pdf-fixtures.ps1');$pdf=Join-Path (NewSwiftPdfFixtures 'synthetic') 'synthetic-eval.pdf';$pdfHash=(Get-FileHash -LiteralPath $pdf).Hash}
+$pdfHash=$null;if(-not $SkipPDF){. (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-pdf-fixtures.ps1');$pdf=Join-Path (NewSwiftPdfFixtures 'synthetic') 'synthetic-eval.pdf';$pdfHash=(Get-FileHash -LiteralPath $pdf).Hash}
 $app=$null
 try {
     $app=New-Object -ComObject Access.Application

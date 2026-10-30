@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
-. (Join-Path $PSScriptRoot 'test-pdf-fixtures.ps1');$pdfs=NewSwiftPdfFixtures 'synthetic'
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-pdf-fixtures.ps1');$pdfs=NewSwiftPdfFixtures 'synthetic'
 $scratch=Join-Path $root ('build\tests\pdf-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=$null

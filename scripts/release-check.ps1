@@ -34,9 +34,9 @@ foreach($guard in @('Rollback','ChangedSourceRejected','PopulatedTargetRejected'
 foreach($suite in @('test-workspace-startup','test-report-pages','test-work-review','test-summary-groups')){
     InvokeSwiftWorkflowStep $suite @('-BuildPath',$blank.Path) $logFolder
 }
-InvokeSwiftWorkflowStep 'test-engine-verification' @('-BuildPath',$blank.Path,'-SourcePath',$demo.Path) $logFolder
+InvokeSwiftWorkflowStep 'test-import-engine' @('-BuildPath',$blank.Path,'-Tier','release','-SourcePath',$demo.Path) $logFolder
 InvokeSwiftWorkflowStep 'develop' @('-Action','ExtendedTest','-BuildPath',$blank.Path) $logFolder
-InvokeSwiftWorkflowStep 'test-report-message-import' @('-BlankPath',$blank.Path,'-DemoPath',$demo.Path) $logFolder
+InvokeSwiftWorkflowStep 'test-workspace-migration' @('-BuildPath',$blank.Path,'-Cases','test-report-message-import','-DemoPath',$demo.Path) $logFolder
 foreach($artifact in @($blank,$demo)){
     if((GetSwiftWorkflowArtifact $artifact.Path).SHA256 -ne $artifact.SHA256){throw ('Release checks changed '+$artifact.Path)}
 }

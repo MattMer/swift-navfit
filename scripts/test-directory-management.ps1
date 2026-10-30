@@ -9,7 +9,9 @@ if($Tier -eq 'release'){
     $logFolder=Join-Path $root ('build/tests/directory-release-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $logFolder)
     $results=@()
     function NativeCheck([string]$script,[string[]]$arguments){
-     $log=Join-Path $logFolder ($script+'.log')
+     $logName=$script
+     if($arguments -contains '-Cases'){$logName=$arguments[[array]::IndexOf($arguments,'-Cases')+1]}
+     $log=Join-Path $logFolder ($logName+'.log')
      $before=$script:suiteFailures.Count
      if(Test-Path (Join-Path $PSScriptRoot ('cases/'+$script+'.ps1'))){
       Invoke-CaseScript $script $arguments *> $log
@@ -30,12 +32,12 @@ if($Tier -eq 'release'){
     NativeCheck 'verify-build-artifact' @('-BuildPath',$BlankPath,'-RequireBlank','-Tier','extended')
     NativeCheck 'test-workspace-startup' @('-BuildPath',$BlankPath,'-Tier','extended','-DemoPath',$DemoPath)
     NativeCheck 'test-report-review-history' @('-BuildPath',$DemoPath)
-    if(-not $CurrentFixturesOnly){NativeCheck 'test-workspace-upgrade' @('-TemplatePath',$BlankPath,'-SourceWorkspacePath',$DemoPath)}
-    NativeCheck 'test-directory-merge-transfer' @('-TemplatePath',$BlankPath,'-SourcePath',$fixture)
+    if(-not $CurrentFixturesOnly){NativeCheck 'test-workspace-migration' @('-BuildPath',$BlankPath,'-Cases','test-workspace-upgrade','-SourceWorkspacePath',$DemoPath)}
+    NativeCheck 'test-workspace-migration' @('-BuildPath',$BlankPath,'-Cases','test-directory-merge-transfer','-SourcePath',$fixture)
     if($CurrentFixturesOnly){
-     NativeCheck 'test-swift-data-import' @('-BuildPath',$BlankPath,'-CurrentSchemaPath',$fixture,'-CurrentFixturesOnly')
+     NativeCheck 'test-workspace-migration' @('-BuildPath',$BlankPath,'-Cases','test-swift-data-import','-CurrentSchemaPath',$fixture,'-CurrentFixturesOnly')
     }else{
-     NativeCheck 'test-swift-data-import' @('-BuildPath',$BlankPath,'-CurrentSchemaPath',$fixture)
+     NativeCheck 'test-workspace-migration' @('-BuildPath',$BlankPath,'-Cases','test-swift-data-import','-CurrentSchemaPath',$fixture)
     }
     if((Get-FileHash -LiteralPath $DemoPath).Hash -ne $demoHash){$script:suiteFailures+='suite changed its demo artifact'}
     Complete-SuiteRun 'directory-management-release' $BlankPath $blankHash

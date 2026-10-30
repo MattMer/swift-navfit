@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $dir=Join-Path $root ('build/tests/navfit-ui-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $dir)
-$source=Join-Path $dir 'synthetic.accdb'; & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source
+$source=Join-Path $dir 'synthetic.accdb'; & (Join-Path (Split-Path $PSScriptRoot -Parent) 'make-navfit-full-fixture.ps1') -DestinationPath $source
 $test=Join-Path $dir 'test.accdb';Copy-Item -LiteralPath $BuildPath -Destination $test
 $hash=(Get-FileHash -LiteralPath $BuildPath).Hash
 $app=New-Object -ComObject Access.Application;$primary=$null;$cleanup=@()

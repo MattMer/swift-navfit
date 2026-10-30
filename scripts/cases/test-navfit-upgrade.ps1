@@ -1,8 +1,8 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $dir=Join-Path $root ('build/tests/navfit-v33-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $dir)
 $modern=Join-Path $dir 'modern.accdb'
-& (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $modern
+& (Join-Path (Split-Path $PSScriptRoot -Parent) 'make-navfit-full-fixture.ps1') -DestinationPath $modern
 $patch=@(@('Reports','DoDID',10),@('Reports','RSDoDID',10),@('Folders','RSAddress1',30),@('Folders','RSAddress2',30),@('Folders','RSCity',15),@('Folders','RSState',2),@('Folders','RSZipCd',9),@('Folders','RSPhone',10),@('Folders','RSDSN',7))
 $engine=New-Object -ComObject DAO.DBEngine.120
 try{

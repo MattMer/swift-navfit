@@ -1,0 +1,26 @@
+param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$SourcePath,[switch]$SkipPDF,[string]$SamplePath)
+$ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'suite-common.ps1')
+$buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash
+$caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-import-commit' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+if($PSBoundParameters.ContainsKey('SourcePath')){$caseArgs+=@('-SourcePath',$SourcePath)}
+Invoke-CaseScript 'test-import-review' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-import-rank' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-pdf-import' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-navfit-upgrade' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+if($PSBoundParameters.ContainsKey('SkipPDF')){if($SkipPDF){$caseArgs+='-SkipPDF'}}
+Invoke-CaseScript 'test-ux-import-flow' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-malformed-imports' $caseArgs
+if($SamplePath){
+$caseArgs=@('-BuildPath',$BuildPath)
+if($PSBoundParameters.ContainsKey('SamplePath')){$caseArgs+=@('-SamplePath',$SamplePath)}
+Invoke-CaseScript 'test-ruad-import' $caseArgs
+}else{Write-Output 'SKIP: test-ruad-import needs -SamplePath'}
+Complete-SuiteRun 'external-import' $BuildPath $buildHash

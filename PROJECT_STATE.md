@@ -165,7 +165,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   | 28–33 | 0.40.0-dev, 23 Oct 2026 | Actual retained-schema matrix; populated 30–33 major transfers. |
 
 - **Historical-test policy:** every release runs
-  [test-swift-data-import.ps1](scripts/test-swift-data-import.ps1) over schema 1
+  [test-workspace-migration.ps1](scripts/test-workspace-migration.ps1) over schema 1
   to the current one, and release-check requires full coverage. Old output files
   are not needed. [tests/historical-schemas](tests/historical-schemas/README.md) holds
   each older schema's DDL:

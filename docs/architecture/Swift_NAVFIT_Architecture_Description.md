@@ -71,11 +71,11 @@ The full AV-1 is [views/AV-1.md](views/AV-1.md).
 | --- | --- | --- |
 | Section 508 / WCAG 2.0 AA (automated) | 12 contrast pairs at 4.5:1 or better; every input and button named; Windows contrast themes followed | `scripts/test-workspace-presentation.ps1`; conformance report draft |
 | Section 508 (screen reader, attended) | Not yet performed | [Screen-reader test](../Accessibility_Screen_Reader_Test.md) |
-| Historical import (every prior schema) | Every schema 1–34 imports through the production path | `scripts/test-swift-data-import.ps1` |
+| Historical import (every prior schema) | Every schema 1–34 imports through the production path | `scripts/test-workspace-migration.ps1` |
 | Extended regression tier | All runners pass on the current build | `scripts/develop.ps1 -Action ExtendedTest` |
 | Printed fit of PDF output | Not yet performed | Backlog H01 |
 | DevSecOps practice | 55 activities done, 29 partial, 0 gaps, 14 command-owned, 20 not applicable | [DevSecOps alignment matrix](DevSecOps_Alignment.md) |
-| Malformed file input | 55 of 55 malformed and control inputs handled cleanly | `test-malformed-imports` |
+| Malformed file input | 55 of 55 malformed and control inputs handled cleanly | `test-external-import` |
 | Threat model | STRIDE over 5 assets, 5 trust boundaries and 6 interfaces; 6 recommendations | [Threat model](Threat_Model.md) |
 | Software bill of materials | Generated from the build; no third-party runtime libraries | [SBOM](SBOM.md), [CycloneDX](sbom.cdx.json) |
 

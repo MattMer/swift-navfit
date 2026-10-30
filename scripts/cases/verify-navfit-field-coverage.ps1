@@ -1,5 +1,5 @@
-param([string]$OutputPath=(Join-Path $PSScriptRoot '../planning/evidence/navfit/field-coverage.json'))
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+param([string]$OutputPath=(Join-Path (Split-Path $PSScriptRoot -Parent) '../planning/evidence/navfit/field-coverage.json'))
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $map=Get-Content -Raw (Join-Path $root 'src/navfit-field-map.json')|ConvertFrom-Json
 $il=Get-Content -Raw (Join-Path $root 'planning/evidence/navfit/native-bindings.json')|ConvertFrom-Json
 $engine=New-Object -ComObject DAO.DBEngine.120;$db=$engine.OpenDatabase((Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb'),$false,$true)

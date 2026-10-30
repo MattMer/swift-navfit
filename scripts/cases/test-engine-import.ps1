@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,
  [string]$BaselinePath,[string]$DemoPath,[string]$SourcePath,[switch]$SkipBaseline)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 if(-not $BaselinePath){$BaselinePath=Join-Path $root 'output/Swift_NAVFIT_Blank_2026-10-20-r123a.accdb'}
 if(-not $DemoPath){$DemoPath=Join-Path $root 'output/Swift_NAVFIT_Demo_2026-10-20-r123a.accdb'}
 $folder=Join-Path $root ('build/tests/engine-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $folder)

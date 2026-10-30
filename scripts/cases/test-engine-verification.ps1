@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$SourcePath,[switch]$InstallSource,[switch]$CommitFaults)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $target=Join-Path $root ('build/tests/engine-exactness-'+[guid]::NewGuid()+'.accdb');Copy-Item $BuildPath $target
 $hash=(Get-FileHash $BuildPath).Hash;$app=$null;$primary=$null;$cleanup=@()
 if($CommitFaults -and -not $SourcePath){throw '-CommitFaults requires an existing synthetic -SourcePath'}

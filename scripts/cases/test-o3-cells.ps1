@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $scratch=Join-Path $root ('build/tests/o3-cells-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=New-Object -ComObject Access.Application

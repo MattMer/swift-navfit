@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BlankPath,[Parameter(Mandatory=$true)][string]$DemoPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-. (Join-Path $PSScriptRoot 'test-contributor-context.ps1')
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-contributor-context.ps1')
 $folder=Join-Path $root ('build/tests/message-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $folder)
 $source=Join-Path $folder 'source.accdb';$target=Join-Path $folder 'target.accdb';Copy-Item $DemoPath $source;Copy-Item $BlankPath $target
 $e=New-Object -ComObject DAO.DBEngine.120;$d=$e.OpenDatabase($source)

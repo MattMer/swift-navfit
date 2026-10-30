@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$TemplatePath,[Parameter(Mandatory=$true)][string]$SourcePath)
-$ErrorActionPreference='Stop'; $root=Split-Path $PSScriptRoot -Parent
-. (Join-Path $PSScriptRoot 'test-contributor-context.ps1')
+$ErrorActionPreference='Stop'; $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-contributor-context.ps1')
 $target=Join-Path $root ('build/tests/merge-transfer-'+[guid]::NewGuid()+'.accdb')
 $before=(Get-FileHash -LiteralPath $SourcePath).Hash
 & powershell.exe -NoProfile -File (Join-Path $root 'scripts/upgrade-workspace.ps1') -SourcePath $SourcePath -TemplatePath $TemplatePath -DestinationPath $target

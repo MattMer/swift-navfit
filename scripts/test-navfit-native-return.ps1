@@ -1,14 +1,24 @@
-param([Parameter(Mandatory=$true)][string]$WorkspacePath,[Parameter(Mandatory=$true)][string]$ReturnedPath,[Parameter(Mandatory=$true)][int]$ReportID,[string]$Marker='',[switch]$AlreadyApplied)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
-$app=New-Object -ComObject Access.Application
-try{
- $app.AutomationSecurity=1;$app.OpenCurrentDatabase($WorkspacePath,$true)
- $app.LoadFromText(5,'NAVFITNativeReturnHarness',(Join-Path $root 'tests/NAVFITNativeReturnHarness.bas'))
- $app.DoCmd.RunCommand(126)
- $result=$app.Eval('VerifyNativeReturn('+ $ReportID +',"'+$ReturnedPath+'","'+(Join-Path $root 'NAVFIT_BLANK.accdb')+'","'+$Marker+'",'+$(if($AlreadyApplied){'True'}else{'False'})+')')
- if($result -notlike 'PASS:*'){throw $result}
- $app.CloseCurrentDatabase()
- $reexport=$result.Split(@('; reexport='),[StringSplitOptions]::None)[1]
- @{Status=$result;Workspace=$WorkspacePath;ReturnedFile=$ReturnedPath;ReturnedSHA256=(Get-FileHash -LiteralPath $ReturnedPath).Hash;Reexport=$reexport;ReexportSHA256=(Get-FileHash -LiteralPath $reexport).Hash}|ConvertTo-Json|Set-Content -LiteralPath ($ReturnedPath+'.native-proof.json')
- Write-Output $result
-}finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+param([string]$WorkspacePath,[string]$ReturnedPath,[int]$ReportID,[string]$Marker,[switch]$AlreadyApplied,[string]$BeforePath,[string]$AfterPath,[string]$EvidencePath)
+$ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'suite-common.ps1')
+# The native-return case intentionally applies changes to the supplied disposable workspace.
+# Hash the read-only returned file (or comparison source), never the workspace it edits.
+$hashPath=if($ReturnedPath){$ReturnedPath}elseif($BeforePath){$BeforePath}else{$null}
+if($hashPath){$buildHash=(Get-FileHash -LiteralPath $hashPath).Hash}
+if($WorkspacePath -and $ReturnedPath -and $PSBoundParameters.ContainsKey('ReportID')){
+$caseArgs=@()
+if($PSBoundParameters.ContainsKey('WorkspacePath')){$caseArgs+=@('-WorkspacePath',$WorkspacePath)}
+if($PSBoundParameters.ContainsKey('ReturnedPath')){$caseArgs+=@('-ReturnedPath',$ReturnedPath)}
+if($PSBoundParameters.ContainsKey('ReportID')){$caseArgs+=@('-ReportID',$ReportID)}
+if($PSBoundParameters.ContainsKey('Marker')){$caseArgs+=@('-Marker',$Marker)}
+if($PSBoundParameters.ContainsKey('AlreadyApplied')){if($AlreadyApplied){$caseArgs+='-AlreadyApplied'}}
+Invoke-CaseScript 'test-navfit-native-return' $caseArgs
+}else{Write-Output 'SKIP: test-navfit-native-return needs -WorkspacePath -ReturnedPath -ReportID'}
+if($BeforePath -and $AfterPath -and $EvidencePath){
+$caseArgs=@()
+if($PSBoundParameters.ContainsKey('BeforePath')){$caseArgs+=@('-BeforePath',$BeforePath)}
+if($PSBoundParameters.ContainsKey('AfterPath')){$caseArgs+=@('-AfterPath',$AfterPath)}
+if($PSBoundParameters.ContainsKey('EvidencePath')){$caseArgs+=@('-EvidencePath',$EvidencePath)}
+Invoke-CaseScript 'verify-navfit-native-roundtrip' $caseArgs
+}else{Write-Output 'SKIP: verify-navfit-native-roundtrip needs -BeforePath -AfterPath -EvidencePath'}
+if($hashPath){Complete-SuiteRun 'navfit-native-return' $hashPath $buildHash}else{Write-Output 'PASS: navfit-native-return suite, 0 cases (manual inputs absent)'}

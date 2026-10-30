@@ -2,7 +2,7 @@
 
 # SV-8 Systems Evolution
 
-Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-swift-data-import`). Changes are additive: tables are added, never removed or renamed.
+Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-workspace-migration`). Changes are additive: tables are added, never removed or renamed.
 
 | Schema | Definition | Application | Tables | Tables added |
 | --- | --- | --- | --- | --- |

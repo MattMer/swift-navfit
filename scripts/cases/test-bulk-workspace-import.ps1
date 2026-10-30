@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$BaselinePath,[string]$DemoPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 if(-not $BaselinePath){$BaselinePath=Join-Path $root 'output/Swift_NAVFIT_Blank_2026-10-19-r121b.accdb'}
 if(-not $DemoPath){$DemoPath=Join-Path $root 'output/Swift_NAVFIT_Demo_2026-10-19-r121b.accdb'}
 $folder=Join-Path $root ('build/tests/bulk-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)

@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath, [string]$SourcePath="")
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
-if($SourcePath){$source=[IO.Path]::GetFullPath($SourcePath)}else{$source=Join-Path $root ('build\tests\review-source-'+[guid]::NewGuid()+'.accdb'); & (Join-Path $PSScriptRoot 'make-navfit-full-fixture.ps1') -DestinationPath $source}
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+if($SourcePath){$source=[IO.Path]::GetFullPath($SourcePath)}else{$source=Join-Path $root ('build\tests\review-source-'+[guid]::NewGuid()+'.accdb'); & (Join-Path (Split-Path $PSScriptRoot -Parent) 'make-navfit-full-fixture.ps1') -DestinationPath $source}
 $hash=(Get-FileHash -LiteralPath $source).Hash
 $scratch=Join-Path $root ('build\tests\review-'+[guid]::NewGuid()+'.accdb')
 Copy-Item -LiteralPath $BuildPath -Destination $scratch

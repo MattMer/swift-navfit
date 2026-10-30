@@ -1,20 +1,21 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[Parameter(Mandatory=$true)][string]$LegacyTemplate)
 $ErrorActionPreference='Stop'
-$root=Split-Path $PSScriptRoot -Parent
+$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/persistence-transfer-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
 $originals=@{}
 foreach($path in @($BuildPath,$LegacyTemplate)){$originals[[IO.Path]::GetFullPath($path)]=(Get-FileHash -LiteralPath $path).Hash}
 $results=@()
 foreach($template in @($LegacyTemplate,$BuildPath)){
-    $tag=if($template -eq $LegacyTemplate){'legacy27'}else{'current28'}
+    $tag=if($template -eq $LegacyTemplate){'legacy27'}else{'current'}
     $source=Join-Path $folder ($tag+'-source.accdb')
     Copy-Item -LiteralPath $template -Destination $source
     $app=New-Object -ComObject Access.Application
     try {
         $app.AutomationSecurity=1;$app.OpenCurrentDatabase($source,$true)
         $schema=$app.Eval('DLookup("SchemaVersion","AppMetadata")')
-        if(($tag -eq 'legacy27' -and $schema -ne 27) -or ($tag -eq 'current28' -and $schema -ne 28)){throw 'Use real schema-27 and schema-28 templates'}
+        #The legacy template is a real schema-27 blank; the current case is the supplied build.
+        if($tag -eq 'legacy27' -and $schema -ne 27){throw 'Use a real schema-27 template for -LegacyTemplate'}
         $app.LoadFromText(5,'PersistenceSeedHarness',(Join-Path $root 'tests/PersistenceSeedHarness.bas'))
         $app.DoCmd.RunCommand(126)
         $seed=$app.Eval('SeedPersistenceTransfer()');Write-Output $seed

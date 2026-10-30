@@ -341,9 +341,7 @@ Run the existing native suites sequentially on disposable copies before the fina
 integrated build, then repeat against the exact final blank:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-navfit-group-export.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-ux-navfit.ps1 -BuildPath "D:\path\blank.accdb"
-powershell.exe -NoProfile -File scripts/test-navfit-adapter.ps1 -BuildPath "D:\path\blank.accdb"
+powershell.exe -NoProfile -File scripts/test-navfit-exchange.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
 These runners default to installed application code. Use `-InstallSource` only for
@@ -400,8 +398,9 @@ Without the required optional inputs, suites print
 `SKIP: verify-ux-immediate-defaults needs -BlankPath -DemoPath`, or
 `SKIP: verify-validation-policy needs -InstructionPath`. Policy text uses the
 case's existing default unless `-InstructionTextPath` is supplied. Benchmark
-and legacy branches keep their original input handling; in particular,
-`test-major -LegacyPath` retains its known stale check. The immediate-defaults
+and legacy branches keep their original input handling. With `-LegacyPath` or
+`-OlderPath`, test-major requires imported relationships to match the current
+build's definitions. The immediate-defaults
 case retains its historical table/version assertions and receipt behavior.
 
 Directory release mode retains the original sequence: merge; history, batch,
@@ -462,8 +461,8 @@ before previewing; its source reader is in-session. Move/merge selections remain
 visible for a fresh preview. No automatic Resume is added to these bounded flows.
 
 For workspace-import outcomes, run the existing
-[test-engine-verification.ps1](../scripts/test-engine-verification.ps1) with
-`-BuildPath <blank.accdb> -SourcePath <retained-synthetic-workspace.accdb> -CommitFaults`.
+[test-import-engine.ps1](../scripts/test-import-engine.ps1) with
+`-BuildPath <blank.accdb> -Tier release -SourcePath <retained-synthetic-workspace.accdb> -CommitFaults`.
 It verifies adversarial field comparisons, a precommit mismatch with confirmed
 rollback/retry, and a fault injected immediately after the real production commit
 on a separate disposable copy. The injection is explicit test instrumentation,
@@ -686,7 +685,7 @@ Retain the related focused gates:
 ```powershell
 powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\schema32-blank.accdb" -OlderPath "D:\path\schema31-blank.accdb" -ChiefComments
 powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -ChiefComments
-powershell.exe -NoProfile -File scripts/test-pdf-expanded.ps1 -BuildPath "D:\path\blank.accdb" -FixturePath "D:\path\synthetic-xfa-fixtures"
+powershell.exe -NoProfile -File scripts/test-pdf-reading.ps1 -BuildPath "D:\path\blank.accdb" -FixturePath "D:\path\synthetic-xfa-fixtures"
 ```
 
 The transfer suite verifies blank new values in old snapshots, actual authored
@@ -767,7 +766,7 @@ The verifier reports whether it reused the build result. It does not create a
 new cache or automatically copy receipts alongside seeded/renamed distributions.
 
 Historical import coverage no longer depends on old output files.
-`test-swift-data-import.ps1` builds a data-only source for every schema from 1 to
+`test-workspace-migration.ps1` builds a data-only source for every schema from 1 to
 the build's from [tests/historical-schemas](../tests/historical-schemas/README.md),
 seeds synthetic rows into every table, imports each through the production
 Settings import and compares every source row and field itself. Each file
@@ -825,6 +824,42 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#how-to-work) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
 
 These working defaults allow justified debugging, native testing and broader validation. They do not relax mandatory session ownership, data protection, source/artifact verification or release requirements.
+
+
+### NAVFIT, PDF and import suites (M08)
+
+All suites below take `-BuildPath <fresh blank>` except the manual native-return
+suite. There are no core cases in these two registry areas, so no new core
+`extendedArgs` are needed; `develop.ps1` discovers the four extended suites from
+the registry without a code change. Every case uses `Invoke-CaseScript`; suites
+aggregate failures with `Complete-SuiteRun`. Missing manual inputs print
+`SKIP: <case> needs -X`. Existing case defaults and fixture logic remain.
+
+| Suite / registry tier | Cases by tier | Parameters beyond BuildPath |
+| --- | --- | --- |
+| `test-navfit-exchange` / extended | Extended: test-navfit-adapter, test-navfit-group-export, test-ux-navfit. Manual: verify-navfit-field-coverage. | `-InstallSource`; `-VerifyFieldCoverage` enables the manual case, optional `-OutputPath` selects its evidence output. |
+| `test-navfit-native-return` / manual | Manual: test-navfit-native-return, verify-navfit-native-roundtrip. | Return needs `-WorkspacePath -ReturnedPath -ReportID`, optional `-Marker -AlreadyApplied`. Comparison needs `-BeforePath -AfterPath -EvidencePath`. No BuildPath. Supply a disposable workspace: the unchanged return case edits it; suite hashes the returned file or comparison source. |
+| `test-pdf-reading` / extended | Extended: test-pdf-expanded, test-pdf-counseling-status. Manual: test-local-pdf. | `-FixturePath` is the expanded fixture directory (generated when absent); `-LocalFixturePath` is the local PDF file, passed to that case as FixturePath; `-InstallReader` goes only to local PDF. |
+| `test-pdf-output` / extended | Extended: test-pdf-output, test-o3-cells. Opt-in helper: test-pdf-target-computer. | `-InstallSource -ReusePresentation -MetricsOnly -ChiefProofOnly -ChiefFieldsOnly -ChiefCasesOnly` go to PDF output. `-TargetComputer` adds the target check; `-TargetComputerOnly` runs only it. `-FixtureDirectory -ReportPath` go only to the target check. |
+| `test-workspace-migration` / release | Release: test-swift-data-import, test-workspace-upgrade, test-report-message-import, test-directory-merge-transfer. Manual: test-persistence-transfer, test-audit-message-transfer. | `-Cases <case names>` selects cases (default all; pass one name with powershell.exe -File). Matrix: `-Schemas -CurrentSchemaPath -CurrentFixturesOnly -SkipKeptReleases -FixturePath`. Upgrade: `-Schema20Path -SourceWorkspacePath` (alias Schema21Path). Persistence needs `-LegacyTemplate`; audit needs `-FixtureMapPath`; messages need `-DemoPath`; directory transfer needs `-SourcePath`. BuildPath is forwarded as TemplatePath/BlankPath where required. |
+| `test-import-engine` / extended | Default `-Tier extended`: test-bulk-workspace-import, test-engine-import. `-Tier release`: test-engine-verification only. | `-BaselinePath -DemoPath` go to bulk/engine import; `-SourcePath -SkipBaseline` to engine import; `-SourcePath -InstallSource -CommitFaults` to verification. Existing defaults and the CommitFaults source requirement remain. |
+| `test-external-import` / extended | Extended: test-import-commit, test-import-review, test-import-rank, test-pdf-import, test-navfit-upgrade, test-ux-import-flow, test-malformed-imports. Manual: test-ruad-import. | `-SourcePath` goes to review; `-SkipPDF` to UX import; RUAD needs `-SamplePath`. |
+
+`test-pdf-fixtures.ps1` stays a dot-sourced helper in scripts/, with its registry
+entry. `test-user-data-equivalence.ps1` stays a separate manual runner, unchanged.
+The persistence-transfer case is manual: `-LegacyTemplate` names a real schema-27
+blank, and the supplied build is the current-schema source.
+
+Release-check selects engine verification with `test-import-engine -Tier release`
+and message transfer with `test-workspace-migration -Cases test-report-message-import`.
+Directory release orchestration selects upgrade, directory transfer and the schema
+matrix separately through workspace-migration, preserving order, distinct logs and
+both directory receipts. The matrix still writes
+`build/r115-data-import-verification.json`, which release-check reads. The upgrade
+case's internal schema-20 fixture call now points to its sibling under cases/.
+The target-computer kit includes test-pdf-output, suite-common and only the target
+case, and its README uses `-TargetComputerOnly`; it does not need development PDF
+output cases or fixture generators on the target computer.
 
 ### Workspace and report suites (M08)
 

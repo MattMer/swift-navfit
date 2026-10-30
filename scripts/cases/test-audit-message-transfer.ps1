@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[Parameter(Mandatory=$true)][string]$FixtureMapPath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/audit-message-transfer-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory $folder)
 $fixtures=Get-Content -LiteralPath $FixtureMapPath -Raw|ConvertFrom-Json

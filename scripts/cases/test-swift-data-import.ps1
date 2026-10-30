@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$Schemas,[string]$CurrentSchemaPath,[switch]$CurrentFixturesOnly,[switch]$SkipKeptReleases,[string]$FixturePath)
-$ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
+$ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
 #Every schema from 1 to the build's schema gets a populated synthetic source.

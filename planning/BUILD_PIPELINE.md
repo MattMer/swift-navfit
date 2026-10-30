@@ -105,3 +105,12 @@ tools through `scripts/test-report-review-history.ps1 -SeedDemo`; both accept
 `tests/runners.json`; see the parameters in
 [Development_Workflow.md](../docs/Development_Workflow.md#workspace-and-report-suites-m08).
 Their unchanged case bodies live in `scripts/cases/` and use suite-common.ps1.
+
+NAVFIT/PDF checks use `test-navfit-exchange`, `test-navfit-native-return` (manual),
+`test-pdf-reading` and `test-pdf-output`. Import checks use
+`test-workspace-migration` (release/manual inputs), `test-import-engine`
+(extended by default; `-Tier release` selects verification) and
+`test-external-import`. Cases live in scripts/cases; fixture generation and
+schema requirements are unchanged. The PDF-fixture helper and manual
+user-data-equivalence runner stay top-level. Parameters and case tiers are in the
+[NAVFIT/PDF/import suite matrix](../docs/Development_Workflow.md#navfit-pdf-and-import-suites-m08).
