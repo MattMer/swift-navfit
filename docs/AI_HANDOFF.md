@@ -38,9 +38,18 @@ test-import-engine's first run hit error 3059 ("Operation canceled by user") in
 its 16-minute old-VBA benchmark; the retry passed. Not yet diagnosed.
 Not run: release gates, NAVFIT98A, physical printing. No Access sessions open.
 
+## M03 revisit (30 October)
+
+PDF packets: each page now resets only the slots the previous page showed
+(f3a7e20; 250 members 65 s to 46 s, pages identical). Editor open profiled at about
+1.1 s on the 4,700-report workspace: mostly per-control layout writes in
+UXRenderFixedSheet (modReportPages). Scratch profilers (not in the repository)
+loaded an instrumented modReportPages copy into a disposable build copy.
+
 ## Exact next actions
 
-1. Gameplan (see project memory): revisit the report editor open time and PDF
-   output (M03 remainder), then L03 workspace size headroom.
+1. Waiting on the user: editor option 1 (cache each control's applied layout per
+   editor session so page revisits skip the writes) or option 2 (bake the Front
+   Page layout into the form design). Then L03 workspace size headroom.
 2. Optional: diagnose the test-import-engine 3059 flake (old-VBA benchmark).
 3. Update this file at milestones and before stopping.
