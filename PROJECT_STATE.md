@@ -108,6 +108,12 @@ import and print-ready PDF output.
 - **Entry points:**
   - Startup runs [AutoExec.txt](src/AutoExec.txt) → `SwiftAppStartup` → setup or
     contributor choice → application shell.
+  - Every build opens as a plain application window: title "Swift NAVFIT", no
+    navigation pane, reduced menus (`AllowFullMenus`, `AllowSpecialKeys`,
+    `AllowBuiltInToolbars`, `AllowBreakIntoCode` off), and startup hides the
+    ribbon. Right-click menus stay on for Cut/Copy/Paste. This is presentation,
+    not protection: holding Shift while opening (`AllowBypassKey` on, by
+    decision) gives full Access for development and field investigation.
   - Generated control expressions (`=Fn()`), macros and `Eval` calls are runtime
     callers too, so text search alone cannot prove code unused.
 - **Navigation:**

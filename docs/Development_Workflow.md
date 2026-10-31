@@ -72,6 +72,10 @@ Tasks explicitly use `powershell.exe`, preserving the tested COM host even when
 the interactive terminal uses PowerShell 7. Do not run Access builds through WSL.
 Python and other available tools may be used where they are a better fit; do not introduce dependencies or parallel toolchains without justification.
 
+Builds open with the navigation pane, ribbon and design menus hidden. To inspect
+tables, forms or code, hold **Shift** while opening the file; that skips the
+startup properties and AutoExec. Automation (COM) opens are not affected.
+
 The PDF runners generate their synthetic fixtures with pikepdf, a development
 tool only (the application has no Python dependency). Create the git-ignored
 environment once at the repository root:

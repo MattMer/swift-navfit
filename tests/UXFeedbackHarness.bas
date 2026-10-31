@@ -56,6 +56,8 @@ Public Function TestUXFeedback() As String
     Check UXReturnSnippets(), "Resources snippet return failed"
     Check CurrentProject.AllForms("frmUXResources").IsLoaded, "Resources return destination missing"
     Check CurrentDb.Properties("StartupShowDBWindow") = False, "Objects pane startup preference not set"
+    Check Not CurrentDb.Properties("AllowFullMenus") And Not CurrentDb.Properties("AllowSpecialKeys") And Not CurrentDb.Properties("AllowBuiltInToolbars") And Not CurrentDb.Properties("AllowBreakIntoCode"), "Lockdown startup properties not set"
+    Check CurrentDb.Properties("AllowBypassKey") And CurrentDb.Properties("AppTitle") = "Swift NAVFIT", "Shift bypass or application title not set"
     Check UXHideAccessObjects(), "Native objects pane hide failed"
     TestUXFeedback = "PASS: " & n & " feedback navigation and recovery assertions": Exit Function
 Failed:

@@ -53,6 +53,7 @@ Failed:
 End Function
 Public Function UXHideAccessObjects() As Boolean
     On Error GoTo Failed
+    DoCmd.ShowToolbar "Ribbon", acToolbarNo
     DoCmd.SelectObject acTable, , True
     DoCmd.RunCommand acCmdWindowHide
     UXHideAccessObjects = True
