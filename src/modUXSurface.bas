@@ -90,6 +90,56 @@ Public Function UXNarrativeStatus() As Boolean
     UXNarrativeStatus = True
 End Function
 
+' Office spelling (local proofing tools only) for one narrative block: the field with focus
+' for F7, otherwise the block last used before the button, otherwise the comments. A signed
+' report asks to reopen first, as typing does. Corrections go through UXSpellApply.
+Public Function UXSpellCheck(Optional ByVal fromKey As Boolean = False) As Boolean
+    Dim f As Access.Form, c As Access.Control, key As String, before As String, failure As String, number As Long, kept As Boolean
+    If Not UXSurfaceAvailable() Then Exit Function
+    Set f = Surface()
+    On Error Resume Next
+    If fromKey Then Set c = Screen.ActiveControl Else Set c = Screen.PreviousControl
+    key = UXSpellKey(c)
+    On Error GoTo Failed
+    If key = "" Then key = "OfficialComments": Set c = f.Controls(UXFieldControl(key))
+    If Not c.Visible Then Forms!frmEditor!uxError.Caption = "Open the page that shows " & UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, "")) & " to check its spelling.": Exit Function
+    If c.Locked Then Exit Function
+    If Not UXSignedEditGuard() Then Exit Function
+    before = Nz(UXSurfacePending(c.Name, c.Value), "")
+    If Len(before) = 0 Then Exit Function
+    'SelLength is an Integer; longer text is checked from the start without a selection.
+    c.SetFocus: c.SelStart = 0: If Len(before) <= 32767 Then c.SelLength = Len(before)
+    DoCmd.RunCommand acCmdSpelling
+    UXSpellCheck = UXSpellApply(key, before)
+    Exit Function
+Failed:
+    number = Err.Number: failure = Err.Description
+    On Error Resume Next
+    If Len(before) > 0 Then
+        Call UXSpellApply(key, before)
+        kept = (Nz(UXSurfacePending(c.Name, c.Value), "") <> before)
+    End If
+    If number = 2501 And Not kept Then Exit Function
+    Forms!frmEditor!uxError.Caption = Left$(IIf(number = 2501, "Spell check stopped.", "Spell check is unavailable: Office proofing tools may be missing on this computer.") & IIf(kept, " Corrections you accepted are kept as pending edits.", " Your text is unchanged.") & IIf(number = 2501, "", " " & failure), 255)
+End Function
+' The narrative key a spell check covers for this control, or "".
+Public Function UXSpellKey(ByVal c As Access.Control) As String
+    Dim key As String
+    If c Is Nothing Then Exit Function
+    If c.Parent.Name <> "frmUXEditorFields" Or Left$(c.Tag, 5) <> "SURF:" Then Exit Function
+    key = Mid$(c.Tag, 6)
+    If key = "OfficialComments" Or key = "CommandEmployment" Or key = "DutyDescription" Or key Like "Trait3#Comment#" Then UXSpellKey = key
+End Function
+' Enter the text the spelling dialog left in the field as if typed: pending buffer, inline
+' validation and recovery follow UXSurfaceSetValue. Unchanged text changes nothing.
+Public Function UXSpellApply(ByVal key As String, ByVal before As String) As Boolean
+    Dim c As Access.Control, after As String
+    Set c = Surface().Controls(UXFieldControl(key))
+    after = Nz(UXSurfacePending(c.Name, c.Value), "")
+    If after = before Then UXSpellApply = True: Exit Function
+    UXSpellApply = UXSurfaceSetValue(key, after)
+    Call UXEditorChanged()
+End Function
 Private Function Surface() As Access.Form
     Set Surface = Forms!frmEditor!uxFieldSurface.Form
 End Function
@@ -442,6 +492,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     If section = 5 Then
         f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Height = 650: f!uxNarrativeCount.Visible = True
         f!cmdSnippets.Width = 3000: f!cmdSnippets.Top = top + 700: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
+        f!cmdSpelling.Left = f!cmdSnippets.Left + 3200: f!cmdSpelling.Width = 2400: f!cmdSpelling.Top = top + 700: f!cmdSpelling.Visible = True: f!cmdSpelling.Enabled = Not locked
         top = top + 1300
     End If
     f.Section(acDetail).Height = top + 200

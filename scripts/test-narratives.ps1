@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath)
 # Narratives suite: narrative persistence and the one-snapshot-per-revision check after
-# reopening; narrative layout; the line-fit meter (Swift PDF and NAVFIT98A against a System.Drawing reference); NavyWriter snippets with pending and saved values.
+# reopening; narrative layout; the line-fit meter (Swift PDF and NAVFIT98A against a System.Drawing reference); spell check plumbing; NavyWriter snippets with pending and saved values.
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'suite-common.ps1')
 $buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash
@@ -91,6 +91,7 @@ Invoke-SuiteCase 'navfit-line-fit' {
         if($null -ne $app){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
     }
 }
+Invoke-HarnessCase 'narrative-spelling' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeSpelling()'
 Invoke-HarnessCase 'navywriter' $BuildPath 'UXNavyWriterHarness' 'TestUXNavyWriter()' -After {param($app) [void]$app.Eval('UXLeaveEditor("Discard")')}
 
 Complete-SuiteRun 'narratives' $BuildPath $buildHash

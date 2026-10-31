@@ -261,3 +261,64 @@ Public Function TestNavfitReference(ByVal manifest As String) As String
 Failed:
     TestNavfitReference = "FAIL: " & label & ": " & Err.Number & " " & Err.Description
 End Function
+' Spell check plumbing. The Office spelling dialog itself needs an attended check; this
+' covers the button and F7 wiring, which blocks each covers, a correction left in the field
+' as the dialog leaves it reaching the pending buffer and recovery, and a signed report.
+Public Function TestNarrativeSpelling() As String
+    On Error GoTo Failed
+    Dim kind As Variant, id As Long, f As Form, surface As Form, c As Control, key As Variant, stage As String, recovery As Long, code As String
+    checks = 0
+    ConfigureWorkspace "SYNTHETIC NARRATIVE SPELLING", "Tester"
+    For Each kind In Array("EVAL", "FITREP", "CHIEFEVAL")
+        stage = kind & " wiring"
+        id = CommitDraft(0, CStr(kind), "Synthetic", "Synthetic", Null, Null, "", "Spelling test", "Teh sailor led the divison.")
+        DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+        Set f = Forms!frmEditor: f.TimerInterval = 0
+        Set surface = f!uxFieldSurface.Form
+        Check surface.KeyPreview And surface.OnKeyDown = "[Event Procedure]", kind & ": F7 is not routed through the editor"
+        code = surface.Module.Lines(1, surface.Module.CountOfLines)
+        Check InStr(code, "vbKeyF7") > 0 And InStr(code, "UXSpellCheck True") > 0, kind & ": F7 handler missing"
+        Check surface!cmdSpelling.OnClick = "=UXSpellCheck()" And surface!cmdSpelling.Caption = "Check spelling", kind & ": spelling button wiring"
+        Check UXSelectSection(5), "Comments section failed"
+        Check surface!cmdSpelling.Visible And surface!cmdSpelling.Enabled, kind & ": spelling button hidden on the comments section"
+        Check surface!cmdSpelling.Top = surface!cmdSnippets.Top And surface!cmdSpelling.Left >= surface!cmdSnippets.Left + surface!cmdSnippets.Width, kind & ": spelling button overlaps the snippet button"
+        stage = kind & " covered blocks"
+        For Each key In Array("OfficialComments", "CommandEmployment", "DutyDescription")
+            Check UXSpellKey(surface.Controls(UXFieldControl(CStr(key)))) = key, kind & ": " & key & " not covered"
+        Next
+        Check UXSpellKey(surface.Controls(UXFieldControl("OfficialName"))) = "", kind & ": name field covered"
+        Check UXSpellKey(Nothing) = "", "No control"
+        If kind = "CHIEFEVAL" Then Check UXSpellKey(surface.Controls(UXFieldControl("Trait36Comment2"))) = "Trait36Comment2", "Chief comment not covered"
+        stage = kind & " unchanged text"
+        Set c = surface!txtOfficialComments
+        c.SetFocus
+        Check UXSpellApply("OfficialComments", "Teh sailor led the divison."), kind & ": unchanged apply failed"
+        Check Not EditorHasPending(), kind & ": unchanged text created a pending edit"
+        stage = kind & " correction"
+        c.Text = "The sailor led the division."
+        Check UXSpellApply("OfficialComments", "Teh sailor led the divison."), kind & ": correction apply failed"
+        Check EditorPendingFields()("OfficialComments") = "The sailor led the division.", kind & ": correction did not reach the pending buffer"
+        Check EditorHasPending() And f!txtOfficialComments = "The sailor led the division.", kind & ": correction is not pending"
+        Check CheckpointEditor(), kind & ": checkpoint failed"
+        recovery = DMax("RecoveryDraftID", "RecoveryDraft")
+        Check DLookup("OfficialComments", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "The sailor led the division.", kind & ": correction missing from recovery"
+        Check UXSaveEditor(), kind & ": save failed"
+        Check DLookup("OfficialComments", "Report", "ReportID=" & id) = "The sailor led the division.", kind & ": saved text differs"
+        stage = kind & " signed report"
+        Check MarkReportSigned(id, CurrentRevision(id), Date) > 0, kind & ": mark signed failed"
+        f.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
+        DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+        Set f = Forms!frmEditor: f.TimerInterval = 0
+        Set surface = f!uxFieldSurface.Form
+        Check UXSelectSection(5), "Comments section failed"
+        surface!txtOfficialComments.SetFocus
+        UXSignedTestAnswer vbNo
+        Check Not UXSpellCheck(True), kind & ": spell check ran on a signed report"
+        Check ReportIsSigned(id) And Not EditorHasPending(), kind & ": refused spell check changed the report"
+        f.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
+    Next
+    TestNarrativeSpelling = "PASS: " & checks & " spell check wiring, pending, recovery and signed-report assertions"
+    Exit Function
+Failed:
+    TestNarrativeSpelling = "FAIL: " & stage & ": " & Err.Number & " " & Err.Description
+End Function

@@ -226,6 +226,14 @@ Below the comments box, the line meter shows how many lines the comments take wh
 
 The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF, which prints extra lines on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
 
+### Check spelling
+
+Choose **Check spelling** beside the line meter, or press **F7** in any narrative block: the comments, block 28 (command employment), block 29 (primary duties) and, on a CHIEFEVAL, each performance comment. Spell check uses Microsoft Office's own spelling checker on this computer; your text is never sent anywhere. The button checks the narrative block you were last in, or the comments.
+
+Corrections you accept become pending edits, like typing: they appear in the line meter and validation, are kept in recovery, and are saved when you choose **Save draft**. On a signed report, Swift first asks whether to reopen it for correction, as it does when you type.
+
+If Office's proofing tools aren't installed, which can happen on locked-down workstations, Swift says so and your text is unchanged. Navy terms such as rates and ship names may be flagged; choose **Ignore** or **Ignore All** for them. Words you add with **Add to Dictionary** go to your own Office dictionary.
+
 ## 4.2 Understand the save states
 
 | State | Meaning and next action |

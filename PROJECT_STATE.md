@@ -87,6 +87,9 @@ import and print-ready PDF output.
     at default pitch (GDI+, its print rectangles and its own limits: comments 18,
     CHIEFEVAL 6; blocks 28/29 3/4; Chief performance comments 2). Longer text gets
     an Information finding that blocks nothing. Unverified against a NAVFIT98A print.
+  - Check spelling (button by the comments, or F7 in a narrative block) runs Office
+    spelling (acCmdSpelling, local proofing only); accepted corrections go through
+    UXSurfaceSetValue as pending edits, and signed reports ask to reopen first.
   - **Mark signed** sets `WorkflowState` to `Signed`, so every save path refuses
     changes. In the editor and group grid the first edit asks whether to reopen
     the report for correction; bulk defaults skip signed reports and list them.

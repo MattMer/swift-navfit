@@ -7,6 +7,7 @@ Begin Form
     NavigationButtons = NotDefault
     CloseButton = NotDefault
     DividingLines = NotDefault
+    KeyPreview = NotDefault
     DefaultView =0
     ScrollBars =2
     BorderStyle =0
@@ -15,9 +16,11 @@ Begin Form
     Right =19725
     Bottom =13245
     Caption ="Report section"
+    OnKeyDown ="[Event Procedure]"
     OnActivate ="=UXVisualEvent(\"frmUXEditorFields\",\"\")"
     FilterOnLoad =0
     AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
     NoSaveCTIWhenDisabled =1
     Begin
         Begin Label
@@ -6799,6 +6802,45 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3400
+                    Top =11500
+                    Width =2400
+                    Height =450
+                    FontSize =10
+                    TabIndex =102
+                    ForeColor =4205854
+                    Name ="cmdSpelling"
+                    Caption ="Check spelling"
+                    OnClick ="=UXSpellCheck()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3400
+                    LayoutCachedTop =11500
+                    LayoutCachedWidth =5800
+                    LayoutCachedHeight =11950
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
                 Begin Label
                     Visible = NotDefault
                     OverlapFlags =255
@@ -6936,3 +6978,15 @@ Begin Form
         End
     End
 End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+
+' F7 runs Swift's spell check so corrections reach the pending buffer and recovery.
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+    If KeyCode = vbKeyF7 And Shift = 0 Then KeyCode = 0: UXSpellCheck True
+
+End Sub

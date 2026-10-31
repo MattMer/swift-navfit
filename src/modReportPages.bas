@@ -239,7 +239,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
      .Caption = CatalogueTraitDescription(kind, CLng(Mid$(key, 6)), Nz(Forms!frmEditor.Controls("cbo" & key), "")): .Visible = True
     End With
    End If
-   If key = "OfficialComments" Then f!uxNarrativeCount.Visible = True: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
+   If key = "OfficialComments" Then f!uxNarrativeCount.Visible = True: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked: f!cmdSpelling.Visible = True: f!cmdSpelling.Enabled = Not locked
    UXSurfaceValidate key
    bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
    If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
@@ -280,6 +280,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
     c.LeftMargin = 90: c.RightMargin = 90: c.TopMargin = 90: c.BottomMargin = 90: c.ScrollBars = 2
     Place f, "uxNarrativeCount", c.Left, c.Top + c.Height + 260, 11400, 400
     Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: f!cmdSnippets.Enabled = Not locked
+    Place f, "cmdSpelling", 3500, c.Top + c.Height + 700, 2400, 400: f!cmdSpelling.Enabled = Not locked
    End If
    Place f, "err" & key, CLng(parts(1)), y + IIf(trait, 390, IIf(UXFieldFlag(key), 430, CLng(parts(4)) + 360)), CLng(parts(3)), 200
    f.Controls("err" & key).FontSize = 8
