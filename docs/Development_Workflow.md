@@ -2,8 +2,8 @@
 
 This document owns development commands and workstation use. Read
 [PROJECT_STATE.md](../PROJECT_STATE.md) for architecture/support decisions,
-[AGENTS.md](../AGENTS.md) for scope/data/release requirements and
-[CONTRIBUTING.md](../CONTRIBUTING.md) for change-specific checks.
+[CONTRIBUTING.md](../CONTRIBUTING.md) for scope/data/release rules and
+change-specific checks.
 
 Maintain tracked VBA, JSON catalogues and generators as authoritative source.
 Choose the most suitable available tool for each task, then validate at a level
@@ -88,7 +88,7 @@ C:/Python312/python.exe -m venv .venv
 NAVPERS forms in `FORMS_REFERENCES_TEMPLATES/` (read only) into a new
 `build/tests` folder for each run.
 
-Workspace recommendations are in [extensions.json](../.vscode/extensions.json):
+Recommended VS Code extensions (local `.vscode/` settings are not tracked):
 
 - Microsoft PowerShell: script navigation, diagnostics and script debugging.
 - VBA by serkonda7: syntax highlighting and snippets, not Access compilation
@@ -106,8 +106,8 @@ on save is disabled to avoid unrelated source changes.
 Agent tooling is per-client. On this workstation the read-only
 `@modelcontextprotocol/server-filesystem` reader is registered in Codex as
 `swift_files` (write tools excluded by its allow-list), and Access Explorer is
-registered for VS Code and Codex. Claude Code has neither; see
-[CLAUDE.md](../CLAUDE.md). Any agent may read source directly. Use the existing
+registered for VS Code and Codex. Claude Code has neither. Agent instruction
+files and settings are kept locally, not in the repository. Any agent may read source directly. Use the existing
 PowerShell build and native-check commands when their verification scope is
 required. [Reader verification](../planning/FILESYSTEM_MCP_SETUP_2026-10-21.json)
 is historical evidence.
@@ -158,7 +158,7 @@ Safety boundaries:
   against actual page/visibility state and fixed report geometry.
 - **Verification and sessions:** Explorer imports/transfers do not replace
   production migration, recovery, reproducible builds, or release gates. Apply
-  the [Access-session ownership and handoff rule](../AGENTS.md#access-automation-safety)
+  the [Access-session ownership and handoff rule](../CONTRIBUTING.md#access-automation-safety)
   before switching between Explorer and another controller. The backend close path
   has a force-kill fallback; do not use it on a session with unsaved user work
   or use restart-processes on user sessions.
@@ -778,7 +778,7 @@ requires the receipt to cover every schema. `-CurrentFixturesOnly` still records
 user-granted waiver, as for r128; it never ends support for older schemas. See
 PROJECT_STATE.md.
 
-Before publication, follow [AGENTS.md](../AGENTS.md): preserve earlier releases
+Before publication, follow [CONTRIBUTING.md](../CONTRIBUTING.md#releases-explicit-request-only): preserve earlier releases
 and user workspaces, place dated/versioned Blank and Demo directly in `output`,
 upload both to the designated Drive folder, verify names/sizes/parents, record
 the exact final artifacts and close owned Access sessions normally.
@@ -821,7 +821,7 @@ During development, minimize unnecessary tool calls, repeated inspection, and du
 
 7. **Preserve useful evidence.** Record meaningful test outcomes, baseline comparisons, and unresolved failures without generating unnecessary permanent logs, reports, or documentation.
 
-8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../AGENTS.md#how-to-work) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
+8. **Bound unusual UI automation.** Prefer one suitable, verified operation over custom orchestration. Apply the [tool-selection justification rule](../CONTRIBUTING.md#how-to-work) before embedded C# or Win32 use. For an exceptional fallback, state the capability gap, required UI context, event/save effects, attempt budget and timeout or other stop condition before running it. A form-opening timeout is not a screenshot-capture timeout; the inspected Explorer screenshot backend also uses synchronous PrintWindow and has no OpenArgs parameter. Do not assume it avoids a custom capture's failure. If the bounded fallback fails or cannot establish the required state, stop and retain the evidence; use an existing runner/manual review or report the unverified case instead of cycling through capture/control APIs. New evidence may justify a revised diagnostic plan, not automatic additional attempts.
 
 These working defaults allow justified debugging, native testing and broader validation. They do not relax mandatory session ownership, data protection, source/artifact verification or release requirements.
 

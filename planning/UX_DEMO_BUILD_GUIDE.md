@@ -66,4 +66,4 @@ Native checks do not establish physical display, keyboard/screen-reader,
 scaling or printed fit. NAVFIT98A remains the final native validation/printing
 destination. Structured PDF extraction is local; it does not require Acrobat.
 Never use a populated user workspace as the seed template or import real data
-into a synthetic Demo. Follow [AGENTS.md](../AGENTS.md) for any release delivery.
+into a synthetic Demo. Follow [CONTRIBUTING.md](../CONTRIBUTING.md#releases-explicit-request-only) for any release delivery.

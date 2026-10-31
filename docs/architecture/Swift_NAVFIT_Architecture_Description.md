@@ -84,7 +84,7 @@ The full AV-1 is [views/AV-1.md](views/AV-1.md).
 | Decision | Why |
 | --- | --- |
 | A single-file Microsoft Access application | Runs on standard Navy workstations with Office and needs no server or network accreditation. Admin staff can move or back it up. |
-| Additive, versioned schema; every release imports every earlier schema | The workspace is a long-lived binder, and no upgrade may lose report history (an AGENTS.md product invariant). |
+| Additive, versioned schema; every release imports every earlier schema | The workspace is a long-lived binder, and no upgrade may lose report history (a CONTRIBUTING.md product invariant). |
 | Unbound report editor with recovery checkpoints | Pending edits survive failures and restarts without half-saved revisions. |
 | File interfaces only (NAVFIT98A, PDF, CSV) | Matches how reports actually reach official systems today. Adds no network attack surface. |
 | Local contributor attribution, not authentication | Access controls come from the command's folder permissions (decision C01). Swift records who did what; it does not claim to authenticate. |

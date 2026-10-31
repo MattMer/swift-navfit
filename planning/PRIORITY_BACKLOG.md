@@ -248,7 +248,7 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
    structures, missing components and insufficient permissions. Interrupted
    provisioning can be resumed, and never overwrites existing command data.
 
-**Product invariants that still apply** ([AGENTS.md](../AGENTS.md)):
+**Product invariants that still apply** ([CONTRIBUTING.md](../CONTRIBUTING.md#product-invariants-non-negotiable)):
 - Every release imports every earlier schema, in either mode.
 - Schema changes are additive and versioned in both modes, and the SharePoint
   schema carries its own version, checked against the front end's.

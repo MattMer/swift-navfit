@@ -59,7 +59,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 
 | Activity | Baseline | Status | Evidence or reason |
 | --- | --- | --- | --- |
-| Change management planning | REQUIRED | Done | [AGENTS.md](../../AGENTS.md): what may change freely, what needs asking, and what needs an explicit request (releases, publishing, signing) |
+| Change management planning | REQUIRED | Done | [CONTRIBUTING.md](../../CONTRIBUTING.md#permissions): what may change freely, what needs asking, and what needs an explicit request (releases, publishing, signing) |
 | Configuration identification | REQUIRED | Done | `APP_VERSION` / `SCHEMA_VERSION` in `modSwift`; the build manifest fingerprints every input; artifacts carry `.build.json` identity |
 | Configuration management planning | REQUIRED | Done | [BUILD_PIPELINE.md](../../planning/BUILD_PIPELINE.md); `scripts/build-manifest.json`; an input-drift guard fails a build whose source changes mid-build |
 | Database design | PREFERRED | Done | Additive, versioned schema policy; [DIV-2](views/DIV-2.md) and [DIV-3](views/DIV-3.md) |
@@ -97,7 +97,7 @@ The guidebook lists these in most phases. Each is assessed once here.
 | Service functional test | PREFERRED | N/A | No services |
 | Static analysis | REQUIRED | Partial | VBA compile check and `check-vba-source`; the build-plan preflight. No security static analysis tool exists for VBA. |
 | Static code scan before commit | REQUIRED | Partial | Same as the code commit scan |
-| Test development | REQUIRED | Done | AGENTS.md: extend the feature's test with the feature; remove a feature's tests with it |
+| Test development | REQUIRED | Done | CONTRIBUTING.md: extend the feature's test with the feature; remove a feature's tests with it |
 | Unit test | REQUIRED | Done | Harnesses call module functions directly (for example the counseling and sign-off harnesses) |
 
 ## Build

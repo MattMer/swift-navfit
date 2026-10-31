@@ -81,7 +81,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | --- | --- | --- | --- |
 | I1 | The workspace or a backup is copied off approved storage | Storage approval and folder permissions. The guide says to keep backups and exports at the workspace's sensitivity. Masking is presentation only; the file isn't encrypted (decision C01). | C |
 | I2 | SSNs exposed in file names or on screen | Output file names omit SSNs (`PDFOutputFileName`). SSNs are masked in previews and merge screens. | M |
-| I3 | Personnel data reaches developers or test fixtures | Fixtures are synthetic, Demo builds contain only synthetic data, and AGENTS.md forbids sending personnel data to external services. | M |
+| I3 | Personnel data reaches developers or test fixtures | Fixtures are synthetic, Demo builds contain only synthetic data, and CONTRIBUTING.md forbids sending personnel data to external services. | M |
 | I4 | Diagnostics or error text leak PII | Error reports name the operation and stage. The support guidance says to reproduce with synthetic data. | P |
 
 ### Denial of service
@@ -152,5 +152,5 @@ Publishers that group policy deploys to the target workstations.
   certificate thumbprint, and that it opens under normal security without the
   Enable Content prompt.
 - Release notes state the signer and thumbprint next to the SHA-256 hashes.
-- Signing happens only on the product owner's explicit request (AGENTS.md) and
+- Signing happens only on the product owner's explicit request (CONTRIBUTING.md) and
   never in the automated build.

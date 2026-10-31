@@ -5,7 +5,7 @@ $ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent
 $folder=Join-Path $root ('build/tests/upgrade-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $source=Join-Path $folder 'synthetic schema20.accdb'
 #The populated schema-20 source is generated from tests/historical-schemas by the
-#import matrix's own builder; old release files are not needed (AGENTS.md).
+#import matrix's own builder; old release files are not needed (CONTRIBUTING.md).
 if($Schema20Path){Copy-Item -LiteralPath $Schema20Path -Destination $source}
 else{
  $made=& powershell.exe -NoProfile -File (Join-Path (Split-Path $PSScriptRoot -Parent) 'cases/test-swift-data-import.ps1') -BuildPath $TemplatePath -Schemas 20 -FixturePath $source 2>&1
