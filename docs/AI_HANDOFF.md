@@ -105,6 +105,18 @@ test-workspace-presentation and test-report-navigation PASS on that build;
 test-traits, test-summary-groups, test-pdf-output PASS on the prior build
 (before the last viewport refinement). Not checked: other DPI/scaling, physical print.
 Unrelated finding: docs/architecture/views/SV-7.md has mojibake (en dash, arrow).
+Follow-up the same day (Matt approved all 7 proposals): editor Create PDF/Mark signed
+on the top row ending at the content edge (`UXFixedResize`; `UXWindowHelpLayout`
+stops the editor context line before them), short trait-grid headings with the
+official caption as tooltip (`UXGridHeading`), plain list headings (modTableSort
+table plus SQL aliases in modSwift, modOperations, modMajorUI, modRSDirectoryUI,
+modUXGroupLifecycle), rail and workspace section fill the window height, Overview
+action row, even button rows (Operations, Resources, Settings, Groups, Directory),
+flat contributor-start buttons. UXSurfaceHarness pins the group box at 2850.
+Verified: BuildAndTest PASS build/workflow/20261030-232254-c52b8185-601f-4874-a130-d621d94a010a;
+workspace-presentation, report-navigation, summary-groups, traits PASS on that build;
+recovery, workspace-resources, reporting-senior-accounting PASS on the prior build.
+Capture tip: use PrintWindow, never CopyFromScreen; the screen may show other apps.
 
 ## Exact next actions
 

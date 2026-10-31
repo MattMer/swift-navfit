@@ -94,7 +94,12 @@ Public Function UXWindowHelpLayout(ByVal formName As String, Optional ByVal view
     UXVisualSet f!cmdWindowHelp, "Left", width - 800: UXVisualSet f!cmdWindowHelp, "Top", 150
     UXVisualSet f!cmdWindowHelp, "Width", 500: UXVisualSet f!cmdWindowHelp, "Height", 400
     If UXHasControl(f, "uxContext") Then
-        UXVisualSet f!uxContext, "Width", f!cmdWindowHelp.Left - f!uxContext.Left - 150
+        'The editor's output actions share the context line's row.
+        If UXHasControl(f, "uxCreatePDF") Then
+            UXVisualSet f!uxContext, "Width", f!uxCreatePDF.Left - f!uxContext.Left - 150
+        Else
+            UXVisualSet f!uxContext, "Width", f!cmdWindowHelp.Left - f!uxContext.Left - 150
+        End If
     End If
     For Each c In f.Controls
         If c.ControlType = acLabel And c.Top < 550 And c.Left < f!cmdWindowHelp.Left And c.Left + c.Width > f!cmdWindowHelp.Left Then

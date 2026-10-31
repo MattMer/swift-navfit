@@ -3,6 +3,7 @@ Option Explicit
 Private states As Object
 Private headersBusy As Boolean
 Private headings As Object
+Private detailsKind As Long
 Private Declare PtrSafe Function GetFocus Lib "user32" () As LongPtr
 Private Declare PtrSafe Function GetScrollPos Lib "user32" (ByVal hwnd As LongPtr, ByVal bar As Long) As Long
 Private Declare PtrSafe Function GetDpiForWindow Lib "user32" (ByVal hwnd As LongPtr) As Long
@@ -151,6 +152,30 @@ Public Function UXSortNativeHeader(ByVal formName As String, ByVal controlName A
   End If
  Next
 End Function
+'The workbench detail list shows five kinds of rows. Sorting rewrites its row source to
+'"SELECT * FROM [uxSort_...]", so remember the kind recognised from the original SQL.
+Private Function DetailsHeadings(ByVal c As Access.Control) As Variant
+ Dim source As String
+ source = c.RowSource
+ If source Like "SELECT ReportID,FieldKey,BeforeValue*" Then
+  detailsKind = 1
+ ElseIf source Like "SELECT StepOrdinal,*" Then
+  detailsKind = 2
+ ElseIf source Like "SELECT ReportID,RevisionID,SortOrdinal*" Then
+  detailsKind = 3
+ ElseIf source Like "SELECT ProposalID,*" Then
+  detailsKind = 4
+ ElseIf source Like "SELECT RuleID,*" Then
+  detailsKind = 5
+ End If
+ Select Case detailsKind
+  Case 2: DetailsHeadings = Array("Step", "Reviewer", "Status", "Instructions", "Decision note", "Decided")
+  Case 3: DetailsHeadings = Array("Report", "Revision", "Order", "Member", "Title", "Report type")
+  Case 4: DetailsHeadings = Array("Proposal", "Report", "Field", "Proposed value", "Status", "Base revision")
+  Case 5: DetailsHeadings = Array("Rule", "Result", "Message", "Check run", "", "")
+  Case Else: DetailsHeadings = Array("Report", "Field", "Before", "After", "Before blank", "After blank")
+ End Select
+End Function
 Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVal column As Long) As String
  Dim labels As Variant, db As DAO.Database, q As DAO.QueryDef, source As String
  Select Case c.Name
@@ -166,6 +191,21 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
   Case "lstRows": labels = Array("ID", "Member", "Designator", "RUIC", "Action")
   Case "lstGroups"
    If f.Name = "frmUXNativeGroups" Then labels = Array("ID", "Folder / group", "Report type", "Paygrade", "Reports")
+  Case "lstOperations": labels = Array("ID", "Operation", "State", "Started")
+  Case "lstReceipts": labels = Array("ID", "Report", "NAVFIT report ID", "Imported", "Undone")
+  Case "lstFields": labels = Array("ID", "Source table", "Source row", "Field no.", "Field", "Data type", "Was empty")
+  Case "lstRecoveries": labels = Array("ID", "Draft", "Report type", "Saved")
+  Case "lstSnippets": labels = Array("ID", "Snippet", "Report type", "Attribution")
+  Case "lstSeniors": labels = Array("ID", "Reporting senior", "Version")
+  Case "lstTasks": labels = Array("ID", "Member and report", "Reviewer", "Review step", "Due date", "Saved version", "Archived")
+  Case "lstMembers"
+   If f.Name = "frmUXDirectoryBatch" Then labels = Array("ID", "Member", "Rank/rate")
+  Case "lstReports"
+   If f.Name = "frmUXMembers" Then labels = Array("ID", "Member", "Rank/rate", "Title")
+   If f.Name = "frmPDFOutput" Then labels = Array("ID", "Report", "Report type", "Source", "File name")
+  Case "lstDrafts"
+   If f.Name = "frmUXNoteRecovery" Then labels = Array("ID", "Member", "Saved") Else labels = Array("ID", "Your unfinished notes", "Saved")
+  Case "lstDetails": labels = DetailsHeadings(c)
  End Select
  If IsArray(labels) Then
   If column <= UBound(labels) Then Heading = labels(column): Exit Function

@@ -4,7 +4,7 @@ Option Explicit
 Public Function LoadMajorWorkbench() As Boolean
     Dim f As Access.Form, key As Variant, keys As String
     Set f = Forms!frmMajorWorkbench
-    f!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,FormKind FROM Report WHERE IsArchived=False ORDER BY UXIdentity(OfficialName,MemberName),ReportID"
+    f!lstReports.RowSource = "SELECT ReportID,Title,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type] FROM Report WHERE IsArchived=False ORDER BY UXIdentity(OfficialName,MemberName),ReportID"
     f!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
     f!cboSnapshot.RowSource = "SELECT SnapshotID,'Group ' & GroupID & ' / ' & Format(AttestedAt,'yyyy-mm-dd hh:nn') FROM GroupSnapshot ORDER BY SnapshotID DESC"
     f!cboTemplate.RowSource = "SELECT TemplateID,Title FROM RouteTemplate WHERE IsArchived=False ORDER BY Title"

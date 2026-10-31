@@ -200,7 +200,7 @@ Public Function LoadOperations() As Boolean
     Forms!frmOperations!lstOperations.Requery
     Forms!frmOperations!lstReceipts.RowSource = "SELECT ImportReceiptID,ReportID,ExternalReportID,ImportedAt,IsUndone FROM ImportReceipt ORDER BY ImportReceiptID DESC"
     Forms!frmOperations!lstReceipts.Requery
-    Forms!frmOperations!lstAudit.RowSource = "SELECT AuditID,EventAt,EventKind,ActorCaption,ReportID,CorrelationGuid FROM AuditEvent ORDER BY AuditID DESC"
+    Forms!frmOperations!lstAudit.RowSource = "SELECT AuditID,EventAt AS [When],EventKind AS [Event],ActorCaption AS [Contributor],ReportID AS [Report],CorrelationGuid AS [Operation key] FROM AuditEvent ORDER BY AuditID DESC"
     Forms!frmOperations!lstAudit.Requery
     LoadOperations = True
 End Function

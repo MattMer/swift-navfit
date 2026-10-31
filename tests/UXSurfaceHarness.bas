@@ -43,7 +43,7 @@ Public Function TestUXSurface() As String
     Check f!cmdSave.VerticalAnchor = acVerticalAnchorTop And f!cmdClose.VerticalAnchor = acVerticalAnchorTop, "Action buttons use stretching anchors"
     Check InStr(f!uxContext.Caption, "Surface tester") > 0, "Workspace context missing contributor"
     Check f!cmdSave.Top = f!uxFieldSurface.Top + f!uxFieldSurface.Height + 490, "Footer did not follow the viewport"
-    Check f!uxGroup.Width = 2800, "Summary group selector lost its fixed width"
+    Check f!uxGroup.Width = 2850, "Summary group selector lost its fixed width"
     Check Not s!txtMemberMiddleInitial.Visible And Not s!txtMemberFirstName.Visible, "Redundant structured names visible"
     DoCmd.Restore
     Check FieldGeometry(s) = geometry And f!cmdSave.Height = 450 And f!uxFieldSurface.Left = 2850, "Restoring window displaced controls"

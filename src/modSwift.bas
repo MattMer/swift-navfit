@@ -471,7 +471,7 @@ End Function
 Private Sub RefreshRevisions()
     Dim f As Form
     Set f = Forms!frmEditor
-    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber, CommittedAt, IIf(Nz(ValuesDisposed,False),'[Draft contents disposed] ','') & Reason AS RevisionNote FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
+    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber AS [Revision], CommittedAt AS [Saved], IIf(Nz(ValuesDisposed,False),'[Draft contents disposed] ','') & Reason AS [Note] FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
     f!lstRevisions.Requery
 End Sub
 

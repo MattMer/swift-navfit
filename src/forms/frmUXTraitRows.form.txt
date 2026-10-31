@@ -333,11 +333,11 @@ Begin Form
                     FontSize =8
                     ForeColor =4205854
                     Name ="headingPromotion"
-                    Caption ="Promotion recommendation"
+                    Caption ="Promotion rec."
                     FontName ="Segoe UI"
                     OnClick ="=UXSortGrid(\"PromotionRecommendation\")"
                     Tag ="9700:1350"
-                    ControlTipText ="Click to sort; click again to reverse"
+                    ControlTipText ="Promotion recommendation"
                     LayoutCachedLeft =9700
                     LayoutCachedTop =20
                     LayoutCachedWidth =11050

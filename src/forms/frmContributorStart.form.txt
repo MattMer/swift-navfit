@@ -119,7 +119,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =6300
+            Height =6700
             Name ="Detail"
             Begin
                 Begin Label
@@ -198,11 +198,13 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
+                    FontSize =10
                     Left =400
                     Top =3100
                     Width =7800
                     Height =500
                     TabIndex =1
+                    ForeColor =4205854
                     Name ="cmdContinue"
                     Caption ="Continue as selected contributor"
                     OnClick ="=AcceptContributorStartup(False)"
@@ -212,6 +214,20 @@ Begin Form
                     LayoutCachedTop =3100
                     LayoutCachedWidth =8200
                     LayoutCachedHeight =3600
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -257,11 +273,13 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
+                    FontSize =10
                     Left =5700
                     Top =4300
                     Width =2500
                     Height =450
                     TabIndex =3
+                    ForeColor =4205854
                     Name ="cmdAdd"
                     Caption ="Add and continue"
                     OnClick ="=AcceptContributorStartup(True)"
@@ -271,6 +289,20 @@ Begin Form
                     LayoutCachedTop =4300
                     LayoutCachedWidth =8200
                     LayoutCachedHeight =4750
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -295,11 +327,13 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
+                    FontSize =10
                     Left =400
                     Top =5800
                     Width =7800
                     Height =400
                     TabIndex =4
+                    ForeColor =4205854
                     Name ="cmdCancel"
                     Caption ="Exit Swift NAVFIT"
                     OnClick ="=CancelContributorStartup()"
@@ -309,6 +343,20 @@ Begin Form
                     LayoutCachedTop =5800
                     LayoutCachedWidth =8200
                     LayoutCachedHeight =6200
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2

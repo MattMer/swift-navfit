@@ -520,10 +520,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2880
+                    Left =2850
                     Top =6360
-                    Width =2880
-                    Height =576
+                    Width =3300
+                    Height =500
                     FontSize =10
                     TabIndex =8
                     ForeColor =16777215
@@ -532,10 +532,10 @@ Begin Form
                     OnClick ="=UXOpenGroupMembers()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2880
+                    LayoutCachedLeft =2850
                     LayoutCachedTop =6360
-                    LayoutCachedWidth =5760
-                    LayoutCachedHeight =6936
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =6860
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -559,10 +559,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =6195
+                    Left =6350
                     Top =6360
-                    Width =2880
-                    Height =576
+                    Width =3300
+                    Height =500
                     FontSize =10
                     TabIndex =9
                     ForeColor =16777215
@@ -571,10 +571,10 @@ Begin Form
                     OnClick ="=UXNewGroup()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =6195
+                    LayoutCachedLeft =6350
                     LayoutCachedTop =6360
-                    LayoutCachedWidth =9075
-                    LayoutCachedHeight =6936
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =6860
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -738,10 +738,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2880
-                    Top =7080
-                    Width =2880
-                    Height =576
+                    Left =9850
+                    Top =6360
+                    Width =3450
+                    Height =500
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -750,10 +750,10 @@ Begin Form
                     OnClick ="=UXGroupAction(\"Rename\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =7080
-                    LayoutCachedWidth =5760
-                    LayoutCachedHeight =7656
+                    LayoutCachedLeft =9850
+                    LayoutCachedTop =6360
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =6860
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -777,10 +777,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2880
-                    Top =7800
-                    Width =2880
-                    Height =576
+                    Left =2850
+                    Top =7010
+                    Width =3300
+                    Height =500
                     FontSize =10
                     TabIndex =12
                     ForeColor =2500257
@@ -789,10 +789,10 @@ Begin Form
                     OnClick ="=UXGroupAction(\"Archive\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2880
-                    LayoutCachedTop =7800
-                    LayoutCachedWidth =5760
-                    LayoutCachedHeight =8376
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =7010
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =7510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -816,10 +816,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =6195
-                    Top =7800
-                    Width =2880
-                    Height =576
+                    Left =6350
+                    Top =7010
+                    Width =3300
+                    Height =500
                     FontSize =10
                     TabIndex =13
                     ForeColor =4205854
@@ -828,10 +828,10 @@ Begin Form
                     OnClick ="=UXGroupAction(\"Recover\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =6195
-                    LayoutCachedTop =7800
-                    LayoutCachedWidth =9075
-                    LayoutCachedHeight =8376
+                    LayoutCachedLeft =6350
+                    LayoutCachedTop =7010
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =7510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -874,10 +874,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =9510
-                    Top =6360
-                    Width =3600
-                    Height =576
+                    Left =9850
+                    Top =7010
+                    Width =3450
+                    Height =500
                     FontSize =10
                     TabIndex =14
                     ForeColor =4205854
@@ -886,10 +886,10 @@ Begin Form
                     OnClick ="=UXListGroupDefaults()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =9510
-                    LayoutCachedTop =6360
-                    LayoutCachedWidth =13110
-                    LayoutCachedHeight =6936
+                    LayoutCachedLeft =9850
+                    LayoutCachedTop =7010
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =7510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -918,7 +918,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxStateStamp"
@@ -938,11 +938,11 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =9100
-                    Width =2880
-                    Height =576
+                    Top =8800
+                    Width =3300
+                    Height =500
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =17
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxGroupState"
@@ -951,9 +951,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =9100
-                    LayoutCachedWidth =5730
-                    LayoutCachedHeight =9676
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =9300
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -963,8 +963,8 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =2850
-                            Top =8650
-                            Width =1755
+                            Top =8450
+                            Width =3300
                             Height =350
                             FontSize =10
                             ForeColor =4205854
@@ -972,9 +972,9 @@ Begin Form
                             Caption ="Local group status"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =8650
-                            LayoutCachedWidth =4605
-                            LayoutCachedHeight =9000
+                            LayoutCachedTop =8450
+                            LayoutCachedWidth =6150
+                            LayoutCachedHeight =8800
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -983,61 +983,22 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =6195
-                    Top =9120
-                    Width =2880
-                    Height =576
+                    Left =6350
+                    Top =8800
+                    Width =3300
+                    Height =500
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =18
                     ForeColor =4205854
                     Name ="uxSaveState"
                     Caption ="Set group status"
                     OnClick ="=UXSetGroupWorkflow()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =6195
-                    LayoutCachedTop =9120
-                    LayoutCachedWidth =9075
-                    LayoutCachedHeight =9696
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =9510
-                    Top =7200
-                    Width =3600
-                    Height =576
-                    FontSize =10
-                    TabIndex =18
-                    ForeColor =4205854
-                    Name ="uxGlobalDefaults"
-                    Caption ="Edit global defaults"
-                    OnClick ="=UXOpenGlobalDefaults()"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =9510
-                    LayoutCachedTop =7200
-                    LayoutCachedWidth =13110
-                    LayoutCachedHeight =7776
+                    LayoutCachedLeft =6350
+                    LayoutCachedTop =8800
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =9300
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1062,21 +1023,21 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =9800
-                    Width =5050
-                    Height =450
+                    Top =7660
+                    Width =3300
+                    Height =500
                     FontSize =10
-                    TabIndex =19
+                    TabIndex =15
                     ForeColor =4205854
-                    Name ="uxExportSelected"
-                    Caption ="Export selected group to NAVFIT98A"
-                    OnClick ="=UXExportSelectedGroup()"
+                    Name ="uxGlobalDefaults"
+                    Caption ="Edit global defaults"
+                    OnClick ="=UXOpenGlobalDefaults()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =9800
-                    LayoutCachedWidth =7900
-                    LayoutCachedHeight =10250
+                    LayoutCachedTop =7660
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =8160
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1100,10 +1061,49 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =8150
-                    Top =9800
-                    Width =5150
-                    Height =450
+                    Left =2850
+                    Top =9600
+                    Width =5100
+                    Height =500
+                    FontSize =10
+                    TabIndex =19
+                    ForeColor =4205854
+                    Name ="uxExportSelected"
+                    Caption ="Export selected group to NAVFIT98A"
+                    OnClick ="=UXExportSelectedGroup()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =9600
+                    LayoutCachedWidth =7950
+                    LayoutCachedHeight =10100
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8250
+                    Top =9600
+                    Width =5050
+                    Height =500
                     FontSize =10
                     TabIndex =20
                     ForeColor =4205854
@@ -1112,10 +1112,10 @@ Begin Form
                     OnClick ="=PDFOutputOpenGroup(\"frmUXGroups\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =8150
-                    LayoutCachedTop =9800
+                    LayoutCachedLeft =8250
+                    LayoutCachedTop =9600
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =10250
+                    LayoutCachedHeight =10100
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

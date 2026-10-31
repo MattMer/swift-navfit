@@ -224,8 +224,10 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     If UXHasControl(f, "uxCurrentExport") Then
         If f!uxCurrentExport.Visible Then bottom = f!uxCurrentExport.Top + f!uxCurrentExport.Height
     End If
-    UXVisualSet f!uxRail, "Height", bottom + 300
-    UXVisualSet f.Section(acDetail), "Height", bottom + 300
+    'The rail runs the full window height even when the content is shorter.
+    bottom = bottom + 300: If bottom < height - 15 Then bottom = height - 15
+    UXVisualSet f!uxRail, "Height", bottom
+    UXVisualSet f.Section(acDetail), "Height", bottom
     state("AppliedWidth") = width: state("AppliedHeight") = height
     layoutPasses = layoutPasses + 1
     UXResizeWorkspace = True

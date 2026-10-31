@@ -296,8 +296,8 @@ Begin Form
                     TextFontFamily =34
                     Left =400
                     Top =10000
-                    Width =4500
-                    Height =600
+                    Width =6150
+                    Height =500
                     FontSize =10
                     TabIndex =3
                     ForeColor =4205854
@@ -308,8 +308,8 @@ Begin Form
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =10000
-                    LayoutCachedWidth =4900
-                    LayoutCachedHeight =10600
+                    LayoutCachedWidth =6550
+                    LayoutCachedHeight =10500
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -333,10 +333,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =5400
+                    Left =6850
                     Top =10000
-                    Width =7400
-                    Height =600
+                    Width =6150
+                    Height =500
                     FontSize =10
                     TabIndex =4
                     ForeColor =4205854
@@ -345,10 +345,10 @@ Begin Form
                     OnClick ="=AcknowledgeOperationUI()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =5400
+                    LayoutCachedLeft =6850
                     LayoutCachedTop =10000
-                    LayoutCachedWidth =12800
-                    LayoutCachedHeight =10600
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =10500
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -372,9 +372,9 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =400
-                    Top =11700
-                    Width =12600
+                    Left =6850
+                    Top =10650
+                    Width =6150
                     Height =500
                     FontSize =10
                     TabIndex =5
@@ -384,10 +384,10 @@ Begin Form
                     OnClick ="=ProvenanceFromOperations()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =11700
+                    LayoutCachedLeft =6850
+                    LayoutCachedTop =10650
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =12200
+                    LayoutCachedHeight =11150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -412,9 +412,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =11000
-                    Width =3500
-                    Height =550
+                    Top =11300
+                    Width =6150
+                    Height =500
                     FontSize =10
                     TabIndex =6
                     ForeColor =4205854
@@ -424,9 +424,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =11000
-                    LayoutCachedWidth =3900
-                    LayoutCachedHeight =11550
+                    LayoutCachedTop =11300
+                    LayoutCachedWidth =6550
+                    LayoutCachedHeight =11800
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -450,10 +450,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =4500
-                    Top =11000
-                    Width =8000
-                    Height =550
+                    Left =400
+                    Top =10650
+                    Width =6150
+                    Height =500
                     FontSize =10
                     TabIndex =7
                     ForeColor =4205854
@@ -462,10 +462,10 @@ Begin Form
                     OnClick ="=UndoFolderBatchUI()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =4500
-                    LayoutCachedTop =11000
-                    LayoutCachedWidth =12500
-                    LayoutCachedHeight =11550
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =10650
+                    LayoutCachedWidth =6550
+                    LayoutCachedHeight =11150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

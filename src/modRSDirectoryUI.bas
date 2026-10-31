@@ -93,7 +93,7 @@ Public Function RSSelectSeniorPage(ByVal page As Long) As Boolean
     RSSelectSeniorPage = True
 End Function
 Public Function RSReloadBaselines() As Boolean
-    Forms!frmUXSeniorEditor!lstBaselines.RowSource = "SELECT Paygrade,AsOfDate,CurrentRSCA,TraitCount,TraitSum,SourceNote FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " ORDER BY AsOfDate DESC,BaselineID DESC"
+    Forms!frmUXSeniorEditor!lstBaselines.RowSource = "SELECT Paygrade,AsOfDate AS [As of],CurrentRSCA AS [RSCA],TraitCount AS [Traits],TraitSum AS [Trait total],SourceNote AS [Source note] FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " ORDER BY AsOfDate DESC,BaselineID DESC"
     Forms!frmUXSeniorEditor!lstBaselines.Requery: RSTableReloadVisible: RSReloadBaselines = True
 End Function
 Public Function RSAddBaselineUI() As Boolean

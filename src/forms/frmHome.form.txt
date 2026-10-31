@@ -244,11 +244,11 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =10500
-                    Top =3550
-                    Width =2800
+                    Left =2850
+                    Top =4100
+                    Width =3300
                     Height =500
-                    FontSize =16
+                    FontSize =10
                     TabIndex =11
                     ForeColor =4205854
                     Name ="cmdRecovery"
@@ -256,10 +256,10 @@ Begin Form
                     OnClick ="=OpenScreen(\"frmRecovery\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =10500
-                    LayoutCachedTop =3550
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =4050
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =4100
+                    LayoutCachedWidth =6150
+                    LayoutCachedHeight =4600
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -769,7 +769,7 @@ Begin Form
                     Left =2850
                     Top =3550
                     Width =7300
-                    Height =500
+                    Height =450
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxRecoveryStatus"
@@ -778,7 +778,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =3550
                     LayoutCachedWidth =10150
-                    LayoutCachedHeight =4050
+                    LayoutCachedHeight =4000
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -838,7 +838,7 @@ Begin Form
                     TextFontFamily =34
                     Left =2850
                     Top =7870
-                    Width =3000
+                    Width =3300
                     Height =500
                     FontSize =10
                     TabIndex =13
@@ -850,7 +850,7 @@ Begin Form
 
                     LayoutCachedLeft =2850
                     LayoutCachedTop =7870
-                    LayoutCachedWidth =5850
+                    LayoutCachedWidth =6150
                     LayoutCachedHeight =8370
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -876,9 +876,9 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =9850
+                    Left =6350
                     Top =7870
-                    Width =3450
+                    Width =3300
                     Height =500
                     FontSize =10
                     TabIndex =14
@@ -888,9 +888,9 @@ Begin Form
                     OnClick ="=UXNewReport()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =9850
+                    LayoutCachedLeft =6350
                     LayoutCachedTop =7870
-                    LayoutCachedWidth =13300
+                    LayoutCachedWidth =9650
                     LayoutCachedHeight =8370
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1034,9 +1034,9 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =10500
-                    Top =4120
-                    Width =2800
+                    Left =6350
+                    Top =4100
+                    Width =3300
                     Height =500
                     FontSize =10
                     TabIndex =16
@@ -1046,10 +1046,10 @@ Begin Form
                     OnClick ="=UXOpenNoteRecoveries()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =10500
-                    LayoutCachedTop =4120
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =4620
+                    LayoutCachedLeft =6350
+                    LayoutCachedTop =4100
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =4600
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

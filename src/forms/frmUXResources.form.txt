@@ -533,7 +533,7 @@ Begin Form
                     Left =2866
                     Top =4000
                     Width =9954
-                    Height =550
+                    Height =600
                     FontSize =10
                     TabIndex =10
                     ForeColor =4205854
@@ -545,7 +545,7 @@ Begin Form
                     LayoutCachedLeft =2866
                     LayoutCachedTop =4000
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =4550
+                    LayoutCachedHeight =4600
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -658,10 +658,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2850
-                    Top =7800
+                    Left =2866
+                    Top =6550
                     Width =9954
-                    Height =550
+                    Height =600
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -670,10 +670,10 @@ Begin Form
                     OnClick ="=OpenScreen(\"frmUXNavyWriter\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =7800
-                    LayoutCachedWidth =12804
-                    LayoutCachedHeight =8350
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =6550
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =7150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -698,10 +698,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2850
+                    Left =2866
                     Top =4850
                     Width =9954
-                    Height =550
+                    Height =600
                     FontSize =10
                     TabIndex =12
                     ForeColor =4205854
@@ -710,10 +710,10 @@ Begin Form
                     OnClick ="=OpenScreen(\"frmUXDirectory\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2850
+                    LayoutCachedLeft =2866
                     LayoutCachedTop =4850
-                    LayoutCachedWidth =12804
-                    LayoutCachedHeight =5400
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =5450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -738,10 +738,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2850
+                    Left =2866
                     Top =5700
                     Width =9954
-                    Height =550
+                    Height =600
                     FontSize =10
                     TabIndex =14
                     ForeColor =4205854
@@ -750,10 +750,10 @@ Begin Form
                     OnClick ="=UXSaveNavyWords()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2850
+                    LayoutCachedLeft =2866
                     LayoutCachedTop =5700
-                    LayoutCachedWidth =12804
-                    LayoutCachedHeight =6250
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =6300
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

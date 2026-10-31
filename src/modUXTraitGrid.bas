@@ -213,11 +213,11 @@ Public Function UXGridLoad() As Boolean
         kind = Nz(DLookup("FormKind", "Report", "ReportID=" & Nz(f!ReportID, 0)), "EVAL")
     End If
     For block = 33 To 39
-        f.Controls("heading" & block).Caption = UXFieldCaption("Trait" & block, kind)
+        UXGridHeading f.Controls("heading" & block), UXFieldCaption("Trait" & block, kind)
         f.Controls("Trait" & block).ControlTipText = UXFieldCaption("Trait" & block, kind)
     Next
-    f!headingAssignmentRecommendationA.Caption = UXFieldCaption("AssignmentRecommendationA", kind)
-    f!headingAssignmentRecommendationB.Caption = UXFieldCaption("AssignmentRecommendationB", kind)
+    UXGridHeading f!headingAssignmentRecommendationA, UXFieldCaption("AssignmentRecommendationA", kind)
+    UXGridHeading f!headingAssignmentRecommendationB, UXFieldCaption("AssignmentRecommendationB", kind)
     Call UXGridRefreshAverages: loading = False
     Call UXGridCurrent: Call UXGridViewport: UXGridLoad = True
     Exit Function
@@ -623,3 +623,46 @@ Public Function UXITAChange(ByVal current As Variant, ByVal prior As Variant) As
  If CDbl(current) > CDbl(prior) Then UXITAChange = 1
  If CDbl(current) < CDbl(prior) Then UXITAChange = -1
 End Function
+'Grid columns are too narrow for the official captions; show a short heading and
+'keep the official caption as the tooltip. The editor pages keep official captions.
+Private Sub UXGridHeading(ByVal heading As Access.Control, ByVal caption As String)
+    Dim words As Variant, i As Long, shown As String, word As String
+    heading.ControlTipText = caption
+    caption = Replace(Replace(caption, "  ", " "), "/", "/ ")
+    caption = Replace(caption, "Career Recommendations - first", "Career rec. 1")
+    caption = Replace(caption, "Career Recommendations - second", "Career rec. 2")
+    words = Split(caption, " ")
+    For i = 0 To UBound(words)
+        word = words(i)
+        If i = 0 Then
+            word = Replace(word, ".", "")
+        Else
+            Select Case UCase$(Replace(word, "/", ""))
+                Case "PROFESSIONAL": word = "Prof."
+                Case "KNOWLEDGE": word = "knowl."
+                Case "EXPERTISE": word = "expert."
+                Case "TECHNICAL": word = "Tech."
+                Case "COMMAND": word = "Cmd."
+                Case "ORGANIZATIONAL": word = "org."
+                Case "INSTITUTIONAL": word = "Instit."
+                Case "MILITARY": word = "Mil."
+                Case "CHARACTER": word = "char."
+                Case "PERSONAL": word = "Pers."
+                Case "ACCOMPLISHMENT": word = "accomp."
+                Case "INITIATIVE": word = "init."
+                Case "PERFORMANCE": word = "perf."
+                Case "EFFECTIVENESS": word = "effect."
+                Case "AND": word = "&&"
+                Case "PROFESSIONALISM": word = "Profes-" & vbCrLf & "sional-" & vbCrLf & "ism"
+                Case "ACCOUNTABILITY": word = "Account-" & vbCrLf & "ability"
+                Case "TEAMWORK": word = "Team-" & vbCrLf & "work"
+                Case "LEADERSHIP": word = "Leader-" & vbCrLf & "ship"
+                Case "DECKPLATE": word = "Deck-" & vbCrLf & "plate"
+                Case Else: word = IIf(i = 1, UCase$(Left$(word, 1)) & LCase$(Mid$(word, 2)), LCase$(word))
+            End Select
+            If Right$(words(i), 1) = "/" And Right$(word, 1) <> "/" Then word = word & "/"
+        End If
+        shown = shown & IIf(i = 0, "", IIf(Right$(shown, 1) = vbLf, "", " ")) & word
+    Next
+    heading.Caption = shown
+End Sub
