@@ -107,10 +107,12 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInstructions"
-                    Caption ="Access has disabled this app's code. Click Enable Content in the yellow security"
-                        " bar, then close and reopen this file. To enable future preview builds, add only"
-                        " the output\\ux preview folder under File > Options > Trust Center > Trust Cente"
-                        "r Settings > Trusted Locations."
+                    Caption ="Access has turned off this app's code, so Swift cannot start yet. Choose Enable"
+                        " Content in the yellow security bar, then close and reopen this file. If the bar"
+                        " is red or has no Enable Content button, the file was blocked as a download: clo"
+                        "se Access, right-click the file, choose Properties, select Unblock, then open it"
+                        " again. If it is still blocked, ask your IT administrator to trust the folder wh"
+                        "ere you keep Swift NAVFIT."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =500
                     LayoutCachedTop =1400
