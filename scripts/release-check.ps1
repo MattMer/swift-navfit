@@ -3,7 +3,7 @@ param(
     [Parameter(Mandatory=$true)][string]$DemoPath,
     [switch]$CurrentFixturesOnly
 )
-# Verification only. Publication remains subject to AGENTS.md delivery gates.
+# Verification only. Publication remains subject to the CONTRIBUTING.md delivery gates.
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'build-plan.ps1')
@@ -19,9 +19,10 @@ InvokeSwiftWorkflowStep 'test-source-contracts' @() $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$blank.Path,'-RequireBlank') $logFolder
 InvokeSwiftWorkflowStep 'verify-build-artifact' @('-BuildPath',$demo.Path) $logFolder
 InvokeSwiftWorkflowStep 'test-workspace-startup' @('-BuildPath',$blank.Path,'-Tier','extended','-DemoPath',$demo.Path) $logFolder
-foreach($artifact in @($blank,$demo)){
-    InvokeSwiftWorkflowStep 'test-report-navigation' @('-BuildPath',$artifact.Path) $logFolder
-}
+InvokeSwiftWorkflowStep 'test-report-navigation' @('-BuildPath',$blank.Path) $logFolder
+#Navigation cases expect a blank workspace; the Demo gets its own startup and launch checks.
+InvokeSwiftWorkflowStep 'cases/test-ux-startup' @('-BuildPath',$demo.Path) $logFolder
+InvokeSwiftWorkflowStep 'cases/test-preview-launch' @('-BuildPath',$demo.Path) $logFolder
 $directoryArguments=@('-Tier','release','-BlankPath',$blank.Path,'-DemoPath',$demo.Path)
 if($CurrentFixturesOnly){$directoryArguments+='-CurrentFixturesOnly'}
 InvokeSwiftWorkflowStep 'test-directory-management' $directoryArguments $logFolder

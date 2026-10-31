@@ -1,21 +1,18 @@
 # Swift NAVFIT — current project state
 
-Updated 28 October 2026. This document describes what is true **now**:
+Updated 31 October 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
 newer verification detail belongs in commit messages, not here.
 
-Assistant continuity is maintained in [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md);
-verify it against the working tree and artifacts when resuming.
-
 ## Versions
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.49.0 | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.49.0 | 35 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.49.0), 26 Oct 2026. Full release gate passed, including schemas 1–35. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.49.0` | 35 | The release commit. Earlier: `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the Drive folder in [Development_Workflow.md](docs/Development_Workflow.md). |
+| Development source | 0.50.0 | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.50.0 | 35 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0), 31 Oct 2026. Full release gate passed, including schemas 1–35. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.50.0` | 35 | The release commit. Earlier: `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 

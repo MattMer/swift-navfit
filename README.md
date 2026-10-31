@@ -101,12 +101,12 @@ For command reviewers, the ISSM and anyone assessing Swift NAVFIT for use:
 
 **Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
 
-### Current release: 0.49.0
+### Current release: 0.50.0
 
-[**Swift NAVFIT 0.49.0**](https://github.com/MattMer/swift-navfit/releases/tag/v0.49.0) (schema 35) passed the full release gate on 26 October 2026. The release page lists each file's SHA-256 hash.
+[**Swift NAVFIT 0.50.0**](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0) (schema 35) passed the full release gate on 31 October 2026. The release page lists each file's SHA-256 hash.
 
-- **Swift_NAVFIT_Blank_0.49.0.accdb:** an empty workspace for a command. Start real work here.
-- **Swift_NAVFIT_Demo_0.49.0.accdb:** synthetic members, reports and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.50.0.accdb:** an empty workspace for a command. Start real work here.
+- **Swift_NAVFIT_Demo_0.50.0.accdb:** synthetic members, reports and groups for practice. Never put real data in it.
 
 > **Four acceptance checks are still untested:**
 > 1. printed fit against the official forms;
@@ -134,7 +134,7 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 
 ### Earlier releases
 
-r128 (app 0.27.1-dev, schema 27) workspaces import into 0.49.0.
+r128 (app 0.27.1-dev, schema 27) workspaces import into 0.50.0.
 
 ## Important boundaries
 
@@ -169,7 +169,7 @@ Generated databases and local verification receipts are not committed. Rebuild
 from the tag using the command above; a newly generated Access file can have a
 different byte hash.
 
-Start with [current architecture and support boundaries](PROJECT_STATE.md), then [development in VS Code](docs/Development_Workflow.md) for commands and [contributing](CONTRIBUTING.md) for change-specific checks. Release preservation requirements remain in [AGENTS.md](AGENTS.md); the r128 historical-test waiver and unresolved future test policy are recorded in PROJECT_STATE.md. Physical scaling, accessibility, and final printed fit require separate acceptance.
+Start with [current architecture and support boundaries](PROJECT_STATE.md), then [development in VS Code](docs/Development_Workflow.md) for commands and [contributing](CONTRIBUTING.md) for change-specific checks. Release preservation requirements are in the [project rules](CONTRIBUTING.md#product-invariants-non-negotiable); the r128 historical-test waiver and unresolved future test policy are recorded in PROJECT_STATE.md. Physical scaling, accessibility, and final printed fit require separate acceptance.
 
 ## Guides and project status
 

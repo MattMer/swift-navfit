@@ -1,7 +1,7 @@
 # Shared process boundary: native Access suites run serially in Windows PowerShell.
 # A failed child cannot be mistaken for a successful task or receipt.
 function InvokeSwiftWorkflowStep([string]$Name,[string[]]$Arguments,[string]$LogFolder){
-    $log=Join-Path $LogFolder ('{0:D2}-{1}.log' -f $script:workflowResults.Count,$Name)
+    $log=Join-Path $LogFolder ('{0:D2}-{1}.log' -f $script:workflowResults.Count,($Name -replace '[\\/]','-'))
     Write-Output ('Running '+$Name+'; log: '+$log)
     $timer=[Diagnostics.Stopwatch]::StartNew()
     try {

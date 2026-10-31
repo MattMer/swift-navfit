@@ -141,7 +141,8 @@ Public Function TestUXGroupDirectory() As String
         Set f = Forms!frmHome
         Check f!uxContributor.Top + f!uxContributor.Height <= f!cmdMyWork.Top, "Contributor overlaps My Work"
         Check f!uxContributorStatus.Top + f!uxContributorStatus.Height <= f!cmdMyWork.Top, "Contributor status overlaps My Work"
-        Check f!uxNoteRecovery.Top >= f!cmdRecovery.Top + f!cmdRecovery.Height And f!uxNoteRecovery.Top + f!uxNoteRecovery.Height < f!uxRecentCaption.Top, "Unposted notes overlaps recovery or recent reports"
+        Check f!uxNoteRecovery.Top = f!cmdRecovery.Top And f!uxNoteRecovery.Left >= f!cmdRecovery.Left + f!cmdRecovery.Width, "Unposted notes is not beside recovery"
+        Check f!cmdRecovery.Top >= f!uxRecoveryStatus.Top + f!uxRecoveryStatus.Height And f!uxNoteRecovery.Top + f!uxNoteRecovery.Height < f!uxRecentCaption.Top, "Recovery row overlaps its status or recent reports"
     Next
     TestUXGroupDirectory = "PASS: " & checks & " group/RUAD/Overview checks": Exit Function
 Failed:
