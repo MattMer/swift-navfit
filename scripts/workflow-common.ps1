@@ -98,6 +98,8 @@ public static class SwiftDialogs {
 '@
     }
     $log=Join-Path $LogFolder ('{0:D2}-{1}.log' -f $script:workflowResults.Count,$Name)
+    #A retry keeps the first run's log as evidence and writes its own.
+    if(Test-Path -LiteralPath $log){$log=Join-Path $LogFolder ('{0:D2}-{1}-retry.log' -f $script:workflowResults.Count,$Name)}
     WriteSwiftProgress ('Running '+$Name+'; log: '+$log)
     $started=Get-Date;$timer=[Diagnostics.Stopwatch]::StartNew();$dialogs=[Collections.Generic.List[string]]::new()
     $shown=0;$nextHeartbeat=5
