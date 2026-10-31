@@ -4,11 +4,11 @@ Updated 30 October 2026. Read this at startup, then verify Git status/diffs,
 versions and artifacts. Requirements remain in [PROJECT_STATE](../PROJECT_STATE.md),
 [backlog](../planning/PRIORITY_BACKLOG.md), [AGENTS](../AGENTS.md) and the
 [development workflow](Development_Workflow.md). Private conversation history is
-not needed. Commits need the user's approval; pushes have not been requested.
+not needed. Commits need the user's approval; pushes need it too (Matt approved the 31 October push).
 
 ## State
 
-- Branch main, ahead of origin/main (not pushed). APP_VERSION 0.49.0 /
+- Branch main, in sync with origin/main after the 31 October push. APP_VERSION 0.49.0 /
   SCHEMA_VERSION 35 ([modSwift](../src/modSwift.bas)).
 - Claude and Codex both work here. Claude Code has the Codex plugin
   (openai/codex-plugin-cc, ChatGPT sign-in). Claude delegates contained pieces
@@ -50,7 +50,7 @@ loaded an instrumented modReportPages copy into a disposable build copy.
 
 Plan: project doc "Plan: narrative line-fit meter and spell check", section 1;
 Matt then asked for NAVFIT98A field sizes, CPO separate from EVAL/FITREP.
-Committed locally, not pushed:
+Committed and pushed:
 - modPDFOutput: `PDFFieldFit` (Swift PDF, shares FitText via `BoxLines`) and
   `NAVFITFieldFit` (GDI+ `GdipMeasureString`, NAVFIT98A 2.2.0.332 print
   rectangles at default pitch; limits comments 18 / CHIEFEVAL 6, blocks 28/29
@@ -70,7 +70,7 @@ Committed locally, not pushed:
 
 ## Spell check (31 October, committed 289093e; word list in the next commit)
 
-Plan section 2, local commits only (not pushed):
+Plan section 2, committed and pushed:
 - `UXSpellCheck` / `UXSpellKey` / `UXSpellApply` (modUXSurface): Check spelling
   button by the comments (`cmdSpelling`) and F7 (frmUXEditorFields class module,
   KeyPreview) run `acCmdSpelling` on the comments, blocks 28/29 and Chief
