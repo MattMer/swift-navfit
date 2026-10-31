@@ -190,7 +190,8 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   rejection. Fixed in 0.44.0-dev by calling them directly; the import runner's
   audit-identity guard covers it.
 
-- Attended acceptance still outstanding: physical print fit, an Acrobat-absent
+- Attended acceptance still outstanding: a NAVFIT98A print check of the narrative
+  line meter (backlog H03), physical print fit, an Acrobat-absent
   workstation, normal-security launch and signing, screen reader/keyboard/DPI,
   PDF preview popup visuals.
 - No one has tested on a target (Navy-managed) workstation.

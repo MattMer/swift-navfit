@@ -46,11 +46,11 @@ PDF packets: each page now resets only the slots the previous page showed
 UXRenderFixedSheet (modReportPages). Scratch profilers (not in the repository)
 loaded an instrumented modReportPages copy into a disposable build copy.
 
-## Narrative line-fit meter (31 October, uncommitted)
+## Narrative line-fit meter (31 October, committed a72eed8)
 
 Plan: project doc "Plan: narrative line-fit meter and spell check", section 1;
 Matt then asked for NAVFIT98A field sizes, CPO separate from EVAL/FITREP.
-Working tree, awaiting Matt's commit approval (not pushed):
+Committed locally, not pushed:
 - modPDFOutput: `PDFFieldFit` (Swift PDF, shares FitText via `BoxLines`) and
   `NAVFITFieldFit` (GDI+ `GdipMeasureString`, NAVFIT98A 2.2.0.332 print
   rectangles at default pitch; limits comments 18 / CHIEFEVAL 6, blocks 28/29
@@ -64,7 +64,7 @@ Working tree, awaiting Matt's commit approval (not pushed):
 - Verified: BuildAndTest PASS build/workflow/20261030-184108-d9fdb6a2-1aec-4dc9-9fd6-badcd9c426ee;
   test-narratives PASS; test-pdf-output PASS, 28 PDFs / 390 pages identical in
   content, images and text to HEAD build 8b82e582. Codex reviewed twice; fixes applied.
-- Not verified: a real NAVFIT98A print (CHIEF comments rectangle fits 7 lines vs
+- Not verified (Matt's attended print is backlog H03): a real NAVFIT98A print (CHIEF comments rectangle fits 7 lines vs
   its 6-line limit; block 28 third line and Chief comment second line are slightly
   clipped in the rectangles); the no-printer path; guide PDF visual check.
 
@@ -76,5 +76,5 @@ Working tree, awaiting Matt's commit approval (not pushed):
    Step 3 (sparse revision values, schema change) is next only if the user
    schedules it.
 3. Optional: diagnose the test-import-engine 3059 flake.
-4. Line-fit meter: commit after Matt approves; then spell check (plan section 2).
+4. Spell check (plan section 2) is in progress; commit only after Matt approves.
 5. Update this file at milestones and before stopping.
