@@ -38,12 +38,14 @@ Public Function RSTableLoad() As Boolean
  Set db = CurrentDb
  For Each grade In RSTableGrades()
   row = Array(Null, Null, Null, Null)
-  Set r = db.OpenRecordset("SELECT TOP 1 CurrentRSCA,TraitCount,AsOfDate,TraitSum,SourceNote FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " AND Paygrade=" & QuoteSQL(CStr(grade)) & " ORDER BY AsOfDate DESC,BaselineID DESC", dbOpenSnapshot)
+  Set r = db.OpenRecordset("SELECT TOP 1 BaselineID,CurrentRSCA,TraitCount,AsOfDate,TraitSum,SourceNote FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " AND Paygrade=" & QuoteSQL(CStr(grade)) & " ORDER BY AsOfDate DESC,BaselineID DESC", dbOpenSnapshot)
   If Not r.EOF Then
    row = Array(r!CurrentRSCA.Value, r!TraitCount.Value, r!AsOfDate.Value, r!TraitSum.Value)
    f.Controls("date" & grade).ControlTipText = Left$(Nz(r!SourceNote, "Historical observation") & IIf(IsNull(r!TraitSum), "; estimated from average and trait count", "; exact historical sum"), 255)
+   f.Controls("src" & grade).Caption = RSBaselineSource(r!BaselineID)
   Else
    f.Controls("date" & grade).ControlTipText = "No baseline recorded for this paygrade."
+   f.Controls("src" & grade).Caption = ""
   End If
   r.Close
   f.Controls("avg" & grade) = row(0): f.Controls("count" & grade) = row(1): f.Controls("date" & grade) = row(2)
@@ -104,12 +106,115 @@ Public Function RSSaveTableButton() As Boolean
 End Function
 Public Function RSViewTableHistory() As Boolean
  Forms!frmUXSeniorEditor!cmdSave.SetFocus
- With Forms!frmUXSeniorEditor
-  !uxRSCATable.Visible = Not !uxRSCATable.Visible
-  !lstBaselines.Visible = Not !uxRSCATable.Visible
-  !cmdRSHistory.Caption = IIf(!uxRSCATable.Visible, "View prior baselines", "Back to paygrade table")
- End With
+ RSHistoryView Not Forms!frmUXSeniorEditor!lstBaselines.Visible
  RSViewTableHistory = True
+End Function
+Private Sub RSHistoryView(ByVal history As Boolean)
+ Dim name As Variant
+ With Forms!frmUXSeniorEditor
+  !uxRSCATable.Visible = Not history: !cmdSaveRSTable.Visible = Not history
+  For Each name In Array("lstBaselines", "cboHistoryGrade", "lblTrailSummary", "cmdOpenGroup"): .Controls(name).Visible = history: Next
+  !cmdRSHistory.Caption = IIf(history, "Back to paygrade table", "View RSCA history")
+ End With
+ If history Then RSShowHistory
+End Sub
+'Where a paygrade's latest RSCA comes from: the entered BOL baseline, or that
+'baseline plus the summary group completions posted on top of it.
+Public Function RSBaselineSource(ByVal baselineID As Long) As String
+ Dim id As Long, parent As Long, steps As Long
+ id = baselineID
+ Do
+  parent = Nz(DLookup("ParentBaselineID", "RSCABaseline", "BaselineID=" & id), 0)
+  If parent = 0 Or parent >= id Then Exit Do
+  steps = steps + 1: id = parent
+ Loop
+ RSBaselineSource = "BOL " & Format$(DLookup("AsOfDate", "RSCABaseline", "BaselineID=" & id), "yyyy-mm-dd") & IIf(steps = 0, "", " + " & steps & " group" & IIf(steps = 1, "", "s"))
+End Function
+Private Function HistoryCell(ByVal text As String) As String
+ HistoryCell = """" & Replace(Replace(Replace(text, """", """"""), vbCr, " "), vbLf, " ") & """"
+End Function
+Private Function HistoryRSCA(ByVal v As Variant) As String
+ If Not IsNull(v(3)) And v(2) > 0 Then
+  HistoryRSCA = Format$(v(3) / v(2), "0.00")
+ ElseIf Not IsNull(v(4)) Then
+  HistoryRSCA = Format$(v(4), "0.00") & IIf(v(2) > 0, " est.", "")
+ End If
+End Function
+'One paygrade's RSCA history as a value list, oldest first. Each local entry names
+'the summary group whose completion posted it. The current chain runs from the
+'latest baseline back through ParentBaselineID to the last entered BOL baseline;
+'entries outside it are earlier history.
+Public Function RSHistoryList(ByVal seniorID As Long, ByVal grade As String, ByRef summary As String) As String
+ Dim db As DAO.Database, r As DAO.Recordset, c As DAO.Recordset, info As Object, chain As Object, key As Variant, v As Variant
+ Dim id As Long, latest As Long, root As Long, groups As Long, entry As String, added As String, reports As String, groupID As Long, text As String
+ Set db = CurrentDb: Set info = CreateObject("Scripting.Dictionary"): Set chain = CreateObject("Scripting.Dictionary")
+ text = "GroupID;Date;Entry;Reports;Traits added;Total traits;RSCA after"
+ summary = "No RSCA history recorded for " & IIf(Len(grade) = 0, "this senior", grade) & "."
+ If seniorID = 0 Or Len(grade) = 0 Then RSHistoryList = text: Exit Function
+ Set r = db.OpenRecordset("SELECT BaselineID,ParentBaselineID,AsOfDate,TraitCount,TraitSum,CurrentRSCA,SourceNote FROM RSCABaseline WHERE SeniorID=" & seniorID & " AND Paygrade=" & QuoteSQL(grade) & " ORDER BY AsOfDate,BaselineID", dbOpenSnapshot)
+ Do While Not r.EOF
+  info.Add CLng(r!BaselineID), Array(CLng(Nz(r!ParentBaselineID, 0)), r!AsOfDate.Value, CLng(r!TraitCount), r!TraitSum.Value, r!CurrentRSCA.Value, Nz(r!SourceNote, ""))
+  r.MoveNext
+ Loop
+ r.Close
+ If info.Count = 0 Then RSHistoryList = text: Exit Function
+ latest = RSLatestBaseline(seniorID, grade): id = latest
+ Do While id > 0 And info.Exists(id) And Not chain.Exists(id)
+  chain.Add id, True: root = id: id = info(id)(0)
+ Loop
+ For Each key In info.Keys
+  v = info(key): groupID = 0: added = "": reports = ""
+  If v(0) = 0 Then
+   entry = IIf(Left$(v(5), 16) = "Swift local RSCA", "Local completion", "BOL baseline (entered)")
+  Else
+   Set c = db.OpenRecordset("SELECT TOP 1 c.CompletionID,c.GroupID,c.PriorCompletionID,g.Title FROM GroupCompletion AS c LEFT JOIN SummaryGroup AS g ON c.GroupID=g.GroupID WHERE c.PostedBaselineID=" & key & " ORDER BY c.CompletionID", dbOpenSnapshot)
+   If c.EOF Then
+    entry = "Local completion"
+   Else
+    groupID = c!groupID
+    entry = IIf(IsNull(c!PriorCompletionID), "Group completed: ", "Group re-completed (correction): ") & Nz(c!Title, "group " & c!groupID)
+    reports = CStr(DCount("*", "GroupCompletionReport", "CompletionID=" & c!CompletionID & " AND TraitCount>0"))
+   End If
+   c.Close
+   If info.Exists(v(0)) Then added = CStr(v(2) - info(v(0))(2))
+   If chain.Exists(key) Then groups = groups + 1
+  End If
+  If Not chain.Exists(key) Then entry = "Earlier: " & entry
+  text = text & ";" & groupID & ";" & HistoryCell(Format$(v(1), "yyyy-mm-dd")) & ";" & HistoryCell(entry) & ";" & HistoryCell(reports) & ";" & HistoryCell(added) & ";" & v(2) & ";" & HistoryCell(HistoryRSCA(v))
+ Next
+ v = info(root)
+ summary = grade & " BOL baseline " & Format$(v(1), "yyyy-mm-dd") & ": RSCA " & IIf(Len(HistoryRSCA(v)) > 0, HistoryRSCA(v), "none") & " (" & v(2) & " traits)"
+ If latest <> root Then
+  v = info(latest)
+  summary = summary & "; now " & HistoryRSCA(v) & " (" & v(2) & " traits) after " & groups & " group completion" & IIf(groups = 1, "", "s") & "."
+ Else
+  summary = summary & ". No summary groups completed since."
+ End If
+ RSHistoryList = text
+End Function
+Public Function RSShowHistory() As Boolean
+ Dim f As Access.Form, senior As Long, grade As String, grades As String, g As Variant, summary As String
+ Set f = Forms!frmUXSeniorEditor: senior = Nz(f!txtSeniorID, 0)
+ For Each g In RSTableGrades()
+  If DCount("*", "RSCABaseline", "SeniorID=" & senior & " AND Paygrade=" & QuoteSQL(CStr(g))) > 0 Then grades = grades & IIf(Len(grades) > 0, ";", "") & g
+ Next
+ f!cboHistoryGrade.RowSource = grades
+ grade = Nz(f!cboHistoryGrade, "")
+ If Len(grade) = 0 Or InStr(";" & grades & ";", ";" & grade & ";") = 0 Then
+  grade = Nz(MajorScalar("SELECT TOP 1 Paygrade FROM RSCABaseline WHERE SeniorID=" & senior & " ORDER BY AsOfDate DESC,BaselineID DESC"), "")
+  If Len(grade) = 0 Then f!cboHistoryGrade = Null Else f!cboHistoryGrade = grade
+ End If
+ f!lstBaselines.RowSource = RSHistoryList(senior, grade, summary)
+ f!lblTrailSummary.Caption = summary
+ RSShowHistory = True
+End Function
+Public Function RSHistoryOpenGroup() As Boolean
+ Dim id As Long
+ id = Val(Nz(Forms!frmUXSeniorEditor!lstBaselines, 0))
+ If id = 0 Then Forms!frmUXSeniorEditor!lblStatus.Caption = "Choose a group completion row first.": Exit Function
+ If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then Forms!frmUXSeniorEditor!lblStatus.Caption = "That summary group no longer exists.": Exit Function
+ If Not RSLeaveSeniorEditor() Then Exit Function
+ RSHistoryOpenGroup = UXShowGroupMembers(id)
 End Function
 Public Function RSTableResize() As Boolean
  Dim f As Access.Form, c As Access.Control, grade As Variant, width As Long, ratio As Double
@@ -119,24 +224,28 @@ Public Function RSTableResize() As Boolean
  'Shrink to fit a narrow window; never stretch the numeric columns past their design.
  ratio = width / 10000: If ratio > 1 Then ratio = 1
  For Each grade In RSTableGrades()
-  f.Controls("grade" & grade).Left = 100 * ratio: f.Controls("grade" & grade).Width = 800 * ratio
-  f.Controls("avg" & grade).Left = 1000 * ratio: f.Controls("avg" & grade).Width = 1600 * ratio
-  f.Controls("count" & grade).Left = 2900 * ratio: f.Controls("count" & grade).Width = 2600 * ratio
-  f.Controls("date" & grade).Left = 5800 * ratio: f.Controls("date" & grade).Width = 3700 * ratio
+  f.Controls("grade" & grade).Left = 100 * ratio: f.Controls("grade" & grade).Width = 900 * ratio
+  f.Controls("avg" & grade).Left = 1100 * ratio: f.Controls("avg" & grade).Width = 1200 * ratio
+  f.Controls("count" & grade).Left = 2400 * ratio: f.Controls("count" & grade).Width = 2100 * ratio
+  f.Controls("date" & grade).Left = 4600 * ratio: f.Controls("date" & grade).Width = 1800 * ratio
+  f.Controls("src" & grade).Left = 6500 * ratio: f.Controls("src" & grade).Width = 3400 * ratio
  Next
- f!headgrade.Left = 100 * ratio: f!headgrade.Width = 800 * ratio
- f!headavg.Left = 1000 * ratio: f!headavg.Width = 1600 * ratio
- f!headcount.Left = 2900 * ratio: f!headcount.Width = 2600 * ratio
- f!headdate.Left = 5800 * ratio: f!headdate.Width = 3700 * ratio
+ f!headgrade.Left = 100 * ratio: f!headgrade.Width = 900 * ratio
+ f!headavg.Left = 1100 * ratio: f!headavg.Width = 1200 * ratio
+ f!headcount.Left = 2400 * ratio: f!headcount.Width = 2100 * ratio
+ f!headdate.Left = 4600 * ratio: f!headdate.Width = 1800 * ratio
+ f!headsrc.Left = 6500 * ratio: f!headsrc.Width = 3400 * ratio
  f.Tag = CStr(width): f.Width = width: RSTableResize = True
 Finished:
 End Function
 Public Sub RSTablePage(ByVal page As Long)
+ Dim name As Variant
  With Forms!frmUXSeniorEditor
   If Not UXHasControl(Forms!frmUXSeniorEditor, "uxRSCATable") Then Exit Sub
-  !uxRSCATable.Visible = (page = 3): !lstBaselines.Visible = False
+  !uxRSCATable.Visible = (page = 3)
+  For Each name In Array("lstBaselines", "cboHistoryGrade", "lblTrailSummary", "cmdOpenGroup"): .Controls(name).Visible = False: Next
   If page = 3 And Not shown Then RSTableLoad: shown = True
-  !cmdRSHistory.Caption = "View prior baselines"
+  !cmdRSHistory.Caption = "View RSCA history"
  End With
 End Sub
 Public Function RSTableChanged() As Boolean
@@ -165,7 +274,7 @@ Public Function RSTableSort(ByVal key As String) As Boolean
  Next
  For i = 0 To UBound(order)
   grade = grades(order(i))
-  For Each c In Array("grade", "avg", "count", "date")
+  For Each c In Array("grade", "avg", "count", "date", "src")
    f.Controls(c & grade).Top = 500 + i * 390
   Next
   f.Controls("avg" & grade).TabIndex = i * 3

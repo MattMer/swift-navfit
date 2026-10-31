@@ -461,6 +461,288 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
+                Begin Label
+                    BackStyle =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =6380
+                    Width =9954
+                    Height =400
+                    FontSize =10
+                    BackColor =15332066
+                    ForeColor =4482335
+                    Tag ="SR:0"
+                    Name ="lblDirectoryLink"
+                    Caption ="Not linked to a command member."
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =6380
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =6780
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =6800
+                    Width =3200
+                    Height =400
+                    FontSize =10
+                    TabIndex =45
+                    ForeColor =4205854
+                    Tag ="SR:0"
+                    Name ="cmdLinkMember"
+                    Caption ="Link to member"
+                    OnClick ="=RSLinkMember()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =6800
+                    LayoutCachedWidth =6066
+                    LayoutCachedHeight =7200
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6236
+                    Top =6800
+                    Width =3200
+                    Height =400
+                    FontSize =10
+                    TabIndex =46
+                    ForeColor =4205854
+                    Tag ="SR:0"
+                    Name ="cmdLinkUpdate"
+                    Caption ="Update from directory"
+                    OnClick ="=RSLinkUpdate()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6236
+                    LayoutCachedTop =6800
+                    LayoutCachedWidth =9436
+                    LayoutCachedHeight =7200
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9606
+                    Top =6800
+                    Width =3214
+                    Height =400
+                    FontSize =10
+                    TabIndex =47
+                    ForeColor =4205854
+                    Tag ="SR:0"
+                    Name ="cmdUnlink"
+                    Caption ="Unlink"
+                    OnClick ="=RSUnlinkMember()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9606
+                    LayoutCachedTop =6800
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =7200
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10
+                    Top =10
+                    Width =100
+                    Height =100
+                    FontSize =10
+                    TabIndex =48
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtMemberID"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10
+                    LayoutCachedTop =10
+                    LayoutCachedWidth =110
+                    LayoutCachedHeight =110
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    BackStyle =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5700
+                    Top =3100
+                    Width =7600
+                    Height =550
+                    FontSize =10
+                    BackColor =15332066
+                    ForeColor =4482335
+                    Name ="lblTrailSummary"
+                    Caption =""
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =5700
+                    LayoutCachedTop =3100
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =3650
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =6600
+                    Width =5000
+                    Height =450
+                    FontSize =10
+                    TabIndex =50
+                    ForeColor =4205854
+                    Name ="cmdOpenGroup"
+                    Caption ="Open selected group"
+                    OnClick ="=RSHistoryOpenGroup()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =6600
+                    LayoutCachedWidth =7850
+                    LayoutCachedHeight =7050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin ComboBox
+                    Visible = NotDefault
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4000
+                    Top =3150
+                    Width =1500
+                    Height =350
+                    FontSize =10
+                    TabIndex =49
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="cboHistoryGrade"
+                    AfterUpdate ="=RSShowHistory()"
+                    RowSourceType ="Value List"
+                    RowSource =""
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =4000
+                    LayoutCachedTop =3150
+                    LayoutCachedWidth =5500
+                    LayoutCachedHeight =3500
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =2850
+                            Top =3180
+                            Width =1100
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblcboHistoryGrade"
+                            Caption ="Paygrade"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =3180
+                            LayoutCachedWidth =3950
+                            LayoutCachedHeight =3480
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin TextBox
                     Visible = NotDefault
                     OverlapFlags =223
@@ -1778,23 +2060,24 @@ Begin Form
                     OverlapFlags =255
                     TextFontFamily =34
                     IMESentenceMode =3
-                    ColumnCount =6
+                    ColumnCount =7
                     Left =2850
-                    Top =3000
+                    Top =3700
                     Width =10450
-                    Height =3500
+                    Height =2800
                     FontSize =10
                     TabIndex =38
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstBaselines"
-                    RowSourceType ="Table/Query"
-                    ColumnWidths ="900;1600;1200;1800;1400;3300"
+                    RowSourceType ="Value List"
+                    RowSourceTypeInt =1
+                    ColumnWidths ="0;1300;4350;900;1150;1250;1200"
                     FontName ="Segoe UI"
                     OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3000
+                    LayoutCachedTop =3700
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =6500
                     ThemeFontIndex =-1
@@ -1806,16 +2089,16 @@ Begin Form
                             Visible = NotDefault
                             OverlapFlags =95
                             Left =2850
-                            Top =3000
+                            Top =3700
                             Width =15
                             Height =15
                             FontSize =1
                             Name ="anlstBaselines"
                             Caption ="Baselines"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =3000
+                            LayoutCachedTop =3700
                             LayoutCachedWidth =2865
-                            LayoutCachedHeight =3015
+                            LayoutCachedHeight =3715
                         End
                     End
                 End
@@ -2075,7 +2358,7 @@ Begin Form
                     TabIndex =43
                     ForeColor =4205854
                     Name ="cmdRSHistory"
-                    Caption ="View prior baselines"
+                    Caption ="View RSCA history"
                     OnClick ="=RSViewTableHistory()"
                     FontName ="Segoe UI"
                     Tag ="SR:3"

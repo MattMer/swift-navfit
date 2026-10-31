@@ -19,6 +19,68 @@ Private Function RejectBaseline(ByVal id As Long, ByVal grade As String, ByVal a
 Rejected:
     RejectBaseline = True
 End Function
+Private Function RejectLink(ByVal member As Long) As Boolean
+    On Error GoTo Rejected
+    Call RSSaveSenior(0, "Rejected link", RSSeniorValues(0), 0, member)
+    Exit Function
+Rejected:
+    RejectLink = True
+End Function
+'A senior linked to a command member: mapping, picker, link status, update, unlink,
+'one senior per member, and the list columns.
+Private Sub TestMemberLink()
+    Dim member As Long, archived As Long, ruad As Object, mapped As Object, f As Access.Form, linked As Long, i As Long, row As Long
+    Set ruad = RUADDecode(Null): ruad("DESG") = "1110": ruad("UIC") = "12345"
+    member = SaveDirectoryMember(0, 0, "Sam Rivera", "RIVERA, SAM JOSE", "CDR", "000000777", "Manual", ruad)
+    Set mapped = RSMemberValues(member)
+    Check mapped("ReportingSeniorName") = "RIVERA, S J" And mapped("ReportingSeniorLastName") = "RIVERA" And mapped("ReportingSeniorFirstInitial") = "S" And mapped("ReportingSeniorMiddleInitial") = "J", "Member name not mapped to the senior block"
+    Check mapped("ReportingSeniorGrade") = "CDR" And mapped("ReportingSeniorDesignator") = "1110" And mapped("ReportingSeniorUIC") = "12345" And mapped("ReportingSeniorSSN") = "000000777", "Member details not mapped"
+    Check Not mapped.Exists("ReportingSeniorTitle"), "Profile supplied a billet title"
+    DoCmd.OpenForm "frmUXSeniors"
+    Check RSOpenSenior(True) And CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded, "New reporting senior did not open the member picker"
+    Forms!frmUXSeniorPicker!txtSearch = "12345": Check RSPickerFilter(), "Picker search failed"
+    Check Forms!frmUXSeniorPicker!lstMembers.ListCount = 1 And Forms!frmUXSeniorPicker!lstMembers.Column(3, 0) = "1110" And Forms!frmUXSeniorPicker!lstMembers.Column(4, 0) = "12345", "Picker did not find the member by UIC with designator and UIC"
+    Check Not RSPickerUse() And CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded, "Picker used no selection"
+    Forms!frmUXSeniorPicker!lstMembers = member: Check RSPickerUse(), "Use selected member failed"
+    Set f = Forms!frmUXSeniorEditor
+    Check f!rsReportingSeniorUIC = "12345" And f!rsReportingSeniorGrade = "CDR" And f!txtMemberID = member And RSSeniorDirty(), "Picker did not fill a pending linked record"
+    Check InStr(f!lblDirectoryLink.Caption, "Matches the directory") > 0, "Link status missing"
+    f!rsReportingSeniorTitle = "CO": f!cmdSave.SetFocus: Check RSSaveSeniorUI(), "Linked senior save failed"
+    linked = f!txtSeniorID
+    Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = member And Not RSSeniorDirty(), "Directory link not saved"
+    CurrentDb.Execute "UPDATE CommandMember SET RankRate='CAPT' WHERE MemberID=" & member, dbFailOnError
+    Check RSShowLink() And InStr(f!lblDirectoryLink.Caption, "Directory differs: Grade") > 0, "Directory difference not shown"
+    Check RSLinkUpdate() And f!rsReportingSeniorGrade = "CAPT" And f!rsReportingSeniorTitle = "CO" And RSSeniorDirty(), "Update from directory changed the wrong values"
+    Check RSUnlinkMember() And IsNull(f!txtMemberID) And InStr(f!lblDirectoryLink.Caption, "Not linked") > 0, "Unlink not pending"
+    DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
+    Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = member, "Closing without saving changed the link"
+    Check RejectLink(member), "Second senior record linked to the same member"
+    archived = SaveDirectoryMember(0, 0, "Pat Archived", "ARCHIVED, PAT", "LT", "")
+    CurrentDb.Execute "UPDATE CommandMember SET IsArchived=True WHERE MemberID=" & archived, dbFailOnError
+    Check RejectLink(archived), "Archived member linked"
+    Check RSOpenSenior(True), "Picker reopen failed"
+    Forms!frmUXSeniorPicker!txtSearch = "RIVERA": RSPickerFilter
+    Check Forms!frmUXSeniorPicker!lstMembers.Column(5, 0) = "Already a senior", "Picker did not mark an existing senior"
+    Forms!frmUXSeniorPicker!lstMembers = member
+    Check Not RSPickerUse() And InStr(Forms!frmUXSeniorPicker!lblStatus.Caption, "already the reporting senior") > 0, "Picker created a duplicate senior"
+    archived = SaveDirectoryMember(0, 0, "Quinn Blankname", "BLANKNAME, QUINN", "LT", "")
+    CurrentDb.Execute "UPDATE CommandMember SET ReportName='' WHERE MemberID=" & archived, dbFailOnError
+    Forms!frmUXSeniorPicker!txtSearch = "Blankname": RSPickerFilter
+    Check Forms!frmUXSeniorPicker!lstMembers.Column(1, 0) = "Quinn Blankname", "Picker showed a blank name for an empty report name"
+    Check RSPickerManual() And Forms!frmUXSeniorEditor!txtSeniorID = 0 And IsNull(Forms!frmUXSeniorEditor!txtMemberID), "Enter details by hand did not open a blank record"
+    DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
+    Check RSLoadDirectory(), "Directory list failed"
+    With Forms!frmUXSeniors!lstSeniors
+        row = -1
+        For i = 0 To .ListCount - 1
+            If Val(.Column(0, i)) = linked Then row = i
+        Next
+        Check row >= 0, "Linked senior missing from the list"
+        Check .Column(2, row) = "CDR" And .Column(3, row) = "1110" And .Column(4, row) = "CO" And .Column(5, row) = "12345" And .Column(6, row) = "Linked", "List columns wrong"
+    End With
+    Check UXSortList("frmUXSeniors", "lstSeniors", 5), "Senior list did not sort by UIC"
+    DoCmd.Close acForm, "frmUXSeniors", acSaveNo
+End Sub
 Public Function TestRSDirectory() As String
     Dim senior As Long, values As Object, saved As Object, reportID As Long, changes As Object, groupID As Long, baseline As Long, result As Object, key As Variant, operation As Long, f As Access.Form, stage As String, snapshot As Long
     On Error GoTo Failed
@@ -72,6 +134,7 @@ Public Function TestRSDirectory() As String
     Check f!txtAsOf = "2026-02-30", "Baseline failure lost pending values"
     f!txtAsOf = "2026-04-01": Check RSAddBaselineUI(), "Baseline UI save failed"
     DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
+    stage = "directory link": TestMemberLink
     stage = "comparison UI": DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID
     Forms!frmMajorWorkbench!uxMode = "Comparison"
     snapshot = DCount("*", "GroupSnapshot"): Check UXOpenComparison(), "Automatic comparison failed"

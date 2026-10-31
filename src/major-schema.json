@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 35,
+  "SchemaVersion": 36,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -49,7 +49,8 @@
     "MemberCounseling",
     "DirectoryMergeCounseling",
     "ReportSignoff",
-    "DraftDisposal"
+    "DraftDisposal",
+    "DirectoryMergeSenior"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -111,7 +112,7 @@
     "CREATE UNIQUE INDEX UX_MajorRouteStep ON RouteTemplateStep (TemplateID,StepOrdinal)",
     "CREATE UNIQUE INDEX UX_MajorRunStep ON RouteRunStep (RunID,StepOrdinal)",
     "CREATE UNIQUE INDEX UX_MajorComparison ON ComparisonMember (SetID,ReportID)",
-    "CREATE TABLE ReportingSeniorRecord (SeniorID COUNTER PRIMARY KEY, SeniorGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, CreatedBy LONG NOT NULL, ModifiedAt DATETIME, VersionCounter LONG)",
+    "CREATE TABLE ReportingSeniorRecord (SeniorID COUNTER PRIMARY KEY, SeniorGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, CreatedBy LONG NOT NULL, ModifiedAt DATETIME, VersionCounter LONG, MemberID LONG)",
     "CREATE TABLE ReportingSeniorValue (ValueID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, FieldKey TEXT(64) NOT NULL, ValueText TEXT(255), IsNullValue BIT)",
     "CREATE TABLE RSCABaseline (BaselineID COUNTER PRIMARY KEY, SeniorID LONG NOT NULL, Paygrade TEXT(5) NOT NULL, AsOfDate DATETIME NOT NULL, CurrentRSCA DOUBLE, TraitCount LONG NOT NULL, TraitSum DOUBLE, SourceNote TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME)",
     "CREATE TABLE GroupRSCABaseline (GroupID LONG PRIMARY KEY, SeniorID LONG NOT NULL, BaselineID LONG, ExcludesGroup BIT)",
@@ -260,7 +261,12 @@
     "CREATE INDEX IX_ReportSignoff_Report ON ReportSignoff (ReportID,MarkedAt)",
     "CREATE TABLE DraftDisposal (DisposalID COUNTER PRIMARY KEY, DisposalGuid TEXT(38) NOT NULL, ReportID LONG NOT NULL, SignoffID LONG NOT NULL, DisposedBy LONG NOT NULL, DisposedAt DATETIME NOT NULL, RevisionsCleared LONG NOT NULL, ValueRowsRemoved LONG NOT NULL, ChangeRowsRemoved LONG NOT NULL, RecoveryRemoved LONG NOT NULL, NoteDraftsRemoved LONG NOT NULL, RawValuesRemoved LONG NOT NULL)",
     "CREATE UNIQUE INDEX UX_DraftDisposal_Guid ON DraftDisposal (DisposalGuid)",
-    "ALTER TABLE DraftDisposal ADD CONSTRAINT FK_DraftDisposal_SignoffID FOREIGN KEY (SignoffID) REFERENCES ReportSignoff (SignoffID)"
+    "ALTER TABLE DraftDisposal ADD CONSTRAINT FK_DraftDisposal_SignoffID FOREIGN KEY (SignoffID) REFERENCES ReportSignoff (SignoffID)",
+    "CREATE INDEX IX_ReportingSeniorRecord_Member ON ReportingSeniorRecord (MemberID)",
+    "ALTER TABLE ReportingSeniorRecord ADD CONSTRAINT FK_ReportingSeniorRecord_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "CREATE TABLE DirectoryMergeSenior (MergeID LONG NOT NULL, SeniorID LONG NOT NULL, VersionCounter LONG NOT NULL, ModifiedAt DATETIME, CONSTRAINT PK_DirectoryMergeSenior PRIMARY KEY (MergeID,SeniorID))",
+    "ALTER TABLE DirectoryMergeSenior ADD CONSTRAINT FK_DirectoryMergeSenior_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
+    "ALTER TABLE DirectoryMergeSenior ADD CONSTRAINT FK_DirectoryMergeSenior_SeniorID FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)"
   ],
   "Queries": [
     {

@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 35. 70 entities; 158 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 36. 71 entities; 161 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -40,6 +40,8 @@ erDiagram
   PriorEvaluation ||--o{ DirectoryMergePrior : "FK_DirectoryMergePrior_PriorID"
   DirectoryMerge ||--o{ DirectoryMergeReport : "FK_DirectoryMergeReport_MergeID"
   Report ||--o{ DirectoryMergeReport : "FK_DirectoryMergeReport_ReportID"
+  DirectoryMerge ||--o{ DirectoryMergeSenior : "FK_DirectoryMergeSenior_MergeID"
+  ReportingSeniorRecord ||--o{ DirectoryMergeSenior : "FK_DirectoryMergeSenior_SeniorID"
   ReportSignoff ||--o{ DraftDisposal : "FK_DraftDisposal_SignoffID"
   FieldDefault ||--o{ FieldDefaultLink : "FK_DefaultLink"
   Folder ||--o{ FieldDefaultLink : "FK_DefaultFolder"
@@ -107,6 +109,7 @@ erDiagram
   UserProfile ||--o{ ReportEvent : "FK_EventAuthor"
   Report ||--o{ ReportHead : "FK_HeadReport"
   ReportRevision ||--o{ ReportHead : "FK_HeadRevision"
+  CommandMember ||--o{ ReportingSeniorRecord : "FK_ReportingSeniorRecord_MemberID"
   UserProfile ||--o{ ReportingSeniorRecord : "FK_RSAuthor"
   ReportingSeniorRecord ||--o{ ReportingSeniorValue : "FK_RSValue"
   Report ||--o{ ReportMessage : "FK_MessageReport"
@@ -202,6 +205,8 @@ erDiagram
 | DirectoryMergePrior | PriorEvaluation | PriorID -> PriorEvaluation.PriorID | FK_DirectoryMergePrior_PriorID |
 | DirectoryMergeReport | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergeReport_MergeID |
 | DirectoryMergeReport | Report | ReportID -> Report.ReportID | FK_DirectoryMergeReport_ReportID |
+| DirectoryMergeSenior | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergeSenior_MergeID |
+| DirectoryMergeSenior | ReportingSeniorRecord | SeniorID -> ReportingSeniorRecord.SeniorID | FK_DirectoryMergeSenior_SeniorID |
 | DraftDisposal | ReportSignoff | SignoffID -> ReportSignoff.SignoffID | FK_DraftDisposal_SignoffID |
 | FieldDefaultLink | FieldDefault | DefaultID -> FieldDefault.DefaultID | FK_DefaultLink |
 | FieldDefaultLink | Folder | FolderID -> Folder.FolderID | FK_DefaultFolder |
@@ -269,6 +274,7 @@ erDiagram
 | ReportEvent | UserProfile | AuthorProfileID -> UserProfile.UserProfileID | FK_EventAuthor |
 | ReportHead | Report | ReportID -> Report.ReportID | FK_HeadReport |
 | ReportHead | ReportRevision | ReportID -> ReportRevision.ReportID, RevisionID -> ReportRevision.RevisionID | FK_HeadRevision |
+| ReportingSeniorRecord | CommandMember | MemberID -> CommandMember.MemberID | FK_ReportingSeniorRecord_MemberID |
 | ReportingSeniorRecord | UserProfile | CreatedBy -> UserProfile.UserProfileID | FK_RSAuthor |
 | ReportingSeniorValue | ReportingSeniorRecord | SeniorID -> ReportingSeniorRecord.SeniorID | FK_RSValue |
 | ReportMessage | Report | ReportID -> Report.ReportID | FK_MessageReport |

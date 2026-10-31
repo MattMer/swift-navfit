@@ -4,6 +4,9 @@ Option Explicit
 Private loadingGroupCalculation As Boolean
 Private seniorInitial As Object
 Private seniorInitialTitle As String
+Private seniorInitialMember As Variant
+Private pickerMode As String
+Private pickerRUAD As Object
 
 Public Function RSLeaveSeniorEditor() As Boolean
     Dim f As Access.Form, decision As String, pendingBaseline As Boolean
@@ -29,25 +32,152 @@ Public Function RSOpenDirectory() As Boolean
     If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm "frmUXSeniors": RSOpenDirectory = True
 End Function
+Private Function SeniorValueSQL(ByVal key As String, ByVal alias As String) As String
+    SeniorValueSQL = "(SELECT First(v.ValueText) FROM ReportingSeniorValue AS v WHERE v.SeniorID=s.SeniorID AND v.FieldKey='" & key & "') AS [" & alias & "]"
+End Function
 Public Function RSLoadDirectory() As Boolean
-    Forms!frmUXSeniors!lstSeniors.RowSource = "SELECT SeniorID,Title,VersionCounter FROM ReportingSeniorRecord ORDER BY Title"
+    Forms!frmUXSeniors!lstSeniors.RowSource = "SELECT s.SeniorID,s.Title," & SeniorValueSQL("ReportingSeniorGrade", "SeniorGrade") & "," & SeniorValueSQL("ReportingSeniorDesignator", "SeniorDesig") & "," & _
+        SeniorValueSQL("ReportingSeniorTitle", "SeniorTitle") & "," & SeniorValueSQL("ReportingSeniorUIC", "SeniorUIC") & ",IIf(s.MemberID Is Null,'','Linked') AS DirectoryLink FROM ReportingSeniorRecord AS s ORDER BY s.Title"
     Forms!frmUXSeniors!lstSeniors.Requery: RSLoadDirectory = True
 End Function
+'New records start from the member picker; opening a record goes straight to it.
 Public Function RSOpenSenior(Optional ByVal createNew As Boolean = False) As Boolean
     Dim id As Long
     If Not createNew Then id = Nz(Forms!frmUXSeniors!lstSeniors, 0)
     If Not createNew And id = 0 Then Forms!frmUXSeniors!lblStatus.Caption = "Choose a reporting senior record.": Exit Function
     If CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then Forms!frmUXSeniorEditor.SetFocus: Exit Function
+    If createNew Then
+        If CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded Then DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+        DoCmd.OpenForm "frmUXSeniorPicker", , , , , , "new": RSOpenSenior = True: Exit Function
+    End If
     DoCmd.OpenForm "frmUXSeniorEditor", , , , , , CStr(id): RSOpenSenior = True
 End Function
+'OpenArgs is a record ID, or "new:<MemberID>" for a new record filled from the directory.
 Public Function RSLoadSeniorEditor() As Boolean
-    Dim f As Access.Form, key As Variant, id As Long
-    Set f = Forms!frmUXSeniorEditor: id = CLng(Nz(f.OpenArgs, "0")): f!txtSeniorID = id
+    Dim f As Access.Form, key As Variant, id As Long, args As String, member As Long
+    Set f = Forms!frmUXSeniorEditor: args = Nz(f.OpenArgs, "0")
+    If Left$(args, 4) = "new:" Then member = CLng(Mid$(args, 5)) Else id = CLng(args)
+    f!txtSeniorID = id
     Set seniorInitial = RSSeniorValues(id)
     seniorInitialTitle = Nz(MajorScalar("SELECT Title FROM ReportingSeniorRecord WHERE SeniorID=" & id), "")
+    seniorInitialMember = MajorScalar("SELECT MemberID FROM ReportingSeniorRecord WHERE SeniorID=" & id)
     f!txtTitle = seniorInitialTitle: f!txtVersion = Nz(MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id), 0)
+    f!txtMemberID = seniorInitialMember
     For Each key In RSSeniorKeys(): f.Controls("rs" & key) = seniorInitial(CStr(key)): Next
-    RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0: RSLoadSeniorEditor = True
+    RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0
+    If member > 0 Then
+        f!txtTitle = Nz(MajorScalar("SELECT IIf(Len(Nz(ReportName,""""))=0,FullName,ReportName) FROM CommandMember WHERE MemberID=" & member), "")
+        RSApplyMemberLink member
+    Else
+        RSShowLink
+    End If
+    RSLoadSeniorEditor = True
+End Function
+'Control values without reading the active control's text, which needs focus.
+Private Function SeniorControlValues() As Object
+    Dim result As Object, key As Variant
+    Set result = CreateObject("Scripting.Dictionary")
+    For Each key In RSSeniorKeys(): result.Add CStr(key), Forms!frmUXSeniorEditor.Controls("rs" & key).Value: Next
+    Set SeniorControlValues = result
+End Function
+Private Function PendingMember() As Variant
+    PendingMember = Null
+    If Nz(Forms!frmUXSeniorEditor!txtMemberID, 0) <> 0 Then PendingMember = CLng(Forms!frmUXSeniorEditor!txtMemberID)
+End Function
+Public Function RSShowLink() As Boolean
+    Dim f As Access.Form, member As Variant, text As String, differs As String
+    Set f = Forms!frmUXSeniorEditor: member = PendingMember()
+    If IsNull(member) Then
+        f!lblDirectoryLink.Caption = "Not linked to a command member. Link one to fill name, grade, designator, UIC and SSN from the member directory."
+        f!cmdLinkMember.Caption = "Link to member"
+    Else
+        text = Nz(MajorScalar("SELECT IIf(Len(Nz(ReportName,""""))=0,FullName,ReportName) & IIf(Len(Nz(RankRate,""""))=0,'',' (' & RankRate & ')') FROM CommandMember WHERE MemberID=" & member), "a missing member")
+        differs = RSMemberDifferences(member, SeniorControlValues())
+        f!lblDirectoryLink.Caption = "Directory member: " & text & IIf(Len(differs) > 0, ". Directory differs: " & differs & ".", ". Matches the directory.")
+        f!cmdLinkMember.Caption = "Change member"
+    End If
+    RSShowLink = True
+End Function
+'Link the editor to a member and copy the values the profile has (pending until saved).
+Public Function RSApplyMemberLink(ByVal memberID As Long) As Boolean
+    Dim f As Access.Form, values As Object, key As Variant
+    Set f = Forms!frmUXSeniorEditor: Set values = RSMemberValues(memberID)
+    f!txtMemberID = memberID
+    For Each key In RSMemberKeys()
+        If Not IsNull(values(CStr(key))) Then f.Controls("rs" & key) = values(CStr(key))
+    Next
+    RSShowLink
+    f!lblStatus.Caption = "Directory details copied. Check the title, then save record details. Saved reports remain unchanged."
+    RSApplyMemberLink = True
+End Function
+Public Function RSLinkMember() As Boolean
+    If CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded Then DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+    DoCmd.OpenForm "frmUXSeniorPicker", , , , , , "link": RSLinkMember = True
+End Function
+Public Function RSLinkUpdate() As Boolean
+    Dim member As Variant
+    member = PendingMember()
+    If IsNull(member) Then Forms!frmUXSeniorEditor!lblStatus.Caption = "Link a command member first.": Exit Function
+    RSLinkUpdate = RSApplyMemberLink(CLng(member))
+End Function
+Public Function RSUnlinkMember() As Boolean
+    Forms!frmUXSeniorEditor!txtMemberID = Null: RSShowLink
+    Forms!frmUXSeniorEditor!lblStatus.Caption = "Directory link removed. Typed values stay. Save record details to keep this change."
+    RSUnlinkMember = True
+End Function
+'Member picker. Designator and UIC come from each member's RUAD profile.
+Public Function RSMemberRUAD(ByVal memberID As Long, ByVal key As String) As Variant
+    If pickerRUAD Is Nothing Then Set pickerRUAD = CreateObject("Scripting.Dictionary")
+    If Not pickerRUAD.Exists(memberID) Then pickerRUAD.Add memberID, RUADDecode(MajorScalar("SELECT RUADData FROM CommandMember WHERE MemberID=" & memberID))
+    RSMemberRUAD = pickerRUAD(memberID)(key)
+End Function
+Public Function RSLoadPicker() As Boolean
+    Dim f As Access.Form
+    Set f = Forms!frmUXSeniorPicker: Set pickerRUAD = Nothing
+    pickerMode = Nz(f.OpenArgs, "new")
+    If pickerMode = "link" Then
+        f.Caption = "Link reporting senior to a member": f!lblHeading.Caption = f.Caption
+        f!cmdManual.Visible = False
+    End If
+    RSLoadPicker = RSPickerFilter(): UXSortHeaders f
+End Function
+Private Function LikeText(ByVal text As String) As String
+    LikeText = Replace(Replace(Replace(Replace(text, "[", "[[]"), "*", "[*]"), "?", "[?]"), "#", "[#]")
+End Function
+Public Function RSPickerFilter() As Boolean
+    Dim f As Access.Form, search As String, where As String
+    Set f = Forms!frmUXSeniorPicker: search = Trim$(Nz(f!txtSearch, ""))
+    where = "m.IsArchived=False"
+    If Len(search) > 0 Then
+        search = QuoteSQL("*" & LikeText(search) & "*")
+        where = where & " AND (m.FullName Like " & search & " OR m.ReportName Like " & search & " OR m.RankRate Like " & search & " OR m.RUADData Like " & search & ")"
+    End If
+    f!lstMembers.RowSource = "SELECT m.MemberID,IIf(Len(Nz(m.ReportName,''))=0,m.FullName,m.ReportName) AS MemberName,m.RankRate,RSMemberRUAD(m.MemberID,'DESG') AS MemberDesig,RSMemberRUAD(m.MemberID,'UIC') AS MemberUIC,IIf(s.SeniorID Is Null,'','Already a senior') AS SeniorStatus " & _
+        "FROM CommandMember AS m LEFT JOIN ReportingSeniorRecord AS s ON s.MemberID=m.MemberID WHERE " & where & " ORDER BY IIf(Len(Nz(m.ReportName,''))=0,m.FullName,m.ReportName)"
+    f!lstMembers.Requery
+    f!lblStatus.Caption = IIf(f!lstMembers.ListCount = 0, "No active members match. Change the search, or enter details by hand.", "Choose a member, then Use selected member.")
+    RSPickerFilter = True
+End Function
+Public Function RSPickerUse() As Boolean
+    Dim f As Access.Form, member As Long, owner As Long, current As Long
+    Set f = Forms!frmUXSeniorPicker: member = Nz(f!lstMembers, 0)
+    If member = 0 Then f!lblStatus.Caption = "Choose a member first.": Exit Function
+    If pickerMode = "link" Then
+        If Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then f!lblStatus.Caption = "The reporting senior record is closed. Open it again to link a member.": Exit Function
+        current = Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0)
+    End If
+    owner = Nz(MajorScalar("SELECT SeniorID FROM ReportingSeniorRecord WHERE MemberID=" & member & " AND SeniorID<>" & current), 0)
+    If owner > 0 Then f!lblStatus.Caption = "This member is already the reporting senior record """ & Nz(MajorScalar("SELECT Title FROM ReportingSeniorRecord WHERE SeniorID=" & owner), "") & """. Open that record instead.": Exit Function
+    DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+    If pickerMode = "link" Then
+        RSPickerUse = RSApplyMemberLink(member)
+    Else
+        DoCmd.OpenForm "frmUXSeniorEditor", , , , , , "new:" & member: RSPickerUse = True
+    End If
+End Function
+Public Function RSPickerManual() As Boolean
+    DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+    DoCmd.OpenForm "frmUXSeniorEditor", , , , , , "0": RSPickerManual = True
 End Function
 Public Function RSReadSeniorUI() As Object
     Dim result As Object, key As Variant, c As Access.Control
@@ -63,6 +193,7 @@ Public Function RSSeniorDirty() As Boolean
     If seniorInitial Is Nothing Then Exit Function
     Set values = RSReadSeniorUI()
     If Nz(Forms!frmUXSeniorEditor!txtTitle, "") <> seniorInitialTitle Then RSSeniorDirty = True: Exit Function
+    If Nz(PendingMember(), 0) <> Nz(seniorInitialMember, 0) Then RSSeniorDirty = True: Exit Function
     For Each key In RSSeniorKeys()
         If Not SameFieldValue(values(CStr(key)), seniorInitial(CStr(key))) Then RSSeniorDirty = True: Exit Function
     Next
@@ -74,9 +205,10 @@ Public Function RSSaveSeniorUI() As Boolean
     Dim f As Access.Form, values As Object, id As Long
     On Error GoTo Failed
     Set f = Forms!frmUXSeniorEditor: Set values = RSReadSeniorUI()
-    id = RSSaveSenior(Nz(f!txtSeniorID, 0), Nz(f!txtTitle, ""), values, Nz(f!txtVersion, 0))
+    id = RSSaveSenior(Nz(f!txtSeniorID, 0), Nz(f!txtTitle, ""), values, Nz(f!txtVersion, 0), PendingMember())
     f!txtSeniorID = id: f!txtVersion = MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id)
-    Set seniorInitial = values: seniorInitialTitle = Nz(f!txtTitle, "")
+    Set seniorInitial = values: seniorInitialTitle = Nz(f!txtTitle, ""): seniorInitialMember = PendingMember()
+    RSShowLink
     f!lblStatus.Caption = "Record saved. Saved report values remain unchanged."
     If CurrentProject.AllForms("frmUXSeniors").IsLoaded Then RSLoadDirectory
     RSSaveSeniorUI = True: Exit Function
@@ -93,8 +225,7 @@ Public Function RSSelectSeniorPage(ByVal page As Long) As Boolean
     RSSelectSeniorPage = True
 End Function
 Public Function RSReloadBaselines() As Boolean
-    Forms!frmUXSeniorEditor!lstBaselines.RowSource = "SELECT Paygrade,AsOfDate AS [As of],CurrentRSCA AS [RSCA],TraitCount AS [Traits],TraitSum AS [Trait total],SourceNote AS [Source note] FROM RSCABaseline WHERE SeniorID=" & Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0) & " ORDER BY AsOfDate DESC,BaselineID DESC"
-    Forms!frmUXSeniorEditor!lstBaselines.Requery: RSTableReloadVisible: RSReloadBaselines = True
+    RSShowHistory: RSTableReloadVisible: RSReloadBaselines = True
 End Function
 Public Function RSAddBaselineUI() As Boolean
     Dim f As Access.Form, count As Double, average As Variant, total As Variant, dateEntry As String, asOf As Date, id As Long

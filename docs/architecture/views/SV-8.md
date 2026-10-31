@@ -41,4 +41,5 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 32 | captured | 0.35.0-dev | 66 | - |
 | 33 | captured | 0.44.0-dev | 66 | - |
 | 34 | captured | 0.45.0-dev | 68 | DirectoryMergeCounseling, MemberCounseling |
-| 35 | current build | 0.50.0 | 70 | DraftDisposal, ReportSignoff |
+| 35 | captured | 0.50.0 | 70 | DraftDisposal, ReportSignoff |
+| 36 | current build | 0.51.0-dev | 71 | DirectoryMergeSenior |

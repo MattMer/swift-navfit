@@ -14,7 +14,7 @@ Begin Form
     Right =19725
     Bottom =13245
     Caption ="Reporting seniors"
-    OnActivate ="=UXVisualEvent(\"frmUXSeniors\",\"UXLoadContext()\")"
+    OnActivate ="=UXSortActivate(\"frmUXSeniors\")"
     OnResize ="=UXHelpResize(\"frmUXSeniors\",\"UXResizeWorkspace(\"\"frmUXSeniors\"\")\")"
     OnLoad ="=RSLoadDirectory()"
     FilterOnLoad =0
@@ -449,11 +449,165 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_0"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",0)"
+                    Tag ="SORT:lstSeniors:0"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_1"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",1)"
+                    Tag ="SORT:lstSeniors:1"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_2"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",2)"
+                    Tag ="SORT:lstSeniors:2"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_3"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",3)"
+                    Tag ="SORT:lstSeniors:3"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_4"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",4)"
+                    Tag ="SORT:lstSeniors:4"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_5"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",5)"
+                    Tag ="SORT:lstSeniors:5"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    FontUnderline = NotDefault
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2400
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    ForeColor =6177536
+                    Name ="sort_lstSeniors_6"
+                    Caption ="Sort"
+                    FontName ="Segoe UI"
+                    OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",6)"
+                    Tag ="SORT:lstSeniors:6"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =3666
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
                 Begin ListBox
                     OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
-                    ColumnCount =3
+                    ColumnCount =7
                     Left =2866
                     Top =2700
                     Width =9954
@@ -464,7 +618,7 @@ Begin Form
                     BorderColor =13285543
                     Name ="lstSeniors"
                     RowSourceType ="Table/Query"
-                    ColumnWidths ="0;11500;0"
+                    ColumnWidths ="0;2900;1000;900;2700;1000;1400"
                     OnDblClick ="=RSOpenSenior()"
                     FontName ="Segoe UI"
 
@@ -713,6 +867,19 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    OverlapFlags =247
+                    IMESentenceMode =3
+                    Width =100
+                    Height =100
+                    TabIndex =11
+                    Name ="uxSortActivateOriginal"
+                    DefaultValue ="\"=UXVisualEvent(\"\"frmUXSeniors\"\",\"\"UXLoadContext()\"\")\""
+
+                    LayoutCachedWidth =100
+                    LayoutCachedHeight =100
                 End
             End
         End

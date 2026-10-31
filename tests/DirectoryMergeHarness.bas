@@ -178,6 +178,22 @@ Public Function TestDirectoryMerge() As String
     Check InStr(Forms!frmUXHelp!txtGuide, "Duplicate Sailor review") > 0 And CurrentProject.AllForms("frmUXDirectoryMerge").IsLoaded, "Help did not retain the review window"
     DoCmd.Close acForm, "frmUXHelp", acSaveNo
     DoCmd.Close acForm, "frmUXDirectoryMerge", acSaveNo
+    'Reporting senior links follow the surviving member and return on undo.
+    Dim p As Long, q As Long, linked As Long, values As Object
+    p = SaveDirectoryMember(0, 0, "Jordan Lee", "LEE, JORDAN", "LCDR", "")
+    q = SaveDirectoryMember(0, 0, "Jordan Lee", "LEE, JORDAN A", "LCDR", "")
+    Set values = RSSeniorValues(0): values("ReportingSeniorName") = "LEE, J"
+    linked = RSSaveSenior(0, "Synthetic linked senior", values, 0, p)
+    Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = p, "Senior link not saved"
+    DoCmd.OpenForm "frmUXSeniorEditor", , , , , , CStr(linked)
+    Check RejectApply(p, q, PreviewDirectoryMerge(p, q)), "Open reporting senior editor did not block merge"
+    DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
+    merged = ApplyDirectoryMerge(p, q, PreviewDirectoryMerge(p, q), "Reviewed linked senior duplicate")
+    Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = q And DCount("*", "DirectoryMergeSenior", "MergeID=" & merged) = 1, "Merge did not move the senior link"
+    Check UndoDirectoryMerge(merged), "Undo of a linked senior merge failed"
+    Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = p, "Undo did not restore the senior link"
+    Call RSSaveSenior(0, "Second linked senior", values, 0, q)
+    Check RejectPreview(p, q), "Merge of two members that both back seniors accepted"
     TestDirectoryMerge = "PASS: " & checks & " directory merge checks; committed and undone fixtures retained": Exit Function
 Failed:
     TestDirectoryMerge = "FAIL: " & Err.Number & ": " & Err.Description

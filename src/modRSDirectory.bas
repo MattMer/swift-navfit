@@ -22,6 +22,64 @@ Public Function RSSeniorValues(ByVal seniorID As Long) As Object
     End If
     Set RSSeniorValues = result
 End Function
+'Reporting senior keys a command member profile can supply. The billet title,
+'address and phone stay on the senior record: the profile holds the member's own.
+Public Function RSMemberKeys() As Variant
+    RSMemberKeys = Array("ReportingSeniorName", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorUIC", "ReportingSeniorSSN")
+End Function
+'Values a linked member supplies. Missing profile values stay Null so an update
+'never clears what was typed on the senior record.
+Public Function RSMemberValues(ByVal memberID As Long) As Object
+    Dim result As Object, r As DAO.Recordset, ruad As Object, key As Variant, last As String, rest As String, parts As Variant, part As Variant, middle As String, pos As Long
+    Set result = CreateObject("Scripting.Dictionary")
+    For Each key In RSMemberKeys(): result.Add CStr(key), Null: Next
+    Set r = CurrentDb.OpenRecordset("SELECT FullName,ReportName,RankRate,MemberSSN,RUADData FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 4815, "modRSDirectory.RSMemberValues", "Command member does not exist."
+    rest = Trim$(Nz(r!ReportName, "")): pos = InStr(rest, ",")
+    If pos > 0 Then
+        last = Trim$(Left$(rest, pos - 1)): rest = Trim$(Mid$(rest, pos + 1))
+    Else
+        rest = Trim$(Nz(r!FullName, "")): pos = InStrRev(rest, " ")
+        If pos > 0 Then last = Mid$(rest, pos + 1): rest = Trim$(Left$(rest, pos - 1)) Else last = rest: rest = ""
+    End If
+    If Len(last) > 0 Then
+        result("ReportingSeniorLastName") = last
+        parts = Split(rest, " ")
+        For Each part In parts
+            If Len(part) > 0 Then
+                If IsNull(result("ReportingSeniorFirstInitial")) Then result("ReportingSeniorFirstInitial") = UCase$(Left$(part, 1)) Else middle = middle & UCase$(Left$(part, 1))
+            End If
+        Next
+        If Len(middle) > 0 Then result("ReportingSeniorMiddleInitial") = Left$(middle, 3)
+        result("ReportingSeniorName") = last & IIf(IsNull(result("ReportingSeniorFirstInitial")), "", ", " & result("ReportingSeniorFirstInitial") & IIf(Len(middle) > 0, " " & Left$(middle, 3), ""))
+    End If
+    If Len(Trim$(Nz(r!RankRate, ""))) > 0 Then result("ReportingSeniorGrade") = Trim$(r!RankRate)
+    If Len(Trim$(Nz(r!MemberSSN, ""))) > 0 Then result("ReportingSeniorSSN") = Trim$(r!MemberSSN)
+    Set ruad = RUADDecode(r!RUADData.Value): r.Close
+    If Len(Trim$(Nz(ruad("DESG"), ""))) > 0 Then result("ReportingSeniorDesignator") = Trim$(ruad("DESG"))
+    If Len(Trim$(Nz(ruad("UIC"), ""))) > 0 Then result("ReportingSeniorUIC") = Trim$(ruad("UIC"))
+    Set RSMemberValues = result
+End Function
+'Labels of profile values that differ from the given senior values.
+Public Function RSMemberDifferences(ByVal memberID As Long, ByVal values As Object) As String
+    Dim member As Object, key As Variant, text As String
+    Set member = RSMemberValues(memberID)
+    For Each key In RSMemberKeys()
+        If Not IsNull(member(CStr(key))) And key <> "ReportingSeniorLastName" And key <> "ReportingSeniorFirstInitial" And key <> "ReportingSeniorMiddleInitial" Then
+            If Not SameFieldValue(member(CStr(key)), values(CStr(key))) Then text = text & IIf(Len(text) > 0, ", ", "") & UXFieldLabel(CStr(key))
+        End If
+    Next
+    RSMemberDifferences = text
+End Function
+'A member backs at most one senior record; a changed link needs an active member.
+Public Sub RSValidateMemberLink(ByVal seniorID As Long, ByVal memberID As Variant)
+    If IsNull(memberID) Then Exit Sub
+    If seniorID > 0 Then
+        If Nz(MajorScalar("SELECT MemberID FROM ReportingSeniorRecord WHERE SeniorID=" & seniorID), 0) = CLng(memberID) Then Exit Sub
+    End If
+    If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & CLng(memberID)), True) Then Err.Raise vbObjectError + 4816, "modRSDirectory.RSValidateMemberLink", "Choose an active command member."
+    If DCount("*", "ReportingSeniorRecord", "MemberID=" & CLng(memberID) & " AND SeniorID<>" & seniorID) > 0 Then Err.Raise vbObjectError + 4817, "modRSDirectory.RSValidateMemberLink", "This member is already linked to another reporting senior record."
+End Sub
 Public Sub RSValidateSenior(ByVal title As String, ByVal values As Object)
     Dim key As Variant, value As Variant, size As Long, i As Long
     If Len(Trim$(title)) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 4801, "modRSDirectory.RSValidateSenior", "Enter a record name of up to 120 characters."
@@ -41,18 +99,24 @@ Public Sub RSValidateSenior(ByVal title As String, ByVal values As Object)
         End If
     Next
 End Sub
-Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVal values As Object, Optional ByVal expectedVersion As Long = 0) As Long
-    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, key As Variant, author As Long, operation As Long, failure As Long, message As String
+'memberID: omit to keep the current directory link, Null to unlink.
+Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVal values As Object, Optional ByVal expectedVersion As Long = 0, Optional ByVal memberID As Variant) As Long
+    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, key As Variant, author As Long, operation As Long, failure As Long, message As String, link As String
     RSValidateSenior title, values: author = MajorAuthor()
+    If Not IsMissing(memberID) Then
+        RSValidateMemberLink seniorID, memberID
+        link = ",MemberID=" & IIf(IsNull(memberID), "Null", CStr(Nz(memberID, 0)))
+    End If
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb: w.BeginTrans
     On Error GoTo Failed
     If seniorID = 0 Then
         Set r = db.OpenRecordset("ReportingSeniorRecord", dbOpenDynaset)
         r.AddNew: r!SeniorGuid = NewIdentity(): r!Title = title: r!CreatedBy = author: r!ModifiedAt = Now(): r!VersionCounter = 1
+        If Not IsMissing(memberID) Then r!MemberID = memberID
         r.Update: r.Bookmark = r.LastModified: seniorID = r!SeniorID: r.Close
     Else
         If expectedVersion < 1 Then Err.Raise vbObjectError + 4806, "modRSDirectory.RSSaveSenior", "Reload the reporting senior before saving."
-        db.Execute "UPDATE ReportingSeniorRecord SET Title=" & QuoteSQL(title) & ",ModifiedAt=Now(),VersionCounter=VersionCounter+1 WHERE SeniorID=" & seniorID & " AND VersionCounter=" & expectedVersion, dbFailOnError
+        db.Execute "UPDATE ReportingSeniorRecord SET Title=" & QuoteSQL(title) & link & ",ModifiedAt=Now(),VersionCounter=VersionCounter+1 WHERE SeniorID=" & seniorID & " AND VersionCounter=" & expectedVersion, dbFailOnError
         If db.RecordsAffected <> 1 Then Err.Raise vbObjectError + 4806, "modRSDirectory.RSSaveSenior", "Reporting senior changed elsewhere. Reload before saving; pending values are retained."
         db.Execute "DELETE FROM ReportingSeniorValue WHERE SeniorID=" & seniorID, dbFailOnError
     End If

@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 35, application 0.50.0. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 36, application 0.51.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -198,6 +198,17 @@ Microsoft Access (ACE) tables in schema 35, application 0.50.0. Types are Access
 | MatchSource | Text (30) |  |
 | UpdatedBy | Long | yes |
 | UpdatedAt | Date/Time |  |
+
+## DirectoryMergeSenior
+
+- **Primary key:** MergeID, SeniorID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| MergeID | Long | yes |
+| SeniorID | Long | yes |
+| VersionCounter | Long | yes |
+| ModifiedAt | Date/Time |  |
 
 ## DraftDisposal
 
@@ -830,6 +841,7 @@ Microsoft Access (ACE) tables in schema 35, application 0.50.0. Types are Access
 | CreatedBy | Long | yes |
 | ModifiedAt | Date/Time |  |
 | VersionCounter | Long |  |
+| MemberID | Long |  |
 
 ## ReportingSeniorValue
 

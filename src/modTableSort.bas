@@ -196,10 +196,11 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
   Case "lstFields": labels = Array("ID", "Source table", "Source row", "Field no.", "Field", "Data type", "Was empty")
   Case "lstRecoveries": labels = Array("ID", "Draft", "Report type", "Saved")
   Case "lstSnippets": labels = Array("ID", "Snippet", "Report type", "Attribution")
-  Case "lstSeniors": labels = Array("ID", "Reporting senior", "Version")
+  Case "lstSeniors": labels = Array("ID", "Reporting senior", "Grade", "Desig", "Title", "UIC", "Directory")
   Case "lstTasks": labels = Array("ID", "Member and report", "Reviewer", "Review step", "Due date", "Saved version", "Archived")
   Case "lstMembers"
    If f.Name = "frmUXDirectoryBatch" Then labels = Array("ID", "Member", "Rank/rate")
+   If f.Name = "frmUXSeniorPicker" Then labels = Array("ID", "Member", "Rank/rate", "Desig", "UIC", "Status")
   Case "lstReports"
    If f.Name = "frmUXMembers" Then labels = Array("ID", "Member", "Rank/rate", "Title")
    If f.Name = "frmPDFOutput" Then labels = Array("ID", "Report", "Report type", "Source", "File name")

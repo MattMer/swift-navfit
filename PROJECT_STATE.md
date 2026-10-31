@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.50.0 | 35 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.51.0-dev | 36 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.50.0 | 35 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0), 31 Oct 2026. Full release gate passed, including schemas 1–35. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
 | Latest source tag | `v0.50.0` | 35 | The release commit. Earlier: `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
@@ -72,6 +72,9 @@ import and print-ready PDF output.
   - `ReportSignoff` records each Mark signed and reopening; `DraftDisposal`
     records each draft disposal. A disposed draft keeps its `ReportRevision` row
     (`ValuesDisposed`) so every link to it stays valid.
+  - `ReportingSeniorRecord.MemberID` optionally links a senior record to one
+    active command member; `DirectoryMergeSenior` lets a member merge move and
+    undo that link. A merge is refused when both members back a senior.
 - **Report editor:**
   - Uses an unbound buffer with fixed Front/Back NAVPERS geometry.
   - All seven traits stay together on the editing Front Page, and Chief reports
@@ -151,6 +154,7 @@ import and print-ready PDF output.
 | M07 | Accessibility (target: Section 508 / WCAG 2.0 AA) | Every input control has an accessible name: its visible label, or a 15-twip `an<Control>` name label that matches the control's visibility. Text contrast meets 4.5:1. test-accessibility guards names, contrast and button captions, with no known gaps. The attended NVDA/JAWS procedure is [docs/Accessibility_Screen_Reader_Test.md](docs/Accessibility_Screen_Reader_Test.md). Under a Windows high-contrast theme, the palette switches to system colors. No screen-reader acceptance. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
 | Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
+| Reporting seniors | Senior list shows grade, designator, title, UIC and directory link. New reporting senior starts from a member picker (or details by hand); a linked record copies name, grade, designator, UIC and SSN from the member and shows when the directory differs, with Update from directory and Unlink. The title, address and phone stay on the senior record. RSCA history per paygrade lists the entered BOL baseline and each summary group completion (and correction) posted on it, with traits added and the RSCA after; the paygrade table shows each RSCA's source | Dev (schema 36). |
 | Counseling | Midterm counseling tracker: chapter 18 schedule by paygrade (current and 2027 tables), records in member history, My Work tab, blocks 30–31 carry-over through Report tools, worksheet disposition after detachment | Dev (schema 34). Printing a pre-filled worksheet is deferred. |
 
 Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md).

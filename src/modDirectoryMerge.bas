@@ -55,6 +55,14 @@ Public Function DirectoryMergeStamp(ByVal sourceID As Long, ByVal targetID As Lo
         Loop
         r.Close
     End If
+    'Reporting senior links (schema 36) join the same way, so older merges stay undoable.
+    If Nz(MajorScalar("SELECT Count(*) FROM ReportingSeniorRecord WHERE MemberID IN (" & ids & ")"), 0) > 0 Then
+        text = text & "TABLE;": Set r = db.OpenRecordset("SELECT SeniorID,MemberID,VersionCounter FROM ReportingSeniorRecord WHERE MemberID IN (" & ids & ") ORDER BY SeniorID", dbOpenSnapshot)
+        Do While Not r.EOF
+            text = text & r!SeniorID & ":" & r!MemberID & ":" & r!VersionCounter & ";ROW;": r.MoveNext
+        Loop
+        r.Close
+    End If
     DirectoryMergeStamp = SourceTextHash(text)
 End Function
 
@@ -94,6 +102,7 @@ Private Sub CheckMergeIdentity(ByVal db As DAO.Database, ByVal sourceID As Long,
     Loop
     r.Close
     If Len(Nz(MajorScalar("SELECT MemberSSN FROM CommandMember WHERE MemberID=" & sourceID), "")) > 0 And Len(Nz(MajorScalar("SELECT MemberSSN FROM CommandMember WHERE MemberID=" & targetID), "")) = 0 Then Err.Raise vbObjectError + 9106, "CheckMergeIdentity", "Keep the member with the entered SSN as the survivor. Swap the selections and preview again."
+    If DCount("*", "ReportingSeniorRecord", "MemberID IN (" & ids & ")") > 1 Then Err.Raise vbObjectError + 9116, "CheckMergeIdentity", "Both members are linked to reporting senior records. Unlink one record before merging, so one member backs one senior."
     Set r = db.OpenRecordset("SELECT TOP 1 MergeID FROM DirectoryMerge WHERE MergeState='Committed' AND (FromMemberID IN (" & ids & ") OR ToMemberID IN (" & ids & "))", dbOpenSnapshot)
     If Not r.EOF Then Err.Raise vbObjectError + 9107, "CheckMergeIdentity", "A selected member already participates in a retained merge. Undo that merge first, or review the separate profile without another merge."
     r.Close
@@ -109,11 +118,11 @@ End Function
 
 Private Sub MergeEditorGuard()
     Dim name As Variant
-    For Each name In Array("frmEditor", "frmUXMemberEditor", "frmUXPriorEditor", "frmUXCounselingEditor")
+    For Each name In Array("frmEditor", "frmUXMemberEditor", "frmUXPriorEditor", "frmUXCounselingEditor", "frmUXSeniorEditor")
         'AllForms names are enumerated: older UI generations may lack a prior editor.
         Dim form As Access.AccessObject
         For Each form In CurrentProject.AllForms
-            If form.Name = name And form.IsLoaded Then Err.Raise vbObjectError + 9109, "MergeEditorGuard", "Close report, member, prior-evaluation and counseling editors before changing directory links. Pending entries remain in their editor."
+            If form.Name = name And form.IsLoaded Then Err.Raise vbObjectError + 9109, "MergeEditorGuard", "Close report, member, prior-evaluation, counseling and reporting senior editors before changing directory links. Pending entries remain in their editor."
         Next
     Next
 End Sub
@@ -143,6 +152,8 @@ Public Function ApplyDirectoryMerge(ByVal sourceID As Long, ByVal targetID As Lo
     db.Execute "UPDATE PriorEvaluation SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "INSERT INTO DirectoryMergeCounseling (MergeID,CounselingID,ModifiedBy,ModifiedAt) SELECT " & id & ",CounselingID,ModifiedBy,ModifiedAt FROM MemberCounseling WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE MemberCounseling SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
+    db.Execute "INSERT INTO DirectoryMergeSenior (MergeID,SeniorID,VersionCounter,ModifiedAt) SELECT " & id & ",SeniorID,VersionCounter,ModifiedAt FROM ReportingSeniorRecord WHERE MemberID=" & sourceID, dbFailOnError
+    db.Execute "UPDATE ReportingSeniorRecord SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET IsArchived=True WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID IN (" & sourceID & "," & targetID & ")", dbFailOnError
     parent.Edit: parent!AfterFingerprint = DirectoryMergeStamp(sourceID, targetID): parent.Update: parent.Close
@@ -194,6 +205,13 @@ Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
         Set item = db.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & rows!CounselingID, dbOpenDynaset)
         item.Edit: item!MemberID = sourceID: item!VersionCounter = item!VersionCounter + 1
         item!ModifiedBy = rows!ModifiedBy: item!ModifiedAt = rows!ModifiedAt: item.Update: item.Close: rows.MoveNext
+    Loop
+    rows.Close
+    Set rows = db.OpenRecordset("SELECT * FROM DirectoryMergeSenior WHERE MergeID=" & mergeID, dbOpenSnapshot)
+    Do While Not rows.EOF
+        Set item = db.OpenRecordset("SELECT * FROM ReportingSeniorRecord WHERE SeniorID=" & rows!SeniorID, dbOpenDynaset)
+        item.Edit: item!MemberID = sourceID: item!VersionCounter = item!VersionCounter + 1: item!ModifiedAt = rows!ModifiedAt
+        item.Update: item.Close: rows.MoveNext
     Loop
     rows.Close
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1 WHERE MemberID=" & sourceID, dbFailOnError

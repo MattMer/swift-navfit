@@ -506,14 +506,24 @@ The group comparison tools can preview staged mark proposals. Review the affecte
 
 ## 11.1 Record reusable senior information
 
-Open **Resources > Reporting seniors and RSCA history**. Create or select the reporting senior and enter the reusable details. Applying those details to reports is a separate deliberate action; editing a directory record does not silently rewrite saved reports.
+Open **Resources > Reporting seniors and RSCA history**. The list shows each record's grade, designator, title, UIC and whether it is linked to a command member; choose **Sort** above a column to sort by it.
+
+1. Choose **New reporting senior**.
+2. Search the command member directory by name, rank/rate or UIC, select the member and choose **Use selected member**. Swift fills the name, grade, designator, UIC and SSN from the member's profile and links the record to the member. A member who already has a senior record is marked and can't be picked again. To enter everything yourself, choose **Enter details by hand**.
+3. Enter the title (for example CO) and any address or phone, then choose **Save record details**. Nothing is saved before this.
+
+On the **Reporting senior details** page, the directory line shows the linked member and whether the directory now differs (after a promotion, for example). **Update from directory** copies the member's current values into the record as pending changes; save to keep them. **Change member** links a different member and **Unlink** removes the link; typed values stay.
+
+Applying those details to reports is a separate deliberate action; editing a directory record does not silently rewrite saved reports.
 
 ## 11.2 Enter historical averages
 
 1. Open the selected senior's RSCA history table.
 2. For each applicable paygrade, enter the historical RSCA, previous graded trait count, and date verified or pulled from BOL.
 3. Leave unused paygrades blank. The count is graded traits, not the number of reports.
-4. Choose **Save RSCA table**. Use **View prior baselines** to inspect older observations.
+4. Choose **Save RSCA table**.
+
+The **Source** column shows where each paygrade's current RSCA comes from: the BOL entry, or the BOL entry plus the summary group completions posted since. Choose **View RSCA history** and pick a paygrade to see the trail: the entered BOL baseline, then each group completion (or correction after reopening) with its date, reports, traits added, total traits and RSCA after. Entries from before the latest BOL entry are marked **Earlier**. Select a group row and choose **Open selected group** to go to that summary group.
 
 An entered rounded average and count produce an estimated historical sum. They do not establish an exact sum. Preserve the source and verification date so later users understand the basis of a projection.
 

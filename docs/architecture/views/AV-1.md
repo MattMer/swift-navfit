@@ -28,11 +28,11 @@ connection. Data enters and leaves only through files the user chooses.
 <!-- generated:facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.50.0 |
-| Schema version | 35 |
-| Tables / enforced relationships | 70 / 158 |
+| Application version | 0.51.0-dev |
+| Schema version | 36 |
+| Tables / enforced relationships | 71 / 161 |
 | Report fields in the catalogue | 100 |
-| VBA modules / forms | 111 / 69 |
+| VBA modules / forms | 111 / 70 |
 | Validation rule packs / pack rules / expanded rules | 2 / 6 / 10 |
 <!-- end generated:facts -->
 

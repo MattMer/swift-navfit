@@ -83,6 +83,23 @@ Public Function TestRSCompletion() As String
  Check DLookup("PriorCompletionID", "GroupCompletion", "CompletionID=" & RSPosting(g)) = posting, "Correction lost prior posting history"
  Check DLookup("RevisionID", "GroupCompletionReport", "CompletionID=" & posting) = rev, "Correction rewrote frozen revision"
  Check Left$(RSReconcileAccounting(), 5) = "PASS:", "Relational accounting does not reconcile"
+ 'The RSCA history names each group posted on top of the BOL baseline.
+ Dim summary As String, trail As String
+ trail = RSHistoryList(sid, "E6", summary)
+ Check InStr(trail, "Group completed: First") > 0 And InStr(trail, "Group completed: Second") > 0 And InStr(trail, "Group re-completed (correction): First") > 0 And InStr(trail, "Earlier:") = 0, "RSCA history did not name the posting groups"
+ Check summary = "E6 BOL baseline 2025-12-31: RSCA 4.20 (100 traits); now 4.11 (114 traits) after 3 group completions.", "RSCA history summary wrong: " & summary
+ Check RSBaselineSource(RSLatestBaseline(sid, "E6")) = "BOL 2025-12-31 + 3 groups", "Paygrade table source wrong"
+ 'The editor shows the same trail as a list and opens the selected group.
+ DoCmd.OpenForm "frmUXSeniorEditor", , , , , , CStr(sid)
+ RSSelectSeniorPage 3: Check RSViewTableHistory(), "RSCA history view failed"
+ With Forms!frmUXSeniorEditor
+  Check !lstBaselines.Visible And !cboHistoryGrade = "E6" And !lstBaselines.ListCount = 5, "RSCA history list did not show the trail"
+  Check !lstBaselines.Column(2, 1) = "BOL baseline (entered)" And !lstBaselines.Column(2, 2) = "Group completed: First" And !lstBaselines.Column(4, 2) = "7" And !lstBaselines.Column(6, 4) = "4.11", "RSCA history rows wrong"
+  Check InStr(!uxRSCATable.Form!srcE6.Caption, "+ 3 groups") > 0, "Paygrade table source column missing"
+  !lstBaselines = CStr(h)
+ End With
+ Check RSHistoryOpenGroup() And CurrentProject.AllForms("frmUXComparison").IsLoaded And Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded, "Open selected group failed"
+ DoCmd.Close acForm, "frmUXComparison", acSaveNo
  sid2 = RSSaveSenior(0, "Second synthetic senior", senior)
  Check RejectSenior(g, sid2), "Counted group reassigned to another senior"
  Check DCount("*", "RSCABaseline") = entries + 2, "Correction did not append one delta entry"
@@ -117,6 +134,8 @@ Public Function TestRSCompletion() As String
  b = RSAddBaseline(sid, "E6", Date + 1, 4, 200, 800, "New independent BOL observation")
  RSSetGroupBaseline g, sid, b, True
  Check RejectComplete(g), "Ambiguous manual reconciliation silently counted twice"
+ trail = RSHistoryList(sid, "E6", summary)
+ Check InStr(trail, "Earlier: Group completed: First") > 0 And InStr(summary, "No summary groups completed since") > 0 And RSBaselineSource(b) = "BOL " & Format$(Date + 1, "yyyy-mm-dd"), "A new BOL entry did not start a new history"
  'Model schema-27 XML on a disposable synthetic group. Migration must never post totals again.
  legacy = CreateSummaryGroup("Legacy accounting", "EVAL", "E4")
  legacyReport = Member(senior, "Legacy synthetic member"): AddGroupMember legacy, legacyReport, "E4"
