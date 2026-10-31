@@ -25,6 +25,7 @@ Components Swift NAVFIT 0.49.0 uses at run time, from a fresh build and the VBA 
 | --- | --- |
 | advapi32.dll | CryptAcquireContextW, CryptCreateHash, CryptDecrypt, CryptDestroyHash, CryptDestroyKey, CryptGetHashParam, CryptHashData, CryptImportKey, CryptReleaseContext, CryptSetKeyParam |
 | gdi32.dll | CreateDCW, CreateFontW, DeleteDC, DeleteObject, GetDeviceCaps, GetTextExtentPoint32W, GetTextFaceW, GetTextMetricsW, SelectObject |
+| gdiplus.dll | GdipCreateFont, GdipCreateFontFamilyFromName, GdipCreateFromHDC, GdipDeleteFont, GdipDeleteFontFamily, GdipDeleteGraphics, GdiplusStartup, GdipMeasureString, GdipSetPageUnit |
 | ole32.dll | CoCreateGuid, StringFromGUID2 |
 | user32.dll | GetDpiForWindow, GetFocus, GetScrollInfo, GetScrollPos, SendMessageA, SystemParametersInfoW |
 
@@ -34,7 +35,7 @@ Components Swift NAVFIT 0.49.0 uses at run time, from a fresh build and the VBA 
 | --- | --- | --- |
 | ADODB.Stream | 5 | UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template) |
 | MSXML2.DOMDocument.6.0 | 12 | XML parsing and writing (PDF form data and exchange) |
-| Scripting.Dictionary | 133 | In-memory keyed collections |
+| Scripting.Dictionary | 135 | In-memory keyed collections |
 | Scripting.FileSystemObject | 7 | File and folder checks |
 | Shell.Application | 1 | Opens a generated PDF in the default viewer |
 

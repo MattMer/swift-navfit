@@ -214,8 +214,26 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
     End If
     VPolicyDetails findings, f, reportID, observed, graded, twos
     ExpandReportValidation findings, f, reportID
+    VNarrativeFit findings, f, reportID, kind
     Set ValidateLiveFields = findings
 End Function
+'Information only: never blocks saving, PDF output or NAVFIT98A export. Measures NAVFIT98A's
+'print (NAVFITFieldFit); a missing printer measures nothing and adds no finding.
+Private Sub VNarrativeFit(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal kind As String)
+    Dim keys As New Collection, key As Variant, trait As Long, part As Long, fit As Object
+    keys.Add "CommandEmployment": keys.Add "DutyDescription": keys.Add "OfficialComments"
+    If kind = "CHIEFEVAL" Then
+        For trait = 33 To 39: For part = 1 To 3: keys.Add "Trait" & trait & "Comment" & part: Next: Next
+    End If
+    For Each key In keys
+        If f.Exists(key) Then
+            If Len(Nz(f(key), "")) > 0 Then
+                Set fit = NAVFITFieldFit(kind, CStr(key), Nz(f(key), ""))
+                If fit("Overflow") > 0 Then VAdd findings, f, id, CStr(key), "Information", "APP-NARRATIVE-FIT", "Narrative is longer than NAVFIT98A's block: " & UXNarrativeFitText(fit) & ". NAVFIT98A warns that text past " & fit("Capacity") & IIf(fit("Capacity") = 1, " line", " lines") & " will be truncated when printed. Saving, Swift PDF output and NAVFIT98A export are not affected."
+            End If
+        End If
+    Next
+End Sub
 Private Function VComponent(ByVal f As Object) As String
     Dim key As Variant
     For Each key In Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW")

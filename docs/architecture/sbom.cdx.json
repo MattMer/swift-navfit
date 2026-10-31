@@ -104,6 +104,15 @@
                        },
                        {
                            "type":  "library",
+                           "bom-ref":  "winapi:gdiplus.dll",
+                           "name":  "gdiplus.dll",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Windows API: GdipCreateFont, GdipCreateFontFamilyFromName, GdipCreateFromHDC, GdipDeleteFont, GdipDeleteFontFamily, GdipDeleteGraphics, GdiplusStartup, GdipMeasureString, GdipSetPageUnit"
+                       },
+                       {
+                           "type":  "library",
                            "bom-ref":  "winapi:ole32.dll",
                            "name":  "ole32.dll",
                            "supplier":  {
@@ -161,7 +170,7 @@
                            "properties":  [
                                               {
                                                   "name":  "swift:uses",
-                                                  "value":  "133"
+                                                  "value":  "135"
                                               }
                                           ]
                        },

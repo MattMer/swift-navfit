@@ -4,6 +4,7 @@ Option Explicit
 Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
+Private narrativeFit As Object, narrativePrint As Object, narrativeKey As String
 
 ' Reference dimensions are NAVFIT default print rectangles, converted from
 ' hundredths of an inch to twips. Margins sit outside that text rectangle.
@@ -33,15 +34,59 @@ Private Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, B
         .ControlTipText = "Plain text; locked Courier New. Overflow is retained. Verify final wrapping in NAVFIT98A."
     End With
 End Sub
+'Line fit text, e.g. "14 of 18 lines in NAVFIT98A" (NAVFITFieldFit) or "14 of 17 lines"
+'(PDFFieldFit, Swift's PDF); "" when the field has no print box.
+Public Function UXNarrativeFitText(ByVal fit As Object, Optional ByVal navfit As Boolean = True) As String
+    Select Case fit("Status")
+        Case "Unavailable": UXNarrativeFitText = "Line count unavailable (no printer)"
+        Case "Measured"
+            UXNarrativeFitText = fit("Lines") & " of " & fit("Capacity") & " lines" & IIf(navfit, " in NAVFIT98A", "")
+            If fit("Overflow") > 0 Then
+                If navfit Then
+                    UXNarrativeFitText = UXNarrativeFitText & ": " & fit("Overflow") & IIf(fit("Overflow") = 1, " line", " lines") & " over its limit"
+                Else
+                    UXNarrativeFitText = UXNarrativeFitText & ": " & fit("Overflow") & IIf(fit("Overflow") = 1, " line continues", " lines continue") & " on an added page"
+                End If
+            ElseIf fit("Lines") = fit("Capacity") Then
+                UXNarrativeFitText = UXNarrativeFitText & ": last line"
+            End If
+            If fit("OneWordLast") Then UXNarrativeFitText = UXNarrativeFitText & "; last line holds one word"
+    End Select
+End Function
+'Status colour for the meter: Error past NAVFIT98A's limit, Warning on its last line.
+Public Function UXNarrativeRole() As String
+    If narrativeFit Is Nothing Then Exit Function
+    If narrativeFit("Status") <> "Measured" Then Exit Function
+    If narrativeFit("Overflow") > 0 Then
+        UXNarrativeRole = "Error"
+    ElseIf narrativeFit("Lines") = narrativeFit("Capacity") And narrativeFit("Capacity") > 0 Then
+        UXNarrativeRole = "Warning"
+    End If
+End Function
 ' Refresh only the narrative caption, including active text not yet posted to Value.
+' Lines are NAVFIT98A's (default pitch), with Swift's PDF in the tip; measured once per
+' type and text. The dirty timer drives refreshes.
 Public Function UXNarrativeStatus() As Boolean
     If Not UXSurfaceAvailable() Then Exit Function
-    Dim f As Access.Form, kind As String, caption As String
+    Dim f As Access.Form, kind As String, caption As String, text As String, role As String
     Set f = Surface(): kind = Nz(Forms!frmEditor!cboKind, "EVAL")
-    caption = Len(Nz(UXSurfacePending("txtOfficialComments", Forms!frmEditor!txtOfficialComments), "")) & " characters | Courier New " & UXNarrativeFontSize(kind) & " pt"
+    text = Nz(UXSurfacePending("txtOfficialComments", Forms!frmEditor!txtOfficialComments), "")
+    If narrativeFit Is Nothing Or narrativeKey <> kind & "|" & text Then
+        Set narrativeFit = NAVFITFieldFit(kind, "OfficialComments", text)
+        Set narrativePrint = PDFFieldFit(kind, "OfficialComments", text): narrativeKey = kind & "|" & text
+    End If
+    caption = UXNarrativeFitText(narrativeFit)
+    If caption <> "" Then caption = caption & " | "
+    caption = caption & Len(text) & " characters"
     If f!txtOfficialComments.Width < UXNarrativeWidth(kind) Then caption = caption & " | Narrow view: wrapping differs"
-    caption = caption & ". Overflow retained; verify final NAVFIT print."
-    If f!uxNarrativeCount.Caption <> caption Then f!uxNarrativeCount.Caption = caption
+    With f!uxNarrativeCount
+        If .Caption <> caption Then .Caption = caption
+        .ControlTipText = Left$("NAVFIT98A default-pitch print; it warns that text past " & narrativeFit("Capacity") & " lines will be truncated. Swift PDF: " & UXNarrativeFitText(narrativePrint, False) & ". Overflow is retained." & IIf(narrativeFit("Reason") <> "", " " & narrativeFit("Reason"), ""), 255)
+        role = UXNarrativeRole()
+        UXVisualSet f!uxNarrativeCount, "BackStyle", IIf(role <> "", 1, 0)
+        If role <> "" Then UXVisualSet f!uxNarrativeCount, "BackColor", UXColor(role)
+        UXVisualSet f!uxNarrativeCount, "ForeColor", UXColor(IIf(role = "", "Ink", role & "Ink"))
+    End With
     UXNarrativeStatus = True
 End Function
 

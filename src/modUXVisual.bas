@@ -111,6 +111,9 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
      UXVisualSet c, "BackStyle", IIf(Len(role) > 0, 1, 0)
      If Len(role) > 0 Then UXVisualSet c, "BackColor", UXColor(role)
      UXVisualSet c, "ForeColor", UXColor(tone)
+    ElseIf key = "uxnarrativecount" Then
+     role = UXNarrativeRole(): UXVisualSet c, "BackStyle", IIf(Len(role) > 0, 1, 0)
+     If Len(role) > 0 Then UXVisualSet c, "BackColor", UXColor(role): UXVisualSet c, "ForeColor", UXColor(role & "Ink")
     End If
    Case acRectangle
     If key = "uxrail" Then

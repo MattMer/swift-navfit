@@ -35,6 +35,31 @@ Private Declare PtrSafe Function PDFTextExtent Lib "gdi32" Alias "GetTextExtentP
 Private Declare PtrSafe Function PDFTextMetrics Lib "gdi32" Alias "GetTextMetricsW" (ByVal dc As LongPtr, ByRef result As PDFFontMetrics) As Long
 Private Declare PtrSafe Function PDFTextFace Lib "gdi32" Alias "GetTextFaceW" (ByVal dc As LongPtr, ByVal count As Long, ByVal buffer As LongPtr) As Long
 Private metricDC As LongPtr, metricFont As LongPtr, metricOldFont As LongPtr
+'NAVFIT98A prints narratives with .NET Graphics.DrawString (GDI+) into fixed rectangles.
+'GdipMeasureString is the same layout engine. learn.microsoft.com/windows/win32/api/gdiplusflat/
+Private Type PDFRectF
+    X As Single
+    Y As Single
+    Width As Single
+    Height As Single
+End Type
+Private Type PDFGdiplusInput
+    Version As Long
+    Callback As LongPtr
+    NoThread As Long
+    NoCodecs As Long
+End Type
+Private Declare PtrSafe Function PDFGdiplusStartup Lib "gdiplus" Alias "GdiplusStartup" (ByRef token As LongPtr, ByRef options As PDFGdiplusInput, ByVal output As LongPtr) As Long
+Private Declare PtrSafe Sub PDFGdiplusShutdown Lib "gdiplus" Alias "GdiplusShutdown" (ByVal token As LongPtr)
+Private Declare PtrSafe Function PDFGdipCreateFromHDC Lib "gdiplus" Alias "GdipCreateFromHDC" (ByVal dc As LongPtr, ByRef graphics As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipDeleteGraphics Lib "gdiplus" Alias "GdipDeleteGraphics" (ByVal graphics As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipSetPageUnit Lib "gdiplus" Alias "GdipSetPageUnit" (ByVal graphics As LongPtr, ByVal unit As Long) As Long
+Private Declare PtrSafe Function PDFGdipCreateFontFamily Lib "gdiplus" Alias "GdipCreateFontFamilyFromName" (ByVal name As LongPtr, ByVal collection As LongPtr, ByRef family As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipDeleteFontFamily Lib "gdiplus" Alias "GdipDeleteFontFamily" (ByVal family As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipCreateFont Lib "gdiplus" Alias "GdipCreateFont" (ByVal family As LongPtr, ByVal emSize As Single, ByVal style As Long, ByVal unit As Long, ByRef font As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipDeleteFont Lib "gdiplus" Alias "GdipDeleteFont" (ByVal font As LongPtr) As Long
+Private Declare PtrSafe Function PDFGdipMeasureString Lib "gdiplus" Alias "GdipMeasureString" (ByVal graphics As LongPtr, ByVal text As LongPtr, ByVal length As Long, ByVal font As LongPtr, ByRef layout As PDFRectF, ByVal format As LongPtr, ByRef bounds As PDFRectF, ByRef fitted As Long, ByRef lines As Long) As Long
+Private gdipToken As LongPtr
 Private metricDpiX As Long, metricDpiY As Long, metricKey As String
 Public Const PDF_OUTPUT_SLOTS As Long = 340
 
@@ -363,6 +388,11 @@ Private Sub CloseMetricContext()
     End If
     metricDC = 0: metricFont = 0: metricOldFont = 0: metricKey = ""
 End Sub
+'Release printer metrics when the editor closes; a running export keeps its context.
+Public Sub PDFFieldFitRelease()
+    If Not exporting Then CloseMetricContext
+    If gdipToken <> 0 Then PDFGdiplusShutdown gdipToken: gdipToken = 0
+End Sub
 Private Function LinesFor(ByVal text As String, ByVal width As Double, ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False, Optional ByVal positions As Collection = Nothing) As Collection
     Dim lines As New Collection, parts As Variant, part As Variant, line As String, c As String, i As Long, count As Long, breakAt As Long, partStart As Long, lineStart As Long
     text = Replace(Replace(text, vbCrLf, vbLf), vbCr, vbLf): parts = Split(text, vbLf)
@@ -395,17 +425,24 @@ Private Function LinesFor(ByVal text As String, ByVal width As Double, ByVal fon
     Next
     Set LinesFor = lines
 End Function
-Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1, Optional ByVal bold As Boolean = False, Optional ByVal spill As Object = Nothing, Optional ByVal compact As Boolean = False)
-    Dim lines As Collection, positions As New Collection, i As Long, step As Double, capacity As Long, remaining As String, normalized As String
-    If value = "" Then Exit Sub
+'Wrap a value into a print box exactly as the PDF does. Shared by FitText and PDFFieldFit.
+Private Function BoxLines(ByVal value As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal bold As Boolean, ByVal compact As Boolean, ByRef step As Double, ByRef capacity As Long, ByRef remaining As String, ByVal positions As Collection) As Collection
+    Dim normalized As String
     step = PDFLineHeight(font, size, bold, compact)
     'Retain an exact line despite floating-point division; tolerance is below a twip.
     capacity = Fix((CDbl(box(3)) + 0.0001) / step): If capacity < 0 Then capacity = 0
-    Set lines = LinesFor(value, CDbl(box(2)), font, size, bold, positions)
+    remaining = ""
+    If value = "" Then Set BoxLines = New Collection: Exit Function
+    Set BoxLines = LinesFor(value, CDbl(box(2)), font, size, bold, positions)
     normalized = Replace(Replace(value, vbCrLf, vbLf), vbCr, vbLf)
-    If lines.Count > capacity Then
+    If BoxLines.Count > capacity Then
         If capacity = 0 Then remaining = value Else remaining = Mid$(normalized, CLng(positions(capacity)))
     End If
+End Function
+Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1, Optional ByVal bold As Boolean = False, Optional ByVal spill As Object = Nothing, Optional ByVal compact As Boolean = False)
+    Dim lines As Collection, positions As New Collection, i As Long, step As Double, capacity As Long, remaining As String
+    If value = "" Then Exit Sub
+    Set lines = BoxLines(value, box, font, size, bold, compact, step, capacity, remaining, positions)
     If remaining <> "" And capacity = 1 And spill Is Nothing Then
         remaining = value
         label = label & " (full value; field marked *)"
@@ -435,6 +472,128 @@ Private Sub FitGradeExplanation(ByVal page As Object, ByVal value As String, ByV
         FitText page, CStr(spill("Text")), label, lower, font, size, overflow, 1, False, Nothing, True
     End If
 End Sub
+'Measure a report field against its printed box for the editor line meter, using the
+'same print rows, wrap and capacity as PlanReport. Never raises: a missing printer or
+'font gives Status "Unavailable" with Reason; a field without a plain text box gives "None".
+Public Function PDFFieldFit(ByVal kind As String, ByVal key As String, ByVal text As String) As Object
+    Dim result As Object, row As Variant, parts As Variant, number As Long, found As Boolean
+    Dim box As Variant, font As String, size As Double, bold As Boolean, step As Double, capacity As Long
+    Dim lines As Collection, positions As New Collection, remaining As String, normalized As String, count As Long, last As String
+    On Error GoTo Unavailable
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "Status", "None": result.Add "Lines", 0&: result.Add "Capacity", 0&
+    result.Add "Overflow", 0&: result.Add "OneWordLast", False: result.Add "Reason", ""
+    Set PDFFieldFit = result
+    For number = 1 To 2
+        For Each row In PDFPrintRows(kind, number)
+            parts = Split(CStr(row), "|")
+            If parts(0) = key And parts(9) <> "1" And Val(parts(13)) <= 0 Then found = True: Exit For
+        Next
+        If found Then Exit For
+    Next
+    If Not found Then Exit Function
+    box = Array(Val(parts(3)), Val(parts(4)), Val(parts(5)), Val(parts(6)))
+    font = parts(7): size = Val(parts(8)): bold = (parts(11) = "1")
+    Set lines = BoxLines(text, box, font, size, bold, False, step, capacity, remaining, positions)
+    result("Capacity") = capacity: count = lines.Count
+    normalized = Replace(Replace(text, vbCrLf, vbLf), vbCr, vbLf)
+    If Right$(normalized, 1) = vbLf Then count = count - 1
+    result("Lines") = count
+    If remaining <> "" Then
+        'A one-line box moves the whole value to the added page (FitText's "*" case).
+        If capacity = 1 Then result("Overflow") = count Else result("Overflow") = count - capacity
+        If result("Overflow") < 1 Then result("Overflow") = 1&
+    End If
+    If result("Overflow") = 0 And count >= 2 Then
+        last = Trim$(CStr(lines(count)))
+        result("OneWordLast") = (last <> "" And InStr(last, " ") = 0)
+    End If
+    result("Status") = "Measured"
+    Exit Function
+Unavailable:
+    If result Is Nothing Then Exit Function
+    result("Status") = "Unavailable": result("Reason") = Err.Description
+    result("Lines") = 0&: result("Capacity") = 0&: result("Overflow") = 0&: result("OneWordLast") = False
+End Function
+'Lines a report field takes in NAVFIT98A 2.2.0.332's print at default comments pitch. Swift
+'never stores CommentsPitch, so its exports print at the default. Fonts and widths are the
+'PrintModule rectangles; capacities are NAVFIT98A's own editor limits, whose warnings say
+'longer text will be truncated. See planning/NAVFIT_PRINT_ENGINE_FINDINGS.md. Never raises.
+Public Function NAVFITFieldFit(ByVal kind As String, ByVal key As String, ByVal text As String) As Object
+    Dim result As Object, size As Single, width As Single, capacity As Long, prefix As String, count As Long, shorter As String, cut As Long
+    On Error GoTo Unavailable
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "Status", "None": result.Add "Lines", 0&: result.Add "Capacity", 0&
+    result.Add "Overflow", 0&: result.Add "OneWordLast", False: result.Add "Reason", ""
+    Set NAVFITFieldFit = result
+    If kind <> "EVAL" And kind <> "FITREP" And kind <> "CHIEFEVAL" Then Exit Function
+    Select Case key
+        Case "OfficialComments"
+            If kind = "CHIEFEVAL" Then size = 10: width = 760: capacity = 6 Else size = 9: width = 715: capacity = 18
+        Case "CommandEmployment": size = 9.65: width = 755: capacity = 3
+        Case "DutyDescription": size = 9.65: width = 755: capacity = 4: prefix = Space$(21)
+        Case Else
+            If kind <> "CHIEFEVAL" Or Not key Like "Trait3#Comment#" Then Exit Function
+            size = 9.65: width = 450: capacity = 2
+    End Select
+    result("Capacity") = capacity
+    If text <> "" Then
+        count = NAVFITLines(prefix & text, size, width)
+        result("Lines") = count
+        If count > capacity Then result("Overflow") = count - capacity
+        'The last line holds one word when dropping that word removes the line. Text that
+        'ends with a line break ends on a blank line.
+        If count >= 2 And count <= capacity And Right$(text, 1) <> vbLf And Right$(text, 1) <> vbCr Then
+            shorter = RTrim$(Replace(Replace(text, vbCr, " "), vbLf, " "))
+            cut = InStrRev(shorter, " ")
+            If cut > 0 Then
+                shorter = RTrim$(Left$(text, cut - 1))
+                If Right$(shorter, 1) = vbLf Or Right$(shorter, 1) = vbCr Then
+                    result("OneWordLast") = True
+                Else
+                    result("OneWordLast") = (NAVFITLines(prefix & shorter, size, width) = count - 1)
+                End If
+            End If
+        End If
+    End If
+    result("Status") = "Measured"
+    Exit Function
+Unavailable:
+    If result Is Nothing Then Exit Function
+    result("Status") = "Unavailable": result("Reason") = Err.Description
+    result("Lines") = 0&: result("Capacity") = 0&: result("Overflow") = 0&: result("OneWordLast") = False
+End Function
+'GDI+ line count for Courier New text as DrawString(text, font, brush, RectangleF) lays it out:
+'no StringFormat, unlimited height, page unit Display (1/100 inch) on the printer context.
+Private Function NAVFITLines(ByVal text As String, ByVal size As Single, ByVal width As Single) As Long
+    Dim options As PDFGdiplusInput, graphics As LongPtr, family As LongPtr, font As LongPtr, layout As PDFRectF, bounds As PDFRectF
+    Dim fitted As Long, lines As Long, status As Long, face As String, failure As Long, message As String
+    On Error GoTo Failed
+    SetMetricFont "Courier New", 10
+    If gdipToken = 0 Then
+        options.Version = 1
+        If PDFGdiplusStartup(gdipToken, options, 0) <> 0 Then gdipToken = 0: Err.Raise vbObjectError + 9112, "modPDFOutput.NAVFITLines", "Windows GDI+ is unavailable."
+    End If
+    face = "Courier New"
+    status = PDFGdipCreateFromHDC(metricDC, graphics)
+    If status = 0 Then status = PDFGdipSetPageUnit(graphics, 1)
+    If status = 0 Then status = PDFGdipCreateFontFamily(StrPtr(face), 0, family)
+    If status = 0 Then status = PDFGdipCreateFont(family, size, 0, 3, font)
+    layout.Width = width: layout.Height = 1000000
+    If status = 0 Then status = PDFGdipMeasureString(graphics, StrPtr(text), Len(text), font, layout, 0, bounds, fitted, lines)
+    If status <> 0 Then Err.Raise vbObjectError + 9112, "modPDFOutput.NAVFITLines", "NAVFIT98A line measurement failed (GDI+ status " & status & ")."
+    NAVFITLines = lines
+Finished:
+    If font <> 0 Then PDFGdipDeleteFont font: font = 0
+    If family <> 0 Then PDFGdipDeleteFontFamily family: family = 0
+    If graphics <> 0 Then PDFGdipDeleteGraphics graphics: graphics = 0
+    On Error GoTo 0
+    If failure <> 0 Then Err.Raise failure, "modPDFOutput.NAVFITLines", message
+    Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    Resume Finished
+End Function
 Private Function TraitAverage(ByVal fields As Object) As String
     Dim key As Variant, mark As String, total As Double, count As Long
     If PDFOutputText(fields, "ObservationStatus") = "NOB" Then Exit Function

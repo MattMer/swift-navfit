@@ -205,6 +205,27 @@ Report accessibility problems through **Settings & Help > Support and limitation
 
 All seven performance traits are grouped on Front Page for editing. This does not change their official printed-page associations. The pages use fixed field geometry. Resize or scroll the viewing area to reach fields; the report fields do not reflow to a different block order.
 
+### Check that the comments fit
+
+Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
+
+| Block | EVAL and FITREP | CHIEFEVAL |
+| --- | --- | --- |
+| Comments | 18 lines | 6 lines |
+| Block 28, command employment | 3 lines | 3 lines |
+| Block 29, primary duties | 4 lines | 4 lines |
+| Each performance comment | Not used | 2 lines |
+
+| Meter | Meaning |
+| --- | --- |
+| *N* of *M* lines in NAVFIT98A | The comments fit. |
+| Amber, "last line" | The comments fill the block; the next line will not fit. |
+| Red, "2 lines over its limit" | NAVFIT98A warns that text past its limit will be truncated when printed. |
+| "last line holds one word" | Shortening the text slightly would save a line. |
+| Line count unavailable (no printer) | Windows has no printer to measure with. Editing and saving carry on. |
+
+The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF, which prints extra lines on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
+
 ## 4.2 Understand the save states
 
 | State | Meaning and next action |
@@ -304,6 +325,7 @@ Choose **Validation issues** in the report action area, or **Pop out validation 
 | Incomplete draft | Supply missing information when available; drafting may continue. |
 | Policy issue | Review the cited rule and correct or substantiate the report as appropriate. |
 | Needs review | A person must verify applicability, an exception, or unavailable evidence. |
+| Information | A note that changes nothing, such as a narrative longer than NAVFIT98A's block. It isn't counted as an issue or recorded in saved readiness. |
 
 Summary-group checks also include grouping, membership, and provisional-capacity reminders. The Demo's clean group has zero member-report findings, but keeps group reminders. A group reminder does not mean every member report has an entry error.
 

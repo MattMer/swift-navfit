@@ -19,7 +19,7 @@ End Function
 ' Validate pending editor values and paint the issue summary. Cache findings by exact
 ' inputs and date; dirty/save state is independent of saved report revisions.
 Public Function UXLivePaint() As Boolean
-    Dim result As Collection, item As Object, invalid As Long, policy As Long, incomplete As Long, review As Long
+    Dim result As Collection, item As Object, invalid As Long, policy As Long, incomplete As Long, review As Long, information As Long
     Dim pending As Object, key As Variant, signature As String
     If busy Or Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
     On Error GoTo Failed
@@ -41,10 +41,11 @@ Public Function UXLivePaint() As Boolean
             Case "Policy issue": policy = policy + 1
             Case "Incomplete draft": incomplete = incomplete + 1
             Case "Needs review": review = review + 1
+            Case "Information": information = information + 1
         End Select
     Next
-    Forms!frmEditor!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes") & " | " & result.count & " issues"
-    Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review. Pending values; no saved revision created."
+    Forms!frmEditor!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes") & " | " & (result.count - information) & " issues"
+    Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review, " & information & " information. Pending values; no saved revision created."
     If EditorHasPending() Then recoveryDirty = True
     validationDirty = False: validationDate = Date
     UXLivePaint = True

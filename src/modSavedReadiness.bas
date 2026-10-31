@@ -27,7 +27,7 @@ End Function
 ' Persist the same shared findings against one saved revision, including full references.
 Public Function RunSharedReadiness(ByVal reportID As Long, ByVal packID As Long) As Long
  Dim db As DAO.Database, w As DAO.Workspace, findings As Collection, item As Object, r As DAO.Recordset
- Dim revision As Long, rule As Long, id As Long, state As String, failure As Long, message As String
+ Dim revision As Long, rule As Long, id As Long, state As String, failure As Long, message As String, recorded As Long
  If Nz(MajorScalar("SELECT VersionName FROM RulePack WHERE PackID=" & packID), "") <> SHARED_READINESS_VERSION Then Err.Raise vbObjectError + 8403, "modSavedReadiness.RunSharedReadiness", "Historical readiness pack retained for evidence only. Install the current pack to create a new validation run."
  If Nz(MajorScalar("SELECT SourceSHA256 FROM RulePack WHERE PackID=" & packID), "") <> NAVY_RULE_SOURCE_HASH Then Err.Raise vbObjectError + 8402, "modSavedReadiness.RunSharedReadiness", "Shared readiness source fingerprint differs. Restore the verified rule pack."
  revision = CurrentRevision(reportID): Set findings = ValidateLiveFields(SavedFields(reportID), reportID)
@@ -39,12 +39,16 @@ Public Function RunSharedReadiness(ByVal reportID As Long, ByVal packID As Long)
  Set r = db.OpenRecordset("ValidationRun", dbOpenDynaset): r.AddNew
  r!ReportID = reportID: r!RevisionID = revision: r!PackID = packID: r!RunAt = Now(): r.Update: r.Bookmark = r.LastModified: id = r!ValidationRunID: r.Close
  Set r = db.OpenRecordset("ValidationFinding", dbOpenDynaset)
+ 'Information findings (print line fit) are not readiness results.
  For Each item In findings
-  state = "NeedsReview": If item("Severity") <> "Needs review" Then state = "Fail"
-  r.AddNew: r!ValidationRunID = id: r!RuleID = rule: r!FindingState = state
-  r!Message = item("Code") & " | " & item("Label") & " | " & item("Severity") & ": " & item("Message") & vbCrLf & item("Reference"): r.Update
+  If item("Severity") <> "Information" Then
+   state = "NeedsReview": If item("Severity") <> "Needs review" Then state = "Fail"
+   r.AddNew: r!ValidationRunID = id: r!RuleID = rule: r!FindingState = state
+   r!Message = item("Code") & " | " & item("Label") & " | " & item("Severity") & ": " & item("Message") & vbCrLf & item("Reference"): r.Update
+   recorded = recorded + 1
+  End If
  Next
- If findings.Count = 0 Then
+ If recorded = 0 Then
   r.AddNew: r!ValidationRunID = id: r!RuleID = rule: r!FindingState = "Pass": r!Message = "No findings from implemented shared checks. This is not certification of Navy readiness.": r.Update
  End If
  r.Close: w.CommitTrans: RunSharedReadiness = id: Exit Function

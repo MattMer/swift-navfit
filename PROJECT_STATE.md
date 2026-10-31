@@ -83,6 +83,10 @@ import and print-ready PDF output.
   - Resizing changes the viewport, not the field layout.
   - Pending values survive page changes, failed saves, VBA reset and restart
     through recovery checkpoints.
+  - A line meter under the comments counts lines as NAVFIT98A 2.2.0.332 prints them
+    at default pitch (GDI+, its print rectangles and its own limits: comments 18,
+    CHIEFEVAL 6; blocks 28/29 3/4; Chief performance comments 2). Longer text gets
+    an Information finding that blocks nothing. Unverified against a NAVFIT98A print.
   - **Mark signed** sets `WorkflowState` to `Signed`, so every save path refuses
     changes. In the editor and group grid the first edit asks whether to reopen
     the report for correction; bulk defaults skip signed reports and list them.
