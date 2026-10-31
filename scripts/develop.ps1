@@ -102,7 +102,7 @@ if($Action -eq 'ExtendedTest'){
         $first=InvokeSwiftMonitoredStep ([string]$runner.name) $arguments $logFolder
         $status='PASS';$evidence=$null
         if($first.ExitCode -ne 0){
-            Write-Output ('Retrying '+$runner.name+' on a fresh copy after exit '+$first.ExitCode+': '+$first.Error)
+            WriteSwiftProgress ('Retrying '+$runner.name+' on a fresh copy after exit '+$first.ExitCode+': '+$first.Error)
             $second=InvokeSwiftMonitoredStep ([string]$runner.name) $arguments $logFolder
             $status=if($second.ExitCode -eq 0){'FLAKY'}else{'FAIL'}
             $evidence=[pscustomobject]@{Runner=[string]$runner.name;Status=$status;First=$first;Retry=$second}
@@ -110,7 +110,7 @@ if($Action -eq 'ExtendedTest'){
         }
         $last=if($evidence){$evidence.Retry}else{$first}
         $script:workflowResults.Add([pscustomobject]@{Script=[string]$runner.name;Status=$status;Seconds=$last.Seconds;Log=$last.Log;Evidence=$evidence})
-        Write-Output ($status+' '+$runner.name)
+        WriteSwiftProgress ($status+' '+$runner.name+' in '+(FormatSwiftElapsed ([TimeSpan]::FromSeconds($last.Seconds))))
     }
     if((GetSwiftWorkflowArtifact $before.Path).SHA256 -ne $before.SHA256){throw 'Extended tests changed the supplied artifact'}
     foreach($item in $flaky){

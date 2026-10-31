@@ -1,19 +1,32 @@
 # Shared process boundary: native Access suites run serially in Windows PowerShell.
 # A failed child cannot be mistaken for a successful task or receipt.
+# Progress lines are shown live with the time, so a long run shows where it is.
+# Nested runs pass them up; a line that already has a time keeps it.
+$script:swiftProgressPattern='^(\[\d\d:\d\d:\d\d\] )?(Running |Done |Still running |Retrying |PASS|FAIL|FLAKY|SKIP)'
+function WriteSwiftProgress([string]$Line){
+    if($Line -match '^\[\d\d:\d\d:\d\d\] '){Write-Host $Line}else{Write-Host ('['+(Get-Date -Format 'HH:mm:ss')+'] '+$Line)}
+}
+
+function FormatSwiftElapsed([TimeSpan]$Elapsed){'{0}:{1:D2}' -f [int][Math]::Floor($Elapsed.TotalMinutes),$Elapsed.Seconds}
+
 function InvokeSwiftWorkflowStep([string]$Name,[string[]]$Arguments,[string]$LogFolder){
     $log=Join-Path $LogFolder ('{0:D2}-{1}.log' -f $script:workflowResults.Count,($Name -replace '[\\/]','-'))
-    Write-Output ('Running '+$Name+'; log: '+$log)
+    WriteSwiftProgress ('Running '+$Name+'; log: '+$log)
     $timer=[Diagnostics.Stopwatch]::StartNew()
     try {
         $ErrorActionPreference='Continue'
-        & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ($Name+'.ps1')) @Arguments *> $log
+        & powershell.exe -NoProfile -File (Join-Path $PSScriptRoot ($Name+'.ps1')) @Arguments *>&1 | ForEach-Object {
+            $_ | Out-File -LiteralPath $log -Append
+            $line=if($_ -is [Management.Automation.ErrorRecord]){$_.Exception.Message}else{[string]$_}
+            if($line -match $script:swiftProgressPattern){WriteSwiftProgress $line}
+        }
         $stepExit=$LASTEXITCODE
     } finally { $ErrorActionPreference='Stop'; $timer.Stop() }
     if($stepExit -ne 0){
         Get-Content -LiteralPath $log -Tail 35
         throw ($Name+' failed (exit '+$stepExit+'). See '+$log)
     }
-    Get-Content -LiteralPath $log | Where-Object {$_ -like 'PASS*'} | Select-Object -Last 3
+    WriteSwiftProgress ('Done '+$Name+' in '+(FormatSwiftElapsed $timer.Elapsed))
     $script:workflowResults.Add([pscustomobject]@{Script=$Name;Status='PASS';Seconds=$timer.Elapsed.TotalSeconds;Log=$log})
 }
 
@@ -85,17 +98,26 @@ public static class SwiftDialogs {
 '@
     }
     $log=Join-Path $LogFolder ('{0:D2}-{1}.log' -f $script:workflowResults.Count,$Name)
-    Write-Output ('Running '+$Name+'; log: '+$log)
+    WriteSwiftProgress ('Running '+$Name+'; log: '+$log)
     $started=Get-Date;$timer=[Diagnostics.Stopwatch]::StartNew();$dialogs=[Collections.Generic.List[string]]::new()
+    $shown=0;$nextHeartbeat=5
     $quoted=@($Arguments|ForEach-Object {if($_ -match '\s'){'"'+$_+'"'}else{$_}})
     $process=Start-Process powershell.exe -ArgumentList (@('-NoProfile','-File',('"'+(Join-Path $PSScriptRoot ($Name+'.ps1'))+'"'))+$quoted) -RedirectStandardOutput $log -RedirectStandardError ($log+'.err') -WindowStyle Hidden -PassThru
     $null=$process.Handle
+    #Echo the runner's new progress lines; a quiet runner gets a heartbeat every 5 minutes.
+    $showProgress={
+        $lines=@(Get-Content -LiteralPath $log -ErrorAction SilentlyContinue)
+        for(;$shown -lt $lines.Count;$shown++){if($lines[$shown] -match $script:swiftProgressPattern){WriteSwiftProgress $lines[$shown]}}
+    }
     while(-not $process.WaitForExit(2000)){
+        . $showProgress
+        if($timer.Elapsed.TotalMinutes -ge $nextHeartbeat){WriteSwiftProgress ('Still running '+$Name+' ('+(FormatSwiftElapsed $timer.Elapsed)+')');$nextHeartbeat+=5}
         foreach($access in @(Get-Process MSACCESS -ErrorAction SilentlyContinue|Where-Object {$_.StartTime -ge $started})){
             $closed=[SwiftDialogs]::CloseVbaError([uint32]$access.Id);if($closed){$dialogs.Add('PID '+$access.Id+' '+$closed)}
         }
         if($timer.Elapsed.TotalMinutes -ge $TimeoutMinutes){$dialogs.Add('Timed out after '+$TimeoutMinutes+' minutes; runner left running (PID '+$process.Id+')');break}
     }
+    . $showProgress
     $exit=if($process.HasExited){$process.ExitCode}else{-1}
     $processes=@()
     if($exit -ne 0){$processes=@(Get-Process MSACCESS -ErrorAction SilentlyContinue|ForEach-Object {'PID '+$_.Id+' started '+$_.StartTime.ToString('s')+' window "'+$_.MainWindowTitle+'"'})}

@@ -71,6 +71,11 @@ that fails is retried once on a fresh copy. Passing on the retry is reported as
 in the output and the receipt; it is never a clean pass, so investigate it.
 Failing twice fails the tier.
 
+`develop.ps1` and `release-check.ps1` print a timestamped line as each step,
+runner and suite case starts or finishes, with elapsed times, and an extended
+runner that is quiet prints "Still running" every 5 minutes. Redirect the output
+to a file and read it to see where a long run is.
+
 The trait suite was restored and modernized: it preserves current service,
 rollback and recovery checks without retired checklist UI or a duplicated
 catalogue loop. Current report-tools/narrative/cleanup harnesses cover long
