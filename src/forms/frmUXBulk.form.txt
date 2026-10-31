@@ -191,7 +191,7 @@ Begin Form
                     Left =2866
                     Top =850
                     Width =7600
-                    Height =500
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
@@ -200,7 +200,7 @@ Begin Form
                     LayoutCachedLeft =2866
                     LayoutCachedTop =850
                     LayoutCachedWidth =10466
-                    LayoutCachedHeight =1350
+                    LayoutCachedHeight =1450
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -1784,7 +1784,7 @@ Begin Form
                     TabIndex =53
                     ForeColor =4205854
                     Name ="uxBlockSection2"
-                    Caption ="Command & duties"
+                    Caption ="Command && duties"
                     OnClick ="=UXBulkSection(2)"
                     FontName ="Segoe UI"
                     UnicodeAccessKey =32

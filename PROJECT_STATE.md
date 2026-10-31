@@ -104,7 +104,8 @@ import and print-ready PDF output.
     the rail becomes a drop-down.
   - Wider than the design, only lists, subforms, wide text boxes and wide
     captions stretch, list columns keep their proportions, and content stops at
-    16,500 twips.
+    16,500 twips. A caption directly above a control with the same left edge
+    moves with that control.
   - Widths are capped at Access's 31,680-twip form limit.
   - Pop-up dialogs stay resizable.
 - **Entry points:**

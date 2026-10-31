@@ -101,8 +101,8 @@ Begin Form
                     Left =350
                     Top =250
                     Width =12200
-                    Height =650
-                    FontSize =10
+                    Height =600
+                    FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
                     Caption ="Import previous Swift NAVFIT workspace"
@@ -110,7 +110,7 @@ Begin Form
                     LayoutCachedLeft =350
                     LayoutCachedTop =250
                     LayoutCachedWidth =12550
-                    LayoutCachedHeight =900
+                    LayoutCachedHeight =850
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -237,7 +237,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =350
-                    Top =8150
+                    Top =8650
                     Width =12200
                     Height =1100
                     FontSize =10
@@ -245,9 +245,9 @@ Begin Form
                     Name ="lblStatus"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =350
-                    LayoutCachedTop =8150
+                    LayoutCachedTop =8650
                     LayoutCachedWidth =12550
-                    LayoutCachedHeight =9250
+                    LayoutCachedHeight =9750
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

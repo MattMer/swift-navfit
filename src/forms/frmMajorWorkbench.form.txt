@@ -3323,7 +3323,7 @@ Begin Form
                     Left =2850
                     Top =900
                     Width =7600
-                    Height =550
+                    Height =600
                     FontSize =20
                     ForeColor =4205854
                     Name ="uxGroupTitle"
@@ -3332,7 +3332,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =900
                     LayoutCachedWidth =10450
-                    LayoutCachedHeight =1450
+                    LayoutCachedHeight =1500
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

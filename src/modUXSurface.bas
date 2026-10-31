@@ -438,7 +438,7 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
             If x > 200 And (band <> priorBand Or x + fieldWidth > usableWidth + 200) Then
                 top = top + rowHeight: x = 200: rowHeight = 0
             End If
-            Set c = f.Controls("label" & key): c.Caption = UXFieldCaption(key, kind): c.Left = x: c.Top = top: c.Width = fieldWidth: c.Height = 300: c.Visible = True
+            Set c = f.Controls("label" & key): c.Caption = Replace(UXFieldCaption(key, kind), "&", "&&"): c.Left = x: c.Top = top: c.Width = fieldWidth: c.Height = 300: c.Visible = True
             Set c = f.Controls(UXFieldControl(key)): c.Left = x: c.Top = top + 320: c.Width = fieldWidth: c.Height = 360: c.Visible = True: c.Locked = locked Or Not applicable
             c.TabIndex = tabOrder: tabOrder = tabOrder + 1
             If flag Then

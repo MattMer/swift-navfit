@@ -1169,24 +1169,32 @@ Begin Form
                 Begin CommandButton
                     Enabled = NotDefault
                     OverlapFlags =223
+                    TextFontFamily =34
                     Left =200
                     Top =7500
                     Width =11800
                     Height =450
                     FontSize =10
                     TabIndex =27
+                    ForeColor =4205854
                     Name ="cmdApplyCounseling"
                     Caption ="Use recorded counseling in blocks 30-31"
                     OnClick ="=UXToolsApplyCounseling()"
-                    Tag ="VIEW:Validation"
                     ControlTipText ="Enters the member's recorded counseling as unsaved edits. Save the report to kee"
                         "p them."
+                    FontName ="Segoe UI"
+                    Tag ="VIEW:Validation"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =7500
                     LayoutCachedWidth =12000
                     LayoutCachedHeight =7950
+                    ForeThemeColorIndex =-1
+                    UseTheme =0
                     Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1

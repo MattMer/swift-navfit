@@ -145,7 +145,7 @@ Begin Form
                     Left =400
                     Top =250
                     Width =12800
-                    Height =500
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
@@ -154,7 +154,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =250
                     LayoutCachedWidth =13200
-                    LayoutCachedHeight =750
+                    LayoutCachedHeight =850
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -253,7 +253,7 @@ Begin Form
                     IMESentenceMode =3
                     Left =400
                     Top =4200
-                    Width =2500
+                    Width =2300
                     Height =450
                     FontSize =10
                     TabIndex =2
@@ -266,7 +266,7 @@ Begin Form
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =4200
-                    LayoutCachedWidth =2900
+                    LayoutCachedWidth =2700
                     LayoutCachedHeight =4650
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
@@ -316,18 +316,18 @@ Begin Form
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
-                            Left =3100
+                            Left =2850
                             Top =4200
-                            Width =1800
+                            Width =2100
                             Height =350
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblRow"
                             Caption ="Source row (optional)"
                             FontName ="Segoe UI"
-                            LayoutCachedLeft =3100
+                            LayoutCachedLeft =2850
                             LayoutCachedTop =4200
-                            LayoutCachedWidth =4900
+                            LayoutCachedWidth =4950
                             LayoutCachedHeight =4550
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1

@@ -184,7 +184,7 @@ Begin Form
                     Left =2866
                     Top =800
                     Width =7600
-                    Height =450
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
@@ -193,7 +193,7 @@ Begin Form
                     LayoutCachedLeft =2866
                     LayoutCachedTop =800
                     LayoutCachedWidth =10466
-                    LayoutCachedHeight =1250
+                    LayoutCachedHeight =1400
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -1022,7 +1022,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2866
-                    Top =8400
+                    Top =9000
                     Width =4819
                     Height =550
                     FontSize =10
@@ -1034,9 +1034,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =8400
+                    LayoutCachedTop =9000
                     LayoutCachedWidth =7685
-                    LayoutCachedHeight =8950
+                    LayoutCachedHeight =9550
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -1103,7 +1103,7 @@ Begin Form
                     OverlapFlags =255
                     TextFontFamily =34
                     Left =2866
-                    Top =7850
+                    Top =8400
                     Width =9954
                     Height =500
                     FontSize =10
@@ -1114,9 +1114,9 @@ Begin Form
                         "ts are proposals until applied; stale groups and locked reports reject changes."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =7850
+                    LayoutCachedTop =8400
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =8350
+                    LayoutCachedHeight =8900
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     ForeThemeColorIndex =-1
@@ -1593,7 +1593,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2850
-                    Top =8450
+                    Top =9000
                     Width =4300
                     Height =450
                     FontSize =10
@@ -1606,9 +1606,9 @@ Begin Form
                     ControlTipText ="Retry only unsaved cells; successful earlier revisions are retained."
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =8450
+                    LayoutCachedTop =9000
                     LayoutCachedWidth =7150
-                    LayoutCachedHeight =8900
+                    LayoutCachedHeight =9450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1635,7 +1635,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =7500
-                    Top =8450
+                    Top =9000
                     Width =5500
                     Height =450
                     FontSize =10
@@ -1648,9 +1648,9 @@ Begin Form
                     ControlTipText ="Discard all remaining unsaved cells; previously saved revisions remain."
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =8450
+                    LayoutCachedTop =9000
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8900
+                    LayoutCachedHeight =9450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -2060,97 +2060,84 @@ Begin Form
                 Begin CommandButton
                     TabStop = NotDefault
                     OverlapFlags =247
+                    TextFontFamily =34
                     Left =2850
                     Top =7800
                     Width =3300
                     Height =500
+                    FontSize =10
                     TabIndex =41
-                    ForeColor =16777215
+                    ForeColor =4205854
                     Name ="uxMarkSignedMember"
                     Caption ="Mark selected report signed"
                     OnClick ="=UXMemberAction(\"Signed\")"
-                    FontName ="Aptos Display"
+                    FontName ="Segoe UI"
                     Tag ="GroupMemberAction"
-                    LeftPadding =0
-                    TopPadding =0
-                    RightPadding =0
-                    BottomPadding =0
-                    GridlineColor =16777215
-                    GridlineWidthLeft =0
-                    GridlineWidthTop =0
-                    GridlineWidthRight =0
-                    GridlineWidthBottom =0
-                    BackStyle =0
 
                     LayoutCachedLeft =2850
                     LayoutCachedTop =7800
                     LayoutCachedWidth =6150
                     LayoutCachedHeight =8300
-                    Alignment =0
-                    ForeTint =0.0
-                    ForeShade =0.0
-                    GridlineThemeColorIndex =0
-                    GridlineTint =0.0
-                    GridlineShade =0.0
-                    UseTheme =0
-                    Shape =0
+                    ForeThemeColorIndex =-1
                     Gradient =0
-                    BackColor =16777215
-                    BackThemeColorIndex =0
-                    BackTint =0.0
-                    BackShade =0.0
-                    OldBorderStyle =0
-                    BorderColor =16777215
-                    BorderThemeColorIndex =0
-                    BorderTint =0.0
-                    BorderShade =0.0
-                    ThemeFontIndex =0
-                    HoverColor =16777215
-                    HoverThemeColorIndex =0
-                    HoverTint =0.0
-                    HoverShade =0.0
-                    PressedColor =16777215
-                    PressedThemeColorIndex =0
-                    PressedTint =0.0
-                    PressedShade =0.0
-                    HoverForeColor =16777215
-                    HoverForeTint =0.0
-                    HoverForeShade =0.0
-                    PressedForeColor =16777215
-                    PressedForeTint =0.0
-                    PressedForeShade =0.0
-                    WebImagePaddingRight =-1
-                    WebImagePaddingBottom =-1
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
                     Overlaps =1
                 End
                 Begin CommandButton
                     OverlapFlags =247
+                    TextFontFamily =34
                     Left =6350
                     Top =7800
                     Width =3300
                     Height =500
+                    FontSize =10
                     TabIndex =42
+                    ForeColor =4205854
                     Name ="uxMarkGroupSigned"
                     Caption ="Mark all reports signed"
                     OnClick ="=UXMemberAction(\"SignedGroup\")"
+                    FontName ="Segoe UI"
                     Tag ="GroupMemberAction"
-                    LeftPadding =0
-                    TopPadding =0
-                    RightPadding =0
-                    BottomPadding =0
-                    GridlineWidthLeft =0
-                    GridlineWidthTop =0
-                    GridlineWidthRight =0
-                    GridlineWidthBottom =0
-                    BackStyle =0
 
                     LayoutCachedLeft =6350
                     LayoutCachedTop =7800
                     LayoutCachedWidth =9650
                     LayoutCachedHeight =8300
-                    Alignment =0
+                    ForeThemeColorIndex =-1
                     Gradient =0
-                    OldBorderStyle =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
                     Overlaps =1
                 End
             End

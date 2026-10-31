@@ -31,6 +31,8 @@ Public Function UXToolsRefresh() As Boolean
   If Left$(c.Tag, 5) = "VIEW:" Then c.Visible = (Mid$(c.Tag, 6) = selectedView)
  Next
  f!uxReviewPanel.Visible = (selectedView = "Review")
+ 'Sort headings belong to their lists, not to a view; place or hide them for this view.
+ UXSortHeaders f
  For Each name In Array("cmdComments", "cmdRoute", "cmdChecklist", "cmdCalculations")
   With Forms!frmEditor.Controls(name)
    active = (CStr(name) = "cmdComments" And selectedView = "Notes") Or (CStr(name) = "cmdRoute" And selectedView = "Review") Or (CStr(name) = "cmdChecklist" And selectedView = "Validation") Or (CStr(name) = "cmdCalculations" And selectedView = "Calculations")

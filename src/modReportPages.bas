@@ -45,20 +45,20 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  UXNavigationLayout f, False, f.Width
  Place f, "uxContext", 250, 100, 8500, 300
  Place f, "uxReport", 250, 550, 8700, 650
- Place f, "uxTypeCaption", 9500, 500, 1200, 300
+ Place f, "uxTypeCaption", 9200, 500, 1500, 300
  If UXHasControl(f, "uxCreatePDF") Then Place f, "uxCreatePDF", 10800, 450, 1200, 400
  If UXHasControl(f, "uxMarkSigned") Then Place f, "uxMarkSigned", 12100, 450, 1500, 400
- Place f, "cboKind", 9500, 850, 2500, 350
+ Place f, "cboKind", 9200, 850, 2800, 350
  Place f, "uxITA", 250, 1250, 5500, 350
  Place f, "uxSGA", 5800, 1250, 6200, 350
  Place f, "uxLocked", 250, 1630, 8700, 350
  Place f, "uxAlias", 250, 1980, 8700, 300
- Place f, "uxGroup", 9200, 1750, 2800, 400
+ Place f, "uxGroup", 9200, 1750, 2800, 350
  names = Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2350, 2850, 400: Next
  names = Array("uxFrontPage", "uxBackPage", "uxPageReview", "uxPageHistory")
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2850, 2850, 400: Next
- Place f, "uxSection", 250, 3320, 11800, 350
+ Place f, "uxSection", 250, 3280, 11800, 410
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
  Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), viewingWidth, body
@@ -246,7 +246,9 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
   Else
    trait = IsTraitKey(key)
    Place f, "label" & key, CLng(parts(1)), y, CLng(parts(3)), 340
-   f.Controls("label" & key).Caption = UXFieldCaption(key, kind): f.Controls("label" & key).FontSize = 8
+   f.Controls("label" & key).Caption = Replace(UXFieldCaption(key, kind), "&", "&&"): f.Controls("label" & key).FontSize = 8
+   'A caption too long for one line takes two, rising into the gap above its field.
+   If CLng(parts(3)) < Len(UXFieldCaption(key, kind)) * 72 Then Place f, "label" & key, CLng(parts(1)), y - 180, CLng(parts(3)), 520
    Place f, UXFieldControl(key), CLng(parts(1)), y + 350, CLng(parts(3)), CLng(parts(4))
    Set c = f.Controls(UXFieldControl(key)): c.TabIndex = order: order = order + 1
    c.Locked = locked Or Not UXFieldApplies(key, kind)

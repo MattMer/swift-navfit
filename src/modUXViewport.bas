@@ -16,6 +16,8 @@ Public Const UX_COMPACT_WIDTH As Long = 12000
 Public Const UX_DESIGN_WIDTH As Long = 10450
 Private Const UX_RIGHT_MARGIN As Long = 350
 Private Const MAX_CONTENT_WIDTH As Long = 16500
+' How far below a fixed-width label to look for the field it captions.
+Private Const CAPTION_REACH As Long = 150
 ' Access rejects form and control positions past 22 inches; a maximized window on
 ' a 2560-pixel or scaled 4K screen is wider than that.
 Public Const UX_MAX_FORM_WIDTH As Long = 31680
@@ -103,9 +105,19 @@ Private Function UXElastic(ByVal c As Access.Control) As Boolean
 End Function
 ' Share the extra width among the elastic controls beside v (sharing rows, not
 ' overlapping it horizontally), in proportion to their design widths. Controls to
-' their right move over by the share they pass. Returns the offset from the rail.
+' their right move over by the share they pass. A fixed-width label directly above
+' a control with the same left edge is its caption and moves with it.
+' Returns the offset from the rail.
 Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal extra As Long, ByRef x As Long, ByRef w As Long)
-    Dim key As Variant, p As Variant, total As Double, before As Double
+    Dim key As Variant, p As Variant, total As Double, before As Double, captioned As Long
+    If v(5) And Not v(4) Then
+        For Each key In geometry.Keys
+            p = geometry(key)
+            If p(0) = v(0) And p(1) >= v(1) + v(3) And p(1) <= v(1) + v(3) + CAPTION_REACH Then
+                UXElasticPlace geometry, p, extra, x, captioned: w = v(2): Exit Sub
+            End If
+        Next
+    End If
     If v(4) Then total = v(2)
     For Each key In geometry.Keys
         p = geometry(key)
@@ -160,7 +172,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
         baseWidth = UX_DESIGN_WIDTH
         For Each c In f.Controls
             If c.Left >= UX_RAIL_EDGE And c.Name <> "cmdWindowHelp" And c.Name <> "uxCompactNav" And c.Name <> "uxContext" And VBA.Left$(c.Tag, 5) <> "SORT:" Then
-                geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height, UXElastic(c))
+                geometry.Add c.Name, Array(c.Left, c.Top, c.Width, c.Height, UXElastic(c), c.ControlType = acLabel)
                 If c.Visible And c.Left + c.Width - UX_CONTENT_LEFT > baseWidth Then baseWidth = c.Left + c.Width - UX_CONTENT_LEFT
             End If
         Next

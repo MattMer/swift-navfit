@@ -86,6 +86,26 @@ Plan section 2, committed and pushed:
   Dictionary), adding the saved .dic in Office, and a workstation without
   proofing tools.
 
+## Visual walkthrough (31 October, committed locally, not pushed)
+
+Matt asked for a full visual pass. 122 screens were captured on a synthetic demo
+with runtime geometry, triaged by Sonnet agents and verified, then fixed: 22-pt
+titles 500 -> 600 twips on 56 forms, editor page title/header/group box, two-line
+block 22/49 captions (`modReportPages`), `&` escaped in field captions, Report
+tools sort headings placed per view (`UXToolsRefresh`) and corrected Validation
+headings (`modTableSort`), Mark signed button styling, overlapping status labels
+(group Members, workspace import), RUAD mojibake and duplicate header, captions
+following their field on wide windows (`UXElasticPlace`). Report geometry,
+captions and PDF code are unchanged. Proposals awaiting Matt (header right column,
+trait-grid headings, raw list headings, rail height, Overview, button rows,
+contributor start) are in the project doc "Swift NAVFIT visual walkthrough:
+fixes and proposals". Capture/triage scripts were scratch only, not in the repo.
+Verified: BuildAndTest PASS build/workflow/20261030-221106-cf50613f-73b4-4795-96b1-e4be89dd9608;
+test-workspace-presentation and test-report-navigation PASS on that build;
+test-traits, test-summary-groups, test-pdf-output PASS on the prior build
+(before the last viewport refinement). Not checked: other DPI/scaling, physical print.
+Unrelated finding: docs/architecture/views/SV-7.md has mojibake (en dash, arrow).
+
 ## Exact next actions
 
 1. Editor page-layout cache is done (b5e7e54); editor open stays about 1.1 s by

@@ -130,7 +130,7 @@ Begin Form
                     Left =2850
                     Top =850
                     Width =10752
-                    Height =500
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
@@ -139,7 +139,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =850
                     LayoutCachedWidth =13602
-                    LayoutCachedHeight =1350
+                    LayoutCachedHeight =1450
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

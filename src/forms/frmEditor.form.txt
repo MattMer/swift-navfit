@@ -7825,66 +7825,29 @@ Begin Form
                 End
                 Begin CommandButton
                     TabStop = NotDefault
-                    OverlapFlags =215
+                    OverlapFlags =223
+                    TextFontFamily =34
                     Left =12100
                     Top =450
                     Width =1500
                     Height =400
+                    FontSize =10
                     TabIndex =172
-                    ForeColor =16777215
                     Name ="uxMarkSigned"
                     Caption ="Mark signed"
-                    OnClick ="=UXSignoffOpen()"
-                    FontName ="Aptos Display"
                     ControlTipText ="Record that the saved report was signed outside Swift and lock it."
-                    LeftPadding =0
-                    TopPadding =0
-                    RightPadding =0
-                    BottomPadding =0
-                    GridlineColor =16777215
-                    GridlineWidthLeft =0
-                    GridlineWidthTop =0
-                    GridlineWidthRight =0
-                    GridlineWidthBottom =0
+                    OnClick ="=UXSignoffOpen()"
+                    FontName ="Segoe UI"
 
                     LayoutCachedLeft =12100
                     LayoutCachedTop =450
                     LayoutCachedWidth =13600
                     LayoutCachedHeight =850
-                    Alignment =0
-                    ForeTint =0.0
-                    ForeShade =0.0
-                    GridlineThemeColorIndex =0
-                    GridlineTint =0.0
-                    GridlineShade =0.0
-                    UseTheme =0
-                    Shape =0
-                    Gradient =0
-                    BackColor =16777215
-                    BackThemeColorIndex =0
-                    BackTint =0.0
-                    BackShade =0.0
-                    BorderColor =16777215
-                    BorderThemeColorIndex =0
-                    BorderTint =0.0
-                    BorderShade =0.0
-                    ThemeFontIndex =0
-                    HoverColor =16777215
-                    HoverThemeColorIndex =0
-                    HoverTint =0.0
-                    HoverShade =0.0
-                    PressedColor =16777215
-                    PressedThemeColorIndex =0
-                    PressedTint =0.0
-                    PressedShade =0.0
-                    HoverForeColor =16777215
-                    HoverForeTint =0.0
-                    HoverForeShade =0.0
-                    PressedForeColor =16777215
-                    PressedForeTint =0.0
-                    PressedForeShade =0.0
-                    WebImagePaddingRight =-1
-                    WebImagePaddingBottom =-1
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
                     Overlaps =1
                 End
                 Begin CommandButton

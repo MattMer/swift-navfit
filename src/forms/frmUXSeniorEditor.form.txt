@@ -180,18 +180,18 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =1100
+                    Top =1040
                     Width =10112
-                    Height =500
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
                     Caption ="Reporting senior record"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =1100
+                    LayoutCachedTop =1040
                     LayoutCachedWidth =12978
-                    LayoutCachedHeight =1600
+                    LayoutCachedHeight =1640
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -609,7 +609,7 @@ Begin Form
                     TabIndex =15
                     ForeColor =4205854
                     Name ="cmdPage1"
-                    Caption ="Address & contact"
+                    Caption ="Address && contact"
                     OnClick ="=RSSelectSeniorPage(1)"
                     FontName ="Segoe UI"
                     UnicodeAccessKey =32

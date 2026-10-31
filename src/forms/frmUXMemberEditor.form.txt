@@ -108,7 +108,7 @@ Begin Form
                     Left =400
                     Top =250
                     Width =11200
-                    Height =500
+                    Height =600
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
@@ -117,7 +117,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =250
                     LayoutCachedWidth =11600
-                    LayoutCachedHeight =750
+                    LayoutCachedHeight =850
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -216,7 +216,7 @@ Begin Form
                     IMESentenceMode =3
                     Left =400
                     Top =2250
-                    Width =2700
+                    Width =3000
                     Height =420
                     FontSize =10
                     TabIndex =2
@@ -227,7 +227,7 @@ Begin Form
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =2250
-                    LayoutCachedWidth =3100
+                    LayoutCachedWidth =3400
                     LayoutCachedHeight =2670
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -239,7 +239,7 @@ Begin Form
                             TextFontFamily =34
                             Left =400
                             Top =1900
-                            Width =2700
+                            Width =3000
                             Height =320
                             FontSize =10
                             ForeColor =4205854
@@ -248,7 +248,7 @@ Begin Form
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1900
-                            LayoutCachedWidth =3100
+                            LayoutCachedWidth =3400
                             LayoutCachedHeight =2220
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
@@ -259,9 +259,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =3450
+                    Left =3650
                     Top =2250
-                    Width =2700
+                    Width =3300
                     Height =420
                     FontSize =10
                     TabIndex =3
@@ -270,9 +270,9 @@ Begin Form
                     Name ="txtSSN"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =3450
+                    LayoutCachedLeft =3650
                     LayoutCachedTop =2250
-                    LayoutCachedWidth =6150
+                    LayoutCachedWidth =6950
                     LayoutCachedHeight =2670
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -282,18 +282,18 @@ Begin Form
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
-                            Left =3450
+                            Left =3650
                             Top =1900
-                            Width =2700
+                            Width =3300
                             Height =320
                             FontSize =10
                             ForeColor =4205854
                             Name ="lbltxtSSN"
                             Caption ="SSN (nine digits, or unentered)"
                             FontName ="Segoe UI"
-                            LayoutCachedLeft =3450
+                            LayoutCachedLeft =3650
                             LayoutCachedTop =1900
-                            LayoutCachedWidth =6150
+                            LayoutCachedWidth =6950
                             LayoutCachedHeight =2220
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1

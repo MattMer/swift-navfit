@@ -35,7 +35,7 @@ Public Function UXBlockLayout(ByVal section As Long) As Boolean
             If multi Then size = usable: band = CStr(key)
             If x > 150 And (band <> prior Or x + size > usable + 150) Then y = y + rowHeight: x = 150: rowHeight = 0
             With f.Controls("label" & key)
-                .Caption = UXFieldCaption(key, kind): .Left = x: .Top = y: .Width = size: .Height = 300: .Visible = True
+                .Caption = Replace(UXFieldCaption(key, kind), "&", "&&"): .Left = x: .Top = y: .Width = size: .Height = 300: .Visible = True
             End With
             With f.Controls("value" & key)
                 .Left = x: .Top = y + 320: .Width = size: .Height = IIf(multi, 1800, 360): .Visible = True: .TabIndex = tabOrder
