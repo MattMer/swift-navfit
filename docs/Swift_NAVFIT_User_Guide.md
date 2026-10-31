@@ -232,7 +232,15 @@ Choose **Check spelling** beside the line meter, or press **F7** in any narrativ
 
 Corrections you accept become pending edits, like typing: they appear in the line meter and validation, are kept in recovery, and are saved when you choose **Save draft**. On a signed report, Swift first asks whether to reopen it for correction, as it does when you type.
 
-If Office's proofing tools aren't installed, which can happen on locked-down workstations, Swift says so and your text is unchanged. Navy terms such as rates and ship names may be flagged; choose **Ignore** or **Ignore All** for them. Words you add with **Add to Dictionary** go to your own Office dictionary.
+If Office's proofing tools aren't installed, which can happen on locked-down workstations, Swift says so and your text is unchanged. Words you add with **Add to Dictionary** go to your own Office dictionary.
+
+**Add the Navy word list (once per computer).** Office's dictionary flags many Navy terms: ratings and paygrades such as ITCS, grades such as LCDR, and terms such as RSCA, NAVFIT98A, DDG and watchbill. Swift includes a list of about 800 of them. Swift never changes your Office settings, so you add the list yourself:
+
+1. Open **Resources** and choose **Save Navy word list for spell check**. Choose a folder you keep, such as Documents. Swift saves *Swift NAVFIT Navy words.dic* there.
+2. In Access, choose **File > Options > Proofing > Custom Dictionaries**.
+3. Choose **Add**, pick the saved file, and choose **OK**.
+
+Office then accepts those terms in Access, Word and Outlook. To stop using them, remove the file in the same dialog.
 
 ## 4.2 Understand the save states
 

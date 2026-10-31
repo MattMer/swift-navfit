@@ -317,7 +317,29 @@ Public Function TestNarrativeSpelling() As String
         Check ReportIsSigned(id) And Not EditorHasPending(), kind & ": refused spell check changed the report"
         f.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     Next
-    TestNarrativeSpelling = "PASS: " & checks & " spell check wiring, pending, recovery and signed-report assertions"
+    stage = "Navy word list"
+    Dim path As String, stream As Object, bytes As Variant, text As String, word As Variant, seen As Object, count As Long
+    path = Environ$("TEMP") & "\SwiftNavyWords-" & Format$(Now(), "yyyymmddhhnnss") & ".dic"
+    count = SaveNavyWordList(path)
+    Check count >= 700, "Navy word list has " & count & " entries"
+    Set stream = CreateObject("ADODB.Stream"): stream.Type = 1: stream.Open: stream.LoadFromFile path: bytes = stream.Read(2): stream.Close
+    Check bytes(0) = &HFF And bytes(1) = &HFE, "Navy word list is not UTF-16 with a byte-order mark"
+    Set stream = CreateObject("ADODB.Stream"): stream.Type = 2: stream.Charset = "unicode": stream.Open: stream.LoadFromFile path: text = stream.ReadText: stream.Close
+    Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
+    For Each word In Split(Left$(text, Len(text) - 2), vbCrLf)
+        Check Len(word) > 0 And Not word Like "*[!A-Za-z0-9]*", "Office would reject the entry [" & word & "]"
+        Check Not seen.Exists(word), "Duplicate entry " & word
+        seen(word) = True
+    Next
+    Check seen.Count = count, "Saved entries differ from the list"
+    For Each word In Array("RSCA", "NAVFIT98A", "LCDR", "CMDCM", "watchbill", "DDG", "ITCS")
+        Check seen.Exists(word), "Navy word list lacks " & word
+    Next
+    Kill path
+    DoCmd.OpenForm "frmUXResources"
+    Check Forms!frmUXResources!cmdNavyWords.OnClick = "=UXSaveNavyWords()" And Forms!frmUXResources!cmdNavyWords.Visible, "Navy word list button missing from Resources"
+    DoCmd.Close acForm, "frmUXResources", acSaveNo
+    TestNarrativeSpelling = "PASS: " & checks & " spell check wiring, pending, recovery and signed-report and Navy word list assertions"
     Exit Function
 Failed:
     TestNarrativeSpelling = "FAIL: " & stage & ": " & Err.Number & " " & Err.Description

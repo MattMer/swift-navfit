@@ -737,6 +737,46 @@ Begin Form
                 End
                 Begin CommandButton
                     OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =5700
+                    Width =9954
+                    Height =550
+                    FontSize =10
+                    TabIndex =14
+                    ForeColor =4205854
+                    Name ="cmdNavyWords"
+                    Caption ="Save Navy word list for spell check"
+                    OnClick ="=UXSaveNavyWords()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =5700
+                    LayoutCachedWidth =12804
+                    LayoutCachedHeight =6250
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
                     Left =15050
                     Top =150
                     Width =500

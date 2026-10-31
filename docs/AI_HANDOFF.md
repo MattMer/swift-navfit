@@ -68,23 +68,23 @@ Committed locally, not pushed:
   its 6-line limit; block 28 third line and Chief comment second line are slightly
   clipped in the rectangles); the no-printer path; guide PDF visual check.
 
-## Spell check (31 October, uncommitted)
+## Spell check (31 October, committed 289093e; word list in the next commit)
 
-Plan section 2. Working tree, awaiting Matt's commit approval:
+Plan section 2, local commits only (not pushed):
 - `UXSpellCheck` / `UXSpellKey` / `UXSpellApply` (modUXSurface): Check spelling
-  button by the comments (`cmdSpelling`, frmUXEditorFields, placed in both
-  layouts) and F7 (new subform class module with KeyPreview) run
-  `acCmdSpelling` on the comments, blocks 28/29 and Chief performance comments;
-  the result goes through `UXSurfaceSetValue`; signed reports ask to reopen.
-  Guide, help, PROJECT_STATE updated.
-- Navy word list not built: Access exposes no custom-dictionary option, so it
-  would mean editing Office's shared dictionary list (registry, used by Word and
-  Outlook). Waiting for Matt's decision.
-- Verified: BuildAndTest PASS build/workflow/20261030-194452-3f3886a0-a002-410d-a5fa-f93633cb16e8;
-  test-narratives PASS (73 spelling assertions); test-workspace-presentation PASS.
-  Codex review fixes applied (long-text selection, honest error message).
-- Needs Matt attended: the Office dialog itself (corrections, cancel, Add to
-  Dictionary) and a workstation without proofing tools.
+  button by the comments (`cmdSpelling`) and F7 (frmUXEditorFields class module,
+  KeyPreview) run `acCmdSpelling` on the comments, blocks 28/29 and Chief
+  performance comments; corrections go through `UXSurfaceSetValue`; signed
+  reports ask to reopen.
+- Navy word list, Matt's option (b): about 800 terms drafted by a fast model and
+  reviewed, embedded in `NavyWordList` (modUXResourceTools). Resources > Save
+  Navy word list for spell check writes a UTF-16 .dic; the user adds it under
+  File > Options > Proofing > Custom Dictionaries. Swift never changes Office settings.
+- Verified: BuildAndTest PASS build/workflow/20261030-202555-8fcc32bf-6941-41e1-a3e7-0409af38df5e;
+  test-narratives PASS (1,686 spelling and word-list assertions); test-workspace-presentation PASS.
+- Needs Matt attended: the Office dialog (corrections, cancel, Add to
+  Dictionary), adding the saved .dic in Office, and a workstation without
+  proofing tools.
 
 ## Exact next actions
 
@@ -94,5 +94,5 @@ Plan section 2. Working tree, awaiting Matt's commit approval:
    Step 3 (sparse revision values, schema change) is next only if the user
    schedules it.
 3. Optional: diagnose the test-import-engine 3059 flake.
-4. Spell check: commit after Matt approves; Navy word list awaits his decision.
+4. Spell check and the Navy word list are committed; Matt's attended checks are listed above.
 5. Update this file at milestones and before stopping.
