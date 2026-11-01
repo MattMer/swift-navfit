@@ -1,5 +1,7 @@
 # Swift NAVFIT
 
+[![Latest release](https://img.shields.io/github/v/release/MattMer/swift-navfit?label=release)](https://github.com/MattMer/swift-navfit/releases/latest) [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE) ![Platform: Windows with Microsoft Access](https://img.shields.io/badge/platform-Windows%20%7C%20Microsoft%20Access-lightgrey)
+
 **Draft, review, and manage Navy evaluations in one local workspace.**
 
 [User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) | [Read the guide online](docs/Swift_NAVFIT_User_Guide.md) | [Download the latest release](https://github.com/MattMer/swift-navfit/releases/latest)
@@ -9,6 +11,10 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
 The 27-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+
+![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
+
+*Rack and stack a summary group: every member's marks and recommendations in one table. All screenshots show the Demo's made-up data.*
 
 ## What Swift helps with
 
@@ -21,6 +27,8 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 - **Archive and recover:** move reports out of the active lists without losing their history.
 
 ### Coordinate review without a separate tracker
+
+![My Work: assigned reviews and route steps with due dates, status and the next action for each](docs/images/my-work.png)
 
 - **My Work:** one list of your assigned reviews, route steps, and reports ready for local approval, plus a tab for report notes.
 - **Review routes:** assign people to ordered steps; they accept or return the report with a note.
@@ -38,6 +46,8 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 - **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
 
 ### Catch problems while drafting
+
+<img src="docs/images/report-editor.png" width="720" alt="The report editor's Front Page, with blocks 1 to 31 in official order, the ITA and group average, review actions and save status">
 
 - **Live findings with citations:** Swift checks values as you type and links each finding to the block it concerns.
 - **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.
@@ -131,6 +141,7 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 - [Choosing your contributor at startup](docs/Contributor_Startup.md)
 - [Reviewing duplicate Sailors](docs/Duplicate_Sailor_Review.md)
 - [Accessibility](docs/Swift_NAVFIT_User_Guide.md#34-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
+- Found a problem? [Open an issue](https://github.com/MattMer/swift-navfit/issues/new/choose) using made-up data only. Report security problems privately as described in [SECURITY.md](SECURITY.md).
 
 **Reviewing Swift for your command?** The [technical README](TECHNICAL_README.md) covers architecture, data handling, security, testing, the release process, known limitations, and the DoDAF, DevSecOps, SBOM, and threat-model documents for an ISSM or technical review.
 

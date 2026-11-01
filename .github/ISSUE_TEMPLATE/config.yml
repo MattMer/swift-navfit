@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security problem
+    url: https://github.com/MattMer/swift-navfit/security/advisories/new
+    about: Report vulnerabilities privately. Never post personnel data in an issue.
+  - name: User guide
+    url: https://github.com/MattMer/swift-navfit/blob/main/docs/Swift_NAVFIT_User_Guide.md
+    about: How to set up and use Swift NAVFIT.

@@ -40,7 +40,10 @@ Thumbs.db
 
 # AI assistant instructions, settings and editor configuration stay local.
 /.claude/
-/.github/
+/.github/*
+# Issue and pull request templates are public project files.
+!/.github/ISSUE_TEMPLATE/
+!/.github/pull_request_template.md
 /.vscode/
 /AGENTS.md
 /CLAUDE.md
