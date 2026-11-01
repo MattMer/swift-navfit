@@ -15,7 +15,7 @@ Public Function UXToolsChoose(ByVal view As String) As Boolean
  UXToolsChoose = UXSelectSection(8)
 End Function
 Public Function UXToolsAvailable() As Boolean
- If CurrentProject.AllForms("frmEditor").IsLoaded Then UXToolsAvailable = UXHasControl(Forms!frmEditor, "uxToolsSurface")
+ UXToolsAvailable = CurrentProject.AllForms("frmEditor").IsLoaded
 End Function
 Public Function UXToolsRefresh() As Boolean
  Dim f As Access.Form, c As Access.Control, id As Long, name As Variant, active As Boolean

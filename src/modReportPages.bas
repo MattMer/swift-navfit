@@ -9,7 +9,7 @@ Public Sub UXFixedForgetLayout()
  Set placedKeys = Nothing
 End Sub
 Public Function UXFixedEnabled() As Boolean
- If CurrentProject.AllForms("frmEditor").IsLoaded Then UXFixedEnabled = UXHasControl(Forms!frmEditor, "uxFrontPage")
+ UXFixedEnabled = CurrentProject.AllForms("frmEditor").IsLoaded
 End Function
 Public Function UXFixedRenderCount() As Long
  UXFixedRenderCount = renders

@@ -33,7 +33,6 @@ End Function
 ' Load latest dated observations; prior baseline records are never overwritten.
 Public Function RSTableLoad() As Boolean
  Dim grade As Variant, r As DAO.Recordset, db As DAO.Database, f As Access.Form, row As Variant
- If Not UXHasControl(Forms!frmUXSeniorEditor, "uxRSCATable") Then Exit Function
  Set f = Forms!frmUXSeniorEditor!uxRSCATable.Form: Set initialRows = CreateObject("Scripting.Dictionary")
  Set db = CurrentDb
  For Each grade In RSTableGrades()
@@ -241,7 +240,6 @@ End Function
 Public Sub RSTablePage(ByVal page As Long)
  Dim name As Variant
  With Forms!frmUXSeniorEditor
-  If Not UXHasControl(Forms!frmUXSeniorEditor, "uxRSCATable") Then Exit Sub
   !uxRSCATable.Visible = (page = 3)
   For Each name In Array("lstBaselines", "cboHistoryGrade", "lblTrailSummary", "cmdOpenGroup"): .Controls(name).Visible = False: Next
   If page = 3 And Not shown Then RSTableLoad: shown = True

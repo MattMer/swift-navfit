@@ -386,11 +386,9 @@ Failed:
 End Function
 
 Public Function LoadHome() As Boolean
-    If UXHasControl(Forms!frmHome, "uxContributor") Then
-        Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
-        Forms!frmHome!uxContributor = ProfileID()
-        Forms!frmHome!uxContributorStatus.Caption = ""
-    End If
+    Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+    Forms!frmHome!uxContributor = ProfileID()
+    Forms!frmHome!uxContributorStatus.Caption = ""
     Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
     Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
     Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
@@ -401,7 +399,7 @@ End Function
 Public Function LoadLibrary() As Boolean
     RefreshFolders
     If IsNull(Forms!frmLibrary!cboArchive) Then Forms!frmLibrary!cboArchive = "Active"
-    If UXHasControl(Forms!frmLibrary, "cboRankFilter") Then UXMemberRankChoices Forms!frmLibrary, "Report"
+    UXMemberRankChoices Forms!frmLibrary, "Report"
     Call RefreshLibrary()
     LoadLibrary = True
 End Function

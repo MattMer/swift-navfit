@@ -18,7 +18,7 @@ Public Function UXShowGroupMembers(ByVal id As Long, Optional ByVal refresh As B
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then DoCmd.OpenForm "frmUXComparison", , , , , , "G:" & id: gridLoaded = True
     Forms!frmUXComparison.Caption = Nz(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & id), "Summary group")
     Forms!frmUXComparison!lblHeading.Caption = Forms!frmUXComparison.Caption
-    If UXHasControl(Forms!frmUXComparison, "uxGroupMeta") Then Forms!frmUXComparison!uxGroupMeta.Caption = Nz(MajorScalar("SELECT FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE GroupID=" & id), "") & " | " & PersistenceCount("GroupMember", "GroupID=" & id) & " members"
+    Forms!frmUXComparison!uxGroupMeta.Caption = Nz(MajorScalar("SELECT FormKind & ' | ' & Paygrade FROM SummaryGroup WHERE GroupID=" & id), "") & " | " & PersistenceCount("GroupMember", "GroupID=" & id) & " members"
     If Forms!frmUXComparison!uxTraitGrid.Form.Recordset.EOF Then Forms!frmUXComparison!lblStatus.Caption = "No reports in this summary group. Choose group members or add a report."
     'A grid load just set the senior caption through its averages; skip a second PSG pass.
     UXGroupTabState "frmUXComparison", 0, , gridLoaded

@@ -220,7 +220,6 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
  Dim stage As String, scopeFailure As Object
  On Error GoTo Failed
  If Not CurrentProject.AllForms("frmUXBulk").IsLoaded Then Exit Function
- If Not UXHasControl(Forms!frmUXBulk, "uxScope") Then Exit Function
  stage = "Count scope reports"
  Set db = CurrentDb
  If directDefaults Then

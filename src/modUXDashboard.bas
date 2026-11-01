@@ -258,7 +258,7 @@ Public Function UXClearReportFilters() As Boolean
     With Forms!frmLibrary
         !txtSearch = Null: !cboArchive = "Active": !lstFolders = 0: !uxFolderFilter = 0
         !uxTypeFilter = "All": !uxStatusFilter = "All"
-        If UXHasControl(Forms!frmLibrary, "cboRankFilter") Then !cboRankFilter = "All ranks/rates"
+        !cboRankFilter = "All ranks/rates"
     End With
     UXClearReportFilters = RefreshLibrary()
 End Function

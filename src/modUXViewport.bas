@@ -109,7 +109,7 @@ End Function
 ' a control with the same left edge is its caption and moves with it.
 ' Returns the offset from the rail.
 Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal extra As Long, ByRef x As Long, ByRef w As Long)
-    Dim key As Variant, p As Variant, total As Double, before As Double, captioned As Long
+    Dim key As Variant, p As Variant, total As Double, before As Double, captioned As Long, slots As Object
     If v(5) And Not v(4) Then
         For Each key In geometry.Keys
             p = geometry(key)
@@ -119,9 +119,13 @@ Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal e
         Next
     End If
     If v(4) Then total = v(2)
+    'Controls stacked in one slot (other pages or views) count once, so hidden
+    'alternatives never shrink a row's share.
+    Set slots = CreateObject("Scripting.Dictionary")
     For Each key In geometry.Keys
         p = geometry(key)
-        If p(4) And p(1) < v(1) + v(3) And v(1) < p(1) + p(3) Then
+        If p(4) And p(1) < v(1) + v(3) And v(1) < p(1) + p(3) And Not slots.Exists(p(0) & ":" & p(2)) Then
+            slots.Add p(0) & ":" & p(2), True
             If p(0) + p(2) <= v(0) Then
                 total = total + p(2): before = before + p(2)
             ElseIf p(0) >= v(0) + v(2) Then

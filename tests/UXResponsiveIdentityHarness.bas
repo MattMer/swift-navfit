@@ -82,6 +82,16 @@ Public Function TestUXResponsiveIdentity() As String
             Check f.ScrollBars = 2, "Safe vertical access missing: " & name
         Next
     Next
+    stage = "stacked page slots"
+    'Hidden pages and views stacked in a slot must not shrink one row's fields.
+    Check UXResizeWorkspace("frmUXSeniorEditor", 18000, 6800), "Wide senior editor resize failed: " & UXViewportFailure()
+    Set f = Forms!frmUXSeniorEditor
+    For Each key In Array("rsReportingSeniorDesignator", "rsReportingSeniorUIC")
+        Check f.Controls(CStr(key)).Width = f!rsReportingSeniorName.Width And f.Controls(CStr(key)).Left = f!rsReportingSeniorName.Left, "Left column width differs: " & key
+    Next
+    For Each key In Array("rsReportingSeniorTitle", "rsReportingSeniorSSN")
+        Check f.Controls(CStr(key)).Width = f!rsReportingSeniorGrade.Width And f.Controls(CStr(key)).Left = f!rsReportingSeniorGrade.Left, "Right column width differs: " & key
+    Next
     stage = "unchanged viewport cache"
     UXResizeWorkspace "frmLibrary", 13800, 6800
     key = UXViewportPasses()

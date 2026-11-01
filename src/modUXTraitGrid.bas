@@ -63,8 +63,8 @@ Private Sub UXGridPendingActions()
         If activeName = "cmdRetryCells" Or activeName = "cmdDiscardCells" Then Forms!frmUXComparison!cmdBack.SetFocus
     End If
     With Forms!frmUXComparison
-        If UXHasControl(Forms!frmUXComparison, "cmdRetryCells") Then .cmdRetryCells.Visible = (UXGridPendingCount() > 0)
-        If UXHasControl(Forms!frmUXComparison, "cmdDiscardCells") Then .cmdDiscardCells.Visible = (UXGridPendingCount() > 0)
+        .cmdRetryCells.Visible = (UXGridPendingCount() > 0)
+        .cmdDiscardCells.Visible = (UXGridPendingCount() > 0)
     End With
 End Sub
 ' Release the separate cache workspace and temporary file only when no pending cells remain.
@@ -276,7 +276,7 @@ Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) A
     If loading Or saving Or cacheRows Is Nothing Then Exit Function
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
-    If UXHasControl(Forms!frmUXComparison, "uxOpenGroupReport") Then Forms!frmUXComparison!uxOpenGroupReport.Enabled = Not f.Recordset.EOF
+    Forms!frmUXComparison!uxOpenGroupReport.Enabled = Not f.Recordset.EOF
     If f.Recordset.EOF Then Exit Function
     f!PriorITA.ControlTipText = Nz(f!PriorPeriod, "") & " - " & Nz(f!PriorSource, "")
     f!PriorPromotion.ControlTipText = f!PriorITA.ControlTipText

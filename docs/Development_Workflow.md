@@ -418,6 +418,12 @@ fail the suite and cannot produce a successful release receipt.
 
 ### Diagnostics, view contracts and trait data (M04–M06)
 
+Form and control names are checked from source, without Access, by
+`scripts/cases/test-form-references.ps1` (part of `scripts/test-source-contracts.ps1`).
+It fails with the module and line of every literal reference whose form or control
+is missing. A field that code reads from a run-time record source with no control
+of its own goes in its `$recordFields` list.
+
 Directory-batch preview/failure checks use the existing
 `scripts/test-directory-management.ps1 -Tier extended -BuildPath <blank>` and its
 `-AdversarialPreviews` mode. The latter isolates each case in a new owned Access

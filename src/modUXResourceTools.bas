@@ -42,7 +42,7 @@ Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPS
 End Function
 Public Sub UXRefreshGroupSenior()
  If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
-  If UXHasControl(Forms!frmUXComparison, "uxSeniorCaption") Then Forms!frmUXComparison!uxSeniorCaption.Caption = UXGroupSeniorCaption(Nz(Forms!frmUXComparison!uxGroupContext, 0))
+  Forms!frmUXComparison!uxSeniorCaption.Caption = UXGroupSeniorCaption(Nz(Forms!frmUXComparison!uxGroupContext, 0))
  End If
 End Sub
 ' Resources opens a dedicated template view, without a summary-group workbench.

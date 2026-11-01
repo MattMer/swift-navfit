@@ -139,7 +139,7 @@ Public Function LoadMyWork(Optional ByVal refreshQueue As Boolean = True) As Boo
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
     Forms!frmMyWork!lstTasks.RowSource = sql & " ORDER BY t.TaskID DESC": Forms!frmMyWork!lstTasks.Requery
     Forms!frmMyWork!txtHistory = Null
-    If refreshQueue And UXHasControl(Forms!frmMyWork, "lstWork") Then Call UXLoadWorkQueue
+    If refreshQueue Then Call UXLoadWorkQueue
     LoadMyWork = True
 End Function
 Public Function TaskDetails() As Boolean

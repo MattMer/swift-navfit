@@ -56,7 +56,7 @@ $tables=@($tables|Sort-Object Name);$relations=@($relations|Sort-Object Child,Pa
 #--- Tracked sources ------------------------------------------------------------
 function ReadText($relative){return [IO.File]::ReadAllText((Join-Path $root $relative))}
 $catalogue=ReadText 'src/field-definitions.json'|ConvertFrom-Json
-$runners=ReadText 'tests/runners.json'|ConvertFrom-Json
+$runners=(ReadText 'tests/runners.json'|ConvertFrom-Json).runners
 $manifest=ReadText 'scripts/build-manifest.json'|ConvertFrom-Json
 $modules=@($manifest.sourceModules).Count+@($manifest.generatedModules).Count
 $forms=@($manifest.forms).Count
