@@ -2,192 +2,138 @@
 
 **Draft, review, and manage Navy evaluations in one local workspace.**
 
-[User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) | [Read the guide online](docs/Swift_NAVFIT_User_Guide.md)
+[User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) | [Read the guide online](docs/Swift_NAVFIT_User_Guide.md) | [Download the latest release](https://github.com/MattMer/swift-navfit/releases/latest)
 
-The 22-page guide covers setup, drafting, notes and replies, validation, summary groups, RSCA, local review, exchange, recovery, and upgrades. It follows the procedure-based organization of the eNavFit guide and describes Swift's current local workflow.
+Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EVALs, CHIEFEVALs, and FITREPs. It keeps report drafting, summary groups, member history, review, revision tracking, and recovery together in one workspace file on your computer.
 
-Swift NAVFIT is a Windows application built in Microsoft Access for EVALs, CHIEFEVALs, and FITREPs. It brings report drafting, summary groups, member history, local review, revision tracking, and recovery into one `.accdb` file.
+It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The goal is to reduce the spreadsheets, emailed copies, repeated data entry, and manual tracking that surround the report-writing process. Swift works alongside NAVFIT98A through supported import/export workflows; NAVFIT98A remains the destination for final native validation and printing.
+The 27-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
-## What Swift adds to the workflow
+## What Swift helps with
 
-### Know what changed—and recover it
+### Know what changed, and get it back
 
-- **Field-level revision history:** see who saved a change, when it changed, and the previous/new values.
-- **Compare and restore revisions:** inspect differences and restore an earlier version as a new revision without erasing history.
-- **Unsaved-edit recovery:** automatic/manual checkpoints preserve pending editor work separately from saved revisions.
-- **Clear save feedback:** distinguish unsaved edits, recovery checkpoints, failed saves, and committed revisions. Failed saves retain pending values for correction and retry.
-- **Archive and recover:** keep reports out of active views without losing their history.
+- **Change history for every field:** see who saved a change, when, and the old and new values.
+- **Compare and restore:** compare two versions of a report and restore an earlier one as a new version, without erasing history.
+- **Unsaved-work recovery:** edits you haven't saved yet are checkpointed separately, so a crash or a failed save doesn't lose them.
+- **Clear save status:** Swift tells you whether a change is unsaved, checkpointed, saved, or failed. A failed save keeps your values so you can fix and retry.
+- **Archive and recover:** move reports out of the active lists without losing their history.
 
 ### Coordinate review without a separate tracker
 
-- **My Work:** one queue for assigned reviews, current route steps, and ready local approvals, with status and next actions. A separate Report notes tab opens shared conversations.
-- **Ordered review routes:** assign contributors to steps, accept or return work with decision notes, and retain earlier decisions when a stale route is restarted.
-- **Shared report conversations:** notes and replies live inside the report workspace, independent of revisions and approval. Private unfinished drafts can be saved and resumed; conversations need no resolve/reopen workflow.
-- **Stale-review protection:** later report changes invalidate earlier review eligibility instead of silently carrying approval forward.
-- **Local attribution:** contributor names, decision notes, and timestamps make the local review trail readable.
+- **My Work:** one list of your assigned reviews, route steps, and reports ready for local approval, plus a tab for report notes.
+- **Review routes:** assign people to ordered steps; they accept or return the report with a note.
+- **Report notes:** a running conversation inside each report, separate from its versions and approval.
+- **Stale-review protection:** if a report changes after review, the earlier review doesn't silently carry forward.
+- **Mark signed:** record that a report was signed outside Swift, for one report or a whole summary group. Signed reports become read-only until reopened.
 
-### Work across a command and summary groups
+### Work across a command and its summary groups
 
-- **Command member directory:** reuse identities and filter report creation by paygrade or rank/rate; create reports individually or in batches. [Review possible duplicate Sailors](docs/Duplicate_Sailor_Review.md), inspect masked identities and affected links, and merge with retained history and guarded undo.
-- **Prior evaluation history:** keep historical evaluations alongside each member for reference without replacing the current report.
-- **Shared fields and defaults:** apply group or command defaults with a visible scope, per-field confirmation, and disclosure when customized values or local approvals are affected.
-- **Live member tables:** edit trait cells in place; failed cells remain available for retry or deliberate discard.
-- **Comparison and proposals:** inspect group marks and stage changes with safeguards against changed membership, revisions, and locks.
-- **Reporting-senior directory and RSCA history:** reuse senior details and dated baselines; distinguish exact historical totals from rounded-average estimates and select a group's baseline deliberately.
+- **Command member directory:** reuse member details, filter by paygrade or rank/rate, and create reports one at a time or in batches. [Review and merge duplicate Sailors](docs/Duplicate_Sailor_Review.md) with history kept and a guarded undo.
+- **Prior evaluations:** keep each member's earlier evaluations alongside the current report for reference.
+- **Shared fields and defaults:** apply group or command defaults, see exactly which reports change, and confirm each replacement.
+- **Rack and stack:** edit every member's trait marks and recommendations in one table, compare ITA with prior reports, and stage proposed changes for review before applying them.
+- **Reporting seniors and RSCA:** reuse senior details and dated RSCA baselines, keep exact totals apart from estimates, and choose a group's baseline deliberately.
+- **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
 
 ### Catch problems while drafting
 
-- **Live, cited findings:** check pending report values and groups, with references and navigation to the affected block.
-- **Distinct issue types:** separate invalid entries, incomplete drafts, policy issues, and matters needing human review.
-- **Drafts remain editable:** incomplete information does not prevent an otherwise valid draft save.
-- **Guided report pages:** fixed Front/Back layouts, all seven traits together on Front Page, contextual help, and consistent navigation/status colors.
-- **Narrative tools:** rate-filtered, attributed snippets and local draft notes remain separate from the official narrative.
+- **Live findings with citations:** Swift checks values as you type and links each finding to the block it concerns.
+- **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.
+- **Drafts stay editable:** missing information never blocks saving a draft.
+- **Familiar report pages:** fixed Front and Back pages in official block order, all seven traits together, and help for the current window.
+- **Narrative tools:** a line counter that matches how NAVFIT98A prints, spell check, and rate-filtered example phrases kept apart from the official narrative.
 
-### Bring existing data forward
+### Bring data in and out
 
-- **NAVFIT98A exchange:** import supported report/group data and export all saved summary-group members using the internal native template. Select a group, choose an export directory, and export. Incomplete drafts, validation findings and archived/approved status do not block export. Pending edits remain separate; export does not imply approval or submission.
-- **Conflict-aware report returns:** compare the exported baseline, current Swift report, and returned NAVFIT file before applying conflicting edits.
-- **Structured PDF import:** preview mapped values and create a new draft or deliberately fill/replace an existing draft. Extraction runs locally without Acrobat or an internet connection.
-- **Previous-Swift workspace transfer:** bulk-copy supported older workspace data/history into a separate blank build, with exact database-engine verification and responsive progress between batches. Source and rollback protections remain.
-- **Backup/restore and operation history:** guarded tools for protecting the workspace and undoing supported operations.
+- **NAVFIT98A exchange:** import reports and groups, and export a whole summary group to NAVFIT98A. Incomplete drafts and findings don't block export.
+- **Returned reports:** when a report comes back from NAVFIT98A, compare it with what you exported and what changed in Swift before applying anything.
+- **PDF import:** read values from a filled report PDF into a new or existing draft, offline and without Acrobat.
+- **PDF output:** print-ready PDFs of single reports and whole summary-group packets on the official form layouts.
+- **Upgrades and backups:** move an earlier Swift workspace into a new version with every value checked, and back up or undo supported operations.
 
 ## Swift NAVFIT compared with NAVFIT98A
 
-NAVFIT98A already provides report editing, folder/default management, validation, import/export, automatic summary functions, and report/folder/summary printing. Those are **shared foundations**, not features invented by Swift. Swift's main additions are the history, recovery, and review services around the report.
+NAVFIT98A already provides report editing, folders and defaults, validation, import and export, summary calculations, and printing. Swift builds on those foundations; its main additions are the history, recovery, and review tools around each report.
 
-| Capability | NAVFIT98A's documented workflow | Swift NAVFIT |
+| Capability | NAVFIT98A | Swift NAVFIT |
 | --- | --- | --- |
-| Saved-change history | - | Contributor-attributed revisions, before/after values, comparison, and restore as a new revision. |
-| Pending-edit checkpoints | - | Recover pending work independently of committed revisions; changed baselines can recover as a new draft. |
-| Review tracking | - | My Work, assignments, ordered steps, decision notes, stale-route detection, and local approval. |
-| Discussion history | - | Unified report notes and replies, private unfinished drafts, and direct navigation from My Work; independent of approval. |
-| Member reuse and history | - | A command directory, rank/paygrade filters, batch report creation, separate prior evaluations, and reviewed duplicate merging with retained history and guarded undo. |
-| Reporting-senior averages | Summary/average calculations are part of NAVFIT98A. | Reusable senior records and dated RSCA baselines, with exact-versus-estimated provenance and deliberate group baseline selection. |
-| Shared group values | Folder defaults and common report values are supported. | Explicit affected-report scope, confirmation of replacements, and reopening of affected local approvals. |
-| Validation | Native individual-report and folder validation. | Embedded checks plus a modeless Validation Issues popout, pending values, issue categories, citations, and links to report fields; coverage is bounded. Native validation is still required after export. |
-| Three-way returned-report reconciliation | - | A retained export baseline and three-way conflict preview for supported single-report returns. |
-| Final native printing | Built-in report, folder, and summary printing. | Export to NAVFIT98A; Swift does not yet provide an equivalent native print engine or verified final printed fit. |
+| Saved-change history | - | Who changed what and when, compare versions, and restore. |
+| Unsaved-work recovery | - | Checkpoints for edits not yet saved. |
+| Review tracking | - | My Work, assignments, ordered steps, decision notes, and local approval. |
+| Report discussion | - | A running notes log inside each report. |
+| Member reuse and history | - | Command directory, batch report creation, prior evaluations, and duplicate merging. |
+| Reporting-senior averages | Summary and average calculations. | Reusable senior records and dated RSCA history per paygrade. |
+| Shared group values | Folder defaults and common values. | Shows every affected report and asks before replacing values. |
+| Validation | Report and folder validation. | Live findings with citations and links to the field. Run NAVFIT98A validation after export as well. |
+| Returned-report reconciliation | - | Compares the exported, current, and returned versions of a report. |
+| Final printing | Built-in report, folder, and summary printing. | Print-ready PDFs; final printed fit is not yet confirmed. |
 
-The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the locally inspected v33 Patch 2 package. A **-** means no equivalent feature was identified in the reviewed NAVFIT98A documentation/package; it is not an exhaustive claim about every version. NAVFIT98A still supports ordinary report/folder import and export. See the [package findings](planning/NAVFIT_PACKAGE_FINDINGS.md), [native validation comparison](planning/NAVFIT_VALIDATION_COMPARISON_2026-10-14.md), and [print-engine findings](planning/NAVFIT_PRINT_ENGINE_FINDINGS.md) for the evidence and version boundaries. Historical comparisons may describe gaps addressed by later Swift work.
+The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), the [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the v33 Patch 2 package. A **-** means no equivalent was found in that material; it is not a claim about every NAVFIT98A version.
 
-## Data security and offline operation
+## Your data stays on your computer
 
-Swift NAVFIT stores reports, revisions, review history, and recovery checkpoints locally in the workspace `.accdb`. Normal drafting and review do not communicate with the internet: the app does not upload report data, synchronize with an online service, or send telemetry. No internet account, cloud service, or separate application-specific network protection is required.
+Swift stores reports, history, review records, and recovery checkpoints in the workspace file (`.accdb`). It does not connect to the internet: it never uploads report data, syncs with an online service, or sends usage data. No online account is needed.
 
-The workspace uses the Windows file/folder access controls and storage protections of its location. Place it in the same approved, protected folder you would use for other files containing the same data; it inherits that folder's permissions under normal Windows inheritance settings and respects explicit file permissions. Existing device encryption, backup, and organizational data-handling rules continue to apply. Swift does not add a separate authentication or encryption layer, and contributor profiles are attribution labels rather than access controls. SSNs remain readable inside the database, including revisions, recovery and retained import data; masked displays do not encrypt storage.
+Protect the workspace the way you protect other files with the same information. Keep it in your command's approved, access-controlled folder; it takes that folder's Windows permissions, and your device encryption, backups, and data-handling rules still apply. Swift adds no password or encryption of its own, and contributor names identify who made a change; they are not logins. SSNs are stored readable inside the file; masking on screen does not encrypt them.
 
-Optional source links, such as NavyWriter, open an external website only when selected; report contents are not included in those links. Microsoft Access/Office and any cloud synchronization configured for the containing folder operate under their own settings, independently of Swift.
+Optional reference links, such as NavyWriter, open a website only when you select them, and never include report contents.
 
-## Architecture, security and accessibility documentation
+## Get Swift NAVFIT
 
-For command reviewers, the ISSM and anyone assessing Swift NAVFIT for use:
-
-- **[Architecture description](docs/architecture/Swift_NAVFIT_Architecture_Description.md)**, aligned with the DoD Architecture Framework (DoDAF) 2.02 and structured per ISO/IEC/IEEE 42010:
-  - stakeholders, concerns and the viewpoints chosen for a standalone desktop application, with reasons for the ones left out;
-  - 14 fit-for-purpose views: overview, operational concept, activities, rules, state transitions, data models, interfaces, functions, measures, schema evolution and standards.
-
-  Five of the views are generated from the source and a fresh build, and a test fails if any of them drifts. The description is DoDAF-*aligned*, not certified conformant: formal conformance requires DoD architecture tooling (DM2/PES exchange).
-- **[DevSecOps alignment matrix](docs/architecture/DevSecOps_Alignment.md):** every activity in the DoD Enterprise DevSecOps Guidebook, marked as done (with evidence), partial, command-owned or not applicable. No gaps remain.
-- **[Software bill of materials](docs/architecture/SBOM.md)** (also in [CycloneDX](docs/architecture/sbom.cdx.json)), generated from the build. Swift uses no third-party runtime libraries; everything it calls is part of Windows or Microsoft Office.
-- **[Threat model](docs/architecture/Threat_Model.md):** STRIDE over Swift's assets, trust boundaries and file interfaces, the mitigations in the code, recommendations, and the code-signing plan. Every importer is tested against 55 generated malformed and control inputs.
-- **Section 508 accessibility:**
-  - automated checks for contrast, screen-reader names and Windows contrast themes;
-  - the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md);
-  - [user guide section 3.4](docs/Swift_NAVFIT_User_Guide.md#34-accessibility).
-
-## Try Swift NAVFIT
-
-**Requires Windows and full desktop Microsoft Access. Free Access Runtime is not a supported target.**
+**You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
 ### Current release: 0.50.0
 
-[**Swift NAVFIT 0.50.0**](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0) (schema 35) passed the full release gate on 31 October 2026. The release page lists each file's SHA-256 hash.
+Download from the [0.50.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.50.0.accdb:** an empty workspace for a command. Start real work here.
-- **Swift_NAVFIT_Demo_0.50.0.accdb:** synthetic members, reports and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.50.0.accdb:** an empty workspace. Start real work here.
+- **Swift_NAVFIT_Demo_0.50.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
 
-> **Four acceptance checks are still untested:**
+> **Not yet tested:**
 > 1. printed fit against the official forms;
-> 2. screen-reader (NVDA/JAWS) use;
-> 3. a workstation without Adobe Acrobat;
-> 4. a Navy-managed workstation under its normal Office policy.
+> 2. screen readers (NVDA and JAWS);
+> 3. a computer without Adobe Acrobat;
+> 4. a Navy-managed workstation under its normal Office settings.
 >
-> The files are also unsigned: choose **Enable Content** when Access asks.
+> The files are not digitally signed yet, so Access asks you to **Enable Content**.
 
-To start:
+### First steps
 
-1. Download the Blank (or the Demo to practice), keep the original, and open a copy in desktop Access. Choose **Enable Content**.
-2. Complete command and contributor setup. Swift asks you to [choose your contributor at every launch](docs/Contributor_Startup.md).
-3. Create or select a summary group, add members and reports, and use My Work for local review. The top-right **?** opens help for the current window, and the [user guide](docs/Swift_NAVFIT_User_Guide.md) covers every procedure.
-4. **Upgrading from an earlier Swift workspace:**
-   1. Open a copy of the new Blank.
-   2. Choose **Settings & Help → Import data from a previous Swift NAVFIT version**. Every earlier schema imports, and every value is verified before commit.
-   3. Close and reopen the workspace.
+1. Download the Blank (or the Demo to practise). Keep the original and open a copy in desktop Access. Choose **Enable Content**.
+2. Set up your command and your contributor name. Swift asks you to [choose your contributor every time it opens](docs/Contributor_Startup.md).
+3. Create a summary group, add members and reports, and use **My Work** for review. The **?** at the top right of each window opens help for it.
 
-   Never overwrite an existing workspace with a Blank.
+### Upgrading from an earlier version
 
-### Development pre-releases
+1. Open a copy of the new Blank.
+2. Choose **Settings & Help → Import data from a previous Swift NAVFIT version** and pick your current workspace. Every value is checked before anything is saved, and your old file is not changed.
+3. Close and reopen the new workspace.
 
-Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-navfit/releases) are test builds of work in progress. They aren't verified releases.
+Never copy a Blank over an existing workspace.
 
-### Earlier releases
+### Test builds
 
-r128 (app 0.27.1-dev, schema 27) workspaces import into 0.50.0.
+Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-navfit/releases) are test builds of work in progress, not verified releases.
 
-## Important boundaries
+## Important limits
 
-- This is an independent development project, not an official Navy system or a replacement for governing instructions and human review.
-- **Local approval is not official submission, signature, or Navy approval.** Group workflow status is also separate from member-report review.
-- Contributor profiles provide attribution, not authentication. Use one authoritative workspace file, one contributor at a time. Separate copies do not synchronize.
-- Validation and exchange cover implemented cases, not every policy or native encoding. Returned-group reconciliation, arbitrary-source matching, and full native printing remain outside the supported workflow.
-- Save checkpoints, revisions, backups, and migration have different purposes. A workspace transfer preserves a source and creates a separate destination; it does not merge independent populated files.
+- Swift NAVFIT is an independent project, not an official Navy system. It does not replace governing instructions or human review.
+- **Local approval and Mark signed are not official submission, signature, or Navy approval.**
+- Use one workspace file per command, with one person working in it at a time. Separate copies do not sync with each other.
+- Validation covers the checks Swift implements, not every policy. Always run NAVFIT98A validation after export.
+- Recovery checkpoints, saved versions, backups, and upgrades do different jobs. An upgrade copies an old workspace into a new one; it does not merge two populated workspaces.
 
-## Build and contribute
+## Help and documentation
 
-Editable source lives in `src/`; Access builders and focused checks live in `scripts/` and `tests/`. Databases, supplied Navy files, and generated scratch builds stay out of Git. On Windows with desktop Access, run the standard fresh build and focused tests (also VS Code's default Ctrl+Shift+B task):
+- [User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) and the [online edition](docs/Swift_NAVFIT_User_Guide.md)
+- [Choosing your contributor at startup](docs/Contributor_Startup.md)
+- [Reviewing duplicate Sailors](docs/Duplicate_Sailor_Review.md)
+- [Accessibility](docs/Swift_NAVFIT_User_Guide.md#34-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
 
-```powershell
-powershell.exe -NoProfile -File scripts/develop.ps1 -Action BuildAndTest
-```
+**Reviewing Swift for your command?** The [technical README](TECHNICAL_README.md) covers architecture, data handling, security, testing, the release process, known limitations, and the DoDAF, DevSecOps, SBOM, and threat-model documents for an ISSM or technical review.
 
-This is the routine development command: it invokes the manifest-driven builder,
-creates a new blank database under `build/dev/`, and runs the standard development
-checks. Use a copy for manual testing and import existing workspace data through
-Settings & Help. Authorized release preparation uses the separate
-`scripts/release-check.ps1` gates; building or tagging source does not publish
-Blank/Demo files or upload them to Drive.
+## License
 
-The `v0.29.0-dev` annotated tag identifies the verified source and records this
-local development artifact:
-
-- File: `Swift_NAVFIT_0.29.0-dev_20261022-081737_3ffe14f2.accdb`
-- SHA-256: `F8B6883CCFE9DEABF9DE2C811DD19DFEACDD2C6F54B91C5B92B946C5E93994B9`
-
-Generated databases and local verification receipts are not committed. Rebuild
-from the tag using the command above; a newly generated Access file can have a
-different byte hash.
-
-Start with [current architecture and support boundaries](PROJECT_STATE.md), then [development in VS Code](docs/Development_Workflow.md) for commands and [contributing](CONTRIBUTING.md) for change-specific checks. Release preservation requirements are in the [project rules](CONTRIBUTING.md#product-invariants-non-negotiable); the r128 historical-test waiver and unresolved future test policy are recorded in PROJECT_STATE.md. Physical scaling, accessibility, and final printed fit require separate acceptance.
-
-## Guides and project status
-
-- [Swift NAVFIT User Guide - PDF](docs/Swift_NAVFIT_User_Guide.pdf) and [editable online edition](docs/Swift_NAVFIT_User_Guide.md)
-- [Architecture description (DoDAF 2.02)](docs/architecture/Swift_NAVFIT_Architecture_Description.md), [DevSecOps alignment](docs/architecture/DevSecOps_Alignment.md), [SBOM](docs/architecture/SBOM.md) and [threat model](docs/architecture/Threat_Model.md)
-
-- [Recent development and verification](planning/RECENT_DEVELOPMENT.md)
-- [Current project state](PROJECT_STATE.md), [release history](planning/CURRENT_STATE.md), and [priority backlog](planning/PRIORITY_BACKLOG.md)
-- [Summary groups, review routes, and workflow foundations](planning/MAJOR_FOUNDATIONS_GUIDE.md)
-- [Workspace guide](planning/UX_WORKSPACE_GUIDE.md)
-- [Review assignments and My Work](planning/REVIEW_ROUTING_GUIDE.md)
-- [Report tools, unified notes, and verification](planning/REPORT_TOOLS_R123_2026-10-20.md)
-- [Historical review-comment service notes](planning/REVIEW_COMMENTS_GUIDE.md)
-- [Reporting seniors and averages](planning/REPORTING_SENIOR_GUIDE.md)
-- [Workspace transfer and fixed report pages](planning/WORKSPACE_COMPAT_PAGES_R115_2026-10-17.md)
-- [Import provenance](planning/PROVENANCE_GUIDE.md)
-- [Build and verification history](planning/BUILD_STATUS.md)
-
-This private repository has no selected open-source license. Coordinate use and redistribution with its owner.
-
-Build contributors: see [the managed build pipeline](planning/BUILD_PIPELINE.md) for explicit generator dependencies, input fingerprints and final source/event checks.
+This repository has no open-source license. Contact its owner about use and redistribution.

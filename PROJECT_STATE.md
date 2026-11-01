@@ -166,11 +166,11 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 1–35.**
+- **The importer accepts source schemas 1–36.**
   [modMigration.bas:17](src/modMigration.bas) hard-codes the upper bound, and
   [modWorkspaceImport.bas](src/modWorkspaceImport.bas) checks
   `SCHEMA_VERSION`. Raise the literal whenever the schema changes. The target
-  must be schema 21–35.
+  must be schema 21–36.
 - Test evidence (local receipts; see history file):
 
   | Source schemas | Last verified | Scope |
