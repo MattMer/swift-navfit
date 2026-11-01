@@ -136,4 +136,6 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 
 ## License
 
-This repository has no open-source license. Contact its owner about use and redistribution.
+Swift NAVFIT is licensed under the [Apache License 2.0](LICENSE): you may use, copy, change and share it, including inside an organization, provided you keep the license and [NOTICE](NOTICE). It comes with no warranty.
+
+Swift NAVFIT is a personal project, built on its author's own time and equipment. It is not an official U.S. Navy or Department of Defense system, and neither endorses it. Using it on government systems is a decision for your command and its ISSM.

@@ -137,7 +137,7 @@ $tiers=$runners|Group-Object tier|Sort-Object Name
 $facts=@('| Fact | Value |','| --- | --- |',('| Application version | '+$meta.App+' |'),('| Schema version | '+$meta.Schema+' |'),('| Tables / enforced relationships | '+$tables.Count+' / '+$relations.Count+' |'),('| Report fields in the catalogue | '+@($catalogue.fields).Count+' |'),('| VBA modules / forms | '+$modules+' / '+$forms+' |'),('| Validation rule packs / pack rules / expanded rules | '+$packs.Count+' / '+$rules.Count+' / '+$references.Count+' |')) -join $nl
 $counts=@('Test runners by tier (`tests/runners.json`):','',(Table @('Tier','Runners') @($tiers|ForEach-Object {,@($_.Name,$_.Count)}))) -join $nl
 $sb=@($generated,'','# Software bill of materials (SBOM)','',
- ('Components Swift NAVFIT '+$meta.App+' uses at run time, from a fresh build and the VBA source. The same inventory is in CycloneDX 1.5 form in [sbom.cdx.json](sbom.cdx.json). Swift ships no third-party code libraries: everything it calls at run time is part of Windows or Microsoft Office.'),'',
+ ('Components Swift NAVFIT '+$meta.App+' uses at run time, from a fresh build and the VBA source. The same inventory is in CycloneDX 1.5 form in [sbom.cdx.json](sbom.cdx.json). Swift ships no third-party code libraries: everything it calls at run time is part of Windows or Microsoft Office. Swift NAVFIT itself is licensed under the Apache License 2.0 ([LICENSE](../../LICENSE)).'),'',
  '## Platform','','| Component | Supplier | Requirement |','| --- | --- | --- |','| Microsoft Access (desktop), VBA 7, ACE database engine | Microsoft | Desktop Access 2016 or later, including Microsoft 365. Access Runtime is not supported. |','',
  '## VBA project references','',(Table @('Reference','Version','GUID','Built in') @($refs|Sort-Object Name|ForEach-Object {,@($_.Name,$_.Version,$_.Guid,$(if($_.BuiltIn){'yes'}else{''}))})),'',
  '## Windows API functions (Declare)','',(Table @('Library','Functions') @($apis.Keys|Sort-Object|ForEach-Object {,@($_,(@($apis[$_]) -join ', '))})),'',
@@ -146,7 +146,7 @@ $sb=@($generated,'','# Software bill of materials (SBOM)','',
  '## Development and test tools (not shipped)','',(Table @('Tool','Used for') $devTools)) -join $nl
 $out['../SBOM.md']=$sb.TrimEnd()
 $cdx=[ordered]@{bomFormat='CycloneDX';specVersion='1.5';version=1
- metadata=[ordered]@{component=[ordered]@{type='application';name='Swift NAVFIT';version=$meta.App}}
+ metadata=[ordered]@{component=[ordered]@{type='application';name='Swift NAVFIT';version=$meta.App;licenses=@([ordered]@{license=[ordered]@{id='Apache-2.0'}})}}
  components=@(
   @([ordered]@{type='platform';'bom-ref'='platform:access';name='Microsoft Access (desktop)';supplier=[ordered]@{name='Microsoft'};version='16.0';description='Desktop Access 2016 or later with VBA 7 and the ACE database engine; Access Runtime not supported'})+
   @($refs|Sort-Object Name|ForEach-Object {[ordered]@{type='library';'bom-ref'=('vba-ref:'+$_.Name);name=$_.Name;version=$_.Version;properties=@([ordered]@{name='vba:guid';value=$_.Guid},[ordered]@{name='vba:builtIn';value=([string]$_.BuiltIn).ToLower()})}})+

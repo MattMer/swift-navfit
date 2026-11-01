@@ -117,8 +117,8 @@ databases, credentials or sensitive report text to issues.
 
 Local approval is not an official signature. Draft saves may be incomplete.
 Do not claim Navy validation, interchange coverage or printing beyond verified
-evidence. The private repository has no selected open-source license; coordinate
-use and redistribution with its owner.
+evidence. Swift NAVFIT is licensed under the Apache License 2.0 (LICENSE and
+NOTICE); contributions are accepted under the same license.
 
 ## Sources of truth
 

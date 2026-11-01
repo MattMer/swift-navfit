@@ -21,6 +21,7 @@ to use it, see the [README](README.md) and the
 | Source size | 106 VBA modules, 70 forms as text, JSON catalogues, 71 tables. |
 | Tests | 33 test suites over 120 case scripts and 115 VBA test harnesses, plus static source checks before every build. |
 | Signing | Not signed yet. Access shows the Enable Content bar. |
+| License | Apache License 2.0. |
 
 ## Architecture
 
@@ -284,5 +285,7 @@ in [BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md).
 
 ## License
 
-This repository has no open-source license. Contact its owner about use and
-redistribution.
+Apache License 2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE). The SBOM records
+the license in its CycloneDX metadata. Swift NAVFIT is a personal project, built
+on its author's own time and equipment, and is not an official U.S. Navy or
+Department of Defense system.
