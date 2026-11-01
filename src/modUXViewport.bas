@@ -18,6 +18,12 @@ Private Const UX_RIGHT_MARGIN As Long = 350
 Private Const MAX_CONTENT_WIDTH As Long = 16500
 ' How far below a fixed-width label to look for the field it captions.
 Private Const CAPTION_REACH As Long = 150
+' The group members grid shows eight rows by design and grows by whole rows
+' (frmUXTraitRows detail height) into spare window height, up to ten more.
+' The group footer (senior caption and buttons) sits 930 twips under content.
+Private Const TALL_ROW_HEIGHT As Long = 650
+Private Const TALL_MAX_GROWTH As Long = 6500
+Private Const GROUP_FOOTER_HEIGHT As Long = 930
 ' Access rejects form and control positions past 22 inches; a maximized window on
 ' a 2560-pixel or scaled 4K screen is wider than that.
 Public Const UX_MAX_FORM_WIDTH As Long = 31680
@@ -139,6 +145,24 @@ Private Sub UXElasticPlace(ByVal geometry As Object, ByVal v As Variant, ByVal e
         If v(4) Then w = w + CLng(extra * v(2) / total)
     End If
 End Sub
+' The list or grid on a screen that takes spare window height: the group
+' members grid, or the staged-changes list that replaces it in preview.
+Private Function UXTallControl(ByVal f As Access.Form) As String
+    If f.Name = "frmUXComparison" Then UXTallControl = IIf(f!uxTraitGrid.Visible, "uxTraitGrid", "lstProposals")
+End Function
+' Height the tall control gains: the window height left under the visible
+' content and the group footer, in whole grid rows, up to TALL_MAX_GROWTH.
+Private Function UXTallGrowth(ByVal f As Access.Form, ByVal geometry As Object, ByVal height As Long) As Long
+    Dim key As Variant, p As Variant, c As Access.Control, content As Long, spare As Long
+    For Each key In geometry.Keys
+        Set c = f.Controls(key): p = geometry(key)
+        If c.Visible And c.Tag <> "GroupFooter" And p(1) + p(3) > content Then content = p(1) + p(3)
+    Next
+    spare = height - content - IIf(f!uxCurrentExport.Visible, GROUP_FOOTER_HEIGHT, 0) - 300
+    If spare <= 0 Then Exit Function
+    spare = (spare \ TALL_ROW_HEIGHT) * TALL_ROW_HEIGHT
+    UXTallGrowth = IIf(spare > TALL_MAX_GROWTH, TALL_MAX_GROWTH, spare)
+End Function
 ' Keep a list's columns in proportion when the list changes width. Screens set
 ' their own column mixes (for example the Reports column views), so scale the
 ' current widths rather than restoring design ones.
@@ -155,7 +179,7 @@ End Sub
 Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewportWidth As Long = 0, Optional ByVal viewportHeight As Long = 0) As Boolean
     Dim f As Access.Form, c As Access.Control, state As Object, geometry As Object, old As Access.Form
     Dim width As Long, height As Long, left As Long, available As Long, baseWidth As Long, bottom As Long, ratio As Double, v As Variant, compact As Boolean
-    Dim x As Long, w As Long, painted As Boolean, extra As Long, oldWidth As Long
+    Dim x As Long, w As Long, painted As Boolean, extra As Long, oldWidth As Long, tall As String, growth As Long, tallBottom As Long
     If viewportBusy Then Exit Function
     On Error GoTo Failed
     Set f = Forms(formName)
@@ -202,6 +226,8 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     'Narrower than the design: scale everything. Wider: only elastic controls grow.
     If ratio > 1 Then extra = IIf(available > MAX_CONTENT_WIDTH, MAX_CONTENT_WIDTH, available) - state("Width")
     If extra < 0 Then extra = 0
+    tall = UXTallControl(f)
+    If Len(tall) > 0 Then v = geometry(tall): tallBottom = v(1) + v(3): growth = UXTallGrowth(f, geometry, height)
     For Each c In f.Controls
         If geometry.Exists(c.Name) Then
             v = geometry(c.Name)
@@ -217,7 +243,13 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
             oldWidth = c.Width
             UXVisualSet c, "Left", x: UXVisualSet c, "Width", w
             If c.ControlType = acListBox And c.Width <> oldWidth Then UXScaleColumns c, oldWidth, c.Width
-            UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3)
+            If c.Name = tall Then
+                UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3) + growth
+            ElseIf growth > 0 And v(1) >= tallBottom Then
+                UXVisualSet c, "Top", v(1) + growth: UXVisualSet c, "Height", v(3)
+            Else
+                UXVisualSet c, "Top", v(1): UXVisualSet c, "Height", v(3)
+            End If
             If c.Visible And c.Top + c.Height > bottom Then bottom = c.Top + c.Height
         End If
     Next
