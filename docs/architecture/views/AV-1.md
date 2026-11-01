@@ -28,7 +28,7 @@ connection. Data enters and leaves only through files the user chooses.
 <!-- generated:facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.51.0-dev |
+| Application version | 0.51.0 |
 | Schema version | 36 |
 | Tables / enforced relationships | 71 / 161 |
 | Report fields in the catalogue | 100 |

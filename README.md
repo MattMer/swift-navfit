@@ -42,7 +42,7 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 - **Prior evaluations:** keep each member's earlier evaluations alongside the current report for reference.
 - **Shared fields and defaults:** apply group or command defaults, see exactly which reports change, and confirm each replacement.
 - **Rack and stack:** edit every member's trait marks and recommendations in one table, compare ITA with prior reports, and stage proposed changes for review before applying them.
-- **Reporting seniors and RSCA:** reuse senior details and dated RSCA baselines, keep exact totals apart from estimates, and choose a group's baseline deliberately.
+- **Reporting seniors and RSCA:** start a senior from the member directory, see each paygrade's RSCA history with every summary group posted to it, keep exact totals apart from estimates, and choose a group's baseline deliberately.
 - **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
 
 ### Catch problems while drafting
@@ -94,12 +94,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.50.0
+### Current release: 0.51.0
 
-Download from the [0.50.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.51.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.51.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.50.0.accdb:** an empty workspace. Start real work here.
-- **Swift_NAVFIT_Demo_0.50.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.51.0.accdb:** an empty workspace. Start real work here.
+- **Swift_NAVFIT_Demo_0.51.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
 
 > **Not yet tested:**
 > 1. printed fit against the official forms;

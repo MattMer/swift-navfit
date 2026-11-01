@@ -1,6 +1,6 @@
 # Swift NAVFIT user documentation
 
-- [User guide (PDF)](Swift_NAVFIT_User_Guide.pdf): 26 pages with linked contents, chapter bookmarks, numbered procedures, troubleshooting, a practice exercise, and glossary. Version 1.4 for Swift NAVFIT 0.50.0, schema 35.
+- [User guide (PDF)](Swift_NAVFIT_User_Guide.pdf): 27 pages with linked contents, chapter bookmarks, numbered procedures, troubleshooting, a practice exercise, and glossary. Version 1.5 for Swift NAVFIT 0.51.0, schema 36.
 - [Online/editable guide](Swift_NAVFIT_User_Guide.md): the maintained source of the PDF.
 - [Architecture description](architecture/Swift_NAVFIT_Architecture_Description.md): DoDAF 2.02 fit-for-purpose views in the ISO/IEC/IEEE 42010 structure.
 - [Screen-reader test](Accessibility_Screen_Reader_Test.md): the attended NVDA/JAWS procedure.

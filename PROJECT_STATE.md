@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 31 October 2026. This document describes what is true **now**:
+Updated 1 November 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.51.0-dev | 36 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.50.0 | 35 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.50.0), 31 Oct 2026. Full release gate passed, including schemas 1–35. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.50.0` | 35 | The release commit. Earlier: `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.51.0 | 36 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.51.0 | 36 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.51.0), 1 Nov 2026. Full release gate passed, including schemas 1–36. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.51.0` | 36 | The release commit. Earlier: `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 

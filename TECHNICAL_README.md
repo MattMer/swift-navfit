@@ -16,8 +16,8 @@ to use it, see the [README](README.md) and the
 | Deployment | One `.accdb` file per command workspace. No installer, server or service. |
 | Network | None. No telemetry, update check, sync or web service. |
 | Third-party runtime code | None. Everything called at runtime is part of Windows or Microsoft Office (see the [SBOM](docs/architecture/SBOM.md)). |
-| Latest release | 0.50.0, schema 35 (31 October 2026), tag `v0.50.0`. |
-| Development source | 0.51.0-dev, schema 36. `APP_VERSION` and `SCHEMA_VERSION` are in [modSwift.bas](src/modSwift.bas). |
+| Latest release | 0.51.0, schema 36 (1 November 2026), tag `v0.51.0`. |
+| Development source | 0.51.0, schema 36. `APP_VERSION` and `SCHEMA_VERSION` are in [modSwift.bas](src/modSwift.bas). |
 | Source size | 106 VBA modules, 70 forms as text, JSON catalogues, 71 tables. |
 | Tests | 33 test suites over 120 case scripts and 115 VBA test harnesses, plus static source checks before every build. |
 | Signing | Not signed yet. Access shows the Enable Content bar. |
