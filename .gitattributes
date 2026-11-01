@@ -8,3 +8,6 @@
 *.png binary
 
 *.pdf binary
+
+# Show Access VBA source as VBA on GitHub (not Visual Basic 6.0).
+*.bas linguist-language=VBA
