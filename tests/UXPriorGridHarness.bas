@@ -25,7 +25,7 @@ Public Function TestUXPriorGrid() As String
     Check Not rows!PriorITA.Enabled And Not rows!PriorPromotion.Enabled And Not rows!PriorITA.TabStop And Not rows!PriorPromotion.TabStop, "Prior cells can receive focus"
     Check rows!PriorITA.BackColor = UXColor("Neutral") And rows!PriorPromotion.BackColor = UXColor("Neutral"), "Prior cells lack read-only shading"
     Check rows!Trait33.Enabled And rows!PromotionRecommendation.Enabled, "Current-value cells were disabled"
-    Check rows!uxOpenReport.OnClick = "=UXGridOpenReport()", "Row Open action missing"
+    Check rows!Member.OnClick = "=UXGridOpenReport()", "Member name does not open its report"
     Check UXGridOpenReport(), "Row report entry failed"
     Check Forms!frmEditor!txtReportID = id, "Row opened wrong report"
     rev = CurrentRevision(id)

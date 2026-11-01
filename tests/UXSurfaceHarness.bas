@@ -136,7 +136,7 @@ Public Function TestUXSurface() As String
     Check UXOpenGroup(), "Group list did not open focused workspace"
     Check Forms!frmUXComparison!uxGroupContext = groupID, "Group workspace opened another group"
     Check InStr(Forms!frmUXComparison!lblHeading.Caption, "Surface group") > 0, "Group title missing"
-    Check Forms!frmUXComparison!uxTraitGrid.Form!ReportID = id And Forms!frmUXComparison!uxTraitGrid.Form!uxOpenReport.OnClick = "=UXGridOpenReport()", "Group members lack report entry point"
+    Check Forms!frmUXComparison!uxTraitGrid.Form!ReportID = id And Forms!frmUXComparison!uxTraitGrid.Form!Member.OnClick = "=UXGridOpenReport()", "Group members lack report entry point"
     Check UXCloseComparison(), "Group workspace did not close"
     stage = "my work": DoCmd.OpenForm "frmMyWork"
     Check Forms!frmMyWork!lstWork.Visible And Not Forms!frmMyWork!lstTasks.Visible And Not Forms!frmMyWork!lstContributors.Visible, "My Work default mixes contributors and work"

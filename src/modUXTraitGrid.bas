@@ -218,6 +218,7 @@ Public Function UXGridLoad() As Boolean
     Next
     UXGridHeading f!headingAssignmentRecommendationA, UXFieldCaption("AssignmentRecommendationA", kind)
     UXGridHeading f!headingAssignmentRecommendationB, UXFieldCaption("AssignmentRecommendationB", kind)
+    UXGridRowFlags f!Member
     Call UXGridRefreshAverages: loading = False
     Call UXGridCurrent: Call UXGridViewport: UXGridLoad = True
     Exit Function
@@ -536,6 +537,17 @@ Public Function UXGridDetail() As Boolean
     f!uxProposalDetail = UXFieldCaption(r!FieldKey, Nz(DLookup("FormKind", "Report", "ReportID=" & r!ReportID), "EVAL")) & vbCrLf & "BEFORE: " & Nz(MajorRevisionValue(r!BaseRevisionID, r!FieldKey), "(blank)") & vbCrLf & "AFTER: " & Nz(r!ValueText, "(clear value)")
     r.Close: UXGridDetail = True
 End Function
+' Rows are one line, so the row status is not shown. A locked row's name shows
+' in grey italics and a row with unsaved cells in red; the current row's full
+' reason shows in the status line (UXGridCurrent).
+Private Sub UXGridRowFlags(ByVal c As Access.TextBox)
+    Dim rule As Access.FormatCondition
+    c.FormatConditions.Delete
+    Set rule = c.FormatConditions.Add(acExpression, , "[RowStatus] Like ""Not saved*""")
+    rule.ForeColor = UXColor("ErrorInk"): rule.FontBold = True
+    Set rule = c.FormatConditions.Add(acExpression, , "Not ([RowStatus] Like ""Editable*"" Or [RowStatus] Like ""Saved*"")")
+    rule.ForeColor = UXColor("Muted"): rule.FontItalic = True
+End Sub
 
 ' Fit the native grid columns to the viewport and retain the live or historical group context.
 Public Function UXGridViewport() As Boolean

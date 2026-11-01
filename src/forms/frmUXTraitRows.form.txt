@@ -128,19 +128,19 @@ Begin Form
                 Begin Label
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =750
+                    Left =30
                     Top =20
-                    Width =2000
+                    Width =2720
                     Height =900
                     FontSize =8
                     ForeColor =4205854
                     Name ="headingMember"
-                    Caption ="Member / state"
+                    Caption ="Member"
                     FontName ="Segoe UI"
                     OnClick ="=UXSortGrid(\"Member\")"
-                    Tag ="750:2000"
-                    ControlTipText ="Click to sort; click again to reverse"
-                    LayoutCachedLeft =750
+                    Tag ="30:2720"
+                    ControlTipText ="Click to sort; click again to reverse. Click a name to open its report."
+                    LayoutCachedLeft =30
                     LayoutCachedTop =20
                     LayoutCachedWidth =2750
                     LayoutCachedHeight =920
@@ -436,33 +436,35 @@ Begin Form
             End
         End
         Begin Section
-            Height =650
+            Height =430
             BackColor =16513012
             Name ="Detail"
             Begin
                 Begin TextBox
+                    FontUnderline = NotDefault
                     Locked = NotDefault
                     TabStop = NotDefault
                     OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =750
-                    Top =30
-                    Width =2000
-                    Height =300
+                    Left =30
+                    Top =40
+                    Width =2720
+                    Height =360
                     FontSize =10
                     BorderColor =13285543
-                    ForeColor =4205854
+                    ForeColor =9394980
                     Name ="Member"
+                    ControlTipText ="Open this report"
                     ControlSource ="Member"
-                    OnDblClick ="=UXGridOpenReport()"
+                    OnClick ="=UXGridOpenReport()"
                     FontName ="Segoe UI"
-                    Tag ="750:2000"
+                    Tag ="30:2720"
 
-                    LayoutCachedLeft =750
-                    LayoutCachedTop =30
+                    LayoutCachedLeft =30
+                    LayoutCachedTop =40
                     LayoutCachedWidth =2750
-                    LayoutCachedHeight =330
+                    LayoutCachedHeight =400
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -470,14 +472,14 @@ Begin Form
                     Begin
                         Begin Label
                             OverlapFlags =93
-                            Left =750
-                            Top =30
+                            Left =30
+                            Top =40
                             Width =15
                             Height =15
                             FontSize =1
                             Name ="anMember"
                             Caption ="Member"
-                            LayoutCachedLeft =750
+                            LayoutCachedLeft =30
                             LayoutCachedTop =30
                             LayoutCachedWidth =765
                             LayoutCachedHeight =45
@@ -485,13 +487,14 @@ Begin Form
                     End
                 End
                 Begin TextBox
+                    Visible = NotDefault
                     Locked = NotDefault
                     TabStop = NotDefault
                     OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =750
-                    Top =340
+                    Top =40
                     Width =2000
                     Height =280
                     FontSize =8
@@ -504,25 +507,26 @@ Begin Form
                     Tag ="750:2000"
 
                     LayoutCachedLeft =750
-                    LayoutCachedTop =340
+                    LayoutCachedTop =40
                     LayoutCachedWidth =2750
-                    LayoutCachedHeight =620
+                    LayoutCachedHeight =320
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                     Begin
                         Begin Label
+                            Visible = NotDefault
                             OverlapFlags =93
                             Left =750
-                            Top =340
+                            Top =40
                             Width =15
                             Height =15
                             FontSize =1
                             Name ="anRowStatus"
                             Caption ="Row status"
                             LayoutCachedLeft =750
-                            LayoutCachedTop =340
+                            LayoutCachedTop =40
                             LayoutCachedWidth =765
                             LayoutCachedHeight =355
                         End
@@ -1117,46 +1121,6 @@ Begin Form
                         End
                     End
                 End
-                Begin CommandButton
-                    OverlapFlags =247
-                    TextFontFamily =34
-                    Left =30
-                    Top =40
-                    Width =650
-                    FontSize =10
-                    TabIndex =16
-                    ForeColor =4205854
-                    Name ="uxOpenReport"
-                    Caption ="Open"
-                    OnClick ="=UXGridOpenReport()"
-                    FontName ="Segoe UI"
-                    Tag ="30:650"
-
-                    LayoutCachedLeft =30
-                    LayoutCachedTop =40
-                    LayoutCachedWidth =680
-                    LayoutCachedHeight =400
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
                 Begin TextBox
                     Enabled = NotDefault
                     Locked = NotDefault
@@ -1169,7 +1133,7 @@ Begin Form
                     Width =1000
                     Height =360
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =16
                     BackColor =15985893
                     BorderColor =13285543
                     ForeColor =8746084
@@ -1215,7 +1179,7 @@ Begin Form
                     Width =2100
                     Height =360
                     FontSize =10
-                    TabIndex =18
+                    TabIndex =17
                     BackColor =15985893
                     BorderColor =13285543
                     ForeColor =8746084

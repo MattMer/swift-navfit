@@ -15,7 +15,9 @@ Public Function TestUXMemberGrid() As String
     Check UXOpenGroupMembers(), "Group did not open member grid"
     Check CurrentProject.AllForms("frmUXComparison").IsLoaded, "Default member grid absent"
     Set rows = Forms!frmUXComparison!uxTraitGrid.Form
-    Check rows!uxOpenReport.OnClick = "=UXGridOpenReport()", "Row Open action missing"
+    Check rows!Member.OnClick = "=UXGridOpenReport()" And rows!Member.FontUnderline, "Member name does not open its report"
+    Check rows.Section(acDetail).Height = 430 And Not rows!RowStatus.Visible, "Member rows are not one line"
+    Check rows!Member.FormatConditions.Count = 2, "Locked and unsaved rows are not flagged"
     Check UXGridOpenReport(), "Row report entry failed"
     Check Forms!frmEditor!txtReportID = id, "Row opened wrong report"
     rev = CurrentRevision(id)

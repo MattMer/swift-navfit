@@ -18,11 +18,11 @@ Private Const UX_RIGHT_MARGIN As Long = 350
 Private Const MAX_CONTENT_WIDTH As Long = 16500
 ' How far below a fixed-width label to look for the field it captions.
 Private Const CAPTION_REACH As Long = 150
-' The group members grid shows eight rows by design and grows by whole rows
-' (frmUXTraitRows detail height) into spare window height, up to ten more.
+' The group members grid shows twelve rows by design and grows by whole rows
+' (frmUXTraitRows detail height) into spare window height, up to fifteen more.
 ' The group footer (senior caption and buttons) sits 930 twips under content.
-Private Const TALL_ROW_HEIGHT As Long = 650
-Private Const TALL_MAX_GROWTH As Long = 6500
+Private Const TALL_ROW_HEIGHT As Long = 430
+Private Const TALL_MAX_GROWTH As Long = 6450
 Private Const GROUP_FOOTER_HEIGHT As Long = 930
 ' Access rejects form and control positions past 22 inches; a maximized window on
 ' a 2560-pixel or scaled 4K screen is wider than that.

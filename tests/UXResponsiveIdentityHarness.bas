@@ -93,18 +93,18 @@ Public Function TestUXResponsiveIdentity() As String
         Check f.Controls(CStr(key)).Width = f!rsReportingSeniorGrade.Width And f.Controls(CStr(key)).Left = f!rsReportingSeniorGrade.Left, "Right column width differs: " & key
     Next
     stage = "tall member grid"
-    'The members grid shows eight rows by design and takes spare window height in
+    'The members grid shows twelve one-line rows by design and takes spare window height in
     'whole rows, with the controls under it moving down.
     Set f = Forms!frmUXComparison
     Check UXResizeWorkspace("frmUXComparison", 18000, 6800), "Short comparison resize failed: " & UXViewportFailure()
-    Check f!uxTraitGrid.Height = 6150, "Members grid is not eight rows: " & f!uxTraitGrid.Height
+    Check f!uxTraitGrid.Height = 6150, "Members grid is not twelve rows: " & f!uxTraitGrid.Height
     Check f!uxGridAverage.Top >= f!uxTraitGrid.Top + f!uxTraitGrid.Height, "Grid average overlaps the members grid"
     Check UXResizeWorkspace("frmUXComparison", 18000, 16000), "Tall comparison resize failed: " & UXViewportFailure()
-    Check f!uxTraitGrid.Height > 6150 And (f!uxTraitGrid.Height - 6150) Mod 650 = 0, "Members grid did not grow by whole rows: " & f!uxTraitGrid.Height
+    Check f!uxTraitGrid.Height > 6150 And (f!uxTraitGrid.Height - 6150) Mod 430 = 0, "Members grid did not grow by whole rows: " & f!uxTraitGrid.Height
     Check f!uxGridAverage.Top >= f!uxTraitGrid.Top + f!uxTraitGrid.Height, "Grid average did not move under the grown grid"
     Check f!uxCurrentExport.Top + f!uxCurrentExport.Height <= 16000, "Group footer pushed past a tall window"
     Check UXResizeWorkspace("frmUXComparison", 18000, 30000), "Very tall comparison resize failed: " & UXViewportFailure()
-    Check f!uxTraitGrid.Height = 6150 + 6500, "Members grid growth is not capped: " & f!uxTraitGrid.Height
+    Check f!uxTraitGrid.Height = 6150 + 6450, "Members grid growth is not capped: " & f!uxTraitGrid.Height
     UXRestoreViewport f
     stage = "unchanged viewport cache"
     UXResizeWorkspace "frmLibrary", 13800, 6800

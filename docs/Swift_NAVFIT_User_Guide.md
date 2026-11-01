@@ -473,7 +473,7 @@ Group status is local tracking. It does not certify that every member is complet
 ## 10.1 Use the group trait table
 
 1. Open the group's **Members** view and its trait table.
-2. Check the member names, report states, and prior-value references before editing.
+2. Check the member names and prior-value references before editing. Click a member's name to open their report; each member takes one row.
 3. Edit the intended current trait or recommendation cell.
 4. Leave the cell and confirm that the change saved. Valid direct edits save as report revisions.
 
@@ -487,6 +487,8 @@ Failed cells remain pending for correction, retry, or deliberate discard. Resolv
 | Yellow current ITA | Lower than this sailor's prior ITA. |
 | No comparison highlight | Equal ITA or no prior ITA available. |
 | Gray prior cells | Historical references that are not editable in the current trait table. |
+| Gray italic name | The report is locked here (for example archived, or changed since the table opened). Select the row to read the reason in the status line. |
+| Red bold name | The row has cells that did not save. Retry or discard them. |
 
 Comparison color is a drafting aid, not a required direction of change. A higher or lower mark still needs an accurate report and appropriate judgment.
 

@@ -1007,14 +1007,14 @@ Begin Form
                             Left =2866
                             Top =3700
                             Width =15
-                            Height =3265
+                            Height =15
                             FontSize =1
                             Name ="anlstProposals"
                             Caption ="Proposed marks"
                             LayoutCachedLeft =2866
                             LayoutCachedTop =3700
                             LayoutCachedWidth =2881
-                            LayoutCachedHeight =6965
+                            LayoutCachedHeight =3715
                         End
                     End
                 End

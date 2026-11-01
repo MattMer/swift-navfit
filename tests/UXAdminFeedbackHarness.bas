@@ -46,7 +46,7 @@ Public Function TestUXAdminFeedback() As String
     Forms!frmMajorWorkbench!uxMode = "Comparison"
     Check UXOpenComparison(), "Comparison failed"
     Set f = Forms!frmUXComparison: Set s = f!uxTraitGrid.Form
-    Check s!Member.OnDblClick = "=UXGridOpenReport()", "Comparison name double click missing"
+    Check s!Member.OnClick = "=UXGridOpenReport()", "Comparison name click missing"
     s!AssignmentRecommendationA = "INSTRUCTOR"
     Check UXGridEdit("AssignmentRecommendationA"), "Immediate cell save failed: " & f!lblStatus.Caption
     Check DLookup("AssignmentRecommendationA", "Report", "ReportID=" & id) = "INSTRUCTOR", "Cell did not save report"
