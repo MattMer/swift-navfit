@@ -151,7 +151,7 @@ Public Function TestRSCompletion() As String
  CurrentDb.Execute "DELETE FROM GroupCompletion WHERE CompletionID=" & posting, dbFailOnError
  CurrentDb.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & legacy, dbFailOnError
  entries = DCount("*", "RSCABaseline")
- MigrateRSAccounting: MigrateRSAccounting
+ Call MigrateRSAccounting: MigrateRSAccounting
  posting = RSPosting(legacy)
  Check DCount("*", "RSCABaseline") = entries And DCount("*", "GroupCompletion", "GroupID=" & legacy) = 1, "Legacy migration double counted or duplicated"
  Check GroupWorkflow(legacy) = "Cancelled", "Legacy cancelled state was lost"

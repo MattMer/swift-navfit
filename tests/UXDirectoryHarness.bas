@@ -38,7 +38,7 @@ Public Function TestUXDirectory() As String
     UXDirectoryClose "frmUXPriorEditor"
     reportID = CommitDraft(0, "EVAL", "History identity", "Casey Morgan", #1/1/2026#, #9/30/2026#, "", "Test", "")
     LinkReportDirectoryMember reportID, m, CurrentRevision(reportID), CLng(DLookup("VersionCounter", "CommandMember", "MemberID=" & m)), "Synthetic identity"
-    UXHistoryLoad: Forms!frmUXMemberHistory!lstHistory = -reportID
+    Call UXHistoryLoad: Forms!frmUXMemberHistory!lstHistory = -reportID
     Check UXHistoryConfirmIdentity(), "Identity preview absent"
     Check Not UXHistoryApplyIdentity(), "Reasonless confirmation accepted"
     Forms!frmUXConfirmIdentity!txtReason = "Synthetic checked SSN"

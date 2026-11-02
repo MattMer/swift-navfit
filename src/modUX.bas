@@ -402,7 +402,8 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
         If Left$(c.Name, 5) = "uxChk" Then
             key = Mid$(c.Name, 6)
             If key = "ObservationStatus" Then raw = f!cboObservationStatus.Value Else raw = f.Controls("txt" & key).Value
-            If IsNull(raw) Or Len(Nz(raw, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (raw = "NOB") Else c.Value = (raw = "Yes")
+            'An unanswered box shows blank, as in NAVFIT98A; the buffer keeps it unanswered.
+            If IsNull(raw) Or Len(Nz(raw, "")) = 0 Then c.Value = False Else If key = "ObservationStatus" Then c.Value = (raw = "NOB") Else c.Value = (raw = "Yes")
         End If
     Next
     If UXSurfaceAvailable() Then
@@ -455,6 +456,10 @@ Public Function UXSaveEditor() As Boolean
             UXShowSaveError SwiftFailureText(context), saved
         End If
     End If
+    'A saved change over a later reviewer's edit is allowed but flagged (F01).
+    Dim notice As String
+    notice = RouteSaveNotice()
+    If saved And Len(notice) > 0 Then f!uxError.Caption = Left$("Saved. " & notice & " They will see it flagged when the report reaches them.", 255)
     Exit Function
 Failed:
     Set context = SwiftFailure("modUX", "UXSaveEditor", "Capture/refresh editor", Err.Number, Err.Description, Err.Source, IIf(saved, "Committed", "Not started"))
@@ -627,7 +632,7 @@ Public Function UXStageComparison() As Boolean
     before = MajorRevisionValue(revision, "PromotionRecommendation"): value = f!cboPromotion.Value
     If Not SameFieldValue(before, value) Then ProposeMeetingField f!txtMeeting, id, "PromotionRecommendation", value: count = count + 1
     w.CommitTrans: started = False
-UXGridLoad: UXRefreshComparisonPreview
+Call UXGridLoad: UXRefreshComparisonPreview
     f!lblStatus.Caption = count & " proposals staged. Saved reports are unchanged. Select one proposal per field below, then Apply."
     If UXHasControl(f, "uxPreviewPage") And count > 0 Then UXComparisonPage "Preview"
     UXStageComparison = True: Exit Function

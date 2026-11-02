@@ -28,11 +28,9 @@ Private Function Rejected(ByVal id As Long, ByVal kind As String, ByVal values A
 Failed:
     Rejected = True
 End Function
-Private Function StaleRejected(ByVal task As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(task, "Accepted", "Stale"): Exit Function
-Failed:
-    StaleRejected = InStr(Err.Description, "stale") > 0
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Private Function CorruptRejected(ByVal id As Long, ByVal revision As Long) As Boolean
     On Error GoTo Failed
@@ -61,8 +59,7 @@ Public Function TestTraits() As String
         values(1) = "2.0": Call SaveTraits(id, CStr(kind), values)
         second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check RevisionFieldStatus(first, second, "Trait34") = "Changed", "Trait change invisible"
-        Check StaleRejected(task), "Trait save did not stale review"
-        Call FinishReview(task, "Cancelled", "New marks")
+        Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
         Check OpenRevisionComparison(id, first), "Trait comparison failed"
         Forms!frmRevisionCompare!lstCompareFields = "Trait34": Call LoadComparisonValues()
         Check Forms!frmRevisionCompare!txtOldValue = "1.0" And Forms!frmRevisionCompare!txtNewValue = "2.0", "Trait comparison values wrong"

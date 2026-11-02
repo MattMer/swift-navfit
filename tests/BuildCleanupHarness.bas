@@ -44,10 +44,10 @@ Public Function TestBuildCleanup() As String
  Next
  Check Not hasLegacy, "Retired standalone form still installed"
  DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
- Forms!frmEditor!txtOfficialName = "SAVED THROUGH LEGACY NAV"
+ Forms!frmEditor!txtOfficialName = "LEGACY, SAVED"
  Check OpenScreen("frmLibrary"), "Legacy main-menu entry did not leave report safely"
  Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Legacy route left old editor open"
- Check DLookup("OfficialName", "Report", "ReportID=" & id) = "SAVED THROUGH LEGACY NAV", "Legacy route lost pending report values"
+ Check DLookup("OfficialName", "Report", "ReportID=" & id) = "LEGACY, SAVED", "Legacy route lost pending report values"
  Check DCount("*", "FolderMove") = moves, "Navigation changed folder history"
  other = CommitDraft(0, "EVAL", "Batch fixture", "SYNTHETIC SECOND", Null, Null, "")
  selection = CStr(id) & "," & CStr(other): stamp = FolderBatchStamp(selection)

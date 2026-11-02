@@ -13,12 +13,15 @@ Public Function TestPageSwitch() As String
  DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
  Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
  revision = CurrentRevision(id)
- s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "UNSAVED PAGE SWITCH"
+ s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "SWITCH, UNSAVED"
  Check UXSelectSection(5), "Back page failed"
- Check f!txtOfficialName = "UNSAVED PAGE SWITCH" And EditorHasPending(), "Active edit lost on switch"
+ Check f!txtOfficialName = "SWITCH, UNSAVED" And EditorHasPending(), "Active edit lost on switch"
+ ' Save formats names, grades and titles as NAVFIT98A does.
+ f!txtRankRate = "it2": Call UXFormatTypedFields
+ Check f!txtRankRate = "IT2", "Grade/rate not uppercased at save"
  Check f.Painting And s.Painting, "Painting left disabled"
  Check UXSelectSection(0), "Front page failed"
- Check s!txtOfficialName = "UNSAVED PAGE SWITCH", "Pending field not restored"
+ Check s!txtOfficialName = "SWITCH, UNSAVED", "Pending field not restored"
  For i = 1 To 8
   Check UXSelectSection(IIf(i Mod 2 = 1, 5, 0)), "Repeated page failed"
   Check f.Painting And s.Painting, "Repeated page disabled painting"
@@ -33,7 +36,7 @@ Public Function TestPageSwitch() As String
  Check f.Painting And s.Painting, "Layout error stranded painting"
  f!uxReport.Tag = tag
  Check UXSelectSection(0), "Could not switch after layout error"
- Check s!txtOfficialName = "UNSAVED PAGE SWITCH", "Failure discarded pending edit"
+ Check s!txtOfficialName = "SWITCH, UNSAVED", "Failure discarded pending edit"
  Check UXLeaveEditor("Discard"), "Cleanup failed"
  TestPageSwitch = "PASS: " & n & " page switch, active-text preservation and paint restoration assertions": Exit Function
 Failed:

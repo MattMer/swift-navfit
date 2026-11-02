@@ -52,6 +52,11 @@ Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As L
     If Nz(r!CurrentRevisionID, 0) <> expectedRevision Or expectedRevision = 0 Then Err.Raise vbObjectError + 1807, "modRouting.AssignReview", "Saved revision changed. Refresh before assigning."
     r.Close: Set r = Nothing
     If RouteValue(db, "SELECT Count(*) FROM ReviewTask WHERE ReportID=" & reportID & " AND TaskState='Pending'") > 0 Then Err.Raise vbObjectError + 1808, "modRouting.AssignReview", "Finish or cancel the pending review before assigning another."
+    'Someone already in the report's active review route acts through that route; a
+    'separate assignment would give them nothing they can act on.
+    Dim inRoute As Variant
+    inRoute = RouteValue(db, "SELECT Min(s.StepOrdinal) FROM RouteRunStep AS s INNER JOIN RouteRun AS u ON s.RunID=u.RunID WHERE u.ReportID=" & reportID & " AND u.RunState In ('Pending','Accepted') AND s.AssigneeID=" & assigneeID)
+    If Not IsNull(inRoute) Then Err.Raise vbObjectError + 1817, "modRouting.AssignReview", Nz(RouteValue(db, "SELECT DisplayName FROM UserProfile WHERE UserProfileID=" & assigneeID), "This contributor") & " is already in this report's review route (step " & inRoute & "). They review it through the route, so no separate assignment is needed."
     stage = "Write task"
     Set r = db.OpenRecordset("ReviewTask", dbOpenDynaset)
     r.AddNew: r!TaskGuid = NewIdentity(): r!ReportID = reportID: r!RevisionID = expectedRevision
@@ -92,9 +97,9 @@ Public Function FinishReview(ByVal taskID As Long, ByVal outcome As String, ByVa
         If pid <> r!AssignedTo Then Err.Raise vbObjectError + 1814, "modRouting.FinishReview", "Switch to the assigned reviewer to record an outcome."
         If Nz(RouteValue(db, "SELECT IsArchived FROM Report WHERE ReportID=" & r!ReportID), True) Then Err.Raise vbObjectError + 1815, "modRouting.FinishReview", "Archived reports cannot receive review outcomes."
         If Nz(RouteValue(db, "SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 1815, "modRouting.FinishReview", "Reopen local approval before recording review outcomes."
-        If Nz(RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID), 0) <> r!RevisionID Then Err.Raise vbObjectError + 1816, "modRouting.FinishReview", "This review is stale. The requester must cancel it and assign the latest saved revision."
+        'F01: the assignee holds the shared draft and may save; finishing records the revision.
     End If
-    r.Edit: r!TaskState = outcome: r!FinishedAt = Now(): r.Update: r.Close: Set r = Nothing
+    r.Edit: r!TaskState = outcome: r!FinishedAt = Now(): r!FinishedRevisionID = RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID): r.Update: r.Close: Set r = Nothing
     Call RouteEvent(db, taskID, pid, outcome, notes)
     w.CommitTrans: trans = False: FinishReview = True: Exit Function
 Failed:

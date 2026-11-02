@@ -14,7 +14,7 @@ Private Sub CompareReports()
     Do While Not r.EOF
         id = r!ReportID
         Check SameFieldValue(UXReportRowCell(id, 0), UXMemberLabel(id)), "Member differs"
-        Check SameFieldValue(UXReportRowCell(id, 1), UXReportState(id)), "State differs for " & id
+        Check SameFieldValue(UXReportRowCell(id, 1), UXReportState(id)), "State differs for " & id & ": list " & UXReportRowCell(id, 1) & ", report " & UXReportState(id)
         Check SameFieldValue(UXReportRowCell(id, 2), UXTableITA(id)), "ITA differs for " & id
         Check SameFieldValue(UXReportRowCell(id, 3), UXTableGroups(id)), "Groups differ"
         Check SameFieldValue(UXReportRowCell(id, 4), DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!CurrentRevisionID)), "Revision number differs"

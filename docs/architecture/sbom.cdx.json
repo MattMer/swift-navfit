@@ -6,7 +6,7 @@
                      "component":  {
                                        "type":  "application",
                                        "name":  "Swift NAVFIT",
-                                       "version":  "0.51.0",
+                                       "version":  "0.52.0-dev",
                                        "licenses":  [
                                                         {
                                                             "license":  {
@@ -177,7 +177,7 @@
                            "properties":  [
                                               {
                                                   "name":  "swift:uses",
-                                                  "value":  "141"
+                                                  "value":  "142"
                                               }
                                           ]
                        },

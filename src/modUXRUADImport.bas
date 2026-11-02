@@ -17,7 +17,7 @@ Public Function UXRUADImportChoose() As Boolean
     count = RUADLoad(CStr(dialog.SelectedItems(1)))
     f!txtPath = CStr(dialog.SelectedItems(1))
     f!lblStatus.Caption = "Choose actions for " & count & " rows. Vacant billets are skipped. Names suggest matches; they do not establish identity."
-    UXRUADImportRows: UXRUADImportChoose = True: Exit Function
+    Call UXRUADImportRows: UXRUADImportChoose = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
 End Function
@@ -59,7 +59,7 @@ Public Function UXRUADImportSelection() As Boolean
     End If
     If Nz(f!cboAction, "Skip") = "Skip" And Nz(f!cboMatch, 0) > 0 Then f!cboAction = "Refresh existing"
     RUADChoose selected, Nz(f!cboAction, "Skip"), Nz(f!cboMatch, 0), Nz(f!chkReplaceManual, False)
-    UXRUADImportRows: f!lstRows = selected: UXRUADImportSelect
+    Call UXRUADImportRows: f!lstRows = selected: UXRUADImportSelect
     f!lblStatus.Caption = "Selection changed. Preview again before Apply.": UXRUADImportSelection = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description

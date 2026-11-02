@@ -88,13 +88,13 @@ Private Sub CheckSaveRefreshFailure(ByVal reportID As Long)
     Set f = Forms!frmEditor: Set surface = f!uxFieldSurface.Form
     key = "OfficialName": Set c = surface.Controls(UXFieldControl(key))
     revision = CurrentRevision(reportID)
-    Check UXSurfaceSetValue(key, "SYNTHETIC saved surface"), "Could not stage surface save value"
+    Check UXSurfaceSetValue(key, "SURFACE, SAVED"), "Could not stage surface save value"
     f!cmdClose.SetFocus
     binding = c.ControlSource: c.ControlSource = "=1"
     saved = UXSaveEditor(): Set context = SwiftLastFailureContext()
     c.ControlSource = binding
     Check saved And CurrentRevision(reportID) <> revision, "Save failed when only the display refresh failed"
-    Check SavedFields(reportID)(key) = "SYNTHETIC saved surface", "Saved value lost after display refresh failure"
+    Check SavedFields(reportID)(key) = "SURFACE, SAVED", "Saved value lost after display refresh failure"
     Check context("Procedure") = "UXSurfaceRefresh" And context("Transaction") = "Committed", "Post-save refresh failure lost committed outcome"
     Check InStr(f!uxError.Caption, "Saved; display refresh failed") = 1 And Not EditorHasPending(), "Post-save refresh failure claimed unsaved edits"
     Check UXSurfaceRefresh() And UXRefreshEditor(), "Display retry failed after post-save refresh failure"

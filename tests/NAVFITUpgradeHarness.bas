@@ -68,7 +68,7 @@ Public Function TestNAVFITUpgrade(ByVal directory As String, ByVal template As S
   Set db = DBEngine.OpenDatabase(directory & "\export-" & key & ".accdb", False, True)
   ValidateNAVFITDatabase db: Check Not NAVFITNeedsV33Upgrade(db), "Export lost Patch 2 schema": db.Close
  Next
- CloseReviewFile: Check SourceFileHash(path) = hash, "Import/export altered original"
+ Call CloseReviewFile: Check SourceFileHash(path) = hash, "Import/export altered original"
  Check OpenReviewFile(path, False), "Repeated conversion failed"
  Set groups = NAVFITReviewGroupChoices(2000): failed = False
  On Error Resume Next

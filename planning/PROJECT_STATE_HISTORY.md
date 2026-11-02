@@ -1219,6 +1219,76 @@ recovery, summary-groups, work-review, workspace-read-performance and
 workspace-migration suites) and `20261101-214900_324ecfa8` (BuildAndTest after
 regenerating the SBOM; wizard-state case with the new dialog handling).
 
+## F01 shared-draft review chain
+
+0.52.0-dev, schema 37 (2 November 2026), from the user's 1 November decision:
+a report under review is one shared draft, later reviewers have more authority,
+and the chain restarts only from a send back or pull back.
+
+- **Holder.** The reviewer at a route's current step holds the report (the
+  requester at step 0; the final reviewer once every step has forwarded; the
+  assignee of a pending individual assignment). `RouteSaveGuard`, called from
+  `CommitDraft`, refuses saves by anyone else. Saves no longer make a route or
+  assignment stale.
+- **Forward / Send back / Pull back** (`modRouteTemplates`). Forward records each
+  step's incoming and outgoing revision (`RouteRunStep.IncomingRevisionID`,
+  `OutgoingRevisionID`). Send back (a selected earlier step, else the previous
+  one) and Pull back (the requester, or a reviewer whose step has forwarded)
+  reset every step from the target upward. `DecideRouteStep` keeps its API:
+  Accepted forwards, Returned sends back one step. Local approval records
+  `RouteRun.ApprovedRevisionID`; individual assignments record
+  `ReviewTask.FinishedRevisionID`.
+- **Authority flags.** When a lower step saves over a field a later step last
+  changed in the route, the save succeeds, the editor says so, and an Override
+  event is shown to the holder when the report moves.
+- **Members grid** (user decision): grid saves skip the holder check and are
+  logged as Grid change events (route) or ReviewTaskEvent rows (assignment).
+- **Group routes** go stale only when membership or archive state changes
+  (`GroupRouteStamp`; routes stored with the old stamp are compared on their
+  membership part).
+- **History.** New `RouteRunEvent` table: Start, Forward, Send back, Pull back,
+  Override and Grid change, with author, revision and note. Its author is not a
+  foreign key: `UserProfile` is at Access's 32-index limit.
+- **UI.** Review page: Forward, Send back, new Pull back button, holder status and
+  flagged changes. Editor header buttons renamed Forward and Send back. My Work
+  shows reports you hold, including ones sent back to you as requester.
+- **Import.** Schemas 1–37 import; schema 36 DDL captured.
+- **Follow-ups from the user's 2 Nov review.** Reviewers later in the chain than
+  the holder may save, flagged to the holder as a Higher change; earlier steps and
+  the requester still pull back first. The holder's own grid edits are not
+  flagged. Forward, Send back and Pull back edit route rows through recordsets
+  only (a reported, unreproduced error 3218 pointed at the earlier mix of
+  recordset and SQL updates in one transaction). **Replace current route with
+  this template** swaps an active route (old run kept as Cancelled, event
+  Replaced); **Delete selected template** hides a template from new routes while
+  running routes keep their copied reviewers.
+- **Editor entry (same review).** Editor check boxes no longer show the third
+  "-" state: unanswered shows blank and stays stored as not answered. Save
+  uppercases names, grades/rates, designators, titles and rater/counselor names,
+  and formats the member name as LAST, FIRST MI SUFFIX and the reporting senior as
+  LAST, F M (`NavyNameFormat`, `UXFormatTypedFields`). It runs at Save, not on
+  field exit, because Access raises AfterUpdate after a resize moves focus
+  mid-typing. Rail buttons on Narrative snippets, Recovery and the import chooser
+  lost their stray borders.
+- **Skipped calls fixed.** A line starting with a procedure name and a colon
+  (`UXMessageRead: ...`) is a VBA line label, so the call never ran. Report notes
+  did not refresh after posting for this reason; 17 more app lines and 8 test
+  lines had the same pattern (reporting-senior table refreshes, roster import
+  rows, NAVFIT group import close, grid preview refresh, counseling and prior
+  history labels, the editor's flush before validation, local PDF cleanup). All
+  now use `Call`, and `check-vba-source.ps1` rejects the pattern.
+- **Assignments and routes.** `AssignReview` refuses a reviewer who is already
+  in the report's active route; assignments to anyone else still work. My Work's
+  Assign layout no longer overlaps its instructions and button.
+
+Verified on builds `20261101-234536_f1bac92a` and `20261102-004348_81058cae`: new
+`test-route-chain` (34 assertions); report-review-history, report-field-
+persistence, traits, summary-groups, member-profiles, workspace-migration (38
+schema fixtures, 1–37), workspace-read-performance, workspace-startup,
+directory-management and work-review suites. Older tests that asserted
+stale-on-save were changed to the new rules. User guide chapters 12–13 rewritten;
+the PDF is not regenerated.
+
 ## Superseded approaches and open concerns
 
 - The r126 local-PDF, r127 directory-merge and report-tools binary-template

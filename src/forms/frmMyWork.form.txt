@@ -707,9 +707,9 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =7650
+                    Top =5800
                     Width =10450
-                    Height =350
+                    Height =1200
                     FontSize =10
                     TabIndex =8
                     BorderColor =13285543
@@ -719,9 +719,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =7650
+                    LayoutCachedTop =5800
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =8000
+                    LayoutCachedHeight =7000
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -731,7 +731,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2850
-                            Top =7270
+                            Top =5450
                             Width =10450
                             Height =300
                             FontSize =10
@@ -741,9 +741,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="MWX:body"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =7270
+                            LayoutCachedTop =5450
                             LayoutCachedWidth =13300
-                            LayoutCachedHeight =7570
+                            LayoutCachedHeight =5750
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -753,7 +753,7 @@ Begin Form
                     OverlapFlags =255
                     TextFontFamily =34
                     Left =2850
-                    Top =7500
+                    Top =7200
                     Width =10450
                     Height =500
                     FontSize =10
@@ -766,9 +766,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =7500
+                    LayoutCachedTop =7200
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =8000
+                    LayoutCachedHeight =7700
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

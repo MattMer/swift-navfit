@@ -36,12 +36,12 @@ Public Function TestUXWorkflows() As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
     Check f.OnUnload = "[Event Procedure]", "Unload guard missing"
-    f!uxFieldSurface.SetFocus: s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "UNSAVED NAME"
+    f!uxFieldSurface.SetFocus: s!txtOfficialName.SetFocus: s!txtOfficialName.Text = "UNSAVED, NAME"
     Check EditorHasPending(), "Typing in active field not dirty"
     Check DCount("*", "RecoveryDraft") = 0, "Unexpected checkpoint before first timer"
     NativeClose "Save"
     Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Automatic native save did not close"
-    Check DLookup("OfficialName", "Report", "ReportID=" & id) = "UNSAVED NAME", "Automatic close lost active text"
+    Check DLookup("OfficialName", "Report", "ReportID=" & id) = "UNSAVED, NAME", "Automatic close lost active text"
     Check prompts = 0, "Automatic close displayed leave popup"
     stage = "failed save on native close"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Set f = Forms!frmEditor
@@ -65,7 +65,7 @@ Public Function TestUXWorkflows() As String
     NativeClose "Save"
     Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Saved native close stayed open"
     Check CurrentRevision(id) <> revision, "Native save did not commit"
-    Check DLookup("OfficialName", "Report", "ReportID=" & id) = "UNSAVED NAME", "Native save lost typed value"
+    Check DLookup("OfficialName", "Report", "ReportID=" & id) = "UNSAVED, NAME", "Native save lost typed value"
     Check DCount("*", "RecoveryDraft") = 0, "Save left pending checkpoint"
     stage = "unchanged close"
     beforePrompts = prompts: DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
@@ -130,7 +130,7 @@ Public Function PrepareForcedQuit(ByVal invalid As Boolean, Optional ByVal kind 
     id = CommitDraft(0, kind, "Forced quit", "Quit member", Null, Null, "", "Test", "")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor.TimerInterval = 0
-    Forms!frmEditor!txtOfficialName = "QUIT SAVE NAME"
+    Forms!frmEditor!txtOfficialName = "SAVE, QUIT"
     Forms!frmEditor!txtMemberSSN = IIf(invalid, "123", "000000777")
     If kind = "CHIEFEVAL" Then
         For block = 33 To 39

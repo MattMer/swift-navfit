@@ -80,7 +80,7 @@ Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boole
         Set r = CurrentDb.OpenRecordset("SELECT BlockNumber,MarkValue FROM PriorEvaluationTrait WHERE PriorID=" & priorID, dbOpenSnapshot)
         Do While Not r.EOF: f.Controls("cboTrait" & r!BlockNumber) = r!MarkValue: r.MoveNext: Loop: r.Close
     End If
-    UXPriorLabels: UXPriorOpen = True
+    Call UXPriorLabels: UXPriorOpen = True
 End Function
 Public Function UXPriorLabels() As Boolean
     Dim block As Long, f As Access.Form
@@ -256,7 +256,7 @@ Public Function UXCounselingOpen(Optional ByVal createNew As Boolean = True, Opt
         f!txtDate = r!CounseledOn: f!cboOutcome = r!Outcome: f!txtCounselor = r!CounselorName: f!cboReason = r!NotPerformedReason
         f!cboDisposition = r!WorksheetDisposition: r.Close
     End If
-    UXCounselingOutcome: UXCounselingOpen = True
+    Call UXCounselingOutcome: UXCounselingOpen = True
 End Function
 Public Function UXCounselingOutcome() As Boolean
     Dim f As Access.Form, completed As Boolean

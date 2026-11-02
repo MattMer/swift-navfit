@@ -101,7 +101,7 @@ Public Function UXMessageRefresh() As Boolean
  f!lblCompose.Caption = "New message as " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & MajorAuthor()), "the current contributor")
  f!lblNoteStatus.Caption = "Messages stay with this report, independent of review or approval, and can continue after it is signed."
  If id = 0 Then f!lblNoteStatus.Caption = "Save this report once before posting notes."
- UXMessageRead: UXMessageRefresh = True
+ Call UXMessageRead: UXMessageRefresh = True
 End Function
 Public Function UXMessageRead() As Boolean
  Dim f As Access.Form, rows As DAO.Recordset, id As Long, text As String, parents As Object
@@ -145,7 +145,7 @@ Failed:
 End Function
 Public Function UXMessageKeep() As Boolean
  If Not UXToolsCheckpoint() Then Exit Function
- UXMessageRefresh: UXToolsForm()!lblNoteStatus.Caption = "Your unfinished note is saved privately. It has not been posted."
+ Call UXMessageRefresh: UXToolsForm()!lblNoteStatus.Caption = "Your unfinished note is saved privately. It has not been posted."
  UXMessageKeep = True
 End Function
 Public Function UXMessageDiscard() As Boolean
@@ -154,7 +154,7 @@ Public Function UXMessageDiscard() As Boolean
  Set f = UXToolsForm()
  If Nz(f!txtDraftVersion, 0) > 0 Then DiscardReportNoteDraft f!txtDraftGuid, f!txtDraftVersion
  f!txtMessage = Null: f!txtDraftSaved = Null: f!txtDraftGuid = NewIdentity(): f!txtDraftVersion = 0: f!txtDraftParent = 0
- UXMessageRefresh: UXMessageDiscard = True: Exit Function
+ Call UXMessageRefresh: UXMessageDiscard = True: Exit Function
 Failed:
  f!lblNoteStatus.Caption = Err.Description
 End Function
@@ -248,7 +248,7 @@ Public Function UXReportReviewMode() As Boolean
  f!lstAssignments.RowSource = "SELECT t.TaskID,p.DisplayName AS Reviewer,t.TaskState AS Status,t.DueDate AS Due FROM ReviewTask AS t INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID WHERE t.ReportID=" & Nz(Forms!frmEditor!txtReportID, 0) & " ORDER BY t.TaskID DESC"
  f!lstAssignments.Requery
  If IsNull(f!lstAssignments) And f!lstAssignments.ListCount > 1 Then f!lstAssignments = f!lstAssignments.ItemData(1)
- UXReportAssignmentSelect: UXReportReviewMode = True
+ Call UXReportAssignmentSelect: UXReportReviewMode = True
 End Function
 Public Function UXReportAssignmentSelect() As Boolean
  Dim f As Access.Form, rows As DAO.Recordset, id As Long, allowed As Boolean, pid As Long
@@ -256,10 +256,10 @@ Public Function UXReportAssignmentSelect() As Boolean
  f!cmdAssignmentAccept.Enabled = False: f!cmdAssignmentReturn.Enabled = False: f!cmdAssignmentCancel.Enabled = False: f!txtAssignmentHistory = "No assignment selected. Assign a saved revision from My Work."
  Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewTask WHERE TaskID=" & id & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0), dbOpenSnapshot)
  If Not rows.EOF Then
-  allowed = rows!TaskState = "Pending" And rows!AssignedTo = pid And rows!RevisionID = CurrentRevision(rows!ReportID) And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & rows!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & rows!ReportID), "") = "Draft"
+  allowed = rows!TaskState = "Pending" And rows!AssignedTo = pid And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & rows!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & rows!ReportID), "") = "Draft"
   f!cmdAssignmentAccept.Enabled = allowed: f!cmdAssignmentReturn.Enabled = allowed
   f!cmdAssignmentCancel.Enabled = rows!TaskState = "Pending" And rows!RequestedBy = pid
-  f!txtAssignmentHistory = rows!TaskState & IIf(rows!RevisionID <> CurrentRevision(rows!ReportID), " / stale saved revision", " / current saved revision") & vbCrLf & Nz(rows!Instructions, "") & vbCrLf & "Requested by " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & rows!RequestedBy), "")
+  f!txtAssignmentHistory = rows!TaskState & IIf(rows!TaskState = "Pending", " / the reviewer can edit the report before deciding", "") & vbCrLf & Nz(rows!Instructions, "") & vbCrLf & "Requested by " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & rows!RequestedBy), "")
  End If
  rows.Close: UXReportAssignmentSelect = True
 End Function
@@ -271,7 +271,7 @@ Public Function UXReportAssignmentDecision(ByVal outcome As String) As Boolean
   UXReportAssignmentDecision = FinishReview(Nz(!lstAssignments, 0), outcome, Nz(!txtAssignmentNote, ""))
   If UXReportAssignmentDecision Then !txtAssignmentNote = Null
  End With
- UXReportAssignmentSelect: UXWorkChanged: Exit Function
+ Call UXReportAssignmentSelect: UXWorkChanged: Exit Function
 Failed:
  UXReviewForm()!txtAssignmentHistory = Err.Description
 End Function

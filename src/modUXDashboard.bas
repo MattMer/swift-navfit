@@ -19,8 +19,8 @@ Public Function UXReportState(ByVal reportID As Long) As String
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Signed" Then UXReportState = "Signed": Exit Function
     If DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Not Null") > 0 And DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Null") = 0 Then UXReportState = "Reopened for correction": Exit Function
     revision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
-    If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending' AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function
-    If DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted') AND RevisionID<>" & revision) > 0 Then UXReportState = "Review needs restart": Exit Function
+    'Saves by the reviewer holding the report keep its review current (F01); only a
+    'group route whose membership changed needs a restart.
     Set routes = CurrentDb.OpenRecordset("SELECT RunID FROM RouteRun WHERE ReportID=" & reportID & " AND RunState In ('Pending','Accepted')", dbOpenSnapshot)
     Do While Not routes.EOF
         If Not RouteIsCurrent(routes!RunID) Then routes.Close: UXReportState = "Review needs restart": Exit Function
@@ -28,7 +28,7 @@ Public Function UXReportState(ByVal reportID As Long) As String
     Loop
     routes.Close
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0 Or DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState='Pending'") > 0 Then UXReportState = "In review": Exit Function
-    If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Returned' AND RevisionID=" & revision) > 0 Then UXReportState = "Returned": Exit Function
+    If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Returned' AND Nz(FinishedRevisionID,RevisionID)=" & revision) > 0 Then UXReportState = "Returned": Exit Function
     UXReportState = "Draft"
 End Function
 Public Function UXGroupAverage(ByVal groupID As Long) As Variant

@@ -463,6 +463,7 @@ Begin Form
                     Gradient =0
                     BackColor =5123348
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -503,6 +504,7 @@ Begin Form
                     Gradient =0
                     BackColor =5123348
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -543,6 +545,7 @@ Begin Form
                     Gradient =0
                     BackColor =5123348
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -583,6 +586,7 @@ Begin Form
                     Gradient =0
                     BackColor =5123348
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -623,6 +627,7 @@ Begin Form
                     Gradient =0
                     BackColor =5123348
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -664,6 +669,7 @@ Begin Form
                     Gradient =0
                     BackColor =7041038
                     BackThemeColorIndex =-1
+                    OldBorderStyle =0
                     BorderColor =13285543
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1

@@ -24,12 +24,9 @@ Private Function Rejected(ByVal id As Long, ByVal kind As String, ByVal values A
 Failed:
     Rejected = True
 End Function
-Private Function StaleReviewRejected(ByVal id As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(id, "Accepted", "Attempt stale")
-    Exit Function
-Failed:
-    StaleReviewRejected = InStr(Err.Description, "stale") > 0
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Private Function CorruptRestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
     On Error GoTo Failed
@@ -59,8 +56,7 @@ Public Function TestAdministration() As String
         Call CommitDraft(id, CStr(kind), "Synthetic", "Local display", Null, Null, "Notes", "Case", "Narrative", values)
         second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check RevisionFieldStatus(first, second, "OfficialName") = "Changed", "Case edit invisible"
-        Check StaleReviewRejected(task), "Administrative edit did not stale review"
-        Call FinishReview(task, "Cancelled", "Newer administration")
+        Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
         Call RestoreDraft(id, first)
         Check Stored(id, "OfficialName") = "O'NAME, SYNTHETIC", "Restore lost administration"
         values = Array(Null, "", Null, "", Null)
@@ -86,9 +82,9 @@ Public Function TestAdministration() As String
     Check Stored(id, "UnitUIC") = "00123" And DCount("*", "ReportRevision") = before, "Failed save partly committed"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Check Forms!frmEditor!txtUnitUIC = "00123", "Editor did not load administration"
-    Forms!frmEditor!txtOfficialName = "UI OFFICIAL NAME": Forms!frmEditor!txtUnitUIC = "00234"
+    Forms!frmEditor!txtOfficialName = "OFFICIAL, UI": Forms!frmEditor!txtUnitUIC = "00234"
     Check SaveEditor(), "Editor save failed"
-    Check Stored(id, "OfficialName") = "UI OFFICIAL NAME" And Stored(id, "UnitUIC") = "00234", "Editor save lost administration"
+    Check Stored(id, "OfficialName") = "OFFICIAL, UI" And Stored(id, "UnitUIC") = "00234", "Editor save lost administration"
     Check OpenDraftChecklist(id), "Checklist failed"
     Check Not MissingInput(id, "OfficialName") And Not MissingInput(id, "UnitUIC"), "Complete administration still missing"
     Call CloseDraftChecklist()
@@ -119,6 +115,16 @@ Public Function TestAdministration() As String
     'Repair the test corruption so migration fixtures retain coherent current history.
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
     r.AddNew: r!RevisionID = second: r!FieldKey = "UnitUIC": r!IsNullValue = True: r.Update: r.Close
+    ' Typed entry formats like NAVFIT98A: uppercase and LAST, FIRST MI SUFFIX.
+    Check NavyNameFormat("john q smith jr") = "SMITH, JOHN Q JR", "First-last name not reordered"
+    Check NavyNameFormat("smith,john quincy") = "SMITH, JOHN Q", "Middle name not reduced to an initial"
+    Check NavyNameFormat("Van Der Berg, Anna") = "VAN DER BERG, ANNA", "Comma last name changed"
+    Check NavyNameFormat("John Smith") = "SMITH, JOHN", "Two-word name not reordered"
+    Check NavyNameFormat("SMITH, JOHN V") = "SMITH, JOHN V" And NavyNameFormat("o'neil, a.") = "O'NEIL, A", "Initial or punctuation handling changed"
+    Check NavyNameFormat("Jane Ann Doe", True) = "DOE, J A", "Reporting senior initials wrong"
+    Check NavyNameFormat("Cher") = "CHER" And NavyNameFormat("") = "", "Single word changed"
+    Check UXTypedText("RankRate", "it2") = "IT2" And UXTypedText("ReportingSeniorTitle", "co") = "CO" And UXTypedText("Title", "draft a") = "draft a", "Uppercase field set wrong"
+    Check IsNull(UXTypedText("OfficialName", Null)), "Empty name not kept empty"
     TestAdministration = "PASS: " & checks & " administration assertions": Exit Function
 Failed:
     TestAdministration = "FAIL: " & Err.Number & " " & Err.Description

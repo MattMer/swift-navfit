@@ -60,16 +60,16 @@ Public Function UXHeaderReviewState() As Boolean
             f!uxReviewApproval.Caption = "Local approval"
         End If
         editable = editable And state = "Draft"
-        reason = "Review setup starts a route. Decisions require the assigned contributor and a current saved revision; local approval requires the final reviewer."
+        reason = "Review setup starts a route. The contributor holding the report can edit it, then forward it or send it back; local approval requires the final reviewer."
         Set r = CurrentDb.OpenRecordset("SELECT TOP 1 * FROM RouteRun WHERE ReportID=" & id & " ORDER BY RunID DESC", dbOpenSnapshot)
         If Not r.EOF Then
             run = r!RunID: current = RouteIsCurrent(run): routeState = r!RunState
             If Not current And (r!RunState = "Pending" Or r!RunState = "Accepted") Then
-                reason = "Stale review: open Review setup and restart the route against current saved values. Only its requester can restart it."
+                reason = "The group's membership changed: open Review setup and restart the route. Only its requester can restart it."
             ElseIf r!RunState = "Pending" Then
-                f!uxReviewAccept.Enabled = editable And current And Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & run & " AND StepOrdinal=" & r!CurrentStep), 0) = author
-                f!uxReviewReturn.Enabled = f!uxReviewAccept.Enabled
-                reason = "Current step assigned to " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & run & " AND StepOrdinal=" & r!CurrentStep), 0)), "Unknown contributor") & ". Decisions apply to saved values."
+                f!uxReviewAccept.Enabled = editable And current And RouteHolder(run) = author
+                f!uxReviewReturn.Enabled = f!uxReviewAccept.Enabled And r!CurrentStep > 0
+                reason = "With " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & RouteHolder(run)), "Unknown contributor") & ". Decisions apply to saved values."
             ElseIf r!RunState = "Accepted" And state <> "Approved" Then
                 f!uxReviewApproval.Enabled = editable And current And Nz(r!ApprovedBy, 0) = author
                 reason = "All steps accepted. Local approval requires the final reviewer and a decision note."
@@ -91,11 +91,11 @@ Public Function UXHeaderReviewState() As Boolean
         primary = "uxReviewApproval"
         If state = "Approved" Then nextAction = "Local approval recorded. Reopen to edit; this is not official submission." Else nextAction = "Next: Record local approval as the final reviewer."
     ElseIf f!uxReviewAccept.Enabled Then
-        primary = "uxReviewAccept": nextAction = "Next: Accept this step or return the report with a decision note."
+        primary = "uxReviewAccept": nextAction = "Next: You hold this report. Edit if needed, then Forward, or Send back with a note."
     ElseIf run > 0 And Not current And (routeState = "Pending" Or routeState = "Accepted") Then
-        primary = "uxReviewSetup": nextAction = "Next: Open Review setup; this stale review needs the requester to restart it."
+        primary = "uxReviewSetup": nextAction = "Next: Open Review setup; the group's membership changed, so the requester must restart this review."
     ElseIf routeState = "Pending" Then
-        primary = "uxReviewSetup": nextAction = "Waiting for the assigned reviewer. Review setup shows the current step."
+        primary = "uxReviewSetup": nextAction = "Under review " & Mid$(ReviewHolderText(id), 1) & ". Only they can save changes; Review setup can pull it back."
     ElseIf routeState = "Accepted" Then
         primary = "uxReviewSetup": nextAction = "Waiting for the final reviewer to record local approval."
     Else
@@ -117,7 +117,7 @@ Public Function UXHeaderReviewState() As Boolean
         If routeState = "Accepted" And current Then f!uxReviewApproval.ControlTipText = "Unavailable: only the final reviewer can record local approval." Else f!uxReviewApproval.ControlTipText = Left$("Unavailable: complete all steps on a current route before local approval. " & reason, 255)
     End If
     If Not f!uxReviewAccept.Enabled And routeState <> "Pending" Then
-        f!uxReviewAccept.ControlTipText = Left$("Unavailable: a current pending review step assigned to you is required. " & reason, 255)
+        f!uxReviewAccept.ControlTipText = Left$("Unavailable: only the contributor holding the report can forward it or send it back. " & reason, 255)
         f!uxReviewReturn.ControlTipText = f!uxReviewAccept.ControlTipText
     End If
     UXApplyVisual f

@@ -30,37 +30,19 @@ If c.Visible Then Check c.Left >= 0 And c.Left + c.Width <= f.Width, "Review cli
 Next
 Next
 Check f!cboRun.ListCount = 1 And f!cboRun = run, "Scoped route selection"
-Check InStr(f!cboRun.Column(1), "Saved revision 1") > 0, "Readable revision label"
+Check InStr(f!cboRun.Column(1), "Started on revision 1") > 0, "Readable revision label"
 Check InStr(f!lstSteps.Column(1, 1), "Reviewer") > 0, "Reviewer name missing"
 Check f!cmdAccept.Enabled And Not f!cmdRestart.Enabled, "Current step actions"
 f!lstSteps = 1: Check UXReviewStep() And InStr(f!txtStep, "Read all saved blocks") > 0, "Full step instructions"
 Set f = ReviewAs(other, id)
 Check Not f!cmdAccept.Enabled And Not f!cmdCancel.Enabled, "Contributor guards"
 Set f = ReviewAs(author, id)
+' F01: the holder's own save keeps the route current; no restart is needed.
 Call CommitDraft(id, "EVAL", "Review fixture", "Synthetic member", #1/1/2026#, #9/30/2026#, "Changed", "Test", "")
 Call UXReviewStatus
-Check f!cmdRestart.Enabled And Not f!cmdAccept.Enabled, "Stale guidance"
-Check InStr(f!lblStatus.Caption, "Needs restart") > 0, "Stale next action missing"
-Call CommitDraft(id, "EVAL", "Review fixture", "Synthetic member", #1/1/2026#, #9/30/2026#, "Changed again", "Test", "")
-Check Not UXReviewAction("Restart"), "Restart ignored changed display baseline"
-Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Failed restart modified old route"
-Call UXReviewStatus
-CurrentDb.Execute "UPDATE RouteTemplate SET IsArchived=True WHERE TemplateID=" & template
-Check Not UXReviewAction("Restart"), "Archived template restarted"
-Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending" And DCount("*", "RouteRun") = 1, "Restart rollback lost route"
-CurrentDb.Execute "UPDATE RouteTemplate SET IsArchived=False WHERE TemplateID=" & template
-CurrentDb.Execute "DELETE FROM RouteTemplateStep WHERE TemplateID=" & template
-Call UXReviewStatus
-Check Not UXReviewAction("Restart"), "Empty template restarted"
-Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending" And DCount("*", "RouteRun") = 1, "Atomic replacement failure modified old route"
-CurrentDb.Execute "INSERT INTO RouteTemplateStep (TemplateID,StepOrdinal,AssigneeID,Instructions) VALUES (" & template & ",1," & author & ",'Read all saved blocks')"
-Call UXReviewStatus
-If Not UXReviewAction("Restart") Then Err.Raise vbObjectError + 5950, , "Restart failed: " & f!lblStatus.Caption
-Check True, "Restart succeeded"
-newRun = f!cboRun
-Check newRun <> run And DLookup("RunState", "RouteRun", "RunID=" & run) = "Cancelled", "Restart did not retain old history"
-Check DLookup("RevisionID", "RouteRun", "RunID=" & newRun) = CurrentRevision(id) And RouteIsCurrent(newRun), "Restart revision wrong"
-Check DLookup("StepState", "RouteRunStep", "RunID=" & newRun) = "Pending", "Restart reused decision"
+Check f!cmdAccept.Enabled And Not f!cmdRestart.Enabled And RouteIsCurrent(run), "Holder save staled the route"
+Check InStr(f!lblStatus.Caption, "You hold this report") > 0, "Holder guidance missing"
+newRun = run
 ' Review actions in the report's own tools refuse while its editor holds unsaved changes.
 Forms!frmEditor!txtNotes = "Pending notes"
 f!txtNote = "Reviewed": Check Not UXReviewAction("Accept"), "Accepted with pending report changes"
@@ -73,7 +55,7 @@ f!txtNote = "Local only": Check UXReviewAction("Approve"), "Approval failed"
 Check f!cmdReopen.Enabled And Not f!cmdStart.Enabled And Not f!cmdRestart.Enabled, "Approval lock"
 Check Not Forms!frmEditor!cmdSave.Enabled, "Approval did not refresh editor lock"
 f!txtNote = "Correction": Check UXReviewAction("Reopen") And f!cmdStart.Enabled, "Reopen guidance"
-Check CLng(f!txtReportID) = id And f!cboRun.ListCount = 2, "Actions lost report scope"
+Check CLng(f!txtReportID) = id And f!cboRun.ListCount = 1, "Actions lost report scope"
 Check Forms!frmEditor!cmdSave.Enabled, "Reopen did not restore editor access"
 Check UXLeaveEditor("Discard"), "Pending review editor cleanup"
 id = CommitDraft(0, "EVAL", "Group review fixture", "Group member", Null, Null, "", "Test", "")
@@ -89,8 +71,20 @@ Check UXReportState(id) = "Review needs restart", "Reports status missed stale g
 Set f = ReviewAs(other, id, groupID)
 Check Not f!cmdRestart.Enabled And Not UXReviewAction("Restart"), "Wrong requester restarted"
 Set f = ReviewAs(author, id, groupID)
+' Restart compares the saved values the panel showed.
+Call CommitDraft(id, "EVAL", "Group review fixture", "Group member", Null, Null, "Changed after display", "Test", "")
+Check Not UXReviewAction("Restart"), "Restart ignored changed display baseline"
+Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Failed restart modified old route"
+Call UXReviewStatus
+CurrentDb.Execute "UPDATE RouteTemplate SET IsArchived=True WHERE TemplateID=" & template
+Check Not UXReviewAction("Restart"), "Archived template restarted"
+Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Restart rollback lost route"
+CurrentDb.Execute "UPDATE RouteTemplate SET IsArchived=False WHERE TemplateID=" & template
+Call UXReviewStatus
 Check UXReviewAction("Restart"), "Group restart failed"
 newRun = f!cboRun
+Check newRun <> run And DLookup("RunState", "RouteRun", "RunID=" & run) = "Cancelled", "Restart did not retain old history"
+Check DLookup("StepState", "RouteRunStep", "RunID=" & newRun) = "Pending", "Restart reused decision"
 Check DLookup("GroupID", "RouteRun", "RunID=" & newRun) = groupID And RouteIsCurrent(newRun), "Group context lost"
 Call CommitDraft(id, "EVAL", "Group review fixture", "Group member", Null, Null, "Group stale", "Test", "")
 CurrentDb.Execute "UPDATE SummaryGroup SET IsArchived=True WHERE GroupID=" & groupID

@@ -30,9 +30,9 @@ foreach($kind in $kinds){foreach($invalid in @($false,$true)){
         $saved=$db.OpenRecordset('SELECT * FROM Report',4)
         $pending=$db.OpenRecordset('SELECT * FROM RecoveryDraft',4)
         if($invalid){
-            if($saved.Fields.Item('MemberSSN').Value -isnot [DBNull] -or $pending.EOF -or $pending.Fields.Item('MemberSSN').Value -cne '123' -or $pending.Fields.Item('OfficialName').Value -cne 'QUIT SAVE NAME'){throw 'Forced quit lost invalid pending values or committed them.'}
+            if($saved.Fields.Item('MemberSSN').Value -isnot [DBNull] -or $pending.EOF -or $pending.Fields.Item('MemberSSN').Value -cne '123' -or $pending.Fields.Item('OfficialName').Value -cne 'SAVE, QUIT'){throw 'Forced quit lost invalid pending values or committed them.'}
         }else{
-            if($saved.Fields.Item('OfficialName').Value -cne 'QUIT SAVE NAME' -or $saved.Fields.Item('MemberSSN').Value -cne '000000777' -or -not $pending.EOF){throw 'Forced quit did not save valid edits.'}
+            if($saved.Fields.Item('OfficialName').Value -cne 'SAVE, QUIT' -or $saved.Fields.Item('MemberSSN').Value -cne '000000777' -or -not $pending.EOF){throw 'Forced quit did not save valid edits.'}
         }
         if($kind -eq 'CHIEFEVAL'){
             foreach($block in 33..39){foreach($entry in 1..3){

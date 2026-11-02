@@ -4,7 +4,7 @@ Option Explicit
 Public Function UXRouteLabel(ByVal runID As Long) As String
     Dim r As DAO.Recordset
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & runID, dbOpenSnapshot)
-    If Not r.EOF Then UXRouteLabel = UXMemberLabel(r!ReportID) & " | " & Nz(DLookup("Title", "RouteTemplate", "TemplateID=" & r!TemplateID), "Review route") & " | Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & " | " & r!RunState & " | " & Format$(r!RequestedAt, "yyyy-mm-dd hh:nn")
+    If Not r.EOF Then UXRouteLabel = UXMemberLabel(r!ReportID) & " | " & Nz(DLookup("Title", "RouteTemplate", "TemplateID=" & r!TemplateID), "Review route") & " | Started on revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & " | " & r!RunState & " | " & Format$(r!RequestedAt, "yyyy-mm-dd hh:nn")
     r.Close
 End Function
 Public Function UXLoadReview(Optional ByVal reportID As Long = 0, Optional ByVal groupID As Long = -1, Optional ByVal runID As Long = 0) As Boolean
@@ -33,12 +33,14 @@ Public Function UXReviewStatus() As Boolean
     Dim f As Access.Form, id As Long, run As Long, r As DAO.Recordset, state As String, current As Boolean, author As Long, assignee As Long, editable As Boolean, message As String, primary As String, nextAction As String, action As Variant
     Set f = UXReviewForm(): id = Nz(f!txtReportID, 0): run = Nz(f!cboRun, 0): author = MajorAuthor()
     editable = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Draft"
-    f!cmdStart.Enabled = editable And DCount("*", "RouteRun", "ReportID=" & id & " AND RunState='Pending'") = 0
+    'With an active route, Start replaces it with the selected template.
+    f!cmdStart.Enabled = editable
+    If DCount("*", "RouteRun", "ReportID=" & id & " AND RunState In ('Pending','Accepted')") > 0 Then f!cmdStart.Caption = "Replace current route with this template" Else f!cmdStart.Caption = "Start review of current saved revision"
     If Nz(f!txtGroupID, 0) > 0 Then f!cmdStart.Enabled = f!cmdStart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & f!txtGroupID), True)
-    f!cmdAccept.Enabled = False: f!cmdReturn.Enabled = False: f!cmdRestart.Enabled = False: f!cmdApprove.Enabled = False: f!cmdCancel.Enabled = False
+    f!cmdAccept.Enabled = False: f!cmdReturn.Enabled = False: f!cmdPullBack.Enabled = False: f!cmdRestart.Enabled = False: f!cmdApprove.Enabled = False: f!cmdCancel.Enabled = False
     f!cmdReopen.Enabled = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Approved"
     f!lstSteps.RowSource = "": f!txtStep = ""
-    message = "Choose a route template and Start review. Actions use saved values; pending editor changes remain separate."
+    message = "Choose a route template and Start review. The reviewer holding the report can edit it, then forward it or send it back."
     If Not editable Then message = "Editing is locked. Reopen local approval with a reason, or recover the archived report first."
     If run > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & run & " AND ReportID=" & id, dbOpenSnapshot)
@@ -46,25 +48,33 @@ Public Function UXReviewStatus() As Boolean
         state = r!RunState: current = RouteIsCurrent(run)
         f!txtExpectedRevision = CurrentRevision(id): f!txtExpectedStamp = ""
         If Nz(r!GroupID, 0) > 0 Then f!txtExpectedStamp = GroupStamp(r!GroupID)
-        assignee = Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & run & " AND StepOrdinal=" & r!CurrentStep), 0)
+        assignee = RouteHolder(run)
         f!lstSteps.RowSource = "SELECT StepOrdinal AS [Step],DLookup('DisplayName','UserProfile','UserProfileID=' & AssigneeID) AS Reviewer,StepState AS [Status],Instructions,DecisionNote AS [Decision note] FROM RouteRunStep WHERE RunID=" & run & " ORDER BY StepOrdinal"
         f!lstSteps.Requery
-        message = "Route: " & state & ". Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & ". "
+        message = "Route: " & state & ". "
+        If (state = "Pending" Or state = "Accepted") And current Then message = message & RouteFlags(run)
         If Not current And (state = "Pending" Or state = "Accepted") Then
-            message = message & "Needs restart: saved report values or group membership changed. The requester can restart using the same template; all earlier decisions stay in history."
+            message = message & "Needs restart: the group's membership changed. The requester can restart using the same template; all earlier decisions stay in history."
             f!cmdRestart.Enabled = editable And r!RequestedBy = author
             If Nz(r!GroupID, 0) > 0 Then f!cmdRestart.Enabled = f!cmdRestart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & r!GroupID), True)
         ElseIf state = "Pending" Then
-            message = message & "Current step " & r!CurrentStep & " of " & DCount("*", "RouteRunStep", "RunID=" & run) & ": " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & assignee), "Unknown reviewer") & ". "
-            If assignee = author Then message = message & "Enter a decision note, then Accept step or Return report." Else message = message & "Switch to this assigned contributor to record a decision."
-            f!cmdAccept.Enabled = current And editable And assignee = author: f!cmdReturn.Enabled = f!cmdAccept.Enabled
+            If r!CurrentStep = 0 Then
+                message = message & "Back with the requester, " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & assignee), "Unknown contributor") & ". "
+            Else
+                message = message & "Step " & r!CurrentStep & " of " & DCount("*", "RouteRunStep", "RunID=" & run) & ": with " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & assignee), "Unknown reviewer") & ". "
+            End If
+            If assignee = author Then message = message & "You hold this report: edit it if needed, then Forward, or Send back with a note (to the step selected below, or the previous step)." Else message = message & "Only the contributor holding it can edit or forward it."
+            f!cmdAccept.Enabled = current And editable And assignee = author
+            f!cmdReturn.Enabled = f!cmdAccept.Enabled And r!CurrentStep > 0
         ElseIf state = "Accepted" And current Then
-            message = message & "All steps accepted. The final reviewer can record Local approval with a note."
+            message = message & "Every step has forwarded. The final reviewer can record Local approval, or Send back with a note."
             f!cmdApprove.Enabled = editable And Nz(r!ApprovedBy, 0) = author
+            f!cmdReturn.Enabled = f!cmdApprove.Enabled
         Else
             message = message & "This route is history. Start another review if needed; local approval must be reopened before editing."
         End If
         f!cmdCancel.Enabled = state = "Pending" And r!RequestedBy = author
+        f!cmdPullBack.Enabled = current And editable And RoutePullBackStep(run, author) >= 0
         r.Close
     End If
     If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then
@@ -76,7 +86,7 @@ Public Function UXReviewStatus() As Boolean
     ElseIf f!cmdRestart.Enabled Then
         primary = "cmdRestart": nextAction = "Restart this stale route as its requester."
     ElseIf f!cmdAccept.Enabled Then
-        primary = "cmdAccept": nextAction = "Enter a note, then Accept step or Return report."
+        primary = "cmdAccept": nextAction = "Edit if needed, then Forward, or Send back with a note."
     ElseIf f!cmdApprove.Enabled Then
         primary = "cmdApprove": nextAction = "Enter a note and record local approval as the final reviewer."
     ElseIf state = "Pending" Or state = "Accepted" Then
@@ -87,7 +97,7 @@ Public Function UXReviewStatus() As Boolean
         nextAction = "Recover the archived report/group or reopen local approval before continuing."
     End If
     message = "Next: " & nextAction & vbCrLf & message
-    For Each action In Array("cmdStart", "cmdAccept", "cmdReturn", "cmdRestart", "cmdApprove", "cmdCancel", "cmdReopen")
+    For Each action In Array("cmdStart", "cmdAccept", "cmdReturn", "cmdPullBack", "cmdRestart", "cmdApprove", "cmdCancel", "cmdReopen")
         With f.Controls(action)
             .UseTheme = False: .FontBold = (.Name = primary And .Enabled)
             .BackColor = IIf(.FontBold, UXColor("Primary"), UXColor("Neutral"))
@@ -95,10 +105,11 @@ Public Function UXReviewStatus() As Boolean
                 .ControlTipText = "Applies to saved values. " & nextAction
             Else
                 Select Case CStr(action)
-                    Case "cmdStart": .ControlTipText = "Unavailable: start requires an active draft/group without a pending route."
-                    Case "cmdAccept", "cmdReturn": .ControlTipText = Left$("Unavailable: decisions require a current pending step assigned to you. " & message, 255)
+                    Case "cmdStart": .ControlTipText = "Unavailable: start or replace requires an active draft and group."
+                    Case "cmdAccept", "cmdReturn": .ControlTipText = Left$("Unavailable: only the contributor holding the report can forward it or send it back. " & message, 255)
+                    Case "cmdPullBack": .ControlTipText = "Unavailable: the requester or a reviewer at an earlier step can pull the report back."
                     Case "cmdApprove": .ControlTipText = "Unavailable: local approval requires all steps accepted on current values and the final reviewer."
-                    Case "cmdRestart": .ControlTipText = "Unavailable: only the requester can restart a stale pending or accepted route."
+                    Case "cmdRestart": .ControlTipText = "Unavailable: only the requester can restart a route whose group membership changed."
                     Case "cmdCancel": .ControlTipText = "Unavailable: only the requester can cancel a pending route."
                     Case "cmdReopen": .ControlTipText = "Unavailable: reopen requires an active, locally approved report."
                 End Select
@@ -160,13 +171,16 @@ Public Function UXReviewAction(ByVal action As String) As Boolean
     If EditorHasPending() And action <> "Cancel" Then Err.Raise 5, "modUXReview.UXReviewAction", "Save or undo pending report changes before recording a review action."
     Set f = UXReviewForm(): run = Nz(f!cboRun, 0): id = Nz(f!txtReportID, 0)
     Select Case action
-        Case "Start": f!cboRun = StartRoute(id, Nz(f!cboTemplate, 0), Nz(f!txtGroupID, 0))
+        Case "Start"
+            run = Nz(MajorScalar("SELECT Max(RunID) FROM RouteRun WHERE ReportID=" & id & " AND RunState In ('Pending','Accepted')"), 0)
+            If run > 0 Then f!cboRun = ReplaceRoute(run, Nz(f!cboTemplate, 0)) Else f!cboRun = StartRoute(id, Nz(f!cboTemplate, 0), Nz(f!txtGroupID, 0))
         Case "Restart"
             expected = Nz(f!txtExpectedRevision, 0): stamp = Nz(f!txtExpectedStamp, "")
             id = RestartStaleRoute(run, expected, stamp)
             f!cboRun.Requery: f!cboRun = id
-        Case "Accept": DecideRouteStep run, "Accepted", Nz(f!txtNote, "")
-        Case "Return": DecideRouteStep run, "Returned", Nz(f!txtNote, "")
+        Case "Accept": ForwardRoute run, Nz(f!txtNote, "")
+        Case "Return": SendBackRoute run, UXSendBackTarget(run), Nz(f!txtNote, "")
+        Case "PullBack": PullBackRoute run, Nz(f!txtNote, "")
         Case "Cancel": CancelRoute run
         Case "Approve": ApproveSavedRoute run, Nz(f!txtNote, "")
         Case "Reopen": ReopenApprovedReport id, Nz(f!txtNote, "")
@@ -192,4 +206,29 @@ Public Function UXGroupReview() As Boolean
     Next
     If id = 0 Then f!lblStatus.Caption = "Select one member to review.": Exit Function
     UXGroupReview = UXOpenReportTool(id, "Review", Nz(f!cboGroup, 0))
+End Function
+'Send back goes to the earlier step selected in the steps list, else the previous
+'step (step 0 is the requester).
+Private Function UXSendBackTarget(ByVal runID As Long) As Long
+    Dim f As Access.Form, k As Long
+    Set f = UXReviewForm()
+    k = Nz(DLookup("CurrentStep", "RouteRun", "RunID=" & runID), 0)
+    If DLookup("RunState", "RouteRun", "RunID=" & runID) = "Accepted" Then k = DCount("*", "RouteRunStep", "RunID=" & runID)
+    UXSendBackTarget = k - 1
+    If Not IsNull(f!lstSteps) Then
+        If CLng(f!lstSteps) < k Then UXSendBackTarget = CLng(f!lstSteps)
+    End If
+End Function
+'Changes flagged for the holder since the report last moved: Members-grid edits
+'and saves over a later reviewer's change.
+Public Function RouteFlags(ByVal runID As Long) As String
+    Dim r As DAO.Recordset, since As Variant
+    since = DMax("RouteEventID", "RouteRunEvent", "RunID=" & runID & " AND EventKind In ('Start','Forward','Send back','Pull back')")
+    If IsNull(since) Then Exit Function
+    Set r = CurrentDb.OpenRecordset("SELECT e.Notes,e.EventAt,p.DisplayName FROM RouteRunEvent AS e LEFT JOIN UserProfile AS p ON e.AuthorProfileID=p.UserProfileID WHERE e.RunID=" & runID & " AND e.EventKind In ('Override','Grid change','Higher change') AND e.RouteEventID>" & since & " ORDER BY e.RouteEventID", dbOpenSnapshot)
+    Do While Not r.EOF
+        RouteFlags = RouteFlags & "Flagged: " & Nz(r!DisplayName, "Unknown contributor") & ", " & Format$(r!EventAt, "yyyy-mm-dd hh:nn") & ": " & Nz(r!Notes, "") & ". "
+        r.MoveNext
+    Loop
+    r.Close
 End Function

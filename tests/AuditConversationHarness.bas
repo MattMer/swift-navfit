@@ -108,7 +108,7 @@ Public Function TestAuditConversation() As String
  Check IsNull(DLookup("MessageBody", "ReportMessage", "LegacyNoteID Is Not Null")), "Legacy Null body was coerced"
  before = DCount("*", "ReportMessage"): eventCount = DCount("*", "AuditEvent")
  Check MigrateReportMessages() = 0, "Conversation conversion is not idempotent"
- MigrateAuditHistory: MigrateAuditHistory
+ Call MigrateAuditHistory: MigrateAuditHistory
  Check DCount("*", "ReportMessage") = before, "Audit backfill changed conversations"
  Check DLookup("AuditGuid", "AuditEvent", "RevisionSourceID=" & rev) = firstGuid, "Audit backfill replaced existing identity"
  Check DCount("*", "ReviewComment") + DCount("*", "ReportNote") = legacyCount, "Legacy evidence rows were changed"

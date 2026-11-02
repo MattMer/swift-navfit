@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.51.0"
-Public Const SCHEMA_VERSION As Long = 36
+Public Const APP_VERSION As String = "0.52.0-dev"
+Public Const SCHEMA_VERSION As Long = 37
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -106,7 +106,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0) As Long
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset, snapshotRows As DAO.Recordset, changeRows As DAO.Recordset
     Dim keys As Variant, previous() As Variant, current() As Variant, i As Long
-    Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
+    Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean, changedKeys As String
     If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, "modSwift.CommitDraft", "Choose EVAL, CHIEFEVAL, or FITREP."
     If Len(title) > UXFieldLimit("Title") Or Len(memberName) > UXFieldLimit("MemberName") Then Err.Raise vbObjectError + 106, "modSwift.CommitDraft", "Title or member name exceeds local draft capacity."
     If Not IsNull(startDate) Then
@@ -235,6 +235,8 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         If Not changed Then
             r.Close: SyncReportDirectory reportID: w.CommitTrans: Call UXEditorContextChanged(): CommitDraft = reportID: Exit Function
         End If
+        'Under review only the holder saves; Members-grid saves are logged instead.
+        RouteSaveGuard reportID
         parentID = r!CurrentRevisionID
         Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
         seq = Nz(rev.Fields(0).Value, 0) + 1: rev.Close: Set rev = Nothing
@@ -263,6 +265,8 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         'snapshot above still records every field.
         If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
             AppendChange changeRows, revisionID, CStr(keys(i)), previous(i), current(i)
+            If Len(changedKeys) > 0 Then changedKeys = changedKeys & "|"
+            changedKeys = changedKeys & keys(i)
         End If
     Next
     snapshotRows.Close: Set snapshotRows = Nothing
@@ -275,6 +279,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     WriteRevisionFacts revisionID
     AssertReportCache reportID
     AuditRecord "Revision", revisionID, auditOperationID
+    If Not IsEmpty(parentID) And Not IsNull(parentID) Then RouteRecordSave db, reportID, revisionID, changedKeys
     SyncReportDirectory reportID
     w.CommitTrans
     Call UXEditorContextChanged(): CommitDraft = reportID
@@ -491,6 +496,7 @@ Public Function SaveEditor() As Boolean
     Set f = Forms!frmEditor
     stage = "Capture and validate pending values"
     UXFlushSurface
+    UXFormatTypedFields
     Call GuardEditorBaseline()
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     stage = "Write draft revision"

@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 36. 71 entities; 161 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 37. 72 entities; 162 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -148,6 +148,7 @@ erDiagram
   RouteTemplate ||--o{ RouteRun : "FK_RouteRun_TemplateID"
   SummaryGroup ||--o{ RouteRun : "FK_RouteRun_GroupID"
   UserProfile ||--o{ RouteRun : "FK_RouteRun_RequestedBy"
+  RouteRun ||--o{ RouteRunEvent : "FK_RouteRunEvent_RunID"
   RouteRun ||--o{ RouteRunStep : "FK_RouteRunStep_RunID"
   UserProfile ||--o{ RouteRunStep : "FK_RouteRunStep_AssigneeID"
   RouteTemplate ||--o{ RouteTemplateStep : "FK_RouteTemplateStep_TemplateID"
@@ -313,6 +314,7 @@ erDiagram
 | RouteRun | RouteTemplate | TemplateID -> RouteTemplate.TemplateID | FK_RouteRun_TemplateID |
 | RouteRun | SummaryGroup | GroupID -> SummaryGroup.GroupID | FK_RouteRun_GroupID |
 | RouteRun | UserProfile | RequestedBy -> UserProfile.UserProfileID | FK_RouteRun_RequestedBy |
+| RouteRunEvent | RouteRun | RunID -> RouteRun.RunID | FK_RouteRunEvent_RunID |
 | RouteRunStep | RouteRun | RunID -> RouteRun.RunID | FK_RouteRunStep_RunID |
 | RouteRunStep | UserProfile | AssigneeID -> UserProfile.UserProfileID | FK_RouteRunStep_AssigneeID |
 | RouteTemplateStep | RouteTemplate | TemplateID -> RouteTemplate.TemplateID | FK_RouteTemplateStep_TemplateID |

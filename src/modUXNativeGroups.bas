@@ -149,7 +149,7 @@ Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = message
 End Function
 Public Function UXCloseNativeGroups() As Boolean
-    CloseReviewFile: DoCmd.Close acForm, "frmUXNativeGroups", acSaveNo
+    Call CloseReviewFile: DoCmd.Close acForm, "frmUXNativeGroups", acSaveNo
     UXCloseNativeGroups = OpenScreen("frmUXImportChoose")
 End Function
 

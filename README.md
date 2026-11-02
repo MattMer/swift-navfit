@@ -31,9 +31,9 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 ![My Work: assigned reviews and route steps with due dates, status and the next action for each](docs/images/my-work.png)
 
 - **My Work:** one list of your assigned reviews, route steps, and reports ready for local approval, plus a tab for report notes.
-- **Review routes:** assign people to ordered steps; they accept or return the report with a note.
+- **Review routes:** the report moves up your chain of command as one shared draft. Whoever holds it can edit it, then forward it or send it back; earlier reviewers can pull it back.
 - **Report notes:** a running conversation inside each report, separate from its versions and approval.
-- **Stale-review protection:** if a report changes after review, the earlier review doesn't silently carry forward.
+- **Clear review history:** Swift records which version each reviewer passed on, and flags when someone lower in the chain changes what a higher reviewer edited.
 - **Mark signed:** record that a report was signed outside Swift, for one report or a whole summary group. Signed reports become read-only until reopened.
 
 ### Work across a command and its summary groups

@@ -22,11 +22,9 @@ Private Function Rejected(ByVal id As Long, ByVal values As Variant) As Boolean
 Failed:
     Rejected = True
 End Function
-Private Function ReviewRejected(ByVal task As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(task, "Accepted", ""): Exit Function
-Failed:
-    ReviewRejected = True
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
     On Error GoTo Failed
@@ -57,8 +55,7 @@ Public Function TestDecisionDetails() As String
                 Case 4: values(4) = "No"
             End Select
             Call SaveDecision(id, CStr(kind), values): second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-            Check ReviewRejected(task), "Feature edit left review current"
-            Call FinishReview(task, "Cancelled", "Changed details")
+            Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
             Check RevisionFieldStatus(first, second, CStr(keys(index))) = "Changed", "Feature change invisible"
             Check OpenRevisionComparison(id, first), "Comparison failed"
             Forms!frmRevisionCompare!lstCompareFields = keys(index): Call LoadComparisonValues()

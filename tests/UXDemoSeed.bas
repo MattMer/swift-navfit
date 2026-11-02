@@ -82,9 +82,9 @@ Public Function SeedUXDemo() As String
     For Each key In TraitKeys(): changes.Add CStr(key), "NOB": Next
     Call CommitSavedFields(ids(3), CurrentRevision(ids(3)), changes, "Synthetic whole-report NOB example")
     task = AssignReview(ids(2), CurrentRevision(ids(2)), author, #10/15/2026#, "Synthetic task: check counseling and trait marks.")
-    task = AssignReview(ids(6), CurrentRevision(ids(6)), author, #10/1/2026#, "Synthetic stale review: open the report and restart review for its current revision.")
-    changes.RemoveAll: changes.Add "DraftNotes", "Changed after assignment so this review is intentionally stale."
-    Call CommitSavedFields(ids(6), CurrentRevision(ids(6)), changes, "Synthetic stale-review example")
+    task = AssignReview(ids(6), CurrentRevision(ids(6)), author, #10/1/2026#, "Synthetic review: edit the report if needed, then accept or return it.")
+    changes.RemoveAll: changes.Add "DraftNotes", "Edited by the reviewer while holding this review."
+    Call CommitSavedFields(ids(6), CurrentRevision(ids(6)), changes, "Synthetic reviewer edit during review")
     task = AssignReview(ids(1), CurrentRevision(ids(1)), reviewer, #10/20/2026#, "Synthetic task assigned to the second contributor.")
     template = CreateRouteTemplate("DEMO local review", CStr(author), "Check the saved synthetic report.")
     route = StartRoute(ids(5), template, groups(2))
@@ -96,9 +96,9 @@ Public Function SeedUXDemo() As String
     template = CreateRouteTemplate("DEMO ordered review", author & "," & reviewer, "Review the saved blocks, then hand off to the next contributor.")
     route = StartRoute(ids(4), template)
     route = StartRoute(ids(7), template)
-    Call AddReviewComment(ids(7), CurrentRevision(ids(7)), "Earlier-revision feedback: check trait marks before restarting review.")
-    changes.RemoveAll: changes.Add "DraftNotes", "Changed after route creation; requester can restart this ordered review."
-    Call CommitSavedFields(ids(7), CurrentRevision(ids(7)), changes, "Synthetic stale ordered-route example")
+    Call AddReviewComment(ids(7), CurrentRevision(ids(7)), "Earlier-revision feedback: check trait marks before forwarding.")
+    changes.RemoveAll: changes.Add "DraftNotes", "Edited by step 1 while it holds this ordered review."
+    Call CommitSavedFields(ids(7), CurrentRevision(ids(7)), changes, "Synthetic holder edit during ordered review")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(ids(1))
     Forms!frmEditor!txtNotes = "RECOVERY DEMO: These pending notes have not been committed. Recover or discard this checkpoint to explore the workflow."
     If Not CheckpointEditor() Then Err.Raise vbObjectError + 5101, , "Demo recovery checkpoint could not be created."

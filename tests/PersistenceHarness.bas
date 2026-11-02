@@ -135,7 +135,7 @@ Public Function TestPersistence() As String
     Check DLookup("DateState", "RevisionDate", "RevisionID=" & rev & " AND FieldKey='DateReported'") = "Unknown", "Legacy date silently parsed/coerced"
     Set saved = SavedFields(a): Check saved("DateReported") = "LEGACY", "Unknown raw date lost"
     count = DCount("*", "RevisionDate"): old = DCount("*", "ReportHead")
-    MigrateReportState: MigrateReportState
+    Call MigrateReportState: MigrateReportState
     Check DCount("*", "RevisionDate") = count And DCount("*", "ReportHead") = old, "State migration is not idempotent"
     For Each key In Array("EVAL", "CHIEFEVAL", "FITREP")
         Check NAVFITMapRows(CStr(key)).Count > 60 And PDFMapRows(CStr(key)).Count > 35, "Canonical adapter coverage missing"

@@ -37,7 +37,7 @@ Public Function TestTraitEvents(Optional ByVal injectLock As Boolean = False) As
   If DLookup("Trait35", "Report", "ReportID=" & id) <> "1.0" Then Err.Raise vbObjectError + 7909, , "Close lost queued edit"
  Next
  If Not injectLock Then TestTraitEvents = "PASS: repeated native control events for all three report types": Exit Function
- UXOpenComparison: Set rows = Forms!frmUXComparison!uxTraitGrid.Form
+ Call UXOpenComparison: Set rows = Forms!frmUXComparison!uxTraitGrid.Form
  Set locks = DBEngine.CreateWorkspace("TestExternalReportLock", "admin", "", dbUseJet)
  Set lockDB = locks.OpenDatabase(CurrentProject.FullName)
  Set locked = lockDB.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenDynaset)

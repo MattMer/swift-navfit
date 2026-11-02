@@ -64,7 +64,7 @@ Public Function RSLoadSeniorEditor() As Boolean
     f!txtTitle = seniorInitialTitle: f!txtVersion = Nz(MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id), 0)
     f!txtMemberID = seniorInitialMember
     For Each key In RSSeniorKeys(): f.Controls("rs" & key) = seniorInitial(CStr(key)): Next
-    RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0
+    Call RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0
     If member > 0 Then
         f!txtTitle = Nz(MajorScalar("SELECT IIf(Len(Nz(ReportName,""""))=0,FullName,ReportName) FROM CommandMember WHERE MemberID=" & member), "")
         RSApplyMemberLink member
@@ -225,7 +225,7 @@ Public Function RSSelectSeniorPage(ByVal page As Long) As Boolean
     RSSelectSeniorPage = True
 End Function
 Public Function RSReloadBaselines() As Boolean
-    RSShowHistory: RSTableReloadVisible: RSReloadBaselines = True
+    Call RSShowHistory: RSTableReloadVisible: RSReloadBaselines = True
 End Function
 Public Function RSAddBaselineUI() As Boolean
     Dim f As Access.Form, count As Double, average As Variant, total As Variant, dateEntry As String, asOf As Date, id As Long
@@ -242,7 +242,7 @@ Public Function RSAddBaselineUI() As Boolean
     asOf = DateSerial(CInt(Left$(dateEntry, 4)), CInt(Mid$(dateEntry, 6, 2)), CInt(Right$(dateEntry, 2)))
     If Format$(asOf, "yyyy-mm-dd") <> dateEntry Then Err.Raise vbObjectError + 4822, "modRSDirectoryUI.RSAddBaselineUI", "Enter a valid as-of date."
     id = RSAddBaseline(f!txtSeniorID, Nz(f!cboPaygrade, ""), asOf, average, CLng(count), total, Nz(f!txtSource, ""))
-    RSReloadBaselines: f!lblStatus.Caption = "Historical baseline saved. Counts are graded traits, not reports. Exact trait sum avoids rounded-RSCA estimates."
+    Call RSReloadBaselines: f!lblStatus.Caption = "Historical baseline saved. Counts are graded traits, not reports. Exact trait sum avoids rounded-RSCA estimates."
     f!txtRSCA = Null: f!txtTraitCount = Null: f!txtTraitSum = Null: f!txtSource = Null: f!txtAsOf = Null
     RSAddBaselineUI = True: Exit Function
 Failed:
@@ -255,7 +255,7 @@ Public Function RSUseSeniorInEditor() As Boolean
     If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 4823, "modRSDirectoryUI.RSUseSeniorInEditor", "Reopen the report before editing."
     Set values = RSSeniorValues(id)
     For Each key In RSSeniorKeys(): Forms!frmEditor.Controls("txt" & key) = values(CStr(key)): Next
-    UXRefreshEditor: RSUseSeniorInEditor = True: Exit Function
+    Call UXRefreshEditor: RSUseSeniorInEditor = True: Exit Function
 Failed:
     Forms!frmEditor!uxError.Caption = Err.Description
 End Function
@@ -330,7 +330,7 @@ Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0
     Set values = RSSeniorValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
     RSStageGroupSenior = UXConfirmReportFields(groupID, values, "Apply selected reporting senior details", decision)
     If RSStageGroupSenior Then
-        RSShowGroupCalculation: UXRefreshGroupSenior
+        Call RSShowGroupCalculation: UXRefreshGroupSenior
         Forms!frmUXGroupRSCA!lblStatus.Caption = "Reporting senior details saved to group members. " & Forms!frmUXGroupRSCA!lblStatus.Caption
     End If
     Exit Function

@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 36, application 0.51.0. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 37, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -993,6 +993,7 @@ Microsoft Access (ACE) tables in schema 36, application 0.51.0. Types are Access
 | Instructions | Long text |  |
 | TaskState | Text (20) |  |
 | FinishedAt | Date/Time |  |
+| FinishedRevisionID | Long |  |
 
 ## ReviewTaskEvent
 
@@ -1075,6 +1076,23 @@ Microsoft Access (ACE) tables in schema 36, application 0.51.0. Types are Access
 | RequestedAt | Date/Time |  |
 | ApprovedBy | Long |  |
 | ApprovedAt | Date/Time |  |
+| ApprovedRevisionID | Long |  |
+
+## RouteRunEvent
+
+- **Primary key:** RouteEventID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| RouteEventID | AutoNumber |  |
+| RunID | Long | yes |
+| EventKind | Text (20) | yes |
+| FromStep | Long |  |
+| ToStep | Long |  |
+| RevisionID | Long |  |
+| AuthorProfileID | Long | yes |
+| EventAt | Date/Time | yes |
+| Notes | Long text |  |
 
 ## RouteRunStep
 
@@ -1091,6 +1109,8 @@ Microsoft Access (ACE) tables in schema 36, application 0.51.0. Types are Access
 | StepState | Text (20) |  |
 | DecisionNote | Long text |  |
 | DecisionAt | Date/Time |  |
+| IncomingRevisionID | Long |  |
+| OutgoingRevisionID | Long |  |
 
 ## RouteTemplate
 

@@ -25,11 +25,9 @@ Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Bo
 Failed:
     RestoreRejected = True
 End Function
-Private Function ReviewRejected(ByVal task As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(task, "Accepted", ""): Exit Function
-Failed:
-    ReviewRejected = True
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Public Function TestAssessment() As String
     Dim kind As Variant, id As Long, first As Long, second As Long, copy As Long, task As Long, bad As Variant
@@ -48,8 +46,7 @@ Public Function TestAssessment() As String
         task = AssignReview(id, first, DLookup("ActiveProfileID", "Workspace"), Null, "Review")
         Call SaveAssessment(id, CStr(kind), Array("NOB", "NOB"))
         second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check ReviewRejected(task), "Assessment edit left review current"
-        Call FinishReview(task, "Cancelled", "New assessment")
+        Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
         Check RevisionFieldStatus(first, second, "ObservationStatus") = "Changed", "Observation change invisible"
         Check RevisionFieldStatus(first, second, "PromotionRecommendation") = "Changed", "Recommendation change invisible"
         Check OpenRevisionComparison(id, first), "Comparison failed"

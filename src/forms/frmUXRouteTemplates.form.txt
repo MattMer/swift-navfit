@@ -547,7 +547,7 @@ Begin Form
                     Left =2850
                     Top =1800
                     Width =3600
-                    Height =2200
+                    Height =1700
                     FontSize =10
                     TabIndex =7
                     ForeColor =4205854
@@ -561,7 +561,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1800
                     LayoutCachedWidth =6450
-                    LayoutCachedHeight =4000
+                    LayoutCachedHeight =3500
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -583,6 +583,45 @@ Begin Form
                         End
                     End
                 End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =3600
+                    Width =3600
+                    Height =400
+                    FontSize =10
+                    TabIndex =8
+                    ForeColor =4205854
+                    Name ="cmdDelete"
+                    Caption ="Delete selected template"
+                    OnClick ="=UXDeleteTemplate()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =3600
+                    LayoutCachedWidth =6450
+                    LayoutCachedHeight =4000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =215
@@ -594,7 +633,7 @@ Begin Form
                     Width =6650
                     Height =2200
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =9
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstSteps"
@@ -656,7 +695,7 @@ Begin Form
                     Width =8550
                     Height =400
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =10
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtTitle"
@@ -703,7 +742,7 @@ Begin Form
                     Width =4600
                     Height =400
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =11
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboReviewer"
@@ -744,7 +783,7 @@ Begin Form
                     Width =2600
                     Height =400
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =12
                     ForeColor =4205854
                     Name ="cmdAdd"
                     Caption ="Add reviewer"
@@ -783,7 +822,7 @@ Begin Form
                     Width =2700
                     Height =400
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =13
                     ForeColor =4205854
                     Name ="cmdClear"
                     Caption ="Clear reviewer order"
@@ -824,7 +863,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =14
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtIDs"
@@ -849,7 +888,7 @@ Begin Form
                     Width =10450
                     Height =550
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =15
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtReviewers"
@@ -889,7 +928,7 @@ Begin Form
                     Width =10450
                     Height =750
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtInstructions"
@@ -933,7 +972,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =17
                     ForeColor =16777215
                     Name ="cmdSave"
                     Caption ="Create route template"
@@ -972,7 +1011,7 @@ Begin Form
                     Width =5000
                     Height =450
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =18
                     ForeColor =4205854
                     Name ="cmdBack"
                     Caption ="Back to Resources"
@@ -1029,7 +1068,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =18
+                    TabIndex =19
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"

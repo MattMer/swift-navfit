@@ -28,11 +28,9 @@ Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Bo
 Failed:
     RestoreRejected = True
 End Function
-Private Function ReviewRejected(ByVal task As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(task, "Accepted", ""): Exit Function
-Failed:
-    ReviewRejected = True
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Public Function TestReportContext() As String
     Dim kind As Variant, panel As Variant, keys As Variant, key As Variant, values As Variant, bad As Variant
@@ -56,8 +54,7 @@ Public Function TestReportContext() As String
             task = AssignReview(id, first, DLookup("ActiveProfileID", "Workspace"), Null, "Feature review")
             If i = 7 Then values(i) = "OTHER DUTY" Else values(i) = "No"
             Call SaveContext(id, CStr(kind), values): second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-            Check ReviewRejected(task), "Feature edit left review current"
-            Call FinishReview(task, "Cancelled", "Updated context")
+            Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
             Check RevisionFieldStatus(first, second, CStr(keys(i))) = "Changed", "Feature change invisible"
             Check OpenRevisionComparison(id, first), "Comparison failed"
             Forms!frmRevisionCompare!lstCompareFields = keys(i): Call LoadComparisonValues()

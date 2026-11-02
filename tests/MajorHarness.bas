@@ -51,7 +51,8 @@ Public Function TestMajor() As String
     Check RouteIsCurrent(route), "Accepted route remains current before edits"
     batch = PreviewFieldBatch(CStr(a), "Title", "After approval", "Material edit")
     ApplyFieldBatch batch
-    Check Not RouteIsCurrent(route), "Material edit makes approval stale"
+    ' F01: the final reviewer holds the accepted route, so their edit keeps it current.
+    Check RouteIsCurrent(route), "The final reviewer's edit staled the route"
     Check MajorScalar("SELECT RunState FROM RouteRun WHERE RunID=" & route) = "Accepted", "Historical approval preserved"
     Check DCount("*", "GroupSnapshotMember", "SnapshotID=" & snap) = 2, "Frozen roster unchanged after edits"
     batch = PreviewFieldBatch(a & "," & b, "Title", "After approval", "First no-op, then change")
@@ -95,8 +96,10 @@ Public Function TestMajor() As String
     Check failed, "Wrong contributor cannot decide second step"
     Call SwitchContributor(secondProfile)
     DecideRouteStep route, "Returned", "Needs correction"
-    Check MajorScalar("SELECT RunState FROM RouteRun WHERE RunID=" & route) = "Returned", "Assigned second reviewer can return route"
+    ' F01: Returned sends the shared draft back one step; the route stays open.
+    Check MajorScalar("SELECT RunState FROM RouteRun WHERE RunID=" & route) = "Pending" And MajorScalar("SELECT CurrentStep FROM RouteRun WHERE RunID=" & route) = 1, "Assigned second reviewer can send the route back"
     Call SwitchContributor(firstProfile)
+    CancelRoute route
     template = CreateRouteTemplate("Repeated reviewer", firstProfile & "," & firstProfile, "Two distinct steps")
     Check DCount("*", "RouteTemplateStep", "TemplateID=" & template) = 2, "Same reviewer can appear at different steps"
     route = StartRoute(b, template, g)

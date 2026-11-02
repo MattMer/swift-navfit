@@ -21,6 +21,13 @@ Failed:
     lastFailure = Err.Number & " " & Err.Description
     Denied = True
 End Function
+Private Function SaveDenied(ByVal id As Long) As Boolean
+    On Error GoTo Failed
+    Call CommitDraft(id, "EVAL", "Requester change", "Synthetic Member", Null, Null, "", "Requester", "Requester narrative")
+    Exit Function
+Failed:
+    SaveDenied = InStr(Err.Description, "Pull it back to edit") > 0
+End Function
 Private Function CountRows(ByVal table As String) As Long
     Dim r As DAO.Recordset
     Set r = CurrentDb.OpenRecordset("SELECT Count(*) FROM [" & table & "]", dbOpenSnapshot)
@@ -72,14 +79,15 @@ Public Function TestRouting() As String
     Check Denied("finish", task), "Finished review overwritten"
     Call LoadMyWork(): Check Forms!frmMyWork!lstTasks.ListCount = 0, "Returned review still pending"
     Call SwitchContributor(requester)
+    ' F01: while the review is pending only the reviewer can save; their edit does not
+    ' stop them finishing it.
     task = AssignReview(reportID, revision, reviewer, Null, "Second pass")
+    Check SaveDenied(reportID), "Requester saved during a pending review"
+    Call SwitchContributor(reviewer)
     Call CommitDraft(reportID, "EVAL", "Later saved", "Synthetic Member", Null, Null, "", "Later", "Later narrative")
     newer = DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID)
-    Call SwitchContributor(reviewer)
-    Check Denied("finish", task), "Stale review accepted"
-    Call LoadMyWork(): Forms!frmMyWork!lstTasks = task: Call TaskDetails()
-    Check InStr(Forms!frmMyWork!txtHistory, "STALE") > 0, "Stale warning absent"
-    Call SwitchContributor(requester): Check FinishReview(task, "Cancelled", "Superseded"), "Stale cancellation failed"
+    Check FinishReview(task, "Accepted", "Edited and accepted") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = newer, "Reviewer's edit blocked the review"
+    Call SwitchContributor(requester)
     task = AssignReview(reportID, newer, reviewer, Null, "Latest")
     Call SwitchContributor(reviewer)
     Forms!frmMyWork!chkAll = True: Call LoadMyWork(): Forms!frmMyWork!lstTasks = task

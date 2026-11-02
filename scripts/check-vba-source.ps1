@@ -23,6 +23,9 @@ foreach($file in $Path){
  $crlf=([regex]::Matches($text,"`r`n")).Count;$lf=([regex]::Matches($text,"(?<!`r)`n")).Count
  if($crlf -gt 0 -and $lf -gt 0){Report 'WARN' $file 0 ("Mixed line endings ($crlf CRLF, $lf LF); git normalizes on commit.");$warnings++}
  $run=0;$seen=@{};$start=0
+ # A line starting "Name: ..." makes Name a line label, so a procedure written there
+ # is never called. Real labels are GoTo/Resume targets; calls need "Call Name:".
+ $labelTargets=@([regex]::Matches(($lines -join "`n"),'\b(?:GoTo|Resume|GoSub)\s+([A-Za-z_]\w*)')|ForEach-Object {$_.Groups[1].Value})
  for($n=0;$n -lt $lines.Count;$n++){
   $line=$lines[$n]
   if($procedure.IsMatch($line)){$start=$n}
@@ -31,6 +34,8 @@ foreach($file in $Path){
    $body=$lines[$start..$n] -join "`n"
    if($body -notmatch '\.resolveExternals\s*=\s*False' -or $body -notmatch '"ProhibitDTD",\s*True'){Report 'ERROR' $file ($n+1) 'LoadXML without resolveExternals = False and ProhibitDTD True earlier in the procedure.';$errors++}
   }
+  $label=[regex]::Match($line,'^\s*([A-Za-z_]\w*):(?!=)\s*\S')
+  if($label.Success -and $label.Groups[1].Value -notin @('Loop','Next','Else','Do','Wend','Exit','End','Resume','Case','Then','Rem') -and $label.Groups[1].Value -notin $labelTargets){Report 'ERROR' $file ($n+1) ("'"+$label.Groups[1].Value+":' starts the line, so VBA reads it as a label and never calls it. Write 'Call "+$label.Groups[1].Value+":' instead.");$errors++}
   if($line.Length -gt 1023){Report 'ERROR' $file ($n+1) ("Line is $($line.Length) characters; VBA allows 1023.");$errors++}
   if($line.TrimEnd() -match '\s_$'){$run++;if($run -eq 25){Report 'ERROR' $file ($n+1) 'More than 24 line continuations in one statement.';$errors++}}else{$run=0}
   $m=$procedure.Match($line)

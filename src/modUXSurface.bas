@@ -206,6 +206,8 @@ Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     Set f = Surface(): name = UXFieldControl(key)
     'A signed report asks before the first change; No puts the field back.
     If Not UXSignedEditGuard() Then UXSurfaceRestoreField key: Exit Function
+    'Names, grades and titles are formatted at Save (UXFormatTypedFields), not here:
+    'Access also raises this event when a resize briefly moves focus mid-typing.
     Forms!frmEditor.Controls(name) = UXSurfaceCanonical(key, f.Controls(name).Value)
     'The printed Yes/No boxes edit one response. Preserve an imported conflict until
     'the contributor deliberately selects a box, then clear its opposite atomically.
@@ -276,7 +278,7 @@ Public Function UXSurfaceValidate(ByVal key As String) As Boolean
 End Function
 Public Function UXSurfaceCheckAll() As Boolean
     Dim key As Variant, errors As String, label As String, valid As Boolean
-    UXFlushSurface: valid = True
+    Call UXFlushSurface: valid = True
     For Each key In DraftFieldKeys()
         If UXFieldControl(CStr(key)) <> "" And Not UXFieldLegacy(CStr(key)) Then
             If Not UXSurfaceValidate(CStr(key)) Then
@@ -310,7 +312,7 @@ Public Sub UXSurfaceRestoreField(ByVal key As String)
     Set c = Surface().Controls(UXFieldControl(key)): value = Forms!frmEditor.Controls(c.Name).Value
     surfaceBusy = True
     If UXFieldFlag(key) Then
-        If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
+        If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = False Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
     Else
         c.Value = value
     End If
@@ -340,7 +342,7 @@ Public Function UXSurfaceRefresh() As Boolean
             key = Mid$(c.Tag, 6): stage = "Refresh field " & key
             value = Forms!frmEditor.Controls(c.Name).Value
             If UXFieldFlag(key) Then
-                If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = Null Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
+                If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = False Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
             Else
                 If Not SameFieldValue(c.Value, value) Then c.Value = value
             End If
@@ -686,3 +688,80 @@ Private Sub UXCompactEditorGeometry(ByVal f As Access.Form, ByVal width As Long,
     End If
     f.Width = width - 100: f.Section(acDetail).Height = effectiveHeight - 100
 End Sub
+'Typed names, grades, designators and titles are uppercase, and the member and
+'reporting senior names take NAVFIT98A's LAST, FIRST MI SUFFIX form.
+Public Function UXTypedText(ByVal key As String, ByVal value As Variant) As Variant
+    UXTypedText = value
+    If IsNull(value) Then Exit Function
+    If VarType(value) <> vbString Then Exit Function
+    Select Case key
+        Case "OfficialName": UXTypedText = NavyNameFormat(value)
+        Case "ReportingSeniorName": UXTypedText = NavyNameFormat(value, True)
+        Case Else
+            If InStr("|" & Join(UXTypedKeys(), "|") & "|", "|" & key & "|") > 0 Then UXTypedText = UCase$(value)
+    End Select
+End Function
+Public Function UXTypedKeys() As Variant
+    UXTypedKeys = Array("OfficialName", "ReportingSeniorName", "RankRate", "Designator", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "CounselorName", "RaterName", "SeniorRaterName", _
+        "MemberFirstName", "MemberLastName", "MemberMiddleInitial", "MemberSuffix", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial", "CounselorLastName")
+End Function
+'Save formats every typed name/grade/title field in the buffer, so text that was
+'never left (for example, still active at Save) is formatted too.
+Public Sub UXFormatTypedFields()
+    Dim f As Access.Form, key As Variant, name As String, value As Variant
+    Set f = Forms!frmEditor
+    For Each key In UXTypedKeys()
+        name = UXFieldControl(CStr(key))
+        If UXHasControl(f, name) Then
+            value = UXTypedText(CStr(key), f.Controls(name).Value)
+            If Not SameFieldValue(value, f.Controls(name).Value) Then f.Controls(name) = value
+        End If
+    Next
+End Sub
+'LAST, FIRST MI SUFFIX: uppercase, periods dropped, middle names reduced to
+'initials. Without a comma the entry is read as FIRST [MIDDLE] LAST [SUFFIX]; use
+'a comma for multi-word last names. initialsOnly gives LAST, F M (reporting senior).
+Public Function NavyNameFormat(ByVal text As String, Optional ByVal initialsOnly As Boolean = False) As String
+    Dim t As String, lastName As String, rest As String, parts As Variant, i As Long, k As Long, token As String, count As Long
+    t = UCase$(Trim$(Replace(text, ".", "")))
+    Do While InStr(t, "  ") > 0: t = Replace(t, "  ", " "): Loop
+    NavyNameFormat = t
+    If Len(t) = 0 Then Exit Function
+    If InStr(t, ",") > 0 Then
+        lastName = Trim$(Left$(t, InStr(t, ",") - 1))
+        rest = Trim$(Replace(Mid$(t, InStr(t, ",") + 1), ",", " "))
+    Else
+        parts = Split(t, " ")
+        If UBound(parts) < 1 Then Exit Function
+        i = UBound(parts)
+        If NameSuffix(CStr(parts(i)), i) Then rest = " " & parts(i): i = i - 1
+        lastName = parts(i)
+        For k = i - 1 To 0 Step -1: rest = " " & parts(k) & rest: Next
+        rest = Trim$(rest)
+    End If
+    NavyNameFormat = lastName
+    If Len(rest) = 0 Then Exit Function
+    NavyNameFormat = lastName & ","
+    parts = Split(rest, " ")
+    For i = 0 To UBound(parts)
+        token = parts(i)
+        If Len(token) > 0 Then
+            If i = UBound(parts) And count > 0 And NameSuffix(token, count + 1) Then
+                NavyNameFormat = NavyNameFormat & " " & token
+            ElseIf count = 0 And Not initialsOnly Then
+                NavyNameFormat = NavyNameFormat & " " & token
+            Else
+                NavyNameFormat = NavyNameFormat & " " & Left$(token, 1)
+            End If
+            count = count + 1
+        End If
+    Next
+End Function
+'JR, SR, II-IV after at least one given name; V and VI only after two, so a lone
+'V stays a middle initial.
+Private Function NameSuffix(ByVal token As String, ByVal position As Long) As Boolean
+    Select Case token
+        Case "JR", "SR", "II", "III", "IV": NameSuffix = position >= 1
+        Case "V", "VI": NameSuffix = position >= 2
+    End Select
+End Function

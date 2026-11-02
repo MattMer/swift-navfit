@@ -16,7 +16,7 @@ End Function
 Private Function SaveNames(ByVal id As Long, ByVal kind As String, ByVal values As Variant) As Long
     If id = 0 Then
         SaveNames = CommitDraft(id, kind, "Names", "Synthetic", Null, Null, "", "Names test", "Narrative", _
-            administration:=Array("FULL MEMBER", Null, Null, Null, Null), reportingSenior:=Array("FULL SENIOR", Null, Null, Null, Null), _
+            administration:=Array("MEMBER, FULL", Null, Null, Null, Null), reportingSenior:=Array("SENIOR, F", Null, Null, Null, Null), _
             serviceDetails:=Array(Null, "FULL COUNSELOR", Null, Null, Null, Null), partyNames:=values)
     Else
         SaveNames = CommitDraft(id, kind, "Names", "Synthetic", Null, Null, "", "Names test", "Narrative", partyNames:=values)
@@ -28,11 +28,9 @@ Private Function Rejected(ByVal id As Long, ByVal values As Variant) As Boolean
 Failed:
     Rejected = True
 End Function
-Private Function ReviewRejected(ByVal task As Long) As Boolean
-    On Error GoTo Failed
-    Call FinishReview(task, "Accepted", ""): Exit Function
-Failed:
-    ReviewRejected = True
+Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
+    'F01: the assignee holds the report and may edit it before accepting.
+    ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
 Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
     On Error GoTo Failed
@@ -64,8 +62,7 @@ Public Function TestPartyNames() As String
                 Case 7: values(7) = "CHANGED COUNSELOR"
             End Select
             Call SaveNames(id, CStr(kind), values): second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-            Check ReviewRejected(task), "Feature edit left review current"
-            Call FinishReview(task, "Cancelled", "Changed details")
+            Check ReviewAcceptedAfterEdit(task, second), "The reviewer's own edit blocked accepting the review"
             Check RevisionFieldStatus(first, second, CStr(keys(index))) = "Changed", "Feature change invisible"
             Check OpenRevisionComparison(id, first), "Comparison failed"
             Forms!frmRevisionCompare!lstCompareFields = keys(index): Call LoadComparisonValues()
@@ -86,7 +83,7 @@ Public Function TestPartyNames() As String
         Check DLookup("CounselorLastName", "RecoveryDraft", "ReportID=" & id) = "NEW COUNSELOR", "Apply did not checkpoint"
         Check SaveEditor(), "Editor save failed"
         Check Stored(id, "ReportingSeniorLastName") = "NEW SENIOR" And Stored(id, "CounselorLastName") = "NEW COUNSELOR" And Stored(id, "MemberFirstName") = "NEW MEMBER", "Editor save lost features"
-        Check Stored(id, "OfficialName") = "FULL MEMBER" And Stored(id, "ReportingSeniorName") = "FULL SENIOR" And Stored(id, "CounselorName") = "FULL COUNSELOR", "Name parts replaced full names"
+        Check Stored(id, "OfficialName") = "MEMBER, FULL" And Stored(id, "ReportingSeniorName") = "SENIOR, F" And Stored(id, "CounselorName") = "FULL COUNSELOR", "Name parts replaced full names"
         Call FixtureCloseEditor()
     Next
     For Each index In Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)

@@ -11,77 +11,10 @@ done, only the remainder is listed. Product invariants and release gates are in
 
 ### F01 — Hierarchical review chain on one shared draft
 
-**Decision:** a report under review is one shared draft. Each reviewer in the
-chain can edit it, and later reviewers have more authority, so their edits count
-for more. The chain goes back to an earlier reviewer only when that person pulls
-it back or someone sends it back to them, and it then runs upward again from
-there. This replaces today's model, where a review accepts one exact saved
-revision and any save makes the route stale and forces a restart from step 1
-(Codex review W01, W02).
-
-**How it works:**
-1. **The holder owns the draft.** While a route is pending, the reviewer at the
-   current step is its holder. The holder can save as often as needed, and saves
-   no longer make the route stale. Saves by anyone else are refused with "This
-   report is with *name* (step 2 of 3). Pull it back to edit." The requester counts
-   as step 0. As with review decisions today, this is attribution, not a login.
-2. **Forward.** The holder chooses Forward (today's Accept), with an optional
-   note. Swift records the revision the holder received and the one they passed
-   on. The next reviewer sees what changed in between, using the existing
-   revision comparison.
-3. **Send back.** The holder chooses an earlier step (by default the previous
-   one) and must give a reason. That step becomes the holder, and every step from
-   there upward goes back to Pending. Their earlier decisions stay in the history.
-4. **Pull back.** A reviewer whose step has already forwarded, or the requester,
-   can take the draft back, with a reason. The effect is the same as being sent
-   back to that step.
-5. **Authority.** When a lower step saves over a field that a higher step last
-   changed, the save warns "Overrides a change by *name* (step 3)". The higher
-   reviewer sees that override flagged when the draft comes back up. Nothing is
-   blocked, but the higher reviewer always knows.
-6. **Final step.** The last reviewer's Forward completes the route. Local
-   approval then locks the revision current at that moment and records which
-   revision it was.
-7. **History never claims more than happened.** Each step shows the exact
-   revision it forwarded. Swift never says a reviewer accepted changes made after
-   their step.
-
-**Group routes:** a route started from a summary group no longer goes stale
-when another member's report changes. Its group check covers membership and
-archive state only. Group completion keeps the full group stamp, so its RSCA
-posting still uses exactly the revisions it shows.
-
-**Individual assignments** (ReviewTask) follow the same rules: the assignee holds
-the draft and may save, and finishing records the revision. Existing tasks stay
-readable.
-
-**Code touched:**
-- `modRouteTemplates`: `RouteIsCurrent`, `DecideRouteStep`, new `SendBackRoute` and `PullBackRoute`, and `ApproveSavedRoute`.
-- `modRouting.FinishReview`.
-- The central save in `CommitDraft`. Members-grid cell saves in `modUXTraitGrid` skip the holder check but log the change on the report.
-- The status display in `UXReportState`, `modUXReadRows` and My Work. It shows "With *name* (step 2 of 3)".
-- `modUXReview` and the review page.
-
-**Schema (additive):**
-- `RouteRunStep` gains `IncomingRevisionID`, `OutgoingRevisionID` and `PassNumber`.
-- `RouteRun` gains `ApprovedRevisionID`.
-- A `RouteRunEvent` table records forward, send back, pull back and holder saves, linked to `AuditEvent`.
-- When a workspace is imported, a pending route takes its old `RevisionID` as the current step's incoming revision. Finished routes keep their history unchanged.
-
-**Members grid (user decision, 1 Nov 2026):** the summary-group Members grid
-sits outside the review chain. Grid edits are always allowed, even while a
-report is with a reviewer. Each grid change is logged in that report: who
-changed which field and when, with a "changed from the Members grid" source. The
-holder sees those changes flagged the same way as an override.
-
-**Acceptance:** native tests of a three-step chain:
-- edits by each holder, forwarding, sending back to step 1 and to step 2, a pull back by step 1 and by the requester;
-- a refused save by a non-holder, and the override warning;
-- final approval locking the right revision;
-- a group route surviving an edit to another member;
-- import of a schema-36 workspace with pending and finished routes.
-
-Update the user guide's review chapter and REVIEW_ROUTING_GUIDE.
+**Implemented in development** (0.52.0-dev, schema 37, 2 Nov 2026); see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f01-shared-draft-review-chain).
+Not yet released. Left from the original design: route events are not linked
+to `AuditEvent`, and the user guide PDF is regenerated at release.
 
 ### F02 — Departure tracking and MNA roster import
 
@@ -216,7 +149,7 @@ applying.
 - home-screen refresh time on the 4,700-report synthetic workspace.
 
 Build order: F02 (snapshots, matching, departures) before F03, which needs its
-departure dates. F01 is independent and can go in parallel.
+departure dates.
 
 ## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
 
@@ -356,9 +289,8 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
 - **Pre-checks before any write:** permissions (provisioning needs list
   management rights; daily use needs contribute rights), schema version and
   front-end compatibility.
-- **F01's hierarchical review chain** gives each report one holder at a time,
-  which reduces concurrent edits to the same report. Design shared-mode
-  conflicts around it.
+- **F01's review chain** gives each report one holder at a time, which reduces
+  concurrent edits to the same report. Design shared-mode conflicts around it.
 - **Constraints from the 1 Nov 2026 Codex review (A01–A08), for the phase-1 spike:**
   - SharePoint batch requests are not all-or-nothing, so a save needs a verified
     publish step, and an ETag compare alone doesn't make a write atomic.

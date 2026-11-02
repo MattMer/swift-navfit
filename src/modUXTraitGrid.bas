@@ -443,7 +443,11 @@ Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Approved" Then ReopenApprovedReport reportID, "Contributor changed " & key & " in group members"
     If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "") = "Signed" Then ReopenSignedReport reportID, "Group members change to " & key
     stage = "Save report revision"
+    'The Members grid sits outside the review chain: the save is logged on a report
+    'under review instead of refused.
+    RouteGridContext True
     Call CommitSavedFields(reportID, expectedRevision, changes, "Automatic group member cell save: " & key)
+    RouteGridContext False
     revision = CurrentRevision(reportID)
     newSet = Nz(Forms!frmUXComparison!txtMeeting, 0)
     If liveGroup = 0 Then
@@ -468,6 +472,7 @@ Public Function UXGridEdit(ByVal key As String, Optional ByVal reopenDecision As
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modUXTraitGrid", "UXGridEdit", stage, Err.number, Err.description, Err.source, "Unknown")
+    RouteGridContext False
     failure = stage & ": " & CLng(swiftPrimary("Number")) & " " & CStr(swiftPrimary("Description"))
     If started Then SwiftRollback w, swiftPrimary
     saving = False

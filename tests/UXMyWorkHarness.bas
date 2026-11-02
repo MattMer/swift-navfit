@@ -86,14 +86,14 @@ Public Function TestUXMyWork() As String
     Call CheckCount
     Call UXLoadWorkQueue
     Check f!lstWork = "Assignment:" & task, "Queue selection lost"
-    Check Not f!cmdAccept.Enabled And Not f!cmdReturn.Enabled And f!cmdCancel.Enabled, "Stale decisions enabled"
-    Check InStr(UXWorkText("Route", run, "Action"), "restart") > 0, "Stale route next action"
+    ' F01: the holder's own save keeps both reviews current.
+    Check f!cmdAccept.Enabled And f!cmdReturn.Enabled And f!cmdCancel.Enabled, "Holder save disabled the assignment decisions"
+    Check InStr(UXWorkText("Route", run, "Action"), "forward or send back") > 0 And RouteIsCurrent(run), "Holder save staled the route"
     Check InStr(UXWorkText("Comment", thread, "Status"), "earlier revision") > 0, "Earlier thread misrepresented"
     MigrateReportMessages id
     Check UXOpenReportTool(id, "Notes"), "Notes navigation failed"
     Check UXToolsForm()!lstMessages.ListCount > 1, "Historical conversation missing"
     Check UXWorkBack(), "Notes return failed"
-    run = RestartStaleRoute(run, CurrentRevision(id), "")
     Call DecideRouteStep(run, "Accepted", "First step complete")
     Check Not UXWorkVisible("Route", run, author) And UXWorkVisible("Route", run, other), "Ordered step did not advance"
     Call SwitchContributor(other): Call LoadMyWork

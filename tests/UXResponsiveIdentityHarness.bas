@@ -32,11 +32,11 @@ Public Function TestUXResponsiveIdentity() As String
     Check InStr(f!uxReport.Caption, "UPDATED OFFICIAL NAME") = 1, "Report header still prefers local name"
     Check f!uxAlias.Caption = "Local name: Legacy display", "Independent local name not identified"
     f!uxFieldSurface.SetFocus: child!txtOfficialName.SetFocus
-    child!txtOfficialName.Text = "PENDING OFFICIAL NAME": child!txtOfficialName.SelStart = 4: child!txtOfficialName.SelLength = 3
+    child!txtOfficialName.Text = "OFFICIAL, PENDING": child!txtOfficialName.SelStart = 4: child!txtOfficialName.SelLength = 3
     Check UXResizeEditor(10000, 6800), "Narrow resize rejected"
     Check Screen.ActiveControl.Name = "txtOfficialName", "Resize changed active field: " & Screen.ActiveControl.Name
     Check child!txtOfficialName.SelStart = 4 And child!txtOfficialName.SelLength = 3, "Resize lost caret/selection"
-    Check child!txtOfficialName.Text = "PENDING OFFICIAL NAME", "Resize lost active text"
+    Check child!txtOfficialName.Text = "OFFICIAL, PENDING", "Resize lost active text: " & child!txtOfficialName.Text
     Check CurrentRevision(id) = rev, "Resize saved a revision"
     stage = "fixed page viewport"
     x = child!txtOfficialName.Left: y = child!txtOfficialName.Top: w = child!txtOfficialName.Width
@@ -45,25 +45,25 @@ Public Function TestUXResponsiveIdentity() As String
         Check f!uxRail.Visible And f!uxNav0.Visible, "Navigation rail hidden at " & key
         Check f!uxFieldSurface.Left > f!uxRail.Left + f!uxRail.Width, "Report overlaps navigation rail at " & key
         Check child!txtOfficialName.Left = x And child!txtOfficialName.Top = y And child!txtOfficialName.Width = w, "Resize reflowed fields at " & key
-        Check child!txtOfficialName.Text = "PENDING OFFICIAL NAME" And CurrentRevision(id) = rev, "Resize lost pending text or saved at " & key
+        Check child!txtOfficialName.Text = "OFFICIAL, PENDING" And CurrentRevision(id) = rev, "Resize lost pending text or saved at " & key
     Next
     Check UXSaveEditor(), "Pending name could not save"
     Check DLookup("MemberName", "Report", "ReportID=" & id) = "Legacy display", "Official edit overwrote independent local name"
-    Check UXMemberLabel(id) = "PENDING OFFICIAL NAME", "Saved identity not refreshed"
+    Check UXMemberLabel(id) = "OFFICIAL, PENDING", "Saved identity not refreshed"
     Call UXLeaveEditor()
     stage = "list identities"
     DoCmd.OpenForm "frmLibrary": RefreshLibrary
-    Check Forms!frmLibrary!lstReports.Column(3, IIf(Forms!frmLibrary!lstReports.ColumnHeads, 1, 0)) = "PENDING OFFICIAL NAME", "Reports list identity mismatch"
+    Check Forms!frmLibrary!lstReports.Column(3, IIf(Forms!frmLibrary!lstReports.ColumnHeads, 1, 0)) = "OFFICIAL, PENDING", "Reports list identity mismatch"
     DoCmd.OpenForm "frmHome": UXDashboardRefresh
-    Check Forms!frmHome!uxRecentReports.Column(1, 1) = "PENDING OFFICIAL NAME", "Overview identity mismatch"
+    Check Forms!frmHome!uxRecentReports.Column(1, 1) = "OFFICIAL, PENDING", "Overview identity mismatch"
     groupID = CreateSummaryGroup("Layout group", "EVAL", "E5"): AddGroupMember groupID, id, "E5"
     DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID: Forms!frmMajorWorkbench!uxGroupContext = groupID
     Check UXGroupNavigate("frmMajorWorkbench", 0), "Group members failed"
-    Check Forms!frmUXComparison!uxTraitGrid.Form!Member = "PENDING OFFICIAL NAME", "Group identity mismatch"
+    Check Forms!frmUXComparison!uxTraitGrid.Form!Member = "OFFICIAL, PENDING", "Group identity mismatch"
     meeting = CreateComparisonSet(FreezeSummaryGroup(groupID, "Synthetic comparison"), "Identity comparison")
     DoCmd.Close acForm, "frmUXComparison", acSaveNo
     DoCmd.OpenForm "frmUXComparison", , , , , , CStr(meeting)
-    Check Forms!frmUXComparison!uxTraitGrid.Form!Member = "PENDING OFFICIAL NAME", "Comparison identity mismatch"
+    Check Forms!frmUXComparison!uxTraitGrid.Form!Member = "OFFICIAL, PENDING", "Comparison identity mismatch"
     DoCmd.OpenForm "frmMyWork": UXMyWorkMode "Assign"
     Check InStr(Forms!frmMyWork!uxAssignReport.RowSource, "UXIdentity") > 0, "Assignment selector identity mismatch"
     stage = "shared workspace bounds"

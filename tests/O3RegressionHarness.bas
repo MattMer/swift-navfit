@@ -22,7 +22,7 @@ Public Function TestO3Cells() As String
   If DLookup("Trait34", "Report", "ReportID=" & id) <> "5.0" Then Err.Raise vbObjectError + 7990, , "Second save reverted"
   result = result & id & " repeated saves persisted; "
  Next
- UXCloseComparison: UXOpenComparison
+ Call UXCloseComparison: Call UXShowGroupMembers(g)
  Set rows = Forms!frmUXComparison!uxTraitGrid.Form
  For Each id In Array(ids(0), ids(1))
   Set r = rows.RecordsetClone: r.FindFirst "ReportID=" & id: rows.Bookmark = r.Bookmark: r.Close

@@ -34,10 +34,13 @@ Public Function UXWorkVisible(ByVal kind As String, ByVal id As Long, ByVal pid 
     report = r!ReportID
     Select Case kind
         Case "Assignment"
-            UXWorkVisible = r!TaskState = "Pending" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> CurrentRevision(report)))
+            'Fails closed, as before F01, when the report has no saved revision.
+            Call CurrentRevision(report)
+            UXWorkVisible = r!TaskState = "Pending" And r!AssignedTo = pid
         Case "Route"
             If r!RunState = "Pending" Then
-                assignee = Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & id & " AND StepOrdinal=" & r!CurrentStep), 0)
+                'Step 0 means the report was sent or pulled back to the requester.
+                If r!CurrentStep = 0 Then assignee = r!RequestedBy Else assignee = Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & id & " AND StepOrdinal=" & r!CurrentStep), 0)
                 UXWorkVisible = assignee = pid Or (r!RequestedBy = pid And Not RouteIsCurrent(id))
             ElseIf r!RunState = "Accepted" Then
                 UXWorkVisible = Nz(r!ApprovedBy, 0) = pid Or (r!RequestedBy = pid And Not RouteIsCurrent(id))
@@ -57,8 +60,7 @@ Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As
         Case "Assignment"
             label = "Assigned review": owner = r!AssignedTo: status = r!TaskState
             If status = "Pending" Then
-                stale = r!RevisionID <> CurrentRevision(report)
-                If stale Then status = "Stale": action = "Requester: cancel and reassign" Else action = "Open report; accept or return"
+                action = "Open report; edit, then accept or return"
                 If Not IsNull(r!DueDate) Then
                     If r!DueDate < Date Then status = status & " / overdue"
                 End If
@@ -69,14 +71,17 @@ Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As
         Case "Route"
             status = r!RunState: label = "Route: step " & r!CurrentStep & " of " & DCount("*", "RouteRunStep", "RunID=" & id)
             owner = Nz(DLookup("AssigneeID", "RouteRunStep", "RunID=" & id & " AND StepOrdinal=" & r!CurrentStep), 0)
+            If r!CurrentStep = 0 Then label = "Route: back with the requester": owner = r!RequestedBy
             If status = "Pending" Or status = "Accepted" Then
                 stale = Not RouteIsCurrent(id)
                 If stale Then
                     status = "Stale": action = "Requester: restart route": owner = r!RequestedBy
                 ElseIf status = "Accepted" Then
                     label = "Route: all steps accepted": action = "Final reviewer: local approval": owner = Nz(r!ApprovedBy, 0)
+                ElseIf r!CurrentStep = 0 Then
+                    action = "Requester: edit, then forward to step 1"
                 Else
-                    action = "Assigned reviewer: accept or return"
+                    action = "Reviewer: edit, then forward or send back"
                 End If
             Else
                 action = "View route history"
@@ -168,7 +173,7 @@ Public Function UXWorkSelection() As Boolean
     text = UXWorkReport(r!ReportID) & vbCrLf & "Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!RevisionID), "?") & " | " & UXWorkText(kind, id, "Status") & vbCrLf & "Next action: " & UXWorkText(kind, id, "Action")
     If kind = "Assignment" Then
         f!lstTasks = id
-        canDecide = r!TaskState = "Pending" And r!AssignedTo = pid And r!RevisionID = CurrentRevision(r!ReportID) And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & r!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & r!ReportID), "") = "Draft"
+        canDecide = r!TaskState = "Pending" And r!AssignedTo = pid And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & r!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & r!ReportID), "") = "Draft"
         f!cmdAccept.Enabled = canDecide: f!cmdReturn.Enabled = canDecide
         f!cmdCancel.Enabled = r!TaskState = "Pending" And r!RequestedBy = pid
         text = text & vbCrLf & "Requested by " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & r!RequestedBy), "") & vbCrLf & Nz(r!Instructions, "")
@@ -178,7 +183,7 @@ Public Function UXWorkSelection() As Boolean
         text = text & vbCrLf & UXRouteLabel(id)
     End If
     r.Close: f!txtHistory = text
-    f!uxWorkStatus.Caption = "Assignment decisions use saved revisions. Open selected work opens the report Review steps view. Shared communication is in the Report notes tab."
+    f!uxWorkStatus.Caption = "The reviewer holding a report can edit it before deciding. Open selected work opens the report Review steps view. Shared communication is in the Report notes tab."
     UXWorkSelection = True
 End Function
 Public Function UXWorkOpen(Optional ByVal reportOnly As Boolean = False) As Boolean

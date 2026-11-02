@@ -68,6 +68,9 @@ Public Function TestReportTools() As String
  Check UXMessagePost(), "Posting failed: " & p!lblNoteStatus.Caption
  Check DCount("*", "ReportMessage", "ReportID=" & id & " AND MessageBody='Board message from the reviewer'") = 1 And IsNull(p!txtMessage), "Post did not add exactly one message"
  Check InStr(p!txtConversation, "Board message from the reviewer") > InStr(p!txtConversation, "Reply after approval"), "Message log not oldest first: board=" & InStr(p!txtConversation, "Board message from the reviewer") & " reply=" & InStr(p!txtConversation, "Reply after approval") & " len=" & Len(Nz(p!txtConversation, "")) & " rows=" & DCount("*", "ReportMessage", "ReportID=" & id) & " reread=" & UXMessageRead() & " after=" & InStr(p!txtConversation, "Board message from the reviewer") & " len2=" & Len(Nz(p!txtConversation, ""))
+ ' A message typed straight in and posted (no saved draft) shows in the log at once.
+ p!txtMessage.SetFocus: p!txtMessage.Text = "Second board message"
+ Check UXMessagePost() And InStr(p!txtConversation, "Second board message") > 0, "Posted message missing from the Messages box"
  stage = "validation popup"
  Check UXOpenValidation(), "Popup open failed"
  Check Forms!frmUXValidation.PopUp And Not Forms!frmUXValidation.Modal, "Validation is not modeless popup"

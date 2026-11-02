@@ -88,6 +88,23 @@ Public Function UXSaveTemplate() As Boolean
 Failed:
  Forms!frmUXRouteTemplates!lblStatus.Caption = Err.Description & " Entries retained."
 End Function
+Public Function UXDeleteTemplate(Optional ByVal confirmed As Boolean = False) As Boolean
+ Dim id As Long
+ On Error GoTo Failed
+ With Forms!frmUXRouteTemplates
+  id = Nz(!lstTemplates, 0)
+  If id = 0 Then !lblStatus.Caption = "Select a route template to delete.": Exit Function
+  If Not confirmed Then
+   If MsgBox("Delete the route template """ & !lstTemplates.Column(1) & """? It will no longer be offered for new reviews. Reports already under review keep their reviewers in order.", vbYesNo + vbQuestion, "Delete route template") <> vbYes Then Exit Function
+  End If
+  DeleteRouteTemplate id
+  !lstTemplates = Null: !lstTemplates.Requery: UXShowTemplate
+  !lblStatus.Caption = "Template deleted. Reports already under review keep their reviewers."
+ End With
+ UXDeleteTemplate = True: Exit Function
+Failed:
+ Forms!frmUXRouteTemplates!lblStatus.Caption = Err.Description
+End Function
 Public Function UXCloseTemplates() As Boolean
  DoCmd.Close acForm, "frmUXRouteTemplates", acSaveNo
  UXCloseTemplates = UXNavigate("frmUXResources")

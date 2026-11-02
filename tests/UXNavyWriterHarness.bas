@@ -54,7 +54,7 @@ Public Function TestUXNavyWriter() As String
     Check Forms!frmSnippets!lstSnippets.ListCount = unassigned, "Imported tagged excerpts incorrectly treated as legacy"
     Check SnippetRate("Old untagged attribution") = "UNSPECIFIED", "Legacy snippet rate invented"
     Check SnippetRate(SnippetRateAttribution("Source [Rate: IT]", "CWT")) = "CWT", "Rate assignment did not replace existing tag"
-    NewSnippetUI: Forms!frmSnippets!txtTitle = "Manual rate example": Forms!frmSnippets!txtBody = "Synthetic original text": Forms!frmSnippets!txtAttribution = "Command author": Forms!frmSnippets!cboSnippetRate = "IT"
+    Call NewSnippetUI: Forms!frmSnippets!txtTitle = "Manual rate example": Forms!frmSnippets!txtBody = "Synthetic original text": Forms!frmSnippets!txtAttribution = "Command author": Forms!frmSnippets!cboSnippetRate = "IT"
     Check SaveSnippetUI(), "Manual snippet rate save failed"
     Check SnippetRate(DLookup("Attribution", "NarrativeSnippet", "SnippetTitle='Manual rate example'")) = "IT", "Manual rate not retained"
     Forms!frmSnippets!cboRateFilter = "IT": LoadSnippets

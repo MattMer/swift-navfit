@@ -574,7 +574,7 @@ Public Function PDFLocalPackets(ByVal path As String) As Object
     Close #file: opened = False
     If SourceFileHash(path) <> before Then InvalidPDF "PDF changed during local extraction."
     result.Add "sourceHash", before: Set PDFLocalPackets = result
-    ClearLocalPDF: Exit Function
+    Call ClearLocalPDF: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     On Error Resume Next

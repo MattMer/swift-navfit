@@ -56,11 +56,12 @@ Public Function UXHistoryITARows(ByVal memberID As Long) As Object
 End Function
 Private Function ReadRouteCurrent(ByVal r As DAO.Recordset, ByVal stamps As Object) As Boolean
     Dim key As String
-    ReadRouteCurrent = (r!RevisionID = Nz(r!SavedRevision, 0)) And Not Nz(r!ReportArchived, True)
+    'Matches RouteIsCurrent: an active report and, for a group route, unchanged membership.
+    ReadRouteCurrent = Not Nz(r!ReportArchived, True)
     If Not IsNull(r!GroupID) Then
-        key = CStr(r!GroupID)
-        If Not stamps.Exists(key) Then stamps.Add key, GroupStamp(r!GroupID, False)
-        If StrComp(Nz(r!GroupStamp, ""), stamps(key), vbBinaryCompare) <> 0 Then ReadRouteCurrent = False
+        key = r!GroupID & "|" & Nz(r!GroupStamp, "")
+        If Not stamps.Exists(key) Then stamps.Add key, RouteGroupCurrent(r!GroupStamp, r!GroupID)
+        If Not stamps(key) Then ReadRouteCurrent = False
     End If
 End Function
 
@@ -80,7 +81,7 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
     Do While Not r.EOF
         If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
         ' Review work on a signed report waits until it is reopened.
-        If r!TaskState = "Pending" And Nz(r!ReportState, "") <> "Signed" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> r!SavedRevision)) Then rows("Assignment:" & r!TaskID) = True
+        If r!TaskState = "Pending" And Nz(r!ReportState, "") <> "Signed" And r!AssignedTo = pid Then rows("Assignment:" & r!TaskID) = True
         r.MoveNext
     Loop
     r.Close
@@ -93,6 +94,7 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
             If r!RunState = "Pending" Then
                 assignee = 0
                 If steps.Exists(id & ":" & r!CurrentStep) Then assignee = steps(id & ":" & r!CurrentStep)
+                If r!CurrentStep = 0 Then assignee = r!RequestedBy
                 visible = assignee = pid Or (r!RequestedBy = pid And Not current)
             Else
                 visible = Nz(r!ApprovedBy, 0) = pid Or (r!RequestedBy = pid And Not current)
@@ -143,8 +145,7 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
                     Case "Assignment"
                         label = "Assigned review": owner = r!AssignedTo: status = r!TaskState
                         If status = "Pending" Then
-                            stale = r!RevisionID <> Nz(r!SavedRevision, 0)
-                            If stale Then status = "Stale": action = "Requester: cancel and reassign" Else action = "Open report; accept or return"
+                            action = "Open report; edit, then accept or return"
                             If Not IsNull(r!DueDate) Then
                                 If r!DueDate < Date Then status = status & " / overdue"
                             End If
@@ -156,14 +157,17 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
                         If Not counts.Exists(CStr(id)) Then counts(CStr(id)) = 0
                         label = "Route: step " & r!CurrentStep & " of " & counts(CStr(id)): status = r!RunState
                         If steps.Exists(id & ":" & r!CurrentStep) Then owner = steps(id & ":" & r!CurrentStep)
+                        If r!CurrentStep = 0 Then label = "Route: back with the requester": owner = r!RequestedBy
                         If status = "Pending" Or status = "Accepted" Then
                             stale = Not ReadRouteCurrent(r, stamps)
                             If stale Then
                                 status = "Stale": action = "Requester: restart route": owner = r!RequestedBy
                             ElseIf status = "Accepted" Then
                                 label = "Route: all steps accepted": action = "Final reviewer: local approval": owner = Nz(r!ApprovedBy, 0)
+                            ElseIf r!CurrentStep = 0 Then
+                                action = "Requester: edit, then forward to step 1"
                             Else
-                                action = "Assigned reviewer: accept or return"
+                                action = "Reviewer: edit, then forward or send back"
                             End If
                         Else
                             action = "View route history"
@@ -269,11 +273,11 @@ Public Sub UXPrepareReportRows()
         row = rows(id): If Len(row(3)) = 0 Then row(3) = "Ungrouped"
         rows(id) = row
     Next
-    Set r = db.OpenRecordset("SELECT t.ReportID,t.RevisionID,t.TaskState,p.CurrentRevisionID FROM ReviewTask AS t INNER JOIN Report AS p ON t.ReportID=p.ReportID WHERE t.TaskState In ('Pending','Returned')", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT t.ReportID,IIf(t.FinishedRevisionID Is Null,t.RevisionID,t.FinishedRevisionID) AS ReviewedRevision,t.TaskState,p.CurrentRevisionID FROM ReviewTask AS t INNER JOIN Report AS p ON t.ReportID=p.ReportID WHERE t.TaskState In ('Pending','Returned')", dbOpenSnapshot)
     Do While Not r.EOF
         If r!TaskState = "Pending" Then
-            If r!RevisionID <> Nz(r!CurrentRevisionID, 0) Then ReadReportState rows, r!ReportID, "Review needs restart" Else ReadReportState rows, r!ReportID, "In review"
-        ElseIf r!RevisionID = Nz(r!CurrentRevisionID, 0) Then
+            ReadReportState rows, r!ReportID, "In review"
+        ElseIf CLng(r!ReviewedRevision) = Nz(r!CurrentRevisionID, 0) Then
             ReadReportState rows, r!ReportID, "Returned"
         End If
         r.MoveNext

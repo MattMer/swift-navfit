@@ -1451,7 +1451,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -1975,7 +1974,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2031,7 +2029,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2087,7 +2084,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2143,7 +2139,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2199,7 +2194,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2255,7 +2249,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2311,7 +2304,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2633,7 +2625,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2689,7 +2680,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2745,7 +2735,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -2801,7 +2790,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -3458,7 +3446,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -3514,7 +3501,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -3570,7 +3556,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200
@@ -3626,7 +3611,6 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin CheckBox
-                    TripleState = NotDefault
                     OverlapFlags =255
                     Left =200
                     Top =200

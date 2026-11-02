@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 36,
+  "SchemaVersion": 37,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -50,7 +50,8 @@
     "DirectoryMergeCounseling",
     "ReportSignoff",
     "DraftDisposal",
-    "DirectoryMergeSenior"
+    "DirectoryMergeSenior",
+    "RouteRunEvent"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -62,8 +63,8 @@
     "CREATE TABLE ChangeItem (ItemID COUNTER PRIMARY KEY, BatchID LONG NOT NULL, ReportID LONG NOT NULL, ExpectedRevision LONG NOT NULL, FieldKey TEXT(64) NOT NULL, NewValue LONGTEXT, NewIsNull BIT, BeforeValue LONGTEXT, BeforeIsNull BIT, AppliedRevision LONG)",
     "CREATE TABLE RouteTemplate (TemplateID COUNTER PRIMARY KEY, Title TEXT(120), IsArchived BIT)",
     "CREATE TABLE RouteTemplateStep (TemplateStepID COUNTER PRIMARY KEY, TemplateID LONG NOT NULL, StepOrdinal LONG NOT NULL, AssigneeID LONG NOT NULL, Instructions LONGTEXT)",
-    "CREATE TABLE RouteRun (RunID COUNTER PRIMARY KEY, ReportID LONG NOT NULL, RevisionID LONG NOT NULL, TemplateID LONG NOT NULL, CurrentStep LONG, RunState TEXT(20), GroupID LONG, GroupStamp LONGTEXT, RequestedBy LONG NOT NULL, RequestedAt DATETIME, ApprovedBy LONG, ApprovedAt DATETIME)",
-    "CREATE TABLE RouteRunStep (RunStepID COUNTER PRIMARY KEY, RunID LONG NOT NULL, StepOrdinal LONG NOT NULL, AssigneeID LONG NOT NULL, Instructions LONGTEXT, StepState TEXT(20), DecisionNote LONGTEXT, DecisionAt DATETIME)",
+    "CREATE TABLE RouteRun (RunID COUNTER PRIMARY KEY, ReportID LONG NOT NULL, RevisionID LONG NOT NULL, TemplateID LONG NOT NULL, CurrentStep LONG, RunState TEXT(20), GroupID LONG, GroupStamp LONGTEXT, RequestedBy LONG NOT NULL, RequestedAt DATETIME, ApprovedBy LONG, ApprovedAt DATETIME, ApprovedRevisionID LONG)",
+    "CREATE TABLE RouteRunStep (RunStepID COUNTER PRIMARY KEY, RunID LONG NOT NULL, StepOrdinal LONG NOT NULL, AssigneeID LONG NOT NULL, Instructions LONGTEXT, StepState TEXT(20), DecisionNote LONGTEXT, DecisionAt DATETIME, IncomingRevisionID LONG, OutgoingRevisionID LONG)",
     "CREATE TABLE ComparisonSet (SetID COUNTER PRIMARY KEY, GroupSnapshotID LONG NOT NULL, Title TEXT(120), CreatedBy LONG NOT NULL, CreatedAt DATETIME)",
     "CREATE TABLE ComparisonMember (ComparisonMemberID COUNTER PRIMARY KEY, SetID LONG NOT NULL, ReportID LONG NOT NULL, RevisionID LONG NOT NULL, SortOrdinal LONG)",
     "CREATE TABLE MeetingProposal (ProposalID COUNTER PRIMARY KEY, SetID LONG NOT NULL, ReportID LONG NOT NULL, BaseRevision LONG NOT NULL, FieldKey TEXT(64), ValueText LONGTEXT, IsNullValue BIT, ProposalState TEXT(20), AppliedRevision LONG)",
@@ -266,7 +267,11 @@
     "ALTER TABLE ReportingSeniorRecord ADD CONSTRAINT FK_ReportingSeniorRecord_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
     "CREATE TABLE DirectoryMergeSenior (MergeID LONG NOT NULL, SeniorID LONG NOT NULL, VersionCounter LONG NOT NULL, ModifiedAt DATETIME, CONSTRAINT PK_DirectoryMergeSenior PRIMARY KEY (MergeID,SeniorID))",
     "ALTER TABLE DirectoryMergeSenior ADD CONSTRAINT FK_DirectoryMergeSenior_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
-    "ALTER TABLE DirectoryMergeSenior ADD CONSTRAINT FK_DirectoryMergeSenior_SeniorID FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)"
+    "ALTER TABLE DirectoryMergeSenior ADD CONSTRAINT FK_DirectoryMergeSenior_SeniorID FOREIGN KEY (SeniorID) REFERENCES ReportingSeniorRecord (SeniorID)",
+    "ALTER TABLE ReviewTask ADD COLUMN FinishedRevisionID LONG",
+    "CREATE TABLE RouteRunEvent (RouteEventID COUNTER PRIMARY KEY, RunID LONG NOT NULL, EventKind TEXT(20) NOT NULL, FromStep LONG, ToStep LONG, RevisionID LONG, AuthorProfileID LONG NOT NULL, EventAt DATETIME NOT NULL, Notes LONGTEXT)",
+    "CREATE INDEX IX_RouteRunEvent_Run ON RouteRunEvent (RunID,EventAt)",
+    "ALTER TABLE RouteRunEvent ADD CONSTRAINT FK_RouteRunEvent_RunID FOREIGN KEY (RunID) REFERENCES RouteRun (RunID)"
   ],
   "Queries": [
     {

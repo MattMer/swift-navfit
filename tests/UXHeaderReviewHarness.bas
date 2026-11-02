@@ -27,17 +27,16 @@ Public Function TestUXHeaderReview() As String
     Check Forms!frmEditor!uxReviewApproval.Enabled And Forms!frmEditor!uxReviewApproval.Caption = "Reopen approval", "Reopen action missing"
     Check UXHeaderReview("Approval", "Reopened for correction"), "Header reopen failed"
     Check DLookup("WorkflowState", "Report", "ReportID=" & id) = "Draft", "Reopen not recorded"
+    ' F01: Send back from step 1 returns the report to the requester; the route stays open.
     run = StartRoute(id, template)
-    Check UXHeaderReview("Return", "Correct this report"), "Header return failed"
-    Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Returned", "Return not recorded"
-    run = StartRoute(id, template)
-    Call CommitDraft(id, "EVAL", "Header review", "Synthetic member", #1/1/2026#, #9/30/2026#, "Concurrent change", "Test", "")
+    Check UXHeaderReview("Return", "Correct this report"), "Header send back failed"
+    Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending" And DLookup("CurrentStep", "RouteRun", "RunID=" & run) = 0, "Send back to the requester not recorded"
+    ' The holder's own save keeps the route current, and Forward resubmits to step 1.
+    Call CommitDraft(id, "EVAL", "Header review", "Synthetic member", #1/1/2026#, #9/30/2026#, "Holder change", "Test", "")
     Call UXHeaderReviewState
-    Check Not Forms!frmEditor!uxReviewAccept.Enabled And InStr(Forms!frmEditor!uxReviewAccept.ControlTipText, "Stale review") > 0, "Stale action not visibly disabled"
-    Check Not UXHeaderReview("Accept", "Cannot accept stale values"), "Stale route accepted"
-    ' The refusal and its next action show in the review panel the header action opened.
-    Check UXToolsView() = "Review" And InStr(UXReviewForm()!lblStatus.Caption, "start a new route for current values") > 0, "Stale next action missing"
-    Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending", "Rejected action changed route"
+    Check Forms!frmEditor!uxReviewAccept.Enabled And Not Forms!frmEditor!uxReviewReturn.Enabled, "Requester cannot forward after editing"
+    Check UXHeaderReview("Accept", "Resubmitted"), "Header forward failed"
+    Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Pending" And DLookup("CurrentStep", "RouteRun", "RunID=" & run) = 1, "Forward did not reach step 1"
     Check UXResizeEditor(9000, 7000), "Compact layout failed"
     For Each name In Array("uxReviewSetup", "uxReviewAccept", "uxReviewReturn", "uxReviewApproval")
         Set c = Forms!frmEditor.Controls(name)

@@ -68,9 +68,9 @@ Use one authoritative workspace file and one contributor at a time. Separate cop
 | --- | --- |
 | Workspace coordinator | Maintains the authoritative file, backups, members, groups, and contributor list. |
 | Drafter | Enters report information, saves revisions, addresses findings, and participates in notes. |
-| Reviewer | Uses the correct contributor profile to accept or return eligible assigned work. |
-| Route requester | Starts routes and handles stale routes, restarts, or cancellation. |
-| Final local reviewer | Records local approval when all required route steps are accepted on current saved values. |
+| Reviewer | Uses the correct contributor profile; while holding a report, edits it and forwards or sends it back. |
+| Route requester | Starts routes, edits reports sent back to them, pulls reports back, and restarts or cancels routes. |
+| Final local reviewer | Records local approval once every route step has forwarded. |
 | Reporting-senior administrator | Maintains reusable senior information and verified historical RSCA inputs. |
 
 These are operating responsibilities, not authenticated security roles. A local contributor profile records attribution; it does not prove identity or enforce folder access.
@@ -253,6 +253,10 @@ Office then accepts those terms in Access, Word and Outlook. To stop using them,
 | No pending changes | No unsaved report changes are detected. A no-op save does not create history. |
 
 Incomplete drafts can be saved when their entered values meet storage requirements. A saved draft is not a certification that every policy check is satisfied.
+
+Saving formats entries the way NAVFIT98A does. Names, grades and rates, designators, titles, and rater and counselor names become uppercase. The member's name becomes **LAST, FIRST MI SUFFIX** (for example, *john q smith jr* becomes *SMITH, JOHN Q JR*), and the reporting senior's name becomes **LAST, F M**. Middle names are shortened to initials and periods are removed. A name typed without a comma is read as first, middle, last; type a comma after a last name of more than one word, such as *VAN DER BERG, ANNA*.
+
+Check boxes start blank. A box you never click is saved as not answered; a cleared box is saved as No.
 
 Leaving the editor attempts a save. If raw entries cannot be saved, Swift keeps
 them in a recovery checkpoint and allows navigation once that checkpoint succeeds.
@@ -550,35 +554,49 @@ The group projection excludes its own already-counted contribution where its sel
 
 # 12. Run an ordered review route
 
-## 12.1 Start-to-finish workflow
+## 12.1 How a review route works
 
-**Draft report > Save > Check findings > Start route > Accept/return each step > Final local approval > Group closeout > Authorized final processing.**
+A routed report is one shared draft that moves up your chain of command. At any moment one person **holds** it: the reviewer at the current step, or the requester when it has been sent back to them. The holder can edit and save the report as often as needed.
 
-Notes and replies can occur throughout. They do not advance this sequence. Individual assignments, described in chapter 13, are another local review mechanism and do not automatically replace the ordered route.
+Later steps have more authority. A reviewer later in the chain than the holder can also edit the report at any time; the change is flagged to the holder. Earlier reviewers and the requester can read the report, but must **Pull back** before editing. If someone at a lower step changes a field that a higher reviewer had changed, Swift allows it but flags it, and the higher reviewer sees the flag when the report comes back to them.
+
+**Draft report > Save > Start route > Each holder edits, then forwards > Final local approval > Group closeout > Authorized final processing.**
+
+Notes and replies can occur throughout. They do not move the report. Individual assignments, described in chapter 13, are a simpler one-reviewer review.
 
 ## 12.2 Start review
 
 1. Save the report and address the findings appropriate to the command's review stage.
 2. Open **Review setup** or **Report tools > Review steps**.
 3. Use **Route steps** mode. Select an available ordered route template. Maintain templates through the route-template tools if a new reviewer sequence is needed.
-4. Choose **Start review**. Confirm the saved report context, selected route, and first reviewer.
+4. Choose **Start review**. The first reviewer now holds the report.
 
-Review actions use saved values. Save or undo pending report changes before recording a review action. Starting a route does not send email or transmit a report to a remote service.
+To change reviewers on a report already under review, select another template and choose **Replace current route with this template**. The old route stays in history and the new one starts at its first step. Route templates are managed under **Resources > Review route templates**; **Delete selected template** removes a template from future use, and reports already under review keep their reviewers in order.
 
-## 12.3 Accept or return a step
+Save or undo pending report changes before recording a review action. Starting a route does not send email or transmit a report to a remote service.
 
-1. The assigned contributor opens the current task from **My Work** or the report Review steps view.
-2. Read the saved report, route instructions, findings, and shared notes.
-3. Enter the decision note and choose **Accept step** or **Return report**. A return requires an explanation.
-4. Confirm the route's new status and next eligible reviewer.
+## 12.3 Forward or send back
 
-Future steps do not become the current reviewer's actionable work early. Unsubmitted decision text is separate from report conversation text; record or clear it before leaving when the editor blocks closure.
+1. The holder opens the report from **My Work** or the report's Review steps view. The status line says who holds it and lists any flagged changes.
+2. Edit and save the report if needed.
+3. Choose **Forward** to pass it to the next step, with an optional note. The next reviewer can compare what changed using **History**.
+4. Or choose **Send back**, with a reason, to return it to an earlier step. Select a step in the steps list to choose where it goes; otherwise it goes back one step, and from step 1 it goes back to the requester. Every step from there up runs again.
 
-## 12.4 Handle changes and approval
+When the report is back with the requester, the requester edits it and chooses **Forward** to resubmit it to step 1.
 
-After corrections are saved, an older pending or accepted route can become stale. Its requester restarts it using current saved values; earlier decisions remain in history. A group-scoped route can also become stale after membership changes. Requester cancellation and restart have their own eligibility checks.
+## 12.4 Pull back
 
-Once all steps are accepted on current values, the final reviewer records **Local approval**. The report becomes read-only. **Reopen approval**, with a reason, permits further edits. Local approval is not an official signature or submission.
+The requester, or a reviewer whose step has already forwarded, can choose **Pull back** with a reason. The report returns to their step, and the chain runs upward again from there. Earlier decisions stay in the route's history.
+
+## 12.5 Members grid changes
+
+The summary-group **Members** grid is outside the review chain. Coordinators can change a member's marks there at any time, even while the report is with a reviewer. Each change is recorded on the report and flagged to whoever holds it.
+
+## 12.6 Approval and restarts
+
+When the last step forwards, the final reviewer records **Local approval**, or sends the report back. Local approval locks the report at its current saved version. **Reopen approval**, with a reason, permits further edits. Local approval is not an official signature or submission.
+
+A route started from a summary group needs a restart only when the group's membership changes. Its requester restarts it from the Review steps view; earlier decisions remain in history.
 
 ---
 
@@ -593,7 +611,7 @@ Once all steps are accepted on current values, the final reviewer records **Loca
 
 Accept and return decisions, with their notes, are made inside the report from its header, not in My Work. Review routes are optional: a report can be saved and marked signed without one.
 
-The review queue includes current assigned reviews, current ordered-route steps, ready local approvals, and requester actions for stale work. Future route steps are not actionable yet. Assignment due dates appear when supplied; routes do not acquire invented due dates.
+The review queue includes reports you hold: assigned reviews, your current route steps, reports sent back to you as requester, ready local approvals, and group routes that need a restart. Future route steps are not actionable yet. Assignment due dates appear when supplied; routes do not acquire invented due dates.
 
 ## 13.2 Assign a saved revision
 
@@ -602,7 +620,7 @@ The review queue includes current assigned reviews, current ordered-route steps,
 3. Confirm the saved-revision context and choose the assignment action.
 4. The assigned contributor opens the work in **Assigned reviews** mode, reviews it, and accepts or returns it with the appropriate decision note.
 
-One pending individual assignment per report is allowed. Only the assigned contributor can accept/return eligible current work. A return needs a reason. The requester can cancel pending work. A later saved revision makes the older assignment stale; cancel it and assign the latest saved revision instead of applying an outdated acceptance.
+One pending individual assignment per report is allowed. While it is pending, the assigned reviewer holds the report: they can edit and save it, then accept or return it. Other contributors' saves are refused until the review is finished or the requester cancels it. A return needs a reason. Swift records which saved version the reviewer finished on.
 
 Acceptance records that assignment's outcome. It is not ordered-route final approval, official signature, or Navy submission. Archived or locally approved reports restrict review decisions according to their state.
 
@@ -610,7 +628,7 @@ Acceptance records that assignment's outcome. It is not ordered-route final appr
 
 Choose My Work's **Report notes** tab to browse workspace conversations, then **Open selected report conversation**. It opens the report's message log. Messages are not approval tasks and need not be closed to complete a review.
 
-Use the completed/all-history controls to inspect older review work. A changed report can make historical work stale without deleting its original decision. If an action is disabled, check active contributor, current saved revision, archive state, local approval, and route step before retrying.
+Use the completed/all-history controls to inspect older review work. If an action is disabled, check the active contributor, who holds the report, archive state and local approval before retrying.
 
 ---
 
@@ -744,7 +762,7 @@ When the warning appears, write a verified backup and plan to start a new blank 
 | Save fails | Correct the reported entry; pending values remain available. Save again and confirm success. |
 | Field is read-only | Check archive state or local approval. Prior-value cells are intentionally read-only. |
 | Accept/Return is disabled | Confirm active contributor, current saved revision, current route step, and report locks. |
-| Review is stale / needs restart | Save corrections; requester restarts the route or cancels/reassigns an individual assignment. |
+| Review needs restart | The group's membership changed; the requester restarts the route from Review steps. |
 | PSG RSCA unavailable | Check matching senior/paygrade baseline, exclusion confirmation, and complete eligible saved traits. |
 | Prior ITA is missing | Inspect the member link and prior evaluation records. Do not enter it in the read-only group reference cell. |
 | Import looks busy | Read the timestamped progress log. Wait for success/failure instead of launching another import. |
@@ -757,7 +775,7 @@ When the warning appears, write a verified backup and plan to start a new blank 
 
 **Draft / Approved:** report editing workflow. Approved means locally locked after local review; it is not official Navy approval.
 
-**Pending / Accepted / Returned / Cancelled:** a review assignment or route's local activity state. Accepted work can become stale if saved values or relevant group context change.
+**Pending / Accepted / Returned / Cancelled:** a review assignment or route's local activity state. A group route needs a restart if the group's membership changes.
 
 **Active / Archived:** visibility and editing lifecycle; archived items are retained and can be recovered.
 

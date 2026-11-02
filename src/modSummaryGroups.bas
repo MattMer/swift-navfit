@@ -48,6 +48,38 @@ Public Function GroupStamp(ByVal groupID As Long, Optional ByVal includeWorkflow
     Loop
     r.Close
 End Function
+' Membership-only stamp for review routes (F01): edits to other members' reports
+' do not make a group route stale; membership and archive changes still do.
+Public Function GroupRouteStamp(ByVal groupID As Long) As String
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("SELECT GroupGuid,IsArchived FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 4103, "modSummaryGroups.GroupRouteStamp", "Group does not exist."
+    GroupRouteStamp = "M1:" & r!GroupGuid & ":" & CStr(r!IsArchived): r.Close
+    Set r = CurrentDb.OpenRecordset("SELECT m.ReportID,r.IsArchived FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " ORDER BY m.ReportID", dbOpenSnapshot)
+    Do While Not r.EOF
+        GroupRouteStamp = GroupRouteStamp & "|" & r!ReportID & ":" & CStr(r!IsArchived): r.MoveNext
+    Loop
+    r.Close
+End Function
+' Routes started before schema 37 stored GroupStamp(group, False)
+' (guid:version:archived|report:revision:archived...). Compare only its membership.
+Public Function RouteGroupCurrent(ByVal stored As Variant, ByVal groupID As Long) As Boolean
+    Dim parts As Variant, head As Variant, member As Variant, i As Long, text As String
+    text = Nz(stored, "")
+    If Left$(text, 3) <> "M1:" Then
+        parts = Split(text, "|")
+        If UBound(parts) < 0 Then Exit Function
+        head = Split(parts(0), ":")
+        If UBound(head) < 2 Then Exit Function
+        text = "M1:" & head(0) & ":" & head(2)
+        For i = 1 To UBound(parts)
+            member = Split(parts(i), ":")
+            If UBound(member) < 2 Then Exit Function
+            text = text & "|" & member(0) & ":" & member(2)
+        Next
+    End If
+    RouteGroupCurrent = (StrComp(text, GroupRouteStamp(groupID), vbBinaryCompare) = 0)
+End Function
 ' Validate explicit group membership and record it transactionally, then invalidate
 ' editor membership/average context after success.
 Public Sub AddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal paygrade As String, Optional ByVal exceptionReason As String = "")
