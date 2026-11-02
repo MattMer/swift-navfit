@@ -235,6 +235,37 @@ Public Function UXMyWorkCounseling() As Boolean
     f!lblCounselingScope.Caption = IIf(rows = "", "No counseling needs attention. ", "") & "Midterm counseling follows the BUPERSINST 1610.10H chapter 18 schedule by paygrade. Select a member to record a session or open their history."
     UXMyWorkCounseling = True
 End Function
+' Departures (F02): members a roster flagged as leaving, for the coordinator to
+' confirm with the detachment date or dismiss with a reason.
+Public Function UXMyWorkDepartures() As Boolean
+    Dim f As Access.Form, rows As String
+    If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
+    Set f = Forms!frmMyWork
+    rows = DepartureRows(Nz(f!chkDeparturesAll, False))
+    f!lstDepartures.RowSourceType = "Value List": f!lstDepartures.RowSource = rows
+    f!lblDeparturesScope.Caption = IIf(rows = "", "No departures to review. ", "") & "Departures come from roster imports: a PRD within " & DEPARTURE_LEAD_DAYS & " days, or a member missing from a newer complete roster. Confirm with the detachment date, or Dismiss with a reason."
+    UXMyWorkDepartures = True
+End Function
+Public Function UXMyWorkDepartureResolve(ByVal outcome As String) As Boolean
+    Dim f As Access.Form, id As Long
+    On Error GoTo Failed
+    Set f = Forms!frmMyWork
+    If IsNull(f!lstDepartures) Then f!lblDeparturesScope.Caption = "Select a departure first.": Exit Function
+    id = CLng(f!lstDepartures)
+    ResolveDeparture id, Nz(DLookup("VersionCounter", "MemberDeparture", "DepartureID=" & id), 0), outcome, f!txtDepartureDate, Nz(f!txtDepartureReason, "")
+    f!txtDepartureDate = Null: f!txtDepartureReason = Null
+    UXMyWorkDepartures
+    f!lblDeparturesScope.Caption = "Departure " & IIf(outcome = "Confirm", "confirmed", "dismissed") & ". " & f!lblDeparturesScope.Caption
+    UXMyWorkDepartureResolve = True: Exit Function
+Failed:
+    f!lblDeparturesScope.Caption = Err.Description
+End Function
+Public Function UXMyWorkDepartureMember() As Boolean
+    Dim f As Access.Form
+    Set f = Forms!frmMyWork
+    If IsNull(f!lstDepartures) Then f!lblDeparturesScope.Caption = "Select a departure first.": Exit Function
+    UXMyWorkDepartureMember = UXDirectoryHistoryFor(CLng(DLookup("MemberID", "MemberDeparture", "DepartureID=" & CLng(f!lstDepartures))))
+End Function
 Private Function UXMyWorkCounselingMemberID() As Long
     If IsNull(Forms!frmMyWork!lstCounseling) Then Forms!frmMyWork!lblCounselingScope.Caption = "Select a member first.": Exit Function
     UXMyWorkCounselingMemberID = CLng(Forms!frmMyWork!lstCounseling)

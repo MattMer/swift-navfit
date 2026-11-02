@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 37. 72 entities; 162 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 38. 75 entities; 166 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -92,6 +92,8 @@ erDiagram
   Report ||--o{ MeetingProposal : "FK_MeetingProposal_ReportID"
   ReportRevision ||--o{ MeetingProposal : "FK_MeetingProposal_BaseRevision"
   CommandMember ||--o{ MemberCounseling : "FK_MemberCounseling_MemberID"
+  CommandMember ||--o{ MemberDeparture : "FK_MemberDeparture_MemberID"
+  RosterImport ||--o{ MemberDeparture : "FK_MemberDeparture_RosterImportID"
   CommandMember ||--o{ MemberReport : "FK_ReportDirectoryMember"
   Report ||--o{ MemberReport : "FK_MemberReport"
   UserProfile ||--o{ MemberReport : "FK_MemberReportAuthor"
@@ -143,6 +145,8 @@ erDiagram
   ReportRevision ||--o{ RevisionChoice : "FK_ChoiceRevision"
   ReportRevision ||--o{ RevisionDate : "FK_DateRevision"
   ReportRevision ||--o{ RevisionValue : "FK_ValueRevision"
+  CommandMember ||--o{ RosterPresence : "FK_RosterPresence_MemberID"
+  RosterImport ||--o{ RosterPresence : "FK_RosterPresence_RosterImportID"
   Report ||--o{ RouteRun : "FK_RouteRun_ReportID"
   ReportRevision ||--o{ RouteRun : "FK_RouteRun_RevisionID"
   RouteTemplate ||--o{ RouteRun : "FK_RouteRun_TemplateID"
@@ -258,6 +262,8 @@ erDiagram
 | MeetingProposal | Report | ReportID -> Report.ReportID | FK_MeetingProposal_ReportID |
 | MeetingProposal | ReportRevision | BaseRevision -> ReportRevision.RevisionID | FK_MeetingProposal_BaseRevision |
 | MemberCounseling | CommandMember | MemberID -> CommandMember.MemberID | FK_MemberCounseling_MemberID |
+| MemberDeparture | CommandMember | MemberID -> CommandMember.MemberID | FK_MemberDeparture_MemberID |
+| MemberDeparture | RosterImport | RosterImportID -> RosterImport.RosterImportID | FK_MemberDeparture_RosterImportID |
 | MemberReport | CommandMember | MemberID -> CommandMember.MemberID | FK_ReportDirectoryMember |
 | MemberReport | Report | ReportID -> Report.ReportID | FK_MemberReport |
 | MemberReport | UserProfile | UpdatedBy -> UserProfile.UserProfileID | FK_MemberReportAuthor |
@@ -309,6 +315,8 @@ erDiagram
 | RevisionChoice | ReportRevision | RevisionID -> ReportRevision.RevisionID | FK_ChoiceRevision |
 | RevisionDate | ReportRevision | RevisionID -> ReportRevision.RevisionID | FK_DateRevision |
 | RevisionValue | ReportRevision | RevisionID -> ReportRevision.RevisionID | FK_ValueRevision |
+| RosterPresence | CommandMember | MemberID -> CommandMember.MemberID | FK_RosterPresence_MemberID |
+| RosterPresence | RosterImport | RosterImportID -> RosterImport.RosterImportID | FK_RosterPresence_RosterImportID |
 | RouteRun | Report | ReportID -> Report.ReportID | FK_RouteRun_ReportID |
 | RouteRun | ReportRevision | RevisionID -> ReportRevision.RevisionID | FK_RouteRun_RevisionID |
 | RouteRun | RouteTemplate | TemplateID -> RouteTemplate.TemplateID | FK_RouteRun_TemplateID |

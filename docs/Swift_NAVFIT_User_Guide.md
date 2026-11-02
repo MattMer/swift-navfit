@@ -391,6 +391,18 @@ Use the report-selection actions in **Reports** to archive or recover reports. A
 
 Use the command-member tools associated with report creation to maintain reusable identities. Confirm spelling, identifiers, rank/rate, and paygrade before creating reports. A member-directory record and a report are related but distinct records; prior evaluations remain historical information rather than silently replacing today's report.
 
+### Import a roster and track departures
+
+**Resources > Command member directory > Import / refresh RUAD CSV** reads the command's NRRM RUAD roster (CSV). Choose the file, then **Match roster rows to members**: rows for one existing member are matched to that member, rows for new people get a new profile, and a name shared by several members waits for you to choose. Check the matches, **Preview**, then **Apply**.
+
+- Tick **This is the complete roster for its UICs** when the file is the full roster. Swift then compares it with the last complete roster for the same UICs, and anyone missing from the newer one is flagged as departing. Leave it clear for a partial or filtered export; then nobody is flagged as missing.
+- A member whose PRD is within 90 days is also flagged as departing, with the PRD as the expected date.
+- When the roster shows a different rate or rank, the preview says so. Tick **Update the profile rank/rate from this roster** on that row to change the profile; otherwise it stays as it is.
+
+Swift never archives or deletes anyone because of a roster. **My Work > Departures** lists the flagged members. Select one and choose **Confirm departure** with the detachment date, or **Dismiss (still aboard)** with a reason. A member who reappears on a later complete roster is marked returned automatically. Every import is kept as a dated snapshot.
+
+MNA rosters are not supported yet.
+
 ## 8.2 Create reports from members
 
 1. Open the member-based report creation workflow.

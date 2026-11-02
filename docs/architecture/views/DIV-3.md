@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 37, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 38, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -494,6 +494,27 @@ Microsoft Access (ACE) tables in schema 37, application 0.52.0-dev. Types are Ac
 | CreatedAt | Date/Time |  |
 | ModifiedBy | Long | yes |
 | ModifiedAt | Date/Time |  |
+
+## MemberDeparture
+
+- **Primary key:** DepartureID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| DepartureID | AutoNumber |  |
+| MemberID | Long | yes |
+| Basis | Text (20) | yes |
+| RosterImportID | Long |  |
+| PRD | Date/Time |  |
+| ExpectedDate | Date/Time |  |
+| ConfirmedDate | Date/Time |  |
+| DepartureState | Text (20) | yes |
+| Reason | Text (255) |  |
+| CreatedBy | Long | yes |
+| CreatedAt | Date/Time | yes |
+| ResolvedBy | Long |  |
+| ResolvedAt | Date/Time |  |
+| VersionCounter | Long | yes |
 
 ## MemberReport
 
@@ -1057,6 +1078,37 @@ Microsoft Access (ACE) tables in schema 37, application 0.52.0-dev. Types are Ac
 | FieldKey | Text (64) | yes |
 | ValueText | Long text |  |
 | IsNullValue | Yes/No |  |
+
+## RosterImport
+
+- **Primary key:** RosterImportID
+- **Unique:** ImportGuid
+
+| Column | Type | Required |
+| --- | --- | --- |
+| RosterImportID | AutoNumber |  |
+| ImportGuid | Text (38) | yes |
+| SourceFormat | Text (10) | yes |
+| SourceHash | Text (64) |  |
+| SourceName | Text (255) |  |
+| AsOfDate | Date/Time | yes |
+| ScopeUICs | Long text |  |
+| IsComplete | Yes/No |  |
+| RosterRows | Long |  |
+| ImportedBy | Long | yes |
+| ImportedAt | Date/Time | yes |
+
+## RosterPresence
+
+- **Primary key:** RosterImportID, MemberID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| RosterImportID | Long | yes |
+| MemberID | Long | yes |
+| UIC | Text (12) |  |
+| PRD | Text (20) |  |
+| RosterRank | Text (12) |  |
 
 ## RouteRun
 

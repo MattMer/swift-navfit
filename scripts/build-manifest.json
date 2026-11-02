@@ -61,6 +61,7 @@
     "src/modReportingSenior.bas",
     "src/modReviewComments.bas",
     "src/modRevisionCompare.bas",
+    "src/modRoster.bas",
     "src/modRouteTemplates.bas",
     "src/modRouting.bas",
     "src/modSavedReadiness.bas",

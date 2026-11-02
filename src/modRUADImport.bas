@@ -1,9 +1,9 @@
 Attribute VB_Name = "modRUADImport"
 Option Explicit
 Private rows As Collection, sourcePath As String, sourceText As String, previewStamp As String
-Private prepared As Boolean, previewOwner As Long
+Private prepared As Boolean, previewOwner As Long, rosterComplete As Boolean
 Public Function RUADReset() As Boolean
-    Set rows = Nothing: sourcePath = "": sourceText = "": previewStamp = "": prepared = False: previewOwner = 0
+    Set rows = Nothing: sourcePath = "": sourceText = "": previewStamp = "": prepared = False: previewOwner = 0: rosterComplete = False
     RUADReset = True
 End Function
 Public Function RUADReadText(ByVal path As String) As String
@@ -47,7 +47,7 @@ Public Function RUADCSV(ByVal text As String) As Collection
 End Function
 Public Function RUADLoad(ByVal path As String) As Long
     Dim parsed As Collection, headers As Object, data As Object, row As Object, fields As Collection, key As Variant, i As Long, j As Long
-    prepared = False: Set rows = Nothing: previewStamp = "": previewOwner = 0
+    prepared = False: Set rows = Nothing: previewStamp = "": previewOwner = 0: rosterComplete = False
     sourcePath = path: sourceText = RUADReadText(path)
     If Len(sourceText) > 5000000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoad", "Use a RUAD CSV smaller than 5 MB."
     Set parsed = RUADCSV(sourceText)
@@ -73,7 +73,7 @@ Public Function RUADLoad(ByVal path As String) As Long
             data.Add CStr(key), CStr(fields(headers(key)))
         Next
         Set row = CreateObject("Scripting.Dictionary")
-        row.Add "Data", data: row.Add "Action", "Skip": row.Add "MemberID", 0&: row.Add "ReplaceManual", False
+        row.Add "Data", data: row.Add "Action", "Skip": row.Add "MemberID", 0&: row.Add "ReplaceManual", False: row.Add "Suggested", 0&: row.Add "UpdateRank", False
         row.Add "Vacant", (Len(data("NAME")) = 0 Or InStr(1, data("SELRES TYPE"), "Vacant", vbTextCompare) > 0)
         row.Add "Detail", "Choose Create new or explicitly match an existing member, then preview."
         rows.Add row
@@ -87,15 +87,61 @@ End Function
 Public Function RUADCount() As Long
     If Not rows Is Nothing Then RUADCount = rows.Count
 End Function
-Public Sub RUADChoose(ByVal index As Long, ByVal action As String, ByVal memberID As Long, Optional ByVal replaceManual As Boolean = False)
+Public Sub RUADChoose(ByVal index As Long, ByVal action As String, ByVal memberID As Long, Optional ByVal replaceManual As Boolean = False, Optional ByVal updateRank As Boolean = False)
     Dim row As Object
     Set row = RUADRow(index)
     If action <> "Skip" And action <> "Create new" And action <> "Refresh existing" Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADChoose", "Choose a supported import action."
     If row("Vacant") And action <> "Skip" Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADChoose", "Vacant billets do not create directory members."
     If action = "Refresh existing" And memberID = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADChoose", "Explicitly choose the existing member."
     row("Action") = action: row("MemberID") = IIf(action = "Refresh existing", memberID, 0): row("ReplaceManual") = replaceManual
+    row("UpdateRank") = updateRank And action = "Refresh existing"
     prepared = False
 End Sub
+'A complete roster lets members missing from it be flagged as departing (F02).
+Public Sub RUADSetComplete(ByVal complete As Boolean)
+    rosterComplete = complete: prepared = False
+End Sub
+Public Function RUADComplete() As Boolean
+    RUADComplete = rosterComplete
+End Function
+'The rate/rank the roster gives a person: DESG for enlisted, RATE/RANK for officers.
+Public Function RUADRosterRank(ByVal data As Object) As String
+    RUADRosterRank = CStr(data("DESG"))
+    If InStr(1, data("E/O"), "Officer", vbTextCompare) > 0 Then RUADRosterRank = CStr(data("RATE/RANK"))
+    If Len(RUADRosterRank) > 5 Then RUADRosterRank = ""
+End Function
+'Suggest the existing member for each row: one active member whose stored roster
+'name, or else whose display name, equals the row's name. Returns how many rows
+'have a suggestion. A suggestion is not identity; the coordinator confirms it.
+Public Function RUADSuggest() As Long
+    Dim byRoster As Object, byName As Object, r As DAO.Recordset, row As Object, name As String, values As Object, key As String
+    Set byRoster = CreateObject("Scripting.Dictionary"): byRoster.CompareMode = vbTextCompare
+    Set byName = CreateObject("Scripting.Dictionary"): byName.CompareMode = vbTextCompare
+    Set r = CurrentDb.OpenRecordset("SELECT MemberID,FullName,RUADData FROM CommandMember WHERE IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        key = Trim$(r!FullName): If byName.Exists(key) Then byName(key) = -1 Else byName.Add key, CLng(r!MemberID)
+        If Not IsNull(r!RUADData) Then
+            Set values = RUADDecode(r!RUADData): key = Trim$(Nz(values("NAME"), ""))
+            If Len(key) > 0 Then
+                If byRoster.Exists(key) Then byRoster(key) = -1 Else byRoster.Add key, CLng(r!MemberID)
+            End If
+        End If
+        r.MoveNext
+    Loop
+    r.Close
+    For Each row In rows
+        row("Suggested") = 0&
+        If Not row("Vacant") Then
+            name = Trim$(CStr(row("Data")("NAME")))
+            If byRoster.Exists(name) Then
+                If byRoster(name) > 0 Then row("Suggested") = byRoster(name)
+            ElseIf byName.Exists(name) Then
+                If byName(name) > 0 Then row("Suggested") = byName(name)
+            End If
+            If row("Suggested") > 0 Then RUADSuggest = RUADSuggest + 1
+        End If
+    Next
+End Function
 Public Function RUADDirectoryStamp() As String
     Dim db As DAO.Database, r As DAO.Recordset
     Set db = CurrentDb: Set r = db.OpenRecordset("SELECT MemberID,VersionCounter,IsArchived FROM CommandMember ORDER BY MemberID", dbOpenSnapshot)
@@ -126,7 +172,7 @@ Private Function RUADSourceXML(ByVal data As Object) As String
 End Function
 Public Function RUADPreview() As String
     Dim row As Object, incoming As Object, values As Object, baseline As Object, db As DAO.Database, r As DAO.Recordset, ids As Object, names As Object
-    Dim key As Variant, name As String, rank As String, reportName As String, details As String, keep As Boolean, selected As Long, vacant As Long, conflicts As Long
+    Dim key As Variant, name As String, rank As String, reportName As String, details As String, keep As Boolean, selected As Long, vacant As Long, conflicts As Long, summary As String
     prepared = False: Set db = CurrentDb: Set ids = CreateObject("Scripting.Dictionary"): Set names = CreateObject("Scripting.Dictionary"): names.CompareMode = vbTextCompare
     If rows Is Nothing Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADPreview", "Choose a CSV first."
     For Each row In rows
@@ -153,7 +199,12 @@ Public Function RUADPreview() As String
                 If r!IsArchived Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADPreview", "Choose an active member."
                 Set values = RUADDecode(r!RUADData): Set baseline = RUADSourceValues(r!RUADData)
                 row("Version") = CLng(r!VersionCounter): row("Name") = CStr(r!FullName): row("Rank") = Nz(r!RankRate, ""): row("ReportName") = Nz(r!ReportName, ""): row("SSN") = Nz(r!MemberSSN, ""): row("SourceKind") = Nz(r!SourceKind, "Manual")
-                details = details & "Matched profile: " & row("Name") & ". Display name, report name, rank/rate and SSN remain unchanged." & vbCrLf
+                details = details & "Matched profile: " & row("Name") & ". Display name, report name and SSN remain unchanged." & vbCrLf
+                If row("UpdateRank") And Len(RUADRosterRank(incoming)) > 0 Then
+                    details = details & "Rank/rate: " & row("Rank") & " -> " & RUADRosterRank(incoming) & " (updated from this roster)" & vbCrLf: row("Rank") = RUADRosterRank(incoming)
+                ElseIf RUADRosterRank(incoming) <> row("Rank") And Len(RUADRosterRank(incoming)) > 0 Then
+                    details = details & "Rank/rate stays " & row("Rank") & "; this roster shows " & RUADRosterRank(incoming) & ". Tick Update the profile rank/rate to change it." & vbCrLf
+                End If
                 r.Close: Set r = Nothing
             End If
             For Each key In RUADKeys()
@@ -181,7 +232,8 @@ Public Function RUADPreview() As String
     Next
     If selected = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADPreview", "Choose at least one member to create or refresh."
     previewStamp = RUADDirectoryStamp(): previewOwner = ActiveContributorID(): prepared = True
-    RUADPreview = selected & " selected changes; " & vacant & " vacant billets skipped; " & conflicts & " changed profile fields reviewed. View every selected row's full before/incoming/after values. No absent members are archived; reports and evaluation history are untouched."
+    If rosterComplete Then summary = " Complete roster: active members on the last complete roster for its UICs who are missing now will be flagged as departing." Else summary = " Not marked as a complete roster, so no one is flagged as missing."
+    RUADPreview = selected & " selected changes; " & vacant & " vacant billets skipped; " & conflicts & " changed profile fields reviewed. View every selected row's full before/incoming/after values. No absent members are archived; reports and evaluation history are untouched." & summary
 End Function
 Public Function RUADApply() As Long
     Dim w As DAO.Workspace, row As Object, id As Long, op As Long, failure As Long, message As String, started As Boolean
@@ -193,12 +245,21 @@ Public Function RUADApply() As Long
     Set w = DBEngine.Workspaces(0): w.BeginTrans: started = True
     If RUADDirectoryStamp() <> previewStamp Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The directory changed. Preview again."
     op = BeginOperation("Import RUAD", sourcePath)
+    Dim present As Object, scope As String, data As Object, member As Long
+    Set present = CreateObject("Scripting.Dictionary"): scope = "|"
     For Each row In rows
+        Set data = row("Data"): member = 0
         If row("Action") <> "Skip" Then
             id = SaveDirectoryMember(CLng(row("MemberID")), CLng(row("Version")), CStr(row("Name")), CStr(row("ReportName")), CStr(row("Rank")), CStr(row("SSN")), CStr(row("SourceKind")), row("Values"), CStr(row("SourceXML")))
-            RUADApply = RUADApply + 1
+            RUADApply = RUADApply + 1: member = id
+        ElseIf Not row("Vacant") Then
+            'A skipped row for a known member still shows they are on the roster.
+            member = CLng(row("Suggested"))
         End If
+        If Len(Trim$(CStr(data("UIC")))) > 0 And InStr(scope, "|" & Trim$(CStr(data("UIC"))) & "|") = 0 Then scope = scope & Trim$(CStr(data("UIC"))) & "|"
+        If member > 0 And Not present.Exists(CStr(member)) Then present.Add CStr(member), Array(Trim$(CStr(data("UIC"))), Trim$(CStr(data("PRD"))), RUADRosterRank(data))
     Next
+    Call RecordRosterImport(CurrentDb, "NRRM", Mid$(sourcePath, InStrRev(sourcePath, "\") + 1), SourceFileHash(sourcePath), scope, rosterComplete, rows.Count, present)
     FinishOperation op, "Completed", RUADApply & " reviewed roster profiles applied atomically; reports and prior history unchanged."
     w.CommitTrans: started = False: prepared = False: Exit Function
 Failed:

@@ -174,6 +174,7 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
         Case "Contributors": names = Array("lstContributors", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
         Case "Notes": names = Array("lblReportNotes", "lstReportNotes", "cmdOpenReportNote", "cmdRefreshReportNotes")
         Case "Counseling": names = Array("lblCounselingScope", "chkCounselingAll", "lblCounselingAll", "lstCounseling", "cmdCounselingRecord", "cmdCounselingMember")
+        Case "Departures": names = Array("lblDeparturesScope", "chkDeparturesAll", "lblDeparturesAll", "lstDepartures", "lblDepartureEntry", "txtDepartureDate", "txtDepartureReason", "cmdDepartureConfirm", "cmdDepartureDismiss", "cmdDepartureMember")
         Case "Assign": names = Array("uxAssignReport", "uxAssignCaption", "lblAssignment", "lblReviewer", "cboReviewer", "lblDue", "txtDue", "lblNotes", "txtNotes", "cmdAssign")
         'Accept and return decisions (and their notes) are made inside the report.
         Case Else: names = Array("chkAll", "lblAll", "cmdRefresh", "lstWork", "uxWorkStatus", "cmdOpenWork", "txtHistory", "cmdDraft")
@@ -186,11 +187,13 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     End If
     f!uxWorkNotesTab.FontBold = (mode = "Notes")
     If UXHasControl(f, "uxWorkCounselingTab") Then f!uxWorkCounselingTab.FontBold = (mode = "Counseling")
+    If UXHasControl(f, "uxWorkDeparturesTab") Then f!uxWorkDeparturesTab.FontBold = (mode = "Departures")
     f!uxWorkTab0.FontBold = (mode = "Assignments"): f!uxWorkTab1.FontBold = (mode = "Assign"): f!uxWorkTab2.FontBold = (mode = "Contributors")
     UXResizeWorkspace f.Name
     UXMyWorkMode = True
     If mode = "Notes" Then UXMyWorkNotes
     If mode = "Counseling" Then UXMyWorkCounseling
+    If mode = "Departures" Then UXMyWorkDepartures
     If mode = "Assignments" Then Call UXLoadWorkQueue
 End Function
 Public Function UXChooseAssignmentReport() As Boolean

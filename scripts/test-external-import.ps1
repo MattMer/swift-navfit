@@ -22,4 +22,5 @@ Invoke-CaseScript 'test-malformed-imports' $caseArgs
 $caseArgs=@('-BuildPath',$BuildPath)
 if($SamplePath){$caseArgs+=@('-SamplePath',$SamplePath)}
 Invoke-CaseScript 'test-ruad-import' $caseArgs
+Invoke-CaseScript 'test-roster' @('-BuildPath',$BuildPath)
 Complete-SuiteRun 'external-import' $BuildPath $buildHash

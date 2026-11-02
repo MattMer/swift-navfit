@@ -43,4 +43,5 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 34 | captured | 0.45.0-dev | 68 | DirectoryMergeCounseling, MemberCounseling |
 | 35 | captured | 0.50.0 | 70 | DraftDisposal, ReportSignoff |
 | 36 | captured | 0.51.0 | 71 | DirectoryMergeSenior |
-| 37 | current build | 0.52.0-dev | 72 | RouteRunEvent |
+| 37 | captured | 0.52.0-dev | 72 | RouteRunEvent |
+| 38 | current build | 0.52.0-dev | 75 | MemberDeparture, RosterImport, RosterPresence |

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 37,
+  "SchemaVersion": 38,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -51,7 +51,10 @@
     "ReportSignoff",
     "DraftDisposal",
     "DirectoryMergeSenior",
-    "RouteRunEvent"
+    "RouteRunEvent",
+    "RosterImport",
+    "RosterPresence",
+    "MemberDeparture"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -271,7 +274,16 @@
     "ALTER TABLE ReviewTask ADD COLUMN FinishedRevisionID LONG",
     "CREATE TABLE RouteRunEvent (RouteEventID COUNTER PRIMARY KEY, RunID LONG NOT NULL, EventKind TEXT(20) NOT NULL, FromStep LONG, ToStep LONG, RevisionID LONG, AuthorProfileID LONG NOT NULL, EventAt DATETIME NOT NULL, Notes LONGTEXT)",
     "CREATE INDEX IX_RouteRunEvent_Run ON RouteRunEvent (RunID,EventAt)",
-    "ALTER TABLE RouteRunEvent ADD CONSTRAINT FK_RouteRunEvent_RunID FOREIGN KEY (RunID) REFERENCES RouteRun (RunID)"
+    "ALTER TABLE RouteRunEvent ADD CONSTRAINT FK_RouteRunEvent_RunID FOREIGN KEY (RunID) REFERENCES RouteRun (RunID)",
+    "CREATE TABLE RosterImport (RosterImportID COUNTER PRIMARY KEY, ImportGuid TEXT(38) NOT NULL, SourceFormat TEXT(10) NOT NULL, SourceHash TEXT(64), SourceName TEXT(255), AsOfDate DATETIME NOT NULL, ScopeUICs LONGTEXT, IsComplete BIT, RosterRows LONG, ImportedBy LONG NOT NULL, ImportedAt DATETIME NOT NULL)",
+    "CREATE UNIQUE INDEX UX_RosterImport_Guid ON RosterImport (ImportGuid)",
+    "CREATE TABLE RosterPresence (RosterImportID LONG NOT NULL, MemberID LONG NOT NULL, UIC TEXT(12), PRD TEXT(20), RosterRank TEXT(12), CONSTRAINT PK_RosterPresence PRIMARY KEY (RosterImportID,MemberID))",
+    "ALTER TABLE RosterPresence ADD CONSTRAINT FK_RosterPresence_RosterImportID FOREIGN KEY (RosterImportID) REFERENCES RosterImport (RosterImportID)",
+    "ALTER TABLE RosterPresence ADD CONSTRAINT FK_RosterPresence_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "CREATE TABLE MemberDeparture (DepartureID COUNTER PRIMARY KEY, MemberID LONG NOT NULL, Basis TEXT(20) NOT NULL, RosterImportID LONG, PRD DATETIME, ExpectedDate DATETIME, ConfirmedDate DATETIME, DepartureState TEXT(20) NOT NULL, Reason TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME NOT NULL, ResolvedBy LONG, ResolvedAt DATETIME, VersionCounter LONG NOT NULL)",
+    "CREATE INDEX IX_MemberDeparture_Member ON MemberDeparture (MemberID,DepartureState)",
+    "ALTER TABLE MemberDeparture ADD CONSTRAINT FK_MemberDeparture_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE MemberDeparture ADD CONSTRAINT FK_MemberDeparture_RosterImportID FOREIGN KEY (RosterImportID) REFERENCES RosterImport (RosterImportID)"
   ],
   "Queries": [
     {

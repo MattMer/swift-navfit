@@ -1289,6 +1289,34 @@ directory-management and work-review suites. Older tests that asserted
 stale-on-save were changed to the new rules. User guide chapters 12–13 rewritten;
 the PDF is not regenerated.
 
+## F02 roster snapshots and departures
+
+0.52.0-dev, schema 38 (2 November 2026), from the user's 1 November decision
+(departures from PRD and from absence on a newer roster; MNA later; no CFL).
+
+- **Snapshots.** Every RUAD Apply records a `RosterImport` (format, file name and
+  hash, import date as the as-of date, UIC scope, complete flag) and a
+  `RosterPresence` row per member on it, including rows skipped for a member
+  that matching identified.
+- **Matching.** **Match roster rows to members** (`RUADSuggest`) refreshes the one
+  active member whose stored roster name, or else display name, equals the row;
+  creates a profile when no member has the name; leaves shared names for an
+  explicit choice. Suggestions are not identity.
+- **Departures** (`modRoster`, `MemberDeparture`). A complete roster flags active
+  members present on the last earlier complete roster for the same UIC and
+  missing now ("Absent from roster"); a readable PRD within 90 days flags "PRD"
+  with the PRD as the expected date (updated if the PRD changes). A member back on
+  a complete roster has an open absence marked Returned. Nothing is archived.
+  **My Work > Departures** confirms (detachment date) or dismisses (reason).
+- **Rank from roster** (Codex W05). The preview shows a roster rate/rank that
+  differs from the profile; **Update the profile rank/rate from this roster**
+  changes it per row.
+- **Source checks.** `check-vba-source.ps1` now also rejects VBA keywords (Open,
+  Imp, Mod, Like and others) as variable or parameter names: two such names
+  compiled in the build and failed only when the module first ran.
+
+Tests: new `test-roster` (16 assertions) in the external-import suite.
+
 ## Superseded approaches and open concerns
 
 - The r126 local-PDF, r127 directory-merge and report-tools binary-template

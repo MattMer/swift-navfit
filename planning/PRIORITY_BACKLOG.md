@@ -18,78 +18,21 @@ to `AuditEvent`, and the user guide PDF is regenerated at release.
 
 ### F02 — Departure tracking and MNA roster import
 
-**Decision:** track departures in two ways: from the PRD, and when a member
-disappears from a newer roster. Keep the NRRM RUAD import, add MNA RUAD, and
-leave out CFL data.
+**NRRM part implemented in development** (0.52.0-dev, schema 38, 2 Nov 2026); see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f02-roster-snapshots-and-departures).
+Not yet released.
 
-**Roster snapshots.** Every roster import becomes a dated snapshot. It records:
-- the format (NRRM or MNA);
-- the file's SHA-256;
-- its as-of date (from the file if present, otherwise entered);
-- the UICs it covers;
-- whether the coordinator confirms it is a complete roster for those UICs.
-
-Only a complete roster can flag absences. A filtered or partial export never
-marks the rest of the command as departing.
-
-**Matching every row.** Today every row starts as Skip and the coordinator picks
-Create or Refresh per row. Instead, Swift suggests a match for every row, from
-the strongest identifier the format carries. The coordinator confirms or
-changes each suggestion.
-- **NRRM:** the roster name already stored on the member, plus rate. NRRM has no DoD ID or SSN.
-- **MNA:** a DoD ID, if its sample shows one.
-
-Matched rows refresh as now, which keeps the per-field review and preservation
-of manual values.
-
-**Two departure signals:**
-- **PRD.** The roster's PRD is stored per member, as now. A member whose PRD is
-  within the lead window (90 days by default, set in Settings) shows as
-  "Departure expected *date*".
-- **Absent from roster.** A member who was present in the last complete roster
-  for a UIC, and is missing from a newer complete roster for the same UIC, becomes
-  "Departure pending: confirm date". Nothing is archived or deleted
-  automatically.
-
-**Resolving a departure.** The coordinator chooses one of three outcomes:
-- **Confirm**, with the actual detachment date. The member stays active until the
-  coordinator archives them after their reports are done.
-- **Dismiss**, with a reason such as "still aboard, missing from that export".
-- **Returned**, when the member reappears in a later roster.
-
-Every choice is kept as history.
-
-**Rank from the roster** (Codex W05, replaces R14). When a refreshed roster's
-rate or rank differs from the profile's `RankRate`, the preview shows both. It
-offers "Update rank from roster" as a reviewed choice; manual corrections are
-kept. Due dates in F03 use the profile rank, so this matters.
-
-**MNA RUAD adapter.** `RUADLoad` detects the format from the header row:
-- **NRRM:** keeps its exact 35-column check.
-- **MNA:** gets its own exact header check, mapped to the same normalized facts:
-  name, rate or rank, paygrade, UIC, PRD and any identifier.
-
-Raw MNA columns are stored with a format tag beside today's NRRM values in
-`RUADData`. The profile page shows the columns for that member's format.
-
-The MNA column names are guessed only once a **sanitized MNA sample** exists
-(headers and two or three made-up rows). Until it arrives, build the snapshot,
-matching and departure parts on NRRM. Add a synthetic MNA fixture to the tests
-once the format is known.
-
-**Schema (additive):**
-- `RosterImport`: format, hash, as-of date, scope UICs, complete flag, who and when.
-- `RosterPresence`: each import's member matches.
-- `MemberDeparture`: member, basis (PRD or absent), detecting import, PRD, confirmed date, state, resolver, reason, version.
-
-**Acceptance:**
-- complete and partial rosters for one and for two UICs;
-- a member absent, then back;
-- a PRD inside and outside the window;
-- two members with the same name;
-- a rank change, with and without a manual correction;
-- the NRRM 35-column check unchanged;
-- the synthetic NRRM roster the import test already generates, extended for these cases.
+**Still open:**
+- **MNA RUAD adapter.** Needs a sanitized MNA sample (headers and two or three
+  made-up rows) before any column mapping is written. The snapshot, matching
+  and departure parts already take a source format, so the adapter only maps
+  MNA columns to name, rate/rank, UIC, PRD and any identifier, with an exact
+  header check of its own.
+- **Real PRD format.** No real NRRM sample is in the repository. PRD is read as
+  yyyy-mm-dd, mm/dd/yyyy, yyyymmdd, yyyy-mm, yyyymm, mm/yyyy or mmyy; confirm
+  against a real export.
+- **Member merges** leave roster presence and departures on the archived source
+  profile.
 
 ### F03 — Reports due on the dashboard
 
@@ -201,7 +144,7 @@ generates a synthetic NRRM roster when no sample file is given.)
 | ID | Work |
 | --- | --- |
 | M05 | **Names built at run time.** Literal form and control names are checked before every build. Names built at run time, such as `"uxNav" & i` or `"frmContext" & panel`, are checked only where a runtime view contract lists them. |
-| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. Each passed on retry. Capture diagnostics the next time one recurs. |
+| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. Each passed on retry. Capture diagnostics the next time one recurs. |
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 

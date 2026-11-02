@@ -202,7 +202,7 @@ Begin Form
                     Width =9400
                     Height =420
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =12
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtPath"
@@ -282,7 +282,7 @@ Begin Form
                     TabIndex =1
                     ForeColor =4205854
                     Name ="cmdNewProfiles"
-                    Caption ="Select new profiles for unmatched names"
+                    Caption ="Match roster rows to members"
                     OnClick ="=UXRUADImportNew()"
                     FontName ="Segoe UI"
 
@@ -310,6 +310,42 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
+                Begin CheckBox
+                    OverlapFlags =85
+                    Left =5800
+                    Top =2050
+                    Width =250
+                    Height =250
+                    TabIndex =2
+                    Name ="chkCompleteRoster"
+                    AfterUpdate ="=UXRUADImportScope()"
+
+                    LayoutCachedLeft =5800
+                    LayoutCachedTop =2050
+                    LayoutCachedWidth =6050
+                    LayoutCachedHeight =2300
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6180
+                            Top =1950
+                            Width =7200
+                            Height =500
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCompleteRoster"
+                            Caption ="This is the complete roster for its UICs (members missing from it are flagged as departing)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6180
+                            LayoutCachedTop =1950
+                            LayoutCachedWidth =13380
+                            LayoutCachedHeight =2450
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin ListBox
                     RowSourceTypeInt =1
                     OverlapFlags =215
@@ -321,7 +357,7 @@ Begin Form
                     Width =5400
                     Height =3150
                     FontSize =10
-                    TabIndex =2
+                    TabIndex =3
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstRows"
@@ -366,7 +402,7 @@ Begin Form
                     Width =2700
                     Height =420
                     FontSize =10
-                    TabIndex =3
+                    TabIndex =4
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboAction"
@@ -416,7 +452,7 @@ Begin Form
                     Width =3800
                     Height =420
                     FontSize =10
-                    TabIndex =4
+                    TabIndex =5
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboMatch"
@@ -461,7 +497,7 @@ Begin Form
                     Top =3450
                     Width =250
                     Height =250
-                    TabIndex =5
+                    TabIndex =6
                     Name ="chkReplaceManual"
                     AfterUpdate ="=UXRUADImportSelection()"
 
@@ -492,6 +528,42 @@ Begin Form
                         End
                     End
                 End
+                Begin CheckBox
+                    OverlapFlags =85
+                    Left =6100
+                    Top =3950
+                    Width =250
+                    Height =250
+                    TabIndex =7
+                    Name ="chkUpdateRank"
+                    AfterUpdate ="=UXRUADImportSelection()"
+
+                    LayoutCachedLeft =6100
+                    LayoutCachedTop =3950
+                    LayoutCachedWidth =6350
+                    LayoutCachedHeight =4200
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =6480
+                            Top =3900
+                            Width =6500
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblUpdateRank"
+                            Caption ="Update the profile rank/rate from this roster"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =6480
+                            LayoutCachedTop =3900
+                            LayoutCachedWidth =12980
+                            LayoutCachedHeight =4250
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin TextBox
                     Locked = NotDefault
                     EnterKeyBehavior = NotDefault
@@ -500,18 +572,18 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =6100
-                    Top =4100
+                    Top =4450
                     Width =6900
-                    Height =2300
+                    Height =1950
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =8
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDetails"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6100
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4450
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =6400
                     BackThemeColorIndex =-1
@@ -563,7 +635,7 @@ Begin Form
                     Width =3800
                     Height =500
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =9
                     ForeColor =4205854
                     Name ="cmdPreview"
                     Caption ="Preview selected changes"
@@ -603,7 +675,7 @@ Begin Form
                     Width =3800
                     Height =500
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =10
                     ForeColor =8746084
                     Name ="cmdApply"
                     Caption ="Apply reviewed changes"
@@ -642,7 +714,7 @@ Begin Form
                     Width =4400
                     Height =500
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =11
                     ForeColor =4205854
                     Name ="cmdClose"
                     Caption ="Close"
@@ -680,7 +752,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =11
+                    TabIndex =13
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"
@@ -827,7 +899,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =100
                     Height =100
-                    TabIndex =12
+                    TabIndex =14
                     Name ="uxSortActivateOriginal"
                     DefaultValue ="\"=UXVisualEvent(\"\"frmUXRUADImport\"\",\"\"\"\")\""
 
