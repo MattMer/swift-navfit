@@ -1,9 +1,9 @@
 Attribute VB_Name = "modRUADImport"
 Option Explicit
 Private rows As Collection, sourcePath As String, sourceText As String, previewStamp As String
-Private prepared As Boolean
+Private prepared As Boolean, previewOwner As Long
 Public Function RUADReset() As Boolean
-    Set rows = Nothing: sourcePath = "": sourceText = "": previewStamp = "": prepared = False
+    Set rows = Nothing: sourcePath = "": sourceText = "": previewStamp = "": prepared = False: previewOwner = 0
     RUADReset = True
 End Function
 Public Function RUADReadText(ByVal path As String) As String
@@ -47,7 +47,7 @@ Public Function RUADCSV(ByVal text As String) As Collection
 End Function
 Public Function RUADLoad(ByVal path As String) As Long
     Dim parsed As Collection, headers As Object, data As Object, row As Object, fields As Collection, key As Variant, i As Long, j As Long
-    prepared = False: Set rows = Nothing: previewStamp = ""
+    prepared = False: Set rows = Nothing: previewStamp = "": previewOwner = 0
     sourcePath = path: sourceText = RUADReadText(path)
     If Len(sourceText) > 5000000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoad", "Use a RUAD CSV smaller than 5 MB."
     Set parsed = RUADCSV(sourceText)
@@ -180,7 +180,7 @@ Public Function RUADPreview() As String
         End If
     Next
     If selected = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADPreview", "Choose at least one member to create or refresh."
-    previewStamp = RUADDirectoryStamp(): prepared = True
+    previewStamp = RUADDirectoryStamp(): previewOwner = ActiveContributorID(): prepared = True
     RUADPreview = selected & " selected changes; " & vacant & " vacant billets skipped; " & conflicts & " changed profile fields reviewed. View every selected row's full before/incoming/after values. No absent members are archived; reports and evaluation history are untouched."
 End Function
 Public Function RUADApply() As Long
@@ -188,6 +188,7 @@ Public Function RUADApply() As Long
     If Not prepared Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "Preview the current selections before Apply."
     If RUADReadText(sourcePath) <> sourceText Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The CSV changed. Choose it again."
     If RUADDirectoryStamp() <> previewStamp Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The directory changed. Preview again."
+    If previewOwner <> ActiveContributorID() Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "Preview the roster changes as the current contributor before Apply."
     On Error GoTo Failed
     Set w = DBEngine.Workspaces(0): w.BeginTrans: started = True
     If RUADDirectoryStamp() <> previewStamp Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The directory changed. Preview again."
@@ -207,5 +208,5 @@ Failed:
     If started Then SwiftRollback w, swiftPrimary
     prepared = False
     On Error GoTo 0
-    SwiftRaise swiftPrimary & " No partial roster batch was applied."
+    SwiftRaise swiftPrimary
 End Function

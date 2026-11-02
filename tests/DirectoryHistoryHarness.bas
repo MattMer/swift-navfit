@@ -12,6 +12,7 @@ Rejected:
     RejectMember = True
 End Function
 Public Function TestDirectoryHistory() As String
+    Dim twinA As Long, twinB As Long, twinReport As Long, twinCopy As Long
     Dim m As Long, other As Long, id As Long, unknown As Long, version As Long, rev As Long, prior As Long, tied As Long, marks As Object, key As Variant, block As Long, previous As Object, count As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC COMMAND DIRECTORY", "Directory tester"
@@ -72,10 +73,26 @@ Public Function TestDirectoryHistory() As String
     Set previous = CheckedPrevious(id)
     Check previous("ITA") = "Unavailable", "Missing start date selected history"
     CurrentDb.Execute "UPDATE Report SET PeriodStart=#2026-01-01# WHERE ReportID=" & id, dbFailOnError
-    ' A confirmed earlier Swift report stays eligible even when archived.
+    ' An archived Swift report is prior history only if it was ever marked signed;
+    ' an abandoned, never-signed draft is not.
     CurrentDb.Execute "UPDATE Report SET PeriodStart=#2025-01-01#,PeriodEnd=#2025-12-31 12:00:00#,IsArchived=True WHERE ReportID=" & unknown, dbFailOnError
     Set previous = CheckedPrevious(id)
-    Check Left$(previous("Source"), 18) = "Saved Swift report", "Archived Swift history eligibility changed"
+    Check previous("ITA") = "NOB", "Archived never-signed draft was used as the prior evaluation"
+    CurrentDb.Execute "UPDATE Report SET IsArchived=False WHERE ReportID=" & unknown, dbFailOnError
+    MarkReportSigned unknown, CurrentRevision(unknown), #1/15/2026#
+    CurrentDb.Execute "UPDATE Report SET IsArchived=True WHERE ReportID=" & unknown, dbFailOnError
+    Set previous = CheckedPrevious(id)
+    Check Left$(previous("Source"), 18) = "Saved Swift report", "Archived signed report was not eligible as prior history"
+    ' Duplicate keeps the original's member link; a same-name directory must not
+    ' gain a third profile through fresh name matching.
+    twinA = SaveDirectoryMember(0, 0, "Pat Lee", "LEE, PAT", "IT2", "")
+    twinB = SaveDirectoryMember(0, 0, "Pat Lee", "LEE, PAT", "IT2", "")
+    twinReport = CommitDraft(0, "EVAL", "Twin report", "Pat Lee", #1/1/2026#, #9/30/2026#, "", "Test", "", administration:=Array("LEE, PAT", "IT2", "", "", ""))
+    LinkReportDirectoryMember twinReport, twinB, CurrentRevision(twinReport), DLookup("VersionCounter", "CommandMember", "MemberID=" & twinB), "Selected the right Pat Lee"
+    count = DCount("*", "CommandMember")
+    twinCopy = DuplicateDraft(twinReport)
+    Check DLookup("MemberID", "MemberReport", "ReportID=" & twinCopy) = twinB And DLookup("MatchState", "MemberReport", "ReportID=" & twinCopy) = "Confirmed", "Duplicate lost the member link"
+    Check DCount("*", "CommandMember") = count, "Duplicate created another member profile"
     TestDirectoryHistory = "PASS: " & n & " directory/history identity and prior-trait assertions": Exit Function
 Failed:
     TestDirectoryHistory = "FAIL after " & n & ": " & Err.Number & " " & Err.Description

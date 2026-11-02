@@ -53,7 +53,7 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
             If StrComp(Nz(r!ReportType, ""), "Eval", vbBinaryCompare) = 0 Then kind = "EVAL"
             If StrComp(Nz(r!ReportType, ""), "Chief", vbBinaryCompare) = 0 Then kind = "CHIEFEVAL"
             If StrComp(Nz(r!ReportType, ""), "FitRep", vbBinaryCompare) = 0 Then kind = "FITREP"
-            !lstImportReports.AddItem CStr(r!ReportID) & ";" & kind & ";" & IIf(kind = "Unknown", "Quarantined", "Pending mapping review") & ";" & Replace(Replace(Replace(Nz(r!FullName, "Unnamed source member"), ";", ","), vbCr, " "), vbLf, " ")
+            !lstImportReports.AddItem CStr(r!ReportID) & ";" & kind & ";" & IIf(kind = "Unknown", "Quarantined", "Pending mapping review") & ";" & UXListCell(Nz(r!FullName, "Unnamed source member"))
             r.MoveNext
         Loop
         !txtFieldValue = "Select a report, then inspect its Comments field before creating a narrative draft."

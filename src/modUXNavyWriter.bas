@@ -13,7 +13,7 @@ Public Function UXLoadNavyWriter() As Boolean
     Forms!frmUXNavyWriter!lstCatalog.RowSourceType = "Value List": Forms!frmUXNavyWriter!lstCatalog.RowSource = ""
     For i = 0 To NavyWriterCount() - 1
         title = NavyWriterValue(i, 0): body = NavyWriterValue(i, 1)
-        If NavyWriterMatches(i, Nz(f!cboRate, "ALL"), term) Then f!lstCatalog.AddItem CStr(i) & ";" & Replace(NavyWriterValue(i, 3), "|", ", ") & ";" & NavyWriterValue(i, 4) & ";" & Replace(title, ";", ",")
+        If NavyWriterMatches(i, Nz(f!cboRate, "ALL"), term) Then f!lstCatalog.AddItem CStr(i) & ";" & UXListCell(Replace(NavyWriterValue(i, 3), "|", ", ")) & ";" & UXListCell(NavyWriterValue(i, 4)) & ";" & UXListCell(title)
     Next
     f!lblStatus.Caption = f!lstCatalog.ListCount & " entries. Select an excerpt to adapt and add, or a collection to open its full source."
     UXLoadNavyWriter = True

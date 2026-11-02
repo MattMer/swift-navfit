@@ -28,6 +28,11 @@ Private bulkDefaultResets As Object
 Public Const UX_EDITOR_VIEW As String = "frmEditor"
 Public Const UX_MEMBERS_VIEW As String = "frmUXComparison"
 Public Const UX_TRAIT_ROWS_VIEW As String = "frmUXTraitRows"
+' One quoted value-list cell. Access splits an unquoted cell at commas as well
+' as semicolons, so quoting keeps names and titles in their own column.
+Public Function UXListCell(ByVal value As Variant) As String
+    UXListCell = """" & Replace(Replace(Replace(Nz(value, ""), """", """"""), vbCr, " "), vbLf, " ") & """"
+End Function
 Public Function UXViewContracts(ByVal view As String) As Variant
     Select Case view
         Case UX_EDITOR_VIEW: UXViewContracts = Array("cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface", "uxRecoverySession", "uxRecoveryRevision", "uxReturnGroup")

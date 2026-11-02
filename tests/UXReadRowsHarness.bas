@@ -24,6 +24,20 @@ Private Sub CompareReports()
     Check DCount("*", "ReportRevision") = before, "Reading created revisions"
     Check DCount("*", "GroupSnapshot") + DCount("*", "ComparisonSet") = snapshots, "Reading created historical snapshots"
 End Sub
+' Quoted value-list cells keep commas, semicolons and quotes in their own column,
+' as the NAVFIT group picker, report picker and NavyWriter list rely on.
+Private Sub CheckListCells()
+    Dim l As Access.ListBox, title As String
+    title = "Alpha, Bravo; ""Charlie"" Group"
+    DoCmd.OpenForm "frmUXNativeGroups", , , , , acHidden: Set l = Forms!frmUXNativeGroups!lstGroups
+    l.RowSourceType = "Value List": l.RowSource = ""
+    l.AddItem "7;" & UXListCell(title) & ";" & UXListCell("EVAL") & ";" & UXListCell("E6") & ";3"
+    l.AddItem "8;" & UXListCell("SMITH, JOHN Q") & ";" & UXListCell("FITREP") & ";" & UXListCell("O3") & ";12"
+    Check l.ListCount = 2, "Quoted cells changed the row count"
+    Check l.Column(1, 0) = title And l.Column(2, 0) = "EVAL" And l.Column(3, 0) = "E6" And l.Column(4, 0) = "3", "Punctuation shifted list columns"
+    Check l.Column(0, 1) = "8" And l.Column(1, 1) = "SMITH, JOHN Q" And l.Column(4, 1) = "12", "Comma name shifted list columns"
+    DoCmd.Close acForm, "frmUXNativeGroups", acSaveNo
+End Sub
 Private Function RejectDivergedMember(ByVal groupID As Long, ByVal reportID As Long) As Boolean
     On Error GoTo Rejected
     AddGroupMember groupID, reportID, "E5"
@@ -36,6 +50,7 @@ Public Function TestUXReadRows() As String
     Dim changes As Object, key As Variant, revision As Long, f As Access.Form, preset As Variant, col As Long, rows As Long, signed As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC READ ROWS", "Reader"
+    CheckListCells
     p = MajorAuthor()
     id = CommitDraft(0, "EVAL", "Z title", "ZULU, MEMBER", #1/1/2026#, #9/30/2026#, "")
     other = CommitDraft(0, "EVAL", "A title", "ALPHA, MEMBER", Null, Null, "")

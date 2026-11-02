@@ -30,9 +30,6 @@ Public Function PDFOutputLoad() As Boolean
     End With
     PDFOutputLoad = PDFOutputRefreshPreview()
 End Function
-Private Function ListCell(ByVal text As String) As String
-    ListCell = """" & Replace(Replace(Replace(text, """", """"""), vbCr, " "), vbLf, " ") & """"
-End Function
 Public Function PDFOutputRefreshPreview() As Boolean
     Dim current As Object, row As Object, text As String, i As Long
     On Error GoTo Failed
@@ -40,7 +37,7 @@ Public Function PDFOutputRefreshPreview() As Boolean
     Set current = PDFOutputJob()
     For Each row In current("Reports")
         If text <> "" Then text = text & ";"
-        text = text & row("ID") & ";" & ListCell(row("Caption")) & ";" & ListCell(row("Kind")) & ";" & ListCell(row("Source")) & ";" & ListCell(PDFOutputFileName(current("Title"), row))
+        text = text & row("ID") & ";" & UXListCell(row("Caption")) & ";" & UXListCell(row("Kind")) & ";" & UXListCell(row("Source")) & ";" & UXListCell(PDFOutputFileName(current("Title"), row))
     Next
     With Forms!frmPDFOutput
         !lstReports.RowSource = text

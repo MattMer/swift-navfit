@@ -156,7 +156,7 @@ once the format is known.
 - two members with the same name;
 - a rank change, with and without a manual correction;
 - the NRRM 35-column check unchanged;
-- a synthetic NRRM fixture generated in the test, so it runs every build (closes T01).
+- the synthetic NRRM roster the import test already generates, extended for these cases.
 
 ### F03 — Reports due on the dashboard
 
@@ -221,18 +221,13 @@ departure dates. F01 is independent and can go in parallel.
 ## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
 
 An outside review on synthetic copies. Causes were confirmed in source during
-triage. R01–R03 were fixed on 1 Nov 2026 (see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r03));
+triage. R01–R08 were fixed on 1 Nov 2026 (see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r08));
 the rest are open. Review IDs are in brackets. Each fix needs a
 native test that fails before the fix.
 
 | ID | Priority | Work |
 | --- | --- | --- |
-| R04 | Medium | **An archived, never-signed draft can be the "prior evaluation"** [W03]. The Swift-report branch of `PreviousMemberEvaluation` (`modMemberHistory`), and its batched twin, don't filter archived reports. Imported prior PDFs legitimately sit in Draft, so "Signed only" would be wrong. Exclude archived reports that were never signed, and show the source state in the tooltip. |
-| R05 | Medium | **RUAD import failure reports error 450 instead of the real error** [D02, T02]. `RUADApply` passes `swiftPrimary & " No partial..."` to `SwiftRaise`, which expects the context object. Pass the object, and assert the primary error number in `RUADImportHarness`. |
-| R06 | Medium | **RUAD preview isn't tied to the contributor who reviewed it** [D03]. Use the `previewOwner` check from `modDirectoryBatch`. Do this before F02 reworks the importer. |
-| R07 | Medium | **Duplicate loses the member link** [D08]. `DuplicateDraft` (`modSwift`) doesn't carry the `MemberReport` link, so name matching can create a third profile for two members with the same name. Copy the link and its match state. |
-| R08 | Medium | **Commas in list rows shift columns** [D09]. Value-list cells aren't quoted, and Access splits at commas. Three places are affected: the NAVFIT group picker (`modUXNativeGroups`), the NAVFIT report picker (`modImportReview`; check "LAST, FIRST" names first) and NavyWriter (`modUXNavyWriter`), which joins multiple rates with ", " itself. Quote and escape each cell with one shared helper. |
 | R09 | Medium | **A Concurrent-only report hides a counseling suggestion** [D07]. `CounselingMatch` (`modCounseling`) skips a session already entered on any other report, including a Concurrent-only one. `CounselingSuggestion` then offers NOT REQ with "No counseling is recorded". Ignore Concurrent-only reports when matching, and never turn a session that is already in use into NOT REQ. |
 | R10 | Medium | **Signing succeeds, but the dialog reports failure when draft disposal fails** [D06]. `UXSignoffSave` commits the signoff before the optional disposal. Report the two outcomes separately and offer to retry the disposal alone. |
 | R11 | Medium | **Backup ignores unsaved Members-grid cells** [G06]. Warn about pending cells before backing up, or refuse until they are saved or discarded. |
@@ -240,8 +235,8 @@ native test that fails before the fix.
 | R13 | Medium | **My Work reads all review history to show active work** [O01]. Preparing one active item took 5.5 ms with no history and 287 ms with 10,000 old tasks and routes. Limit the active view to candidate rows. Pair this with F01, which changes the same readers. |
 | R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], to retire or replace a review route template [G09], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. |
 
-(R14, rank from the roster, moved into F02. T01, the RUAD test needing a sample
-file, is covered by F02's synthetic fixture.)
+(R14, rank from the roster, moved into F02. T01 is done: the RUAD import test
+generates a synthetic NRRM roster when no sample file is given.)
 
 **Small features from the review:**
 - **P01, search:** search that ignores name order and punctuation, a period from/to filter, and saved named filter sets.

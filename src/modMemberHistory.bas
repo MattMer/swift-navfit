@@ -93,8 +93,10 @@ Public Function PreviousMemberEvaluation(ByVal reportID As Long) As Object
     member = MajorScalar("SELECT MemberID FROM MemberReport WHERE ReportID=" & reportID & " AND MatchState='Confirmed'")
     start = MajorScalar("SELECT PeriodStart FROM Report WHERE ReportID=" & reportID)
     If IsNull(member) Or IsNull(start) Then result("Source") = "Confirm member identity and report start date to select prior history": Set PreviousMemberEvaluation = result: Exit Function
+    'An archived Swift report counts only if it was ever marked signed: an
+    'abandoned draft is not an earlier evaluation.
     sql = "SELECT 'External' AS SourceKind,PriorID AS SourceID,PeriodStart,PeriodEnd,PromotionRecommendation FROM PriorEvaluation WHERE MemberID=" & CLng(member) & " AND IsArchived=False AND PeriodEnd<" & SQLDate(start)
-    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & CLng(member) & " AND m.MatchState='Confirmed' AND r.ReportID<>" & reportID & " AND r.PeriodEnd<" & SQLDate(start) & " ORDER BY PeriodEnd DESC"
+    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE (r.IsArchived=False OR r.ReportID In (SELECT ReportID FROM ReportSignoff)) AND m.MemberID=" & CLng(member) & " AND m.MatchState='Confirmed' AND r.ReportID<>" & reportID & " AND r.PeriodEnd<" & SQLDate(start) & " ORDER BY PeriodEnd DESC"
     Set r = CurrentDb.OpenRecordset(sql, dbOpenSnapshot)
     If Not r.EOF Then
         source = r!SourceKind: recordID = r!SourceID: ending = r!PeriodEnd
@@ -129,7 +131,7 @@ Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Obje
     memberSQL = "SELECT MemberID FROM MemberReport WHERE MatchState='Confirmed' AND ReportID In (" & reportSQL & ")"
     'Swift candidates carry what UXTableITA reads: observation status and head revision.
     sql = "SELECT 'External' AS SourceKind,PriorID AS SourceID,MemberID,PeriodStart,PeriodEnd,PromotionRecommendation,SourceNote AS SourceDetail,Null AS Observation,0 AS HeadRevision FROM PriorEvaluation WHERE IsArchived=False AND MemberID In (" & memberSQL & ")"
-    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,m.MemberID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,r.WorkflowState,r.ObservationStatus,Nz(h.RevisionID,0) FROM (Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID) LEFT JOIN ReportHead AS h ON r.ReportID=h.ReportID WHERE m.MatchState='Confirmed' AND m.MemberID In (" & memberSQL & ") ORDER BY PeriodEnd DESC"
+    sql = sql & " UNION ALL SELECT 'Swift',r.ReportID,m.MemberID,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,r.WorkflowState,r.ObservationStatus,Nz(h.RevisionID,0) FROM (Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID) LEFT JOIN ReportHead AS h ON r.ReportID=h.ReportID WHERE (r.IsArchived=False OR r.ReportID In (SELECT ReportID FROM ReportSignoff)) AND m.MatchState='Confirmed' AND m.MemberID In (" & memberSQL & ") ORDER BY PeriodEnd DESC"
     Set r = db.OpenRecordset(sql, dbOpenSnapshot)
     Do While Not r.EOF
         token = CStr(r!MemberID)

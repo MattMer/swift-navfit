@@ -22,9 +22,17 @@ Private Function TryApply() As Boolean
     result = RUADApply(): TryApply = True
 Rejected:
 End Function
+Private Function ApplyFailure() As String
+    On Error GoTo Rejected
+    Dim result As Long
+    result = RUADApply(): Exit Function
+Rejected:
+    ApplyFailure = Err.Number & " " & Err.Description
+End Function
 Public Function TestRUADImport(ByVal sample As String) As String
     Dim i As Long, vacant As Long, selected As Long, count As Long, id As Long, initial As Long, version As Long, second As Long
     Dim row As Object, data As Object, values As Object, doc As Object, db As DAO.Database, r As DAO.Recordset, key As Variant, text As String, summary As String, path As String, failure As String, testSSN As String, stamp As String, f As Access.Form
+    Dim owner As Long, reviewer As Long, failed As String
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC RUAD TEST", "Roster tester": Set db = CurrentDb
     initial = DCount("*", "CommandMember")
@@ -68,6 +76,13 @@ Public Function TestRUADImport(ByVal sample As String) As String
     Check RUADApply() = 1, "Explicit conflict override"
     Set values = RUADDecode(DLookup("RUADData", "CommandMember", "MemberID=" & id))
     Check values("PHONE") = "Incoming contact", "Override applied"
+    ' A preview applies only for the contributor who reviewed it.
+    RUADChoose 1, "Refresh existing", id: summary = RUADPreview()
+    owner = ActiveContributorID(): reviewer = AddContributor("Second roster tester")
+    Check SwitchContributor(reviewer), "Switch to second contributor"
+    Check InStr(ApplyFailure(), "as the current contributor") > 0, "Another contributor applied the preview"
+    Check SwitchContributor(owner), "Switch back to reviewing contributor"
+    Check Len(ApplyFailure()) > 0, "Refused preview stayed actionable"
     RUADChoose 1, "Refresh existing", id: summary = RUADPreview()
     version = DLookup("VersionCounter", "CommandMember", "MemberID=" & id)
     stamp = RUADDirectoryStamp()
@@ -81,7 +96,9 @@ Public Function TestRUADImport(ByVal sample As String) As String
     RUADChoose 2, "Create new", 0
     db.TableDefs("CommandMember").Fields("FullName").ValidationRule = "<> 'Synthetic late invalid'"
     summary = RUADPreview(): version = DLookup("VersionCounter", "CommandMember", "MemberID=" & id): count = DCount("*", "CommandMember")
-    Check Not TryApply(), "Late save rejected"
+    ' The caller sees the primary DAO validation failure, not a secondary error.
+    failed = ApplyFailure()
+    Check Left$(failed, 5) = "3317 ", "Late save lost its primary error: " & failed
     Check DLookup("VersionCounter", "CommandMember", "MemberID=" & id) = version And DCount("*", "CommandMember") = count, "Whole batch rolled back"
     db.TableDefs("CommandMember").Fields("FullName").ValidationRule = ""
     RUADChoose 2, "Skip", 0: summary = RUADPreview(): WriteCSV path, text & vbCrLf

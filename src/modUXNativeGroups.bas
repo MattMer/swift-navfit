@@ -48,7 +48,7 @@ Public Function UXLoadNativeGroups() As Boolean
     f!lstGroups.RowSourceType = "Value List": f!lstGroups.RowSource = ""
     For Each key In choices.Keys
         Set item = choices(key)
-        f!lstGroups.AddItem key & ";" & Replace(item("Title"), ";", ",") & ";" & item("Kind") & ";" & item("Paygrade") & ";" & item("Count")
+        f!lstGroups.AddItem key & ";" & UXListCell(item("Title")) & ";" & UXListCell(item("Kind")) & ";" & UXListCell(item("Paygrade")) & ";" & item("Count")
     Next
     f!lblStatus.Caption = ReviewUpgradeMessage() & "Choose groups, then Preview. A ? paygrade means the source rank/rate is missing: select those groups and assign a compatible paygrade below. Empty folders contain no reports to import."
     If choices.Count = 0 Then f!lblStatus.Caption = "This database contains no populated report groups. Empty folders have no reports to import."

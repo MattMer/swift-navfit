@@ -332,11 +332,23 @@ End Function
 Public Function DuplicateDraft(ByVal reportID As Long) As Long
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
-    Dim r As DAO.Recordset
+    Dim r As DAO.Recordset, link As DAO.Recordset, failure As Long, source As String, message As String
     Set r = ownedDB.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 116, "modSwift.DuplicateDraft", "Report does not exist."
+    'The copy is the same Sailor: keep the original's member link and its trust
+    'state instead of matching the name again.
+    Set link = ownedDB.OpenRecordset("SELECT m.MemberID,m.MatchState FROM MemberReport AS m INNER JOIN CommandMember AS c ON m.MemberID=c.MemberID WHERE c.IsArchived=False AND m.ReportID=" & reportID, dbOpenSnapshot)
+    If Not link.EOF Then DirectoryCreationContext link!MemberID, Nz(link!MatchState, "Provisional"), "Duplicated report"
+    link.Close
+    On Error GoTo Failed
     DuplicateDraft = CommitDraft(0, r!FormKind, Left$("Copy of " & Nz(r!Title, ""), 160), Nz(r!MemberName, ""), r!PeriodStart, r!PeriodEnd, Nz(r!DraftNotes, ""), "Duplicate report " & reportID, r!OfficialComments, Array(r!OfficialName.Value, r!RankRate.Value, r!Designator.Value, r!UnitUIC.Value, r!ShipStation.Value), Array(r!Trait33.Value, r!Trait34.Value, r!Trait35.Value, r!Trait36.Value, r!Trait37.Value, r!Trait38.Value, r!Trait39.Value), Array(r!ObservationStatus.Value, r!PromotionRecommendation.Value), r!PromotionStatus.Value, Array(r!ReportingSeniorName.Value, r!ReportingSeniorGrade.Value, r!ReportingSeniorDesignator.Value, r!ReportingSeniorTitle.Value, r!ReportingSeniorUIC.Value), ReportContextFromRecordset(r), MemberDetailsFromRecordset(r), ServiceDetailsFromRecordset(r), DecisionDetailsFromRecordset(r), ReportPeopleFromRecordset(r), PartyNamesFromRecordset(r), StoredBlock28(reportID), SavedFields(reportID))
+    DirectoryCreationContext 0
     r.Close
+    Exit Function
+Failed:
+    failure = Err.Number: source = Err.Source: message = Err.Description
+    DirectoryCreationContext 0
+    Err.Raise failure, source, message
 End Function
 
 Public Function Startup() As Boolean

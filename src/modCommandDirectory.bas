@@ -1,7 +1,7 @@
 Attribute VB_Name = "modCommandDirectory"
 Option Compare Binary
 Option Explicit
-Private creationMember As Long
+Private creationMember As Long, creationState As String, creationSource As String
 Private Function DirectorySSN(ByVal value As Variant) As String
     Dim s As String, i As Long
     s = Trim$(Nz(value, ""))
@@ -123,7 +123,7 @@ Public Function SyncReportDirectory(ByVal reportID As Long) As Long
     ssn = DirectorySSN(report!MemberSSN)
     Set link = ownedDB.OpenRecordset("SELECT * FROM MemberReport WHERE ReportID=" & reportID, dbOpenDynaset)
     If creationMember > 0 Then
-        id = creationMember: state = "Confirmed": source = "Manual selection"
+        id = creationMember: state = creationState: source = creationSource
     ElseIf Not link.EOF Then
         id = link!MemberID: state = link!MatchState: source = link!MatchSource
         Set member = ownedDB.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & id, dbOpenSnapshot)
@@ -233,6 +233,6 @@ Failed:
     SwiftRollback w, swiftPrimary: If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0: SwiftRaise swiftPrimary
 End Sub
-Public Sub DirectoryCreationContext(ByVal memberID As Long)
-    creationMember = memberID
+Public Sub DirectoryCreationContext(ByVal memberID As Long, Optional ByVal state As String = "Confirmed", Optional ByVal source As String = "Manual selection")
+    creationMember = memberID: creationState = state: creationSource = source
 End Sub

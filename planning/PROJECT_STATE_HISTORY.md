@@ -1150,7 +1150,7 @@ Existing C04 and legacy feature-layout gaps above remain separate from these
 checks. No release, publication, physical/accessibility or printed acceptance is
 claimed.
 
-## Codex review fixes R01–R03
+## Codex review fixes R01–R08
 
 Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
 [backlog](PRIORITY_BACKLOG.md)):
@@ -1173,10 +1173,29 @@ Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
   backup and any verification file this call created. `test-recovery` injects
   the journal failure and checks the kept file against its receipt hash.
 
-Verified on build `Swift_NAVFIT_0.51.0_20261101-195039_c961a8ad`: BuildAndTest
+- **R04, prior evaluation.** An archived Swift report counts as prior history
+  only if it was ever marked signed; an abandoned draft no longer supplies the
+  prior ITA. Both `PreviousMemberEvaluation` and its batched twin apply the rule.
+- **R05, RUAD failure diagnostics.** `RUADApply` raises the primary failure
+  (for example DAO 3317) instead of error 450.
+- **R06, RUAD preview owner.** A roster preview applies only for the contributor
+  who made it; after a contributor switch Apply asks for a new preview.
+- **R07, Duplicate.** A copy keeps the original's member link and match state
+  (`DirectoryCreationContext` now carries both), so two members with the same
+  name no longer produce a third profile.
+- **R08, list punctuation.** The shared `UXListCell` quotes value-list cells, so
+  commas, semicolons and quotes stay in their column in the NAVFIT group and
+  report pickers and the NavyWriter list. The PDF output list uses it too.
+- **T01.** `test-ruad-import` generates a synthetic 35-column NRRM roster when no
+  `-SamplePath` is given, so it runs in every external-import suite run.
+
+R01–R03 verified on build `Swift_NAVFIT_0.51.0_20261101-195039_c961a8ad`: BuildAndTest
 PASS, plus recovery, summary-groups, workspace-read-performance,
 workspace-resources and reporting-senior-accounting suites, and the extended
-report-review-history and work-review suites.
+report-review-history and work-review suites. R04–R08 verified on build
+`Swift_NAVFIT_0.51.0_20261101-201607_44f81547`: BuildAndTest PASS, plus the
+directory-management, external-import, workspace-read-performance,
+summary-groups, report-field-persistence, member-profiles and narratives suites.
 
 ## Superseded approaches and open concerns
 

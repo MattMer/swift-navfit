@@ -18,9 +18,8 @@ if($PSBoundParameters.ContainsKey('SkipPDF')){if($SkipPDF){$caseArgs+='-SkipPDF'
 Invoke-CaseScript 'test-ux-import-flow' $caseArgs
 $caseArgs=@('-BuildPath',$BuildPath)
 Invoke-CaseScript 'test-malformed-imports' $caseArgs
-if($SamplePath){
+#Without -SamplePath the case generates a synthetic NRRM roster.
 $caseArgs=@('-BuildPath',$BuildPath)
-if($PSBoundParameters.ContainsKey('SamplePath')){$caseArgs+=@('-SamplePath',$SamplePath)}
+if($SamplePath){$caseArgs+=@('-SamplePath',$SamplePath)}
 Invoke-CaseScript 'test-ruad-import' $caseArgs
-}else{Write-Output 'SKIP: test-ruad-import needs -SamplePath'}
 Complete-SuiteRun 'external-import' $BuildPath $buildHash
