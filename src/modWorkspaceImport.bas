@@ -137,6 +137,10 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  Set r = source.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot): version = r!SchemaVersion: r.Close: Set r = Nothing
  If version < 1 Or version > SCHEMA_VERSION Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This source version is not supported by the current app. No data was changed."
  text = "Source: " & path & vbCrLf & "Schema " & version & " -> " & SCHEMA_VERSION & vbCrLf & vbCrLf
+ stage = "Check backup receipt"
+ Dim receipt As String
+ receipt = BackupReceiptCheck(path, SourceFileHash(path))
+ If Len(receipt) > 0 Then text = text & receipt & vbCrLf & vbCrLf
  For Each table In source.TableDefs
   If Left$(table.Name, 4) <> "MSys" And table.Name <> "AppMetadata" Then
    stage = "Count preview table " & table.Name
@@ -177,6 +181,7 @@ Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As Str
  If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Cannot import this file into itself."
  WorkspaceImportProgress "Checking source fingerprint and destination..."
  If SourceFileHash(path) <> hash Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Source changed. Choose and preview it again."
+ Call BackupReceiptCheck(path, hash)
  result = MigrateWorkspace(path, importing, True, hash)
  If Left$(result, 5) <> "PASS:" Then
   Set cause = SwiftLastFailureContext()

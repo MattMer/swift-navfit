@@ -33,7 +33,7 @@ Components Swift NAVFIT 0.51.0 uses at run time, from a fresh build and the VBA 
 
 | Class | Uses | Purpose |
 | --- | --- | --- |
-| ADODB.Stream | 6 | UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template) |
+| ADODB.Stream | 7 | UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template) |
 | MSXML2.DOMDocument.6.0 | 12 | XML parsing and writing (PDF form data and exchange) |
 | Scripting.Dictionary | 141 | In-memory keyed collections |
 | Scripting.FileSystemObject | 7 | File and folder checks |

@@ -188,6 +188,24 @@ Public Function TestSignoff() As String
     If Not UXSignoffSave(True) Then Check False, "Group dialog save failed: " & Forms!frmUXSignoff!lblStatus.Caption
     Check ReportIsSigned(r1) And ReportIsSigned(r2) And GroupWorkflow(g) = "In-Work", "Group dialog did not sign reports, or changed the group status"
 
+    stage = "disposal failure after signing"
+    ' Signing commits first; a failed optional disposal is reported on its own and
+    ' can be retried through Dispose of drafts.
+    Dim partial As Long
+    partial = CommitDraft(0, "EVAL", "Disposal failure", "SYNTHETIC, DISPOSAL", #1/1/2026#, #9/30/2026#, "")
+    Call Revise(partial, "Second saved revision")
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then DoCmd.Close acForm, "frmEditor", acSaveNo
+    Check UXSignoffOpen(partial), "Mark signed dialog did not open for the disposal case"
+    CurrentDb.TableDefs("DraftDisposal").Fields("RevisionsCleared").ValidationRule = "<0"
+    Forms!frmUXSignoff!txtSignedOn = #10/9/2026#: Forms!frmUXSignoff!chkDispose = True
+    Check UXSignoffSave(True), "Signing reported failure although it committed"
+    CurrentDb.TableDefs("DraftDisposal").Fields("RevisionsCleared").ValidationRule = ""
+    Check ReportIsSigned(partial) And DCount("*", "DraftDisposal", "ReportID=" & partial) = 0, "Signing or disposal outcome wrong"
+    Check CurrentProject.AllForms("frmUXSignoff").IsLoaded, "Dialog closed and hid the disposal failure"
+    Check InStr(Forms!frmUXSignoff!lblStatus.Caption, "Marked signed. Disposing of drafts failed") = 1 And Not Forms!frmUXSignoff!cmdSave.Enabled, "Disposal failure message or retry guard wrong: " & Forms!frmUXSignoff!lblStatus.Caption
+    DoCmd.Close acForm, "frmUXSignoff"
+    Check UXDisposeDrafts(partial, True) And DCount("*", "DraftDisposal", "ReportID=" & partial) = 1, "Disposal retry failed"
+
     stage = "reports list"
     DoCmd.OpenForm "frmLibrary"
     Forms!frmLibrary!uxStatusFilter = "Signed": RefreshLibrary

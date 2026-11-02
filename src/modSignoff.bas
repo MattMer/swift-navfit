@@ -209,13 +209,27 @@ Public Function UXSignoffSave(Optional ByVal confirmedDisposal As Boolean = Fals
         UXSignoffSave = UXSignoffSaveGroup(CDate(f!txtSignedOn), dispose): Exit Function
     End If
     Call MarkReportSigned(signoffReport, signoffRevision, CDate(f!txtSignedOn))
-    If dispose Then Call DisposeReportDrafts(signoffReport)
+    'Signing is committed. Optional disposal is its own transaction, so its failure
+    'is reported separately and Save is not offered again.
+    If dispose Then
+        On Error GoTo DisposalFailed
+        Call DisposeReportDrafts(signoffReport)
+        On Error GoTo Failed
+    End If
     DoCmd.Close acForm, f.Name
+    UXSignoffRefresh signoffReport
+    UXSignoffSave = True: Exit Function
+DisposalFailed:
+    UXSignoffDisposalFailed f, 1, Err.Description
     UXSignoffRefresh signoffReport
     UXSignoffSave = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
 End Function
+Private Sub UXSignoffDisposalFailed(ByVal f As Access.Form, ByVal failed As Long, ByVal message As String)
+    f!lblStatus.Caption = "Marked signed. Disposing of drafts failed for " & failed & IIf(failed = 1, " report", " reports") & ", so nothing was disposed there: " & message & " Use Dispose of drafts to try again."
+    f!cmdCancel.SetFocus: f!cmdSave.Enabled = False: f!chkDispose.Enabled = False
+End Sub
 Private Function UXSignoffSaveGroup(ByVal signedOn As Date, ByVal dispose As Boolean) As Boolean
     Dim r As DAO.Recordset, before As String, marked As Long, id As Variant, ids As New Collection
     Set r = CurrentDb.OpenRecordset("SELECT r.ReportID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & signoffGroup & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved')", dbOpenSnapshot)
@@ -226,10 +240,20 @@ Private Function UXSignoffSaveGroup(ByVal signedOn As Date, ByVal dispose As Boo
     Else
         marked = MarkGroupReportsSigned(signoffGroup, signedOn)
     End If
+    Dim failed As Long, message As String
     If dispose Then
-        For Each id In ids: Call DisposeReportDrafts(CLng(id)): Next
+        On Error Resume Next
+        For Each id In ids
+            Err.Clear: Call DisposeReportDrafts(CLng(id))
+            If Err.Number <> 0 Then failed = failed + 1: message = Err.Description
+        Next
+        On Error GoTo 0
     End If
-    DoCmd.Close acForm, "frmUXSignoff"
+    If failed > 0 Then
+        UXSignoffDisposalFailed Forms!frmUXSignoff, failed, message
+    Else
+        DoCmd.Close acForm, "frmUXSignoff"
+    End If
     If CurrentProject.AllForms("frmUXGroups").IsLoaded Then UXGroupList
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then UXGridLoad
     UXSignoffSaveGroup = True

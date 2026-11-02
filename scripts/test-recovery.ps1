@@ -122,6 +122,19 @@ try {
   $r=$db.OpenRecordset('SELECT CommandName FROM Workspace',4);try{AssertBackup ($r.Fields.Item(0).Value -ceq 'SYNTHETIC BACKUP') 'Restore did not bring the backed-up workspace setup'}finally{$r.Close()}
  }finally{$db.Close()}
  $results.Add('Restore through Settings & Help import: raw date, all 21 Chief comments and saved report retained')
+ #A backup changed after verification is refused while its receipt sits beside it.
+ $changed=Join-Path $folder 'changed-backup.accdb';$changedTarget=Join-Path $folder 'changed-restore.accdb'
+ Copy-Item -LiteralPath $backup -Destination $changed;Copy-Item -LiteralPath ($backup+'.verification.json') -Destination ($changed+'.verification.json')
+ $db=$engine.OpenDatabase($changed);try{$db.Execute('DELETE FROM RevisionChange')}finally{$db.Close()}
+ Copy-Item -LiteralPath $BuildPath -Destination $changedTarget
+ $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($changedTarget,$true)
+ $app.LoadFromText(5,'WorkspaceImportHarness',(Join-Path $root 'tests/WorkspaceImportHarness.bas'))
+ [void]$app.Eval('ConfigureWorkspace("SYNTHETIC CHANGED RESTORE","Tester")')
+ $outcome=$app.Eval('TryWorkspaceImport('+(Quote $changed)+')')
+ $reports=[int]$app.Eval('DCount("*","Report")')
+ $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
+ AssertBackup ($outcome -like 'REJECTED:*changed after it was verified*' -and $reports -eq 0) ('Changed backup was restored: '+$outcome)
+ $results.Add('A backup changed after verification is refused while its receipt is present')
  if($CompiledPath){
   $compiled=Join-Path $folder 'compiled.accde';$compiledBackup=Join-Path $folder 'compiled-backup.accdb'
   Copy-Item -LiteralPath $CompiledPath -Destination $compiled

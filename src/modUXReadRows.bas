@@ -71,19 +71,20 @@ Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
     Dim id As Long, assignee As Long, visible As Boolean, current As Boolean
     Set db = CurrentDb: Set rows = ReadMap(): Set steps = ReadMap(): Set threads = ReadMap()
     Set stamps = ReadMap()
-    Set r = db.OpenRecordset("SELECT RunID,StepOrdinal,AssigneeID FROM RouteRunStep", dbOpenSnapshot)
+    'Active work only: completed and cancelled history is never visible here, so it
+    'is not read (the queue stays flat as review history grows).
+    Set r = db.OpenRecordset("SELECT s.RunID,s.StepOrdinal,s.AssigneeID FROM RouteRunStep AS s INNER JOIN RouteRun AS u ON (s.RunID=u.RunID AND s.StepOrdinal=u.CurrentStep) WHERE u.RunState='Pending'", dbOpenSnapshot)
     Do While Not r.EOF: steps(r!RunID & ":" & r!StepOrdinal) = Nz(r!AssigneeID, 0): r.MoveNext: Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT t.TaskID,t.RevisionID,t.AssignedTo,t.RequestedBy,t.TaskState,p.CurrentRevisionID AS SavedRevision,p.WorkflowState AS ReportState FROM ReviewTask AS t LEFT JOIN Report AS p ON t.ReportID=p.ReportID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT t.TaskID,t.RevisionID,t.AssignedTo,t.RequestedBy,t.TaskState,p.CurrentRevisionID AS SavedRevision,p.WorkflowState AS ReportState FROM ReviewTask AS t LEFT JOIN Report AS p ON t.ReportID=p.ReportID WHERE t.TaskState='Pending'", dbOpenSnapshot)
     Do While Not r.EOF
-        ' VBA's original And/Or evaluates CurrentRevision even for completed tasks.
         If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
         ' Review work on a signed report waits until it is reopened.
         If r!TaskState = "Pending" And Nz(r!ReportState, "") <> "Signed" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> r!SavedRevision)) Then rows("Assignment:" & r!TaskID) = True
         r.MoveNext
     Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT u.*,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived,p.WorkflowState AS ReportState FROM RouteRun AS u LEFT JOIN Report AS p ON u.ReportID=p.ReportID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT u.*,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived,p.WorkflowState AS ReportState FROM RouteRun AS u LEFT JOIN Report AS p ON u.ReportID=p.ReportID WHERE u.RunState In ('Pending','Accepted')", dbOpenSnapshot)
     Do While Not r.EOF
         id = r!RunID: visible = False
         If (r!RunState = "Pending" Or r!RunState = "Accepted") And Nz(r!ReportState, "") <> "Signed" Then
@@ -115,7 +116,9 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
         profiles(CStr(r!UserProfileID)) = Nz(r!DisplayName, "Unknown contributor"): r.MoveNext
     Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT RunID,StepOrdinal,AssigneeID FROM RouteRunStep", dbOpenSnapshot)
+    sql = "SELECT RunID,StepOrdinal,AssigneeID FROM RouteRunStep"
+    If Not history Then sql = sql & " WHERE RunID In (SELECT RunID FROM RouteRun WHERE RunState In ('Pending','Accepted'))"
+    Set r = db.OpenRecordset(sql, dbOpenSnapshot)
     Do While Not r.EOF
         key = CStr(r!RunID): steps(key & ":" & r!StepOrdinal) = Nz(r!AssigneeID, 0)
         If Not counts.Exists(key) Then counts(key) = 0
@@ -128,6 +131,7 @@ Public Sub UXPrepareWorkRows(ByVal pid As Long, ByVal history As Boolean)
             Case "Route": table = "RouteRun": key = "RunID"
         End Select
         sql = "SELECT w.*,p.OfficialName,p.MemberName,p.FormKind,p.PeriodStart,p.PeriodEnd,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived,p.WorkflowState AS ReportWorkflow FROM " & table & " AS w LEFT JOIN Report AS p ON w.ReportID=p.ReportID"
+        If Not history Then sql = sql & IIf(kind = "Assignment", " WHERE w.TaskState='Pending'", " WHERE w.RunState In ('Pending','Accepted')")
         Set r = db.OpenRecordset(sql, dbOpenSnapshot)
         Do While Not r.EOF
             id = r.Fields(key): owner = 0: label = "": status = "": action = "": due = "Not set"

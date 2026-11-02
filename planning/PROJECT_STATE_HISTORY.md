@@ -1150,7 +1150,7 @@ Existing C04 and legacy feature-layout gaps above remain separate from these
 checks. No release, publication, physical/accessibility or printed acceptance is
 claimed.
 
-## Codex review fixes R01–R08
+## Codex review fixes R01–R13
 
 Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
 [backlog](PRIORITY_BACKLOG.md)):
@@ -1186,6 +1186,24 @@ Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
 - **R08, list punctuation.** The shared `UXListCell` quotes value-list cells, so
   commas, semicolons and quotes stay in their column in the NAVFIT group and
   report pickers and the NavyWriter list. The PDF output list uses it too.
+- **R09, counseling suggestion.** A Concurrent-only report repeating a session's
+  date no longer uses up that session for the member's Regular report. When the
+  period's session is already on another Regular report, Swift offers nothing
+  instead of NOT REQ with "No counseling is recorded".
+- **R10, signing with disposal.** When the optional draft disposal fails after
+  signing commits, the Mark signed dialog stays open, says the report is signed
+  and the disposal failed, and disables Save; Dispose of drafts retries it. The
+  group dialog reports how many disposals failed.
+- **R11, backup and the Members grid.** Backup refuses while Members-grid cells
+  are unsaved, since a backup copies only saved values.
+- **R12, restore check.** When a `.verification.json` sits beside the file,
+  workspace import (and its preview) requires the file's SHA-256 to match it, and
+  the preview says the backup is verified. A changed backup is refused.
+- **R13, My Work reads.** The active queue reads only pending tasks, active routes
+  and their current steps, so it no longer grows with review history.
+- **Wizard-state test.** The synthetic VBA error dialog is ended by sending its
+  End button's command to the dialog window and confirming it closed, instead of
+  Alt+E keystrokes that failed when the Access window wasn't in front.
 - **T01.** `test-ruad-import` generates a synthetic 35-column NRRM roster when no
   `-SamplePath` is given, so it runs in every external-import suite run.
 
@@ -1195,7 +1213,11 @@ workspace-resources and reporting-senior-accounting suites, and the extended
 report-review-history and work-review suites. R04–R08 verified on build
 `Swift_NAVFIT_0.51.0_20261101-201607_44f81547`: BuildAndTest PASS, plus the
 directory-management, external-import, workspace-read-performance,
-summary-groups, report-field-persistence, member-profiles and narratives suites.
+summary-groups, report-field-persistence, member-profiles and narratives suites. R09–R13
+verified on builds `20261101-204939_96f9fa7f` (member-profiles, report-review-history,
+recovery, summary-groups, work-review, workspace-read-performance and
+workspace-migration suites) and `20261101-214900_324ecfa8` (BuildAndTest after
+regenerating the SBOM; wizard-state case with the new dialog handling).
 
 ## Superseded approaches and open concerns
 

@@ -221,18 +221,13 @@ departure dates. F01 is independent and can go in parallel.
 ## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
 
 An outside review on synthetic copies. Causes were confirmed in source during
-triage. R01–R08 were fixed on 1 Nov 2026 (see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r08));
-the rest are open. Review IDs are in brackets. Each fix needs a
+triage. R01–R13 were fixed on 1 Nov 2026 (see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r13));
+R15 is open. Review IDs are in brackets. Each fix needs a
 native test that fails before the fix.
 
 | ID | Priority | Work |
 | --- | --- | --- |
-| R09 | Medium | **A Concurrent-only report hides a counseling suggestion** [D07]. `CounselingMatch` (`modCounseling`) skips a session already entered on any other report, including a Concurrent-only one. `CounselingSuggestion` then offers NOT REQ with "No counseling is recorded". Ignore Concurrent-only reports when matching, and never turn a session that is already in use into NOT REQ. |
-| R10 | Medium | **Signing succeeds, but the dialog reports failure when draft disposal fails** [D06]. `UXSignoffSave` commits the signoff before the optional disposal. Report the two outcomes separately and offer to retry the disposal alone. |
-| R11 | Medium | **Backup ignores unsaved Members-grid cells** [G06]. Warn about pending cells before backing up, or refuse until they are saved or discarded. |
-| R12 | Medium | **Restore doesn't check the backup's own receipt** [G07]. When a `.verification.json` is present, compare its SHA-256 before restoring and say whether the file has changed since backup. |
-| R13 | Medium | **My Work reads all review history to show active work** [O01]. Preparing one active item took 5.5 ms with no history and 287 ms with 10,000 old tasks and routes. Limit the active view to candidate rows. Pair this with F01, which changes the same readers. |
 | R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], to retire or replace a review route template [G09], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. |
 
 (R14, rank from the roster, moved into F02. T01 is done: the RUAD import test

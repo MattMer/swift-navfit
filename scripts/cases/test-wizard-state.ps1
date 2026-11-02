@@ -74,22 +74,52 @@ try {
  if($ownedProcess.Count -ne 1){throw 'Cannot identify owned Access process for the synthetic error test'}
  # The classic VBE error dialog has no UI Automation Invoke pattern. Supervise
  # this one literal synthetic error using a bounded, PID/start-time checked job;
- # one Alt+E ends it. Never click/dismiss arbitrary Access or user dialogs.
+ # one End click ends it. Never click/dismiss arbitrary Access or user dialogs.
  $supervisor=Start-Job -ArgumentList $ownedProcess[0].Id,$ownedProcess[0].StartTime.ToUniversalTime().Ticks -ScriptBlock {
   param($ownedPID,$startedTicks)
-  Add-Type -AssemblyName UIAutomationClient
-  $deadline=[datetime]::UtcNow.AddSeconds(15)
-  while([datetime]::UtcNow -lt $deadline){
+  # The VBA error dialog is its own top-level #32770 window. WM_COMMAND for its
+  # End button needs no focus or keystrokes, so it works while someone is using
+  # the machine; the dialog must then close before this reports success.
+  Add-Type -Namespace SwiftTest -Name Win32 -MemberDefinition @'
+public delegate bool EnumProc(System.IntPtr h, System.IntPtr l);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool EnumWindows(EnumProc cb, System.IntPtr l);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool EnumChildWindows(System.IntPtr p, EnumProc cb, System.IntPtr l);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(System.IntPtr h, out uint pid);
+[System.Runtime.InteropServices.DllImport("user32.dll", CharSet=System.Runtime.InteropServices.CharSet.Unicode)] public static extern int GetClassName(System.IntPtr h, System.Text.StringBuilder s, int n);
+[System.Runtime.InteropServices.DllImport("user32.dll", CharSet=System.Runtime.InteropServices.CharSet.Unicode)] public static extern int GetWindowText(System.IntPtr h, System.Text.StringBuilder s, int n);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern int GetDlgCtrlID(System.IntPtr h);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool PostMessage(System.IntPtr h, uint m, System.IntPtr w, System.IntPtr l);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool IsWindow(System.IntPtr h);
+'@
+  function Text($h,[switch]$Class){$t=New-Object Text.StringBuilder 512;if($Class){[void][SwiftTest.Win32]::GetClassName($h,$t,512)}else{[void][SwiftTest.Win32]::GetWindowText($h,$t,512)};"$t"}
+  function Find-SyntheticDialog($ownedPID,$startedTicks){
    $process=Get-Process -Id $ownedPID -ErrorAction Stop
    if($process.StartTime.ToUniversalTime().Ticks -ne $startedTicks){throw 'Owned test process changed'}
-   $window=[Windows.Automation.AutomationElement]::FromHandle($process.MainWindowHandle)
-   if($window){
-    $names=@($window.FindAll([Windows.Automation.TreeScope]::Descendants,[Windows.Automation.Condition]::TrueCondition)|ForEach-Object {$_.Current.Name})
-    if(($names -join ' ') -like '*SYNTHETIC unhandled wizard failure*'){
-     $keyboard=New-Object -ComObject WScript.Shell
-     try{if(-not $keyboard.AppActivate($ownedPID)){throw 'Owned synthetic dialog could not be activated'};$keyboard.SendKeys('%e')}finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($keyboard)}
-     return 'Ended verified synthetic VBA failure'
+   $tops=New-Object Collections.ArrayList
+   [void][SwiftTest.Win32]::EnumWindows({param($h,$l) $id=[uint32]0;[void][SwiftTest.Win32]::GetWindowThreadProcessId($h,[ref]$id);if($id -eq $ownedPID){[void]$tops.Add($h)};$true},[IntPtr]::Zero)
+   foreach($dialog in $tops){
+    if((Text $dialog -Class) -ne '#32770'){continue}
+    $kids=New-Object Collections.ArrayList
+    [void][SwiftTest.Win32]::EnumChildWindows($dialog,{param($h,$l) [void]$kids.Add($h);$true},[IntPtr]::Zero)
+    if(-not @($kids|Where-Object {(Text $_) -like '*SYNTHETIC unhandled wizard failure*'}).Count){continue}
+    $end=@($kids|Where-Object {(Text $_ -Class) -eq 'Button' -and (Text $_) -eq '&End'})
+    if($end.Count -ne 1){throw 'Synthetic dialog has no single End button; no alternate control attempted'}
+    return @($dialog,$end[0])
+   }
+   return $null
+  }
+  $deadline=[datetime]::UtcNow.AddSeconds(15)
+  while([datetime]::UtcNow -lt $deadline){
+   $found=Find-SyntheticDialog $ownedPID $startedTicks
+   if($null -ne $found){
+    $control=[SwiftTest.Win32]::GetDlgCtrlID($found[1])
+    [void][SwiftTest.Win32]::PostMessage($found[0],0x0111,[IntPtr]$control,$found[1])
+    $closing=[datetime]::UtcNow.AddSeconds(10)
+    while([datetime]::UtcNow -lt $closing){
+     Start-Sleep -Milliseconds 250
+     if(-not [SwiftTest.Win32]::IsWindow($found[0])){return 'Ended verified synthetic VBA failure'}
     }
+    throw 'Synthetic dialog stayed open after End'
    }
    Start-Sleep -Milliseconds 500
   }

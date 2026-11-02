@@ -9,6 +9,15 @@ Private Sub OpenGroup(ByVal id As Long)
  Forms!frmUXGroups!lstGroups = id
  Check UXOpenGroup(), "Open selected group failed"
 End Sub
+Private Function BackupRefusedForGrid() As Boolean
+ Dim path As String
+ path = Environ$("TEMP") & "\Swift-grid-backup-" & Mid$(NewIdentity(), 2, 36) & ".accdb"
+ On Error GoTo Refused
+ Call WriteWorkspaceBackup(path)
+ Exit Function
+Refused:
+ BackupRefusedForGrid = InStr(Err.Description, "unsaved Members-grid cells") > 0 And Len(Dir$(path)) = 0
+End Function
 Public Function TestGroupExit() As String
  Dim a As Long, b As Long, emptyGroup As Long, report As Long, other As Long, rows As Access.Form, key As Variant, before As Long
  On Error GoTo Failed
@@ -35,6 +44,7 @@ Public Function TestGroupExit() As String
  before = CurrentRevision(report)
  Check Not UXNavigate("frmHome"), "Invalid pending cell allowed leave"
  Check CurrentProject.AllForms("frmUXComparison").IsLoaded And UXGridPendingCount() = 1 And CurrentRevision(report) = before, "Blocked leave lost pending data"
+ Check BackupRefusedForGrid() And UXGridPendingCount() = 1, "Backup ran with unsaved grid cells, or lost them"
  Forms!frmUXGroups!lstGroups = b: Check Not UXOpenGroup(), "Invalid pending cell allowed replacement"
  Check Forms!frmUXComparison!uxGroupContext = a, "Blocked replacement changed context"
  rows!AssignmentRecommendationA = "CORRECTED": Check UXGridQueue("AssignmentRecommendationA"), "Correction queue failed"

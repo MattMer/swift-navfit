@@ -204,6 +204,8 @@ Public Function CounselingSuggestion(ByVal f As Object, ByVal reportID As Long) 
     fromDate = CDate(FieldText(f, "PeriodStart")): toDate = CDate(FieldText(f, "PeriodEnd"))
     Set s = CounselingMatch(memberID, fromDate, toDate, reportID)
     If s Is Nothing Then
+        'A session in the period that another report already uses is not "no counseling".
+        If Nz(MajorScalar("SELECT Count(*) FROM MemberCounseling WHERE MemberID=" & memberID & " AND IsArchived=False AND CounseledOn>=" & SQLDate(fromDate) & " AND CounseledOn<=" & SQLDate(toDate)), 0) > 0 Then Exit Function
         Set s = CreateObject("Scripting.Dictionary")
         s("CounselingID") = 0: s("CounselingDate") = "NOT REQ": s("CounselorName") = ""
         s("Message") = "No counseling is recorded for this member in this report period."
@@ -224,7 +226,10 @@ Private Function CounselingMatch(ByVal memberID As Long, ByVal fromDate As Date,
     Do While Not r.EOF
         dateText = Format$(r!CounseledOn, "yyyy-mm-dd")
         If r!Outcome = COUNSELING_COMPLETED Then
-            If Nz(MajorScalar("SELECT Count(*) FROM Report AS p INNER JOIN MemberReport AS m ON p.ReportID=m.ReportID WHERE m.MemberID=" & memberID & " AND p.ReportID<>" & reportID & " AND p.IsArchived=False AND p.CounselingDate=" & QuoteSQL(dateText)), 0) = 0 Then
+            'Only another Regular report uses up the session; a Concurrent-only report
+            'repeating the date does not.
+            If Nz(MajorScalar("SELECT Count(*) FROM Report AS p INNER JOIN MemberReport AS m ON p.ReportID=m.ReportID WHERE m.MemberID=" & memberID & " AND p.ReportID<>" & reportID & " AND p.IsArchived=False AND p.CounselingDate=" & QuoteSQL(dateText) & _
+                " AND p.CurrentRevisionID Not In (SELECT c.RevisionID FROM RevisionValue AS c WHERE c.FieldKey='ReportConcurrent' AND c.ValueText='Yes' AND c.RevisionID Not In (SELECT g.RevisionID FROM RevisionValue AS g WHERE g.FieldKey='ReportRegular' AND g.ValueText='Yes'))"), 0) = 0 Then
                 s("CounselingID") = r!CounselingID: s("CounselingDate") = dateText: s("CounselorName") = r!CounselorName
                 s("Message") = "Recorded counseling on " & dateText & " (" & r!CounselorName & ") falls in this report period."
                 Exit Do

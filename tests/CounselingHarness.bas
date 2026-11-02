@@ -45,7 +45,7 @@ Private Function HasFinding(ByVal reportID As Long) As Boolean
 End Function
 Public Function TestCounseling() As String
     Dim e5 As Long, blank As Long, chief As Long, id As Long, other As Long, report As Long, second As Long, concurrent As Long
-    Dim s As Object, f As Access.Form, i As Long, found As Boolean, before As Long, stamp As String, merge As Long, source As Long, target As Long, ops As Long, stage As String
+    Dim s As Object, changes As Object, f As Access.Form, i As Long, found As Boolean, before As Long, stamp As String, merge As Long, source As Long, target As Long, ops As Long, stage As String
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC COUNSELING", "Counseling tester"
 
@@ -118,6 +118,11 @@ Public Function TestCounseling() As String
     Check Suggested(second) = "NOT REQ|", "NOT REQ not suggested for empty block 30: " & Suggested(second)
     concurrent = RegularReport(e5, #9/16/2026#, #9/15/2027#, "No")
     Check Suggested(concurrent) = "(none)", "Concurrent report got a suggestion"
+    ' A Concurrent-only report repeating the date does not use up the session for
+    ' the Regular report.
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add "CounselingDate", "2026-09-21": changes.Add "CounselorName", "EXAMPLE, D"
+    CommitSavedFields concurrent, CurrentRevision(concurrent), changes, "Concurrent counseling entry"
+    Check Suggested(report) = "2026-09-21|EXAMPLE, D", "Concurrent-only report hid the Regular suggestion: " & Suggested(report)
 
     stage = "report tools apply"
     before = CurrentRevision(report)
@@ -137,7 +142,9 @@ Public Function TestCounseling() As String
     Check UXSaveEditor(), "Save after apply failed"
     Check Suggested(report) = "(none)" And Not HasFinding(report), "Saved report still offered the session"
     Check RegularReport(e5, #9/1/2026#, #9/15/2027#) > 0, "Overlapping report failed"
-    Check Suggested(DMax("ReportID", "Report")) = "NOT REQ|", "Session documented twice: " & Suggested(DMax("ReportID", "Report"))
+    ' The session is in use on another Regular report: no second offer, and no
+    ' NOT REQ claiming nothing was recorded.
+    Check Suggested(DMax("ReportID", "Report")) = "(none)", "Session in use offered again or turned into NOT REQ: " & Suggested(DMax("ReportID", "Report"))
     Call UXLeaveEditor("Discard")
 
     stage = "screens"

@@ -63,6 +63,7 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If Not UXCloseEditorForBackup() Then Err.Raise vbObjectError + 4801, "modBackupUI.WriteWorkspaceBackup", "Pending editor values could not be checkpointed and closed. Save or close the editor before retrying."
     End If
+    If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4830, "modBackupUI.WriteWorkspaceBackup", "Save or discard the unsaved Members-grid cells first. A backup copies only saved values."
     Set db = CurrentDb: Set names = New Collection
     For Each table In db.TableDefs
         If Left$(table.Name, 4) <> "MSys" And Left$(table.Name, 1) <> "~" Then
@@ -139,6 +140,21 @@ Private Sub WriteNewTextFile(ByVal path As String, ByVal text As String)
     stream.SaveToFile path, 1
     stream.Close
 End Sub
+' A Swift backup keeps its .verification.json beside it. When that receipt is
+' present, the file must still have the hash it was verified with. Returns a line
+' for the import preview, or "" when the file has no receipt.
+Public Function BackupReceiptCheck(ByVal path As String, ByVal hash As String) As String
+    Dim stream As Object, text As String, at As Long, verified As String
+    If Len(Dir$(path & ".verification.json")) = 0 Then Exit Function
+    If FileLen(path & ".verification.json") > 500000 Then Err.Raise vbObjectError + 4831, "modBackupUI.BackupReceiptCheck", "The backup's verification file is too large to read."
+    Set stream = CreateObject("ADODB.Stream"): stream.Type = 2: stream.Charset = "utf-8": stream.Open: stream.LoadFromFile path & ".verification.json"
+    text = stream.ReadText: stream.Close
+    at = InStr(text, """SHA256"":""")
+    If at > 0 Then verified = Mid$(text, at + 10, 64)
+    If InStr(text, """Status"":""PASS""") = 0 Or Len(verified) <> 64 Then Err.Raise vbObjectError + 4831, "modBackupUI.BackupReceiptCheck", "The backup's verification file is not a passing Swift backup receipt. Restore refused; no data was changed."
+    If StrComp(verified, hash, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 4832, "modBackupUI.BackupReceiptCheck", "This backup changed after it was verified: its SHA-256 no longer matches its verification file. Restore refused; no data was changed. If the change was deliberate, move the .verification.json file away and import the file as an ordinary workspace."
+    BackupReceiptCheck = "Verified backup: the file matches its verification record (SHA-256 " & Left$(verified, 12) & "...)."
+End Function
 Public Function ShowCopyVerification() As Boolean
     Dim picker As Object, stream As Object, path As String
     On Error GoTo Failed
