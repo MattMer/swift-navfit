@@ -1150,6 +1150,34 @@ Existing C04 and legacy feature-layout gaps above remain separate from these
 checks. No release, publication, physical/accessibility or printed acceptance is
 claimed.
 
+## Codex review fixes R01–R03
+
+Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
+[backlog](PRIORITY_BACKLOG.md)):
+
+- **R01, status precedence.** The batched Reports reader no longer lets a review
+  overlay replace Signed or "Reopened for correction", and it shows a report whose
+  signoffs are all reopened as "Reopened for correction", matching
+  `UXReportState`. Review assignments and routes on a signed report leave My Work
+  (`UXWorkVisible` and `UXWorkVisibleRows`) and return when it is reopened. The
+  unused participants query in `UXWorkVisibleRows` was removed.
+  `UXReadRowsHarness` covers signed, reopened and re-signed reports with a
+  pending assignment and route.
+- **R02, completed groups.** `AddGroupMember` and `RemoveGroupMember` refuse a
+  Completed group ("Reopen the completed group before changing its members").
+  Completing a Completed group again with a signed date signs any member still
+  unsigned. `SignoffHarness` covers both.
+- **R03, backup journal failure.** When the journal entry fails after a backup
+  and its verification file are written, `WriteWorkspaceBackup` keeps both and
+  reports that only the journal entry failed. An earlier failure removes the
+  backup and any verification file this call created. `test-recovery` injects
+  the journal failure and checks the kept file against its receipt hash.
+
+Verified on build `Swift_NAVFIT_0.51.0_20261101-195039_c961a8ad`: BuildAndTest
+PASS, plus recovery, summary-groups, workspace-read-performance,
+workspace-resources and reporting-senior-accounting suites, and the extended
+report-review-history and work-review suites.
+
 ## Superseded approaches and open concerns
 
 - The r126 local-PDF, r127 directory-merge and report-tools binary-template

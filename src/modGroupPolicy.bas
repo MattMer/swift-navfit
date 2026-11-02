@@ -52,7 +52,9 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     db.Execute "INSERT INTO GroupLifecycle (GroupID,WorkflowState,ChangedBy,ChangedAt) VALUES (" & groupID & "," & QuoteSQL(state) & "," & author & ",Now())", dbFailOnError
     Dim reportsChanged As Long, outcome As String
     outcome = "Local group status changed; member report states unchanged."
-    If state = "Completed" And old <> "Completed" And Not IsNull(signedOn) Then
+    'Completing again also signs any member left unsigned, so a Completed group
+    'never posts a draft without its signed date.
+    If state = "Completed" And Not IsNull(signedOn) Then
         reportsChanged = MarkGroupReportsSigned(groupID, CDate(signedOn)): outcome = "Group completed; " & reportsChanged & " member reports marked signed " & Format$(signedOn, "yyyy-mm-dd") & "."
     ElseIf old = "Completed" And state <> "Completed" Then
         reportsChanged = ReopenGroupReports(groupID, "Group reopened from Completed to " & state): outcome = "Group reopened; " & reportsChanged & " signed member reports reopened for correction."

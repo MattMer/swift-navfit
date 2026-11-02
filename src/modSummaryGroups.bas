@@ -59,6 +59,7 @@ Public Sub AddGroupMember(ByVal groupID As Long, ByVal reportID As Long, ByVal p
     Set g = db.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
     stage = "Check group": If g.EOF Then Err.Raise vbObjectError + 4103, "modSummaryGroups.AddGroupMember", "Group does not exist."
     If g!IsArchived Then Err.Raise vbObjectError + 4104, "modSummaryGroups.AddGroupMember", "Recover the group first."
+    If GroupWorkflow(groupID) = "Completed" Then Err.Raise vbObjectError + 4120, "modSummaryGroups.AddGroupMember", "Reopen the completed group before changing its members."
     If g!FormKind <> f("FormKind") Or g!Paygrade <> paygrade Then
         Err.Raise vbObjectError + 4105, "modSummaryGroups.AddGroupMember", "Report kind and explicit paygrade must match the group."
     End If
@@ -88,6 +89,7 @@ Public Sub RemoveGroupMember(ByVal groupID As Long, ByVal reportID As Long)
     On Error GoTo Failed
     If Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 4104, "modSummaryGroups.RemoveGroupMember", "Select an active group."
     If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & reportID) <> 1 Then Err.Raise vbObjectError + 4109, "modSummaryGroups.RemoveGroupMember", "Report is not in the group."
+    If GroupWorkflow(groupID) = "Completed" Then Err.Raise vbObjectError + 4120, "modSummaryGroups.RemoveGroupMember", "Reopen the completed group before changing its members."
     operation = BeginOperation("Remove group member", "Group " & groupID & ", report " & reportID & "; previous exception: " & Nz(MajorScalar("SELECT ExceptionReason FROM GroupMember WHERE GroupID=" & groupID & " AND ReportID=" & reportID), ""))
     CurrentDb.Execute "DELETE FROM GroupMember WHERE GroupID=" & groupID & " AND ReportID=" & reportID, dbFailOnError
     CurrentDb.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError

@@ -67,32 +67,26 @@ End Function
 ' Fresh inclusion keys only: no formatted rows and no persistent cache. The public
 ' single-item visibility service remains available for authoritative UI decisions.
 Public Function UXWorkVisibleRows(ByVal pid As Long) As Object
-    Dim db As DAO.Database, r As DAO.Recordset, rows As Object, steps As Object, threads As Object, participants As Object, authors As Object, stamps As Object
-    Dim sql As String, token As String, id As Long, assignee As Long, visible As Boolean, current As Boolean
+    Dim db As DAO.Database, r As DAO.Recordset, rows As Object, steps As Object, threads As Object, stamps As Object
+    Dim id As Long, assignee As Long, visible As Boolean, current As Boolean
     Set db = CurrentDb: Set rows = ReadMap(): Set steps = ReadMap(): Set threads = ReadMap()
-    Set participants = ReadMap(): Set authors = ReadMap(): Set stamps = ReadMap()
-    sql = "SELECT ReportID FROM ReportRevision WHERE AuthorProfileID=" & pid
-    sql = sql & " UNION SELECT ReportID FROM ReviewTask WHERE TaskState='Pending' AND (AssignedTo=" & pid & " OR RequestedBy=" & pid & ")"
-    sql = sql & " UNION SELECT ReportID FROM RouteRun WHERE RunState In ('Pending','Accepted') AND (RequestedBy=" & pid & " OR ApprovedBy=" & pid & ")"
-    sql = sql & " UNION SELECT u.ReportID FROM RouteRunStep AS s INNER JOIN RouteRun AS u ON s.RunID=u.RunID WHERE u.RunState='Pending' AND s.StepOrdinal=u.CurrentStep AND s.AssigneeID=" & pid
-    Set r = db.OpenRecordset(sql, dbOpenSnapshot)
-    Do While Not r.EOF: participants(CStr(r!ReportID)) = True: r.MoveNext: Loop
-    r.Close
+    Set stamps = ReadMap()
     Set r = db.OpenRecordset("SELECT RunID,StepOrdinal,AssigneeID FROM RouteRunStep", dbOpenSnapshot)
     Do While Not r.EOF: steps(r!RunID & ":" & r!StepOrdinal) = Nz(r!AssigneeID, 0): r.MoveNext: Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT t.TaskID,t.RevisionID,t.AssignedTo,t.RequestedBy,t.TaskState,p.CurrentRevisionID AS SavedRevision FROM ReviewTask AS t LEFT JOIN Report AS p ON t.ReportID=p.ReportID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT t.TaskID,t.RevisionID,t.AssignedTo,t.RequestedBy,t.TaskState,p.CurrentRevisionID AS SavedRevision,p.WorkflowState AS ReportState FROM ReviewTask AS t LEFT JOIN Report AS p ON t.ReportID=p.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         ' VBA's original And/Or evaluates CurrentRevision even for completed tasks.
         If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
-        If r!TaskState = "Pending" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> r!SavedRevision)) Then rows("Assignment:" & r!TaskID) = True
+        ' Review work on a signed report waits until it is reopened.
+        If r!TaskState = "Pending" And Nz(r!ReportState, "") <> "Signed" And (r!AssignedTo = pid Or (r!RequestedBy = pid And r!RevisionID <> r!SavedRevision)) Then rows("Assignment:" & r!TaskID) = True
         r.MoveNext
     Loop
     r.Close
-    Set r = db.OpenRecordset("SELECT u.*,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived FROM RouteRun AS u LEFT JOIN Report AS p ON u.ReportID=p.ReportID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT u.*,p.CurrentRevisionID AS SavedRevision,p.IsArchived AS ReportArchived,p.WorkflowState AS ReportState FROM RouteRun AS u LEFT JOIN Report AS p ON u.ReportID=p.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
         id = r!RunID: visible = False
-        If r!RunState = "Pending" Or r!RunState = "Accepted" Then
+        If (r!RunState = "Pending" Or r!RunState = "Accepted") And Nz(r!ReportState, "") <> "Signed" Then
             If Nz(r!SavedRevision, 0) = 0 Then Err.Raise vbObjectError + 4002, "modUXReadRows.UXWorkVisibleRows", "Select a saved report."
             current = ReadRouteCurrent(r, stamps)
             If r!RunState = "Pending" Then
@@ -198,7 +192,8 @@ Private Sub ReadReportState(ByVal rows As Object, ByVal id As Long, ByVal state 
     Dim row As Variant, prior As String
     If Not rows.Exists(CStr(id)) Then Exit Sub
     row = rows(CStr(id)): prior = row(1)
-    If prior = "Archived" Or prior = "Local approval" Or prior = "Review needs restart" Then Exit Sub
+    'Lifecycle states outrank review overlays, matching UXReportState.
+    If prior = "Archived" Or prior = "Local approval" Or prior = "Signed" Or prior = "Reopened for correction" Or prior = "Review needs restart" Then Exit Sub
     If state = "Returned" And prior = "In review" Then Exit Sub
     row(1) = state: rows(CStr(id)) = row
 End Sub
@@ -244,6 +239,17 @@ Public Sub UXPrepareReportRows()
         rows(id) = row
     Next
     values.Close
+    'Reopened for correction: every signoff for the report has been reopened.
+    Set r = db.OpenRecordset("SELECT ReportID FROM ReportSignoff GROUP BY ReportID HAVING Sum(IIf(ReopenedAt Is Null,1,0))=0", dbOpenSnapshot)
+    Do While Not r.EOF
+        id = CStr(r!ReportID)
+        If rows.Exists(id) Then
+            row = rows(id)
+            If row(1) = "Draft" Then row(1) = "Reopened for correction": rows(id) = row
+        End If
+        r.MoveNext
+    Loop
+    r.Close
     Set r = db.OpenRecordset("SELECT m.ReportID,g.Title FROM GroupMember AS m INNER JOIN SummaryGroup AS g ON m.GroupID=g.GroupID ORDER BY g.Title,g.GroupID", dbOpenSnapshot)
     Do While Not r.EOF
         id = CStr(r!ReportID)

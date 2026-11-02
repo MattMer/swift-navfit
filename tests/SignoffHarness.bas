@@ -12,6 +12,13 @@ Private Function MarkFails(ByVal id As Long, ByVal revision As Long, ByVal signe
 Failed:
     MarkFails = True
 End Function
+Private Function MemberChangeFails(ByVal groupID As Long, ByVal reportID As Long, ByVal adding As Boolean) As Boolean
+    On Error GoTo Failed
+    If adding Then AddGroupMember groupID, reportID, "E5" Else RemoveGroupMember groupID, reportID
+    Exit Function
+Failed:
+    MemberChangeFails = InStr(Err.Description, "Reopen the completed group") > 0
+End Function
 Private Function SaveFails(ByVal id As Long) As Boolean
     Dim changes As Object
     On Error GoTo Failed
@@ -150,7 +157,7 @@ Public Function TestSignoff() As String
     DoCmd.Close acForm, "frmUXComparison"
 
     stage = "group signing"
-    Dim g As Long, r1 As Long, r2 As Long, senior As Object, sid As Long
+    Dim g As Long, r1 As Long, r2 As Long, r3 As Long, senior As Object, sid As Long
     'Completion posts RSCA accounting, so the reports carry a senior and marks.
     Set senior = CreateObject("Scripting.Dictionary")
     For Each key In RSSeniorKeys(): senior.Add CStr(key), Null: Next
@@ -168,6 +175,13 @@ Public Function TestSignoff() As String
     Check Not ReportIsSigned(r1) And Not ReportIsSigned(r2), "Reopening the completed group left reports signed"
     SetGroupWorkflow g, GroupStamp(g), "Completed"
     Check Not ReportIsSigned(r1), "Completing without a signed date signed reports"
+    'A Completed group's members change only after Reopen, and completing again
+    'with a signed date signs every member still unsigned.
+    r3 = AccountedReport(senior, "Group sign three", "")
+    Check MemberChangeFails(g, r3, True) And DCount("*", "GroupMember", "GroupID=" & g) = 2, "Completed group accepted a new member"
+    Check MemberChangeFails(g, r2, False) And DCount("*", "GroupMember", "GroupID=" & g) = 2, "Completed group lost a member"
+    SetGroupWorkflow g, GroupStamp(g), "Completed", #10/10/2026#
+    Check ReportIsSigned(r1) And ReportIsSigned(r2), "Completing again did not sign the unsigned members"
     SetGroupWorkflow g, GroupStamp(g), "In-Work"
     Check UXSignoffOpenGroup(g, False), "Group dialog did not open"
     Forms!frmUXSignoff!txtSignedOn = #10/11/2026#

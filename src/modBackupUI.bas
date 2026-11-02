@@ -53,7 +53,7 @@ End Function
 Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     Dim db As DAO.Database, backup As DAO.Database, table As DAO.TableDef, q As DAO.QueryDef, names As Collection, name As Variant
     Dim prefix As String, counts As String, rows As Long, total As Long, created As Boolean, evidence As String, operation As Long
-    Dim failure As Long, message As String, source As String, folder As String
+    Dim failure As Long, message As String, source As String, folder As String, receipt As Boolean, published As Boolean
     On Error GoTo Failed
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "A backup is a new .accdb data file."
     folder = Left$(destination, InStrRev(destination, "\") - 1)
@@ -90,7 +90,7 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     evidence = "{""Status"":""PASS"",""Mode"":""Data backup"",""Source"":" & JsonString(source) & ",""Destination"":" & JsonString(destination) & _
         ",""SHA256"":""" & SourceFileHash(destination) & """,""Schema"":" & SCHEMA_VERSION & ",""AppVersion"":" & JsonString(APP_VERSION) & _
         ",""RowsVerified"":" & total & ",""CreatedAt"":""" & Format$(Now(), "yyyy-mm-dd\Thh:nn:ss") & """,""Counts"":{" & counts & "}}"
-    WriteNewTextFile destination & ".verification.json", evidence
+    receipt = True: WriteNewTextFile destination & ".verification.json", evidence: published = True
     operation = BeginOperation("Data backup", destination)
     FinishOperation operation, "Completed", "Verified " & total & " rows. Restore with Settings & Help > Import data into a new blank workspace."
     WriteWorkspaceBackup = evidence
@@ -101,9 +101,14 @@ Failed:
     If Not q Is Nothing Then q.Close
     If Not backup Is Nothing Then backup.Close
     RemoveBackupQueries prefix
-    'Only the incomplete file this call created is removed; nothing else is touched.
-    If created Then Kill destination
+    'A verified backup with its receipt is kept when only the journal entry fails.
+    'Otherwise only the incomplete files this call created are removed.
+    If Not published Then
+        If created Then Kill destination
+        If receipt Then Kill destination & ".verification.json"
+    End If
     On Error GoTo 0
+    If published Then message = "The backup was written and verified, and its verification file was saved: " & destination & ". Only the local backup journal entry failed: " & message
     Err.Raise failure, "modBackupUI.WriteWorkspaceBackup", message
 End Function
 Private Sub RemoveBackupQueries(ByVal prefix As String)

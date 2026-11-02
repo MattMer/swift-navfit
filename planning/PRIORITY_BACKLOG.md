@@ -59,7 +59,7 @@ readable.
 - `modRouteTemplates`: `RouteIsCurrent`, `DecideRouteStep`, new `SendBackRoute` and `PullBackRoute`, and `ApproveSavedRoute`.
 - `modRouting.FinishReview`.
 - The central save in `CommitDraft`. Members-grid cell saves in `modUXTraitGrid` skip the holder check but log the change on the report.
-- The status display in `UXReportState`, `modUXReadRows` and My Work. It shows "With *name* (step 2 of 3)" and fixes R01 at the same time.
+- The status display in `UXReportState`, `modUXReadRows` and My Work. It shows "With *name* (step 2 of 3)".
 - `modUXReview` and the review page.
 
 **Schema (additive):**
@@ -221,14 +221,13 @@ departure dates. F01 is independent and can go in parallel.
 ## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
 
 An outside review on synthetic copies. Causes were confirmed in source during
-triage; nothing is fixed yet. Review IDs are in brackets. Each fix needs a
+triage. R01–R03 were fixed on 1 Nov 2026 (see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r03));
+the rest are open. Review IDs are in brackets. Each fix needs a
 native test that fails before the fix.
 
 | ID | Priority | Work |
 | --- | --- | --- |
-| R01 | High | **Reports and My Work show the wrong status for signed and reopened reports** [D01, T03]. `ReadReportState` (`modUXReadRows`) lets a review overlay replace Signed, which is missing from its protected list. The batched reader also shows a report reopened for correction as plain Draft. Outstanding reviews on a signed report stay in the reviewer's queue. Use one precedence order for the scalar, batched and queue readers, and keep the review history. Add Signed, Reopened and re-signed cases to the read-row tests. F01 rewrites this display; fix R01 first or as part of it. |
-| R02 | High | **Completed groups take new members, and completing again doesn't sign them** [D04]. `AddGroupMember` doesn't check the lifecycle. `SetGroupWorkflow` posts RSCA on every Completed, but signs reports only when the old state wasn't Completed. Require Reopen before membership changes on a Completed group, or show the group as needing recompletion. Test accounting and signing together. |
-| R03 | High | **A failed journal write after a verified backup deletes the backup and leaves a PASS receipt** [D05]. `WriteWorkspaceBackup` writes the sidecar before the journal entry, then its failure cleanup deletes the verified file. The receipt it leaves behind also blocks a retry. Keep the verified backup and report the journal failure, as PDF publication already does [V01]. |
 | R04 | Medium | **An archived, never-signed draft can be the "prior evaluation"** [W03]. The Swift-report branch of `PreviousMemberEvaluation` (`modMemberHistory`), and its batched twin, don't filter archived reports. Imported prior PDFs legitimately sit in Draft, so "Signed only" would be wrong. Exclude archived reports that were never signed, and show the source state in the tooltip. |
 | R05 | Medium | **RUAD import failure reports error 450 instead of the real error** [D02, T02]. `RUADApply` passes `swiftPrimary & " No partial..."` to `SwiftRaise`, which expects the context object. Pass the object, and assert the primary error number in `RUADImportHarness`. |
 | R06 | Medium | **RUAD preview isn't tied to the contributor who reviewed it** [D03]. Use the `previewOwner` check from `modDirectoryBatch`. Do this before F02 reworks the importer. |
@@ -238,7 +237,7 @@ native test that fails before the fix.
 | R10 | Medium | **Signing succeeds, but the dialog reports failure when draft disposal fails** [D06]. `UXSignoffSave` commits the signoff before the optional disposal. Report the two outcomes separately and offer to retry the disposal alone. |
 | R11 | Medium | **Backup ignores unsaved Members-grid cells** [G06]. Warn about pending cells before backing up, or refuse until they are saved or discarded. |
 | R12 | Medium | **Restore doesn't check the backup's own receipt** [G07]. When a `.verification.json` is present, compare its SHA-256 before restoring and say whether the file has changed since backup. |
-| R13 | Medium | **My Work reads all review history to show active work** [O01]. Preparing one active item took 5.5 ms with no history and 287 ms with 10,000 old tasks and routes. `UXWorkVisibleRows` also builds a participants dictionary it never uses. Limit the active view to candidate rows. Pair this with F01, which changes the same readers. |
+| R13 | Medium | **My Work reads all review history to show active work** [O01]. Preparing one active item took 5.5 ms with no history and 287 ms with 10,000 old tasks and routes. Limit the active view to candidate rows. Pair this with F01, which changes the same readers. |
 | R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], to retire or replace a review route template [G09], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. |
 
 (R14, rank from the roster, moved into F02. T01, the RUAD test needing a sample

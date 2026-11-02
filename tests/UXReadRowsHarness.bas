@@ -33,7 +33,7 @@ Rejected:
 End Function
 Public Function TestUXReadRows() As String
     Dim id As Long, other As Long, p As Long, g As Long, g2 As Long, template As Long, run As Long, task As Long, thread As Long
-    Dim changes As Object, key As Variant, revision As Long, f As Access.Form, preset As Variant, col As Long, rows As Long
+    Dim changes As Object, key As Variant, revision As Long, f As Access.Form, preset As Variant, col As Long, rows As Long, signed As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC READ ROWS", "Reader"
     p = MajorAuthor()
@@ -112,6 +112,23 @@ Public Function TestUXReadRows() As String
     Check UXSortList("frmLibrary", "lstReports", 6), "Prepared ITA sort failed"
     Check f!lstReports = other, "Sort selection lost"
     DoCmd.Close acForm, "frmLibrary", acSaveNo
+    ' Signed and reopened reports outrank review overlays in both readers, and
+    ' review work on a signed report leaves My Work until it is reopened.
+    signed = CommitDraft(0, "EVAL", "Signed title", "SIERRA, MEMBER", #1/1/2026#, #9/30/2026#, "")
+    task = AssignReview(signed, CurrentRevision(signed), p, Null, "Review before signing")
+    run = StartRoute(signed, template)
+    MarkReportSigned signed, CurrentRevision(signed), Date
+    CompareReports
+    Check UXReportRowCell(signed, 1) = "Signed", "Review overlay replaced Signed"
+    Check Not UXWorkVisible("Assignment", task, p) And Not UXWorkVisible("Route", run, p), "Signed report review stayed in My Work"
+    Check Not UXWorkVisibleRows(p).Exists("Assignment:" & task) And Not UXWorkVisibleRows(p).Exists("Route:" & run), "Signed report review stayed in batched My Work"
+    ReopenSignedReport signed, "Correct block 43"
+    CompareReports
+    Check UXReportRowCell(signed, 1) = "Reopened for correction", "Reopened report shown as " & UXReportRowCell(signed, 1)
+    Check UXWorkVisible("Assignment", task, p) And UXWorkVisibleRows(p).Exists("Assignment:" & task), "Reopened report review missing from My Work"
+    MarkReportSigned signed, CurrentRevision(signed), Date
+    CompareReports
+    Check UXReportRowCell(signed, 1) = "Signed", "Re-signed report state"
     TestUXReadRows = "PASS: " & checks & " batch report equivalence, historical traits, review state, filters and sorting checks": Exit Function
 Failed:
     TestUXReadRows = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description

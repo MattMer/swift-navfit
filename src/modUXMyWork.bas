@@ -45,6 +45,8 @@ Public Function UXWorkVisible(ByVal kind As String, ByVal id As Long, ByVal pid 
         Case "Comment": UXWorkVisible = False
     End Select
     r.Close
+    ' Review work on a signed report waits until it is reopened.
+    If UXWorkVisible Then UXWorkVisible = Nz(DLookup("WorkflowState", "Report", "ReportID=" & report), "") <> "Signed"
 End Function
 Public Function UXWorkText(ByVal kind As String, ByVal id As Long, ByVal part As String) As String
     Dim r As DAO.Recordset, status As String, action As String, owner As Long, label As String, stale As Boolean, report As Long

@@ -87,6 +87,15 @@ try {
  $db.TableDefs.Delete('SyntheticLinkedReports');$db.Close()
  AssertBackup (-not (Test-Path -LiteralPath (Join-Path $folder 'linked-out.accdb'))) 'Rejected linked-table backup left a file'
  AssertBackup ([int]$app.Eval('DCount("*","MSysObjects","Name Like ''zSwiftBackup*''")') -eq 0) 'Backup left temporary queries'
+ #A journal failure after verification keeps the verified backup and its receipt.
+ $journalFail=Join-Path $folder 'journal-fail.accdb'
+ $db=$app.CurrentDb();$db.TableDefs.Item('OperationJournal').Fields.Item('OperationKind').ValidationRule="<>'Data backup'";$db.Close()
+ $outcome=$app.Eval('TryWorkspaceBackup('+(Quote $journalFail)+')')
+ $db=$app.CurrentDb();$db.TableDefs.Item('OperationJournal').Fields.Item('OperationKind').ValidationRule='';$db.Close()
+ AssertBackup ($outcome -like 'REJECTED:*written and verified*journal entry failed*') ('Journal failure was not reported as a kept backup: '+$outcome)
+ $status=Get-Content -LiteralPath ($journalFail+'.verification.json') -Raw -Encoding UTF8|ConvertFrom-Json
+ AssertBackup ((Test-Path -LiteralPath $journalFail) -and $status.Status -eq 'PASS' -and $status.SHA256 -eq (Get-FileHash -LiteralPath $journalFail).Hash) 'Journal failure deleted the verified backup or left a mismatched receipt'
+ $results.Add('Journal failure after verification keeps the backup and a matching receipt')
  $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
  $status=Get-Content -LiteralPath ($backup+'.verification.json') -Raw -Encoding UTF8|ConvertFrom-Json
  AssertBackup ($status.Status -eq 'PASS' -and $status.SHA256 -eq (Get-FileHash -LiteralPath $backup).Hash -and $status.Destination -eq $backup) 'Verification record does not match the backup file'
