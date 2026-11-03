@@ -122,6 +122,15 @@ Do not overwrite the old file with a new Blank. Open a separate new Blank and us
 
 Contributor switching is guarded while report work is open. Do not bypass the guard by editing tables or creating a duplicate profile to impersonate another person.
 
+**Add a contributor.** Type a name and choose **Add contributor**, or choose **Add from directory** and pick a command member; the contributor is then named with their rank/rate and report name (for example, *LCDR JONES, PAUL A*) and linked to that member.
+
+**Delete a contributor.** Select them and choose **Delete contributor**. You cannot delete the active contributor. Deleting someone:
+- removes them from every route template (a template left with no reviewers is deleted) and from every active review route. Later steps move up; if they held a report, the next reviewer now holds it; if they were the last reviewer, the route is complete with the reviewer before them; a route with no reviewer left is cancelled;
+- cancels review requests assigned to them;
+- keeps their name on everything they already did (saved revisions, messages, decisions).
+
+Adding the same name again brings their profile back.
+
 ---
 
 # 3. Navigate the application
@@ -270,6 +279,8 @@ Office then accepts those terms in Access, Word and Outlook. To stop using them,
 Incomplete drafts can be saved when their entered values meet storage requirements. A saved draft is not a certification that every policy check is satisfied.
 
 Saving formats entries the way NAVFIT98A does. Names, grades and rates, designators, titles, and rater and counselor names become uppercase. The member's name becomes **LAST, FIRST MI SUFFIX** (for example, *john q smith jr* becomes *SMITH, JOHN Q JR*), and the reporting senior's name becomes **LAST, F M**. Middle names are shortened to initials and periods are removed. A name typed without a comma is read as first, middle, last; type a comma after a last name of more than one word, such as *VAN DER BERG, ANNA*.
+
+Double-click the rater, senior rater or counselor field to fill it from the member directory. The rater and senior rater become **LAST, F M, RANK** (28 characters at most) and the counselor **LAST, F M** (20 at most); a name too long is shortened to the last name, and one that still does not fit is left for you to type.
 
 Check boxes start blank. A box you never click is saved as not answered; a cleared box is saved as No.
 

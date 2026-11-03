@@ -1333,6 +1333,33 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## P06 people picker and contributor management
+
+0.52.0-dev, schema 41 (2 November 2026), from the user's request: report people
+and contributors come from the member directory, contributors can be deleted, and
+manual entry stays.
+
+- **People fields.** Double-clicking the rater, senior rater or counselor field
+  opens the member picker (`frmUXSeniorPicker`, role mode). `MemberPeopleText`
+  formats the signature names as "LAST, F M, RANK" (28) and the counselor as
+  "LAST, F M" (20), or splits it into last name and initials where the form shows
+  them; too-long names fall back to the last name, then refuse.
+- **Contributors from the directory.** **Add from directory** creates a contributor
+  named "RANK LAST, FIRST MI" with `UserProfile.MemberID` set; a member is a
+  contributor once. Manual add stays.
+- **Delete contributor** (`DeleteContributor`). `UserProfile.IsRetired` hides the
+  profile from every contributor list and refuses switching, assignment and new
+  templates; history keeps the name. Their template steps are removed and closed
+  up (an empty template is archived); in active routes their steps are removed,
+  the next step takes over as holder, a route whose last step was removed is
+  complete, and a route with no reviewer or a deleted requester at step 0 is
+  cancelled, each with a route event. Pending review requests assigned to them
+  are cancelled with an event. The active contributor cannot be deleted. Adding
+  the same name again restores the profile.
+
+Tests: new `test-contributors` (28 assertions, including the editor picker) in the
+report-review-history suite.
+
 ## Member date reported
 
 0.52.0-dev, schema 40 (2 November 2026), from the user's request: the member

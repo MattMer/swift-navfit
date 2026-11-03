@@ -66,7 +66,7 @@ End Function
 
 Public Function LoadContributorStartup() As Boolean
  With Forms!frmContributorStart
-  !cboContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName,UserProfileID"
+  !cboContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName,UserProfileID"
   !cboContributor = Null
   !txtNewContributor = Null
   !lblStatus.Caption = "Choose your name for this launch, or add a contributor."

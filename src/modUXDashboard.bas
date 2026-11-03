@@ -171,7 +171,7 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
         If Left$(c.Tag, 4) = "MWX:" Then c.Visible = False
     Next
     Select Case mode
-        Case "Contributors": names = Array("lstContributors", "cmdSwitch", "txtContributor", "cmdAdd", "lblScope")
+        Case "Contributors": names = Array("lstContributors", "cmdSwitch", "cmdDeleteContributor", "txtContributor", "cmdAdd", "cmdAddDirectory", "lblScope")
         Case "Notes": names = Array("lblReportNotes", "lstReportNotes", "cmdOpenReportNote", "cmdRefreshReportNotes")
         Case "Counseling": names = Array("lblCounselingScope", "chkCounselingAll", "lblCounselingAll", "lstCounseling", "cmdCounselingRecord", "cmdCounselingMember")
         Case "Departures": names = Array("lblDeparturesScope", "chkDeparturesAll", "lblDeparturesAll", "lstDepartures", "lblDepartureEntry", "txtDepartureDate", "txtDepartureReason", "cmdDepartureConfirm", "cmdDepartureDismiss", "cmdDepartureMember")

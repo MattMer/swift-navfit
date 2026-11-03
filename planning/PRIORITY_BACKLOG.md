@@ -51,7 +51,7 @@ native test that fails before the fix.
 
 | ID | Priority | Work |
 | --- | --- | --- |
-| R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], to retire or replace a review route template [G09], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. |
+| R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. (Retiring and replacing route templates [G09] was done with F01.) |
 
 (R14, rank from the roster, moved into F02. T01 is done: the RUAD import test
 generates a synthetic NRRM roster when no sample file is given.)
@@ -60,7 +60,6 @@ generates a synthetic NRRM roster when no sample file is given.)
 - **P01, search:** search that ignores name order and punctuation, a period from/to filter, and saved named filter sets.
 - **P02, placeholder check:** an Information finding for Swift's own unfinished starter markers, such as `[MEASURABLE RESULT]`. It never blocks a save or output.
 - **P03, snippet target:** insert a snippet into the field being edited, at the cursor.
-- **P06, people picker:** pick the rater, senior rater and counselor from the directory.
 
 **Not taken:**
 - **P04, accomplishment notebook:** waits for demand.

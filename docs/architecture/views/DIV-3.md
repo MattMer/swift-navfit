@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 40, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 41, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -1304,6 +1304,8 @@ Microsoft Access (ACE) tables in schema 40, application 0.52.0-dev. Types are Ac
 | UserProfileID | AutoNumber |  |
 | ProfileGuid | Text (38) | yes |
 | DisplayName | Text (120) | yes |
+| IsRetired | Yes/No |  |
+| MemberID | Long |  |
 
 ## ValidationFinding
 

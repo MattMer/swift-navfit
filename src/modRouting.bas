@@ -15,15 +15,69 @@ End Function
 Private Function RouteProfile() As Long
     RouteProfile = ActiveContributorID()
 End Function
-Public Function AddContributor(ByVal name As String) As Long
-    Dim r As DAO.Recordset
+Public Function AddContributor(ByVal name As String, Optional ByVal memberID As Long = 0) As Long
+    Dim r As DAO.Recordset, retired As Variant
     Call RouteProfile
     name = Trim$(name)
     If Len(name) = 0 Or Len(name) > 120 Then Err.Raise vbObjectError + 1801, "modRouting.AddContributor", "Enter a contributor name of 1 to 120 characters."
-    If DCount("*", "UserProfile", "DisplayName='" & Replace(name, "'", "''") & "'") > 0 Then Err.Raise vbObjectError + 1802, "modRouting.AddContributor", "A contributor with this display name already exists."
-    Set r = CurrentDb.OpenRecordset("UserProfile", dbOpenDynaset)
-    r.AddNew: r!ProfileGuid = NewIdentity(): r!DisplayName = name: r.Update: r.Bookmark = r.LastModified
+    If DCount("*", "UserProfile", "IsRetired=False AND DisplayName=" & QuoteSQL(name)) > 0 Then Err.Raise vbObjectError + 1802, "modRouting.AddContributor", "A contributor with this display name already exists."
+    'A deleted contributor added again gets their old profile back, with its history.
+    retired = MajorScalar("SELECT Min(UserProfileID) FROM UserProfile WHERE IsRetired=True AND DisplayName=" & QuoteSQL(name))
+    If memberID > 0 And IsNull(retired) Then retired = MajorScalar("SELECT Min(UserProfileID) FROM UserProfile WHERE IsRetired=True AND MemberID=" & memberID)
+    If IsNull(retired) Then
+        Set r = CurrentDb.OpenRecordset("UserProfile", dbOpenDynaset)
+        r.AddNew: r!ProfileGuid = NewIdentity(): r!IsRetired = False
+    Else
+        Set r = CurrentDb.OpenRecordset("SELECT * FROM UserProfile WHERE UserProfileID=" & retired, dbOpenDynaset)
+        r.Edit: r!IsRetired = False
+    End If
+    r!DisplayName = name
+    If memberID > 0 Then r!MemberID = memberID
+    r.Update: r.Bookmark = r.LastModified
     AddContributor = r!UserProfileID: r.Close: Set r = Nothing
+End Function
+'A contributor from the command directory: "RANK LAST, FIRST MI", linked to the member.
+Public Function AddContributorFromMember(ByVal memberID As Long) As Long
+    Dim r As DAO.Recordset, name As String
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 1832, "modRouting.AddContributorFromMember", "Choose a member from the directory."
+    If r!IsArchived Then r.Close: Err.Raise vbObjectError + 1832, "modRouting.AddContributorFromMember", "Recover the member before adding them as a contributor."
+    name = Nz(r!ReportName, "")
+    If Len(name) = 0 Then name = NavyNameFormat(r!FullName)
+    name = Trim$(Nz(r!RankRate, "") & " " & name): r.Close
+    If DCount("*", "UserProfile", "IsRetired=False AND MemberID=" & memberID) > 0 Then Err.Raise vbObjectError + 1833, "modRouting.AddContributorFromMember", name & " is already a contributor."
+    AddContributorFromMember = AddContributor(name, memberID)
+End Function
+'Deleting a contributor keeps their name on everything they did, hides them from
+'every contributor list, takes them out of route templates and active review
+'routes, and cancels the review requests assigned to them. Returns a summary.
+Public Function DeleteContributor(ByVal profileID As Long) As String
+    Dim db As DAO.Database, w As DAO.Workspace, r As DAO.Recordset, name As String, tasks As Long, routes As String, trans As Boolean, operation As Long
+    On Error GoTo Failed
+    If profileID = RouteProfile() Then Err.Raise vbObjectError + 1830, "modRouting.DeleteContributor", "Switch to another contributor before deleting this one."
+    If Nz(MajorScalar("SELECT IsRetired FROM UserProfile WHERE UserProfileID=" & profileID), True) Then Err.Raise vbObjectError + 1831, "modRouting.DeleteContributor", "Choose a contributor to delete."
+    name = MajorScalar("SELECT DisplayName FROM UserProfile WHERE UserProfileID=" & profileID)
+    Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    Set r = db.OpenRecordset("SELECT * FROM ReviewTask WHERE AssignedTo=" & profileID & " AND TaskState='Pending'", dbOpenDynaset)
+    Do While Not r.EOF
+        r.Edit: r!TaskState = "Cancelled": r!FinishedAt = Now(): r.Update
+        Call RouteEvent(db, r!TaskID, RouteProfile(), "Cancelled", "Review request removed: " & name & " was deleted as a contributor.")
+        tasks = tasks + 1: r.MoveNext
+    Loop
+    r.Close: Set r = Nothing
+    routes = RouteRemoveContributor(db, profileID, name)
+    db.Execute "UPDATE UserProfile SET IsRetired=True WHERE UserProfileID=" & profileID, dbFailOnError
+    DeleteContributor = "Deleted " & name & ". " & routes & " " & tasks & " review request(s) cancelled. Their past work keeps their name."
+    operation = BeginOperation("Delete contributor", name)
+    FinishOperation operation, "Completed", DeleteContributor
+    w.CommitTrans: trans = False: Exit Function
+Failed:
+    Dim swiftPrimary As Object
+    Set swiftPrimary = SwiftFailure("modRouting", "DeleteContributor", "Execute", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not active"))
+    If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r": Set r = Nothing
+    If trans Then SwiftRollback w, swiftPrimary
+    On Error GoTo 0
+    SwiftRaise swiftPrimary
 End Function
 Public Sub RequireContributorSwitch()
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4815, "modRouting.RequireContributorSwitch", "Retry or discard pending comparison cells before switching contributors."
@@ -32,7 +86,7 @@ Public Sub RequireContributorSwitch()
 End Sub
 Public Function SwitchContributor(ByVal profileID As Long) As Boolean
     RequireContributorSwitch
-    If DCount("*", "UserProfile", "UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.SwitchContributor", "Select an existing contributor."
+    If DCount("*", "UserProfile", "IsRetired=False AND UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.SwitchContributor", "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError
     BindActiveContributor profileID
     UXLoadContext
@@ -42,7 +96,7 @@ Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As L
     Dim r As DAO.Recordset, w As DAO.Workspace, db As DAO.Database, trans As Boolean, id As Long, pid As Long, failure As Long, message As String, stage As String
     On Error GoTo Failed
     pid = RouteProfile()
-    If DCount("*", "UserProfile", "UserProfileID=" & assigneeID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.AssignReview", "Select an existing reviewer."
+    If DCount("*", "UserProfile", "IsRetired=False AND UserProfileID=" & assigneeID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.AssignReview", "Select an existing reviewer."
     If Not IsNull(due) Then due = DateValue(due)
     stage = "Begin assignment"
     Set db = CurrentDb: Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
@@ -138,7 +192,7 @@ Public Function LoadMyWork(Optional ByVal refreshQueue As Boolean = True) As Boo
         Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
     End If
     Forms!frmMyWork!lblProfile.Caption = "Active contributor: " & DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid) & ". Profiles are attribution, not authentication."
-    Forms!frmMyWork!lstContributors.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName": Forms!frmMyWork!lstContributors.Requery
+    Forms!frmMyWork!lstContributors.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName": Forms!frmMyWork!lstContributors.Requery
     Forms!frmMyWork!cboReviewer.RowSource = Forms!frmMyWork!lstContributors.RowSource: Forms!frmMyWork!cboReviewer.Requery
     sql = "SELECT t.TaskID,UXIdentity(r.OfficialName,r.MemberName) & ' | ' & r.FormKind & ' | ' & Nz(Format(r.PeriodEnd,'yyyy-mm-dd'),'No period') AS [Member and report],p.DisplayName AS Reviewer,t.TaskState AS [Review step],t.DueDate AS [Due date],IIf(t.RevisionID=r.CurrentRevisionID,'Current','Stale') AS [Saved version],r.IsArchived FROM (ReviewTask AS t INNER JOIN Report AS r ON t.ReportID=r.ReportID) INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID"
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
@@ -170,6 +224,13 @@ Public Function ContributorUI(ByVal action As String) As Boolean
     If action = "Add" Then
         Call AddContributor(Nz(Forms!frmMyWork!txtContributor, ""))
         Forms!frmMyWork!txtContributor = Null
+    ElseIf action = "Directory" Then
+        DoCmd.OpenForm "frmUXSeniorPicker", , , , , , "contributor"
+        ContributorUI = True: Exit Function
+    ElseIf action = "Delete" Then
+        If IsNull(Forms!frmMyWork!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
+        If MsgBox("Delete " & Forms!frmMyWork!lstContributors.Column(1) & "?" & vbCrLf & vbCrLf & "They are removed from route templates and active review routes, and review requests assigned to them are cancelled. Their past work keeps their name.", vbYesNo + vbExclamation, "Delete contributor") <> vbYes Then Exit Function
+        MsgBox DeleteContributor(CLng(Forms!frmMyWork!lstContributors)), vbInformation, "Delete contributor"
     Else
         If IsNull(Forms!frmMyWork!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
         Call SwitchContributor(Nz(Forms!frmMyWork!lstContributors, 0))

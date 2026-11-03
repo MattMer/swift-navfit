@@ -75,6 +75,35 @@ Public Sub RefreshDirectoryFromReport(ByVal memberID As Long, ByVal reportID As 
         SaveDirectoryMember memberID, version, display, official, rank, ssn, "Report"
     End If
 End Sub
+'P06: a report people field filled from a directory member. Signature names are
+'"LAST, F M, RANK" within 28 characters; the counselor is "LAST, F M" within 20, or
+'split into last name and initials. Raises when the name cannot fit.
+Public Function MemberPeopleText(ByVal memberID As Long, ByVal key As String) As String
+    Dim r As DAO.Recordset, brief As String, lastName As String, initials As String, rank As String, limit As Long
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 6970, "modCommandDirectory.MemberPeopleText", "Choose a member from the directory."
+    brief = Nz(r!ReportName, ""): If Len(brief) = 0 Then brief = Nz(r!FullName, "")
+    rank = Nz(r!RankRate, ""): r.Close
+    brief = NavyNameFormat(brief, True)
+    If InStr(brief, ",") > 0 Then
+        lastName = Trim$(Left$(brief, InStr(brief, ",") - 1)): initials = Trim$(Mid$(brief, InStr(brief, ",") + 1))
+    Else
+        lastName = brief
+    End If
+    Select Case key
+        Case "RaterName", "SeniorRaterName"
+            limit = 28: MemberPeopleText = brief & IIf(Len(rank) > 0, ", " & rank, "")
+            If Len(MemberPeopleText) > limit Then MemberPeopleText = lastName & IIf(Len(rank) > 0, ", " & rank, "")
+        Case "CounselorName"
+            limit = 20: MemberPeopleText = brief
+            If Len(MemberPeopleText) > limit Then MemberPeopleText = lastName
+        Case "CounselorLastName": limit = 20: MemberPeopleText = lastName
+        Case "CounselorFirstInitial": limit = 1: MemberPeopleText = Left$(initials, 1)
+        Case "CounselorMiddleInitial": limit = 3: MemberPeopleText = Replace(Trim$(Mid$(initials, 2)), " ", "")
+        Case Else: Err.Raise vbObjectError + 6970, "modCommandDirectory.MemberPeopleText", "This field is not filled from the directory."
+    End Select
+    If Len(MemberPeopleText) > limit Then Err.Raise vbObjectError + 6971, "modCommandDirectory.MemberPeopleText", "The member's name does not fit this field (" & limit & " characters). Type it instead."
+End Function
 'A new report for a member starts with the profile's date reported (block 9).
 Public Sub MemberCreationDefaults(ByVal values As Object, ByVal memberID As Long)
     Dim reported As Variant

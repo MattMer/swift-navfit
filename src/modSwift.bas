@@ -11,7 +11,7 @@ End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
 Public Const APP_VERSION As String = "0.52.0-dev"
-Public Const SCHEMA_VERSION As Long = 40
+Public Const SCHEMA_VERSION As Long = 41
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -403,7 +403,7 @@ Failed:
 End Function
 
 Public Function LoadHome() As Boolean
-    Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+    Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName"
     Forms!frmHome!uxContributor = ProfileID()
     Forms!frmHome!uxContributorStatus.Caption = ""
     Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")

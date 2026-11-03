@@ -218,7 +218,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
-                    Top =5000
+                    Top =5450
                     Width =10450
                     Height =1600
                     FontSize =10
@@ -230,9 +230,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =5000
+                    LayoutCachedTop =5450
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =6600
+                    LayoutCachedHeight =7050
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -390,6 +390,88 @@ Begin Form
                     LayoutCachedTop =4350
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =4800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =10100
+                    Top =3450
+                    Width =3200
+                    Height =450
+                    FontSize =10
+                    TabIndex =52
+                    ForeColor =4205854
+                    Name ="cmdDeleteContributor"
+                    Caption ="Delete contributor"
+                    OnClick ="=ContributorUI(\"Delete\")"
+                    FontName ="Segoe UI"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =10100
+                    LayoutCachedTop =3450
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =3900
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =10100
+                    Top =4900
+                    Width =3200
+                    Height =450
+                    FontSize =10
+                    TabIndex =53
+                    ForeColor =4205854
+                    Name ="cmdAddDirectory"
+                    Caption ="Add from directory"
+                    OnClick ="=ContributorUI(\"Directory\")"
+                    FontName ="Segoe UI"
+                    Tag ="MWX:body"
+
+                    LayoutCachedLeft =10100
+                    LayoutCachedTop =4900
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =5350
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

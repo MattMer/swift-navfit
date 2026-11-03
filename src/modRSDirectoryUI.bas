@@ -138,6 +138,14 @@ Public Function RSLoadPicker() As Boolean
     If pickerMode = "link" Then
         f.Caption = "Link reporting senior to a member": f!lblHeading.Caption = f.Caption
         f!cmdManual.Visible = False
+    ElseIf pickerMode = "contributor" Then
+        f.Caption = "Add a contributor from the directory": f!lblHeading.Caption = f.Caption
+        f!lblIntro.Caption = "Choose the command member to add as a contributor. Their rank/rate and report name become the contributor name. To add someone who is not in the directory, type their name on My Work instead."
+        f!cmdManual.Visible = False
+    ElseIf Left$(pickerMode, 5) = "role:" Then
+        f.Caption = "Fill " & RSPickerRoleName() & " from the directory": f!lblHeading.Caption = f.Caption
+        f!lblIntro.Caption = "Choose the command member. The field is filled the way the report form expects; you can still edit it before saving."
+        f!cmdManual.Visible = False
     End If
     RSLoadPicker = RSPickerFilter(): UXSortHeaders f
 End Function
@@ -152,16 +160,69 @@ Public Function RSPickerFilter() As Boolean
         search = QuoteSQL("*" & LikeText(search) & "*")
         where = where & " AND (m.FullName Like " & search & " OR m.ReportName Like " & search & " OR m.RankRate Like " & search & " OR m.RUADData Like " & search & ")"
     End If
-    f!lstMembers.RowSource = "SELECT m.MemberID,IIf(Len(Nz(m.ReportName,''))=0,m.FullName,m.ReportName) AS MemberName,m.RankRate,RSMemberRUAD(m.MemberID,'DESG') AS MemberDesig,RSMemberRUAD(m.MemberID,'UIC') AS MemberUIC,IIf(s.SeniorID Is Null,'','Already a senior') AS SeniorStatus " & _
+    f!lstMembers.RowSource = "SELECT m.MemberID,IIf(Len(Nz(m.ReportName,''))=0,m.FullName,m.ReportName) AS MemberName,m.RankRate,RSMemberRUAD(m.MemberID,'DESG') AS MemberDesig,RSMemberRUAD(m.MemberID,'UIC') AS MemberUIC," & RSPickerStatus() & " AS SeniorStatus " & _
         "FROM CommandMember AS m LEFT JOIN ReportingSeniorRecord AS s ON s.MemberID=m.MemberID WHERE " & where & " ORDER BY IIf(Len(Nz(m.ReportName,''))=0,m.FullName,m.ReportName)"
     f!lstMembers.Requery
     f!lblStatus.Caption = IIf(f!lstMembers.ListCount = 0, "No active members match. Change the search, or enter details by hand.", "Choose a member, then Use selected member.")
     RSPickerFilter = True
 End Function
+'The picker's last column: who already holds the member in this mode.
+Private Function RSPickerStatus() As String
+    If pickerMode = "contributor" Then
+        RSPickerStatus = "IIf(DCount('*','UserProfile','IsRetired=False AND MemberID=' & m.MemberID)>0,'Already a contributor','')"
+    ElseIf Left$(pickerMode, 5) = "role:" Then
+        RSPickerStatus = "''"
+    Else
+        RSPickerStatus = "IIf(s.SeniorID Is Null,'','Already a senior')"
+    End If
+End Function
+Private Function RSPickerRoleName() As String
+    Select Case Mid$(pickerMode, 6)
+        Case "RaterName": RSPickerRoleName = "the rater"
+        Case "SeniorRaterName": RSPickerRoleName = "the senior rater"
+        Case Else: RSPickerRoleName = "the counselor"
+    End Select
+End Function
+'P06: double-clicking the rater, senior rater or counselor field opens the picker.
+Public Function UXPickPerson(ByVal key As String) As Boolean
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Exit Function
+    If Not Forms!frmEditor!cmdSave.Enabled Then Exit Function
+    If CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded Then DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+    DoCmd.OpenForm "frmUXSeniorPicker", , , , , , "role:" & key
+    UXPickPerson = True
+End Function
+'Fill the editor's people field (and the counselor's split name fields, where the
+'report type shows them) from the chosen member.
+Private Function RSPickerFillRole(ByVal member As Long) As Boolean
+    Dim key As String, keys As Variant, k As Variant, values As Object, c As Access.Control
+    key = Mid$(pickerMode, 6): Set values = CreateObject("Scripting.Dictionary")
+    If key = "RaterName" Or key = "SeniorRaterName" Then keys = Array(key) Else keys = Array("CounselorName", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial")
+    For Each k In keys
+        Set c = Forms!frmEditor.Controls("txt" & k)
+        If k = key Or c.Visible Then values.Add CStr(k), MemberPeopleText(member, CStr(k))
+    Next
+    For Each k In values.Keys: Forms!frmEditor.Controls("txt" & k) = values(k): Next
+    Call CheckpointEditor: Call UXRefreshEditor
+    RSPickerFillRole = True
+End Function
 Public Function RSPickerUse() As Boolean
     Dim f As Access.Form, member As Long, owner As Long, current As Long
     Set f = Forms!frmUXSeniorPicker: member = Nz(f!lstMembers, 0)
     If member = 0 Then f!lblStatus.Caption = "Choose a member first.": Exit Function
+    If pickerMode = "contributor" Or Left$(pickerMode, 5) = "role:" Then
+        On Error GoTo Refused
+        If pickerMode = "contributor" Then
+            Call AddContributorFromMember(member)
+        Else
+            If Not CurrentProject.AllForms("frmEditor").IsLoaded Then f!lblStatus.Caption = "The report is closed. Open it again to fill this field.": Exit Function
+            Call RSPickerFillRole(member)
+        End If
+        DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+        If pickerMode = "contributor" And CurrentProject.AllForms("frmMyWork").IsLoaded Then Call LoadMyWork
+        RSPickerUse = True: Exit Function
+Refused:
+        f!lblStatus.Caption = Err.Description: Exit Function
+    End If
     If pickerMode = "link" Then
         If Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then f!lblStatus.Caption = "The reporting senior record is closed. Open it again to link a member.": Exit Function
         current = Nz(Forms!frmUXSeniorEditor!txtSeniorID, 0)

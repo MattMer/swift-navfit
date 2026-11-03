@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 40,
+  "SchemaVersion": 41,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -288,7 +288,9 @@
     "CREATE TABLE ReportDueDismissal (DismissalID COUNTER PRIMARY KEY, MemberID LONG NOT NULL, Basis TEXT(20) NOT NULL, DueDate DATETIME NOT NULL, Reason TEXT(255) NOT NULL, DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
     "CREATE INDEX IX_ReportDueDismissal_Member ON ReportDueDismissal (MemberID,Basis,DueDate)",
     "ALTER TABLE ReportDueDismissal ADD CONSTRAINT FK_ReportDueDismissal_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
-    "ALTER TABLE CommandMember ADD COLUMN DateReported DATETIME"
+    "ALTER TABLE CommandMember ADD COLUMN DateReported DATETIME",
+    "ALTER TABLE UserProfile ADD COLUMN IsRetired BIT",
+    "ALTER TABLE UserProfile ADD COLUMN MemberID LONG"
   ],
   "Queries": [
     {

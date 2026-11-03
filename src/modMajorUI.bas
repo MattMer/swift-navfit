@@ -13,7 +13,7 @@ Public Function LoadMajorWorkbench() As Boolean
     f!cboBatch.RowSource = "SELECT BatchID,BatchKind & ' / ' & BatchState & ' / ' & Left(BatchNote,60) FROM ChangeBatch ORDER BY BatchID DESC"
     f!cboProposal.RowSource = "SELECT ProposalID,'Report ' & ReportID & ' / ' & FieldKey & ' / ' & ProposalState FROM qryMeetingProposalRevisionIDs ORDER BY ProposalID DESC"
     f!cboFolder.RowSource = "SELECT FolderID,FolderName FROM Folder ORDER BY FolderName"
-    f!cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName,UserProfileID"
+    f!cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName,UserProfileID"
     For Each key In DraftFieldKeys()
         If key <> "FormKind" Then
             If Len(keys) > 0 Then keys = keys & ";"

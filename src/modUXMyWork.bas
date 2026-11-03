@@ -144,7 +144,7 @@ Public Function UXLoadWorkQueue() As Boolean
     If Not CurrentProject.AllForms("frmMyWork").IsLoaded Then Exit Function
     Call UXAssertView("frmMyWork")
     Set f = Forms!frmMyWork
-    f!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName"
+    f!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName"
     f!uxContributor = MajorAuthor()
     selected = Nz(f!lstWork, "")
     Call UXPrepareWorkRows(MajorAuthor(), Nz(f!chkAll, False))

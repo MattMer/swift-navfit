@@ -29,7 +29,7 @@ connection. Data enters and leaves only through files the user chooses.
 | Fact | Value |
 | --- | --- |
 | Application version | 0.52.0-dev |
-| Schema version | 40 |
+| Schema version | 41 |
 | Tables / enforced relationships | 76 / 167 |
 | Report fields in the catalogue | 100 |
 | VBA modules / forms | 113 / 70 |

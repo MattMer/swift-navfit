@@ -6,6 +6,7 @@ $caseArgs=@('-BuildPath',$BuildPath)
 if($SeedDemo){$caseArgs+='-SeedDemo'}
 Invoke-CaseScript 'test-report-tools' $caseArgs
 Invoke-CaseScript 'test-route-chain' @('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-contributors' @('-BuildPath',$BuildPath)
 if($Tier -eq 'extended'){
 $caseArgs=@('-BuildPath',$BuildPath)
 if($FixturePath){$caseArgs+=@('-FixturePath',$FixturePath)}

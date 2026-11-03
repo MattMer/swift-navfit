@@ -54,7 +54,7 @@ End Function
 Public Function UXLoadRouteTemplates() As Boolean
  With Forms!frmUXRouteTemplates
   !lstTemplates.RowSource = "SELECT TemplateID,Title FROM RouteTemplate WHERE IsArchived=False ORDER BY Title"
-  !cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile ORDER BY DisplayName,UserProfileID"
+  !cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName,UserProfileID"
  End With
  UXLoadRouteTemplates = True
 End Function

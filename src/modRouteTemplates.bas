@@ -18,6 +18,7 @@ Public Function CreateRouteTemplate(ByVal title As String, ByVal assigneesCSV As
     r.AddNew: r!Title = title: r!IsArchived = False: r.Update: r.Bookmark = r.LastModified: id = r!TemplateID: r.Close
     Set s = ownedDB.OpenRecordset("RouteTemplateStep", dbOpenDynaset)
     For Each key In Split(assigneesCSV, ",")
+        If DCount("*", "UserProfile", "IsRetired=False AND UserProfileID=" & CLng(Trim$(key))) = 0 Then Err.Raise vbObjectError + 4300, "modRouteTemplates.CreateRouteTemplate", "A chosen reviewer is not an active contributor."
         Set ids = MajorIDs(CStr(key))
         ordinal = ordinal + 1
         s.AddNew: s!TemplateID = id: s!StepOrdinal = ordinal: s!AssigneeID = CLng(Trim$(key)): s!Instructions = instructions: s.Update
@@ -237,6 +238,92 @@ Private Function RouteRunHolder(ByVal r As DAO.Recordset) As Long
         RouteRunHolder = Nz(MajorScalar("SELECT AssigneeID FROM RouteRunStep WHERE RunID=" & r!RunID & " AND StepOrdinal=" & r!CurrentStep), 0)
     End If
 End Function
+'A deleted contributor leaves every route template and active route. Later steps
+'move up; when the holder is removed the next step holds the draft; a route with no
+'reviewer left, or still with a deleted requester at step 0, is cancelled. Runs in
+'the caller's transaction. Returns a summary.
+Public Function RouteRemoveContributor(ByVal db As DAO.Database, ByVal profileID As Long, ByVal name As String) As String
+    Dim ids As Collection, id As Variant, r As DAO.Recordset, n As Long, before As Long, k As Long, revision As Long, templates As Long, emptied As Long, runs As Long, cancelled As Long, note As String
+    note = name & " was deleted as a contributor."
+    Set ids = RouteIDs(db, "SELECT DISTINCT TemplateID FROM RouteTemplateStep WHERE AssigneeID=" & profileID)
+    For Each id In ids
+        n = RouteRenumber(db, "SELECT * FROM RouteTemplateStep WHERE TemplateID=" & id & " ORDER BY StepOrdinal", profileID, 0, before)
+        If n = 0 Then
+            Set r = db.OpenRecordset("SELECT * FROM RouteTemplate WHERE TemplateID=" & id, dbOpenDynaset)
+            r.Edit: r!IsArchived = True: r.Update: r.Close: emptied = emptied + 1
+        End If
+        templates = templates + 1
+    Next
+    Set ids = RouteIDs(db, "SELECT DISTINCT s.RunID FROM RouteRunStep AS s INNER JOIN RouteRun AS u ON s.RunID=u.RunID WHERE s.AssigneeID=" & profileID & " AND u.RunState In ('Pending','Accepted')")
+    For Each id In ids
+        Set r = db.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & id, dbOpenDynaset)
+        k = r!CurrentStep: revision = CurrentRevision(r!ReportID)
+        n = RouteRenumber(db, "SELECT * FROM RouteRunStep WHERE RunID=" & id & " ORDER BY StepOrdinal", profileID, k, before)
+        r.Edit
+        If n = 0 Then
+            r!RunState = "Cancelled": cancelled = cancelled + 1
+        ElseIf r!RunState = "Accepted" Then
+            r!CurrentStep = n
+            If Nz(r!ApprovedBy, 0) = profileID Then r!ApprovedBy = RouteStepAssignee(db, CLng(id), n)
+        ElseIf k - before > n Then
+            'The removed holder was the last step; everyone left has forwarded.
+            r!CurrentStep = n: r!RunState = "Accepted": r!ApprovedBy = RouteStepAssignee(db, CLng(id), n): r!ApprovedAt = Now()
+        Else
+            r!CurrentStep = k - before
+            If k - before >= 1 Then RouteSetIncoming db, CLng(id), k - before, revision
+        End If
+        r.Update: r.Bookmark = r.LastModified
+        RouteEventAdd db, CLng(id), IIf(n = 0, "Cancelled", "Reviewer removed"), k, r!CurrentStep, revision, note & IIf(n = 0, " No reviewer remains; the route is cancelled.", "")
+        r.Close: runs = runs + 1
+    Next
+    Set r = db.OpenRecordset("SELECT * FROM RouteRun WHERE RequestedBy=" & profileID & " AND RunState='Pending' AND CurrentStep=0", dbOpenDynaset)
+    Do While Not r.EOF
+        r.Edit: r!RunState = "Cancelled": r.Update
+        RouteEventAdd db, r!RunID, "Cancelled", 0, 0, CurrentRevision(r!ReportID), note & " The report was back with them as requester; the route is cancelled."
+        cancelled = cancelled + 1: r.MoveNext
+    Loop
+    r.Close
+    RouteRemoveContributor = "Removed from " & templates & " route template(s) (" & emptied & " left empty and deleted) and " & runs & " active route(s); " & cancelled & " route(s) cancelled;"
+End Function
+Private Function RouteIDs(ByVal db As DAO.Database, ByVal sql As String) As Collection
+    Dim r As DAO.Recordset
+    Set RouteIDs = New Collection
+    Set r = db.OpenRecordset(sql, dbOpenSnapshot)
+    Do While Not r.EOF: RouteIDs.Add CLng(r.Fields(0).Value): r.MoveNext: Loop
+    r.Close
+End Function
+'Deletes a contributor's steps and closes the gaps. Returns the steps left; before
+'counts removed steps below currentStep.
+Private Function RouteRenumber(ByVal db As DAO.Database, ByVal sql As String, ByVal profileID As Long, ByVal currentStep As Long, ByRef before As Long) As Long
+    Dim s As DAO.Recordset
+    before = 0
+    Set s = db.OpenRecordset(sql, dbOpenDynaset)
+    Do While Not s.EOF
+        If s!AssigneeID = profileID Then
+            If s!StepOrdinal < currentStep Then before = before + 1
+            s.Delete
+        Else
+            RouteRenumber = RouteRenumber + 1
+            If s!StepOrdinal <> RouteRenumber Then s.Edit: s!StepOrdinal = RouteRenumber: s.Update
+        End If
+        s.MoveNext
+    Loop
+    s.Close
+End Function
+Private Function RouteStepAssignee(ByVal db As DAO.Database, ByVal runID As Long, ByVal ordinal As Long) As Long
+    Dim s As DAO.Recordset
+    Set s = db.OpenRecordset("SELECT AssigneeID FROM RouteRunStep WHERE RunID=" & runID & " AND StepOrdinal=" & ordinal, dbOpenSnapshot)
+    If Not s.EOF Then RouteStepAssignee = s!AssigneeID
+    s.Close
+End Function
+Private Sub RouteSetIncoming(ByVal db As DAO.Database, ByVal runID As Long, ByVal ordinal As Long, ByVal revision As Long)
+    Dim s As DAO.Recordset
+    Set s = db.OpenRecordset("SELECT * FROM RouteRunStep WHERE RunID=" & runID & " AND StepOrdinal=" & ordinal, dbOpenDynaset)
+    If Not s.EOF Then
+        If IsNull(s!IncomingRevisionID) Then s.Edit: s!IncomingRevisionID = revision: s.Update
+    End If
+    s.Close
+End Sub
 Public Function RouteHolder(ByVal runID As Long) As Long
     Dim r As DAO.Recordset
     Set r = CurrentDb.OpenRecordset("SELECT * FROM RouteRun WHERE RunID=" & runID, dbOpenSnapshot)
