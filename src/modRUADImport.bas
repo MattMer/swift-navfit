@@ -217,16 +217,27 @@ Public Function RUADRosterRank(ByVal data As Object) As String
 End Function
 'Suggest the existing member for each row: one active member with the row's DoD ID
 '(MNA), or else whose stored roster name, or else whose display name, equals the
-'row's name. Returns how many rows
-'have a suggestion. A suggestion is not identity; the coordinator confirms it.
+'row's name, or else whose name in report format (LAST, FIRST MI) equals the row's.
+'Returns how many rows have a suggestion. A suggestion is not identity; the
+'coordinator confirms it.
 Public Function RUADSuggest() As Long
-    Dim byRoster As Object, byName As Object, byDoDID As Object, r As DAO.Recordset, row As Object, name As String, values As Object, key As String
-    Set byDoDID = CreateObject("Scripting.Dictionary")
+    Dim byRoster As Object, byName As Object, byDoDID As Object, byReport As Object, r As DAO.Recordset, row As Object, name As String, values As Object, key As String, field As Variant
+    Set byDoDID = CreateObject("Scripting.Dictionary"): Set byReport = CreateObject("Scripting.Dictionary")
     Set byRoster = CreateObject("Scripting.Dictionary"): byRoster.CompareMode = vbTextCompare
     Set byName = CreateObject("Scripting.Dictionary"): byName.CompareMode = vbTextCompare
-    Set r = CurrentDb.OpenRecordset("SELECT MemberID,FullName,RUADData FROM CommandMember WHERE IsArchived=False", dbOpenSnapshot)
+    Set r = CurrentDb.OpenRecordset("SELECT MemberID,FullName,ReportName,RUADData FROM CommandMember WHERE IsArchived=False", dbOpenSnapshot)
     Do While Not r.EOF
         key = Trim$(r!FullName): If byName.Exists(key) Then byName(key) = -1 Else byName.Add key, CLng(r!MemberID)
+        For Each field In Array(r!ReportName, r!FullName)
+            key = NavyNameFormat(Nz(field, ""))
+            If Len(key) > 0 Then
+                If Not byReport.Exists(key) Then
+                    byReport.Add key, CLng(r!MemberID)
+                ElseIf byReport(key) <> r!MemberID Then
+                    byReport(key) = -1
+                End If
+            End If
+        Next
         If Not IsNull(r!RUADData) Then
             Set values = RUADDecode(r!RUADData): key = Trim$(Nz(values("NAME"), ""))
             If Len(key) > 0 Then
@@ -250,6 +261,13 @@ Public Function RUADSuggest() As Long
                 If byRoster(name) > 0 Then row("Suggested") = byRoster(name)
             ElseIf byName.Exists(name) Then
                 If byName(name) > 0 Then row("Suggested") = byName(name)
+            Else
+                'MNA writes LAST FIRST MIDDLE without the comma.
+                If sourceFormat = "MNA" And InStr(name, ",") = 0 Then name = Replace(name, " ", ", ", 1, 1)
+                key = NavyNameFormat(name)
+                If byReport.Exists(key) Then
+                    If byReport(key) > 0 Then row("Suggested") = byReport(key)
+                End If
             End If
             If row("Suggested") > 0 Then RUADSuggest = RUADSuggest + 1
         End If

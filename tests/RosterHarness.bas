@@ -22,7 +22,7 @@ Private Function WriteRoster(ByVal people As Variant) As String
                 Case "SELRES TYPE": value = "Drilling"
                 Case Else: value = "SYN"
             End Select
-            cells = cells & IIf(Len(cells) > 0, ",", "") & value
+            cells = cells & IIf(Len(cells) > 0, ",", "") & """" & value & """"
         Next
         text = text & vbCrLf & cells
     Next
@@ -109,6 +109,13 @@ Public Function TestRoster() As String
     Check DLookup("DepartureState", "MemberDeparture", "DepartureID=" & id) = "Confirmed" And DLookup("ConfirmedDate", "MemberDeparture", "DepartureID=" & id) = DateValue(soon), "Confirm not recorded"
     Check PendingDepartureCount() = 0 And InStr(DepartureRows(), "CHARLIE THREE") > 0 And InStr(DepartureRows(), "BRAVO TWO") = 0 And InStr(DepartureRows(True), "BRAVO TWO") > 0, "Open and all-history lists wrong"
     Check ResolveRefused(id, "Dismiss", Null, "Changed mind"), "A confirmed departure was dismissed"
+
+    ' A member entered by hand matches a roster row written in report format.
+    Dim quinn As Long, path As String
+    quinn = SaveDirectoryMember(0, 0, "Quinn Synthname", "SYNTHNAME, QUINN", "IT2", "")
+    path = WriteRoster(Array("SYNTHNAME, QUINN|IT2|11111|" & later))
+    Call RUADLoad(path): Call RUADSuggest: Kill path
+    Check RUADRow(1)("Suggested") = quinn, "Roster name in report format did not match the member"
     TestRoster = "PASS: " & checks & " roster snapshot, departure, matching and rank assertions": Exit Function
 Failed:
     TestRoster = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description

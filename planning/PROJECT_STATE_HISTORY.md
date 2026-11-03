@@ -1333,6 +1333,16 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## Roster matching by report-format name (3 November 2026)
+
+Found while preparing synthetic rosters for a walkthrough video: roster rows matched
+members only by exact name, so an MNA "TAYLOR JAMIE" or NRRM "TAYLOR, JAMIE" never
+matched a member created from reports ("Jamie Taylor", report name "TAYLOR, JAMIE")
+and the import offered duplicate profiles. `RUADSuggest` now falls back to the name
+in report format (LAST, FIRST MI), from the member's report name or display name,
+reading MNA names as LAST FIRST MIDDLE; it suggests only when one member fits.
+Test: `test-roster` (17 NRRM assertions).
+
 ## Screenshots for the README and user guide (3 November 2026)
 
 The README's three screenshots are replaced and a fourth added (Overview with
