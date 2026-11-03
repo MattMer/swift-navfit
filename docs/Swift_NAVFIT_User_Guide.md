@@ -130,7 +130,7 @@ Contributor switching is guarded while report work is open. Do not bypass the gu
 
 | Left navigation | Use it for |
 | --- | --- |
-| Overview | Workspace status, work counts, and recovery entry points. |
+| Overview | Workspace status, work counts, reports due, and recovery entry points. |
 | Reports | Search, filters, report creation, import, and selected-report actions. |
 | Summary groups | Membership, shared defaults, traits, group status, and closeout. |
 | My Work | Assigned reviews, current route work, contributor controls, and report conversations. |
@@ -138,6 +138,21 @@ Contributor switching is guarded while report work is open. Do not bypass the gu
 | Settings & Help | Help, backups, transfer from older Swift versions, operation history, and diagnostics. |
 
 The top-right **?** opens help for the current window. Use the application's navigation and return buttons to keep the report or group context correct. Leaving a report follows its normal save/recovery guards. Leaving a group closes its working view so another group can open with the correct context.
+
+### Reports due
+
+**Overview > Reports due** lists the reports the command owes:
+
+- **Periodic** reports for each active member, from the periodic calendar for their paygrade (BUPERSINST 1610.10H tables 1 and 1A), shown from 90 days before the date until 90 days after it. E-9 and CWO5 have no Regular periodic report from 3 June 2026 (NAVADMIN 132/26).
+- **Detachment** reports for members flagged in **My Work > Departures**, at the confirmed detachment date or the PRD.
+
+Each row shows the member, rate, report form, due date and status (overdue, or due in N days). A row clears once a matching draft exists: a Regular report for that member ending on the due date (within 30 days of a detachment date). A Concurrent-only report does not count.
+
+- **Create draft** makes that report for the member, already linked to them: the form for their paygrade, Regular and Periodic (or Detachment of Individual), ending on the due date and starting the day after their latest earlier report. It opens in the editor.
+- **Dismiss** needs a reason in the box beside it, for example when a detachment report is not needed because the periodic report falls close by.
+- **Departures (N)** opens **My Work > Departures**. Double-click a row to open the member's history.
+
+Members with no rank/rate are counted below the list, because no due date can be worked out for them. Swift does not decide whether a report is required; check eligibility against current policy.
 
 ## 3.2 Report workspace map
 
@@ -391,9 +406,11 @@ Use the report-selection actions in **Reports** to archive or recover reports. A
 
 Use the command-member tools associated with report creation to maintain reusable identities. Confirm spelling, identifiers, rank/rate, and paygrade before creating reports. A member-directory record and a report are related but distinct records; prior evaluations remain historical information rather than silently replacing today's report.
 
+A member profile also holds **Date reported** (block 9), the date the member reported aboard. Neither roster format carries it, so enter it on the profile; leave it blank when unknown. New reports created for the member (from **Reports due** or from the directory) start with it filled in, and you can still change it on the report. Saving a report with a later date reported updates the profile; an earlier date never moves it back.
+
 ### Import a roster and track departures
 
-**Resources > Command member directory > Import / refresh RUAD CSV** reads the command's NRRM RUAD roster (CSV). Choose the file, then **Match roster rows to members**: rows for one existing member are matched to that member, rows for new people get a new profile, and a name shared by several members waits for you to choose. Check the matches, **Preview**, then **Apply**.
+**Resources > Command member directory > Import / refresh RUAD CSV** reads the command's roster: an NRRM RUAD export (CSV) or an MNA roster workbook (.xlsx). Choose the file, then **Match roster rows to members**: rows for one existing member are matched to that member, rows for new people get a new profile, and a name shared by several members waits for you to choose. Check the matches, **Preview**, then **Apply**.
 
 - Tick **This is the complete roster for its UICs** when the file is the full roster. Swift then compares it with the last complete roster for the same UICs, and anyone missing from the newer one is flagged as departing. Leave it clear for a partial or filtered export; then nobody is flagged as missing.
 - A member whose PRD is within 90 days is also flagged as departing, with the PRD as the expected date.
@@ -401,7 +418,7 @@ Use the command-member tools associated with report creation to maintain reusabl
 
 Swift never archives or deletes anyone because of a roster. **My Work > Departures** lists the flagged members. Select one and choose **Confirm departure** with the detachment date, or **Dismiss (still aboard)** with a reason. A member who reappears on a later complete roster is marked returned automatically. Every import is kept as a dated snapshot.
 
-MNA rosters are not supported yet.
+For an MNA workbook, Swift reads the date and UIC at the top and the POC at the bottom, and shows them after you choose the file. The roster's date becomes the snapshot date, and everyone listed (local, cross-assigned in or out, and IAP) counts for that UIC. Vacant billets are skipped. MNA rows carry the member's DoD ID, so a member whose name changed is still matched to the same profile. Names are converted to report format (LAST, FIRST MI). MNA does not list officer ranks, so a new officer profile starts without one. A roster dated before the last complete roster for its UIC cannot be marked complete.
 
 ## 8.2 Create reports from members
 

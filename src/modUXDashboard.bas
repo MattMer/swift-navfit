@@ -230,7 +230,59 @@ Public Function UXDashboardRefresh() As Boolean
     f!cmdRecovery.Enabled = (recoveryCount > 0)
     f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
     f!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
+    If UXHasControl(f, "uxReportsDue") Then UXDueRefresh
     UXDashboardRefresh = True
+End Function
+' Reports due (F03): what the command owes, worked out from the directory, the
+' periodic calendar and departures. It clears once a matching draft exists.
+Public Function UXDueRefresh() As Boolean
+    Dim f As Access.Form, rows As String, count As Long, missing As Long, note As String
+    Set f = Forms!frmHome
+    rows = ReportsDueRows(count, missing)
+    f!uxReportsDue.RowSourceType = "Value List": f!uxReportsDue.RowSource = rows
+    f!uxDueHeading.Caption = "Reports due (" & count & ")"
+    f!cmdDueDepartures.Caption = "Departures (" & PendingDepartureCount() & ")"
+    note = "Periodic reports due within " & DUE_LEAD_DAYS & " days, or up to " & DUE_OVERDUE_DAYS & " days overdue, and detachment reports for departures. A report clears once a matching draft exists."
+    If missing > 0 Then note = missing & IIf(missing = 1, " active member has", " active members have") & " no rank/rate, so no due date can be worked out. " & note
+    f!uxDueNote.Caption = note
+    UXDueRefresh = True
+End Function
+Private Function UXDueKey() As String
+    If IsNull(Forms!frmHome!uxReportsDue) Then Forms!frmHome!uxDueNote.Caption = "Select a due report first." Else UXDueKey = CStr(Forms!frmHome!uxReportsDue)
+End Function
+Public Function UXDueCreate() As Boolean
+    Dim key As String, id As Long
+    On Error GoTo Failed
+    key = UXDueKey(): If Len(key) = 0 Then Exit Function
+    id = CreateDueDraft(key)
+    UXDueRefresh
+    If Not UXLeaveEditor() Then Exit Function
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+    UXDueCreate = True
+    Exit Function
+Failed:
+    Forms!frmHome!uxDueNote.Caption = Err.Description
+End Function
+Public Function UXDueDismiss() As Boolean
+    Dim key As String
+    On Error GoTo Failed
+    key = UXDueKey(): If Len(key) = 0 Then Exit Function
+    Call DismissDue(key, Nz(Forms!frmHome!txtDueReason, ""))
+    Forms!frmHome!txtDueReason = Null
+    UXDueRefresh
+    Forms!frmHome!uxDueNote.Caption = "Marked not required. " & Forms!frmHome!uxDueNote.Caption
+    UXDueDismiss = True: Exit Function
+Failed:
+    Forms!frmHome!uxDueNote.Caption = Err.Description
+End Function
+Public Function UXDueDepartures() As Boolean
+    If Not UXNavigate("frmMyWork") Then Exit Function
+    UXDueDepartures = UXMyWorkMode("Departures")
+End Function
+Public Function UXDueOpenMember() As Boolean
+    Dim key As String
+    key = UXDueKey(): If Len(key) = 0 Then Exit Function
+    UXDueOpenMember = UXDirectoryHistoryFor(CLng(Split(key, "|")(0)))
 End Function
 Public Function UXOpenRecentReport() As Boolean
     Dim id As Long

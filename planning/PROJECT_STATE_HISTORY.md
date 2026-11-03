@@ -1315,7 +1315,57 @@ the PDF is not regenerated.
   Imp, Mod, Like and others) as variable or parameter names: two such names
   compiled in the build and failed only when the module first ran.
 
-Tests: new `test-roster` (16 assertions) in the external-import suite.
+- **MNA rosters** (from a sanitized sample the user supplied; it is not in the
+  repository). An `.xlsx` goes to `RUADLoadMNA`, which reads the sheet through
+  the Access Excel driver as text. The top line gives the roster date and UIC,
+  the footer POC gives who pulled it; both show on the import screen and in the
+  operation record, and the roster date becomes the snapshot's as-of date.
+  Enlisted and Officer sections are found by their title and BIN header rows
+  (headers checked); every row with an Assign Type is a billet, including IAP
+  rows without a BIN, and everyone counts for the header UIC. PRD is YYMM
+  (2612 = December 2026). IRATE fills the rate for enlisted and the designator
+  for officers (MNA has no officer rank). The DoD ID is stored on the profile's
+  roster provenance and matched before the name, so a renamed member keeps the
+  same profile. Names become report format (LAST, FIRST MI).
+- **Older rosters.** A roster dated before the last complete roster for its UIC
+  cannot be recorded as complete, since it would flag the wrong people.
+
+Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
+in the external-import suite.
+
+## Member date reported
+
+0.52.0-dev, schema 40 (2 November 2026), from the user's request: the member
+profile holds the date reported aboard, since block 9 needs it and neither NRRM
+nor MNA carries it (MNA's ADTE column is not this date). `CommandMember.DateReported`
+is entered on the member editor; `MemberCreationDefaults` copies it into drafts
+created from Reports due or the directory; a saved, confirmed report with a later
+block 9 date moves the profile forward, never back. Roster imports leave it
+unchanged. Tests: 7 more assertions in `test-reports-due`.
+
+## F03 reports due
+
+0.52.0-dev, schema 39 (2 November 2026), from the user's 1 November decision:
+the home screen lists members with upcoming reports, and an item drops off once
+the right report exists, even as a draft.
+
+- **Calculated, not stored** (`modReportsDue`). Periodic: `PeriodicExpectedDate`
+  for the member's worn paygrade in the previous, current and next year, listed
+  from 90 days before to 90 days after the date; E-9 and CWO5 excluded from
+  3 June 2026. Detachment: open F02 departures with an expected date, same window.
+- **Satisfied** by a non-archived, member-linked Report with `ReportRegular='Yes'`
+  ending on the periodic date, or with `OccasionDetachment='Yes'` ending within
+  30 days of the departure. Concurrent-only reports do not count.
+- **Dismissals** (`ReportDueDismissal`, the only new table) need a reason and can
+  be undone.
+- **Create draft** makes the linked draft (form by paygrade, Regular, Periodic or
+  Detachment of Individual, ending on the due date, starting after the member's
+  latest earlier report, global defaults and counseling defaults applied).
+- **Home screen**: Reports due (N), the list, a reason box, Create draft, Dismiss,
+  Departures (N), and a note counting members without rank/rate. The page is
+  taller (12,600 twips).
+
+Tests: new `test-reports-due` (22 assertions) in the external-import suite.
 
 ## Superseded approaches and open concerns
 

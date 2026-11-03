@@ -10,14 +10,14 @@ Public Function UXRUADImportChoose() As Boolean
     On Error GoTo Failed
     Set f = Forms!frmUXRUADImport: f!cmdApply.Enabled = False
     Set dialog = Application.FileDialog(3)
-    dialog.Title = "Choose the command RUAD CSV": dialog.AllowMultiSelect = False
-    dialog.Filters.Clear: dialog.Filters.Add "RUAD CSV", "*.csv"
+    dialog.Title = "Choose the command roster (NRRM RUAD CSV or MNA workbook)": dialog.AllowMultiSelect = False
+    dialog.Filters.Clear: dialog.Filters.Add "NRRM RUAD CSV or MNA workbook", "*.csv;*.xlsx"
     If dialog.Show <> -1 Then Exit Function
     f!lstRows.RowSource = "": f!txtDetails = Null
     count = RUADLoad(CStr(dialog.SelectedItems(1)))
     f!txtPath = CStr(dialog.SelectedItems(1))
     f!chkCompleteRoster = False: RUADSetComplete False
-    f!lblStatus.Caption = "Choose actions for " & count & " rows, or Match roster rows to members. Vacant billets are skipped. Names suggest matches; they do not establish identity."
+    f!lblStatus.Caption = Trim$(RUADSourceSummary() & " Choose actions for " & count & " rows, or Match roster rows to members. Vacant billets are skipped. Names and DoD IDs suggest matches; they do not establish identity.")
     Call UXRUADImportRows: UXRUADImportChoose = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description

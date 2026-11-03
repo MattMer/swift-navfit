@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 38,
+  "SchemaVersion": 40,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -54,7 +54,8 @@
     "RouteRunEvent",
     "RosterImport",
     "RosterPresence",
-    "MemberDeparture"
+    "MemberDeparture",
+    "ReportDueDismissal"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -283,7 +284,11 @@
     "CREATE TABLE MemberDeparture (DepartureID COUNTER PRIMARY KEY, MemberID LONG NOT NULL, Basis TEXT(20) NOT NULL, RosterImportID LONG, PRD DATETIME, ExpectedDate DATETIME, ConfirmedDate DATETIME, DepartureState TEXT(20) NOT NULL, Reason TEXT(255), CreatedBy LONG NOT NULL, CreatedAt DATETIME NOT NULL, ResolvedBy LONG, ResolvedAt DATETIME, VersionCounter LONG NOT NULL)",
     "CREATE INDEX IX_MemberDeparture_Member ON MemberDeparture (MemberID,DepartureState)",
     "ALTER TABLE MemberDeparture ADD CONSTRAINT FK_MemberDeparture_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
-    "ALTER TABLE MemberDeparture ADD CONSTRAINT FK_MemberDeparture_RosterImportID FOREIGN KEY (RosterImportID) REFERENCES RosterImport (RosterImportID)"
+    "ALTER TABLE MemberDeparture ADD CONSTRAINT FK_MemberDeparture_RosterImportID FOREIGN KEY (RosterImportID) REFERENCES RosterImport (RosterImportID)",
+    "CREATE TABLE ReportDueDismissal (DismissalID COUNTER PRIMARY KEY, MemberID LONG NOT NULL, Basis TEXT(20) NOT NULL, DueDate DATETIME NOT NULL, Reason TEXT(255) NOT NULL, DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
+    "CREATE INDEX IX_ReportDueDismissal_Member ON ReportDueDismissal (MemberID,Basis,DueDate)",
+    "ALTER TABLE ReportDueDismissal ADD CONSTRAINT FK_ReportDueDismissal_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
+    "ALTER TABLE CommandMember ADD COLUMN DateReported DATETIME"
   ],
   "Queries": [
     {

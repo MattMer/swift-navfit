@@ -59,6 +59,7 @@
     "src/modReportState.bas",
     "src/modReportTools.bas",
     "src/modReportingSenior.bas",
+    "src/modReportsDue.bas",
     "src/modReviewComments.bas",
     "src/modRevisionCompare.bas",
     "src/modRoster.bas",

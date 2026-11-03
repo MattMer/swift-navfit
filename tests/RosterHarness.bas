@@ -32,12 +32,18 @@ Private Function WriteRoster(ByVal people As Variant) As String
 End Function
 'Load, match every row (refresh the named member or create one), preview, apply.
 Private Function ImportRoster(ByVal people As Variant, ByVal complete As Boolean, Optional ByVal rankFor As String = "") As Long
-    Dim path As String, i As Long, row As Object, summary As String
+    Dim path As String
     path = WriteRoster(people)
+    ImportRoster = ImportPath(path, complete, rankFor)
+    Kill path
+End Function
+Private Function ImportPath(ByVal path As String, ByVal complete As Boolean, Optional ByVal rankFor As String = "") As Long
+    Dim i As Long, row As Object, summary As String
     Call RUADLoad(path): Call RUADSuggest
     For i = 1 To RUADCount()
         Set row = RUADRow(i)
-        If row("Suggested") > 0 Then
+        If row("Vacant") Then
+        ElseIf row("Suggested") > 0 Then
             RUADChoose i, "Refresh existing", CLng(row("Suggested")), False, (CStr(row("Data")("NAME")) = rankFor)
         Else
             RUADChoose i, "Create new", 0
@@ -46,8 +52,14 @@ Private Function ImportRoster(ByVal people As Variant, ByVal complete As Boolean
     RUADSetComplete complete
     summary = RUADPreview()
     Call RUADApply
-    Kill path
-    ImportRoster = DMax("RosterImportID", "RosterImport")
+    ImportPath = DMax("RosterImportID", "RosterImport")
+End Function
+Private Function ImportRefused(ByVal path As String) As Boolean
+    On Error GoTo Refused
+    Call ImportPath(path, True)
+    Exit Function
+Refused:
+    ImportRefused = True
 End Function
 Private Function Departures(ByVal name As String, ByVal state As String, Optional ByVal basis As String = "") As Long
     Departures = Nz(MajorScalar("SELECT Count(*) FROM MemberDeparture AS d INNER JOIN CommandMember AS c ON d.MemberID=c.MemberID WHERE c.FullName='" & name & "' AND d.DepartureState='" & state & "'" & IIf(Len(basis) > 0, " AND d.Basis='" & basis & "'", "")), 0)
@@ -100,4 +112,41 @@ Public Function TestRoster() As String
     TestRoster = "PASS: " & checks & " roster snapshot, departure, matching and rank assertions": Exit Function
 Failed:
     TestRoster = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+
+'MNA workbooks written by test-roster.ps1: mna-1 (2 Apr 2025), mna-2 (5 May 2025:
+'SYNALPHA renamed, SYNBRAVO gone) and mna-3 (1 Mar 2025, older than both).
+Public Function TestMNARoster(ByVal folder As String) As String
+    Dim first As Long, imports As Long, summary As String
+    On Error GoTo Failed
+    checks = 0
+    ConfigureWorkspace "SYNTHETIC MNA ROSTER", "Coordinator"
+    Check RUADLoad(folder & "\mna-1.xlsx") = 6, "MNA billet rows not read"
+    summary = RUADSourceSummary()
+    Check InStr(summary, "dated 2025-04-02") > 0 And InStr(summary, "UIC 99999") > 0 And InStr(summary, "pulled by ITC SYNTHETIC PULLER") > 0 And InStr(summary, "000-0000") = 0, "MNA header or POC wrong: " & summary
+    Check RUADRow(3)("Vacant") And RUADRow(1)("Data")("PRD") = "2040-12" And RUADRow(1)("Data")("DESG") = "IT2" And RUADRow(1)("DoDID") = "9000000001", "Enlisted row wrong"
+    Check RUADRow(4)("Data")("UIC") = "99999" And RUADRow(4)("Data")("UMUIC") = "77777" And RUADRow(5)("Data")("SELRES TYPE") = "IAP", "CAO or IAP row wrong"
+    Check RUADRow(6)("Data")("E/O") = "Officer" And RUADRow(6)("Data")("DESG") = "1815H" And RUADRow(6)("Data")("RATE/RANK") = "", "Officer row wrong"
+
+    ' First complete MNA roster: dated snapshot, formatted report names, PRD window.
+    imports = DCount("*", "RosterImport")
+    first = ImportPath(folder & "\mna-1.xlsx", True)
+    Check DLookup("SourceFormat", "RosterImport", "RosterImportID=" & first) = "MNA" And DLookup("AsOfDate", "RosterImport", "RosterImportID=" & first) = #4/2/2025#, "MNA snapshot format or date wrong"
+    Check DLookup("ScopeUICs", "RosterImport", "RosterImportID=" & first) = "|99999|" And DCount("*", "RosterPresence", "RosterImportID=" & first) = 5, "MNA snapshot scope wrong"
+    Check DLookup("ReportName", "CommandMember", "FullName='SYNALPHA JOHN QUINCY'") = "SYNALPHA, JOHN Q" And DLookup("ReportName", "CommandMember", "FullName='SYNBRAVO MARK ALLEN JR'") = "SYNBRAVO, MARK A JR", "MNA report names wrong"
+    Check DLookup("RankRate", "CommandMember", "FullName='SYNCHARLIE PAUL'") = "ITC" And Nz(DLookup("RankRate", "CommandMember", "FullName='SYNECHO RUTH ANN'"), "") = "", "MNA rate or officer rank wrong"
+    Check Departures("SYNCHARLIE PAUL", "Pending", "PRD") = 1 And Departures("SYNALPHA JOHN QUINCY", "Pending") = 0, "MNA PRD window wrong"
+
+    ' A renamed member matches by DoD ID; a missing one is flagged.
+    Call RUADLoad(folder & "\mna-2.xlsx"): Call RUADSuggest
+    Check RUADRow(1)("Suggested") = DLookup("MemberID", "CommandMember", "FullName='SYNALPHA JOHN QUINCY'"), "DoD ID did not match the renamed member"
+    Call ImportPath(folder & "\mna-2.xlsx", True)
+    Check DCount("*", "CommandMember", "FullName Like 'SYN*'") = 5, "Renamed MNA member duplicated"
+    Check Departures("SYNBRAVO MARK ALLEN JR", "Pending", "Absent from roster") = 1 And Departures("SYNDELTA ANNE MARIE", "Pending") = 0, "Absent MNA member not flagged"
+
+    ' An older roster cannot be recorded as complete.
+    Check ImportRefused(folder & "\mna-3.xlsx") And DCount("*", "RosterImport") = imports + 2, "Older complete roster accepted"
+    TestMNARoster = "PASS: " & checks & " MNA roster read, snapshot, DoD ID matching and departure assertions": Exit Function
+Failed:
+    TestMNARoster = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function

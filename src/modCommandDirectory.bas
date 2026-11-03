@@ -36,13 +36,24 @@ End Function
 'blanks but cannot replace information supplied by a later dated report.
 Public Sub RefreshDirectoryFromReport(ByVal memberID As Long, ByVal reportID As Long)
     Dim db As DAO.Database, member As DAO.Recordset, report As DAO.Recordset, latest As DAO.Recordset
-    Dim ssn As String, rank As String, official As String, display As String, version As Long, fresh As Boolean, changed As Boolean, incoming As String
+    Dim ssn As String, rank As String, official As String, display As String, version As Long, fresh As Boolean, changed As Boolean, incoming As String, reported As Variant, reportedText As String
     Set db = CurrentDb
     Set member = db.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
-    Set report = db.OpenRecordset("SELECT OfficialName,MemberSSN,RankRate,PeriodEnd FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    Set report = db.OpenRecordset("SELECT OfficialName,MemberSSN,RankRate,PeriodEnd,DateReported FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     ssn = Nz(member!MemberSSN, ""): incoming = DirectorySSN(report!MemberSSN)
     If incoming <> "" And ssn <> "" And incoming <> ssn Then member.Close: report.Close: Exit Sub
-    If (incoming = "" Or incoming = ssn) And (Nz(report!RankRate, "") = "" Or Nz(report!RankRate, "") = Nz(member!RankRate, "")) And (Nz(report!OfficialName, "") = "" Or Nz(report!OfficialName, "") = Nz(member!ReportName, "")) Then member.Close: report.Close: Exit Sub
+    'A report's date reported moves the profile's forward, never back.
+    reported = Null
+    reportedText = Nz(report!DateReported, "")
+    If IsValidIsoDate(reportedText) Then
+        reported = DateSerial(CLng(Left$(reportedText, 4)), CLng(Mid$(reportedText, 6, 2)), CLng(Right$(reportedText, 2)))
+        If Year(reported) < 1950 Or reported > DateAdd("yyyy", 1, Date) Then
+            reported = Null
+        ElseIf Not IsNull(member!DateReported) Then
+            If reported <= member!DateReported Then reported = Null
+        End If
+    End If
+    If (incoming = "" Or incoming = ssn) And (Nz(report!RankRate, "") = "" Or Nz(report!RankRate, "") = Nz(member!RankRate, "")) And (Nz(report!OfficialName, "") = "" Or Nz(report!OfficialName, "") = Nz(member!ReportName, "")) And IsNull(reported) Then member.Close: report.Close: Exit Sub
     Set latest = db.OpenRecordset("SELECT Max(r.PeriodEnd) AS LatestEnd FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & memberID & " AND m.MatchState='Confirmed' AND r.ReportID<>" & reportID, dbOpenSnapshot)
     fresh = False
     If Not IsNull(report!PeriodEnd) Then
@@ -58,7 +69,17 @@ Public Sub RefreshDirectoryFromReport(ByVal memberID As Long, ByVal reportID As 
     incoming = Nz(report!OfficialName, "")
     If incoming <> "" And incoming <> official And (fresh Or official = "") Then official = incoming: changed = True
     member.Close: report.Close
-    If changed Then SaveDirectoryMember memberID, version, display, official, rank, ssn, "Report"
+    If Not IsNull(reported) Then
+        SaveDirectoryMember memberID, version, display, official, rank, ssn, "Report", , , reported
+    ElseIf changed Then
+        SaveDirectoryMember memberID, version, display, official, rank, ssn, "Report"
+    End If
+End Sub
+'A new report for a member starts with the profile's date reported (block 9).
+Public Sub MemberCreationDefaults(ByVal values As Object, ByVal memberID As Long)
+    Dim reported As Variant
+    reported = MajorScalar("SELECT DateReported FROM CommandMember WHERE MemberID=" & memberID)
+    If Not IsNull(reported) Then values("DateReported") = Format$(reported, "yyyy-mm-dd")
 End Sub
 Private Function DirectoryName(ByVal value As Variant) As String
     Dim s As String
@@ -66,13 +87,25 @@ Private Function DirectoryName(ByVal value As Variant) As String
     s = Replace(Replace(Replace(s, ",", ""), ".", ""), " ", "")
     DirectoryName = s
 End Function
-Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersion As Long, ByVal displayName As String, ByVal reportName As String, ByVal rank As String, ByVal ssn As String, Optional ByVal sourceKind As String = "Manual", Optional ByVal ruadValues As Variant, Optional ByVal ruadSourceXML As String = "") As Long
+Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersion As Long, ByVal displayName As String, ByVal reportName As String, ByVal rank As String, ByVal ssn As String, Optional ByVal sourceKind As String = "Manual", Optional ByVal ruadValues As Variant, Optional ByVal ruadSourceXML As String = "", Optional ByVal dateReported As Variant) As Long
     Dim db As DAO.Database, ruad As Object, ruadXML As String
     Dim r As DAO.Recordset, w As DAO.Workspace, author As Long, failure As Long, message As String, op As Long, duplicate As Variant
     author = MajorAuthor(): displayName = Trim$(displayName): ssn = Trim$(ssn)
     If displayName = "" Or Len(displayName) > 120 Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Enter a member name within 120 characters."
     If Len(reportName) > 27 Or Len(rank) > 5 Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Report name permits 27 characters; rank/rate permits 5. No value will be truncated."
     If ssn <> "" And DirectorySSN(ssn) = "" Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Enter all nine SSN digits or leave SSN unentered."
+    'Date reported: left as it is when not passed; blank clears it.
+    If Not IsMissing(dateReported) Then
+        If Len(Trim$(Nz(dateReported, ""))) = 0 Then
+            dateReported = Null
+        ElseIf Not IsDate(dateReported) Then
+            Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Enter date reported as a date, or leave it blank."
+        ElseIf Year(CDate(dateReported)) < 1950 Or CDate(dateReported) > DateAdd("yyyy", 1, Date) Then
+            Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Date reported must be a real date, not more than a year ahead."
+        Else
+            dateReported = DateValue(CDate(dateReported))
+        End If
+    End If
     If ssn <> "" Then
         duplicate = MajorScalar("SELECT MemberID FROM CommandMember WHERE MemberSSN=" & QuoteSQL(ssn) & " AND MemberID<>" & memberID)
         If Not IsNull(duplicate) Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "That SSN already belongs to a directory member. Choose the existing member; names alone are not an identity match."
@@ -101,6 +134,7 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
     r!RUADData = ruadXML
     r!FullName = displayName: r!ReportName = reportName: r!RankRate = rank
     If ssn = "" Then r!MemberSSN = Null Else r!MemberSSN = ssn
+    If Not IsMissing(dateReported) Then r!DateReported = dateReported
     r!ModifiedBy = author: r!ModifiedAt = Now(): r.Update: r.Bookmark = r.LastModified: SaveDirectoryMember = r!MemberID: r.Close
     op = BeginOperation("Save command member", displayName & "; rank/rate " & rank & "; SSN " & IIf(ssn = "", "unentered", "ending " & Right$(ssn, 4)))
     FinishOperation op, "Completed", "Directory profile saved; report fields and prior evaluation records unchanged."

@@ -44,11 +44,24 @@ End Function
 
 'Record one roster import and who was on it, then flag departures. Runs inside
 'the caller's import transaction. present maps MemberID -> Array(UIC, PRD, rank).
-Public Function RecordRosterImport(ByVal db As DAO.Database, ByVal sourceFormat As String, ByVal sourceName As String, ByVal sourceHash As String, ByVal scopeUICs As String, ByVal complete As Boolean, ByVal rosterRows As Long, ByVal present As Object) As Long
-    Dim r As DAO.Recordset, id As Long, key As Variant, item As Variant
+Public Function RecordRosterImport(ByVal db As DAO.Database, ByVal sourceFormat As String, ByVal sourceName As String, ByVal sourceHash As String, ByVal scopeUICs As String, ByVal complete As Boolean, ByVal rosterRows As Long, ByVal present As Object, Optional ByVal asOf As Variant) As Long
+    Dim r As DAO.Recordset, id As Long, key As Variant, item As Variant, uic As Variant, newest As Variant
+    'A roster dated before the last complete one for its UIC would flag the wrong
+    'people as missing, so it can be recorded only as a partial roster.
+    If Not IsDate(asOf) Then asOf = Date
+    If complete Then
+        For Each uic In Split(Mid$(scopeUICs, 2), "|")
+            If Len(uic) > 0 Then
+                newest = MajorScalar("SELECT Max(AsOfDate) FROM RosterImport WHERE IsComplete=True AND ScopeUICs Like " & QuoteSQL("*|" & uic & "|*"))
+                If Not IsNull(newest) Then
+                    If CDate(newest) > CDate(asOf) Then Err.Raise vbObjectError + 9710, "modRoster.RecordRosterImport", "A newer complete roster for UIC " & uic & " (" & Format$(newest, "yyyy-mm-dd") & ") is already recorded. Import this one without This is the complete roster."
+                End If
+            End If
+        Next
+    End If
     Set r = db.OpenRecordset("RosterImport", dbOpenDynaset, dbAppendOnly)
     r.AddNew: r!ImportGuid = NewIdentity(): r!SourceFormat = sourceFormat: r!SourceName = Left$(sourceName, 255): r!SourceHash = sourceHash
-    r!AsOfDate = Date: r!ScopeUICs = scopeUICs: r!IsComplete = complete: r!RosterRows = rosterRows
+    r!AsOfDate = asOf: r!ScopeUICs = scopeUICs: r!IsComplete = complete: r!RosterRows = rosterRows
     r!ImportedBy = MajorAuthor(): r!ImportedAt = Now()
     r.Update: r.Bookmark = r.LastModified: id = r!RosterImportID: r.Close
     Set r = db.OpenRecordset("RosterPresence", dbOpenDynaset, dbAppendOnly)

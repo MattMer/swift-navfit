@@ -20,7 +20,7 @@ Public Function UXDirectoryEdit(Optional ByVal createNew As Boolean = False) As 
     If memberID > 0 Then
         Set db = CurrentDb
         Set r = db.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
-        memberVersion = r!VersionCounter: f!txtName = r!FullName: f!txtReportName = r!ReportName: f!txtRank = r!RankRate: f!txtSSN = r!MemberSSN: UXRUADLoad r!RUADData: r.Close
+        memberVersion = r!VersionCounter: f!txtName = r!FullName: f!txtReportName = r!ReportName: f!txtRank = r!RankRate: f!txtSSN = r!MemberSSN: f!txtDateReported = IIf(IsNull(r!DateReported), Null, Format$(r!DateReported, "yyyy-mm-dd")): UXRUADLoad r!RUADData: r.Close
     Else
         UXRUADLoad Null
     End If
@@ -30,7 +30,7 @@ Public Function UXDirectorySave() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXMemberEditor
-    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), "Manual", UXRUADValues())
+    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), "Manual", UXRUADValues(), , Nz(f!txtDateReported, ""))
     DoCmd.Close acForm, f.Name: UXDirectoryLoad: UXDirectorySave = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description

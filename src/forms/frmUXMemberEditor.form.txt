@@ -300,6 +300,51 @@ Begin Form
                         End
                     End
                 End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =7200
+                    Top =2250
+                    Width =3000
+                    Height =420
+                    FontSize =10
+                    TabIndex =4
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtDateReported"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7200
+                    LayoutCachedTop =2250
+                    LayoutCachedWidth =10200
+                    LayoutCachedHeight =2670
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =7200
+                            Top =1900
+                            Width =3000
+                            Height =320
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtDateReported"
+                            Caption ="Date reported (block 9)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =7200
+                            LayoutCachedTop =1900
+                            LayoutCachedWidth =10200
+                            LayoutCachedHeight =2220
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
@@ -308,7 +353,7 @@ Begin Form
                     Width =2150
                     Height =450
                     FontSize =10
-                    TabIndex =4
+                    TabIndex =5
                     ForeColor =4205854
                     Name ="ruadPage0"
                     Caption ="Unit"
@@ -347,7 +392,7 @@ Begin Form
                     Width =2150
                     Height =450
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =6
                     ForeColor =4205854
                     Name ="ruadPage1"
                     Caption ="Member"
@@ -386,7 +431,7 @@ Begin Form
                     Width =2150
                     Height =450
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =7
                     ForeColor =4205854
                     Name ="ruadPage2"
                     Caption ="Assignment"
@@ -425,7 +470,7 @@ Begin Form
                     Width =2150
                     Height =450
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =8
                     ForeColor =4205854
                     Name ="ruadPage3"
                     Caption ="Mobilization"
@@ -464,7 +509,7 @@ Begin Form
                     Width =2150
                     Height =450
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =9
                     ForeColor =4205854
                     Name ="ruadPage4"
                     Caption ="Contact"
@@ -504,7 +549,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =10
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad0"
@@ -550,7 +595,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =11
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad1"
@@ -596,7 +641,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =12
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad2"
@@ -642,7 +687,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =13
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad3"
@@ -689,7 +734,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =14
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad4"
@@ -735,7 +780,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =15
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad5"
@@ -781,7 +826,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad6"
@@ -827,7 +872,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =17
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad7"
@@ -873,7 +918,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =18
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad8"
@@ -919,7 +964,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =18
+                    TabIndex =19
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad9"
@@ -965,7 +1010,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =19
+                    TabIndex =20
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad11"
@@ -1011,7 +1056,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =20
+                    TabIndex =21
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad12"
@@ -1057,7 +1102,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =21
+                    TabIndex =22
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad13"
@@ -1103,7 +1148,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =22
+                    TabIndex =23
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad14"
@@ -1149,7 +1194,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =23
+                    TabIndex =24
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad15"
@@ -1195,7 +1240,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =24
+                    TabIndex =25
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad16"
@@ -1241,7 +1286,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =25
+                    TabIndex =26
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad17"
@@ -1287,7 +1332,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =26
+                    TabIndex =27
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad18"
@@ -1333,7 +1378,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =27
+                    TabIndex =28
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad19"
@@ -1379,7 +1424,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =28
+                    TabIndex =29
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad20"
@@ -1425,7 +1470,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =29
+                    TabIndex =30
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad21"
@@ -1471,7 +1516,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =30
+                    TabIndex =31
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad22"
@@ -1517,7 +1562,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =31
+                    TabIndex =32
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad23"
@@ -1563,7 +1608,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =32
+                    TabIndex =33
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad24"
@@ -1609,7 +1654,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =33
+                    TabIndex =34
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad25"
@@ -1656,7 +1701,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =34
+                    TabIndex =35
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad26"
@@ -1702,7 +1747,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =35
+                    TabIndex =36
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad27"
@@ -1748,7 +1793,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =36
+                    TabIndex =37
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad28"
@@ -1794,7 +1839,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =37
+                    TabIndex =38
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad29"
@@ -1840,7 +1885,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =38
+                    TabIndex =39
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad30"
@@ -1886,7 +1931,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =39
+                    TabIndex =40
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad31"
@@ -1932,7 +1977,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =40
+                    TabIndex =41
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad32"
@@ -1978,7 +2023,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =41
+                    TabIndex =42
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad33"
@@ -2024,7 +2069,7 @@ Begin Form
                     Width =3600
                     Height =450
                     FontSize =10
-                    TabIndex =42
+                    TabIndex =43
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="ruad34"
@@ -2089,7 +2134,7 @@ Begin Form
                     Width =5400
                     Height =500
                     FontSize =10
-                    TabIndex =43
+                    TabIndex =44
                     ForeColor =16777215
                     Name ="cmdSave"
                     Caption ="Save member profile"
@@ -2128,7 +2173,7 @@ Begin Form
                     Width =5400
                     Height =500
                     FontSize =10
-                    TabIndex =44
+                    TabIndex =45
                     ForeColor =4205854
                     Name ="cmdCancel"
                     Caption ="Cancel"
@@ -2166,7 +2211,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =45
+                    TabIndex =46
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"

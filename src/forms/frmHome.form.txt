@@ -127,7 +127,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =9500
+            Height =12600
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -135,12 +135,12 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =9500
+                    Height =12600
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
                     LayoutCachedWidth =2450
-                    LayoutCachedHeight =9500
+                    LayoutCachedHeight =12600
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                 End
@@ -912,6 +912,345 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                     Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =8650
+                    Width =10450
+                    Height =400
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxDueHeading"
+                    FontWeight =700
+                    Caption ="Reports due"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8650
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =9050
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =255
+                    IMESentenceMode =3
+                    ColumnCount =6
+                    Left =2850
+                    Top =9100
+                    Width =10450
+                    Height =2100
+                    ColumnOrder =0
+                    FontSize =10
+                    TabIndex =18
+                    Name ="uxReportsDue"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;3600;1200;2400;1600;1650"
+                    OnDblClick ="=UXDueOpenMember()"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =9100
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =11200
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =2850
+                            Top =9100
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="anuxReportsDue"
+                            Caption ="Reports due"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =9100
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =9115
+                        End
+                    End
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_0"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",0)"
+                    Tag ="SORT:uxReportsDue:0"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_1"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",1)"
+                    Tag ="SORT:uxReportsDue:1"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_2"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",2)"
+                    Tag ="SORT:uxReportsDue:2"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_3"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",3)"
+                    Tag ="SORT:uxReportsDue:3"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_4"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",4)"
+                    Tag ="SORT:uxReportsDue:4"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =223
+                    Left =2850
+                    Top =8750
+                    Width =800
+                    Height =300
+                    FontSize =9
+                    Name ="sort_uxReportsDue_5"
+                    Caption ="Sort"
+                    OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",5)"
+                    Tag ="SORT:uxReportsDue:5"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =8750
+                    LayoutCachedWidth =3650
+                    LayoutCachedHeight =9050
+                End
+                Begin TextBox
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2850
+                    Top =11350
+                    Width =3700
+                    Height =450
+                    FontSize =10
+                    TabIndex =19
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtDueReason"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =11350
+                    LayoutCachedWidth =6550
+                    LayoutCachedHeight =11800
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =95
+                            Left =2850
+                            Top =11350
+                            Width =15
+                            Height =15
+                            FontSize =1
+                            Name ="antxtDueReason"
+                            Caption ="Reason to dismiss a due report"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =11350
+                            LayoutCachedWidth =2865
+                            LayoutCachedHeight =11365
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6700
+                    Top =11350
+                    Width =2100
+                    Height =450
+                    FontSize =10
+                    TabIndex =20
+                    ForeColor =4205854
+                    Name ="cmdDueCreate"
+                    Caption ="Create draft"
+                    OnClick ="=UXDueCreate()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6700
+                    LayoutCachedTop =11350
+                    LayoutCachedWidth =8800
+                    LayoutCachedHeight =11800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =8950
+                    Top =11350
+                    Width =2100
+                    Height =450
+                    FontSize =10
+                    TabIndex =21
+                    ForeColor =4205854
+                    Name ="cmdDueDismiss"
+                    Caption ="Dismiss"
+                    OnClick ="=UXDueDismiss()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8950
+                    LayoutCachedTop =11350
+                    LayoutCachedWidth =11050
+                    LayoutCachedHeight =11800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =11200
+                    Top =11350
+                    Width =2100
+                    Height =450
+                    FontSize =10
+                    TabIndex =22
+                    ForeColor =4205854
+                    Name ="cmdDueDepartures"
+                    Caption ="Departures"
+                    OnClick ="=UXDueDepartures()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11200
+                    LayoutCachedTop =11350
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =11800
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =11900
+                    Width =10450
+                    Height =450
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxDueNote"
+                    Caption =""
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =11900
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =12350
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
                 End
                 Begin ComboBox
                     LimitToList = NotDefault

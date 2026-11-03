@@ -2,8 +2,10 @@ Attribute VB_Name = "modRUADImport"
 Option Explicit
 Private rows As Collection, sourcePath As String, sourceText As String, previewStamp As String
 Private prepared As Boolean, previewOwner As Long, rosterComplete As Boolean
+Private sourceFormat As String, rosterAsOf As Variant, rosterUIC As String, rosterPOC As String
 Public Function RUADReset() As Boolean
     Set rows = Nothing: sourcePath = "": sourceText = "": previewStamp = "": prepared = False: previewOwner = 0: rosterComplete = False
+    sourceFormat = "": rosterAsOf = Null: rosterUIC = "": rosterPOC = ""
     RUADReset = True
 End Function
 Public Function RUADReadText(ByVal path As String) As String
@@ -48,7 +50,10 @@ End Function
 Public Function RUADLoad(ByVal path As String) As Long
     Dim parsed As Collection, headers As Object, data As Object, row As Object, fields As Collection, key As Variant, i As Long, j As Long
     prepared = False: Set rows = Nothing: previewStamp = "": previewOwner = 0: rosterComplete = False
-    sourcePath = path: sourceText = RUADReadText(path)
+    sourceFormat = "NRRM": rosterAsOf = Null: rosterUIC = "": rosterPOC = ""
+    sourcePath = path
+    If LCase$(Right$(path, 5)) = ".xlsx" Then RUADLoad = RUADLoadMNA(path): Exit Function
+    sourceText = RUADReadText(path)
     If Len(sourceText) > 5000000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoad", "Use a RUAD CSV smaller than 5 MB."
     Set parsed = RUADCSV(sourceText)
     If parsed.Count < 2 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoad", "The CSV has no member rows."
@@ -72,13 +77,113 @@ Public Function RUADLoad(ByVal path As String) As Long
             If Len(fields(headers(key))) > 4000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoad", "CSV row " & i & ": " & key & " exceeds 4,000 characters."
             data.Add CStr(key), CStr(fields(headers(key)))
         Next
-        Set row = CreateObject("Scripting.Dictionary")
-        row.Add "Data", data: row.Add "Action", "Skip": row.Add "MemberID", 0&: row.Add "ReplaceManual", False: row.Add "Suggested", 0&: row.Add "UpdateRank", False
-        row.Add "Vacant", (Len(data("NAME")) = 0 Or InStr(1, data("SELRES TYPE"), "Vacant", vbTextCompare) > 0)
-        row.Add "Detail", "Choose Create new or explicitly match an existing member, then preview."
-        rows.Add row
+        rows.Add RUADNewRow(data, "")
     Next
     RUADLoad = rows.Count
+End Function
+Private Function RUADNewRow(ByVal data As Object, ByVal dodid As String) As Object
+    Dim row As Object
+    Set row = CreateObject("Scripting.Dictionary")
+    row.Add "Data", data: row.Add "Action", "Skip": row.Add "MemberID", 0&: row.Add "ReplaceManual", False: row.Add "Suggested", 0&: row.Add "UpdateRank", False
+    row.Add "Vacant", (Len(data("NAME")) = 0 Or InStr(1, data("SELRES TYPE"), "Vacant", vbTextCompare) > 0)
+    row.Add "DoDID", dodid
+    row.Add "Detail", "Choose Create new or explicitly match an existing member, then preview."
+    Set RUADNewRow = row
+End Function
+'MNA roster workbook: "Date: ..., UIC: ..." at the top, then Enlisted and Officer
+'sections, each with a title row and a BIN header row. Every row with an Assign
+'Type is a billet (IAP rows have no BIN). Everyone listed counts for the header UIC,
+'including members cross-assigned in or out.
+Private Function RUADLoadMNA(ByVal path As String) As Long
+    Dim cells As Variant, kind As String, headed As Boolean, data As Object, key As Variant, n As Long
+    sourceFormat = "MNA": sourceText = SourceFileHash(path)
+    Set rows = New Collection
+    For Each cells In RUADSheetRows(path)
+        n = n + 1
+        If Left$(cells(1), 5) = "Date:" And Len(rosterUIC) = 0 Then
+            RUADMNAHeader cells(1)
+        ElseIf Left$(cells(6), 4) = "POC:" Then
+            rosterPOC = Trim$(Mid$(cells(6), 5))
+            If InStr(rosterPOC, ",") > 0 Then rosterPOC = Trim$(Left$(rosterPOC, InStr(rosterPOC, ",") - 1))
+        ElseIf (Left$(cells(1), 8) = "Enlisted" Or Left$(cells(1), 7) = "Officer") And Len(cells(2)) = 0 Then
+            kind = Split(cells(1), " ")(0): headed = False
+        ElseIf cells(1) = "BIN" Then
+            If Len(kind) = 0 Or cells(8) <> "IRATE" Or cells(13) <> "DoDID" Or cells(14) <> "Name" Or cells(15) <> "PRD" Or cells(20) <> "Assign Type" Or cells(23) <> "TRUIC" Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoadMNA", "Unrecognized MNA column headers in row " & n & "."
+            headed = True
+        ElseIf headed And Len(cells(20)) > 0 Then
+            If Len(rosterUIC) = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoadMNA", "The MNA roster has no Date and UIC line above its first section."
+            Set data = CreateObject("Scripting.Dictionary")
+            For Each key In RUADKeys(): data.Add CStr(key), "": Next
+            data("RUIC") = rosterUIC: data("UIC") = rosterUIC: data("E/O") = kind: data("NAME") = cells(14): data("SELRES TYPE") = cells(20)
+            data("DESG") = cells(8): If kind = "Enlisted" Then data("RATE/RANK") = cells(8)
+            data("BIN") = cells(1): data("ABSC") = cells(2): data("UMUIC") = cells(4): data("AUIC") = cells(5): data("RBSC") = cells(6)
+            data("REQ DESG/REQ RTING") = cells(7): data("RFAS") = cells(9): data("NOBC/NEC") = cells(10): data("PRD") = RUADMNAPRD(cells(15))
+            data("IMS") = cells(16): data("PNOBC/PNEC") = cells(21): data("TRUIC") = cells(23)
+            rows.Add RUADNewRow(data, cells(13))
+            If rows.Count > 10000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoadMNA", "Use no more than 10,000 roster rows."
+        End If
+    Next
+    If Len(rosterUIC) = 0 Or IsNull(rosterAsOf) Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoadMNA", "The MNA roster has no readable Date and UIC line."
+    If rows.Count = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADLoadMNA", "The MNA roster has no billet rows."
+    RUADLoadMNA = rows.Count
+End Function
+'Every worksheet row as cells A..W, read as text.
+Private Function RUADSheetRows(ByVal path As String) As Collection
+    Dim db As DAO.Database, t As DAO.TableDef, r As DAO.Recordset, sheet As String, cells() As String, i As Long, failure As Long, message As String
+    Set RUADSheetRows = New Collection
+    On Error GoTo Failed
+    Set db = DBEngine.OpenDatabase(path, False, True, "Excel 12.0 Xml;HDR=NO;IMEX=1;")
+    For Each t In db.TableDefs
+        If Len(sheet) = 0 And Right$(Replace(t.Name, "'", ""), 1) = "$" Then sheet = Replace(t.Name, "'", "")
+    Next
+    If Len(sheet) = 0 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADSheetRows", "The workbook has no worksheet."
+    Set r = db.OpenRecordset("SELECT * FROM [" & sheet & "]", dbOpenSnapshot)
+    Do While Not r.EOF
+        ReDim cells(1 To 23)
+        For i = 1 To 23
+            If i <= r.Fields.Count Then cells(i) = Trim$(Nz(r.Fields(i - 1).Value, ""))
+        Next
+        RUADSheetRows.Add cells: r.MoveNext
+        If RUADSheetRows.Count > 20000 Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADSheetRows", "Use a workbook with no more than 20,000 rows."
+    Loop
+    r.Close: db.Close
+    Exit Function
+Failed:
+    failure = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not r Is Nothing Then r.Close
+    If Not db Is Nothing Then db.Close
+    On Error GoTo 0
+    Err.Raise failure, "modRUADImport.RUADSheetRows", "The MNA workbook cannot be read: " & message
+End Function
+'"Date: Wed Apr 02 17:35:33 EDT 2025,  UIC: 87114"
+Private Sub RUADMNAHeader(ByVal text As String)
+    Dim stamp As String, parts As Variant, m As Long
+    If InStr(text, ",") = 0 Or InStr(1, text, "UIC:", vbTextCompare) = 0 Then Exit Sub
+    stamp = Trim$(Mid$(text, 6, InStr(text, ",") - 6))
+    Do While InStr(stamp, "  ") > 0: stamp = Replace(stamp, "  ", " "): Loop
+    parts = Split(stamp, " ")
+    If UBound(parts) >= 3 Then
+        If Len(parts(1)) = 3 Then m = InStr(1, "JanFebMarAprMayJunJulAugSepOctNovDec", parts(1), vbTextCompare)
+        If m Mod 3 = 1 And IsNumeric(parts(2)) And IsNumeric(parts(UBound(parts))) Then
+            If CLng(parts(UBound(parts))) >= 2000 Then rosterAsOf = DateSerial(CLng(parts(UBound(parts))), (m + 2) \ 3, CLng(parts(2)))
+        End If
+    End If
+    rosterUIC = UCase$(Trim$(Mid$(text, InStr(1, text, "UIC:", vbTextCompare) + 4)))
+End Sub
+'MNA PRD is YYMM (2612 = December 2026).
+Private Function RUADMNAPRD(ByVal text As String) As String
+    RUADMNAPRD = text
+    If text Like "####" Then
+        If Val(Right$(text, 2)) >= 1 And Val(Right$(text, 2)) <= 12 Then RUADMNAPRD = "20" & Left$(text, 2) & "-" & Right$(text, 2)
+    End If
+End Function
+'The roster's date, UIC and who pulled it (MNA); "" for an NRRM CSV.
+Public Function RUADSourceSummary() As String
+    If sourceFormat = "MNA" Then RUADSourceSummary = "MNA roster dated " & Format$(rosterAsOf, "yyyy-mm-dd") & " for UIC " & rosterUIC & IIf(Len(rosterPOC) > 0, ", pulled by " & rosterPOC, "") & "."
+End Function
+Private Function RUADSourceStamp() As String
+    If sourceFormat = "MNA" Then RUADSourceStamp = SourceFileHash(sourcePath) Else RUADSourceStamp = RUADReadText(sourcePath)
 End Function
 Public Function RUADRow(ByVal index As Long) As Object
     If rows Is Nothing Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADRow", "Choose a RUAD CSV first."
@@ -110,11 +215,13 @@ Public Function RUADRosterRank(ByVal data As Object) As String
     If InStr(1, data("E/O"), "Officer", vbTextCompare) > 0 Then RUADRosterRank = CStr(data("RATE/RANK"))
     If Len(RUADRosterRank) > 5 Then RUADRosterRank = ""
 End Function
-'Suggest the existing member for each row: one active member whose stored roster
-'name, or else whose display name, equals the row's name. Returns how many rows
+'Suggest the existing member for each row: one active member with the row's DoD ID
+'(MNA), or else whose stored roster name, or else whose display name, equals the
+'row's name. Returns how many rows
 'have a suggestion. A suggestion is not identity; the coordinator confirms it.
 Public Function RUADSuggest() As Long
-    Dim byRoster As Object, byName As Object, r As DAO.Recordset, row As Object, name As String, values As Object, key As String
+    Dim byRoster As Object, byName As Object, byDoDID As Object, r As DAO.Recordset, row As Object, name As String, values As Object, key As String
+    Set byDoDID = CreateObject("Scripting.Dictionary")
     Set byRoster = CreateObject("Scripting.Dictionary"): byRoster.CompareMode = vbTextCompare
     Set byName = CreateObject("Scripting.Dictionary"): byName.CompareMode = vbTextCompare
     Set r = CurrentDb.OpenRecordset("SELECT MemberID,FullName,RUADData FROM CommandMember WHERE IsArchived=False", dbOpenSnapshot)
@@ -125,6 +232,10 @@ Public Function RUADSuggest() As Long
             If Len(key) > 0 Then
                 If byRoster.Exists(key) Then byRoster(key) = -1 Else byRoster.Add key, CLng(r!MemberID)
             End If
+            key = RUADSourceDoDID(r!RUADData)
+            If Len(key) > 0 Then
+                If byDoDID.Exists(key) Then byDoDID(key) = -1 Else byDoDID.Add key, CLng(r!MemberID)
+            End If
         End If
         r.MoveNext
     Loop
@@ -133,7 +244,9 @@ Public Function RUADSuggest() As Long
         row("Suggested") = 0&
         If Not row("Vacant") Then
             name = Trim$(CStr(row("Data")("NAME")))
-            If byRoster.Exists(name) Then
+            If byDoDID.Exists(CStr(row("DoDID"))) Then
+                If byDoDID(CStr(row("DoDID"))) > 0 Then row("Suggested") = byDoDID(CStr(row("DoDID")))
+            ElseIf byRoster.Exists(name) Then
                 If byRoster(name) > 0 Then row("Suggested") = byRoster(name)
             ElseIf byName.Exists(name) Then
                 If byName(name) > 0 Then row("Suggested") = byName(name)
@@ -160,11 +273,22 @@ Private Function RUADSourceValues(ByVal xml As Variant) As Object
     End If
     Set RUADSourceValues = d
 End Function
-Private Function RUADSourceXML(ByVal data As Object) As String
+'The DoD ID recorded from an MNA roster, or "".
+Private Function RUADSourceDoDID(ByVal xml As Variant) As String
+    Dim doc As Object, node As Object
+    If InStr(1, Nz(xml, ""), "dodid=", vbTextCompare) = 0 Then Exit Function
+    Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True
+    If Not doc.LoadXML(CStr(xml)) Then Exit Function
+    Set node = doc.SelectSingleNode("/RUAD/Source/@dodid")
+    If Not node Is Nothing Then RUADSourceDoDID = node.Text
+End Function
+Private Function RUADSourceXML(ByVal data As Object, ByVal dodid As String) As String
     Dim doc As Object, node As Object, field As Object, key As Variant
     Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True
     doc.LoadXML RUADEncode(data, CStr(data("NAME")))
     Set node = doc.createElement("Source"): node.setAttribute "path", sourcePath: node.setAttribute "importedAt", Format$(Now(), "yyyy-mm-dd hh:nn:ss")
+    If sourceFormat = "MNA" Then node.setAttribute "format", "MNA": node.setAttribute "asOf", Format$(rosterAsOf, "yyyy-mm-dd")
+    If Len(dodid) > 0 Then node.setAttribute "dodid", dodid
     For Each key In RUADKeys()
         Set field = doc.createElement("Field"): field.setAttribute "key", CStr(key): field.Text = CStr(data(key)): node.appendChild field
     Next
@@ -188,7 +312,10 @@ Public Function RUADPreview() As String
                 rank = CStr(incoming("DESG"))
                 If InStr(1, incoming("E/O"), "Officer", vbTextCompare) > 0 Then rank = CStr(incoming("RATE/RANK"))
                 If Len(rank) > 5 Then rank = ""
-                reportName = IIf(Len(name) <= 27, name, "")
+                reportName = name
+                'MNA names are LAST FIRST MIDDLE without the comma.
+                If sourceFormat = "MNA" Then reportName = NavyNameFormat(Replace(name, " ", ", ", 1, 1))
+                If Len(reportName) > 27 Then reportName = ""
                 row("Version") = 0&: row("Name") = name: row("Rank") = rank: row("ReportName") = reportName: row("SSN") = "": row("SourceKind") = "RUAD"
                 details = details & "New provisional member; SSN unentered. Report rank/rate: " & rank & "; official name: " & reportName & vbCrLf
             Else
@@ -225,7 +352,7 @@ Public Function RUADPreview() As String
                 details = details & "  After: " & Nz(values(key), "(unentered)") & IIf(keep, " [preserved]", "") & vbCrLf
             Next
             If row.Exists("Values") Then row.Remove "Values"
-            row.Add "Values", values: row("SourceXML") = RUADSourceXML(incoming): row("Detail") = details
+            row.Add "Values", values: row("SourceXML") = RUADSourceXML(incoming, CStr(row("DoDID"))): row("Detail") = details
         Else
             row("Detail") = IIf(row("Vacant"), "Vacant billet: skipped; no person created.", "Skipped by selection.")
         End If
@@ -238,7 +365,7 @@ End Function
 Public Function RUADApply() As Long
     Dim w As DAO.Workspace, row As Object, id As Long, op As Long, failure As Long, message As String, started As Boolean
     If Not prepared Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "Preview the current selections before Apply."
-    If RUADReadText(sourcePath) <> sourceText Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The CSV changed. Choose it again."
+    If RUADSourceStamp() <> sourceText Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The roster file changed. Choose it again."
     If RUADDirectoryStamp() <> previewStamp Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "The directory changed. Preview again."
     If previewOwner <> ActiveContributorID() Then prepared = False: Err.Raise vbObjectError + 7070, "modRUADImport.RUADApply", "Preview the roster changes as the current contributor before Apply."
     On Error GoTo Failed
@@ -259,8 +386,8 @@ Public Function RUADApply() As Long
         If Len(Trim$(CStr(data("UIC")))) > 0 And InStr(scope, "|" & Trim$(CStr(data("UIC"))) & "|") = 0 Then scope = scope & Trim$(CStr(data("UIC"))) & "|"
         If member > 0 And Not present.Exists(CStr(member)) Then present.Add CStr(member), Array(Trim$(CStr(data("UIC"))), Trim$(CStr(data("PRD"))), RUADRosterRank(data))
     Next
-    Call RecordRosterImport(CurrentDb, "NRRM", Mid$(sourcePath, InStrRev(sourcePath, "\") + 1), SourceFileHash(sourcePath), scope, rosterComplete, rows.Count, present)
-    FinishOperation op, "Completed", RUADApply & " reviewed roster profiles applied atomically; reports and prior history unchanged."
+    Call RecordRosterImport(CurrentDb, sourceFormat, Mid$(sourcePath, InStrRev(sourcePath, "\") + 1), SourceFileHash(sourcePath), scope, rosterComplete, rows.Count, present, rosterAsOf)
+    FinishOperation op, "Completed", RUADApply & " reviewed roster profiles applied atomically; reports and prior history unchanged." & IIf(sourceFormat = "MNA", " " & RUADSourceSummary(), "")
     w.CommitTrans: started = False: prepared = False: Exit Function
 Failed:
     Dim swiftPrimary As Object

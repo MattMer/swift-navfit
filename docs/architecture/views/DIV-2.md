@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 38. 75 entities; 166 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 40. 76 entities; 167 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -107,6 +107,7 @@ erDiagram
   ReportRevision ||--o{ RecoveryDraft : "FK_RecoveryRevision"
   UserProfile ||--o{ RecoveryDraft : "FK_RecoveryAuthor"
   Folder ||--o{ Report : "FK_ReportFolder"
+  CommandMember ||--o{ ReportDueDismissal : "FK_ReportDueDismissal_MemberID"
   Report ||--o{ ReportEvent : "FK_EventReport"
   UserProfile ||--o{ ReportEvent : "FK_EventAuthor"
   Report ||--o{ ReportHead : "FK_HeadReport"
@@ -277,6 +278,7 @@ erDiagram
 | RecoveryDraft | ReportRevision | BaseRevisionID -> ReportRevision.RevisionID | FK_RecoveryRevision |
 | RecoveryDraft | UserProfile | AuthorProfileID -> UserProfile.UserProfileID | FK_RecoveryAuthor |
 | Report | Folder | FolderID -> Folder.FolderID | FK_ReportFolder |
+| ReportDueDismissal | CommandMember | MemberID -> CommandMember.MemberID | FK_ReportDueDismissal_MemberID |
 | ReportEvent | Report | ReportID -> Report.ReportID | FK_EventReport |
 | ReportEvent | UserProfile | AuthorProfileID -> UserProfile.UserProfileID | FK_EventAuthor |
 | ReportHead | Report | ReportID -> Report.ReportID | FK_HeadReport |

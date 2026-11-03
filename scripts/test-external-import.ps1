@@ -23,4 +23,5 @@ $caseArgs=@('-BuildPath',$BuildPath)
 if($SamplePath){$caseArgs+=@('-SamplePath',$SamplePath)}
 Invoke-CaseScript 'test-ruad-import' $caseArgs
 Invoke-CaseScript 'test-roster' @('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-reports-due' @('-BuildPath',$BuildPath)
 Complete-SuiteRun 'external-import' $BuildPath $buildHash

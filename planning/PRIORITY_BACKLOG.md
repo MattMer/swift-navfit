@@ -18,16 +18,13 @@ to `AuditEvent`, and the user guide PDF is regenerated at release.
 
 ### F02 — Departure tracking and MNA roster import
 
-**NRRM part implemented in development** (0.52.0-dev, schema 38, 2 Nov 2026); see
+**NRRM and MNA implemented in development** (0.52.0-dev, schema 38, 2 Nov 2026); see
 [PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f02-roster-snapshots-and-departures).
 Not yet released.
 
 **Still open:**
-- **MNA RUAD adapter.** Needs a sanitized MNA sample (headers and two or three
-  made-up rows) before any column mapping is written. The snapshot, matching
-  and departure parts already take a source format, so the adapter only maps
-  MNA columns to name, rate/rank, UIC, PRD and any identifier, with an exact
-  header check of its own.
+- **Officer rank from MNA.** MNA lists the designator but not the rank, so a
+  new officer profile from MNA starts without one.
 - **Real PRD format.** No real NRRM sample is in the repository. PRD is read as
   yyyy-mm-dd, mm/dd/yyyy, yyyymmdd, yyyy-mm, yyyymm, mm/yyyy or mmyy; confirm
   against a real export.
@@ -36,63 +33,13 @@ Not yet released.
 
 ### F03 — Reports due on the dashboard
 
-**Decision:** the home screen lists members with upcoming reports. A member
-drops off once the right report exists, even as a draft.
+**Implemented in development** (0.52.0-dev, schema 39, 2 Nov 2026); see
+[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f03-reports-due).
+Not yet released. Left from the design: the lead window is fixed at 90 days
+(not yet a Settings choice from 60 to 120), and Create draft makes one report at
+a time rather than sending several to directory batch creation.
 
-**What's due.** This is calculated on refresh, like counseling due work. Nothing
-is stored except dismissals.
-- **Periodic:** the next date from `PeriodicExpectedDate` for the member's worn
-  paygrade, using the same versioned calendar and exemptions as validation. E-9
-  and CWO5 have no Regular periodic report after 3 June 2026 (NAVADMIN 132/26);
-  reuse the rule counseling already applies.
-- **Detachment:** due at the confirmed detachment date, or at the PRD while it
-  isn't confirmed (from F02). Swift doesn't decide whether a detachment report is
-  required (for example, when a periodic report falls close by). It shows both,
-  and the coordinator dismisses the one that isn't needed.
 
-**When it shows.** A due report appears once its date is inside the lead
-window: 90 days by default, adjustable from 60 to 120 for the 2–3 month
-collection period. It stays until satisfied or dismissed, and shows "Overdue"
-after the date.
-
-**When it's satisfied.** It is satisfied by a report that:
-- is not archived;
-- is linked to the member (`MemberReport`);
-- has the matching flag (Regular for periodic, Detachment of Individual for detachment);
-- has its period end on the due date. For a detachment, the period end falls inside the window around the detachment date.
-
-A draft is enough. Concurrent-only reports don't count.
-
-**Dismiss.** "Not required", with a reason, is stored in a new `ReportDueDismissal`
-table (member, basis, due date, reason, who and when). Undo is available.
-
-**On the home screen** (`frmHome`, `UXDashboardRefresh`):
-- A "Reports due (N)" count joins the report, group and work counts.
-- A list shows member, rate, kind, due date and status (Overdue, Due in N days).
-- Actions: Open member, Create draft and Dismiss.
-- A "Departures to confirm (N)" link opens the F02 list.
-- A line notes "N members have no rank/rate", because no due date can be worked out for them.
-
-**Create draft** starts a report that is already linked to the member. It sets:
-- the period end to the due date;
-- the Regular or Detachment flag;
-- the period start to the day after the member's last report, when that is known.
-
-For several members at once, the selected rows go to the existing directory
-batch creation. That creation already checks the contributor and previews before
-applying.
-
-**Acceptance:**
-- each paygrade's periodic date across the 2026/2027 calendar change;
-- E-9 and CWO5 exemptions;
-- a draft clearing the item, and an archived or Concurrent-only draft not clearing it;
-- a detachment from a PRD and from a confirmed date;
-- dismissal and undo;
-- a member without rank;
-- home-screen refresh time on the 4,700-report synthetic workspace.
-
-Build order: F02 (snapshots, matching, departures) before F03, which needs its
-departure dates.
 
 ## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
 

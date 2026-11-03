@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 38, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 40, application 0.52.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -113,6 +113,7 @@ Microsoft Access (ACE) tables in schema 38, application 0.52.0-dev. Types are Ac
 | ModifiedBy | Long | yes |
 | ModifiedAt | Date/Time |  |
 | RUADData | Long text |  |
+| DateReported | Date/Time |  |
 
 ## ComparisonMember
 
@@ -827,6 +828,22 @@ Microsoft Access (ACE) tables in schema 38, application 0.52.0-dev. Types are Ac
 | LegacyFormKind | Text (12) |  |
 | LegacyWorkflowState | Text (40) |  |
 | LegacyWorkflowNull | Yes/No |  |
+
+## ReportDueDismissal
+
+- **Primary key:** DismissalID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| DismissalID | AutoNumber |  |
+| MemberID | Long | yes |
+| Basis | Text (20) | yes |
+| DueDate | Date/Time | yes |
+| Reason | Text (255) | yes |
+| DismissedBy | Long | yes |
+| DismissedAt | Date/Time | yes |
+| UndoneBy | Long |  |
+| UndoneAt | Date/Time |  |
 
 ## ReportEvent
 
