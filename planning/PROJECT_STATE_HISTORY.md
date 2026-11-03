@@ -1333,6 +1333,22 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## Screenshots for the README and user guide (3 November 2026)
+
+The README's three screenshots are replaced and a fourth added (Overview with
+Reports due); the user guide gains eleven screenshots beside the procedures they
+illustrate. All come from a disposable copy of the synthetic Demo, captured with
+PrintWindow; the roster and departure shots add synthetic data to that copy only.
+`build_user_guide.py` now places `![caption](images/...)` lines as framed images
+with captions (guide 38 pages).
+
+The captures found three screen problems, fixed: My Work > Contributors' "Add
+from directory" did not move with the stretched layout (the three actions now sit
+beside the list); the Departures and Counseling "show all" check boxes started in
+the in-between state, and the Departures headings overlapped that box; the roster
+import screen and its directory button still said "RUAD CSV" after MNA support
+(now "roster").
+
 ## Report page polish and group moves (3 November 2026)
 
 From the user's review of the P06 build:

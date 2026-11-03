@@ -489,7 +489,7 @@ Begin Form
                     TabIndex =8
                     ForeColor =4205854
                     Name ="cmdRUADImport"
-                    Caption ="Import / refresh RUAD CSV"
+                    Caption ="Import / refresh roster"
                     OnClick ="=UXRUADImportOpen()"
                     FontName ="Segoe UI"
 

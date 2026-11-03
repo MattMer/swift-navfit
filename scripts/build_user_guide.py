@@ -15,8 +15,9 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, KeepTogether,
+    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, KeepTogether, Image,
 )
+from reportlab.lib.utils import ImageReader
 from pypdf import PdfReader
 
 NAVY = colors.HexColor('#15304D')
@@ -92,6 +93,8 @@ def render(source, output, chapter_pages):
                                spaceAfter=7),
         'bullet': ParagraphStyle('Bullet', fontName=regular, fontSize=9.5, leading=13.2,
                                  textColor=INK, leftIndent=21, bulletIndent=8, spaceAfter=4),
+        'caption': ParagraphStyle('Caption', fontName=regular, fontSize=8.3, leading=11,
+                                  textColor=colors.HexColor('#4A5D70'), spaceBefore=3, spaceAfter=10),
         'bullet2': ParagraphStyle('Bullet2', fontName=regular, fontSize=9.5, leading=13.2,
                                   textColor=INK, leftIndent=39, bulletIndent=26, spaceAfter=4),
     }
@@ -111,6 +114,19 @@ def render(source, output, chapter_pages):
         while i < len(lines):
             line = lines[i].strip()
             if not line:
+                i += 1
+                continue
+            picture = re.fullmatch(r'!\[(.*)\]\((.+)\)', line)
+            if picture:
+                #A screenshot: the text width at most, 4.6 inches tall at most, kept with its caption.
+                path = source.parent / picture.group(2)
+                pixels_w, pixels_h = ImageReader(str(path)).getSize()
+                scale = min(width / pixels_w, 4.6 * inch / pixels_h)
+                frame = Table([[Image(str(path), pixels_w * scale, pixels_h * scale)]], hAlign='LEFT')
+                frame.setStyle(TableStyle([('BOX', (0, 0), (-1, -1), .5, colors.HexColor('#CCD8E0')),
+                                           ('LEFTPADDING', (0, 0), (-1, -1), 0), ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                                           ('TOPPADDING', (0, 0), (-1, -1), 0), ('BOTTOMPADDING', (0, 0), (-1, -1), 0)]))
+                story.append(KeepTogether([Spacer(1, 2), frame, Paragraph(inline(picture.group(1)), styles['caption'])]))
                 i += 1
                 continue
             if line.startswith('|'):

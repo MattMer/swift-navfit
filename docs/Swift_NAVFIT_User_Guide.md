@@ -12,7 +12,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 
 **Independent development application.** Local approval and group completion do not constitute official signatures, submission, or Navy approval. Use governing instructions and the command's authorized final processing procedure.
 
-**Guide scope:** Swift NAVFIT 0.52.0 navigation and behavior. Screen maps are orientation diagrams, not screenshots. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
+**Guide scope:** Swift NAVFIT 0.52.0 navigation and behavior. Screen maps are orientation diagrams. Screenshots show the Demo workspace's made-up data. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
 
 ---
 
@@ -131,6 +131,8 @@ Contributor switching is guarded while report work is open. Do not bypass the gu
 
 Adding the same name again brings their profile back.
 
+![My Work > Contributors: switch, delete, or add a contributor by name or from the member directory.](images/my-work-contributors.png)
+
 ---
 
 # 3. Navigate the application
@@ -162,6 +164,8 @@ Each row shows the member, rate, report form, due date and status (overdue, or d
 - **Departures (N)** opens **My Work > Departures**. Double-click a row to open the member's history.
 
 Members with no rank/rate are counted below the list, because no due date can be worked out for them. Swift does not decide whether a report is required; check eligibility against current policy.
+
+![Overview: recent reports and the Reports due list, with Create draft, Dismiss and Departures.](images/overview-reports-due.png)
 
 ## 3.2 Report workspace map
 
@@ -231,6 +235,10 @@ All seven performance traits are grouped on Front Page for editing. This does no
 
 Front Page follows the printed form's rows: blocks 5–9 share a row, as do 10–15 and 16–21. Block 21 (billet subcategory) is a list of NAVFIT98A's subcategories. On a CHIEFEVAL, block 20 is the test date followed by the result, chosen from a list, as on NAVPERS 1616/27.
 
+![An EVAL Front Page: blocks 1 to 31 in the printed form's rows, with the ITA, group average, review actions and save status above.](images/report-editor.png)
+
+![A CHIEFEVAL Front Page held for review: Forward and Send back are available, block 20 is the date and result, and each trait has three comment boxes.](images/report-editor-chief.png)
+
 ### Check that the comments fit
 
 Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
@@ -285,6 +293,8 @@ Incomplete drafts can be saved when their entered values meet storage requiremen
 Saving formats entries the way NAVFIT98A does. Names, grades and rates, designators, titles, and rater and counselor names become uppercase. The member's name becomes **LAST, FIRST MI SUFFIX** (for example, *john q smith jr* becomes *SMITH, JOHN Q JR*), and the reporting senior's name becomes **LAST, F M**. Middle names are shortened to initials and periods are removed. A name typed without a comma is read as first, middle, last; type a comma after a last name of more than one word, such as *VAN DER BERG, ANNA*.
 
 Double-click the rater, senior rater or counselor field to fill it from the member directory. The rater and senior rater become **LAST, F M, RANK** (28 characters at most) and the counselor **LAST, F M** (20 at most); a name too long is shortened to the last name, and one that still does not fit is left for you to type.
+
+![Filling the rater from the member directory.](images/member-picker.png)
 
 Check boxes start blank. A box you never click is saved as not answered; a cleared box is saved as No.
 
@@ -423,9 +433,11 @@ Use the command-member tools associated with report creation to maintain reusabl
 
 A member profile also holds **Date reported** (block 9), the date the member reported aboard. Neither roster format carries it, so enter it on the profile; leave it blank when unknown. New reports created for the member (from **Reports due** or from the directory) start with it filled in, and you can still change it on the report. Saving a report with a later date reported updates the profile; an earlier date never moves it back.
 
+![A member profile, with Date reported (block 9) beside the rank/rate and SSN.](images/member-editor.png)
+
 ### Import a roster and track departures
 
-**Resources > Command member directory > Import / refresh RUAD CSV** reads the command's roster: an NRRM RUAD export (CSV) or an MNA roster workbook (.xlsx). Choose the file, then **Match roster rows to members**: rows for one existing member are matched to that member, rows for new people get a new profile, and a name shared by several members waits for you to choose. Check the matches, **Preview**, then **Apply**.
+**Resources > Command member directory > Import / refresh roster** reads the command's roster: an NRRM RUAD export (CSV) or an MNA roster workbook (.xlsx). Choose the file, then **Match roster rows to members**: rows for one existing member are matched to that member, rows for new people get a new profile, and a name shared by several members waits for you to choose. Check the matches, **Preview**, then **Apply**.
 
 - Tick **This is the complete roster for its UICs** when the file is the full roster. Swift then compares it with the last complete roster for the same UICs, and anyone missing from the newer one is flagged as departing. Leave it clear for a partial or filtered export; then nobody is flagged as missing.
 - A member whose PRD is within 90 days is also flagged as departing, with the PRD as the expected date.
@@ -433,7 +445,11 @@ A member profile also holds **Date reported** (block 9), the date the member rep
 
 Swift never archives or deletes anyone because of a roster. **My Work > Departures** lists the flagged members. Select one and choose **Confirm departure** with the detachment date, or **Dismiss (still aboard)** with a reason. A member who reappears on a later complete roster is marked returned automatically. Every import is kept as a dated snapshot.
 
+![My Work > Departures: members flagged by PRD or by absence from a complete roster, with Confirm and Dismiss.](images/my-work-departures.png)
+
 For an MNA workbook, Swift reads the date and UIC at the top and the POC at the bottom, and shows them after you choose the file. The roster's date becomes the snapshot date, and everyone listed (local, cross-assigned in or out, and IAP) counts for that UIC. Vacant billets are skipped. MNA rows carry the member's DoD ID, so a member whose name changed is still matched to the same profile. Names are converted to report format (LAST, FIRST MI). MNA does not list officer ranks, so a new officer profile starts without one. A roster dated before the last complete roster for its UIC cannot be marked complete.
+
+![An MNA roster loaded for import: its date, UIC and POC under the rows, each row's action, and the complete-roster box.](images/roster-import.png)
 
 ## 8.2 Create reports from members
 
@@ -497,6 +513,8 @@ Master chiefs and CWO5s have no Regular periodic report since 3 June 2026, so Sw
 
 In **Choose group members**, each report shows its report number, period, status and current groups, so two unnamed drafts can be told apart.
 
+![Choose group members: each report shows its number, period, status and current groups.](images/choose-group-members.png)
+
 The group workspace provides Members, Defaults, Review, and History. Use its return-to-list action to choose another group. Selecting another main menu closes the working group view; opening a different group should show that group's roster and title.
 
 ## 9.2 Apply defaults deliberately
@@ -530,6 +548,8 @@ Group status is local tracking. It does not certify that every member is complet
 4. Leave the cell and confirm that the change saved. Valid direct edits save as report revisions.
 
 Failed cells remain pending for correction, retry, or deliberate discard. Resolve pending cells before relying on saved group calculations, changing context, or reordering rows. Table headings sort rows; pending cells save before a new order is applied.
+
+![A summary group's trait table: each member on one row, with ITA, recommendation and prior values for comparison.](images/summary-group-members.png)
 
 ## 10.2 Read the comparison cues
 
@@ -660,6 +680,8 @@ A route started from a summary group needs a restart only when the group's membe
 Accept and return decisions, with their notes, are made inside the report from its header, not in My Work. Review routes are optional: a report can be saved and marked signed without one.
 
 The review queue includes reports you hold: assigned reviews, your current route steps, reports sent back to you as requester, ready local approvals, and group routes that need a restart. Future route steps are not actionable yet. Assignment due dates appear when supplied; routes do not acquire invented due dates.
+
+![My Work: assigned reviews and route steps, with due dates, status and the next action for each.](images/my-work.png)
 
 ## 13.2 Assign a saved revision
 

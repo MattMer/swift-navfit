@@ -183,7 +183,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblSteps"
-                    Caption ="Choose CSV > Review matches and full values > Preview > Apply > Results"
+                    Caption ="Choose roster > Review matches and full values > Preview > Apply > Results"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =900
@@ -225,7 +225,7 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtPath"
-                            Caption ="RUAD CSV file"
+                            Caption ="Roster file (NRRM CSV or MNA workbook)"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1350
                             LayoutCachedWidth =415
@@ -243,7 +243,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="cmdChoose"
-                    Caption ="Choose RUAD CSV"
+                    Caption ="Choose roster file"
                     OnClick ="=UXRUADImportChoose()"
                     FontName ="Segoe UI"
 

@@ -10,7 +10,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 32-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 38-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 
@@ -48,9 +48,11 @@ The 32-page user guide covers setup, drafting, notes, validation, summary groups
 - **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
 - **People from the directory:** fill the rater, senior rater and counselor from the member directory, add contributors from it, and remove contributors who leave.
 
+![Overview: recent reports and the Reports due list, showing overdue and upcoming periodic reports and a detachment report, with Create draft, Dismiss and Departures](docs/images/overview-reports-due.png)
+
 ### Catch problems while drafting
 
-<img src="docs/images/report-editor.png" width="720" alt="The report editor's Front Page, with blocks 1 to 31 in official order, the ITA and group average, review actions and save status">
+<img src="docs/images/report-editor.png" width="640" alt="The report editor's Front Page laid out like the printed EVAL form, with the ITA and group average, review actions and save status">
 
 - **Live findings with citations:** Swift checks values as you type and links each finding to the block it concerns.
 - **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.

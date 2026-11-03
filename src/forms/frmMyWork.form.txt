@@ -218,7 +218,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
-                    Top =5450
+                    Top =5000
                     Width =10450
                     Height =1600
                     FontSize =10
@@ -230,9 +230,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =5450
+                    LayoutCachedTop =5000
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =7050
+                    LayoutCachedHeight =6600
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -294,7 +294,7 @@ Begin Form
                     Left =10100
                     Top =2900
                     Width =3200
-                    Height =450
+                    Height =400
                     FontSize =10
                     TabIndex =23
                     ForeColor =4205854
@@ -307,7 +307,7 @@ Begin Form
                     LayoutCachedLeft =10100
                     LayoutCachedTop =2900
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =3350
+                    LayoutCachedHeight =3300
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -415,9 +415,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =10100
-                    Top =3450
+                    Top =3370
                     Width =3200
-                    Height =450
+                    Height =400
                     FontSize =10
                     TabIndex =52
                     ForeColor =4205854
@@ -428,9 +428,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =10100
-                    LayoutCachedTop =3450
+                    LayoutCachedTop =3370
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =3900
+                    LayoutCachedHeight =3770
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -456,9 +456,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =10100
-                    Top =4900
+                    Top =3840
                     Width =3200
-                    Height =450
+                    Height =400
                     FontSize =10
                     TabIndex =53
                     ForeColor =4205854
@@ -469,9 +469,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =10100
-                    LayoutCachedTop =4900
+                    LayoutCachedTop =3840
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =5350
+                    LayoutCachedHeight =4240
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2152,6 +2152,7 @@ Begin Form
                     ColumnOrder =0
                     TabIndex =39
                     Name ="chkCounselingAll"
+                    DefaultValue ="False"
                     AfterUpdate ="=UXMyWorkCounseling()"
                     Tag ="MWX:body"
 
@@ -2436,6 +2437,7 @@ Begin Form
                     ColumnOrder =0
                     TabIndex =45
                     Name ="chkDeparturesAll"
+                    DefaultValue ="False"
                     AfterUpdate ="=UXMyWorkDepartures()"
                     Tag ="MWX:body"
 
@@ -2469,9 +2471,9 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =7
                     Left =2850
-                    Top =3700
+                    Top =4000
                     Width =10450
-                    Height =2550
+                    Height =2250
                     ColumnOrder =0
                     FontSize =10
                     TabIndex =46
@@ -2482,7 +2484,7 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3700
+                    LayoutCachedTop =4000
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =6250
                     Begin
@@ -2490,16 +2492,16 @@ Begin Form
                             Visible = NotDefault
                             OverlapFlags =95
                             Left =2850
-                            Top =3700
+                            Top =4000
                             Width =15
                             Height =15
                             FontSize =1
                             Name ="anlstDepartures"
                             Caption ="Departures to review"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =3700
+                            LayoutCachedTop =4000
                             LayoutCachedWidth =2865
-                            LayoutCachedHeight =3715
+                            LayoutCachedHeight =4015
                         End
                     End
                 End
