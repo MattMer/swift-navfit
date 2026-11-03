@@ -1,8 +1,9 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$Check)
 # Generate the DoDAF-aligned architecture views that come from tracked source
 # and a fresh build (docs/architecture/views): AV-2, DIV-2, DIV-3, OV-6a, SV-8,
-# plus the generated blocks in AV-1 and SV-7. -Check writes nothing and fails
-# when a view is stale; it also checks the OV-6b state lists against the schema.
+# plus the generated blocks in AV-1, SV-7 and TECHNICAL_README.md. -Check writes
+# nothing and fails when a view is stale; it also checks the OV-6b state lists
+# against the schema and the TECHNICAL_README data inventory against the tables.
 # Reads a disposable copy of the build; installs the standard rule packs there.
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $views=Join-Path $root 'docs/architecture/views';$nl="`n"
@@ -157,7 +158,20 @@ $cdx=[ordered]@{bomFormat='CycloneDX';specVersion='1.5';version=1
   @($devTools|ForEach-Object {[ordered]@{type='application';'bom-ref'=('tool:'+$_[0]);name=$_[0];scope='excluded';description=$_[1]}})
  )}
 $out['../sbom.cdx.json']=($cdx|ConvertTo-Json -Depth 10)
-$blocks=@{'AV-1.md'=@{facts=$facts};'SV-7.md'=@{counts=$counts}}
+$migration=ReadText 'src/modMigration.bas'
+$sourceMax=[regex]::Match($migration,'If ver < 1 Or ver > (\d+) Then').Groups[1].Value
+$targetRange=[regex]::Match($migration,'targetVersion < (\d+) Or targetVersion > (\d+) Then')
+if(-not $sourceMax -or -not $targetRange.Success){throw 'Importer schema range not found in src/modMigration.bas'}
+$readmeFacts=@('| Fact | Value |','| --- | --- |',
+ ('| Application version | '+$meta.App+' (`APP_VERSION` in `src/modSwift.bas`) |'),
+ ('| Schema version | '+$meta.Schema+' |'),
+ ('| Imports accepted | Workspaces of schema 1 to '+$sourceMax+', into a target of schema '+$targetRange.Groups[1].Value+' to '+$targetRange.Groups[2].Value+' |'),
+ ('| Tables / enforced relationships | '+$tables.Count+' / '+$relations.Count+' |'),
+ ('| VBA modules / forms | '+$modules+' / '+$forms+' |'),
+ ('| Report fields in the catalogue | '+@($catalogue.fields).Count+' |'),
+ ('| Test suites by tier | '+(@($tiers|ForEach-Object {[string]$_.Count+' '+$_.Name}) -join ', ')+' |'),
+ ('| Test cases / VBA test harnesses | '+@(Get-ChildItem (Join-Path $root 'scripts/cases') -Filter '*.ps1').Count+' / '+@(Get-ChildItem (Join-Path $root 'tests') -Filter '*.bas').Count+' |')) -join $nl
+$blocks=@{'AV-1.md'=@{facts=$facts};'SV-7.md'=@{counts=$counts};'../../../TECHNICAL_README.md'=@{'readme-facts'=$readmeFacts}}
 
 #--- Write or check -------------------------------------------------------------
 $stale=@()
@@ -186,5 +200,12 @@ foreach($m in [regex]::Matches($ov6b,'<!-- states:(\w+)\.(\w+) ([^>]+) -->')){
  $checked++
 }
 if($checked -lt 2){throw 'OV-6b state lists missing'}
+#TECHNICAL_README section 5.2 must classify exactly the build's tables.
+$readme=[IO.File]::ReadAllText((Join-Path $root 'TECHNICAL_README.md'))
+$inventory=[regex]::Match($readme,'(?s)<!-- data-inventory -->(.*?)<!-- end data-inventory -->')
+if(-not $inventory.Success){throw 'TECHNICAL_README.md has no data inventory block'}
+$listed=@([regex]::Matches($inventory.Groups[1].Value,'`(\w+)`')|ForEach-Object {$_.Groups[1].Value}|Sort-Object -Unique)
+$unlisted=@($tables.Name|Where-Object {$listed -notcontains $_});$gone=@($listed|Where-Object {@($tables.Name) -notcontains $_})
+if($unlisted.Count -or $gone.Count){throw ('TECHNICAL_README.md data inventory (section 5.2) does not match the build. Classify: '+($unlisted -join ', ')+'; remove: '+($gone -join ', '))}
 if($stale.Count){throw ('Architecture views are stale; run scripts/generate-architecture-views.ps1 -BuildPath <fresh build>: '+($stale -join ', '))}
 Write-Output ('PASS: '+$(if($Check){'checked'}else{'generated'})+' '+($out.Count+$blocks.Count)+' architecture views; '+$checked+' OV-6b state lists match the schema; schema '+$meta.Schema+', '+$tables.Count+' tables, '+$rules.Count+' pack rules')

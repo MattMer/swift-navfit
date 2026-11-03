@@ -143,7 +143,7 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 - [Accessibility](docs/Swift_NAVFIT_User_Guide.md#34-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
 - Found a problem? [Open an issue](https://github.com/MattMer/swift-navfit/issues/new/choose) using made-up data only. Report security problems privately as described in [SECURITY.md](SECURITY.md).
 
-**Reviewing Swift for your command?** The [technical README](TECHNICAL_README.md) covers architecture, data handling, security, testing, the release process, known limitations, and the DoDAF, DevSecOps, SBOM, and threat-model documents for an ISSM or technical review.
+**Reviewing Swift for your command?** The [security and system description](TECHNICAL_README.md) is written for ISSMs, privacy officers and application approvers. It covers what Swift is, the registration and approval questions, every kind of personal data it holds and where, its security controls and residual risks, accessibility, testing, the release process and known limitations, and links the DoDAF, DevSecOps, SBOM and threat-model documents.
 
 ## License
 
