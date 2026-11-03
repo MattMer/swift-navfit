@@ -35,7 +35,7 @@ Public Function TestCompatPages() As String
      Check s.Controls("txt" & key).TabIndex > previous, "Chief comment tab order does not follow its trait: " & key
      previous = s.Controls("txt" & key).TabIndex
      Check s.Controls("txt" & key).Controls("label" & key).Caption = "Comment " & entry, "Chief comment lacks its attached label"
-     Check s.Controls("txt" & key).Width = 6876 And s.Controls("txt" & key).Height = 580, "Chief comment does not match the printed comment area"
+     Check s.Controls("txt" & key).Width = 6876 And s.Controls("txt" & key).Height = 680, "Chief comment is not the printed width with room for two edited lines"
      Check s.Controls("txt" & key).FontName = "Times New Roman" And s.Controls("txt" & key).FontSize = 12, "Chief comment font differs from the report"
      f!uxFieldSurface.SetFocus: s.Controls("txt" & key).SetFocus
      Check s.ActiveControl.Name = "txt" & key, "Chief comment cannot receive keyboard focus: " & s.ActiveControl.Name

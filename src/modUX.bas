@@ -372,7 +372,8 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
     If editorContextDirty Or editorContextReport <> id Or editorContextGroup <> Nz(f!uxGroup, 0) Then
     editorGroupRefreshes = editorGroupRefreshes + 1
     id = Nz(f!txtReportID, 0): Set db = CurrentDb
-    f!uxGroup.RowSource = "SELECT g.GroupID,g.Title FROM SummaryGroup AS g INNER JOIN GroupMember AS m ON g.GroupID=m.GroupID WHERE m.ReportID=" & id & " AND g.IsArchived=False ORDER BY g.Title"
+    'Every active group of this report type; groups it is not in offer a move.
+    f!uxGroup.RowSource = "SELECT g.GroupID,g.Title & IIf(DCount('*','GroupMember','GroupID=' & g.GroupID & ' AND ReportID=" & id & "')>0,'',' (move here)') AS Label FROM SummaryGroup AS g WHERE g.IsArchived=False AND g.FormKind=" & QuoteSQL(Nz(f!cboKind, "")) & " ORDER BY g.Title"
     f!uxGroup.Requery
     Set r = db.OpenRecordset("SELECT GroupID FROM GroupMember WHERE ReportID=" & id, dbOpenSnapshot)
     Do While Not r.EOF: groups = groups + 1: groupID = r!GroupID: r.MoveNext: Loop: r.Close
@@ -517,7 +518,8 @@ Public Function UXChooseMembers() As Boolean
     If groupContext = 0 Then MsgBox "Create or choose a group first.": Exit Function
     kind = Nz(MajorScalar("SELECT FormKind FROM SummaryGroup WHERE GroupID=" & groupContext), "")
     DoCmd.OpenForm "frmUXMembers": Set f = Forms!frmUXMembers
-    f!lstReports.RowSource = "SELECT ReportID,UXIdentity(OfficialName,MemberName) AS Member,RankRate,Title FROM Report WHERE IsArchived=False AND FormKind=" & QuoteSQL(kind) & " ORDER BY UXIdentity(OfficialName,MemberName)"
+    'Unnamed drafts look alike, so each row also shows its report number, period, state and groups.
+    f!lstReports.RowSource = "SELECT ReportID,UXIdentity(OfficialName,MemberName) & ' (report ' & ReportID & ')' AS Member,RankRate,Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No period') & ' | ' & UXReportState(ReportID) & ' | ' & UXTableGroups(ReportID) AS Details FROM Report WHERE IsArchived=False AND FormKind=" & QuoteSQL(kind) & " ORDER BY UXIdentity(OfficialName,MemberName),ReportID"
     f!lstReports.Requery
     For i = 0 To f!lstReports.ListCount - 1
         id = Nz(f!lstReports.Column(0, i), 0)

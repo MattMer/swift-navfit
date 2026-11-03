@@ -2312,7 +2312,8 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin TextBox
+                Begin ComboBox
+                    RowSourceTypeInt =1
                     Visible = NotDefault
                     OverlapFlags =255
                     TextFontFamily =34
@@ -2326,6 +2327,9 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtReadinessDetail"
+                    RowSourceType ="Value List"
+                    RowSource ="DEP/OP;Excellent;Failure;Good;Maximum;Med Waiver;Other;Outstanding;Probationary;"
+                        "Satisfactory"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
 
@@ -2368,7 +2372,8 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin TextBox
+                Begin ComboBox
+                    RowSourceTypeInt =1
                     Visible = NotDefault
                     OverlapFlags =255
                     TextFontFamily =34
@@ -2382,6 +2387,12 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtBilletSubcategory"
+                    RowSourceType ="Value List"
+                    RowSource ="APPROVED;BASIC;CANVASSER;CO AFLOAT;CO ASHORE;CRF;INDIV AUG;INSTRUCTOR;INTERN;NA;"
+                        "OIC;RESAC1;RESAC6;RESIDENT;SCREENED;SEA COMP;SPECIAL01;SPECIAL02;SPECIAL03;SPECI"
+                        "AL04;SPECIAL05;SPECIAL06;SPECIAL07;SPECIAL08;SPECIAL09;SPECIAL10;SPECIAL11;SPECI"
+                        "AL12;SPECIAL13;SPECIAL14;SPECIAL15;SPECIAL16;SPECIAL17;SPECIAL18;SPECIAL19;SPECI"
+                        "AL20;STUDENT"
                     AfterUpdate ="=UXRefreshEditor()"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
@@ -4190,7 +4201,7 @@ Begin Form
                     Name ="uxGroup"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;2400"
-                    AfterUpdate ="=UXRefreshEditor()"
+                    AfterUpdate ="=UXEditorGroupChosen()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11350

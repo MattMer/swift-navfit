@@ -71,9 +71,12 @@ End Sub
 Private Sub VRReadiness(ByVal findings As Collection, ByVal f As Object, ByVal id As Long)
  Dim text As String, dateText As String, i As Long
  text = UCase$(VRText(f, "ReadinessSummary")): dateText = VRText(f, "ReadinessDate")
+ 'The Chief form's block 20 is a date and a result list; older imports kept the
+ 'result in the summary code.
+ If VRText(f, "FormKind") = "CHIEFEVAL" And VRText(f, "ReadinessDetail") <> "" Then text = UCase$(VRText(f, "ReadinessDetail"))
  If text = "" And dateText = "" And VRText(f, "ReportConcurrent") = "Yes" And VRText(f, "ReportRegular") <> "Yes" Then Exit Sub
  If text = "" Then
-  VAdd findings, f, id, "ReadinessSummary", "Incomplete draft", "VR-PFA", "Complete physical readiness. Use the form's no-test convention when no official results apply."
+  VAdd findings, f, id, IIf(VRText(f, "FormKind") = "CHIEFEVAL", "ReadinessDetail", "ReadinessSummary"), "Incomplete draft", "VR-PFA", "Complete physical readiness. Use the form's no-test convention when no official results apply."
  ElseIf VRText(f, "FormKind") <> "CHIEFEVAL" Then
   For i = 1 To Len(text)
    If InStr("PBFMWN", Mid$(text, i, 1)) = 0 Then VAdd findings, f, id, "ReadinessSummary", "Policy issue", "VR-PFA", "Use P/B/F/M/W/N codes, oldest to newest, without spaces or slashes.": Exit For

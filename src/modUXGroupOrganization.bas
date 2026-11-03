@@ -29,6 +29,26 @@ Private Sub CheckMove(ByVal id As Long, ByVal destination As Long)
     grade = ValidationWornPaygrade(Nz(DLookup("RankRate", "Report", "ReportID=" & id), ""))
     If grade = "" Or grade <> Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & destination), "") Or Nz(DLookup("FormKind", "Report", "ReportID=" & id), "") <> Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & destination), "") Then Err.Raise vbObjectError + 6803, "modUXGroupOrganization.CheckMove", "Set the report's worn rank/rate and choose a matching report type/paygrade group."
 End Sub
+'The editor's group box: choosing a group the report is not in moves it there, after
+'the user confirms. A declined or refused move puts the box back on its current group.
+Public Function UXEditorGroupChosen() As Boolean
+    Dim f As Access.Form, id As Long, destination As Long, title As String
+    Set f = Forms!frmEditor: id = Nz(f!txtReportID, 0): destination = Nz(f!uxGroup, 0)
+    If destination = 0 Or DCount("*", "GroupMember", "GroupID=" & destination & " AND ReportID=" & id) > 0 Then UXEditorGroupChosen = UXRefreshEditor(): Exit Function
+    On Error GoTo Failed
+    If id = 0 Then Err.Raise vbObjectError + 6806, "modUXGroupOrganization.UXEditorGroupChosen", "Save the report before moving it into a summary group."
+    title = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & destination), "")
+    If MsgBox("Move this report into the summary group """ & title & """?" & vbCrLf & vbCrLf & "Now in: " & UXTableGroups(id) & ". The report leaves any other group. Saved report values don't change.", vbYesNo + vbQuestion, "Move report") <> vbYes Then GoTo Revert
+    CheckMove id, destination
+    MoveReportGroup id, destination, MoveStamp(id, destination)
+    If CurrentProject.AllForms("frmLibrary").IsLoaded Then RefreshLibrary
+    UXEditorGroupChosen = UXRefreshEditor(): Exit Function
+Failed:
+    MsgBox Err.Description, vbInformation, "Move report"
+Revert:
+    f!uxGroup = MajorScalar("SELECT Min(GroupID) FROM GroupMember WHERE ReportID=" & id)
+    Call UXRefreshEditor
+End Function
 Public Sub MoveReportGroup(ByVal id As Long, ByVal destination As Long, ByVal expected As String)
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, old As String, failure As Long, message As String, op As Long
     Set w = DBEngine.Workspaces(0): Set db = CurrentDb

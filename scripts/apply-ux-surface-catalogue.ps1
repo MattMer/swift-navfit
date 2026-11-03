@@ -33,6 +33,8 @@ foreach($field in $uxFields){
 $surfaceModule.Add('End Select')
 $surfaceModule.Add('If key = "Designator" Then block = "3"')
 $surfaceModule.Add('If key = "RankRate" And kind = "CHIEFEVAL" Then label = "Rating"')
+#NAVPERS 1616/26 block 12 is Promotion/Frocking; the Chief and officer forms use it for detachment of the reporting senior.
+$surfaceModule.Add('If key = "OccasionFrocking" And kind = "EVAL" Then label = "Promotion / Frocking"')
 $surfaceModule.Add('If IsTraitKey(key) Then label = Replace(Replace(CatalogueTraitTitle(kind, CLng(Mid$(key, 6))), vbCr, ""), vbLf, " ")')
 $surfaceModule.Add('If Len(block) > 0 Then label = block & ". " & label')
 $surfaceModule.Add('UXFieldCaption = label: End Function')

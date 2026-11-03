@@ -229,6 +229,8 @@ Report accessibility problems through **Settings & Help > Support and limitation
 
 All seven performance traits are grouped on Front Page for editing. This does not change their official printed-page associations. The pages use fixed field geometry. Resize or scroll the viewing area to reach fields; the report fields do not reflow to a different block order.
 
+Front Page follows the printed form's rows: blocks 5–9 share a row, as do 10–15 and 16–21. Block 21 (billet subcategory) is a list of NAVFIT98A's subcategories. On a CHIEFEVAL, block 20 is the test date followed by the result, chosen from a list, as on NAVPERS 1616/27.
+
 ### Check that the comments fit
 
 Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
@@ -258,7 +260,9 @@ Corrections you accept become pending edits, like typing: they appear in the lin
 
 If Office's proofing tools aren't installed, which can happen on locked-down workstations, Swift says so and your text is unchanged. Words you add with **Add to Dictionary** go to your own Office dictionary.
 
-**Add the Navy word list (once per computer).** Office's dictionary flags many Navy terms: ratings and paygrades such as ITCS, grades such as LCDR, and terms such as RSCA, NAVFIT98A, DDG and watchbill. Swift includes a list of about 800 of them. Swift never changes your Office settings, so you add the list yourself:
+Office normally skips words in all capitals, which are common in Navy writing. Swift's spell check includes them: it turns off **Ignore words in UPPERCASE** for that check only and puts your Access setting back when the check ends. Office's own "The spelling check is complete" message is unchanged.
+
+**Add the Navy word list (once per computer).** Office's dictionary flags many Navy terms: ratings and paygrades such as ITCS, grades such as LCDR, and terms such as RSCA, NAVFIT98A, DDG and watchbill. Swift includes a list of about 800 of them. Apart from the uppercase setting above, which it restores, Swift never changes your Office settings, so you add the list yourself:
 
 1. Open **Resources** and choose **Save Navy word list for spell check**. Choose a folder you keep, such as Documents. Swift saves *Swift NAVFIT Navy words.dic* there.
 2. In Access, choose **File > Options > Proofing > Custom Dictionaries**.
@@ -488,6 +492,10 @@ Master chiefs and CWO5s have no Regular periodic report since 3 June 2026, so Sw
 2. Enter the group context, including its title, report type, and paygrade as requested.
 3. Open the group and add the intended reports or create reports in its context.
 4. Check the roster and group findings against the applicable summary-group criteria.
+
+**Move a report from inside it.** In the report, the summary group box lists every active group for the report's type. A group the report is not in is marked *(move here)*; choose it and confirm, and the report moves into that group and leaves any other. Choosing a group it is already in just shows that group's averages. Save a new report before moving it.
+
+In **Choose group members**, each report shows its report number, period, status and current groups, so two unnamed drafts can be told apart.
 
 The group workspace provides Members, Defaults, Review, and History. Use its return-to-list action to choose another group. Selecting another main menu closes the working group view; opening a different group should show that group's roster and title.
 

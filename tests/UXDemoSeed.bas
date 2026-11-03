@@ -6,7 +6,8 @@ Private Function DemoReport(ByVal kind As String, ByVal member As String, ByVal 
     id = CommitDraft(0, kind, "DEMO - " & member, member, #1/1/2026#, #9/30/2026#, "Synthetic practice report. Change any values to explore the app.", "Create synthetic demo", "SYNTHETIC EXAMPLE ONLY. Led a practice team, completed training milestones and supported a fictional command. Replace this text while exploring the editor.")
     Set changes = CreateObject("Scripting.Dictionary")
     changes.Add "CommandEmployment", "SYNTHETIC COMMAND: Completed training exercises and fictional deployment milestones."
-    changes.Add "OfficialName", UCase$(member): changes.Add "RankRate", rank
+    'Seed names as saving formats them, so an untouched demo report saves as a no-op.
+    changes.Add "OfficialName", NavyNameFormat(member): changes.Add "RankRate", rank
     changes.Add "MemberSSN", "0000000" & Format$(number, "00")
     changes.Add "UnitUIC", "12345": changes.Add "ShipStation", "DEMO COMMAND"
     changes.Add "DateReported", "2026-01-01": changes.Add "PromotionStatus", "REGULAR"
@@ -45,7 +46,7 @@ Public Function SeedUXDemo() As String
     author = MajorAuthor(): reviewer = AddContributor("Robin Chen (demo)")
     Set senior = CreateObject("Scripting.Dictionary")
     For Each key In RSSeniorKeys(): senior.Add CStr(key), Null: Next
-    senior("ReportingSeniorName") = "DEMO A": senior("ReportingSeniorLastName") = "DEMO": senior("ReportingSeniorFirstInitial") = "A"
+    senior("ReportingSeniorName") = "DEMO, A": senior("ReportingSeniorLastName") = "DEMO": senior("ReportingSeniorFirstInitial") = "A"
     senior("ReportingSeniorGrade") = "CDR": senior("ReportingSeniorDesignator") = "1110": senior("ReportingSeniorTitle") = "CO"
     senior("ReportingSeniorUIC") = "12345": senior("ReportingSeniorSSN") = "000000001"
     senior("ReportingSeniorAddress1") = "100 DEMO WAY": senior("ReportingSeniorCity") = "EXAMPLE": senior("ReportingSeniorState") = "VA"

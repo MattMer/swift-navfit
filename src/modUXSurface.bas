@@ -94,7 +94,7 @@ End Function
 ' for F7, otherwise the block last used before the button, otherwise the comments. A signed
 ' report asks to reopen first, as typing does. Corrections go through UXSpellApply.
 Public Function UXSpellCheck(Optional ByVal fromKey As Boolean = False) As Boolean
-    Dim f As Access.Form, c As Access.Control, key As String, before As String, failure As String, number As Long, kept As Boolean
+    Dim f As Access.Form, c As Access.Control, key As String, before As String, failure As String, number As Long, kept As Boolean, upper As Variant
     If Not UXSurfaceAvailable() Then Exit Function
     Set f = Surface()
     On Error Resume Next
@@ -109,18 +109,33 @@ Public Function UXSpellCheck(Optional ByVal fromKey As Boolean = False) As Boole
     If Len(before) = 0 Then Exit Function
     'SelLength is an Integer; longer text is checked from the start without a selection.
     c.SetFocus: c.SelStart = 0: If Len(before) <= 32767 Then c.SelLength = Len(before)
+    'Navy writing uses many all-capital words, which Office skips by default. Check
+    'them for this run only, then put back the user's own Access setting.
+    upper = UXSpellUppercase(Null)
     DoCmd.RunCommand acCmdSpelling
+    Call UXSpellUppercase(upper)
     UXSpellCheck = UXSpellApply(key, before)
     Exit Function
 Failed:
     number = Err.Number: failure = Err.Description
     On Error Resume Next
+    If Not IsEmpty(upper) Then Call UXSpellUppercase(upper)
     If Len(before) > 0 Then
         Call UXSpellApply(key, before)
         kept = (Nz(UXSurfacePending(c.Name, c.Value), "") <> before)
     End If
     If number = 2501 And Not kept Then Exit Function
     Forms!frmEditor!uxError.Caption = Left$(IIf(number = 2501, "Spell check stopped.", "Spell check is unavailable: Office proofing tools may be missing on this computer.") & IIf(kept, " Corrections you accepted are kept as pending edits.", " Your text is unchanged.") & IIf(number = 2501, "", " " & failure), 255)
+End Function
+'Sets "Ignore words in UPPERCASE" (False when restore is Null) and returns the
+'previous value, or Empty when this Access version has no such option.
+Private Function UXSpellUppercase(ByVal restore As Variant) As Variant
+    On Error GoTo Unavailable
+    UXSpellUppercase = Application.GetOption("Spelling ignore words in UPPERCASE")
+    Application.SetOption "Spelling ignore words in UPPERCASE", IIf(IsNull(restore), False, restore)
+    Exit Function
+Unavailable:
+    UXSpellUppercase = Empty
 End Function
 ' The narrative key a spell check covers for this control, or "".
 Public Function UXSpellKey(ByVal c As Access.Control) As String

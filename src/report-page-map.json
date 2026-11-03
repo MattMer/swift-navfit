@@ -512,10 +512,10 @@
       "block": 31,
       "basis": "Current NAVPERS XFA page subform"
     },
-    "ReadinessSummary": {
+    "ReadinessDetail": {
       "page": 0,
       "block": 20,
-      "basis": "Official block order"
+      "basis": "Current NAVPERS XFA page subform"
     },
     "ReadinessDate": {
       "page": 0,

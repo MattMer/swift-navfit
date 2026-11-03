@@ -939,9 +939,9 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =6
                     Left =2850
-                    Top =9100
+                    Top =9450
                     Width =10450
-                    Height =2100
+                    Height =1750
                     ColumnOrder =0
                     FontSize =10
                     TabIndex =18
@@ -951,23 +951,23 @@ Begin Form
                     OnDblClick ="=UXDueOpenMember()"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =9100
+                    LayoutCachedTop =9450
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =11200
                     Begin
                         Begin Label
                             OverlapFlags =95
                             Left =2850
-                            Top =9100
+                            Top =9450
                             Width =15
                             Height =15
                             FontSize =1
                             Name ="anuxReportsDue"
                             Caption ="Reports due"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =9100
+                            LayoutCachedTop =9450
                             LayoutCachedWidth =2865
-                            LayoutCachedHeight =9115
+                            LayoutCachedHeight =9465
                         End
                     End
                 End

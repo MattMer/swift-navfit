@@ -331,6 +331,10 @@ Builds open as a plain application window with the navigation pane, full menus
 and ribbon hidden. This is presentation, not protection: holding Shift while
 opening bypasses it (`AllowBypassKey` stays on, by decision, for support).
 
+Swift changes one Office setting, and only briefly: during its own spell check
+it turns off Access's "Ignore words in UPPERCASE" so all-capital Navy terms are
+checked, then restores the user's value.
+
 ### 6.9 Error handling
 
 Error messages name the operation and stage; most do not include report values,
@@ -531,6 +535,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 3 Nov 2026 | Spell check briefly changes Access's uppercase setting (section 6.8). |
 | 2 Nov 2026 | Expanded from the technical README into a security and system description: identification, registration and approval considerations, data inventory and privacy, security controls, residual risk, accessibility, and the keep-current rule. Covers schema 41 (roster imports from NRRM and MNA, departures, reports due, member date reported, contributor deletion and directory pickers). |
 
 ## Further reading

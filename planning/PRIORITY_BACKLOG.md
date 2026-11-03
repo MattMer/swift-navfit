@@ -90,7 +90,7 @@ generates a synthetic NRRM roster when no sample file is given.)
 | ID | Work |
 | --- | --- |
 | M05 | **Names built at run time.** Literal form and control names are checked before every build. Names built at run time, such as `"uxNav" & i` or `"frmContext" & panel`, are checked only where a runtime view contract lists them. |
-| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. Each passed on retry. Capture diagnostics the next time one recurs. |
+| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. |
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 

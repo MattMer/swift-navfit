@@ -1333,6 +1333,35 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## Report page polish and group moves (3 November 2026)
+
+From the user's review of the P06 build:
+
+- **"Duplicate" report when choosing group members.** Not a copy: the test file
+  held two unnamed EVAL drafts, and the chooser showed them as identical rows,
+  so one Apply swapped which one was in the group. The chooser now shows each
+  report's number, period, status and current groups.
+- **Report editor group box** lists every active group of the report's type;
+  choosing one the report is not in asks to move it there (`UXEditorGroupChosen`,
+  through the existing `MoveReportGroup` checks and journal).
+- **Compact Front Page.** Rows follow NAVPERS 1616/26 and 1616/27: blocks 5-9,
+  10-15 and 16-21 share rows; captions are one 8-point line with the field
+  directly below (row pitch 800 instead of 930 twips). Block 21 and the Chief
+  block 20 result are lists from NAVFIT98A (`src/service-reference.json`). On a
+  CHIEFEVAL, block 20 is the date then the result (`ReadinessDetail`); the
+  readiness rule reads that result, falling back to the summary code for older
+  imports. Chief performance comments are 680 twips tall with 900-twip spacing so
+  a second line no longer scrolls the first out of view.
+- **Reports due** headings are named and sit below the section title; Departures
+  headings are named too.
+- **Spell check** turns off Access's "Ignore words in UPPERCASE" for its own run
+  and restores the user's value.
+- **EVAL block 12** is captioned Promotion / Frocking, as on NAVPERS 1616/26 (the
+  Chief and officer forms keep Detachment of Reporting Senior).
+- **Demo.** Its seed names were not in Navy format, so since F01 an untouched
+  demo report "changed" on save and the one under review refused it; the Demo
+  builder's own check failed. Names are now seeded already formatted.
+
 ## P06 people picker and contributor management
 
 0.52.0-dev, schema 41 (2 November 2026), from the user's request: report people

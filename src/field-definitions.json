@@ -3512,11 +3512,7 @@
               "ordinal": 36
             }
           ],
-          "page": {
-            "page": 0,
-            "block": 20,
-            "basis": "Official block order"
-          }
+          "page": null
         },
         "FITREP": {
           "pdf": [],
@@ -3572,7 +3568,11 @@
               "ordinal": 37
             }
           ],
-          "page": null
+          "page": {
+            "page": 0,
+            "block": 20,
+            "basis": "Current NAVPERS XFA page subform"
+          }
         },
         "FITREP": {
           "pdf": [],
@@ -6827,7 +6827,7 @@
   ],
   "fixedLayout": {
     "EVAL:0": {
-      "height": 15120,
+      "height": 12840,
       "fields": [
         {
           "key": "OfficialName",
@@ -6864,223 +6864,223 @@
         {
           "key": "ComponentActive",
           "x": 180,
-          "y": 1110,
-          "w": 2192,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentTAR",
-          "x": 2532,
-          "y": 1110,
-          "w": 2192,
+          "x": 1200,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentInactive",
-          "x": 4884,
-          "y": 1110,
-          "w": 2192,
+          "x": 2220,
+          "y": 980,
+          "w": 1050,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentATADSW",
-          "x": 7236,
-          "y": 1110,
-          "w": 2192,
+          "x": 3390,
+          "y": 980,
+          "w": 1350,
           "h": 360,
           "trait": false
         },
         {
           "key": "UnitUIC",
-          "x": 9588,
-          "y": 1110,
-          "w": 2192,
+          "x": 4880,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "ShipStation",
-          "x": 180,
-          "y": 2040,
-          "w": 6100,
+          "x": 6620,
+          "y": 980,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "PromotionStatus",
-          "x": 6440,
-          "y": 2040,
-          "w": 2500,
+          "x": 8660,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "DateReported",
-          "x": 9100,
-          "y": 2040,
-          "w": 2680,
+          "x": 10400,
+          "y": 980,
+          "w": 1380,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionPeriodic",
           "x": 180,
-          "y": 2970,
-          "w": 2780,
+          "y": 1780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionDetachment",
-          "x": 3120,
-          "y": 2970,
-          "w": 2780,
+          "x": 1550,
+          "y": 1780,
+          "w": 1800,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionFrocking",
-          "x": 6060,
-          "y": 2970,
-          "w": 2780,
+          "x": 3470,
+          "y": 1780,
+          "w": 1850,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionSpecial",
-          "x": 9000,
-          "y": 2970,
-          "w": 2780,
+          "x": 5440,
+          "y": 1780,
+          "w": 1300,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodStart",
-          "x": 180,
-          "y": 3620,
-          "w": 1900,
+          "x": 6880,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodEnd",
-          "x": 2240,
-          "y": 3620,
-          "w": 1900,
+          "x": 9400,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "ObservationStatus",
-          "x": 4300,
-          "y": 3620,
-          "w": 2400,
+          "x": 180,
+          "y": 2780,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportRegular",
-          "x": 6860,
-          "y": 3620,
-          "w": 1500,
+          "x": 2200,
+          "y": 2780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportConcurrent",
-          "x": 8520,
-          "y": 3620,
-          "w": 1600,
+          "x": 3570,
+          "y": 2780,
+          "w": 1450,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportOperationalCommander",
-          "x": 10280,
-          "y": 3620,
-          "w": 1500,
+          "x": 5140,
+          "y": 2780,
+          "w": 1200,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReadinessSummary",
-          "x": 180,
-          "y": 4550,
-          "w": 3760,
+          "x": 6460,
+          "y": 2780,
+          "w": 1500,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReadinessDate",
-          "x": 4100,
-          "y": 4550,
-          "w": 3760,
+          "x": 8080,
+          "y": 2780,
+          "w": 1700,
           "h": 360,
           "trait": false
         },
         {
           "key": "BilletSubcategory",
-          "x": 8020,
-          "y": 4550,
-          "w": 3760,
+          "x": 9900,
+          "y": 2780,
+          "w": 1880,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorName",
           "x": 180,
-          "y": 5480,
-          "w": 1800,
+          "y": 3780,
+          "w": 2250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorGrade",
-          "x": 2140,
-          "y": 5480,
-          "w": 1800,
+          "x": 2570,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorDesignator",
-          "x": 4100,
-          "y": 5480,
-          "w": 1800,
+          "x": 3710,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorTitle",
-          "x": 6060,
-          "y": 5480,
-          "w": 1800,
+          "x": 4850,
+          "y": 3780,
+          "w": 3900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorUIC",
-          "x": 8020,
-          "y": 5480,
-          "w": 1800,
+          "x": 8890,
+          "y": 3780,
+          "w": 1100,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorSSN",
-          "x": 9980,
-          "y": 5480,
-          "w": 1800,
+          "x": 10130,
+          "y": 3780,
+          "w": 1650,
           "h": 360,
           "trait": false
         },
         {
           "key": "CommandEmployment",
           "x": 180,
-          "y": 6410,
+          "y": 4580,
           "w": 11600,
           "h": 950,
           "trait": false
@@ -7088,7 +7088,7 @@
         {
           "key": "PrimaryDuty",
           "x": 180,
-          "y": 7930,
+          "y": 5980,
           "w": 2400,
           "h": 360,
           "trait": false
@@ -7096,7 +7096,7 @@
         {
           "key": "DutyDescription",
           "x": 2740,
-          "y": 7930,
+          "y": 5980,
           "w": 9040,
           "h": 950,
           "trait": false
@@ -7104,7 +7104,7 @@
         {
           "key": "CounselingDate",
           "x": 180,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -7112,7 +7112,7 @@
         {
           "key": "CounselorName",
           "x": 6060,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -7120,7 +7120,7 @@
         {
           "key": "Trait33",
           "x": 180,
-          "y": 10380,
+          "y": 8180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7128,7 +7128,7 @@
         {
           "key": "Trait34",
           "x": 180,
-          "y": 11000,
+          "y": 8800,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7136,7 +7136,7 @@
         {
           "key": "Trait35",
           "x": 180,
-          "y": 11620,
+          "y": 9420,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7144,7 +7144,7 @@
         {
           "key": "Trait36",
           "x": 180,
-          "y": 12240,
+          "y": 10040,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7152,7 +7152,7 @@
         {
           "key": "Trait37",
           "x": 180,
-          "y": 12860,
+          "y": 10660,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7160,7 +7160,7 @@
         {
           "key": "Trait38",
           "x": 180,
-          "y": 13480,
+          "y": 11280,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7168,7 +7168,7 @@
         {
           "key": "Trait39",
           "x": 180,
-          "y": 14100,
+          "y": 11900,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7176,7 +7176,7 @@
         {
           "key": "@guidance",
           "x": 5550,
-          "y": 10380,
+          "y": 8180,
           "w": 6000,
           "h": 4260
         }
@@ -7340,7 +7340,7 @@
       ]
     },
     "CHIEFEVAL:0": {
-      "height": 30500,
+      "height": 29480,
       "fields": [
         {
           "key": "OfficialName",
@@ -7377,223 +7377,223 @@
         {
           "key": "ComponentActive",
           "x": 180,
-          "y": 1110,
-          "w": 2192,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentTAR",
-          "x": 2532,
-          "y": 1110,
-          "w": 2192,
+          "x": 1200,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentInactive",
-          "x": 4884,
-          "y": 1110,
-          "w": 2192,
+          "x": 2220,
+          "y": 980,
+          "w": 1050,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentATADSW",
-          "x": 7236,
-          "y": 1110,
-          "w": 2192,
+          "x": 3390,
+          "y": 980,
+          "w": 1350,
           "h": 360,
           "trait": false
         },
         {
           "key": "UnitUIC",
-          "x": 9588,
-          "y": 1110,
-          "w": 2192,
+          "x": 4880,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "ShipStation",
-          "x": 180,
-          "y": 2040,
-          "w": 6100,
+          "x": 6620,
+          "y": 980,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "PromotionStatus",
-          "x": 6440,
-          "y": 2040,
-          "w": 2500,
+          "x": 8660,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "DateReported",
-          "x": 9100,
-          "y": 2040,
-          "w": 2680,
+          "x": 10400,
+          "y": 980,
+          "w": 1380,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionPeriodic",
           "x": 180,
-          "y": 2970,
-          "w": 2780,
+          "y": 1780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionDetachment",
-          "x": 3120,
-          "y": 2970,
-          "w": 2780,
+          "x": 1550,
+          "y": 1780,
+          "w": 1800,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionFrocking",
-          "x": 6060,
-          "y": 2970,
-          "w": 2780,
+          "x": 3470,
+          "y": 1780,
+          "w": 1850,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionSpecial",
-          "x": 9000,
-          "y": 2970,
-          "w": 2780,
+          "x": 5440,
+          "y": 1780,
+          "w": 1300,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodStart",
-          "x": 180,
-          "y": 3620,
-          "w": 1900,
+          "x": 6880,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodEnd",
-          "x": 2240,
-          "y": 3620,
-          "w": 1900,
+          "x": 9400,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "ObservationStatus",
-          "x": 4300,
-          "y": 3620,
-          "w": 2400,
+          "x": 180,
+          "y": 2780,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportRegular",
-          "x": 6860,
-          "y": 3620,
-          "w": 1500,
+          "x": 2200,
+          "y": 2780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportConcurrent",
-          "x": 8520,
-          "y": 3620,
-          "w": 1600,
+          "x": 3570,
+          "y": 2780,
+          "w": 1450,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportOperationalCommander",
-          "x": 10280,
-          "y": 3620,
-          "w": 1500,
-          "h": 360,
-          "trait": false
-        },
-        {
-          "key": "ReadinessSummary",
-          "x": 180,
-          "y": 4550,
-          "w": 3760,
+          "x": 5140,
+          "y": 2780,
+          "w": 1200,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReadinessDate",
-          "x": 4100,
-          "y": 4550,
-          "w": 3760,
+          "x": 6460,
+          "y": 2780,
+          "w": 1600,
+          "h": 360,
+          "trait": false
+        },
+        {
+          "key": "ReadinessDetail",
+          "x": 8180,
+          "y": 2780,
+          "w": 1700,
           "h": 360,
           "trait": false
         },
         {
           "key": "BilletSubcategory",
-          "x": 8020,
-          "y": 4550,
-          "w": 3760,
+          "x": 10000,
+          "y": 2780,
+          "w": 1780,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorName",
           "x": 180,
-          "y": 5480,
-          "w": 1800,
+          "y": 3780,
+          "w": 2250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorGrade",
-          "x": 2140,
-          "y": 5480,
-          "w": 1800,
+          "x": 2570,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorDesignator",
-          "x": 4100,
-          "y": 5480,
-          "w": 1800,
+          "x": 3710,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorTitle",
-          "x": 6060,
-          "y": 5480,
-          "w": 1800,
+          "x": 4850,
+          "y": 3780,
+          "w": 3900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorUIC",
-          "x": 8020,
-          "y": 5480,
-          "w": 1800,
+          "x": 8890,
+          "y": 3780,
+          "w": 1100,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorSSN",
-          "x": 9980,
-          "y": 5480,
-          "w": 1800,
+          "x": 10130,
+          "y": 3780,
+          "w": 1650,
           "h": 360,
           "trait": false
         },
         {
           "key": "CommandEmployment",
           "x": 180,
-          "y": 6410,
+          "y": 4580,
           "w": 11600,
           "h": 950,
           "trait": false
@@ -7601,7 +7601,7 @@
         {
           "key": "PrimaryDuty",
           "x": 180,
-          "y": 7930,
+          "y": 5980,
           "w": 2400,
           "h": 360,
           "trait": false
@@ -7609,7 +7609,7 @@
         {
           "key": "DutyDescription",
           "x": 2740,
-          "y": 7930,
+          "y": 5980,
           "w": 9040,
           "h": 950,
           "trait": false
@@ -7617,7 +7617,7 @@
         {
           "key": "CounselingDate",
           "x": 180,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -7625,7 +7625,7 @@
         {
           "key": "CounselorName",
           "x": 6060,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -7633,7 +7633,7 @@
         {
           "key": "Trait33",
           "x": 180,
-          "y": 10380,
+          "y": 8180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7641,31 +7641,31 @@
         {
           "key": "Trait33Comment1",
           "x": 4932,
-          "y": 10630,
+          "y": 8430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait33Comment2",
           "x": 4932,
-          "y": 11350,
+          "y": 9330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait33Comment3",
           "x": 4932,
-          "y": 12070,
+          "y": 10230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait34",
           "x": 180,
-          "y": 13180,
+          "y": 11180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7673,31 +7673,31 @@
         {
           "key": "Trait34Comment1",
           "x": 4932,
-          "y": 13430,
+          "y": 11430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait34Comment2",
           "x": 4932,
-          "y": 14150,
+          "y": 12330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait34Comment3",
           "x": 4932,
-          "y": 14870,
+          "y": 13230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait35",
           "x": 180,
-          "y": 15980,
+          "y": 14180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7705,31 +7705,31 @@
         {
           "key": "Trait35Comment1",
           "x": 4932,
-          "y": 16230,
+          "y": 14430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait35Comment2",
           "x": 4932,
-          "y": 16950,
+          "y": 15330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait35Comment3",
           "x": 4932,
-          "y": 17670,
+          "y": 16230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait36",
           "x": 180,
-          "y": 18780,
+          "y": 17180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7737,31 +7737,31 @@
         {
           "key": "Trait36Comment1",
           "x": 4932,
-          "y": 19030,
+          "y": 17430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait36Comment2",
           "x": 4932,
-          "y": 19750,
+          "y": 18330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait36Comment3",
           "x": 4932,
-          "y": 20470,
+          "y": 19230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait37",
           "x": 180,
-          "y": 21580,
+          "y": 20180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7769,31 +7769,31 @@
         {
           "key": "Trait37Comment1",
           "x": 4932,
-          "y": 21830,
+          "y": 20430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait37Comment2",
           "x": 4932,
-          "y": 22550,
+          "y": 21330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait37Comment3",
           "x": 4932,
-          "y": 23270,
+          "y": 22230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait38",
           "x": 180,
-          "y": 24380,
+          "y": 23180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7801,31 +7801,31 @@
         {
           "key": "Trait38Comment1",
           "x": 4932,
-          "y": 24630,
+          "y": 23430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait38Comment2",
           "x": 4932,
-          "y": 25350,
+          "y": 24330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait38Comment3",
           "x": 4932,
-          "y": 26070,
+          "y": 25230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait39",
           "x": 180,
-          "y": 27180,
+          "y": 26180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -7833,25 +7833,25 @@
         {
           "key": "Trait39Comment1",
           "x": 4932,
-          "y": 27430,
+          "y": 26430,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait39Comment2",
           "x": 4932,
-          "y": 28150,
+          "y": 27330,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         },
         {
           "key": "Trait39Comment3",
           "x": 4932,
-          "y": 28870,
+          "y": 28230,
           "w": 6876,
-          "h": 580,
+          "h": 680,
           "trait": false
         }
       ]
@@ -8014,7 +8014,7 @@
       ]
     },
     "FITREP:0": {
-      "height": 15120,
+      "height": 12840,
       "fields": [
         {
           "key": "OfficialName",
@@ -8051,223 +8051,223 @@
         {
           "key": "ComponentActive",
           "x": 180,
-          "y": 1110,
-          "w": 2192,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentTAR",
-          "x": 2532,
-          "y": 1110,
-          "w": 2192,
+          "x": 1200,
+          "y": 980,
+          "w": 900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentInactive",
-          "x": 4884,
-          "y": 1110,
-          "w": 2192,
+          "x": 2220,
+          "y": 980,
+          "w": 1050,
           "h": 360,
           "trait": false
         },
         {
           "key": "ComponentATADSW",
-          "x": 7236,
-          "y": 1110,
-          "w": 2192,
+          "x": 3390,
+          "y": 980,
+          "w": 1350,
           "h": 360,
           "trait": false
         },
         {
           "key": "UnitUIC",
-          "x": 9588,
-          "y": 1110,
-          "w": 2192,
+          "x": 4880,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "ShipStation",
-          "x": 180,
-          "y": 2040,
-          "w": 6100,
+          "x": 6620,
+          "y": 980,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "PromotionStatus",
-          "x": 6440,
-          "y": 2040,
-          "w": 2500,
+          "x": 8660,
+          "y": 980,
+          "w": 1600,
           "h": 360,
           "trait": false
         },
         {
           "key": "DateReported",
-          "x": 9100,
-          "y": 2040,
-          "w": 2680,
+          "x": 10400,
+          "y": 980,
+          "w": 1380,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionPeriodic",
           "x": 180,
-          "y": 2970,
-          "w": 2780,
+          "y": 1780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionDetachment",
-          "x": 3120,
-          "y": 2970,
-          "w": 2780,
+          "x": 1550,
+          "y": 1780,
+          "w": 1800,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionFrocking",
-          "x": 6060,
-          "y": 2970,
-          "w": 2780,
+          "x": 3470,
+          "y": 1780,
+          "w": 1850,
           "h": 360,
           "trait": false
         },
         {
           "key": "OccasionSpecial",
-          "x": 9000,
-          "y": 2970,
-          "w": 2780,
+          "x": 5440,
+          "y": 1780,
+          "w": 1300,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodStart",
-          "x": 180,
-          "y": 3620,
-          "w": 1900,
+          "x": 6880,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "PeriodEnd",
-          "x": 2240,
-          "y": 3620,
-          "w": 1900,
+          "x": 9400,
+          "y": 1780,
+          "w": 2380,
           "h": 360,
           "trait": false
         },
         {
           "key": "ObservationStatus",
-          "x": 4300,
-          "y": 3620,
-          "w": 2400,
+          "x": 180,
+          "y": 2780,
+          "w": 1900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportRegular",
-          "x": 6860,
-          "y": 3620,
-          "w": 1500,
+          "x": 2200,
+          "y": 2780,
+          "w": 1250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportConcurrent",
-          "x": 8520,
-          "y": 3620,
-          "w": 1600,
+          "x": 3570,
+          "y": 2780,
+          "w": 1450,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportOperationalCommander",
-          "x": 10280,
-          "y": 3620,
-          "w": 1500,
+          "x": 5140,
+          "y": 2780,
+          "w": 1200,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReadinessSummary",
-          "x": 180,
-          "y": 4550,
-          "w": 3760,
+          "x": 6460,
+          "y": 2780,
+          "w": 1500,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReadinessDate",
-          "x": 4100,
-          "y": 4550,
-          "w": 3760,
+          "x": 8080,
+          "y": 2780,
+          "w": 1700,
           "h": 360,
           "trait": false
         },
         {
           "key": "BilletSubcategory",
-          "x": 8020,
-          "y": 4550,
-          "w": 3760,
+          "x": 9900,
+          "y": 2780,
+          "w": 1880,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorName",
           "x": 180,
-          "y": 5480,
-          "w": 1800,
+          "y": 3780,
+          "w": 2250,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorGrade",
-          "x": 2140,
-          "y": 5480,
-          "w": 1800,
+          "x": 2570,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorDesignator",
-          "x": 4100,
-          "y": 5480,
-          "w": 1800,
+          "x": 3710,
+          "y": 3780,
+          "w": 1000,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorTitle",
-          "x": 6060,
-          "y": 5480,
-          "w": 1800,
+          "x": 4850,
+          "y": 3780,
+          "w": 3900,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorUIC",
-          "x": 8020,
-          "y": 5480,
-          "w": 1800,
+          "x": 8890,
+          "y": 3780,
+          "w": 1100,
           "h": 360,
           "trait": false
         },
         {
           "key": "ReportingSeniorSSN",
-          "x": 9980,
-          "y": 5480,
-          "w": 1800,
+          "x": 10130,
+          "y": 3780,
+          "w": 1650,
           "h": 360,
           "trait": false
         },
         {
           "key": "CommandEmployment",
           "x": 180,
-          "y": 6410,
+          "y": 4580,
           "w": 11600,
           "h": 950,
           "trait": false
@@ -8275,7 +8275,7 @@
         {
           "key": "PrimaryDuty",
           "x": 180,
-          "y": 7930,
+          "y": 5980,
           "w": 2400,
           "h": 360,
           "trait": false
@@ -8283,7 +8283,7 @@
         {
           "key": "DutyDescription",
           "x": 2740,
-          "y": 7930,
+          "y": 5980,
           "w": 9040,
           "h": 950,
           "trait": false
@@ -8291,7 +8291,7 @@
         {
           "key": "CounselingDate",
           "x": 180,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -8299,7 +8299,7 @@
         {
           "key": "CounselorName",
           "x": 6060,
-          "y": 9450,
+          "y": 7380,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -8307,7 +8307,7 @@
         {
           "key": "Trait33",
           "x": 180,
-          "y": 10380,
+          "y": 8180,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8315,7 +8315,7 @@
         {
           "key": "Trait34",
           "x": 180,
-          "y": 11000,
+          "y": 8800,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8323,7 +8323,7 @@
         {
           "key": "Trait35",
           "x": 180,
-          "y": 11620,
+          "y": 9420,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8331,7 +8331,7 @@
         {
           "key": "Trait36",
           "x": 180,
-          "y": 12240,
+          "y": 10040,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8339,7 +8339,7 @@
         {
           "key": "Trait37",
           "x": 180,
-          "y": 12860,
+          "y": 10660,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8347,7 +8347,7 @@
         {
           "key": "Trait38",
           "x": 180,
-          "y": 13480,
+          "y": 11280,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8355,7 +8355,7 @@
         {
           "key": "Trait39",
           "x": 180,
-          "y": 14100,
+          "y": 11900,
           "w": 5000,
           "h": 360,
           "trait": true
@@ -8363,7 +8363,7 @@
         {
           "key": "@guidance",
           "x": 5550,
-          "y": 10380,
+          "y": 8180,
           "w": 6000,
           "h": 4260
         }

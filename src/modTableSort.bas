@@ -187,6 +187,8 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
   Case "lstCounseling"
    If f.Name = "frmMyWork" Then labels = Array("ID", "Member", "Rank/rate", "Status", "Due month", "Last counseled", "Note") Else labels = Array("ID", "Date", "Outcome", "Counselor or reason", "Worksheet")
   Case "lstChoices": labels = Array("Field", "Change", "Decision")
+  Case "uxReportsDue": labels = Array("ID", "Member", "Rank/rate", "Report", "Due", "Status")
+  Case "lstDepartures": labels = Array("ID", "Member", "Rank/rate", "Basis", "Expected", "State", "Flagged")
   Case "lstCatalog": labels = Array("ID", "Rate", "Type", "Example")
   Case "lstRows": labels = Array("ID", "Member", "Designator", "RUIC", "Action")
   Case "lstGroups"
@@ -202,7 +204,7 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
    If f.Name = "frmUXDirectoryBatch" Then labels = Array("ID", "Member", "Rank/rate")
    If f.Name = "frmUXSeniorPicker" Then labels = Array("ID", "Member", "Rank/rate", "Desig", "UIC", "Status")
   Case "lstReports"
-   If f.Name = "frmUXMembers" Then labels = Array("ID", "Member", "Rank/rate", "Title")
+   If f.Name = "frmUXMembers" Then labels = Array("ID", "Member", "Rank/rate", "Period, state and groups")
    If f.Name = "frmPDFOutput" Then labels = Array("ID", "Report", "Report type", "Source", "File name")
   Case "lstDrafts"
    If f.Name = "frmUXNoteRecovery" Then labels = Array("ID", "Member", "Saved") Else labels = Array("ID", "Your unfinished notes", "Saved")

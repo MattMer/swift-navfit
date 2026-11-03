@@ -42,7 +42,7 @@ foreach($layout in $oldLayouts.PSObject.Properties){
             $current=@($actual.fields|Where-Object key -eq $row.key)
             Check ($current.Count -eq 1 -and ($current[0]|ConvertTo-Json -Compress) -ceq ($row|ConvertTo-Json -Compress)) ('Unrelated Chief field moved: '+$row.key)
         }
-        Check ($actual.height -eq 30500 -and @($actual.fields|Where-Object key -eq '@guidance').Count -eq 0) 'Chief trait groups require the fixed tall canvas and per-trait guidance'
+        Check ($actual.height -eq 29480 -and @($actual.fields|Where-Object key -eq '@guidance').Count -eq 0) 'Chief trait groups require the fixed tall canvas and per-trait guidance'
     }else{Check (($actual|ConvertTo-Json -Depth 10 -Compress) -ceq ($layout.Value|ConvertTo-Json -Depth 10 -Compress)) ('Fixed geometry changed: '+$layout.Name)}
 }
 $manifest=Get-Content (Join-Path $root 'scripts/build-manifest.json') -Raw|ConvertFrom-Json
@@ -56,7 +56,7 @@ foreach($field in $chief){
     Check ($field.bindings.CHIEFEVAL.navfit[0].source -ceq ($prefixes[$block-33]+'DN'+$entry)) ('Chief native comment order differs: '+$field.key)
     Check ($field.bindings.EVAL.navfit.Count -eq 0 -and $field.bindings.FITREP.navfit.Count -eq 0) ('Chief comments leaked into another native kind: '+$field.key)
     $row=$catalogue.fixedLayout.'CHIEFEVAL:0'.fields|Where-Object key -eq $field.key
-    Check ($row.y -eq 10380+($block-33)*2800+250+($entry-1)*720 -and $row.x -eq 4932 -and $row.w -eq 6876 -and $row.h -eq 580) ('Chief comment must match the printed width/height in its trait group: '+$field.key)
+    Check ($row.y -eq 8180+($block-33)*3000+250+($entry-1)*900 -and $row.x -eq 4932 -and $row.w -eq 6876 -and $row.h -eq 680) ('Chief comment must match the printed width/height in its trait group: '+$field.key)
 }
 # Forms are source: a catalogue change must include the form edit. Every field's
 # control exists in the editor and its surface; runtime layout comes from modUXFields.

@@ -246,17 +246,18 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
   Else
    trait = IsTraitKey(key)
-   Place f, "label" & key, CLng(parts(1)), y, CLng(parts(3)), 340
+   'Compact rows like the printed form: an 8-point caption line, then the field.
+   Place f, "label" & key, CLng(parts(1)), y, CLng(parts(3)), 220
    f.Controls("label" & key).Caption = Replace(UXFieldCaption(key, kind), "&", "&&"): f.Controls("label" & key).FontSize = 8
    'A caption too long for one line takes two, rising into the gap above its field.
-   If CLng(parts(3)) < Len(UXFieldCaption(key, kind)) * 72 Then Place f, "label" & key, CLng(parts(1)), y - 180, CLng(parts(3)), 520
-   Place f, UXFieldControl(key), CLng(parts(1)), y + 350, CLng(parts(3)), CLng(parts(4))
+   If CLng(parts(3)) < Len(UXFieldCaption(key, kind)) * 72 Then Place f, "label" & key, CLng(parts(1)), y - 180, CLng(parts(3)), 400
+   Place f, UXFieldControl(key), CLng(parts(1)), y + 230, CLng(parts(3)), CLng(parts(4))
    Set c = f.Controls(UXFieldControl(key)): c.TabIndex = order: order = order + 1
    c.Locked = locked Or Not UXFieldApplies(key, kind)
    If c.ControlType <> acCheckBox Then c.FontName = "Segoe UI": c.FontSize = 10
    If UXFieldFlag(key) Then
     c.Left = CLng(parts(1)): c.Top = y + 40: c.Width = 280: c.Height = 280
-    With f.Controls("label" & key): .Left = c.Left + 350: .Width = CLng(parts(3)) - 350: .Height = 430: End With
+    With f.Controls("label" & key): .Left = c.Left + 350: .Top = y: .Width = CLng(parts(3)) - 350: .Height = 430: End With
    End If
    If trait Then
     f.Controls("label" & key).Width = 4000
@@ -285,7 +286,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
     Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: f!cmdSnippets.Enabled = Not locked
     Place f, "cmdSpelling", 3500, c.Top + c.Height + 700, 2400, 400: f!cmdSpelling.Enabled = Not locked
    End If
-   Place f, "err" & key, CLng(parts(1)), y + IIf(trait, 390, IIf(UXFieldFlag(key), 430, CLng(parts(4)) + 360)), CLng(parts(3)), 200
+   Place f, "err" & key, CLng(parts(1)), y + IIf(trait, 390, IIf(UXFieldFlag(key), 430, CLng(parts(4)) + 240)), CLng(parts(3)), 190
    f.Controls("err" & key).FontSize = 8
    UXSurfaceValidate key
    bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
