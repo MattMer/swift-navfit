@@ -10,7 +10,7 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.52.0-dev"
+Public Const APP_VERSION As String = "0.52.0"
 Public Const SCHEMA_VERSION As Long = 41
 
 Public Function NewIdentity() As String

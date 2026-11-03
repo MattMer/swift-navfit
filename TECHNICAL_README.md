@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.51.0, schema 36 (1 November 2026), tag `v0.51.0` |
+| Latest release | 0.52.0, schema 41 (3 November 2026), tag `v0.52.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.52.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.52.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 41 |
 | Imports accepted | Workspaces of schema 1 to 41, into a target of schema 21 to 41 |
 | Tables / enforced relationships | 76 / 167 |
@@ -535,6 +535,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 3 Nov 2026 | Release 0.52.0. |
 | 3 Nov 2026 | Spell check briefly changes Access's uppercase setting (section 6.8). |
 | 2 Nov 2026 | Expanded from the technical README into a security and system description: identification, registration and approval considerations, data inventory and privacy, security controls, residual risk, accessibility, and the keep-current rule. Covers schema 41 (roster imports from NRRM and MNA, departures, reports due, member date reported, contributor deletion and directory pickers). |
 

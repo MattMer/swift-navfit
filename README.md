@@ -10,7 +10,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 27-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 32-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 
@@ -44,6 +44,9 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 - **Rack and stack:** edit every member's trait marks and recommendations in one table, compare ITA with prior reports, and stage proposed changes for review before applying them.
 - **Reporting seniors and RSCA:** start a senior from the member directory, see each paygrade's RSCA history with every summary group posted to it, keep exact totals apart from estimates, and choose a group's baseline deliberately.
 - **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
+- **Rosters and departures:** import the command's NRRM or MNA roster. Members missing from a newer complete roster, or near their PRD, are flagged as departing for you to confirm.
+- **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
+- **People from the directory:** fill the rater, senior rater and counselor from the member directory, add contributors from it, and remove contributors who leave.
 
 ### Catch problems while drafting
 
@@ -52,7 +55,7 @@ The 27-page user guide covers setup, drafting, notes, validation, summary groups
 - **Live findings with citations:** Swift checks values as you type and links each finding to the block it concerns.
 - **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.
 - **Drafts stay editable:** missing information never blocks saving a draft.
-- **Familiar report pages:** fixed Front and Back pages in official block order, all seven traits together, and help for the current window.
+- **Familiar report pages:** fixed Front and Back pages laid out like the official forms, all seven traits together, and help for the current window.
 - **Narrative tools:** a line counter that matches how NAVFIT98A prints, spell check, and rate-filtered example phrases kept apart from the official narrative.
 
 ### Bring data in and out
@@ -94,12 +97,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.51.0
+### Current release: 0.52.0
 
-Download from the [0.51.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.51.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.52.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.52.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.51.0.accdb:** an empty workspace. Start real work here.
-- **Swift_NAVFIT_Demo_0.51.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.52.0.accdb:** an empty workspace. Start real work here.
+- **Swift_NAVFIT_Demo_0.52.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
 
 > **Not yet tested:**
 > 1. printed fit against the official forms;

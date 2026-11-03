@@ -16,7 +16,13 @@ Public Function TestUXAdminFeedback() As String
         Set f = Forms!frmEditor: Set s = f!uxFieldSurface.Form
         Check UXSectionName(0) = "Admin data", "Admin section caption incorrect"
         Check s!txtOfficialName.Visible And s!txtReportingSeniorName.Visible, "Admin data did not combine member and senior fields"
-        Check Not s!txtMemberFirstName.Visible And Not s!txtReportingSeniorLastName.Visible And Not s!txtReadinessDetail.Visible, "Redundant fields exposed"
+        Check Not s!txtMemberFirstName.Visible And Not s!txtReportingSeniorLastName.Visible, "Redundant fields exposed"
+        'NAVPERS 1616/27 block 20 is the date and a result list; the other forms keep the summary code.
+        If kind = "CHIEFEVAL" Then
+            Check s!txtReadinessDetail.Visible And Not s!txtReadinessSummary.Visible, "Chief block 20 is not the date and result"
+        Else
+            Check Not s!txtReadinessDetail.Visible And s!txtReadinessSummary.Visible, "Readiness result exposed outside the Chief form"
+        End If
         Check s!txtCommandEmployment.Visible, "Block 28 absent"
         s!txtCommandEmployment = "Synthetic deployment and command achievement"
         Check UXSurfaceEdited("CommandEmployment"), "Block 28 edit failed"

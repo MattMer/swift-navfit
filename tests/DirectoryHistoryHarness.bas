@@ -51,7 +51,9 @@ Public Function TestDirectoryHistory() As String
     prior = SavePriorEvaluation(prior, 3, m, "EVAL", "IT3", #1/1/2025#, #12/31/2025#, "NOB", "NOB", marks, "NOB source")
     Check PriorEvaluationITA(prior) = "NOB", "Whole-report NOB not distinguished"
     Check DCount("*", "PriorEvaluationTrait", "PriorID=" & prior) = 7, "Trait edit lost slots or duplicated rows"
-    LinkReportDirectoryMember unknown, m, CurrentRevision(unknown), 1, "Confirmed member identity from source"
+    'The linked report's block 9 moved the profile's date reported forward, so its version moved too.
+    Check DLookup("DateReported", "CommandMember", "MemberID=" & m) = #1/1/2026#, "Linked report did not set the member's date reported"
+    LinkReportDirectoryMember unknown, m, CurrentRevision(unknown), DLookup("VersionCounter", "CommandMember", "MemberID=" & m), "Confirmed member identity from source"
     Check DLookup("MatchState", "MemberReport", "ReportID=" & unknown) = "Confirmed", "Manual identity confirmation failed"
     Set previous = CheckedPrevious(unknown)
     Check previous("ITA") = "NOB", "Confirmed identity did not expose prior history"

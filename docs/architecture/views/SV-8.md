@@ -47,4 +47,4 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 38 | captured | 0.52.0-dev | 75 | MemberDeparture, RosterImport, RosterPresence |
 | 39 | captured | 0.52.0-dev | 76 | ReportDueDismissal |
 | 40 | captured | 0.52.0-dev | 76 | - |
-| 41 | current build | 0.52.0-dev | 76 | - |
+| 41 | current build | 0.52.0 | 76 | - |

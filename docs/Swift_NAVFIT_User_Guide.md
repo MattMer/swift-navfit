@@ -1,8 +1,8 @@
 # Swift NAVFIT User Guide
 
-Version 1.5 | 1 November 2026
+Version 1.6 | 3 November 2026
 
-For Swift NAVFIT 0.51.0 | schema 36
+For Swift NAVFIT 0.52.0 | schema 41
 
 ## Draft. Coordinate. Review. Preserve.
 
@@ -12,7 +12,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 
 **Independent development application.** Local approval and group completion do not constitute official signatures, submission, or Navy approval. Use governing instructions and the command's authorized final processing procedure.
 
-**Guide scope:** Swift NAVFIT 0.51.0 navigation and behavior. Screen maps are orientation diagrams, not screenshots. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
+**Guide scope:** Swift NAVFIT 0.52.0 navigation and behavior. Screen maps are orientation diagrams, not screenshots. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
 
 ---
 
@@ -869,7 +869,7 @@ For a repeatable error, retain the file and note the version, action, report/gro
 
 ## 20.1 What this guide establishes
 
-This manual describes the Swift NAVFIT 0.51.0 local workflow. It is not a Navy instruction, authorization to sign, or certification of report policy compliance. Use applicable governing instructions and command procedures for eligibility, required content, signatures, and submission.
+This manual describes the Swift NAVFIT 0.52.0 local workflow. It is not a Navy instruction, authorization to sign, or certification of report policy compliance. Use applicable governing instructions and command procedures for eligibility, required content, signatures, and submission.
 
 Swift does not provide BOL login, Navy role acknowledgment, online trusted-agent delegation, email delivery, automatic notifications, official signatures, or official submission. Contributor profiles and reporting-senior records are local data, not Navy account roles.
 
@@ -880,7 +880,7 @@ Native automated checks cover defined workflows, every earlier workspace schema,
 | Reference | Use in this guide |
 | --- | --- |
 | eNavFit User Guide, Version 1.0, 10 December 2021; supplied 86-page PDF | Training-manual organization: overview, responsibilities, access, navigation, workflow, procedures, and reference material. Its online roles and submission process are not Swift features. |
-| Swift NAVFIT 0.51.0 source and generated control definitions | Current captions, destinations, save guards, messages, review, counseling, Mark signed, calculations and migration procedures. |
+| Swift NAVFIT 0.52.0 source and generated control definitions | Current captions, destinations, save guards, messages, review, counseling, Mark signed, calculations and migration procedures. |
 | [Architecture description](architecture/Swift_NAVFIT_Architecture_Description.md) and current project state | Interfaces, data model, rules, standards and boundaries. |
 | Current workspace help and earlier feature documentation | Report editing, groups, members, defaults, RSCA, import/export, recovery, and backup context, reconciled to current navigation. |
 
@@ -888,6 +888,6 @@ The reference eNavFit manual is used as an organizational model, not reproduced 
 
 ## 20.3 Maintenance
 
-Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covers application 0.51.0, schema 36. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
+Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covers application 0.52.0, schema 41. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
 
 Start with this guide for current user procedures. Older feature guides retain historical service and verification detail and may describe superseded windows or review/comment behavior. The repository's current-state notes identify the latest delivered artifacts and remaining work.

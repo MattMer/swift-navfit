@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 1 November 2026. This document describes what is true **now**:
+Updated 3 November 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.51.0 | 36 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.51.0 | 36 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.51.0), 1 Nov 2026. Full release gate passed, including schemas 1–36. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.51.0` | 36 | The release commit. Earlier: `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.52.0 | 41 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.52.0 | 41 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.52.0), 3 Nov 2026. Full release gate passed, including schemas 1–41. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.52.0` | 41 | The release commit. Earlier: `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 
@@ -166,11 +166,11 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 1–36.**
+- **The importer accepts source schemas 1–41.**
   [modMigration.bas:17](src/modMigration.bas) hard-codes the upper bound, and
   [modWorkspaceImport.bas](src/modWorkspaceImport.bas) checks
   `SCHEMA_VERSION`. Raise the literal whenever the schema changes. The target
-  must be schema 21–36.
+  must be schema 21–41.
 - Test evidence (local receipts; see history file):
 
   | Source schemas | Last verified | Scope |
