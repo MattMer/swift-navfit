@@ -1333,6 +1333,28 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## Summary letter details and ISICs (3 November 2026, schema 42)
+
+From the user's walkthrough: the summary letter's lower section was blank, and
+NAVFIT98A keeps an ISIC, e-mail and phone per letter profile.
+
+- **ISICs** (`ISIC` table, `modISIC`, **Resources > ISICs for summary letters**,
+  `frmUXISICs`): name, UIC and up to four address lines; delete hides one from new
+  choices. Each summary group remembers its ISIC (`SummaryGroup.ISICID`).
+- **Reporting senior e-mail**: a record-only key (`RSRecordOnlyKeys`) stored and
+  edited with the senior but never copied to reports; validated as name@domain.
+- **The letter** (`PlanSummaryContact`): submitted on time (chosen on the Create
+  PDFs screen), ISIC address and UIC, the senior's address, e-mail and phone (from
+  the group's senior record, else the reports' shared values), and the Created date
+  in Navy format. Checked on a print preview.
+- **Fixes:** double-clicking the rater, senior rater or counselor field did nothing,
+  because the handler was on the editor's hidden buffer controls rather than the
+  visible page; the picker now enters values through the visible fields. `Shared`
+  is added to the source check's reserved words. APP_VERSION 0.53.0-dev.
+
+Tests: new `test-isic` (12 assertions) in the reporting-senior-accounting suite;
+`test-contributors` checks the double-click is on the visible fields.
+
 ## Roster matching by report-format name (3 November 2026)
 
 Found while preparing synthetic rosters for a walkthrough video: roster rows matched

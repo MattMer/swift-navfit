@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 41. 76 entities; 167 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 42. 77 entities; 168 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -165,6 +165,7 @@ erDiagram
   GroupCompletionReport ||--o{ RSCountedReport : "FK_CountedPostingReport"
   Report ||--o{ RSCountedReport : "FK_CountedReport"
   RulePack ||--o{ RuleDefinition : "FK_RuleDefinition_PackID"
+  ISIC ||--o{ SummaryGroup : "FK_SummaryGroup_ISICID"
   RuleDefinition ||--o{ ValidationFinding : "FK_ValidationFinding_RuleID"
   ValidationRun ||--o{ ValidationFinding : "FK_ValidationFinding_ValidationRunID"
   Report ||--o{ ValidationRun : "FK_ValidationRun_ReportID"
@@ -336,6 +337,7 @@ erDiagram
 | RSCountedReport | GroupCompletionReport | CompletionID -> GroupCompletionReport.CompletionID, ReportID -> GroupCompletionReport.ReportID | FK_CountedPostingReport |
 | RSCountedReport | Report | ReportID -> Report.ReportID | FK_CountedReport |
 | RuleDefinition | RulePack | PackID -> RulePack.PackID | FK_RuleDefinition_PackID |
+| SummaryGroup | ISIC | ISICID -> ISIC.ISICID | FK_SummaryGroup_ISICID |
 | ValidationFinding | RuleDefinition | RuleID -> RuleDefinition.RuleID | FK_ValidationFinding_RuleID |
 | ValidationFinding | ValidationRun | ValidationRunID -> ValidationRun.ValidationRunID | FK_ValidationFinding_ValidationRunID |
 | ValidationRun | Report | ReportID -> Report.ReportID | FK_ValidationRun_ReportID |

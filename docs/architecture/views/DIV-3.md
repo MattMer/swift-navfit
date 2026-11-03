@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 41, application 0.52.0. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 42, application 0.53.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -444,6 +444,19 @@ Microsoft Access (ACE) tables in schema 41, application 0.52.0. Types are Access
 | AppliedRevisionID | Long |  |
 | OperationID | Long |  |
 | IsUndone | Yes/No |  |
+
+## ISIC
+
+- **Primary key:** ISICID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| ISICID | AutoNumber |  |
+| Title | Text (120) | yes |
+| UIC | Text (6) |  |
+| Address | Long text |  |
+| IsArchived | Yes/No |  |
+| VersionCounter | Long | yes |
 
 ## LibraryPreference
 
@@ -1276,6 +1289,7 @@ Microsoft Access (ACE) tables in schema 41, application 0.52.0. Types are Access
 | KeySpec | Long text |  |
 | VersionCounter | Long |  |
 | IsArchived | Yes/No |  |
+| ISICID | Long |  |
 
 ## TraitDefinition
 

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 41,
+  "SchemaVersion": 42,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -55,7 +55,8 @@
     "RosterImport",
     "RosterPresence",
     "MemberDeparture",
-    "ReportDueDismissal"
+    "ReportDueDismissal",
+    "ISIC"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -290,7 +291,10 @@
     "ALTER TABLE ReportDueDismissal ADD CONSTRAINT FK_ReportDueDismissal_MemberID FOREIGN KEY (MemberID) REFERENCES CommandMember (MemberID)",
     "ALTER TABLE CommandMember ADD COLUMN DateReported DATETIME",
     "ALTER TABLE UserProfile ADD COLUMN IsRetired BIT",
-    "ALTER TABLE UserProfile ADD COLUMN MemberID LONG"
+    "ALTER TABLE UserProfile ADD COLUMN MemberID LONG",
+    "CREATE TABLE ISIC (ISICID COUNTER PRIMARY KEY, Title TEXT(120) NOT NULL, UIC TEXT(6), Address LONGTEXT, IsArchived BIT, VersionCounter LONG NOT NULL)",
+    "ALTER TABLE SummaryGroup ADD COLUMN ISICID LONG",
+    "ALTER TABLE SummaryGroup ADD CONSTRAINT FK_SummaryGroup_ISICID FOREIGN KEY (ISICID) REFERENCES ISIC (ISICID)"
   ],
   "Queries": [
     {

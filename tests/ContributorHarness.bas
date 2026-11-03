@@ -90,12 +90,18 @@ Public Function TestContributors() As String
     ' The editor's people fields open the picker and take the chosen member.
     id1 = CommitDraft(0, "EVAL", "Picker report", "SYNTHETIC FIVE", #1/1/2026#, #9/30/2026#, "")
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id1)
+    Dim page As Access.Form, field As Variant
+    Set page = Forms!frmEditor!uxFieldSurface.Form
+    'The visible fields, not the editor's hidden buffers, carry the double-click.
+    For Each field In Array("RaterName", "SeniorRaterName", "CounselorName", "CounselorLastName")
+        Check page.Controls("txt" & field).OnDblClick Like "=UXPickPerson(*", "Double-click not on the visible field: " & field
+    Next
     Check UXPickPerson("RaterName"), "Rater picker did not open"
     Forms!frmUXSeniorPicker!lstMembers = member: Check RSPickerUse(), "Use selected member failed for the rater"
-    Check Forms!frmEditor!txtRaterName = "JONES, P A, LCDR" And Not CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded, "Rater field not filled from the member"
+    Check UXSurfacePending("txtRaterName", page!txtRaterName.Value) = "JONES, P A, LCDR" And Not CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded, "Rater field not filled from the member"
     Check UXPickPerson("CounselorName"), "Counselor picker did not open"
     Forms!frmUXSeniorPicker!lstMembers = member: Check RSPickerUse(), "Use selected member failed for the counselor"
-    Check Forms!frmEditor!txtCounselorName = "JONES, P A" And EditorHasPending(), "Counselor field not filled or not pending"
+    Check UXSurfacePending("txtCounselorName", page!txtCounselorName.Value) = "JONES, P A" And EditorHasPending(), "Counselor field not filled or not pending"
     Forms!frmEditor.OnUnload = ""
     DoCmd.Close acForm, "frmEditor", acSaveNo
     TestContributors = "PASS: " & checks & " contributor directory, delete and people-field assertions": Exit Function

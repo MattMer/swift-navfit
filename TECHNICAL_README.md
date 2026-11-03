@@ -40,14 +40,14 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.52.0 (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 41 |
-| Imports accepted | Workspaces of schema 1 to 41, into a target of schema 21 to 41 |
-| Tables / enforced relationships | 76 / 167 |
-| VBA modules / forms | 113 / 70 |
+| Application version | 0.53.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Schema version | 42 |
+| Imports accepted | Workspaces of schema 1 to 42, into a target of schema 21 to 42 |
+| Tables / enforced relationships | 77 / 168 |
+| VBA modules / forms | 114 / 71 |
 | Report fields in the catalogue | 100 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 124 / 119 |
+| Test cases / VBA test harnesses | 125 / 120 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -190,7 +190,7 @@ out of Git.
 | Assignment | Billet, PRD, NEC/NOBC, reserve unit data, date reported, departure dates and reasons | NRRM or MNA rosters; typed |
 | Contact details | Address, phone and e-mail where the NRRM roster includes them | NRRM roster |
 | Evaluation content | Trait grades, promotion recommendation, comments, career recommendations, qualifications, counseling dates and counselor, prior evaluation history | Typed, NAVFIT98A, PDF |
-| Reporting senior and raters | Name, grade, designator, title, UIC, SSN, DoD ID, address, phone; rater, senior rater and counselor names | Typed, directory, PDF |
+| Reporting senior and raters | Name, grade, designator, title, UIC, SSN, DoD ID, address, phone, e-mail; rater, senior rater and counselor names | Typed, directory, PDF |
 | Review work | Notes, messages, review decisions and their free text | Typed by contributors |
 | Contributors | Display names (optionally linked to a directory member) | Typed or from the directory |
 
@@ -206,7 +206,7 @@ added or removed without updating this list.
 | Area | Tables | Personal data |
 | --- | --- | --- |
 | Member directory and rosters | `CommandMember`, `MemberReport`, `PriorEvaluation`, `PriorEvaluationTrait`, `MemberCounseling`, `MemberDeparture`, `RosterImport`, `RosterPresence`, `ReportDueDismissal` | Yes: identity, SSN, roster data (including DoD ID and contact details), prior grades, counseling, departures |
-| Reporting seniors | `ReportingSeniorRecord`, `ReportingSeniorValue`, `RSCABaseline`, `GroupRSCABaseline`, `RSCountedReport` | Yes: senior identity, SSN, contact details; cumulative averages |
+| Reporting seniors | `ReportingSeniorRecord`, `ReportingSeniorValue`, `RSCABaseline`, `GroupRSCABaseline`, `RSCountedReport` | Yes: senior identity, SSN, contact details (including e-mail); cumulative averages |
 | Directory merge history | `DirectoryMerge`, `DirectoryMergeReport`, `DirectoryMergePrior`, `DirectoryMergeCounseling`, `DirectoryMergeSenior` | Links between member records before and after a merge |
 | Reports and revisions | `Report`, `ReportHead`, `ReportRevision`, `RevisionValue`, `RevisionChange`, `RevisionDate`, `RevisionChoice`, `ReportEvent`, `ReportSignoff`, `DraftDisposal`, `RecoveryDraft` | Yes: every report field in every saved version, unsaved checkpoints, sign-off and disposal records |
 | Imports | `ImportReceipt`, `ImportRawValue`, `WizardPreview` | Yes: raw values as imported (including SSNs) and import provenance |
@@ -215,6 +215,7 @@ added or removed without updating this list.
 | Summary groups | `SummaryGroup`, `GroupMember`, `GroupSnapshot`, `GroupSnapshotMember`, `GroupCompletion`, `GroupCompletionReport`, `GroupCompletionCurrent`, `GroupLifecycle`, `ComparisonSet`, `ComparisonMember` | Membership and accounting links to reports |
 | Review and collaboration | `ReviewTask`, `ReviewTaskEvent`, `ReviewComment`, `ReviewCommentEvent`, `ReportNote`, `ReportNoteDraft`, `ReportMessage`, `RouteTemplate`, `RouteTemplateStep`, `RouteRun`, `RouteRunStep`, `RouteRunEvent` | Free text written by contributors, which may mention members |
 | Contributors and audit | `UserProfile`, `AuditActor`, `AuditEvent`, `OperationJournal` | Contributor names; operation descriptions (which can name members and show the last four SSN digits) |
+| Summary letters | `ISIC` | ISIC names, UICs and mailing addresses (organizations, not people) |
 | Workspace and library | `Workspace`, `AppMetadata`, `Folder`, `FolderMove`, `FolderBatchChange`, `LibraryPreference`, `NarrativeSnippet` | Command name; reusable comment text written by users |
 <!-- end data-inventory -->
 
@@ -535,6 +536,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 3 Nov 2026 | Schema 42: ISICs and the reporting senior's e-mail, printed on summary letters (sections 5.1 and 5.2). |
 | 3 Nov 2026 | Release 0.52.0. |
 | 3 Nov 2026 | Spell check briefly changes Access's uppercase setting (section 6.8). |
 | 2 Nov 2026 | Expanded from the technical README into a security and system description: identification, registration and approval considerations, data inventory and privacy, security controls, residual risk, accessibility, and the keep-current rule. Covers schema 41 (roster imports from NRRM and MNA, departures, reports due, member date reported, contributor deletion and directory pickers). |

@@ -22,10 +22,16 @@ Public Function PDFOutputOpenGroup(ByVal screen As String) As Boolean
 Failed:
     MsgBox Err.Description, vbExclamation, "Create group PDFs"
 End Function
+Private Sub PDFOutputLetterChoices()
+    PDFOutputSetLetter Nz(Forms!frmPDFOutput!cboISIC, 0), Nz(Forms!frmPDFOutput!cboOnTime, "")
+End Sub
 Public Function PDFOutputLoad() As Boolean
     With Forms!frmPDFOutput
         !cboSource = "Current drafts": !cboFormat = IIf(previewGroup > 0, "Combined packet", "Individual PDFs")
         !chkSummary = (previewGroup > 0): !chkSummary.Enabled = (previewGroup > 0)
+        !cboISIC.RowSource = "SELECT ISICID,Title FROM ISIC WHERE IsArchived=False ORDER BY Title"
+        !cboISIC = IIf(GroupISIC(previewGroup) > 0, GroupISIC(previewGroup), Null): !cboOnTime = Null
+        !cboISIC.Enabled = (previewGroup > 0): !cboOnTime.Enabled = (previewGroup > 0)
         !txtFolder = PDFOutputFolderPreference(): !cmdOpenFolder.Enabled = False: !cmdOpenPDF.Enabled = False
     End With
     PDFOutputLoad = PDFOutputRefreshPreview()
@@ -82,6 +88,7 @@ Public Function PDFOutputPagePreview() As Boolean
     If Nz(Forms!frmPDFOutput!txtFolder, "") = "" Then
         If Not PDFOutputBrowseFolder() Then Exit Function
     End If
+    PDFOutputLetterChoices
     PDFOutputPreviewPages CStr(Forms!frmPDFOutput!txtFolder), Nz(Forms!frmPDFOutput!chkSummary, False)
     Forms!frmPDFOutput.Visible = False
     PDFOutputPagePreview = True: Exit Function
@@ -101,7 +108,10 @@ Public Function PDFOutputCreate() As Boolean
     f!txtFindings.SetFocus
     f!cmdGenerate.Enabled = False: f!cmdRefresh.Enabled = False: f!cmdClose.Enabled = False
     f!lblStatus.Caption = "Creating print-ready PDFs from the captured preview...": f.Repaint
+    PDFOutputLetterChoices
     folder = PDFOutputGenerate(Nz(f!txtFolder, ""), selected, Nz(f!cboFormat, ""), Nz(f!chkSummary, False))
+    'The group remembers its ISIC for the next summary letter.
+    If previewGroup > 0 Then SetGroupISIC previewGroup, Nz(f!cboISIC, 0)
     f!lblStatus.Caption = "Completed: " & folder
     f!cmdOpenFolder.Enabled = True: f!cmdOpenPDF.Enabled = True
     f!cmdGenerate.Enabled = True: f!cmdRefresh.Enabled = True: f!cmdClose.Enabled = True

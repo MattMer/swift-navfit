@@ -114,12 +114,12 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =7600
+                    Height =8900
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
                     LayoutCachedWidth =2450
-                    LayoutCachedHeight =7600
+                    LayoutCachedHeight =8900
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                 End
@@ -674,6 +674,46 @@ Begin Form
                     LayoutCachedTop =6550
                     LayoutCachedWidth =12820
                     LayoutCachedHeight =7150
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =7400
+                    Width =9954
+                    Height =600
+                    FontSize =10
+                    TabIndex =15
+                    ForeColor =4205854
+                    Name ="cmdISICs"
+                    Caption ="ISICs for summary letters"
+                    OnClick ="=OpenScreen(\"frmUXISICs\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =7400
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =8000
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

@@ -63,7 +63,7 @@ Public Function RSLoadSeniorEditor() As Boolean
     seniorInitialMember = MajorScalar("SELECT MemberID FROM ReportingSeniorRecord WHERE SeniorID=" & id)
     f!txtTitle = seniorInitialTitle: f!txtVersion = Nz(MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id), 0)
     f!txtMemberID = seniorInitialMember
-    For Each key In RSSeniorKeys(): f.Controls("rs" & key) = seniorInitial(CStr(key)): Next
+    For Each key In RSRecordKeys(): f.Controls("rs" & key) = seniorInitial(CStr(key)): Next
     Call RSTableReset: RSReloadBaselines: RSSelectSeniorPage 0
     If member > 0 Then
         f!txtTitle = Nz(MajorScalar("SELECT IIf(Len(Nz(ReportName,""""))=0,FullName,ReportName) FROM CommandMember WHERE MemberID=" & member), "")
@@ -194,15 +194,16 @@ End Function
 'Fill the editor's people field (and the counselor's split name fields, where the
 'report type shows them) from the chosen member.
 Private Function RSPickerFillRole(ByVal member As Long) As Boolean
-    Dim key As String, keys As Variant, k As Variant, values As Object, c As Access.Control
+    Dim key As String, keys As Variant, k As Variant, values As Object, page As Access.Form
     key = Mid$(pickerMode, 6): Set values = CreateObject("Scripting.Dictionary")
+    Set page = Forms!frmEditor!uxFieldSurface.Form
     If key = "RaterName" Or key = "SeniorRaterName" Then keys = Array(key) Else keys = Array("CounselorName", "CounselorLastName", "CounselorFirstInitial", "CounselorMiddleInitial")
     For Each k In keys
-        Set c = Forms!frmEditor.Controls("txt" & k)
-        If k = key Or c.Visible Then values.Add CStr(k), MemberPeopleText(member, CStr(k))
+        If k = key Or page.Controls(UXFieldControl(CStr(k))).Visible Then values.Add CStr(k), MemberPeopleText(member, CStr(k))
     Next
-    For Each k In values.Keys: Forms!frmEditor.Controls("txt" & k) = values(k): Next
-    Call CheckpointEditor: Call UXRefreshEditor
+    'Enter each value as if typed into its visible field.
+    For Each k In values.Keys: Call UXSurfaceSetValue(CStr(k), values(k)): Next
+    Call UXEditorChanged
     RSPickerFillRole = True
 End Function
 Public Function RSPickerUse() As Boolean
@@ -243,7 +244,7 @@ End Function
 Public Function RSReadSeniorUI() As Object
     Dim result As Object, key As Variant, c As Access.Control
     Set result = CreateObject("Scripting.Dictionary")
-    For Each key In RSSeniorKeys()
+    For Each key In RSRecordKeys()
         Set c = Forms!frmUXSeniorEditor.Controls("rs" & key)
         If Screen.ActiveControl.Name = c.Name Then result.Add CStr(key), c.Text Else result.Add CStr(key), c.Value
     Next
@@ -255,7 +256,7 @@ Public Function RSSeniorDirty() As Boolean
     Set values = RSReadSeniorUI()
     If Nz(Forms!frmUXSeniorEditor!txtTitle, "") <> seniorInitialTitle Then RSSeniorDirty = True: Exit Function
     If Nz(PendingMember(), 0) <> Nz(seniorInitialMember, 0) Then RSSeniorDirty = True: Exit Function
-    For Each key In RSSeniorKeys()
+    For Each key In RSRecordKeys()
         If Not SameFieldValue(values(CStr(key)), seniorInitial(CStr(key))) Then RSSeniorDirty = True: Exit Function
     Next
 End Function

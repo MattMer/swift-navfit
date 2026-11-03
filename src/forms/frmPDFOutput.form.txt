@@ -217,6 +217,94 @@ Begin Form
                     OverlapFlags =87
                     TextFontFamily =34
                     IMESentenceMode =3
+                    Left =2100
+                    Top =1950
+                    Width =5400
+                    Height =400
+                    FontSize =10
+                    Name ="cboISIC"
+                    BoundColumn =1
+                    ColumnWidths ="0;5400"
+                    ColumnCount =2
+                    TabIndex =3
+                    RowSourceType ="Table/Query"
+                    RowSource =""
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2100
+                    LayoutCachedTop =1950
+                    LayoutCachedWidth =7500
+                    LayoutCachedHeight =2350
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =300
+                            Top =1975
+                            Width =1750
+                            Height =350
+                            FontSize =10
+                            Name ="lblISIC"
+                            Caption ="ISIC (summary letter)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
+                            LayoutCachedTop =1975
+                            LayoutCachedWidth =2050
+                            LayoutCachedHeight =2325
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =11000
+                    Top =1950
+                    Width =1600
+                    Height =400
+                    FontSize =10
+                    Name ="cboOnTime"
+                    ColumnCount =1
+                    TabIndex =4
+                    RowSourceType ="Value List"
+                    RowSource ="Yes;No"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11000
+                    LayoutCachedTop =1950
+                    LayoutCachedWidth =12600
+                    LayoutCachedHeight =2350
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =93
+                            TextFontFamily =34
+                            Left =8900
+                            Top =1975
+                            Width =2000
+                            Height =350
+                            FontSize =10
+                            Name ="lblOnTime"
+                            Caption ="Submitted on time"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8900
+                            LayoutCachedTop =1975
+                            LayoutCachedWidth =10900
+                            LayoutCachedHeight =2325
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =87
+                    TextFontFamily =34
+                    IMESentenceMode =3
                     Left =7200
                     Top =850
                     Width =3400
@@ -296,7 +384,7 @@ Begin Form
                     Width =9000
                     Height =450
                     FontSize =10
-                    TabIndex =3
+                    TabIndex =5
                     Name ="txtFolder"
                     FontName ="Segoe UI"
 
@@ -333,7 +421,7 @@ Begin Form
                     Width =2400
                     Height =450
                     FontSize =10
-                    TabIndex =4
+                    TabIndex =6
                     Name ="cmdBrowse"
                     Caption ="Choose folder"
                     OnClick ="=PDFOutputBrowseFolder()"
@@ -360,7 +448,7 @@ Begin Form
                     Width =13500
                     Height =2350
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =7
                     Name ="lstReports"
                     RowSourceType ="Value List"
                     ColumnWidths ="0;2800;1100;2900;6500"
@@ -404,7 +492,7 @@ Begin Form
                     Width =13500
                     Height =2200
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =8
                     Name ="txtFindings"
                     FontName ="Segoe UI"
 
@@ -458,7 +546,7 @@ Begin Form
                     Width =6100
                     Height =500
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =9
                     Name ="cmdPagePreview"
                     Caption ="Preview printed pages (close preview to return)"
                     OnClick ="=PDFOutputPagePreview()"
@@ -482,7 +570,7 @@ Begin Form
                     Width =2700
                     Height =500
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =10
                     Name ="cmdRefresh"
                     Caption ="Refresh captured preview"
                     OnClick ="=PDFOutputRefreshPreview()"
@@ -506,7 +594,7 @@ Begin Form
                     Width =3200
                     Height =500
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =11
                     Name ="cmdGenerate"
                     Caption ="Create print-ready PDFs"
                     OnClick ="=PDFOutputCreate()"
@@ -530,7 +618,7 @@ Begin Form
                     Width =2300
                     Height =500
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =12
                     Name ="cmdOpenPDF"
                     Caption ="Open first PDF"
                     OnClick ="=PDFOutputOpenResult(False)"
@@ -554,7 +642,7 @@ Begin Form
                     Width =2300
                     Height =500
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =13
                     Name ="cmdOpenFolder"
                     Caption ="Open output folder"
                     OnClick ="=PDFOutputOpenResult(True)"
@@ -578,7 +666,7 @@ Begin Form
                     Width =2200
                     Height =500
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =14
                     Name ="cmdClose"
                     Caption ="Close"
                     OnClick ="=PDFOutputClose()"
@@ -710,7 +798,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =100
                     Height =100
-                    TabIndex =13
+                    TabIndex =15
                     Name ="uxSortActivateOriginal"
                     DefaultValue ="\"\""
 

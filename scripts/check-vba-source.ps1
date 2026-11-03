@@ -37,7 +37,7 @@ foreach($file in $Path){
   # Keywords cannot be variable or parameter names; VBA reports a syntax error only
   # when the module first runs, which a build does not do.
   $declared=[regex]::Matches($line,'(?i)(?:\b(?:Dim|Private|Public|Static|ByVal|ByRef|Optional)\s+|,\s*)([A-Za-z_]\w*)\s+As\b')
-  foreach($d in $declared){if($d.Groups[1].Value -in @('Open','Imp','Eqv','Xor','Mod','Is','Like','Not','And','Or','Put','Get','Lock','Unlock','Input','Each','In','To','Then','Loop','Wend','Until')){Report 'ERROR' $file ($n+1) ("'"+$d.Groups[1].Value+"' is a VBA keyword and cannot name a variable or parameter.");$errors++}}
+  foreach($d in $declared){if($d.Groups[1].Value -in @('Open','Imp','Eqv','Xor','Mod','Is','Like','Not','And','Or','Put','Get','Lock','Unlock','Input','Each','In','To','Then','Loop','Wend','Until','Shared')){Report 'ERROR' $file ($n+1) ("'"+$d.Groups[1].Value+"' is a VBA keyword and cannot name a variable or parameter.");$errors++}}
   $label=[regex]::Match($line,'^\s*([A-Za-z_]\w*):(?!=)\s*\S')
   if($label.Success -and $label.Groups[1].Value -notin @('Loop','Next','Else','Do','Wend','Exit','End','Resume','Case','Then','Rem') -and $label.Groups[1].Value -notin $labelTargets){Report 'ERROR' $file ($n+1) ("'"+$label.Groups[1].Value+":' starts the line, so VBA reads it as a label and never calls it. Write 'Call "+$label.Groups[1].Value+":' instead.");$errors++}
   if($line.Length -gt 1023){Report 'ERROR' $file ($n+1) ("Line is $($line.Length) characters; VBA allows 1023.");$errors++}

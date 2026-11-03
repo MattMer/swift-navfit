@@ -2268,8 +2268,6 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtCounselorName"
-                    OnDblClick ="=UXPickPerson(\"CounselorName\")"
-                    ControlTipText ="Double-click to fill from the member directory."
                     AfterUpdate ="=UXRefreshEditor()"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
@@ -2831,8 +2829,6 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtRaterName"
-                    OnDblClick ="=UXPickPerson(\"RaterName\")"
-                    ControlTipText ="Double-click to fill from the member directory."
                     AfterUpdate ="=UXRefreshEditor()"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
@@ -2891,8 +2887,6 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtSeniorRaterName"
-                    OnDblClick ="=UXPickPerson(\"SeniorRaterName\")"
-                    ControlTipText ="Double-click to fill from the member directory."
                     AfterUpdate ="=UXRefreshEditor()"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
@@ -3133,8 +3127,6 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtCounselorLastName"
-                    OnDblClick ="=UXPickPerson(\"CounselorName\")"
-                    ControlTipText ="Double-click to fill from the member directory."
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
 

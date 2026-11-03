@@ -210,6 +210,7 @@ Public Sub PDFOutputCapture(ByVal groupID As Long, ByVal reportID As Long, ByVal
     Set job = CreateObject("Scripting.Dictionary")
     job.Add "ID", NewIdentity(): job.Add "Captured", Now(): job.Add "GroupID", groupID
     job.Add "Title", "Ungrouped": job.Add "Paygrade", "": job.Add "GroupKind", ""
+    job.Add "ISICID", GroupISIC(groupID): job.Add "OnTime", ""
     If groupID > 0 Then
         Set r = CurrentDb.OpenRecordset("SELECT * FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
         If r.EOF Then Err.Raise vbObjectError + 9103, "modPDFOutput.PDFOutputCapture", "The summary group is unavailable."
@@ -237,6 +238,12 @@ Public Sub PDFOutputCapture(ByVal groupID As Long, ByVal reportID As Long, ByVal
     End If
     job.Add "Reports", rows: job.Add "Files", files: job.Add "Folder", ""
     job.Add "StatisticsGroupID", context: job.Add "StatisticsRows", stats
+End Sub
+'Summary letter choices made on the output screen: the ISIC and whether the report
+'was submitted on time ("Yes", "No" or blank).
+Public Sub PDFOutputSetLetter(ByVal isic As Long, ByVal onTime As String)
+    If job Is Nothing Then Exit Sub
+    job("ISICID") = isic: job("OnTime") = onTime
 End Sub
 Public Function PDFOutputFolderPreference() As String
     Dim identity As String
@@ -836,6 +843,7 @@ Private Sub PlanSummary(ByVal rows As Collection)
             If index <= rows.Count Then AddSlot page, "X", 549, 529, 20, 14, "Arial", 10, 2
         End If
         If template = 1 Then AddSlot page, " ", 503, 574, 69, 18, "Times New Roman", 7, 1, True
+        If template = 1 Then PlanSummaryContact page, rows, extra
         template = 2
     Loop While index <= rows.Count
     AddContinuations CStr(job("Title")) & " summary", extra
@@ -843,6 +851,24 @@ Private Sub PlanSummary(ByVal rows As Collection)
     For i = 1 To total
         AddSlot printPages(i), "Page " & i & " of " & total, 519, 736, 53, 14, "Times New Roman", 8, 3, True
     Next
+End Sub
+'The letter's lower section: submitted on time, ISIC address and UIC, the reporting
+'senior's address, e-mail and phone, and the date the letter was created.
+Private Sub PlanSummaryContact(ByVal page As Object, ByVal rows As Collection, ByVal extra As Collection)
+    Dim common As Object, details As Object, key As Variant
+    Set common = CreateObject("Scripting.Dictionary")
+    For Each key In Array("ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone")
+        common.Add CStr(key), CommonField(rows, CStr(key))
+    Next
+    Set details = SummaryLetterDetails(job("GroupID"), job("ISICID"), CStr(job("OnTime")), common)
+    If details("OnTime") = "Yes" Then AddSlot page, "X", 180, 453, 21, 14, "Arial", 10, 2
+    If details("OnTime") = "No" Then AddSlot page, "X", 227, 453, 21, 14, "Arial", 10, 2
+    FitText page, CStr(details("ISICAddress")), "Summary ISIC address", Array(22, 592, 210, 44), "Times New Roman", 8, extra
+    AddSlot page, CStr(details("ISICUIC")), 200, 576, 34, 10, "Times New Roman", 8
+    FitText page, CStr(details("SeniorAddress")), "Summary reporting senior address", Array(22, 663, 210, 44), "Times New Roman", 8, extra
+    AddSlot page, CStr(details("Email")), 47, 720.5, 190, 9, "Times New Roman", 8
+    AddSlot page, CStr(details("Phone")), 47, 729.5, 190, 9, "Times New Roman", 8
+    AddSlot page, PrintNavyDate(Format$(job("Captured"), "yyyy-mm-dd")), 47, 738.5, 190, 9, "Times New Roman", 8
 End Sub
 Private Sub WritePageCache()
     Dim db As DAO.Database, r As DAO.Recordset, sql As String, number As Long, page As Object

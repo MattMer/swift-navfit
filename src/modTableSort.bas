@@ -187,6 +187,7 @@ Private Function Heading(ByVal f As Access.Form, ByVal c As Access.Control, ByVa
   Case "lstCounseling"
    If f.Name = "frmMyWork" Then labels = Array("ID", "Member", "Rank/rate", "Status", "Due month", "Last counseled", "Note") Else labels = Array("ID", "Date", "Outcome", "Counselor or reason", "Worksheet")
   Case "lstChoices": labels = Array("Field", "Change", "Decision")
+  Case "lstISICs": labels = Array("ID", "ISIC", "UIC")
   Case "uxReportsDue": labels = Array("ID", "Member", "Rank/rate", "Report", "Due", "Status")
   Case "lstDepartures": labels = Array("ID", "Member", "Rank/rate", "Basis", "Expected", "State", "Flagged")
   Case "lstCatalog": labels = Array("ID", "Rate", "Type", "Example")

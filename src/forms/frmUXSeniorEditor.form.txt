@@ -492,7 +492,7 @@ Begin Form
                     Width =3200
                     Height =400
                     FontSize =10
-                    TabIndex =45
+                    TabIndex =46
                     ForeColor =4205854
                     Tag ="SR:0"
                     Name ="cmdLinkMember"
@@ -532,7 +532,7 @@ Begin Form
                     Width =3200
                     Height =400
                     FontSize =10
-                    TabIndex =46
+                    TabIndex =47
                     ForeColor =4205854
                     Tag ="SR:0"
                     Name ="cmdLinkUpdate"
@@ -572,7 +572,7 @@ Begin Form
                     Width =3214
                     Height =400
                     FontSize =10
-                    TabIndex =47
+                    TabIndex =48
                     ForeColor =4205854
                     Tag ="SR:0"
                     Name ="cmdUnlink"
@@ -614,7 +614,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =48
+                    TabIndex =49
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtMemberID"
@@ -661,7 +661,7 @@ Begin Form
                     Width =5000
                     Height =450
                     FontSize =10
-                    TabIndex =50
+                    TabIndex =51
                     ForeColor =4205854
                     Name ="cmdOpenGroup"
                     Caption ="Open selected group"
@@ -704,7 +704,7 @@ Begin Form
                     Width =1500
                     Height =350
                     FontSize =10
-                    TabIndex =49
+                    TabIndex =50
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboHistoryGrade"
@@ -1010,7 +1010,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =22
+                    TabIndex =23
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorName"
@@ -1058,7 +1058,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =23
+                    TabIndex =24
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorGrade"
@@ -1106,7 +1106,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =27
+                    TabIndex =28
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorDesignator"
@@ -1154,7 +1154,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =30
+                    TabIndex =31
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorTitle"
@@ -1202,7 +1202,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =34
+                    TabIndex =35
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorUIC"
@@ -1250,7 +1250,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =36
+                    TabIndex =37
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorSSN"
@@ -1298,7 +1298,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =21
+                    TabIndex =22
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorAddress1"
@@ -1346,7 +1346,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =24
+                    TabIndex =25
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorAddress2"
@@ -1394,7 +1394,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =28
+                    TabIndex =29
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorCity"
@@ -1442,7 +1442,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =29
+                    TabIndex =30
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorState"
@@ -1490,7 +1490,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =35
+                    TabIndex =36
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorZip"
@@ -1538,7 +1538,7 @@ Begin Form
                     Width =4740
                     Height =400
                     FontSize =10
-                    TabIndex =37
+                    TabIndex =38
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="rsReportingSeniorPhone"
@@ -1619,6 +1619,54 @@ Begin Form
                             LayoutCachedLeft =2866
                             LayoutCachedTop =3300
                             LayoutCachedWidth =7606
+                            LayoutCachedHeight =3750
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =8001
+                    Top =3800
+                    Width =4740
+                    Height =400
+                    FontSize =10
+                    TabIndex =21
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="rsReportingSeniorEmail"
+                    AfterUpdate ="=RSPendingLabel()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:2"
+
+                    LayoutCachedLeft =8001
+                    LayoutCachedTop =3800
+                    LayoutCachedWidth =12741
+                    LayoutCachedHeight =4200
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =223
+                            TextFontFamily =34
+                            Left =8001
+                            Top =3300
+                            Width =4740
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblRSReportingSeniorDSN"
+                            Caption ="E-mail (summary letters)"
+                            FontName ="Segoe UI"
+                            Tag ="SR:2"
+                            LayoutCachedLeft =8001
+                            LayoutCachedTop =3300
+                            LayoutCachedWidth =12741
                             LayoutCachedHeight =3750
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
@@ -1835,7 +1883,7 @@ Begin Form
                     Width =4740
                     Height =350
                     FontSize =10
-                    TabIndex =25
+                    TabIndex =26
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtRSCA"
@@ -1882,7 +1930,7 @@ Begin Form
                     Width =4740
                     Height =350
                     FontSize =10
-                    TabIndex =26
+                    TabIndex =27
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtTraitCount"
@@ -1929,7 +1977,7 @@ Begin Form
                     Width =4740
                     Height =350
                     FontSize =10
-                    TabIndex =31
+                    TabIndex =32
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtTraitSum"
@@ -1976,7 +2024,7 @@ Begin Form
                     Width =4740
                     Height =350
                     FontSize =10
-                    TabIndex =32
+                    TabIndex =33
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtSource"
@@ -2022,7 +2070,7 @@ Begin Form
                     Width =9954
                     Height =450
                     FontSize =10
-                    TabIndex =33
+                    TabIndex =34
                     ForeColor =4205854
                     Name ="cmdAddBaseline"
                     Caption ="Add historical baseline (save record details first)"
@@ -2066,7 +2114,7 @@ Begin Form
                     Width =10450
                     Height =2800
                     FontSize =10
-                    TabIndex =38
+                    TabIndex =39
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstBaselines"
@@ -2110,7 +2158,7 @@ Begin Form
                     Width =4740
                     Height =500
                     FontSize =10
-                    TabIndex =39
+                    TabIndex =40
                     ForeColor =4205854
                     Name ="cmdBack"
                     Caption ="Back to reporting seniors"
@@ -2149,7 +2197,7 @@ Begin Form
                     Width =4740
                     Height =500
                     FontSize =10
-                    TabIndex =40
+                    TabIndex =41
                     ForeColor =16777215
                     Name ="cmdSave"
                     Caption ="Save record details"
@@ -2297,7 +2345,7 @@ Begin Form
                     Top =3000
                     Width =10450
                     Height =3500
-                    TabIndex =41
+                    TabIndex =42
                     Name ="uxRSCATable"
                     SourceObject ="Form.frmUXRSCATable"
                     Tag ="SR:3"
@@ -2315,7 +2363,7 @@ Begin Form
                     Width =5000
                     Height =450
                     FontSize =10
-                    TabIndex =42
+                    TabIndex =43
                     ForeColor =4205854
                     Name ="cmdSaveRSTable"
                     Caption ="Save RSCA table"
@@ -2355,7 +2403,7 @@ Begin Form
                     Width =5200
                     Height =450
                     FontSize =10
-                    TabIndex =43
+                    TabIndex =44
                     ForeColor =4205854
                     Name ="cmdRSHistory"
                     Caption ="View RSCA history"
@@ -2394,7 +2442,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =44
+                    TabIndex =45
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"

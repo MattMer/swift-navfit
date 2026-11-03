@@ -584,7 +584,7 @@ Open **Resources > Reporting seniors and RSCA history**. The list shows each rec
 
 1. Choose **New reporting senior**.
 2. Search the command member directory by name, rank/rate or UIC, select the member and choose **Use selected member**. Swift fills the name, grade, designator, UIC and SSN from the member's profile and links the record to the member. A member who already has a senior record is marked and can't be picked again. To enter everything yourself, choose **Enter details by hand**.
-3. Enter the title (for example CO) and any address or phone, then choose **Save record details**. Nothing is saved before this.
+3. Enter the title (for example CO) and any address, phone or e-mail, then choose **Save record details**. Nothing is saved before this. The address, phone and e-mail print on the group's summary letter; the e-mail is kept on the record only, because the report forms have no e-mail block.
 
 On the **Reporting senior details** page, the directory line shows the linked member and whether the directory now differs (after a promotion, for example). **Update from directory** copies the member's current values into the record as pending changes; save to keep them. **Change member** links a different member and **Unlink** removes the link; typed values stay.
 
@@ -731,6 +731,18 @@ Completed groups update local RSCA totals. Re-completion posts differences; reop
 Save report edits before exchange. Export the report or group using the supported NAVFIT98A workflow, retain its baseline, and open the exported file in NAVFIT98A for native validation and printing. Follow the command's authorized signature and submission process outside Swift.
 
 Swift has no verified equivalent of NAVFIT98A's native final print engine. Its report-editing layout and a clean finding list do not prove final printed fit, signature completion, or acceptance by an official system.
+
+
+## 14.4 Create PDFs and the summary letter
+
+1. In a report, choose **Create PDF**; in a summary group, choose **Preview / create PDFs**.
+2. For a group, leave **Summary letter first** ticked to put the FITREP/EVAL summary letter (NAVPERS 1610/1) at the front.
+3. Choose the group's **ISIC (summary letter)** and whether the report was **Submitted on time**. The group remembers its ISIC for next time.
+4. Choose **Preview printed pages** to check the pages, or **Create print-ready PDFs**.
+
+The summary letter fills its lower section from these choices and from the group's reporting senior record: the ISIC address and UIC, the reporting senior's address, e-mail and phone, the submitted-on-time box, and the date it was created. When the senior record has no address or phone, the values every report in the group shares are used instead.
+
+**Keep the ISIC list.** Open **Resources > ISICs for summary letters** to add, change or delete an ISIC: a name, its UIC, and the address as it should print (up to four lines). Deleting one removes it from new choices only.
 
 ---
 

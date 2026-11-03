@@ -5,10 +5,19 @@ Option Explicit
 Public Function RSSeniorKeys() As Variant
     RSSeniorKeys = Array("ReportingSeniorName", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", "ReportingSeniorSSN", "ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN", "ReportingSeniorLastName", "ReportingSeniorFirstInitial", "ReportingSeniorMiddleInitial")
 End Function
+'Details kept on the senior's record but not on reports: the e-mail is printed on
+'summary letters only.
+Public Function RSRecordOnlyKeys() As Variant
+    RSRecordOnlyKeys = Array("ReportingSeniorEmail")
+End Function
+'Every key a senior record stores: the report fields, then the record-only ones.
+Public Function RSRecordKeys() As Variant
+    RSRecordKeys = Split(Join(RSSeniorKeys(), "|") & "|" & Join(RSRecordOnlyKeys(), "|"), "|")
+End Function
 Public Function RSSeniorValues(ByVal seniorID As Long) As Object
     Dim result As Object, key As Variant, r As DAO.Recordset
     Set result = CreateObject("Scripting.Dictionary")
-    For Each key In RSSeniorKeys(): result.Add CStr(key), Null: Next
+    For Each key In RSRecordKeys(): result.Add CStr(key), Null: Next
     If seniorID > 0 Then
         If DCount("*", "ReportingSeniorRecord", "SeniorID=" & seniorID) <> 1 Then Err.Raise vbObjectError + 4800, "modRSDirectory.RSSeniorValues", "Reporting senior record does not exist."
         Set r = CurrentDb.OpenRecordset("SELECT * FROM ReportingSeniorValue WHERE SeniorID=" & seniorID, dbOpenSnapshot)
@@ -83,6 +92,17 @@ End Sub
 Public Sub RSValidateSenior(ByVal title As String, ByVal values As Object)
     Dim key As Variant, value As Variant, size As Long, i As Long
     If Len(Trim$(title)) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 4801, "modRSDirectory.RSValidateSenior", "Enter a record name of up to 120 characters."
+    'Callers that pass report fields only leave the e-mail unentered; the values they
+    'pass are not changed, because some reuse them as report fields.
+    value = Null
+    If values.Exists("ReportingSeniorEmail") Then value = values("ReportingSeniorEmail")
+    If Not IsNull(value) Then
+        If VarType(value) <> vbString Then Err.Raise vbObjectError + 4803, "modRSDirectory.RSValidateSenior", "Reporting senior values must be text."
+        value = Trim$(value)
+        If Len(value) > 100 Then Err.Raise vbObjectError + 4804, "modRSDirectory.RSValidateSenior", "E-mail exceeds 100 characters."
+        If Len(value) > 0 And (InStr(value, "@") < 2 Or InStr(value, " ") > 0 Or InStrRev(value, ".") < InStr(value, "@")) Then Err.Raise vbObjectError + 4804, "modRSDirectory.RSValidateSenior", "Enter the e-mail as name@domain, or leave it blank."
+        If Len(value) = 0 Then values("ReportingSeniorEmail") = Null Else values("ReportingSeniorEmail") = value
+    End If
     For Each key In RSSeniorKeys()
         If Not values.Exists(CStr(key)) Then Err.Raise vbObjectError + 4802, "modRSDirectory.RSValidateSenior", "Missing reporting senior value: " & key
         value = values(CStr(key))
@@ -101,7 +121,7 @@ Public Sub RSValidateSenior(ByVal title As String, ByVal values As Object)
 End Sub
 'memberID: omit to keep the current directory link, Null to unlink.
 Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVal values As Object, Optional ByVal expectedVersion As Long = 0, Optional ByVal memberID As Variant) As Long
-    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, key As Variant, author As Long, operation As Long, failure As Long, message As String, link As String
+    Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, key As Variant, author As Long, operation As Long, failure As Long, message As String, link As String, value As Variant
     RSValidateSenior title, values: author = MajorAuthor()
     If Not IsMissing(memberID) Then
         RSValidateMemberLink seniorID, memberID
@@ -121,8 +141,10 @@ Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVa
         db.Execute "DELETE FROM ReportingSeniorValue WHERE SeniorID=" & seniorID, dbFailOnError
     End If
     Set r = db.OpenRecordset("ReportingSeniorValue", dbOpenDynaset)
-    For Each key In RSSeniorKeys()
-        r.AddNew: r!SeniorID = seniorID: r!FieldKey = key: r!ValueText = values(CStr(key)): r!IsNullValue = IsNull(values(CStr(key))): r.Update
+    For Each key In RSRecordKeys()
+        value = Null
+        If values.Exists(CStr(key)) Then value = values(CStr(key))
+        r.AddNew: r!SeniorID = seniorID: r!FieldKey = key: r!ValueText = value: r!IsNullValue = IsNull(value): r.Update
     Next
     r.Close
     operation = BeginOperation("Save reporting senior", "Reporting senior record " & seniorID)
