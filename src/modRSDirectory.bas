@@ -14,6 +14,12 @@ End Function
 Public Function RSRecordKeys() As Variant
     RSRecordKeys = Split(Join(RSSeniorKeys(), "|") & "|" & Join(RSRecordOnlyKeys(), "|"), "|")
 End Function
+'The report fields of a senior record, without the record-only details.
+Public Function RSSeniorReportValues(ByVal seniorID As Long) As Object
+    Dim key As Variant
+    Set RSSeniorReportValues = RSSeniorValues(seniorID)
+    For Each key In RSRecordOnlyKeys(): RSSeniorReportValues.Remove CStr(key): Next
+End Function
 Public Function RSSeniorValues(ByVal seniorID As Long) As Object
     Dim result As Object, key As Variant, r As DAO.Recordset
     Set result = CreateObject("Scripting.Dictionary")

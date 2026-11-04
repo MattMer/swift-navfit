@@ -215,17 +215,22 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
     VPolicyDetails findings, f, reportID, observed, graded, twos
     ExpandReportValidation findings, f, reportID
     VNarrativeFit findings, f, reportID, kind
+    VStarterMarkers findings, f, reportID, kind
     Set ValidateLiveFields = findings
 End Function
 'Information only: never blocks saving, PDF output or NAVFIT98A export. Measures NAVFIT98A's
 'print (NAVFITFieldFit); a missing printer measures nothing and adds no finding.
-Private Sub VNarrativeFit(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal kind As String)
-    Dim keys As New Collection, key As Variant, trait As Long, part As Long, fit As Object
+Private Function VNarrativeKeys(ByVal kind As String) As Collection
+    Dim keys As New Collection, trait As Long, part As Long
     keys.Add "CommandEmployment": keys.Add "DutyDescription": keys.Add "OfficialComments"
     If kind = "CHIEFEVAL" Then
         For trait = 33 To 39: For part = 1 To 3: keys.Add "Trait" & trait & "Comment" & part: Next: Next
     End If
-    For Each key In keys
+    Set VNarrativeKeys = keys
+End Function
+Private Sub VNarrativeFit(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal kind As String)
+    Dim key As Variant, fit As Object
+    For Each key In VNarrativeKeys(kind)
         If f.Exists(key) Then
             If Len(Nz(f(key), "")) > 0 Then
                 Set fit = NAVFITFieldFit(kind, CStr(key), Nz(f(key), ""))
@@ -234,6 +239,31 @@ Private Sub VNarrativeFit(ByVal findings As Collection, ByVal f As Object, ByVal
         End If
     Next
 End Sub
+'Information only (P02): starter text and snippets mark what to replace with bracketed
+'capitals, such as [MEASURABLE RESULT]. Never blocks saving, PDF output or export.
+Private Sub VStarterMarkers(ByVal findings As Collection, ByVal f As Object, ByVal id As Long, ByVal kind As String)
+    Dim key As Variant, marker As String
+    For Each key In VNarrativeKeys(kind)
+        If f.Exists(key) Then
+            marker = StarterMarker(Nz(f(key), ""))
+            If Len(marker) > 0 Then VAdd findings, f, id, CStr(key), "Information", "APP-STARTER-MARKER", "Starter text still has " & marker & ". Replace each bracketed placeholder with the member's own details. Saving, Swift PDF output and NAVFIT98A export are not affected."
+        End If
+    Next
+End Sub
+'The first bracketed placeholder in the text: capitals with digits, spaces or / & - ' between [ and ].
+Public Function StarterMarker(ByVal text As String) As String
+    Dim start As Long, finish As Long, inner As String
+    start = InStr(text, "[")
+    Do While start > 0
+        finish = InStr(start + 1, text, "]")
+        If finish = 0 Then Exit Function
+        inner = Mid$(text, start + 1, finish - start - 1)
+        If Len(inner) >= 2 And Len(inner) <= 60 And Not inner Like "*[!A-Z0-9 /&'-]*" And inner Like "*[A-Z][A-Z]*" And StrComp(inner, UCase$(inner), vbBinaryCompare) = 0 Then
+            StarterMarker = "[" & inner & "]": Exit Function
+        End If
+        start = InStr(start + 1, text, "[")
+    Loop
+End Function
 Private Function VComponent(ByVal f As Object) As String
     Dim key As Variant
     For Each key In Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW")

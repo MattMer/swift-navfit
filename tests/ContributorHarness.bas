@@ -97,6 +97,7 @@ Public Function TestContributors() As String
         Check page.Controls("txt" & field).OnDblClick Like "=UXPickPerson(*", "Double-click not on the visible field: " & field
     Next
     Check UXPickPerson("RaterName"), "Rater picker did not open"
+    Check Not Forms!frmUXSeniorPicker!sort_lstMembers_5.Visible And Forms!frmUXSeniorPicker!sort_lstMembers_4.Visible, "Filling a field showed the empty Status heading"
     Forms!frmUXSeniorPicker!lstMembers = member: Check RSPickerUse(), "Use selected member failed for the rater"
     Check UXSurfacePending("txtRaterName", page!txtRaterName.Value) = "JONES, P A, LCDR" And Not CurrentProject.AllForms("frmUXSeniorPicker").IsLoaded, "Rater field not filled from the member"
     Check UXPickPerson("CounselorName"), "Counselor picker did not open"

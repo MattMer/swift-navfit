@@ -154,6 +154,7 @@ Public Function ApplyDirectoryMerge(ByVal sourceID As Long, ByVal targetID As Lo
     db.Execute "UPDATE MemberCounseling SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "INSERT INTO DirectoryMergeSenior (MergeID,SeniorID,VersionCounter,ModifiedAt) SELECT " & id & ",SeniorID,VersionCounter,ModifiedAt FROM ReportingSeniorRecord WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE ReportingSeniorRecord SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1,ModifiedAt=Now() WHERE MemberID=" & sourceID, dbFailOnError
+    MoveRosterHistory db, id, sourceID, targetID
     db.Execute "UPDATE CommandMember SET IsArchived=True WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1,ModifiedBy=" & actor & ",ModifiedAt=Now() WHERE MemberID IN (" & sourceID & "," & targetID & ")", dbFailOnError
     parent.Edit: parent!AfterFingerprint = DirectoryMergeStamp(sourceID, targetID): parent.Update: parent.Close
@@ -172,6 +173,27 @@ CleanupFailure:
     SwiftRaise swiftPrimary
 End Function
 
+'Roster presence, departures and report-due dismissals follow the surviving member.
+'Where the survivor already has the same entry (listed on the same roster, an open
+'departure, a dismissal of the same due date), the merged member keeps its own.
+'DirectoryMergeLink records what moved so Undo can move it back.
+Private Sub MoveRosterHistory(ByVal db As DAO.Database, ByVal mergeID As Long, ByVal sourceID As Long, ByVal targetID As Long)
+    db.Execute "INSERT INTO DirectoryMergeLink (MergeID,LinkTable,LinkID) SELECT " & mergeID & ",'RosterPresence',p.RosterImportID FROM RosterPresence AS p WHERE p.MemberID=" & sourceID & _
+        " AND NOT EXISTS (SELECT 1 FROM RosterPresence AS t WHERE t.MemberID=" & targetID & " AND t.RosterImportID=p.RosterImportID)", dbFailOnError
+    db.Execute "UPDATE RosterPresence SET MemberID=" & targetID & " WHERE MemberID=" & sourceID & " AND RosterImportID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='RosterPresence')", dbFailOnError
+    db.Execute "INSERT INTO DirectoryMergeLink (MergeID,LinkTable,LinkID) SELECT " & mergeID & ",'MemberDeparture',d.DepartureID FROM MemberDeparture AS d WHERE d.MemberID=" & sourceID & _
+        " AND (d.DepartureState Not In ('Pending','Confirmed') OR NOT EXISTS (SELECT 1 FROM MemberDeparture AS t WHERE t.MemberID=" & targetID & " AND t.DepartureState In ('Pending','Confirmed')))", dbFailOnError
+    db.Execute "UPDATE MemberDeparture SET MemberID=" & targetID & ",VersionCounter=VersionCounter+1 WHERE MemberID=" & sourceID & " AND DepartureID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='MemberDeparture')", dbFailOnError
+    db.Execute "INSERT INTO DirectoryMergeLink (MergeID,LinkTable,LinkID) SELECT " & mergeID & ",'ReportDueDismissal',d.DismissalID FROM ReportDueDismissal AS d WHERE d.MemberID=" & sourceID & _
+        " AND NOT EXISTS (SELECT 1 FROM ReportDueDismissal AS t WHERE t.MemberID=" & targetID & " AND t.Basis=d.Basis AND t.DueDate=d.DueDate)", dbFailOnError
+    db.Execute "UPDATE ReportDueDismissal SET MemberID=" & targetID & " WHERE MemberID=" & sourceID & " AND DismissalID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='ReportDueDismissal')", dbFailOnError
+End Sub
+'Moves back what the merge moved; entries added to the survivor since stay with it.
+Private Sub RestoreRosterHistory(ByVal db As DAO.Database, ByVal mergeID As Long, ByVal sourceID As Long, ByVal targetID As Long)
+    db.Execute "UPDATE RosterPresence SET MemberID=" & sourceID & " WHERE MemberID=" & targetID & " AND RosterImportID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='RosterPresence')", dbFailOnError
+    db.Execute "UPDATE MemberDeparture SET MemberID=" & sourceID & ",VersionCounter=VersionCounter+1 WHERE MemberID=" & targetID & " AND DepartureID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='MemberDeparture')", dbFailOnError
+    db.Execute "UPDATE ReportDueDismissal SET MemberID=" & sourceID & " WHERE MemberID=" & targetID & " AND DismissalID IN (SELECT LinkID FROM DirectoryMergeLink WHERE MergeID=" & mergeID & " AND LinkTable='ReportDueDismissal')", dbFailOnError
+End Sub
 Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
     Dim db As DAO.Database, w As DAO.Workspace, parent As DAO.Recordset, rows As DAO.Recordset, item As DAO.Recordset
     Dim sourceID As Long, targetID As Long, trans As Boolean, actor As Long, operation As Long, field As Variant, failure As Long, message As String
@@ -214,6 +236,7 @@ Public Function UndoDirectoryMerge(ByVal mergeID As Long) As Boolean
         item.Update: item.Close: rows.MoveNext
     Loop
     rows.Close
+    RestoreRosterHistory db, mergeID, sourceID, targetID
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1 WHERE MemberID=" & sourceID, dbFailOnError
     db.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1 WHERE MemberID=" & targetID, dbFailOnError
     For Each field In Array(sourceID, targetID)

@@ -22,13 +22,26 @@ foreach($file in $Path){
  if(-not ($lines|Where-Object {$_ -match '^\s*Option\s+Explicit\s*$'})){Report 'ERROR' $file 1 'Missing Option Explicit.';$errors++}
  $crlf=([regex]::Matches($text,"`r`n")).Count;$lf=([regex]::Matches($text,"(?<!`r)`n")).Count
  if($crlf -gt 0 -and $lf -gt 0){Report 'WARN' $file 0 ("Mixed line endings ($crlf CRLF, $lf LF); git normalizes on commit.");$warnings++}
- $run=0;$seen=@{};$start=0
+ $run=0;$seen=@{};$start=0;$procSeen=$false;$locals=@{}
  # A line starting "Name: ..." makes Name a line label, so a procedure written there
  # is never called. Real labels are GoTo/Resume targets; calls need "Call Name:".
  $labelTargets=@([regex]::Matches(($lines -join "`n"),'\b(?:GoTo|Resume|GoSub)\s+([A-Za-z_]\w*)')|ForEach-Object {$_.Groups[1].Value})
  for($n=0;$n -lt $lines.Count;$n++){
   $line=$lines[$n]
-  if($procedure.IsMatch($line)){$start=$n}
+  if($procedure.IsMatch($line)){$start=$n;$procSeen=$true;$locals=@{}
+   $params=[regex]::Match($line,'\((.*)\)')
+   if($params.Success){foreach($p in [regex]::Matches($params.Groups[1].Value,'(?i)(?:^|,)\s*(?:Optional\s+)?(?:ByVal\s+|ByRef\s+|ParamArray\s+)?([A-Za-z_]\w*)')){$locals[$p.Groups[1].Value.ToLowerInvariant()]=$n+1}}
+  }
+  # A name declared twice in one procedure compiles only when a test first runs it.
+  if($line -match '^\s*Dim\s'){
+   foreach($d in [regex]::Matches(($line -replace "'.*$",''),'(?i)(?:\bDim\s+|,\s*)([A-Za-z_]\w*)(?:\(\))?\s+As\b')){
+    $k=$d.Groups[1].Value.ToLowerInvariant()
+    if($locals.ContainsKey($k)){Report 'ERROR' $file ($n+1) ("'"+$d.Groups[1].Value+"' is already declared in this procedure (line "+$locals[$k]+"); VBA reports Duplicate declaration.");$errors++}else{$locals[$k]=$n+1}
+   }
+  }
+  # Module-level declarations must precede every procedure; one placed further down
+  # passes the build and fails to compile ("Variable not defined") when a test runs.
+  elseif($procSeen -and $line -match '^\s*(?:Private|Public|Global)\s+(?!(?:Static\s+)?(?:Function|Sub|Property)\b)\w'){Report 'ERROR' $file ($n+1) 'Module-level declaration after the first procedure; move it to the top of the module.';$errors++}
   # Threat model E3: every XML parse refuses DTDs and external resources explicitly.
   if($line -match '\.LoadXML\b'){
    $body=$lines[$start..$n] -join "`n"

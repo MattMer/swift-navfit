@@ -142,6 +142,14 @@ Public Function TestMNARoster(ByVal folder As String) As String
     Check DLookup("ScopeUICs", "RosterImport", "RosterImportID=" & first) = "|99999|" And DCount("*", "RosterPresence", "RosterImportID=" & first) = 5, "MNA snapshot scope wrong"
     Check DLookup("ReportName", "CommandMember", "FullName='SYNALPHA JOHN QUINCY'") = "SYNALPHA, JOHN Q" And DLookup("ReportName", "CommandMember", "FullName='SYNBRAVO MARK ALLEN JR'") = "SYNBRAVO, MARK A JR", "MNA report names wrong"
     Check DLookup("RankRate", "CommandMember", "FullName='SYNCHARLIE PAUL'") = "ITC" And Nz(DLookup("RankRate", "CommandMember", "FullName='SYNECHO RUTH ANN'"), "") = "", "MNA rate or officer rank wrong"
+    ' An officer without a rank takes it from their latest report.
+    Dim officer As Long, officerReport As Long
+    officer = DLookup("MemberID", "CommandMember", "FullName='SYNECHO RUTH ANN'")
+    officerReport = CommitDraft(0, "FITREP", "Officer rank", "RANK FIXTURE OFFICER", #1/1/2026#, #6/30/2026#, "")
+    CurrentDb.Execute "UPDATE Report SET RankRate='LCDR' WHERE ReportID=" & officerReport, dbFailOnError
+    CurrentDb.Execute "UPDATE MemberReport SET MemberID=" & officer & ",MatchState='Confirmed' WHERE ReportID=" & officerReport, dbFailOnError
+    Check FillRankFromLatestReport(officer) And DLookup("RankRate", "CommandMember", "MemberID=" & officer) = "LCDR", "Officer rank not taken from the latest report"
+    Check Not FillRankFromLatestReport(officer), "A profile rank was replaced"
     Check Departures("SYNCHARLIE PAUL", "Pending", "PRD") = 1 And Departures("SYNALPHA JOHN QUINCY", "Pending") = 0, "MNA PRD window wrong"
 
     ' A renamed member matches by DoD ID; a missing one is flagged.

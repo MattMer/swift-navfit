@@ -145,6 +145,8 @@ Public Function RSLoadPicker() As Boolean
     ElseIf Left$(pickerMode, 5) = "role:" Then
         f.Caption = "Fill " & RSPickerRoleName() & " from the directory": f!lblHeading.Caption = f.Caption
         f!lblIntro.Caption = "Choose the command member. The field is filled the way the report form expects; you can still edit it before saving."
+        'Filling a field has no status to show: drop the empty Status column.
+        f!lstMembers.ColumnWidths = "0;4300;1500;1300;1500;0"
         f!cmdManual.Visible = False
     End If
     RSLoadPicker = RSPickerFilter(): UXSortHeaders f
@@ -315,9 +317,10 @@ Public Function RSUseSeniorInEditor() As Boolean
     On Error GoTo Failed
     id = Nz(Forms!frmEditor!uxSeniorRecord, 0): If id = 0 Then Err.Raise vbObjectError + 4800, "modRSDirectoryUI.RSUseSeniorInEditor", "Choose a reporting senior record."
     If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 4823, "modRSDirectoryUI.RSUseSeniorInEditor", "Reopen the report before editing."
-    Set values = RSSeniorValues(id)
-    For Each key In RSSeniorKeys(): Forms!frmEditor.Controls("txt" & key) = values(CStr(key)): Next
-    Call UXRefreshEditor: RSUseSeniorInEditor = True: Exit Function
+    Set values = RSSeniorReportValues(id)
+    'Through the visible page, so the fields show the record and the save keeps it.
+    For Each key In RSSeniorKeys(): Call UXSurfaceSetValue(CStr(key), values(CStr(key))): Next
+    Call UXEditorChanged: RSUseSeniorInEditor = True: Exit Function
 Failed:
     Forms!frmEditor!uxError.Caption = Err.Description
 End Function
@@ -389,7 +392,7 @@ Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0
     On Error GoTo Failed
     groupID = Nz(Forms!frmUXGroupRSCA!txtGroupID, 0)
     If Nz(Forms!frmUXGroupRSCA!cboSenior, 0) = 0 Then Err.Raise vbObjectError + 4800, "modRSDirectoryUI.RSStageGroupSenior", "Choose a reporting senior."
-    Set values = RSSeniorValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
+    Set values = RSSeniorReportValues(Nz(Forms!frmUXGroupRSCA!cboSenior, 0))
     RSStageGroupSenior = UXConfirmReportFields(groupID, values, "Apply selected reporting senior details", decision)
     If RSStageGroupSenior Then
         Call RSShowGroupCalculation: UXRefreshGroupSenior

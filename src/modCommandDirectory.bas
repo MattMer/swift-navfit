@@ -116,6 +116,19 @@ Private Function DirectoryName(ByVal value As Variant) As String
     s = Replace(Replace(Replace(s, ",", ""), ".", ""), " ", "")
     DirectoryName = s
 End Function
+'A profile without a rank/rate (MNA lists none for officers) takes it from the
+'member's latest confirmed report that has one. Returns True when it filled one.
+Public Function FillRankFromLatestReport(ByVal memberID As Long) As Boolean
+    Dim r As DAO.Recordset, rank As String
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM CommandMember WHERE MemberID=" & memberID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Exit Function
+    If Len(Nz(r!RankRate, "")) > 0 Then r.Close: Exit Function
+    rank = Trim$(Nz(MajorScalar("SELECT TOP 1 r.RankRate FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & memberID & _
+        " AND m.MatchState='Confirmed' AND Len(Trim(Nz(r.RankRate,'')))>0 ORDER BY r.PeriodEnd DESC,r.ReportID DESC"), ""))
+    If Len(rank) = 0 Or Len(rank) > 5 Then r.Close: Exit Function
+    Call SaveDirectoryMember(memberID, r!VersionCounter, r!FullName, Nz(r!ReportName, ""), rank, Nz(r!MemberSSN, ""))
+    r.Close: FillRankFromLatestReport = True
+End Function
 Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersion As Long, ByVal displayName As String, ByVal reportName As String, ByVal rank As String, ByVal ssn As String, Optional ByVal sourceKind As String = "Manual", Optional ByVal ruadValues As Variant, Optional ByVal ruadSourceXML As String = "", Optional ByVal dateReported As Variant) As Long
     Dim db As DAO.Database, ruad As Object, ruadXML As String
     Dim r As DAO.Recordset, w As DAO.Workspace, author As Long, failure As Long, message As String, op As Long, duplicate As Variant
@@ -288,7 +301,9 @@ Public Sub LinkReportDirectoryMember(ByVal reportID As Long, ByVal memberID As L
     If r.EOF Then r.AddNew: r!ReportID = reportID Else r.Edit
     r!MemberID = memberID: r!MatchState = "Confirmed": r!MatchSource = "Manual confirmation": r!UpdatedBy = MajorAuthor(): r!UpdatedAt = Now(): r.Update: r.Close
     FinishOperation op, "Completed", "Identity link confirmed; saved report fields unchanged."
-    w.CommitTrans: Exit Sub
+    w.CommitTrans: On Error GoTo 0
+    Call FillRankFromLatestReport(memberID)
+    Exit Sub
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modCommandDirectory", "LinkReportDirectoryMember", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")

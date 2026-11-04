@@ -447,7 +447,7 @@ Swift never archives or deletes anyone because of a roster. **My Work > Departur
 
 ![My Work > Departures: members flagged by PRD or by absence from a complete roster, with Confirm and Dismiss.](images/my-work-departures.png)
 
-For an MNA workbook, Swift reads the date and UIC at the top and the POC at the bottom, and shows them after you choose the file. The roster's date becomes the snapshot date, and everyone listed (local, cross-assigned in or out, and IAP) counts for that UIC. Vacant billets are skipped. MNA rows carry the member's DoD ID, so a member whose name changed is still matched to the same profile. Names are converted to report format (LAST, FIRST MI). MNA does not list officer ranks, so a new officer profile starts without one. A roster dated before the last complete roster for its UIC cannot be marked complete.
+For an MNA workbook, Swift reads the date and UIC at the top and the POC at the bottom, and shows them after you choose the file. The roster's date becomes the snapshot date, and everyone listed (local, cross-assigned in or out, and IAP) counts for that UIC. Vacant billets are skipped. MNA rows carry the member's DoD ID, so a member whose name changed is still matched to the same profile. Names are converted to report format (LAST, FIRST MI). MNA does not list officer ranks, so an officer's rank comes from their latest report in Swift; with no report, enter it on the profile. A roster dated before the last complete roster for its UIC cannot be marked complete.
 
 ![An MNA roster loaded for import: its date, UIC and POC under the rows, each row's action, and the complete-roster box.](images/roster-import.png)
 
@@ -793,6 +793,8 @@ The supported mappings cover defined structured fields for the three report type
 ## 16.2 Use snippets and references
 
 Open **Resources** for narrative snippets and reference tools. Filter by rate, inspect attribution and applicability, then use the available insertion workflow for the report narrative. Legacy untagged snippets appear as Unassigned until tagged.
+
+From the report editor, click in the narrative block where the text belongs, then open the snippets and select **Insert**. The snippet goes in at that cursor, in that block; if you have not clicked in a narrative block, it goes after the comments. Starter text marks what to replace with bracketed capitals, such as `[MEASURABLE RESULT]`. Until each is replaced, the report shows an Information finding. It does not stop saving or output.
 
 NavyWriter collection links open the complete external source when selected. Only supported reviewed excerpts can be imported through the catalog tools. Check that suggested wording fits the member's actual work, grade, period, and the report's narrative capacity.
 

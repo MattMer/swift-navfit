@@ -41,9 +41,9 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.53.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 42 |
-| Imports accepted | Workspaces of schema 1 to 42, into a target of schema 21 to 42 |
-| Tables / enforced relationships | 77 / 168 |
+| Schema version | 43 |
+| Imports accepted | Workspaces of schema 1 to 43, into a target of schema 21 to 43 |
+| Tables / enforced relationships | 78 / 169 |
 | VBA modules / forms | 114 / 71 |
 | Report fields in the catalogue | 100 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
@@ -207,7 +207,7 @@ added or removed without updating this list.
 | --- | --- | --- |
 | Member directory and rosters | `CommandMember`, `MemberReport`, `PriorEvaluation`, `PriorEvaluationTrait`, `MemberCounseling`, `MemberDeparture`, `RosterImport`, `RosterPresence`, `ReportDueDismissal` | Yes: identity, SSN, roster data (including DoD ID and contact details), prior grades, counseling, departures |
 | Reporting seniors | `ReportingSeniorRecord`, `ReportingSeniorValue`, `RSCABaseline`, `GroupRSCABaseline`, `RSCountedReport` | Yes: senior identity, SSN, contact details (including e-mail); cumulative averages |
-| Directory merge history | `DirectoryMerge`, `DirectoryMergeReport`, `DirectoryMergePrior`, `DirectoryMergeCounseling`, `DirectoryMergeSenior` | Links between member records before and after a merge |
+| Directory merge history | `DirectoryMerge`, `DirectoryMergeReport`, `DirectoryMergePrior`, `DirectoryMergeCounseling`, `DirectoryMergeSenior`, `DirectoryMergeLink` | Links between member records before and after a merge |
 | Reports and revisions | `Report`, `ReportHead`, `ReportRevision`, `RevisionValue`, `RevisionChange`, `RevisionDate`, `RevisionChoice`, `ReportEvent`, `ReportSignoff`, `DraftDisposal`, `RecoveryDraft` | Yes: every report field in every saved version, unsaved checkpoints, sign-off and disposal records |
 | Imports | `ImportReceipt`, `ImportRawValue`, `WizardPreview` | Yes: raw values as imported (including SSNs) and import provenance |
 | Bulk changes and defaults | `ChangeBatch`, `ChangeItem`, `FieldDefault`, `FieldDefaultLink`, `MeetingProposal` | Yes: field values before and after a change, shared default values |
@@ -536,6 +536,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 3 Nov 2026 | Schema 43: `DirectoryMergeLink` records roster history, departures and dismissals that a member merge moves, so Undo can move them back (section 5.2). |
 | 3 Nov 2026 | Schema 42: ISICs and the reporting senior's e-mail, printed on summary letters (sections 5.1 and 5.2). |
 | 3 Nov 2026 | Release 0.52.0. |
 | 3 Nov 2026 | Spell check briefly changes Access's uppercase setting (section 6.8). |

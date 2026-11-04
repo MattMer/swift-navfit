@@ -190,6 +190,18 @@ Public Function TestNarrativeLineFit() As String
         For Each item In ValidateLiveFields(fields, id)
             Check item("Code") <> "APP-NARRATIVE-FIT", kind & ": a fitting narrative has a finding"
         Next
+        ' P02: a starter placeholder left in a narrative is information only.
+        fields("DutyDescription") = "Led [TEAM/SCOPE] of 12, achieving [MEASURABLE RESULT]."
+        found = False
+        For Each item In ValidateLiveFields(fields, id)
+            If item("Code") = "APP-STARTER-MARKER" Then
+                Check item("Severity") = "Information" And item("Key") = "DutyDescription" And InStr(item("Message"), "[TEAM/SCOPE]") > 0, kind & ": starter marker finding " & item("Message")
+                found = True
+            End If
+        Next
+        Check found, kind & ": starter marker not reported"
+        Check StarterMarker("See [1] and [ab] and [Ship]") = "" And StarterMarker("No markers") = "" And StarterMarker("Text [O'NEIL-SMITH] here") = "[O'NEIL-SMITH]", "Starter marker detection wrong"
+        fields("DutyDescription") = "Short"
         stage = kind & " editor meter"
         DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
         Set f = Forms!frmEditor: f.TimerInterval = 0

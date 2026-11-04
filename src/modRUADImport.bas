@@ -397,6 +397,8 @@ Public Function RUADApply() As Long
         If row("Action") <> "Skip" Then
             id = SaveDirectoryMember(CLng(row("MemberID")), CLng(row("Version")), CStr(row("Name")), CStr(row("ReportName")), CStr(row("Rank")), CStr(row("SSN")), CStr(row("SourceKind")), row("Values"), CStr(row("SourceXML")))
             RUADApply = RUADApply + 1: member = id
+            'No rank on the roster (MNA officers): use the latest report, else it is entered by hand.
+            If Len(CStr(row("Rank"))) = 0 Then Call FillRankFromLatestReport(id)
         ElseIf Not row("Vacant") Then
             'A skipped row for a known member still shows they are on the roster.
             member = CLng(row("Suggested"))

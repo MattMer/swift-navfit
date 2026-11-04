@@ -90,7 +90,7 @@ Public Function TestNAVFITGroupExport(ByVal directory As String, ByVal template 
         values("ReportingSeniorSSN") = old: Call NAVFITCommitFields(copy, values, "Synthetic group member", "Restore test")
         Check InStr(Rejected(groupID, directory & "\stale-" & id & ".accdb", template, token), "Preview again") > 0, "Stale preview exported"
         If id = 1 Then
-            Set senior = RSSeniorValues(0)
+            Set senior = RSSeniorReportValues(0)
             For Each key In senior.Keys: senior(key) = values(key): Next
             seniorID = RSSaveSenior(0, "Synthetic export senior", senior)
             baselineID = RSAddBaseline(seniorID, grade, DateSerial(2026, 1, 1), 4#, 7, 28#, "Synthetic exact history")

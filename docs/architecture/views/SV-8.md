@@ -48,4 +48,5 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 39 | captured | 0.52.0-dev | 76 | ReportDueDismissal |
 | 40 | captured | 0.52.0-dev | 76 | - |
 | 41 | captured | 0.52.0 | 76 | - |
-| 42 | current build | 0.53.0-dev | 77 | ISIC |
+| 42 | captured | 0.53.0-dev | 77 | ISIC |
+| 43 | current build | 0.53.0-dev | 78 | DirectoryMergeLink |

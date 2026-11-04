@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 42, application 0.53.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 43, application 0.53.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -175,6 +175,17 @@ Microsoft Access (ACE) tables in schema 42, application 0.53.0-dev. Types are Ac
 | CounselingID | Long | yes |
 | ModifiedBy | Long | yes |
 | ModifiedAt | Date/Time |  |
+
+## DirectoryMergeLink
+
+- **Primary key:** LinkRowID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| LinkRowID | AutoNumber |  |
+| MergeID | Long | yes |
+| LinkTable | Text (30) | yes |
+| LinkID | Long | yes |
 
 ## DirectoryMergePrior
 

@@ -18,18 +18,45 @@ Public Function SaveSnippet(ByVal snippetID As Long, ByVal title As String, ByVa
     r!ModifiedAt = Now(): r.Update: r.Bookmark = r.LastModified: SaveSnippet = r!SnippetID: r.Close
 End Function
 Public Function InsertNarrativeSnippet(ByVal snippetID As Long) As Boolean
-    Dim r As DAO.Recordset, text As String, kind As String
+    Dim r As DAO.Recordset, text As String, kind As String, body As String, key As String, start As Long, name As String, before As String, after As String
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1203, "modSnippets.InsertNarrativeSnippet", "Open the target draft editor first."
     If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 1204, "modSnippets.InsertNarrativeSnippet", "Recover the archived report before editing."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM NarrativeSnippet WHERE SnippetID=" & snippetID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 1205, "modSnippets.InsertNarrativeSnippet", "Select a snippet."
     kind = Nz(Forms!frmEditor!cboKind, "")
     If r!FormKind <> "ALL" And r!FormKind <> kind Then Err.Raise vbObjectError + 1206, "modSnippets.InsertNarrativeSnippet", "Snippet is intended for a different report type."
-    text = Nz(Forms!frmEditor!txtOfficialComments, "")
-    If Len(text) > 0 Then text = text & vbCrLf
-    Forms!frmEditor!txtOfficialComments = text & r!SnippetBody
-    r.Close: Call RefreshNarrativeLabel(): Call CheckpointEditor(): Call UXRefreshEditor()
+    body = r!SnippetBody: r.Close
+    'At the cursor in the narrative block last written in; otherwise after the comments.
+    If UXNarrativeTarget(key, start) Then
+        name = UXFieldControl(key)
+        If Forms!frmEditor!uxFieldSurface.Form.Controls(name).Locked Then Err.Raise vbObjectError + 1204, "modSnippets.InsertNarrativeSnippet", "This block cannot be edited."
+        text = Nz(UXSurfacePending(name, Forms!frmEditor!uxFieldSurface.Form.Controls(name).Value), "")
+        If start > Len(text) Then start = Len(text)
+        before = Left$(text, start): after = Mid$(text, start + 1)
+        If Len(before) > 0 And Not Right$(before, 1) Like "[ " & vbCr & vbLf & vbTab & "]" Then body = " " & body
+        If Len(after) > 0 And Not Left$(after, 1) Like "[ " & vbCr & vbLf & vbTab & ".,;:]" Then body = body & " "
+        Call UXSurfaceSetValue(key, before & body & after): Call UXEditorChanged
+        UXNarrativeMoveCaret key, Len(before & body)
+    ElseIf UXSurfaceAvailable() Then
+        text = Nz(UXSurfacePending("txtOfficialComments", Forms!frmEditor!uxFieldSurface.Form!txtOfficialComments.Value), "")
+        If Len(text) > 0 Then text = text & vbCrLf
+        Call UXSurfaceSetValue("OfficialComments", text & body): Call UXEditorChanged
+    Else
+        text = Nz(Forms!frmEditor!txtOfficialComments, "")
+        If Len(text) > 0 Then text = text & vbCrLf
+        Forms!frmEditor!txtOfficialComments = text & body
+    End If
+    Call RefreshNarrativeLabel(): Call CheckpointEditor(): Call UXRefreshEditor()
     Forms!frmEditor.SetFocus: InsertNarrativeSnippet = True
+End Function
+' Where Insert will put the snippet, for the confirmation.
+Public Function SnippetTargetText() As String
+    Dim key As String, start As Long
+    If UXNarrativeTarget(key, start) Then
+        SnippetTargetText = "at the cursor in " & UXFieldCaption(key, Nz(Forms!frmEditor!cboKind, ""))
+    Else
+        SnippetTargetText = "at the end of the comments"
+    End If
 End Function
 Public Function SnippetRate(ByVal attribution As Variant) As String
     Dim text As String, start As Long, finish As Long
@@ -95,7 +122,8 @@ Failed:
 End Function
 Public Function InsertSnippetUI() As Boolean
     On Error GoTo Failed
-    If MsgBox("Append this snippet to the open draft's official narrative? Review it for this member before saving. Existing text is retained.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+    If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 1203, "modSnippets.InsertSnippetUI", "Open the target draft editor first."
+    If MsgBox("Insert this snippet " & SnippetTargetText() & "? Review it for this member before saving. Existing text is retained.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
     InsertSnippetUI = InsertNarrativeSnippet(Nz(Forms!frmSnippets!txtSnippetID, 0)): Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Insert snippet"

@@ -45,6 +45,18 @@ Private Function RejectUndo(ByVal id As Long) As Boolean
 Rejected:
     RejectUndo = True
 End Function
+Private Function RosterFixture(ByVal db As DAO.Database, ByVal guid As String) As Long
+    db.Execute "INSERT INTO RosterImport (ImportGuid,SourceFormat,AsOfDate,ImportedBy,ImportedAt) VALUES ('" & guid & "','MNA',#2026-06-01#," & MajorAuthor() & ",Now())", dbFailOnError
+    RosterFixture = db.OpenRecordset("SELECT @@IDENTITY")(0)
+End Function
+Private Function DepartureFixture(ByVal db As DAO.Database, ByVal member As Long, ByVal state As String) As Long
+    db.Execute "INSERT INTO MemberDeparture (MemberID,Basis,DepartureState,CreatedBy,CreatedAt,VersionCounter) VALUES (" & member & ",'PRD','" & state & "'," & MajorAuthor() & ",Now(),1)", dbFailOnError
+    DepartureFixture = db.OpenRecordset("SELECT @@IDENTITY")(0)
+End Function
+Private Function DismissalFixture(ByVal db As DAO.Database, ByVal member As Long, ByVal due As Date) As Long
+    db.Execute "INSERT INTO ReportDueDismissal (MemberID,Basis,DueDate,Reason,DismissedBy,DismissedAt) VALUES (" & member & ",'Periodic',#" & Format$(due, "yyyy-mm-dd") & "#,'Synthetic'," & MajorAuthor() & ",Now())", dbFailOnError
+    DismissalFixture = db.OpenRecordset("SELECT @@IDENTITY")(0)
+End Function
 Public Function TestDirectoryMerge() As String
     Dim a As Long, b As Long, c As Long, report As Long, prior As Long, merged As Long, rev As Long, count As Long
     Dim beforeArchive As Variant, stamp As String, before As String, db As DAO.Database, marks As Object, block As Long, opCount As Long, field As Variant
@@ -194,6 +206,33 @@ Public Function TestDirectoryMerge() As String
     Check DLookup("MemberID", "ReportingSeniorRecord", "SeniorID=" & linked) = p, "Undo did not restore the senior link"
     Call RSSaveSenior(0, "Second linked senior", values, 0, q)
     Check RejectPreview(p, q), "Merge of two members that both back seniors accepted"
+    'Roster presence, departures and due-date dismissals follow the survivor; an entry the
+    'survivor already has stays with the merged member. Undo moves them back.
+    Dim m As Long, n As Long, imp1 As Long, imp2 As Long, dep1 As Long, dep2 As Long, dis1 As Long, dis2 As Long
+    Set db = CurrentDb
+    m = SaveDirectoryMember(0, 0, "Riley Ames", "AMES, RILEY", "PO2", "")
+    n = SaveDirectoryMember(0, 0, "Riley Ames", "AMES, RILEY B", "PO2", "")
+    imp1 = RosterFixture(db, "{00000000-0000-0000-0000-0000000000A1}")
+    imp2 = RosterFixture(db, "{00000000-0000-0000-0000-0000000000A2}")
+    db.Execute "INSERT INTO RosterPresence (RosterImportID,MemberID,UIC) VALUES (" & imp1 & "," & m & ",'00001')", dbFailOnError
+    db.Execute "INSERT INTO RosterPresence (RosterImportID,MemberID,UIC) VALUES (" & imp2 & "," & m & ",'00001')", dbFailOnError
+    db.Execute "INSERT INTO RosterPresence (RosterImportID,MemberID,UIC) VALUES (" & imp2 & "," & n & ",'00001')", dbFailOnError
+    dep1 = DepartureFixture(db, m, "Pending")
+    dep2 = DepartureFixture(db, n, "Pending")
+    dis1 = DismissalFixture(db, m, #6/30/2026#)
+    dis2 = DismissalFixture(db, m, #9/30/2026#)
+    Call DismissalFixture(db, n, #9/30/2026#)
+    merged = ApplyDirectoryMerge(m, n, PreviewDirectoryMerge(m, n), "Reviewed roster duplicate")
+    Check DCount("*", "RosterPresence", "MemberID=" & n) = 2 And DCount("*", "RosterPresence", "MemberID=" & m & " AND RosterImportID=" & imp2) = 1, "Roster presence did not follow the survivor"
+    Check DLookup("MemberID", "MemberDeparture", "DepartureID=" & dep1) = m, "An open departure was moved onto a survivor that has one"
+    Check DLookup("MemberID", "ReportDueDismissal", "DismissalID=" & dis1) = n And DLookup("MemberID", "ReportDueDismissal", "DismissalID=" & dis2) = m, "Dismissals did not follow the survivor"
+    Check DCount("*", "DirectoryMergeLink", "MergeID=" & merged) = 2, "Moved roster entries not recorded"
+    Check UndoDirectoryMerge(merged), "Undo of a roster merge failed"
+    Check DCount("*", "RosterPresence", "MemberID=" & m) = 2 And DCount("*", "RosterPresence", "MemberID=" & n) = 1 And DLookup("MemberID", "ReportDueDismissal", "DismissalID=" & dis1) = m, "Undo did not restore roster entries"
+    db.Execute "UPDATE MemberDeparture SET DepartureState='Returned' WHERE DepartureID=" & dep2, dbFailOnError
+    merged = ApplyDirectoryMerge(m, n, PreviewDirectoryMerge(m, n), "Reviewed roster duplicate again")
+    Check DLookup("MemberID", "MemberDeparture", "DepartureID=" & dep1) = n, "Open departure did not follow a survivor without one"
+    Check UndoDirectoryMerge(merged) And DLookup("MemberID", "MemberDeparture", "DepartureID=" & dep1) = m, "Undo did not restore the departure"
     TestDirectoryMerge = "PASS: " & checks & " directory merge checks; committed and undone fixtures retained": Exit Function
 Failed:
     TestDirectoryMerge = "FAIL: " & Err.Number & ": " & Err.Description

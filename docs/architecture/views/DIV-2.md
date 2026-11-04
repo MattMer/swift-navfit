@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 42. 77 entities; 168 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 43. 78 entities; 169 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
@@ -36,6 +36,7 @@ erDiagram
   OperationJournal ||--o{ DirectoryMerge : "FK_DirectoryMerge_OperationID"
   DirectoryMerge ||--o{ DirectoryMergeCounseling : "FK_DirectoryMergeCounseling_MergeID"
   MemberCounseling ||--o{ DirectoryMergeCounseling : "FK_DirectoryMergeCounseling_CounselingID"
+  DirectoryMerge ||--o{ DirectoryMergeLink : "FK_DirectoryMergeLink_MergeID"
   DirectoryMerge ||--o{ DirectoryMergePrior : "FK_DirectoryMergePrior_MergeID"
   PriorEvaluation ||--o{ DirectoryMergePrior : "FK_DirectoryMergePrior_PriorID"
   DirectoryMerge ||--o{ DirectoryMergeReport : "FK_DirectoryMergeReport_MergeID"
@@ -208,6 +209,7 @@ erDiagram
 | DirectoryMerge | OperationJournal | OperationID -> OperationJournal.OperationID | FK_DirectoryMerge_OperationID |
 | DirectoryMergeCounseling | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergeCounseling_MergeID |
 | DirectoryMergeCounseling | MemberCounseling | CounselingID -> MemberCounseling.CounselingID | FK_DirectoryMergeCounseling_CounselingID |
+| DirectoryMergeLink | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergeLink_MergeID |
 | DirectoryMergePrior | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergePrior_MergeID |
 | DirectoryMergePrior | PriorEvaluation | PriorID -> PriorEvaluation.PriorID | FK_DirectoryMergePrior_PriorID |
 | DirectoryMergeReport | DirectoryMerge | MergeID -> DirectoryMerge.MergeID | FK_DirectoryMergeReport_MergeID |

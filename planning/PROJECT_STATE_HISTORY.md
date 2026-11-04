@@ -1333,6 +1333,35 @@ the PDF is not regenerated.
 Tests: new `test-roster` (16 NRRM and 14 MNA assertions, on synthetic workbooks)
 in the external-import suite.
 
+## Small fixes before 0.53.0 (3 November 2026, schema 43)
+
+- **Use record in pending draft** (reporting senior on the front page) wrote to the
+  editor's hidden buffer controls, so the visible fields did not change and Save
+  did not keep the record. It now enters values through the visible page.
+- **Group calculator, apply senior details** failed with "Unknown or immutable
+  draft field" since the senior e-mail was added: record-only keys are now left
+  out (`RSSeniorReportValues`).
+- **P02, starter placeholders**: an Information finding (`APP-STARTER-MARKER`)
+  for a bracketed capitals placeholder such as `[MEASURABLE RESULT]` left in a
+  narrative block. It never blocks saving, PDF output or export.
+- **P03, snippet at the cursor**: the narrative blocks record the cursor on key
+  and mouse up (`UXNarrativeCaret`); Insert puts the snippet there, with spacing,
+  or after the comments when no cursor was recorded.
+- **Member merges** move roster presence, departures and report-due dismissals to
+  the survivor (`DirectoryMergeLink` records what moved; Undo moves it back). An
+  entry the survivor already has (same roster, an open departure, the same
+  dismissed due date) stays with the merged member.
+- **Officer rank**: a profile without a rank/rate (MNA lists none for officers)
+  takes it from the member's latest confirmed report, on roster apply and when a
+  report link is confirmed; report saves already filled a blank rank.
+- **Member picker**: the empty Status column is hidden when filling a report field.
+- **Source check**: a module-level declaration after the first procedure is now an
+  error (it passed the build and stopped a test with "Variable not defined").
+
+Tests: `test-rs-directory` (editor apply, saved), `test-narratives` (marker and
+insert at the cursor), `test-directory-merge` (roster history and undo),
+`test-roster` (officer rank), `test-contributors` (picker heading).
+
 ## Summary letter details and ISICs (3 November 2026, schema 42)
 
 From the user's walkthrough: the summary letter's lower section was blank, and

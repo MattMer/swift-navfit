@@ -89,14 +89,14 @@ Public Function TestRSDirectory() As String
     stage = "save": senior = RSSaveSenior(0, "Synthetic O'Neil", values)
     Set saved = RSSeniorValues(senior)
     Check saved("ReportingSeniorName") = "O'NEIL A" And saved("ReportingSeniorLastName") = "OTHER", "Independent full name and name parts changed"
-    Check DCount("*", "ReportingSeniorValue", "SeniorID=" & senior) = 16, "Directory field coverage incorrect"
+    Check DCount("*", "ReportingSeniorValue", "SeniorID=" & senior) = 17, "Directory field coverage incorrect"
     values("ReportingSeniorTitle") = "COMMANDING OFF": Call RSSaveSenior(senior, "Synthetic RS", values, 1)
     Check RejectSave(senior, values, 1), "Stale record update accepted"
     Check MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & senior) = 2, "Stale update changed version"
     CurrentDb.TableDefs("ReportingSeniorValue").Fields("FieldKey").ValidationRule = "<> 'ReportingSeniorTitle'"
     Check RejectSave(senior, values, 2), "Injected directory failure accepted"
     Check MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & senior) = 2, "Failed save did not roll back version"
-    Check DCount("*", "ReportingSeniorValue", "SeniorID=" & senior) = 16, "Failed save lost directory values"
+    Check DCount("*", "ReportingSeniorValue", "SeniorID=" & senior) = 17, "Failed save lost directory values"
     CurrentDb.TableDefs("ReportingSeniorValue").Fields("FieldKey").ValidationRule = ""
     Check RejectBaseline(senior, "E5", 4.79, 124, 593), "Mismatched exact totals accepted"
     Check RejectBaseline(senior, "E5", 6, 124, Null), "Out-of-range RSCA accepted"
@@ -153,6 +153,18 @@ Public Function TestRSDirectory() As String
     Check saved("ReportingSeniorSSN") = "000123456" And saved("ReportingSeniorName") = "O'NEIL A", "Group apply lost senior details"
     Check RSShowGroupCalculation(), "Group PSG display failed"
     Check InStr(Forms!frmUXGroupRSCA!lblCalculation.Caption, "3.00") > 0, "Group PSG display not recalculated"
+    ' The report's "Use record in pending draft" reaches the visible page and the save.
+    stage = "editor apply"
+    Dim drafted As Long
+    drafted = CommitDraft(0, "EVAL", "Use senior", "SYNTHETIC USE", #1/1/2026#, #9/30/2026#, "")
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(drafted)
+    Forms!frmEditor!uxSeniorRecord = senior
+    Check RSUseSeniorInEditor(), "Use record in pending draft failed"
+    Check Forms!frmEditor!uxFieldSurface.Form!txtReportingSeniorName.Value = "O'NEIL A", "The visible field did not show the senior record"
+    Check UXSaveEditor(), "Save after using the senior record failed"
+    Set saved = SavedFields(drafted)
+    Check saved("ReportingSeniorSSN") = "000123456" And saved("ReportingSeniorAddress1") = "123 SYNTHETIC ST", "The senior record did not reach the saved report"
+    Forms!frmEditor.OnUnload = "": DoCmd.Close acForm, "frmEditor", acSaveNo
     TestRSDirectory = "PASS: " & checks & " reporting senior, RSCA and comparison assertions": Exit Function
 Failed:
     TestRSDirectory = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description

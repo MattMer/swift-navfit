@@ -580,6 +580,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"OfficialComments\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"OfficialComments\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"OfficialComments\")"
                     Tag ="SURF:OfficialComments"
 
                     LayoutCachedLeft =200
@@ -2442,6 +2444,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"DutyDescription\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"DutyDescription\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"DutyDescription\")"
                     Tag ="SURF:DutyDescription"
 
                     LayoutCachedLeft =200
@@ -5228,6 +5232,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"CommandEmployment\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"CommandEmployment\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"CommandEmployment\")"
                     Tag ="SURF:CommandEmployment"
 
                     LayoutCachedLeft =200
@@ -5296,6 +5302,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait33Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment1\")"
                     Tag ="SURF:Trait33Comment1"
 
                     LayoutCachedLeft =200
@@ -5364,6 +5372,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait33Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment2\")"
                     Tag ="SURF:Trait33Comment2"
 
                     LayoutCachedLeft =200
@@ -5432,6 +5442,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait33Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment3\")"
                     Tag ="SURF:Trait33Comment3"
 
                     LayoutCachedLeft =200
@@ -5500,6 +5512,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait34Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment1\")"
                     Tag ="SURF:Trait34Comment1"
 
                     LayoutCachedLeft =200
@@ -5568,6 +5582,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait34Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment2\")"
                     Tag ="SURF:Trait34Comment2"
 
                     LayoutCachedLeft =200
@@ -5636,6 +5652,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait34Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment3\")"
                     Tag ="SURF:Trait34Comment3"
 
                     LayoutCachedLeft =200
@@ -5704,6 +5722,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait35Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment1\")"
                     Tag ="SURF:Trait35Comment1"
 
                     LayoutCachedLeft =200
@@ -5772,6 +5792,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait35Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment2\")"
                     Tag ="SURF:Trait35Comment2"
 
                     LayoutCachedLeft =200
@@ -5840,6 +5862,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait35Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment3\")"
                     Tag ="SURF:Trait35Comment3"
 
                     LayoutCachedLeft =200
@@ -5908,6 +5932,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait36Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment1\")"
                     Tag ="SURF:Trait36Comment1"
 
                     LayoutCachedLeft =200
@@ -5976,6 +6002,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait36Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment2\")"
                     Tag ="SURF:Trait36Comment2"
 
                     LayoutCachedLeft =200
@@ -6044,6 +6072,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait36Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment3\")"
                     Tag ="SURF:Trait36Comment3"
 
                     LayoutCachedLeft =200
@@ -6112,6 +6142,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait37Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment1\")"
                     Tag ="SURF:Trait37Comment1"
 
                     LayoutCachedLeft =200
@@ -6180,6 +6212,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait37Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment2\")"
                     Tag ="SURF:Trait37Comment2"
 
                     LayoutCachedLeft =200
@@ -6248,6 +6282,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait37Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment3\")"
                     Tag ="SURF:Trait37Comment3"
 
                     LayoutCachedLeft =200
@@ -6316,6 +6352,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait38Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment1\")"
                     Tag ="SURF:Trait38Comment1"
 
                     LayoutCachedLeft =200
@@ -6384,6 +6422,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait38Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment2\")"
                     Tag ="SURF:Trait38Comment2"
 
                     LayoutCachedLeft =200
@@ -6452,6 +6492,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait38Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment3\")"
                     Tag ="SURF:Trait38Comment3"
 
                     LayoutCachedLeft =200
@@ -6520,6 +6562,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait39Comment1\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment1\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment1\")"
                     Tag ="SURF:Trait39Comment1"
 
                     LayoutCachedLeft =200
@@ -6588,6 +6632,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait39Comment2\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment2\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment2\")"
                     Tag ="SURF:Trait39Comment2"
 
                     LayoutCachedLeft =200
@@ -6656,6 +6702,8 @@ Begin Form
                     AfterUpdate ="=UXSurfaceEdited(\"Trait39Comment3\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment3\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment3\")"
                     Tag ="SURF:Trait39Comment3"
 
                     LayoutCachedLeft =200

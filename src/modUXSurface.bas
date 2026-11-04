@@ -1,6 +1,7 @@
 Attribute VB_Name = "modUXSurface"
 Option Compare Binary
 Option Explicit
+Private caretReport As Long, caretKey As String, caretStart As Long
 Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
@@ -137,6 +138,25 @@ Private Function UXSpellUppercase(ByVal restore As Variant) As Variant
 Unavailable:
     UXSpellUppercase = Empty
 End Function
+' The narrative block and cursor last used in the open report, so a snippet chosen in
+' its own window goes where the contributor was writing (P03).
+Public Function UXNarrativeCaret(ByVal key As String) As Boolean
+    On Error GoTo Unavailable
+    Dim c As Access.Control
+    Set c = Surface().Controls(UXFieldControl(key))
+    caretStart = c.SelStart: caretKey = key: caretReport = Nz(Forms!frmEditor!txtReportID, 0)
+    UXNarrativeCaret = True
+Unavailable:
+End Function
+' The recorded block and cursor for this report: False when none was recorded.
+Public Function UXNarrativeTarget(ByRef key As String, ByRef start As Long) As Boolean
+    If Len(caretKey) = 0 Or Not UXSurfaceAvailable() Then Exit Function
+    If caretReport <> Nz(Forms!frmEditor!txtReportID, 0) Then Exit Function
+    key = caretKey: start = caretStart: UXNarrativeTarget = True
+End Function
+Public Sub UXNarrativeMoveCaret(ByVal key As String, ByVal start As Long)
+    caretKey = key: caretStart = start: caretReport = Nz(Forms!frmEditor!txtReportID, 0)
+End Sub
 ' The narrative key a spell check covers for this control, or "".
 Public Function UXSpellKey(ByVal c As Access.Control) As String
     Dim key As String

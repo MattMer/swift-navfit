@@ -63,6 +63,21 @@ Public Function TestNarratives() As String
     Check SaveEditor(), "Snippet save failed"
     Check StrComp(StoredNarrative(id), text, vbBinaryCompare) = 0, "Snippet save lost exact text"
     Check CurrentRevision(id) <> revision, "Snippet save did not append history"
+    ' P03: a snippet goes in at the cursor of the block last written in.
+    stage = "snippet at cursor"
+    Dim middle As Long, surface As Access.Form
+    middle = SaveSnippet(0, "Middle phrase", "MIDDLE", "Synthetic reference", "ALL")
+    Check UXSelectSection(5), "Comments section failed"
+    Set surface = Forms!frmEditor!uxFieldSurface.Form
+    surface!txtOfficialComments.SetFocus: surface!txtOfficialComments.SelStart = 7: surface!txtOfficialComments.SelLength = 0
+    Check UXNarrativeCaret("OfficialComments"), "Cursor not recorded"
+    Check InStr(SnippetTargetText(), "at the cursor in") = 1, "Insert target not described: " & SnippetTargetText()
+    Check InsertNarrativeSnippet(middle), "Insert at cursor failed"
+    Check StrComp(Forms!frmEditor!txtOfficialComments, "Snippet MIDDLE" & Mid$(text, 8), vbBinaryCompare) = 0, "Snippet not inserted at the cursor: " & Left$(Forms!frmEditor!txtOfficialComments, 30)
+    Check InsertNarrativeSnippet(middle), "Second insert failed"
+    Check Left$(Forms!frmEditor!txtOfficialComments, 21) = "Snippet MIDDLE MIDDLE", "Cursor did not move past the insert: " & Left$(Forms!frmEditor!txtOfficialComments, 30)
+    Check SaveEditor(), "Snippet at cursor save failed"
+    Check Left$(StoredNarrative(id), 21) = "Snippet MIDDLE MIDDLE", "Insert at cursor not saved"
     Call FixtureCloseEditor()
     TestNarratives = "PASS: " & assertions & " narrative/snippet assertions across three forms"
     Exit Function

@@ -58,8 +58,6 @@ generates a synthetic NRRM roster when no sample file is given.)
 
 **Small features from the review:**
 - **P01, search:** search that ignores name order and punctuation, a period from/to filter, and saved named filter sets.
-- **P02, placeholder check:** an Information finding for Swift's own unfinished starter markers, such as `[MEASURABLE RESULT]`. It never blocks a save or output.
-- **P03, snippet target:** insert a snippet into the field being edited, at the cursor.
 
 **Not taken:**
 - **P04, accomplishment notebook:** waits for demand.
