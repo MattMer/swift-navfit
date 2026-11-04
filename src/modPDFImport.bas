@@ -154,13 +154,13 @@ Public Function PDFImportStamp() As String
 End Function
 Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind As String, Optional ByVal targetID As Long = 0, Optional ByVal mode As String = "Fill empty fields", Optional ByRef outcome As String = "") As Long
     Dim id As Long, changes As Object, receipt As DAO.Recordset, raw As DAO.Recordset, receiptID As Long, w As DAO.Workspace, failure As Long, message As String, db As DAO.Database, stage As String, expected As Long, operationID As Long
-    Dim trans As Boolean
+    Dim trans As Boolean, attempt As Long, sourceCriteria As String
     outcome = "Not started"
     If pdfContext.Preview Is Nothing Then Err.Raise vbObjectError + 4712, "modPDFImport.ImportPDFPreview", "Preview a supported PDF first."
     PDFRequireOwner
     If pdfContext.StageGuid <> "" Then WizardPreviewCheck "PDFImport", pdfContext.StageGuid
     If SourceFileHash(pdfContext.Path) <> pdfContext.Hash Then Err.Raise vbObjectError + 4706, "modPDFImport.ImportPDFPreview", "PDF changed after preview."
-    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfContext.Hash) & " AND AdapterVersion Like 'pdf-xfa-v*'") > 0 Then Err.Raise vbObjectError + 4713, "modPDFImport.ImportPDFPreview", "This exact PDF has already been imported."
+    If DCount("*", "ImportReceipt", "SourceHash=" & QuoteSQL(pdfContext.Hash) & " AND AdapterVersion Like 'pdf-xfa-v*' AND (IsUndone=False Or IsUndone Is Null)") > 0 Then Err.Raise vbObjectError + 4713, "modPDFImport.ImportPDFPreview", "This exact PDF has already been imported. Undo that import before applying it to another draft."
     If identifierKind <> "SSN" And identifierKind <> "DoDID" And identifierKind <> "Retain only" Then Err.Raise vbObjectError + 4714, "modPDFImport.ImportPDFPreview", "Choose how to interpret the combined identifier field."
     If targetID > 0 Then
         If pdfContext.Changes Is Nothing Then Err.Raise vbObjectError + 4722, "modPDFImport.ImportPDFPreview", "Preview the merge before Apply."
@@ -175,6 +175,12 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     On Error GoTo Failed
     stage = "Begin import transaction"
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True: outcome = "Active"
+    sourceCriteria = "SourceHash=" & QuoteSQL(pdfContext.Hash) & " AND ExternalReportID=0"
+    If DCount("*", "ImportReceipt", sourceCriteria & " AND (IsUndone=False Or IsUndone Is Null)") > 0 Then Err.Raise vbObjectError + 4713, "modPDFImport.ImportPDFPreview", "This exact PDF has an active import. Undo it before applying again."
+    attempt = Nz(DMax("ReceiptAttempt", "ImportReceipt", sourceCriteria), 0)
+    If attempt = 0 And DCount("*", "ImportReceipt", sourceCriteria) > 0 Then attempt = 1
+    If attempt = 2147483647 Then Err.Raise vbObjectError + 4713, "modPDFImport.ImportPDFPreview", "This PDF has reached the import attempt limit."
+    attempt = attempt + 1
     operationID = BeginOperation("PDF import", pdfContext.Path)
     stage = "Create draft"
     If targetID = 0 Then
@@ -197,6 +203,7 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
     stage = "Retain receipt": Set db = CurrentDb
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = pdfContext.Hash: receipt!SourcePath = pdfContext.Path: receipt!ExternalReportID = 0: receipt!ReportID = id
+    receipt!ReceiptAttempt = attempt
     receipt!AuthorProfileID = MajorAuthor(): receipt!ImportedAt = Now(): receipt!AdapterVersion = "pdf-xfa-v3-local": receipt!ValueEncoding = "XFA XML; " & IIf(targetID = 0, "new draft", mode) & "; baseline " & expected: receipt!AppliedRevisionID = CurrentRevision(id): receipt!IsUndone = False
     If targetID > 0 Then receipt!BeforeRevisionID = expected
     receipt!OperationID = operationID

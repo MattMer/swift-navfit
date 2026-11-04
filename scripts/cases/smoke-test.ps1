@@ -112,7 +112,8 @@ try {
     Assert ($app.Eval('Forms!frmLibrary!lstReports.ListCount = 0')) 'Search safely handles apostrophes'
     [void](InvokeVba 'SmokeSetControlValue' @('frmLibrary','txtSearch','Synthetic draft EVAL'))
     [void]$app.Eval('RefreshLibrary()')
-    Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 2')) 'Search finds title matches'
+    # Word matching also finds EVAL within CHIEFEVAL, alongside the EVAL and its copy.
+    Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 3')) 'Word search finds EVAL and CHIEFEVAL title matches'
     $app.DoCmd.Close(2,'frmLibrary',2)
     $app.DoCmd.OpenForm('frmEditor',0,'','',0,0,'0')
     [void]$app.Eval('SmokeEditorEntries()')

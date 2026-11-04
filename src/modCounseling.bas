@@ -148,17 +148,24 @@ Public Function CounselingReasonChoices() As String
     CounselingReasonChoices = """TEMADD"";""ILLNESS"";""LEAVE"";""DEPLOYED"";""HOSPITALIZED"";""SEE COMMENT"""
 End Function
 Public Function ArchiveCounseling(ByVal counselingID As Long, ByVal expectedVersion As Long) As Boolean
+    ArchiveCounseling = CounselingArchiveState(counselingID, expectedVersion, True)
+End Function
+Public Function RestoreCounseling(ByVal counselingID As Long, ByVal expectedVersion As Long) As Boolean
+    RestoreCounseling = CounselingArchiveState(counselingID, expectedVersion, False)
+End Function
+Private Function CounselingArchiveState(ByVal counselingID As Long, ByVal expectedVersion As Long, ByVal archived As Boolean) As Boolean
     Dim r As DAO.Recordset, w As DAO.Workspace, op As Long
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & counselingID, dbOpenDynaset)
     If r.EOF Then Err.Raise vbObjectError + 9506, "modCounseling.ArchiveCounseling", "The counseling record no longer exists."
     If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 9507, "modCounseling.ArchiveCounseling", "The counseling record changed. Reopen it before archiving."
-    If r!IsArchived Then Err.Raise vbObjectError + 9508, "modCounseling.ArchiveCounseling", "The counseling record is already archived."
-    r.Edit: r!IsArchived = True: r!VersionCounter = r!VersionCounter + 1: r!ModifiedBy = MajorAuthor(): r!ModifiedAt = Now(): r.Update: r.Close
-    op = BeginOperation("Archive counseling record", "Counseling record " & counselingID)
-    FinishOperation op, "Completed", "Counseling record archived; it is retained and no longer counts toward the schedule."
-    w.CommitTrans: ArchiveCounseling = True: Exit Function
+    If r!IsArchived = archived Then Err.Raise vbObjectError + 9508, "modCounseling.CounselingArchiveState", "The counseling record is already " & IIf(archived, "archived.", "active.")
+    If Not archived And Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & r!MemberID), True) Then Err.Raise vbObjectError + 9505, "modCounseling.CounselingArchiveState", "Restore the command member before restoring counseling."
+    r.Edit: r!IsArchived = archived: r!VersionCounter = r!VersionCounter + 1: r!ModifiedBy = MajorAuthor(): r!ModifiedAt = Now(): r.Update: r.Close
+    op = BeginOperation(IIf(archived, "Archive counseling record", "Restore counseling record"), "Counseling record " & counselingID)
+    FinishOperation op, "Completed", IIf(archived, "Counseling record archived; it is retained and no longer counts toward the schedule.", "Counseling record restored; it counts toward the schedule and report suggestions again.")
+    w.CommitTrans: CounselingArchiveState = True: Exit Function
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modCounseling", "ArchiveCounseling", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")

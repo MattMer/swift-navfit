@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 43,
+  "SchemaVersion": 44,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -57,7 +57,8 @@
     "MemberDeparture",
     "ReportDueDismissal",
     "ISIC",
-    "DirectoryMergeLink"
+    "DirectoryMergeLink",
+    "SavedReportFilter"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -298,7 +299,10 @@
     "ALTER TABLE SummaryGroup ADD CONSTRAINT FK_SummaryGroup_ISICID FOREIGN KEY (ISICID) REFERENCES ISIC (ISICID)",
     "CREATE TABLE DirectoryMergeLink (LinkRowID COUNTER PRIMARY KEY, MergeID LONG NOT NULL, LinkTable TEXT(30) NOT NULL, LinkID LONG NOT NULL)",
     "CREATE INDEX IX_DirectoryMergeLink_Merge ON DirectoryMergeLink (MergeID,LinkTable)",
-    "ALTER TABLE DirectoryMergeLink ADD CONSTRAINT FK_DirectoryMergeLink_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)"
+    "ALTER TABLE DirectoryMergeLink ADD CONSTRAINT FK_DirectoryMergeLink_MergeID FOREIGN KEY (MergeID) REFERENCES DirectoryMerge (MergeID)",
+    "CREATE TABLE SavedReportFilter (FilterID COUNTER CONSTRAINT PK_SavedReportFilter PRIMARY KEY, FilterGuid TEXT(38) NOT NULL, OwnerProfileGuid TEXT(38) NOT NULL, FilterName TEXT(80) NOT NULL, SearchText TEXT(255), PeriodFrom DATETIME, PeriodThrough DATETIME, FormKind TEXT(12) NOT NULL, ReportState TEXT(30) NOT NULL, RankFilter TEXT(40) NOT NULL, ArchiveMode TEXT(12) NOT NULL, GroupScope TEXT(12) NOT NULL, GroupGuid TEXT(38), VersionCounter LONG NOT NULL, ModifiedAt DATETIME NOT NULL)",
+    "CREATE UNIQUE INDEX UX_SavedReportFilter_Guid ON SavedReportFilter (FilterGuid)",
+    "CREATE UNIQUE INDEX UX_SavedReportFilter_Name ON SavedReportFilter (OwnerProfileGuid,FilterName)"
   ],
   "Queries": [
     {

@@ -221,9 +221,10 @@ End Function
 Public Function UXHistoryCounselingLoad() As Boolean
     Dim f As Access.Form, r As DAO.Recordset, rows As String, s As Object
     Set f = Forms!frmUXMemberHistory
+    Call UXAssertView(f.Name)
     If Not UXHasControl(f, "lstCounseling") Then Exit Function
     f!lstCounseling.RowSourceType = "Value List"
-    Set r = CurrentDb.OpenRecordset("SELECT CounselingID,CounseledOn,Outcome,CounselorName,NotPerformedReason,WorksheetDisposition FROM MemberCounseling WHERE MemberID=" & historyMember & " AND IsArchived=False ORDER BY CounseledOn DESC", dbOpenSnapshot)
+    Set r = CurrentDb.OpenRecordset("SELECT CounselingID,CounseledOn,Outcome,CounselorName,NotPerformedReason,WorksheetDisposition FROM MemberCounseling WHERE MemberID=" & historyMember & " AND IsArchived=" & IIf(Nz(f!chkArchivedCounseling, False), "True", "False") & " ORDER BY CounseledOn DESC", dbOpenSnapshot)
     Do While Not r.EOF
         If rows <> "" Then rows = rows & ";"
         rows = rows & r!CounselingID & ";" & Format$(r!CounseledOn, "yyyy-mm-dd") & ";" & r!Outcome & ";""" & Replace(Nz(r!CounselorName, r!NotPerformedReason), """", "'") & """;" & Nz(r!WorksheetDisposition, "")
@@ -231,6 +232,8 @@ Public Function UXHistoryCounselingLoad() As Boolean
     Loop
     r.Close
     f!lstCounseling.RowSource = rows
+    f!cmdCounselingEdit.Enabled = Not Nz(f!chkArchivedCounseling, False)
+    f!cmdCounselingArchive.Caption = IIf(Nz(f!chkArchivedCounseling, False), "Restore selected counseling", "Archive selected counseling")
     Set s = CounselingMemberStatus(historyMember)
     f!lblCounselingStatus.Caption = "Counseling: " & s("Status") & IIf(IsNull(s("DueMonth")), "", " (" & Format$(Nz(s("DueMonth"), Date), "mmmm yyyy") & ")") & IIf(s("Note") = "", "", ". " & s("Note"))
     UXHistoryCounselingLoad = True
@@ -241,6 +244,7 @@ Public Function UXCounselingOpen(Optional ByVal createNew As Boolean = True, Opt
     If member > 0 Then historyMember = member
     counselingMember = historyMember
     If Not createNew Then
+        If Nz(Forms!frmUXMemberHistory!chkArchivedCounseling, False) Then Forms!frmUXMemberHistory!lblStatus.Caption = "Restore the counseling record before editing.": Exit Function
         If IsNull(Forms!frmUXMemberHistory!lstCounseling) Then Forms!frmUXMemberHistory!lblStatus.Caption = "Select a counseling record to edit.": Exit Function
         counselingID = CLng(Forms!frmUXMemberHistory!lstCounseling)
     End If
@@ -278,15 +282,16 @@ Failed:
     f!lblStatus.Caption = Err.Description
 End Function
 Public Function UXCounselingArchive(Optional ByVal confirmed As Boolean = False) As Boolean
-    Dim id As Long, version As Variant
+    Dim id As Long, version As Variant, restoring As Boolean
     On Error GoTo Failed
     If IsNull(Forms!frmUXMemberHistory!lstCounseling) Then Forms!frmUXMemberHistory!lblStatus.Caption = "Select a counseling record to archive.": Exit Function
     id = CLng(Forms!frmUXMemberHistory!lstCounseling)
+    restoring = Nz(Forms!frmUXMemberHistory!chkArchivedCounseling, False)
     If Not confirmed Then
-        If MsgBox("Archive the selected counseling record? It is retained but no longer counts toward the schedule or report suggestions.", vbYesNo + vbQuestion + vbDefaultButton2, "Archive counseling record") <> vbYes Then Exit Function
+        If MsgBox(IIf(restoring, "Restore the selected counseling record? It will count toward the schedule and report suggestions again.", "Archive the selected counseling record? It is retained but no longer counts toward the schedule or report suggestions."), vbYesNo + vbQuestion + vbDefaultButton2, IIf(restoring, "Restore counseling record", "Archive counseling record")) <> vbYes Then Exit Function
     End If
     version = MajorScalar("SELECT VersionCounter FROM MemberCounseling WHERE CounselingID=" & id)
-    UXCounselingArchive = ArchiveCounseling(id, CLng(Nz(version, 0)))
+    If restoring Then UXCounselingArchive = RestoreCounseling(id, CLng(Nz(version, 0))) Else UXCounselingArchive = ArchiveCounseling(id, CLng(Nz(version, 0)))
     UXCounselingRefresh
     Exit Function
 Failed:

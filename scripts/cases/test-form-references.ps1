@@ -9,6 +9,8 @@ param()
 $ErrorActionPreference='Stop'
 $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $checks=0
+. (Join-Path (Split-Path $PSScriptRoot -Parent) 'view-control-contracts.ps1')
+$dynamicViewControls=GetSwiftDynamicViewControls $root
 function Check([bool]$ok,[string]$message){if(-not $ok){throw $message};$script:checks++}
 
 # Fields of a record source set at run time that code reads by name with no
@@ -166,6 +168,9 @@ function Get-FormReferenceFailures($Source){
         foreach($m in [regex]::Matches($design,'Forms!\[?(\w+)\]?!\[?(\w+)\]?')){NeedControl ('form '+$name) $m.Groups[1].Value $m.Groups[2].Value}
         foreach($m in [regex]::Matches($design,'Tag ="SORT:(\w+):\d+"')){NeedControl ('form '+$name+' sort tag') $name $m.Groups[1].Value}
     }
+    foreach($view in $dynamicViewControls.Keys){
+        foreach($control in $dynamicViewControls[$view]){NeedControl 'dynamic view contract' $view $control}
+    }
     [pscustomobject]@{Failures=$failures;References=$script:refCount}
 }
 
@@ -190,3 +195,9 @@ Check (@((Get-FormReferenceFailures $gone).Failures|Where-Object {$_ -like '*for
 $sorted=Mutated 'frmUXSeniors' {param($f) [void]$f.Controls.Remove('lstSeniors')}
 Check (@((Get-FormReferenceFailures $sorted).Failures|Where-Object {$_ -like '*frmUXSeniors.lstSeniors*'}).Count -gt 0) 'Sort tag list removal was not detected'
 Write-Output ('PASS: '+$result.References+' literal form/control references resolve; '+$checks+' contract and mutation checks')
+foreach($pair in @(@('frmLibrary','uxNav5'),@('frmContextDuties','txtDutyDescription'),@('frmUXEditorFields','errOfficialName'),@('frmUXSeniorEditor','rsReportingSeniorEmail'),@('frmUXMemberEditor','ruadPage4'),@('frmUXSharedFields','valueUnitUIC'),@('frmUXRSCATable','countO10'),@('frmUXMemberHistory','sort_lstCounseling_4'),@('frmServiceDetails','txtReadinessDetail'),@('frmUXPriorEditor','lblTrait39'),@('frmEditor','uxSection9'))){
+    $copy=ReadSource $root;[void]$copy.Forms[$pair[0]].Controls.Remove($pair[1])
+    $needle=$pair[0]+'.'+$pair[1]
+    Check (@((Get-FormReferenceFailures $copy).Failures|Where-Object {$_ -like ('*dynamic view contract*'+$needle+'*')}).Count -gt 0) ('Dynamic control removal was missed: '+$needle)
+}
+Write-Output ('PASS: dynamic form/control families expanded from catalogues; '+$checks+' total mutation checks')

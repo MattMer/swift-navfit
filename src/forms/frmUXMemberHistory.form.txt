@@ -579,7 +579,7 @@ Begin Form
                     OverlapFlags =85
                     Left =400
                     Top =7900
-                    Width =12600
+                    Width =9500
                     Height =450
                     FontSize =10
                     Name ="lblCounselingStatus"
@@ -772,6 +772,27 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin CheckBox
+                    Left =10300
+                    Top =7950
+                    Width =250
+                    Height =250
+                    Name ="chkArchivedCounseling"
+                    AfterUpdate ="=UXHistoryCounselingLoad()"
+                    DefaultValue ="False"
+                    Begin
+                        Begin Label
+                            Left =10650
+                            Top =7950
+                            Width =2500
+                            Height =300
+                            FontSize =9
+                            ForeColor =2692374
+                            Name ="lblchkArchivedCounseling"
+                            Caption ="Archived counseling"
+                        End
+                    End
                 End
             End
         End

@@ -43,6 +43,7 @@ Public Function UXChooseSectionCompact() As Boolean
 End Function
 Public Sub UXNavigationLayout(ByVal f As Access.Form, ByVal compact As Boolean, ByVal width As Long)
     Dim i As Long, active As Access.Control, origin As Access.Form
+    Call UXAssertView(f.Name)
     On Error Resume Next
     Set origin = Screen.ActiveForm
     Set active = f.ActiveControl

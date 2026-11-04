@@ -41,6 +41,18 @@ Private Sub CheckWizardViewContracts()
         DoCmd.Close acForm, view, acSaveNo
     Next
 End Sub
+Private Sub CheckDynamicViewContracts()
+    Dim item As Variant, view As String, c As Access.Control, original As String
+    For Each item In Array(Array("frmLibrary", "uxNav5"), Array("frmContextDuties", "txtDutyDescription"), Array("frmUXEditorFields", "errOfficialName"), Array("frmUXSeniorEditor", "rsReportingSeniorEmail"), Array("frmUXMemberEditor", "ruadPage4"), Array("frmUXSharedFields", "valueUnitUIC"), Array("frmUXRSCATable", "countO10"), Array("frmUXMemberHistory", "sort_lstCounseling_4"), Array("frmServiceDetails", "txtReadinessDetail"), Array("frmUXPriorEditor", "lblTrait39"), Array("frmEditor", "uxSection9"))
+        view = CStr(item(0)): DoCmd.OpenForm view, acDesign
+        Check UXAssertView(view), "Dynamic view rejected: " & view
+        Set c = Forms(view).Controls(CStr(item(1))): original = c.Name: c.Name = "SyntheticDynamicMissing"
+        Check ContractRejected(view, 9400), "Missing computed control accepted: " & view & "." & original
+        c.Name = original
+        Check UXAssertView(view), "Restored computed control rejected: " & view
+        DoCmd.Close acForm, view, acSaveNo
+    Next
+End Sub
 Private Function SurfaceAssignmentError(ByVal c As Access.Control, ByVal value As Variant, ByRef message As String) As Long
     On Error GoTo Failed
     c.Value = value
@@ -229,6 +241,7 @@ Public Function TestDiagnosticsContracts() As String
     DoCmd.Close acForm, "frmEditor", acSaveNo
     CheckContributorFailures
     CheckWizardViewContracts
+    CheckDynamicViewContracts
     TestDiagnosticsContracts = "PASS: " & checks & " primary/cleanup diagnostics, rollback/retry and missing/renamed/binding contracts"
     Exit Function
 Failed:

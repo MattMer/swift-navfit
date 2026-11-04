@@ -7,6 +7,7 @@ $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'build-plan.ps1')
 . (Join-Path $PSScriptRoot 'workflow-common.ps1')
+. (Join-Path $PSScriptRoot 'build-retention.ps1')
 $plan=GetSwiftBuildPlan $root (Join-Path $PSScriptRoot 'build-manifest.json')
 if($Action -in @('Test','Compile','ExtendedTest') -and -not $BuildPath){throw '-BuildPath is required for Test, Compile or ExtendedTest'}
 if($CompiledPath -and $Action -ne 'Compile'){throw '-CompiledPath is only valid for Compile'}
@@ -20,6 +21,10 @@ if($Action -in @('Build','BuildAndTest')){
     $BuildPath=[IO.Path]::GetFullPath($BuildPath)
     if(Test-Path -LiteralPath $BuildPath){throw ('Refusing to overwrite existing database: '+$BuildPath)}
 }
+if($Action -ne 'Preflight'){[void](InvokeSwiftScratchCleanup -Root $root -Apply -PreservePath @($BuildPath,$CompiledPath))}
+$scratchRun=StartSwiftScratchRun $root
+$scratchStatus='FAIL'
+try {
 $logFolder=Join-Path $root ('build/workflow/'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $logFolder)
 $script:workflowResults=[Collections.Generic.List[object]]::new()
@@ -128,3 +133,7 @@ $receipt=Join-Path $logFolder 'verification.json'
 Write-Output ('PASS: '+$Action+$(if($extendedFlaky.Count){' with '+$extendedFlaky.Count+' FLAKY runner(s): '+(($extendedFlaky|ForEach-Object {$_.Runner})-join ', ')}else{''})+'; receipt: '+$receipt)
 if($artifact){Write-Output ('Artifact: '+$artifact.Path)}
 if($compiledArtifact){Write-Output ('Compiled artifact: '+$compiledArtifact.Path)}
+$scratchStatus=if($extendedFlaky.Count){'FLAKY'}else{'PASS'}
+} finally {
+    try{CompleteSwiftScratchRun $scratchRun $scratchStatus}catch{Write-Warning ('Scratch retention record failed: '+$_.Exception.Message)}
+}

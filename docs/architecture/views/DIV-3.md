@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 43, application 0.53.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 44, application 0.53.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -437,7 +437,7 @@ Microsoft Access (ACE) tables in schema 43, application 0.53.0-dev. Types are Ac
 ## ImportReceipt
 
 - **Primary key:** ImportReceiptID
-- **Unique:** SourceHash, ExternalReportID
+- **Unique:** SourceHash, ExternalReportID, ReceiptAttempt
 
 | Column | Type | Required |
 | --- | --- | --- |
@@ -455,6 +455,7 @@ Microsoft Access (ACE) tables in schema 43, application 0.53.0-dev. Types are Ac
 | AppliedRevisionID | Long |  |
 | OperationID | Long |  |
 | IsUndone | Yes/No |  |
+| ReceiptAttempt | Long |  |
 
 ## ISIC
 
@@ -1285,6 +1286,29 @@ Microsoft Access (ACE) tables in schema 43, application 0.53.0-dev. Types are Ac
 | SourceSHA256 | Text (64) |  |
 | EffectiveFrom | Date/Time |  |
 | EffectiveTo | Date/Time |  |
+
+## SavedReportFilter
+
+- **Primary key:** FilterID
+- **Unique:** FilterGuid; OwnerProfileGuid, FilterName
+
+| Column | Type | Required |
+| --- | --- | --- |
+| FilterID | AutoNumber |  |
+| FilterGuid | Text (38) | yes |
+| OwnerProfileGuid | Text (38) | yes |
+| FilterName | Text (80) | yes |
+| SearchText | Text (255) |  |
+| PeriodFrom | Date/Time |  |
+| PeriodThrough | Date/Time |  |
+| FormKind | Text (12) | yes |
+| ReportState | Text (30) | yes |
+| RankFilter | Text (40) | yes |
+| ArchiveMode | Text (12) | yes |
+| GroupScope | Text (12) | yes |
+| GroupGuid | Text (38) |  |
+| VersionCounter | Long | yes |
+| ModifiedAt | Date/Time | yes |
 
 ## SummaryGroup
 

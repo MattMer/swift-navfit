@@ -314,6 +314,7 @@ Public Function UXClearReportFilters() As Boolean
         !txtSearch = Null: !cboArchive = "Active": !lstFolders = 0: !uxFolderFilter = 0
         !uxTypeFilter = "All": !uxStatusFilter = "All"
         !cboRankFilter = "All ranks/rates"
+        !txtPeriodFrom = Null: !txtPeriodThrough = Null: !cboSavedFilter = Null
     End With
     UXClearReportFilters = RefreshLibrary()
 End Function

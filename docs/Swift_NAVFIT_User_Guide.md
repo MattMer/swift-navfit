@@ -150,6 +150,27 @@ Adding the same name again brings their profile back.
 
 The top-right **?** opens help for the current window. Use the application's navigation and return buttons to keep the report or group context correct. Leaving a report follows its normal save/recovery guards. Leaving a group closes its working view so another group can open with the correct context.
 
+### Find reports and keep filter sets
+
+In **Reports**, search words can appear in any order. For example, `Jamie Taylor`
+finds `TAYLOR, JAMIE`; apostrophes and hyphens can be omitted. Searching changes
+only the list, never the stored name.
+
+**Period overlaps from** and **Through** include reports overlapping that date
+range, including either boundary. Leave either date blank for an open-ended
+range. A report missing the date needed for a bound is excluded. A reversed
+range leaves the previous list in place and shows a correction message.
+
+Choose **Save filter** to name the current search, period, group, report type,
+review status, rank/rate and archive filters. Select a **Saved filter** to apply
+it later. Saving under the selected name asks before replacing it; a new name
+creates a separate set. **Delete filter** removes only the saved set. **Clear
+filters** resets the current criteria without deleting saved sets. Sets belong
+to the selected contributor and transfer with the workspace. This is a
+convenience, not an access-control boundary: protect the workspace file itself.
+A saved set whose group is archived or unavailable shows an error; it never
+silently changes to all reports.
+
 ### Reports due
 
 **Overview > Reports due** lists the reports the command owes:
@@ -490,6 +511,12 @@ BUPERSINST 1610.10H chapter 18 sets a midterm counseling month for each paygrade
 
 A session held earlier or later than the scheduled month still counts for that cycle. Archive a record entered in error; it is kept but no longer counts.
 
+In the member's history, select **Archived counseling** to view retained archived
+records. Select one and choose **Restore selected counseling** to return it to
+the active history and schedule/report suggestions. Archived records cannot be
+edited until restored. Restore the member first if their directory profile is
+archived. Changing the archive view never changes a counseling record.
+
 When you create a report for the member (from the directory or a summary group), blocks 30–31 start with the recorded session in the report's period: the date and counselor, or NOT PERF and the reason. You can change them, and Swift never replaces values already entered. A session already entered on another of the member's reports is not used again. For an existing report, **Report tools > Validation** shows a finding when blocks 30–31 differ from the record; select it and choose **Use recorded counseling in blocks 30-31**.
 
 The signed worksheet stays on paper; Swift records the session, not the signature. After the member has a Detachment of Individual report, record whether the worksheet was **Given to member** or **Destroyed**, as chapter 18 requires; Swift notes the date itself.
@@ -787,6 +814,12 @@ Extraction runs locally inside Swift NAVFIT. Acrobat, Reader, Python, external u
 6. Apply, inspect Results, and open the imported or merged report for validation and saving as appropriate.
 
 Close the target editor and resolve pending recovery before merging. Changed or locked targets require a fresh preview. Blank or missing source PDF fields do not clear existing values. Source or mapping-choice changes invalidate the preview.
+
+If a PDF was applied to the wrong draft, use the import receipt's **Undo** action
+in operation history first. Then choose the same PDF again, select the correct
+draft and preview/apply it. Each attempt retains its own receipt and raw source
+values; Undo does not erase them. An active import of that PDF still prevents a
+duplicate. Undo refuses later edits and locked reports so they are preserved.
 
 The supported mappings cover defined structured fields for the three report types. They do not promise extraction from arbitrary scans or every PDF layout. Normal PDF import uses SSN; legacy DoDID mapping requires explicit compatibility selection. Inspect identifiers and leading zeros after import.
 

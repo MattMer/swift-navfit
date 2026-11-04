@@ -46,11 +46,99 @@ Public Function UXViewContracts(ByVal view As String) As Variant
         Case "frmNAVFITExchange": UXViewContracts = Array("cmdExportGroup|OnClick|=UXExportNAVFITGroup()", "cmdtxtExportPath|OnClick|=UXChooseNAVFITGroupFolder()", "cmdBack|OnClick|=UXCloseScreen(""frmNAVFITExchange"")", "cboGroup", "lblGroup", "txtExportPath", "txtStatus", "txtTemplate")
         Case "frmUXWorkspaceImport": UXViewContracts = Array("cmdResume|OnClick|=UXResumeSwiftWorkspace()", "cmdCancelPreview|OnClick|=UXCancelSwiftWorkspacePreview()", "cmdApply|OnClick|=UXApplySwiftWorkspace()", "cmdClose|OnClick|=UXCloseScreen(""frmUXWorkspaceImport"")", "txtPreview", "txtProgress", "lblStatus")
         Case "frmPDFOutput": UXViewContracts = Array("cmdGenerate|OnClick|=PDFOutputCreate()", "cmdPagePreview|OnClick|=PDFOutputPagePreview()", "cmdBrowse|OnClick|=PDFOutputBrowseFolder()", "cmdRefresh|OnClick|=PDFOutputRefreshPreview()", "cmdClose|OnClick|=PDFOutputClose()", "cmdOpenPDF|OnClick|=PDFOutputOpenResult(False)", "cmdOpenFolder|OnClick|=PDFOutputOpenResult(True)", "lstReports|AfterUpdate|=PDFOutputSelectRow()", "txtFolder", "txtFindings", "cboSource", "cboFormat", "lblStatus")
+        Case "frmLibrary": UXViewContracts = Array("txtPeriodFrom|AfterUpdate|=RefreshLibrary()", "txtPeriodThrough|AfterUpdate|=RefreshLibrary()", "cboSavedFilter|AfterUpdate|=UXLoadReportFilter()", "cmdSaveFilter|OnClick|=UXSaveReportFilter()", "cmdDeleteFilter|OnClick|=UXDeleteReportFilter()")
+        Case "frmUXMemberHistory": UXViewContracts = Array("chkArchivedCounseling|AfterUpdate|=UXHistoryCounselingLoad()", "cmdCounselingArchive|OnClick|=UXCounselingArchive()")
         Case Else: UXViewContracts = Array()
     End Select
 End Function
+'Finite dynamic families, derived from the same field/key catalogues as their
+'callers. The file-only build checker expands these families independently.
+Public Function UXDynamicViewControls(ByVal view As String) As Collection
+    Dim result As New Collection, keys As Variant, key As Variant, i As Long, routes As Variant
+    keys = Array()
+    Select Case view
+        Case "frmMemberDetails": keys = MemberDetailsKeys()
+        Case "frmDecisionDetails": keys = DecisionDetailsKeys()
+        Case "frmPartyNames": keys = PartyNamesKeys()
+        Case "frmReportingSenior": keys = ReportingSeniorKeys()
+        Case "frmReportPeople": keys = ReportPeopleKeys()
+        Case "frmServiceDetails": keys = ServiceDetailsKeys()
+        Case "frmContextOccasions", "frmContextCategories", "frmContextDuties": keys = ReportContextPanelKeys(Mid$(view, 11))
+    End Select
+    For Each key In keys: result.Add "txt" & key: Next
+    If view = "frmUXSeniorEditor" Then
+        For Each key In RSRecordKeys(): result.Add "rs" & key: Next
+    End If
+    If view = "frmUXRSCATable" Then
+        For Each key In RSTableGrades()
+            result.Add "grade" & key: result.Add "avg" & key: result.Add "count" & key: result.Add "date" & key: result.Add "src" & key
+        Next
+    End If
+    If view = "frmUXBulk" Or view = "frmUXSharedFields" Then
+        For Each key In UXSharedKeys()
+            If view = "frmUXBulk" Then result.Add "uxValue" & key Else result.Add "value" & key: result.Add "label" & key
+        Next
+    End If
+    If view = UX_EDITOR_VIEW Then
+        For i = 0 To 9: result.Add "uxSection" & i: Next
+    End If
+    If view = UX_EDITOR_VIEW Or view = "frmUXPriorEditor" Then
+        For i = 33 To 39: result.Add "lblTrait" & i: result.Add "cboTrait" & i: Next
+    End If
+    If view = UX_TRAIT_ROWS_VIEW Then
+        For i = 33 To 39: result.Add "heading" & i: result.Add "Trait" & i: Next
+    End If
+    If view = "frmUXMemberEditor" Then
+        keys = RUADKeys()
+        For i = 0 To UBound(keys)
+            If keys(i) <> "NAME" Then result.Add "ruad" & i: result.Add "ruadLabel" & i
+        Next
+        For i = 0 To 4: result.Add "ruadPage" & i: Next
+    End If
+    If view = "frmUXEditorFields" Then
+        For Each key In CatalogueFieldKeys()
+            If key <> "FormKind" Then result.Add UXFieldControl(CStr(key)): result.Add "label" & key: result.Add "err" & key
+        Next
+        For i = 0 To 2: result.Add "uxGroupBox" & i: Next
+        For i = 33 To 39: result.Add "uxChiefGuidance" & i: Next
+    End If
+    If view <> UX_TRAIT_ROWS_VIEW And view <> "frmUXEditorFields" And view <> "frmUXSharedFields" And view <> "frmUXRSCATable" Then
+        If UXHasControl(Forms(view), "uxCompactNav") Then
+            routes = UXWorkspaceRoutes()
+            For i = 0 To UBound(routes): result.Add "uxNav" & i: Next
+        End If
+        If UXHasControl(Forms(view), "uxGroupTab0") Then
+            For Each key In Array(0, 1, 2, 4): result.Add "uxGroupTab" & key: Next
+        End If
+        Dim list As Access.Control
+        For Each list In Forms(view).Controls
+            If list.ControlType = acListBox Then
+                If UXHasControl(Forms(view), "sort_" & list.Name & "_0") Then
+                    For i = 0 To list.ColumnCount - 1: result.Add "sort_" & list.Name & "_" & i: Next
+                End If
+            End If
+        Next
+    End If
+    Set UXDynamicViewControls = result
+End Function
 Public Function UXRequireControl(ByVal view As String, ByVal name As String) As Access.control
     On Error GoTo Missing
+    If view = "frmUXSharedFields" And CurrentProject.AllForms("frmUXBulk").IsLoaded Then
+        If Forms!frmUXBulk.CurrentView <> 0 Then
+            Set UXRequireControl = Forms!frmUXBulk!uxBlocks.Form.Controls(name): Exit Function
+        End If
+    End If
+    If view = "frmUXRSCATable" And CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then
+        If Forms!frmUXSeniorEditor.CurrentView <> 0 Then
+            Set UXRequireControl = Forms!frmUXSeniorEditor!uxRSCATable.Form.Controls(name): Exit Function
+        End If
+    End If
+    If view = "frmUXEditorFields" And CurrentProject.AllForms(UX_EDITOR_VIEW).IsLoaded Then
+        If Forms(UX_EDITOR_VIEW).CurrentView <> 0 Then
+            Set UXRequireControl = Forms(UX_EDITOR_VIEW)!uxFieldSurface.Form.Controls(name)
+            Exit Function
+        End If
+    End If
     If view = UX_TRAIT_ROWS_VIEW And CurrentProject.AllForms(UX_MEMBERS_VIEW).IsLoaded Then
         If Forms(UX_MEMBERS_VIEW).CurrentView <> 0 Then
             Set UXRequireControl = Forms(UX_MEMBERS_VIEW)!uxTraitGrid.Form.Controls(name)
@@ -75,6 +163,7 @@ Public Function UXAssertView(ByVal view As String) As Boolean
             If StrComp(actual, expected, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 9401, "modUX.UXAssertView", "Required view binding differs: " & view & "." & parts(0) & "." & parts(1)
         End If
     Next
+    For Each key In UXDynamicViewControls(view): Set c = UXRequireControl(view, CStr(key)): Next
     If view = UX_EDITOR_VIEW Then
         For Each key In CatalogueControls(): Set c = UXRequireControl(view, CStr(key)): Next
     End If

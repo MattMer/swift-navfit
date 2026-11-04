@@ -14,6 +14,15 @@ minutes). Existing files are never overwritten. Identity comes from
 
 ## Order
 
+The standard `develop.ps1` workflow (except Preflight) and `release-check.ps1`
+first prune expired scratch artifacts using `build-retention.ps1`. This is
+housekeeping outside the database assembly graph; it never prunes `build/dev`,
+release files, `output`, tracked fixtures, workflow logs or verification receipts.
+Successful managed scratch expires after 24 hours; failed, flaky and unclassified
+scratch after seven days. Active workflows/Access sessions and `.keep` pins prevent
+cleanup. Manual preview/apply and the path/hash manifests are documented in
+[build scratch retention](../docs/Development_Workflow.md#build-scratch-retention).
+
 1. Create the database: tables, validation rules, relationships and canonical
    queries from `major-schema.json` and `build.ps1`.
 2. Load every static module in `sourceModules`, then generate `modTraitCatalogue`.
@@ -77,6 +86,13 @@ form absence and event function bindings. The adjacent `.accdb.build.json`
 receipt records the artifact hash, identity, input fingerprints, stage durations
 and structural results; it does not replace workflow, migration or physical
 acceptance tests.
+
+`view-control-contracts.ps1` expands finite computed-name families from the field,
+detail, context, senior, roster and navigation catalogues. The form-reference
+source check and reopened build verification both require those controls, and
+the native diagnostics harness mutates representative names to test rejection.
+Runtime view assertions also check those families before navigation layout and
+context-panel use. Declare a contract when adding another dynamic family.
 
 Run `scripts/test-source-contracts.ps1` without Access for rejected plans, input
 drift, form normalization and the runner inventory, and

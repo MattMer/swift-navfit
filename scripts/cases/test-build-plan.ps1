@@ -106,3 +106,84 @@ $scriptText=(@($scripts)+@(Get-ChildItem (Join-Path $root 'scripts/cases') -Filt
 $orphans=@(Get-ChildItem (Join-Path $root 'tests') -Filter '*.bas'|Where-Object {$scriptText -notmatch [regex]::Escape($_.BaseName)}|ForEach-Object {$_.Name})
 Check ($orphans.Count -eq 0) ('No script loads these harnesses; remove them or wire them to a runner: '+($orphans -join ', '))
 Write-Output ('PASS: '+$checks+' build-plan preflight, dependency, identity, input-drift and runner-inventory checks')
+
+# Scratch-retention expiry and deletion safeguards are part of the build contract.
+& {
+$ErrorActionPreference='Stop'
+$repo=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+. (Join-Path $repo 'scripts/build-retention.ps1')
+$fixture=Join-Path $repo ('build/tests/retention-'+[guid]::NewGuid())
+[void](New-Item -ItemType Directory -Path (Join-Path $fixture 'build/tests') -Force)
+$script:retentionChecks=0
+function Check($ok,$message){if(-not $ok){throw $message};$script:retentionChecks++}
+function OldFile([string]$name,[int]$hours){
+ $path=Join-Path $fixture ('build/tests/'+$name+'-'+[guid]::NewGuid()+'.accdb')
+ [IO.File]::WriteAllText($path,'synthetic retention fixture')
+ [IO.File]::SetLastWriteTimeUtc($path,[datetime]::UtcNow.AddHours(-$hours))
+ return $path
+}
+$old=OldFile 'old' 200
+$recent=OldFile 'recent' 2
+$unknown=OldFile 'unknown' 48
+$pinned=OldFile 'pinned' 200
+[IO.File]::WriteAllText(($pinned+'.keep'),'keep')
+[IO.File]::SetLastWriteTimeUtc(($pinned+'.keep'),[datetime]::UtcNow.AddDays(-20))
+$locked=OldFile 'locked' 200
+$protected=OldFile 'protected' 200
+$manual=Join-Path $fixture 'build/tests/manually-retained.accdb'
+[IO.File]::WriteAllText($manual,'preserve');[IO.File]::SetLastWriteTimeUtc($manual,[datetime]::UtcNow.AddDays(-20))
+$outside=Join-Path $fixture 'build/dev/preserve.accdb'
+[void](New-Item -ItemType Directory -Path (Split-Path $outside) -Force);[IO.File]::WriteAllText($outside,'preserve')
+$expiredDir=Join-Path $fixture ('build/tests/expired-dir-'+[guid]::NewGuid())
+$pinnedDir=Join-Path $fixture ('build/tests/pinned-dir-'+[guid]::NewGuid())
+$recentDir=Join-Path $fixture ('build/tests/recent-dir-'+[guid]::NewGuid())
+$linkedDir=Join-Path $fixture ('build/tests/linked-dir-'+[guid]::NewGuid())
+foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir)){
+ [void](New-Item -ItemType Directory -Path $dir)
+ [IO.File]::WriteAllText((Join-Path $dir 'data.txt'),'synthetic')
+ [IO.File]::SetLastWriteTimeUtc((Join-Path $dir 'data.txt'),[datetime]::UtcNow.AddDays(-20))
+}
+[IO.File]::WriteAllText((Join-Path $pinnedDir '.keep'),'keep')
+[IO.File]::SetLastWriteTimeUtc((Join-Path $pinnedDir '.keep'),[datetime]::UtcNow.AddDays(-20))
+[IO.File]::SetLastWriteTimeUtc((Join-Path $recentDir 'data.txt'),[datetime]::UtcNow)
+$link=Join-Path $linkedDir 'junction'
+[void](New-Item -ItemType Junction -Path $link -Target (Split-Path $outside))
+foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir)){[IO.Directory]::SetLastWriteTimeUtc($dir,[datetime]::UtcNow.AddDays(-20))}
+# Record a successful 48-hour-old item and a failed one at the same age.
+$passed=OldFile 'passed' 48;$failed=OldFile 'failed' 48
+$records=Join-Path $fixture 'build/retention/runs'
+[void](New-Item -ItemType Directory -Path $records -Force)
+foreach($pair in @(@($passed,'PASS'),@($failed,'FAIL'))){
+ @{Status=$pair[1];CompletedUtc=[datetime]::UtcNow.AddHours(-47).ToString('o');Entries=@(@{Path=$pair[0];Ticks=(Get-Item -LiteralPath $pair[0]).LastWriteTimeUtc.Ticks})}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $records ($pair[1]+'.json'))
+}
+$handle=[IO.File]::Open($locked,'Open','ReadWrite','None')
+try {
+ $preview=InvokeSwiftScratchCleanup -Root $fixture -PreservePath @($protected)
+ Check ($preview.Status -eq 'PREVIEW' -and (Test-Path -LiteralPath $old)) 'Preview deleted a candidate'
+ $result=InvokeSwiftScratchCleanup -Root $fixture -Apply -PreservePath @($protected)
+ if($result.Status -eq 'SKIP'){throw 'Close Access before running file-only retention checks'}
+ Check (-not(Test-Path -LiteralPath $old)) 'Expired unknown scratch survived'
+ Check (-not(Test-Path -LiteralPath $passed)) 'Expired successful scratch survived'
+ Check (-not(Test-Path -LiteralPath $expiredDir)) 'Expired generated directory survived'
+ foreach($path in @($recent,$unknown,$pinned,($pinned+'.keep'),$locked,$protected,$manual,$outside,$failed,$pinnedDir,$recentDir,$link)){Check (Test-Path -LiteralPath $path) ('Protected/recent/failed artifact removed: '+$path)}
+ $lines=@(Get-Content -LiteralPath $result.Manifest|ForEach-Object {$_|ConvertFrom-Json})
+ Check (@($lines|Where-Object {$_.Path -eq $old -and $_.SHA256 -match '^[A-F0-9]{64}$'}).Count -eq 1) 'Deletion lacks path/hash evidence'
+} finally {
+ $handle.Dispose()
+ # Remove only the test junction itself, never its target.
+ if((Get-Item -LiteralPath $link -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){[IO.Directory]::Delete($link)}
+ # These pins belong only to this fixture; do not permanently exempt test output.
+ foreach($pin in @(($pinned+'.keep'),(Join-Path $pinnedDir '.keep'))){Remove-Item -LiteralPath $pin -ErrorAction SilentlyContinue}
+}
+# An active managed workflow prevents cleanup, and completion classifies new items.
+$run=StartSwiftScratchRun $fixture
+try {
+ $new=OldFile 'managed' 200
+ $result=InvokeSwiftScratchCleanup -Root $fixture -Apply
+ Check ($result.Status -eq 'SKIP' -and (Test-Path -LiteralPath $new)) 'Active workflow was not protected'
+} finally {CompleteSwiftScratchRun $run 'FAIL'}
+$record=Get-Content -LiteralPath ($run.Lease -replace '\.active\.json$','.json') -Raw|ConvertFrom-Json
+Check ($record.Status -eq 'FAIL' -and @($record.Entries|Where-Object Path -eq $new).Count -eq 1) 'Failed workflow evidence was not recorded'
+Write-Output ('PASS: '+$script:retentionChecks+' scratch-retention safety and expiry checks')
+
+}

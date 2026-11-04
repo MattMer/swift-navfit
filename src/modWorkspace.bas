@@ -109,6 +109,7 @@ End Function
 
 Public Function RefreshLibrary() As Boolean
     Dim f As Form, sql As String, term As String, folderID As Long, state As String, selection As Long, filter As String
+    On Error GoTo Failed
     Set f = Forms!frmLibrary
     selection = Nz(f!lstReports, 0)
     sql = "SELECT " & LibraryViewSelect() & " FROM Report WHERE 1=1"
@@ -124,8 +125,9 @@ Public Function RefreshLibrary() As Boolean
         If filter <> "All" Then sql = sql & " AND UXReportRowCell(ReportID,1)=" & QuoteSQL(filter)
         If UXHasControl(f, "cboRankFilter") Then sql = sql & UXMemberRankWhere(Nz(f!cboRankFilter, "All ranks/rates"))
     End If
-    term = Replace(Trim$(Nz(f!txtSearch, "")), "'", "''")
-    If Len(term) > 0 Then sql = sql & " AND (InStr(1,Nz([Title],''),'" & term & "',1)>0 OR InStr(1,Nz([MemberName],''),'" & term & "',1)>0 OR InStr(1,Nz([OfficialName],''),'" & term & "',1)>0)"
+    term = Left$(Trim$(Nz(f!txtSearch, "")), 255)
+    If Len(term) > 0 Then sql = sql & " AND ReportSearchMatches(" & QuoteSQL(term) & ",[Title],[MemberName],[OfficialName])"
+    sql = sql & ReportPeriodWhere(f!txtPeriodFrom, f!txtPeriodThrough)
     f!lstReports.RowSource = sql & " ORDER BY ModifiedAt DESC, ReportID DESC"
     f!lstReports.Requery
     If selection > 0 Then
@@ -139,6 +141,9 @@ Public Function RefreshLibrary() As Boolean
     If shown < 0 Then shown = 0
     f!lblCount.Caption = shown & " reports shown"
     RefreshLibrary = True
+    Exit Function
+Failed:
+    Forms!frmLibrary!lblCount.Caption = Err.Description
 End Function
 
 Public Function AddFolderUI() As Boolean

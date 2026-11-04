@@ -124,6 +124,103 @@ Public Function TestUXWorkflows() As String
 Failed:
     TestUXWorkflows = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
 End Function
+Private Function LibraryContains(ByVal reportID As Long) As Boolean
+    Dim i As Long
+    For i = 1 To Forms!frmLibrary!lstReports.ListCount - 1
+        If CLng(Forms!frmLibrary!lstReports.Column(0, i)) = reportID Then LibraryContains = True: Exit Function
+    Next
+End Function
+Private Function RejectSavedFilter(ByVal id As Long, ByVal version As Long, ByVal name As String, ByVal values As Object) As Boolean
+    On Error GoTo Rejected
+    Call SaveReportFilter(id, version, name, values)
+    Exit Function
+Rejected:
+    RejectSavedFilter = True
+End Function
+Public Function TestReportFilters() As String
+    Dim f As Access.Form, first As Long, outside As Long, undated As Long, saved As Long, owner As Long, other As Long, group As Long
+    Dim values As Object, before As Long, prior As String, rejected As Boolean, stage As String, otherSaved As Long
+    On Error GoTo Failed
+    before = checks: owner = MajorAuthor()
+    stage = "search"
+    Check ReportSearchMatches("Taylor, Jamie", Null, "Jamie Taylor", Null), "Name order or comma search failed"
+    Check ReportSearchMatches("oneil smith", "", "O'Neil-Smith", ""), "Punctuation search failed"
+    Check Not ReportSearchMatches("taylor zzz", Null, "Taylor Jamie", Null), "Search accepted a missing token"
+    Check ReportSearchMatches("O'BRIEN", Null, "O'Brien", Null), "Apostrophe search failed"
+    first = CommitDraft(0, "EVAL", "P01 boundary", "Jamie O'Neil-Smith", #1/1/2026#, #9/30/2026#, "", "Filter test")
+    outside = CommitDraft(0, "EVAL", "P01 outside", "Jamie O'Neil-Smith", #1/1/2025#, #12/31/2025#, "", "Filter test")
+    undated = CommitDraft(0, "EVAL", "P01 undated", "Jamie O'Neil-Smith", Null, Null, "", "Filter test")
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "RankRate", "IT2"
+    Call CommitSavedFields(first, CurrentRevision(first), values, "P01 rank filter fixture")
+    Check UXNavigate("frmLibrary"), "Reports did not open"
+    Set f = Forms!frmLibrary: Check UXClearReportFilters(), "Clear filters failed"
+    f!txtSearch = "SMITH, JAMIE ONEIL": Check RefreshLibrary() And LibraryContains(first), "Reordered name did not match in Reports"
+    f!txtPeriodFrom = #9/30/2026#: f!txtPeriodThrough = #9/30/2026#
+    Check RefreshLibrary() And LibraryContains(first) And Not LibraryContains(outside) And Not LibraryContains(undated), "Inclusive overlap or null-period filter failed"
+    prior = f!lstReports.RowSource: f!txtPeriodFrom = #1/1/2027#
+    Check Not RefreshLibrary() And f!lstReports.RowSource = prior, "Reversed period changed the report list"
+    f!txtPeriodFrom = #9/30/2026#
+    stage = "saved sets"
+    group = CreateSummaryGroup("P01 saved scope", "EVAL", "E5"): AddGroupMember group, first, "E5"
+    Check RefreshFolders(), "Group choices did not refresh"
+    UXMemberRankChoices f, "Report"
+    f!uxTypeFilter = "EVAL": f!uxStatusFilter = "Draft": f!cboRankFilter = "E5"
+    f!lstFolders = group: f!uxFolderFilter = group
+    Check UXSaveReportFilter("P01 saved O'Brien", True), "Named filter save failed: " & f!lblCount.Caption
+    saved = CLng(f!cboSavedFilter): Set values = ReportFilterCriteria()
+    Check UXClearReportFilters() And IsNull(f!txtPeriodFrom) And IsNull(f!cboSavedFilter), "Clear filters retained a period or named selection"
+    f!cboSavedFilter = saved
+    Check UXLoadReportFilter() And LibraryContains(first) And Not LibraryContains(outside), "Named filter did not restore the list: " & f!lblCount.Caption
+    Check f!txtPeriodFrom = #9/30/2026# And CLng(f!lstFolders) = group, "Named period/group scope lost"
+    Check f!uxTypeFilter = "EVAL" And f!uxStatusFilter = "Draft" And f!cboRankFilter = "E5" And f!cboArchive = "Active", "Named type/status/rank/archive criteria lost"
+    Check RejectSavedFilter(0, 0, "P01 saved O'Brien", values), "Duplicate name accepted"
+    Check SaveReportFilter(saved, 1, "P01 saved O'Brien", values) = saved, "Named filter update failed"
+    Check RejectSavedFilter(saved, 1, "P01 saved O'Brien", values), "Stale named-filter update accepted"
+    stage = "contributor isolation"
+    other = AddContributor("Synthetic filter owner")
+    Check SwitchContributor(other), "Contributor switch failed"
+    Check f!cboSavedFilter.ListCount = 0 And IsNull(f!cboSavedFilter), "Contributor switch exposed stale saved sets"
+    Check RejectSavedFilter(saved, 2, "P01 saved O'Brien", values), "Another contributor replaced the saved set"
+    otherSaved = SaveReportFilter(0, 0, "P01 saved O'Brien", values)
+    Check otherSaved <> saved, "Contributor could not use the same filter name"
+    Check DeleteReportFilter(otherSaved, 1), "Own named-filter delete failed"
+    Check SwitchContributor(owner), "Owner switch failed"
+    Check f!cboSavedFilter.ListCount = 1 And IsNull(f!cboSavedFilter), "Owner filter choices did not refresh on switch"
+    f!cboSavedFilter = saved: Check UXLoadReportFilter(), "Owner could not reload saved set"
+    On Error Resume Next
+    Call DeleteReportFilter(saved, 1): rejected = Err.Number <> 0: Err.Clear
+    On Error GoTo Failed
+    Check rejected And DCount("*", "SavedReportFilter", "FilterID=" & saved) = 1, "Stale filter delete removed the set"
+    Check SaveReportFilter(saved, 2, "P01 saved O'Brien", values) = saved, "Concurrent filter update failed"
+    Check Not UXDeleteReportFilter(True) And DCount("*", "SavedReportFilter", "FilterID=" & saved) = 1, "Stale UI deleted a newer saved set"
+    Check UXLoadReportFilter(), "Saved set did not refresh after a conflict"
+    Check UXSaveReportFilter("P01 saved O'Brien", True), "Confirmed UI replacement failed"
+    prior = f!lstReports.RowSource
+    CurrentDb.Execute "UPDATE SummaryGroup SET IsArchived=True WHERE GroupID=" & group, dbFailOnError
+    Check Not UXLoadReportFilter() And f!lstReports.RowSource = prior, "Archived group silently broadened a saved filter"
+    CurrentDb.Execute "UPDATE SummaryGroup SET IsArchived=False WHERE GroupID=" & group, dbFailOnError
+    Check UXLoadReportFilter(), "Restored group scope could not reload"
+    Check UXClearReportFilters(), "Clear before saving an empty search failed"
+    Check UXSaveReportFilter("P01 temporary", True), "Empty-search filter save failed"
+    Check UXDeleteReportFilter(True), "Named filter UI delete failed: " & f!lblCount.Caption
+    f!cboSavedFilter = saved: Check UXLoadReportFilter(), "Final saved set did not reload"
+    TestReportFilters = "PASS: " & (checks - before) & " report search, period, named filter, owner and stale-write checks": Exit Function
+Failed:
+    TestReportFilters = "FAIL report filters at " & stage & ": " & Err.Number & " " & Err.Description
+End Function
+Public Function VerifyReportFilterRecovery() As String
+    Dim id As Long
+    On Error GoTo Failed
+    Call SwitchContributor(CLng(DMin("UserProfileID", "UserProfile")))
+    id = DLookup("FilterID", "SavedReportFilter", "FilterName='P01 saved O''Brien'")
+    DoCmd.OpenForm "frmLibrary"
+    Forms!frmLibrary!cboSavedFilter = id
+    If Not UXLoadReportFilter() Then Err.Raise 5, , Forms!frmLibrary!lblCount.Caption
+    If Forms!frmLibrary!txtPeriodFrom <> #9/30/2026# Or Forms!frmLibrary!txtSearch <> "SMITH, JAMIE ONEIL" Or Nz(Forms!frmLibrary!lstFolders, 0) <= 0 Then Err.Raise 5, , "Saved criteria lost on reopen"
+    VerifyReportFilterRecovery = "PASS: saved report filter restores after a fresh Access session": Exit Function
+Failed:
+    VerifyReportFilterRecovery = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Public Function PrepareForcedQuit(ByVal invalid As Boolean, Optional ByVal kind As String = "EVAL") As Boolean
     Dim id As Long, block As Long, entry As Long
     ConfigureWorkspace "SYNTHETIC QUIT TEST", "Quit tester"

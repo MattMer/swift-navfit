@@ -149,7 +149,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =8900
+            Height =9850
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -157,12 +157,12 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =8900
+                    Height =9850
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
                     LayoutCachedWidth =2450
-                    LayoutCachedHeight =8900
+                    LayoutCachedHeight =9850
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                 End
@@ -335,7 +335,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =6
                     Left =2850
-                    Top =3250
+                    Top =4200
                     Width =10450
                     Height =2300
                     FontSize =10
@@ -378,7 +378,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2880
-                    Top =5640
+                    Top =6590
                     Width =4424
                     Height =350
                     FontSize =10
@@ -397,7 +397,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =13
@@ -435,7 +435,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4470
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =14
@@ -473,7 +473,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6045
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =16
@@ -511,7 +511,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7635
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =17
@@ -549,7 +549,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9210
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =15
@@ -587,7 +587,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =6840
+                    Top =7790
                     Height =576
                     FontSize =10
                     TabIndex =18
@@ -626,7 +626,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10800
-                    Top =6120
+                    Top =7070
                     Height =576
                     FontSize =10
                     TabIndex =21
@@ -1390,6 +1390,106 @@ Begin Form
                             LayoutCachedHeight =1750
                         End
                     End
+                End
+                Begin TextBox
+                    Left =2850
+                    Top =3420
+                    Width =1800
+                    Height =450
+                    Name ="txtPeriodFrom"
+                    FontSize =10
+                    ForeColor =2692374
+                    BackColor =16777215
+                    AfterUpdate ="=RefreshLibrary()"
+                    Format ="Short Date"
+                    Begin
+                        Begin Label
+                            Left =2850
+                            Top =3120
+                            Width =1800
+                            Height =300
+                            FontSize =9
+                            ForeColor =2692374
+                            Name ="lbltxtPeriodFrom"
+                            Caption ="Period overlaps from"
+                        End
+                    End
+                End
+                Begin TextBox
+                    Left =5100
+                    Top =3420
+                    Width =1800
+                    Height =450
+                    Name ="txtPeriodThrough"
+                    FontSize =10
+                    ForeColor =2692374
+                    BackColor =16777215
+                    AfterUpdate ="=RefreshLibrary()"
+                    Format ="Short Date"
+                    Begin
+                        Begin Label
+                            Left =5100
+                            Top =3120
+                            Width =1800
+                            Height =300
+                            FontSize =9
+                            ForeColor =2692374
+                            Name ="lbltxtPeriodThrough"
+                            Caption ="Through"
+                        End
+                    End
+                End
+                Begin ComboBox
+                    Left =7350
+                    Top =3420
+                    Width =2500
+                    Height =450
+                    Name ="cboSavedFilter"
+                    FontSize =10
+                    ForeColor =2692374
+                    BackColor =16777215
+                    AfterUpdate ="=UXLoadReportFilter()"
+                    ColumnCount =3
+                    ColumnWidths ="0;2500;0"
+                    BoundColumn =1
+                    LimitToList = NotDefault
+                    AutoExpand = NotDefault
+                    Begin
+                        Begin Label
+                            Left =7350
+                            Top =3120
+                            Width =2500
+                            Height =300
+                            FontSize =9
+                            ForeColor =2692374
+                            Name ="lblcboSavedFilter"
+                            Caption ="Saved filter"
+                        End
+                    End
+                End
+                Begin CommandButton
+                    Left =10100
+                    Top =3420
+                    Width =1500
+                    Height =450
+                    Name ="cmdSaveFilter"
+                    FontSize =10
+                    ForeColor =2692374
+                    BackColor =16777215
+                    OnClick ="=UXSaveReportFilter()"
+                    Caption ="Save filter"
+                End
+                Begin CommandButton
+                    Left =11750
+                    Top =3420
+                    Width =1550
+                    Height =450
+                    Name ="cmdDeleteFilter"
+                    FontSize =10
+                    ForeColor =2692374
+                    BackColor =16777215
+                    OnClick ="=UXDeleteReportFilter()"
+                    Caption ="Delete filter"
                 End
             End
         End

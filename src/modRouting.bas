@@ -89,6 +89,7 @@ Public Function SwitchContributor(ByVal profileID As Long) As Boolean
     If DCount("*", "UserProfile", "IsRetired=False AND UserProfileID=" & profileID) = 0 Then Err.Raise vbObjectError + 1804, "modRouting.SwitchContributor", "Select an existing contributor."
     CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & profileID & " WHERE WorkspaceID=1", dbFailOnError
     BindActiveContributor profileID
+    If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call UXReportFilterChoices
     UXLoadContext
     SwitchContributor = True
 End Function

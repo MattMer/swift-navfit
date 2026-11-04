@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 3 November 2026. This document describes what is true **now**:
+Updated 4 November 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.52.0 | 41 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.53.0-dev | 44 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.52.0 | 41 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.52.0), 3 Nov 2026. Full release gate passed, including schemas 1–41. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
 | Latest source tag | `v0.52.0` | 41 | The release commit. Earlier: `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
@@ -35,7 +35,7 @@ import and print-ready PDF output.
 
 ## Architecture
 
-- **Source:** [src/](src/) holds 106 static VBA modules, JSON catalogues, the
+- **Source:** [src/](src/) holds 110 static VBA modules, JSON catalogues, the
   AutoExec macro, PDF template images and the 69 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
   lists the modules, forms, generated modules, fingerprinted inputs and six
@@ -47,6 +47,12 @@ import and print-ready PDF output.
   contracts. **Forms are source:** edit the text, or change a form in Access on a
   disposable build and re-export it with `scripts/export-form-text.ps1`; see
   [BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md). A build takes about 2 minutes.
+- **Build scratch retention:** the standard development and release workflows
+  prune generated scratch after 24 hours for successful runs and seven days for
+  failed/flaky/unclassified runs. Pins, active workflows, Access sessions and
+  supplied input databases are protected; development/release builds, retained
+  outputs and workflow receipts remain. See
+  [retention commands](docs/Development_Workflow.md#build-scratch-retention).
 - **Schema authority:** [major-schema.json](src/major-schema.json) and the base
   builder in `build.ps1` define all DDL. Whenever the schema changes, update both
   together, along with `SCHEMA_VERSION`, metadata and migration.
@@ -137,6 +143,9 @@ import and print-ready PDF output.
 
 ## Feature status
 
+R15, P01 and M05 are implemented in development (schema 44). The canonical
+BuildAndTest passed on the current source; these changes are not released.
+
 | ID | Item | Status |
 | --- | --- | --- |
 | C01 | SSN protection decision | Decided: folder permissions only. |
@@ -150,7 +159,9 @@ import and print-ready PDF output.
 | M01 | Compiled ACCDE distribution | Unsigned dev candidate only. The compiled runner covers startup, import, saves and PDF output (report PDF and group packet) under trusted automation. Normal-security launch is unresolved and there is no signing certificate. |
 | M02 | Recoverable/owned import previews (Resume/Cancel) | Dev (schema 30); follow-ups through 0.44. |
 | M03 | Batched reads for folders, history, groups/RSCA, summary list | Dev. |
-| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Every literal form and control name in VBA, form modules and form properties (bang references, `With` blocks, bound form variables, subforms, `Controls("…")`, probes, open/close targets, sort tags) must resolve against `src/forms`; the static `test-form-references` case in `test-source-contracts` checks this before every build. Code no longer probes for controls a named form always has. Names built at run time stay covered by the runtime view contracts. Broader M04 inventory remains in the backlog. |
+| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Every literal form and control name in VBA, form modules and form properties (bang references, `With` blocks, bound form variables, subforms, `Controls("…")`, probes, open/close targets, sort tags) must resolve against `src/forms`; the static `test-form-references` case in `test-source-contracts` checks this before every build. Code no longer probes for controls a named form always has. Finite computed-name families are expanded from catalogues during source and reopened native checks, with runtime assertions and mutation checks covering navigation, context/detail panels, report fields, traits, shared defaults, roster fields, RSCA rows and sort headings. New dynamic families require a contract. Broader M04 inventory remains in the backlog. |
+| R15 | Archived counseling view/restore; PDF reapply after Undo | Dev (schema 44). Counseling preserves versions/attribution; each PDF attempt retains its own receipt and raw provenance. |
+| P01 | Flexible report search, period overlap filters and named filter sets | Dev (schema 44). Contributor-scoped sets transfer by owner/group GUID; version guards reject stale updates/deletes. |
 | M07 | Accessibility (target: Section 508 / WCAG 2.0 AA) | Every input control has an accessible name: its visible label, or a 15-twip `an<Control>` name label that matches the control's visibility. Text contrast meets 4.5:1. test-accessibility guards names, contrast and button captions, with no known gaps. The attended NVDA/JAWS procedure is [docs/Accessibility_Screen_Reader_Test.md](docs/Accessibility_Screen_Reader_Test.md). Under a Windows high-contrast theme, the palette switches to system colors. No screen-reader acceptance. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
 | Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |

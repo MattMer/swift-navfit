@@ -52,6 +52,7 @@
     "src/modRUADProfiles.bas",
     "src/modRecovery.bas",
     "src/modReportContext.bas",
+    "src/modReportFilters.bas",
     "src/modReportMessages.bas",
     "src/modReportNotes.bas",
     "src/modReportPageMap.bas",
@@ -121,6 +122,7 @@
     "modUXSurfaceFields"
   ],
   "inputs": [
+    "scripts/build-retention.ps1",
     "src/major-schema.json",
     "FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb",
     "src/field-definitions.json",
@@ -150,7 +152,8 @@
     "scripts/verify-built-application.ps1",
     "scripts/build.ps1",
     "scripts/vba-source-normalization.ps1",
-    "scripts/install-form-text.ps1"
+    "scripts/install-form-text.ps1",
+    "scripts/view-control-contracts.ps1"
   ],
   "retiredForms": {
     "frmHelp": "frmUXHelp",

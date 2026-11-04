@@ -35,7 +35,7 @@ Components Swift NAVFIT 0.53.0-dev uses at run time, from a fresh build and the 
 | --- | --- | --- |
 | ADODB.Stream | 7 | UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template) |
 | MSXML2.DOMDocument.6.0 | 13 | XML parsing and writing (PDF form data and exchange) |
-| Scripting.Dictionary | 153 | In-memory keyed collections |
+| Scripting.Dictionary | 155 | In-memory keyed collections |
 | Scripting.FileSystemObject | 7 | File and folder checks |
 | Shell.Application | 1 | Opens a generated PDF in the default viewer |
 

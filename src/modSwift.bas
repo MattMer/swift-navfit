@@ -11,7 +11,7 @@ End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
 Public Const APP_VERSION As String = "0.53.0-dev"
-Public Const SCHEMA_VERSION As Long = 43
+Public Const SCHEMA_VERSION As Long = 44
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -414,9 +414,11 @@ Public Function LoadHome() As Boolean
 End Function
 
 Public Function LoadLibrary() As Boolean
+    Call UXAssertView("frmLibrary")
     RefreshFolders
     If IsNull(Forms!frmLibrary!cboArchive) Then Forms!frmLibrary!cboArchive = "Active"
     UXMemberRankChoices Forms!frmLibrary, "Report"
+    Call UXReportFilterChoices
     Call RefreshLibrary()
     LoadLibrary = True
 End Function

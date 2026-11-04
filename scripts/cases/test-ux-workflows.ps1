@@ -12,6 +12,30 @@ try {
     $result=$app.Eval('TestUXWorkflows()')
     if(-not $result.StartsWith('PASS:')){throw $result}
     Write-Output $result
+    $filters=$app.Eval('TestReportFilters()')
+    if($filters -notlike 'PASS:*'){throw $filters};Write-Output $filters
+    $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
+    $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
+    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-contributor-context.ps1')
+    SelectSyntheticContributor $app
+    $recovery=$app.Eval('VerifyReportFilterRecovery()')
+    if($recovery -notlike 'PASS:*'){throw $recovery};Write-Output $recovery
+    $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
+    $sourceHash=(Get-FileHash -LiteralPath $scratch).Hash
+    $transfer=Join-Path $root ('build/tests/report-filter-transfer-'+[guid]::NewGuid()+'.accdb')
+    Copy-Item -LiteralPath $BuildPath -Destination $transfer
+    $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($transfer,$true)
+    [void]$app.Eval('ConfigureWorkspace("SYNTHETIC FILTER TRANSFER","Bootstrap")')
+    if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$scratch+'")')){throw 'Saved-filter transfer preview failed'}
+    if(-not $app.Eval('UXApplySwiftWorkspace()')){throw ('Saved-filter transfer failed: '+$app.Eval('Forms!frmUXWorkspaceImport!lblStatus.Caption'))}
+    $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
+    $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($transfer,$true)
+    SelectSyntheticContributor $app
+    $app.LoadFromText(5,'UXWorkflowHarness',(Join-Path $root 'tests/UXWorkflowHarness.bas'))
+    $transferred=$app.Eval('VerifyReportFilterRecovery()')
+    if($transferred -notlike 'PASS:*'){throw ('Transferred filter: '+$transferred)}
+    if((Get-FileHash -LiteralPath $scratch).Hash -ne $sourceHash){throw 'Filter transfer changed its source workspace'}
+    Write-Output ('PASS: Settings import retains saved filter owner, group scope and values; source unchanged; '+$transferred)
 }finally{if($null -ne $app){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}}
 $kinds=@('EVAL');if($ChiefComments){$kinds+='CHIEFEVAL'}
 foreach($kind in $kinds){foreach($invalid in @($false,$true)){

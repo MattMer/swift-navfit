@@ -212,6 +212,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
     Set target = db.OpenRecordset("SELECT CurrentRevisionID FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)
     receipt.AddNew: receipt!ReceiptGuid = NewIdentity(): receipt!SourceHash = hash
+    receipt!ReceiptAttempt = 1
     receipt!SourcePath = reviewOriginalPath: receipt!ExternalReportID = externalID: receipt!ReportID = id
     receipt!AuthorProfileID = ActiveContributorID()
     receipt!ImportedAt = Now(): receipt!AdapterVersion = "comments-v1/local-CStr"

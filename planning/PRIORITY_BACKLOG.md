@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 1 November 2026 (0.51.0, schema 36). This lists open work only. Finished
+Updated 4 November 2026 (0.53.0-dev, schema 44). This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
@@ -13,51 +13,38 @@ done, only the remainder is listed. Product invariants and release gates are in
 
 **Implemented in development** (0.52.0-dev, schema 37, 2 Nov 2026); see
 [PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f01-shared-draft-review-chain).
-Not yet released. Left from the original design: route events are not linked
-to `AuditEvent`, and the user guide PDF is regenerated at release.
+Shipped in 0.52.0. Remaining: route events are not linked to `AuditEvent`.
+The user guide PDF is regenerated at release.
 
 ### F02 — Departure tracking and MNA roster import
 
 **NRRM and MNA implemented in development** (0.52.0-dev, schema 38, 2 Nov 2026); see
 [PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f02-roster-snapshots-and-departures).
-Not yet released.
+Shipped in 0.52.0.
 
 **Still open:**
 - **Officer rank from MNA.** MNA lists the designator but not the rank, so a
-  new officer profile from MNA starts without one.
+  new officer profile without a linked report starts without one. The current
+  source already fills a missing rank from the latest linked report.
 - **Real PRD format.** No real NRRM sample is in the repository. PRD is read as
   yyyy-mm-dd, mm/dd/yyyy, yyyymmdd, yyyy-mm, yyyymm, mm/yyyy or mmyy; confirm
   against a real export.
-- **Member merges** leave roster presence and departures on the archived source
-  profile.
 
 ### F03 — Reports due on the dashboard
 
 **Implemented in development** (0.52.0-dev, schema 39, 2 Nov 2026); see
 [PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f03-reports-due).
-Not yet released. Left from the design: the lead window is fixed at 90 days
-(not yet a Settings choice from 60 to 120), and Create draft makes one report at
-a time rather than sending several to directory batch creation.
+Shipped in 0.52.0. The lead window stays fixed at 90 days by owner decision.
+Remaining: Create draft makes one report at a time rather than sending several
+to directory batch creation.
 
 
 
-## Codex review of 0.51.0 (1 Nov 2026): bounded fixes
+## Review decisions not planned
 
-An outside review on synthetic copies. Causes were confirmed in source during
-triage. R01–R13 were fixed on 1 Nov 2026 (see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#codex-review-fixes-r01r13));
-R15 is open. Review IDs are in brackets. Each fix needs a
-native test that fails before the fix.
-
-| ID | Priority | Work |
-| --- | --- | --- |
-| R15 | Low | **Small maintenance gaps:** there is no way to view or restore archived counseling [G08], or to re-apply a PDF to the right draft after undoing an import into the wrong one [W04]. (Retiring and replacing route templates [G09] was done with F01.) |
-
-(R14, rank from the roster, moved into F02. T01 is done: the RUAD import test
-generates a synthetic NRRM roster when no sample file is given.)
-
-**Small features from the review:**
-- **P01, search:** search that ignores name order and punctuation, a period from/to filter, and saved named filter sets.
+R01-R13 were completed earlier. R15, P01 and M05 are complete in development
+(0.53.0-dev, schema 44).
+R14's remaining input-data limitation is recorded under F02.
 
 **Not taken:**
 - **P04, accomplishment notebook:** waits for demand.
@@ -87,7 +74,6 @@ generates a synthetic NRRM roster when no sample file is given.)
 
 | ID | Work |
 | --- | --- |
-| M05 | **Names built at run time.** Literal form and control names are checked before every build. Names built at run time, such as `"uxNav" & i` or `"frmContext" & panel`, are checked only where a runtime view contract lists them. |
 | T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. |
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)

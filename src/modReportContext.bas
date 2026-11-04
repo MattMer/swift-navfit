@@ -77,6 +77,7 @@ Public Function OpenReportContext(ByVal panel As String) As Boolean
     keys = ReportContextPanelKeys(panel): screen = "frmContext" & panel
     If Not CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 2507, "modReportContext.OpenReportContext", "Open a draft first."
     DoCmd.OpenForm screen
+    Call UXAssertView(screen)
     For Each key In keys
         Forms(screen).Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
@@ -87,6 +88,7 @@ Public Function ApplyReportContext(ByVal panel As String) As Boolean
     Dim key As Variant, screen As String, keys As Variant
     keys = ReportContextPanelKeys(panel): screen = "frmContext" & panel
     If Not Forms!frmEditor!cmdSave.Enabled Then Err.Raise vbObjectError + 2508, "modReportContext.ApplyReportContext", "Recover the archived draft before editing."
+    Call UXAssertView(screen)
     For Each key In keys
         Forms!frmEditor.Controls("txt" & key) = Forms(screen).Controls("txt" & key).Value
     Next

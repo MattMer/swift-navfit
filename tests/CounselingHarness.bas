@@ -45,6 +45,7 @@ Private Function HasFinding(ByVal reportID As Long) As Boolean
 End Function
 Public Function TestCounseling() As String
     Dim e5 As Long, blank As Long, chief As Long, id As Long, other As Long, report As Long, second As Long, concurrent As Long
+    Dim restored As Long, stale As Long, rejectedRestore As Boolean
     Dim s As Object, changes As Object, f As Access.Form, i As Long, found As Boolean, before As Long, stamp As String, merge As Long, source As Long, target As Long, ops As Long, stage As String
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC COUNSELING", "Counseling tester"
@@ -167,6 +168,20 @@ Public Function TestCounseling() As String
     UXDirectoryClose "frmUXCounselingEditor"
     Forms!frmUXMemberHistory!lstCounseling = DMax("CounselingID", "MemberCounseling")
     Check UXCounselingArchive(True) And Forms!frmUXMemberHistory!lstCounseling.ListCount = 1, "History archive failed"
+    Forms!frmUXMemberHistory.Controls("chkArchivedCounseling") = True
+    Check UXHistoryCounselingLoad() And Forms!frmUXMemberHistory!lstCounseling.ListCount = 2, "Archived counseling cannot be viewed"
+    Check Not Forms!frmUXMemberHistory!cmdCounselingEdit.Enabled, "Archived counseling enabled editing"
+    Forms!frmUXMemberHistory!lstCounseling = DMax("CounselingID", "MemberCounseling")
+    restored = CLng(Forms!frmUXMemberHistory!lstCounseling): stale = CLng(DLookup("VersionCounter", "MemberCounseling", "CounselingID=" & restored))
+    Check Not UXCounselingOpen(False), "Archived counseling opened for editing"
+    Check UXCounselingArchive(True), "Archived counseling could not be restored"
+    On Error Resume Next
+    Call RestoreCounseling(restored, stale): rejectedRestore = (Err.Number = vbObjectError + 9507): Err.Clear
+    On Error GoTo Failed
+    Check rejectedRestore, "Stale counseling restore accepted"
+    Check Not DLookup("IsArchived", "MemberCounseling", "CounselingID=" & DMax("CounselingID", "MemberCounseling")), "Restore did not persist"
+    Forms!frmUXMemberHistory.Controls("chkArchivedCounseling") = False
+    Check UXHistoryCounselingLoad() And Forms!frmUXMemberHistory!lstCounseling.ListCount = 2, "Restored counseling missing from active history"
     UXDirectoryClose "frmUXMemberHistory"
     DoCmd.OpenForm "frmMyWork"
     Check UXMyWorkMode("Counseling"), "Counseling tab failed"
@@ -229,5 +244,6 @@ Public Function VerifyCounselingRecovery() As String
     If e5 = 0 Then VerifyCounselingRecovery = "FAIL: member missing": Exit Function
     If DLookup("WorksheetDisposition", "MemberCounseling", "MemberID=" & e5 & " AND IsArchived=False AND Outcome='Completed'") <> "Given to member" Then VerifyCounselingRecovery = "FAIL: disposition lost": Exit Function
     If DCount("*", "MemberCounseling", "MemberID=" & e5) <> 3 Then VerifyCounselingRecovery = "FAIL: record count " & DCount("*", "MemberCounseling", "MemberID=" & e5): Exit Function
+    If DCount("*", "MemberCounseling", "MemberID=" & e5 & " AND NotPerformedReason='FAMILY EMERGENCY' AND IsArchived=False AND VersionCounter=3") <> 1 Then VerifyCounselingRecovery = "FAIL: restored counseling state/version lost": Exit Function
     VerifyCounselingRecovery = "PASS: counseling records, archive state and disposition persist in a new session"
 End Function

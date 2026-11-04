@@ -41,10 +41,10 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.53.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 43 |
-| Imports accepted | Workspaces of schema 1 to 43, into a target of schema 21 to 43 |
-| Tables / enforced relationships | 78 / 169 |
-| VBA modules / forms | 114 / 71 |
+| Schema version | 44 |
+| Imports accepted | Workspaces of schema 1 to 44, into a target of schema 21 to 44 |
+| Tables / enforced relationships | 79 / 169 |
+| VBA modules / forms | 115 / 71 |
 | Report fields in the catalogue | 100 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 125 / 120 |
@@ -216,8 +216,18 @@ added or removed without updating this list.
 | Review and collaboration | `ReviewTask`, `ReviewTaskEvent`, `ReviewComment`, `ReviewCommentEvent`, `ReportNote`, `ReportNoteDraft`, `ReportMessage`, `RouteTemplate`, `RouteTemplateStep`, `RouteRun`, `RouteRunStep`, `RouteRunEvent` | Free text written by contributors, which may mention members |
 | Contributors and audit | `UserProfile`, `AuditActor`, `AuditEvent`, `OperationJournal` | Contributor names; operation descriptions (which can name members and show the last four SSN digits) |
 | Summary letters | `ISIC` | ISIC names, UICs and mailing addresses (organizations, not people) |
+| Saved report filters | `SavedReportFilter` | Contributor GUID, named search criteria, period bounds and group scope; search text and filter names may contain member names |
+
 | Workspace and library | `Workspace`, `AppMetadata`, `Folder`, `FolderMove`, `FolderBatchChange`, `LibraryPreference`, `NarrativeSnippet` | Command name; reusable comment text written by users |
 <!-- end data-inventory -->
+
+Saved report-filter sets are scoped by contributor GUID for convenience, not
+authentication. They transfer as workspace data, including any names in search
+text. Schema 44 also adds a nullable `ImportReceipt.ReceiptAttempt`: legacy
+receipts retain an unspecified attempt, and new import attempts have distinct
+sequence numbers. The source/record/attempt index retains each receipt while
+the PDF adapter refuses a second active import; Undo permits a fresh reviewed
+attempt without rewriting the earlier receipt's source identity or provenance.
 
 ### 5.3 Where data goes
 
@@ -373,6 +383,8 @@ Open recommendations: sign releases; optionally hash each saved revision.
 - The importer accepts source workspaces of every earlier schema, from 1 to the
   current one, into a target of schema 21 or later. It refuses a populated
   target, an unknown source table, or a source newer than the application.
+- Referenced ISIC organizations are copied before summary groups so their links
+  remain valid during schema 42 and later imports.
 - Every value is compared with the source before the import commits.
 - Every release runs the workspace-migration suite over every schema.
   [tests/historical-schemas](tests/historical-schemas/README.md) holds each
@@ -400,9 +412,21 @@ Open recommendations: sign releases; optionally hash each saved revision.
 - **Generated documents are checked.** Architecture views, the SBOM, state
   lists and the generated parts of this document are regenerated from a build,
   and a test fails if they drift from it.
+- **Dynamic view names are checked.** The source and reopened native build
+  checks expand navigation, context-panel, detail-dialog, roster, senior and
+  report-field control families from their catalogues. Native mutation tests
+  exercise missing computed controls. New dynamic families need corresponding
+  contracts; arbitrary computed strings are not proved safe by literal checks.
 - **Receipts.** Each run writes a `verification.json` receipt under
   `build/workflow` with the build's hash. Receipts are local and not committed;
   verification results are recorded in commit messages.
+- **Scratch retention.** Development and release workflows prune successful
+  generated scratch artifacts after 24 hours and failed/flaky/unclassified
+  scratch after seven days. Active sessions, pinned artifacts and supplied input
+  databases are protected. Workflow/release receipts, development/release builds,
+  historical fixtures and user workspaces are outside the cleanup scope. Local
+  path/hash manifests record cleanup; deletion is not secure erasure. See
+  [build scratch retention](docs/Development_Workflow.md#build-scratch-retention).
 
 ## 11. Release process
 
@@ -536,6 +560,8 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 4 Nov 2026 | Schema 44: named report filters and import receipt attempts; counseling restore, ISIC import dependency order and dynamic view-family checks (sections 5.2, 9 and 10). |
+| 4 Nov 2026 | Added automatic build/test scratch retention and local path/hash cleanup manifests (section 10). |
 | 3 Nov 2026 | Schema 43: `DirectoryMergeLink` records roster history, departures and dismissals that a member merge moves, so Undo can move them back (section 5.2). |
 | 3 Nov 2026 | Schema 42: ISICs and the reporting senior's e-mail, printed on summary letters (sections 5.1 and 5.2). |
 | 3 Nov 2026 | Release 0.52.0. |

@@ -92,6 +92,37 @@ C:/Python312/python.exe -m venv .venv
 NAVPERS forms in `FORMS_REFERENCES_TEMPLATES/` (read only) into a new
 `build/tests` folder for each run.
 
+### Build scratch retention
+
+`develop.ps1` (except Preflight) and `release-check.ps1` automatically clean
+expired generated `build/source-check-<guid>` directories and generated artifacts
+directly under `build/tests` before starting checks:
+
+- Successful managed runs: **24 hours**.
+- Failed, flaky, interrupted, standalone or older unclassified runs: **7 days**.
+- Workflow logs, release receipts, `build/dev`, release folders, `output`, source
+  fixtures and reference material: **never pruned by this command**.
+
+The workflow records newly created/updated scratch entries and its outcome under
+`build/retention/runs`. Unknown manually named artifacts are left alone. A `.keep`
+file inside a generated directory, or `<artifact>.keep` beside any artifact,
+exempts it. Supplied BuildPath/BlankPath/DemoPath inputs are protected automatically.
+Cleanup skips while Access or a managed workflow is active, rejects directory
+links, and skips files it cannot open exclusively. Age includes nested contents;
+recently modified evidence stays. Keep unresolved failures beyond seven days by
+pinning them. Retention is local housekeeping, not a secure-erasure guarantee.
+
+Preview or apply manually (no Access needed):
+
+```powershell
+./scripts/clean-build-scratch.ps1
+./scripts/clean-build-scratch.ps1 -Apply
+```
+
+Each invocation writes file paths, reasons, SHA-256 hashes and a cleanup summary
+under `build/retention`. Preview leaves all candidates in place. Cleanup does not
+follow old receipt links into other folders or remove the `build/tests` root.
+
 Recommended VS Code extensions (local `.vscode/` settings are not tracked):
 
 - Microsoft PowerShell: script navigation, diagnostics and script debugging.

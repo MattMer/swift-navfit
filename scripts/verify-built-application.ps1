@@ -67,10 +67,14 @@ foreach($match in [regex]::Matches($contractCode,'(?im)^\s*Case ("[^"]+"|\w+): U
 if($viewContracts.Count -eq 0 -or $viewContracts.Count -ne [regex]::Matches($contractCode,'(?im)^\s*Case (?!Else\b)').Count){throw 'Required view contracts could not be read completely'}
 foreach($name in $viewContracts.Keys){if($formNames -notcontains $name){throw ('Required view missing: '+$name)}}
 $canonicalControls=@((Get-Content (Join-Path $root 'src/field-definitions.json') -Raw|ConvertFrom-Json).fields|ForEach-Object {$_.control})
+. (Join-Path $PSScriptRoot 'view-control-contracts.ps1')
+$dynamicControls=GetSwiftDynamicViewControls $root
+foreach($view in $dynamicControls.Keys){if($formNames -notcontains $view){throw ('Required dynamic view missing: '+$view)}}
 foreach($name in $formNames){
  $app.DoCmd.OpenForm($name,1);$f=$app.Forms.Item($name)
  $controlNames=@($f.Controls|ForEach-Object {$_.Name})
  $required=@();if($viewContracts.ContainsKey($name)){$required=@($viewContracts[$name])}
+ if($dynamicControls.ContainsKey($name)){$required+=@($dynamicControls[$name])}
  if($name -eq 'frmEditor'){$required+=@($canonicalControls)}
  if($name -eq 'frmUXTraitRows'){foreach($block in 33..39){$required+=('Trait'+$block+'|AfterUpdate|=UXGridQueue("Trait'+$block+'")')}}
  foreach($entry in $required){
