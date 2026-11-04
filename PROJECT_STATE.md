@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.53.0-dev | 44 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.52.0 | 41 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.52.0), 3 Nov 2026. Full release gate passed, including schemas 1–41. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.52.0` | 41 | The release commit. Earlier: `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.53.0 | 44 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.53.0 | 44 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.53.0), 4 Nov 2026. Full release gate passed, including schemas 1–44 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.53.0` | 44 | The release commit. Earlier: `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 
@@ -143,8 +143,8 @@ import and print-ready PDF output.
 
 ## Feature status
 
-R15, P01 and M05 are implemented in development (schema 44). The canonical
-BuildAndTest passed on the current source; these changes are not released.
+R15, P01 and M05 are released in 0.53.0 (schema 44). The canonical build and
+full release gate passed on the current source.
 
 | ID | Item | Status |
 | --- | --- | --- |
@@ -160,8 +160,8 @@ BuildAndTest passed on the current source; these changes are not released.
 | M02 | Recoverable/owned import previews (Resume/Cancel) | Dev (schema 30); follow-ups through 0.44. |
 | M03 | Batched reads for folders, history, groups/RSCA, summary list | Dev. |
 | M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Every literal form and control name in VBA, form modules and form properties (bang references, `With` blocks, bound form variables, subforms, `Controls("…")`, probes, open/close targets, sort tags) must resolve against `src/forms`; the static `test-form-references` case in `test-source-contracts` checks this before every build. Code no longer probes for controls a named form always has. Finite computed-name families are expanded from catalogues during source and reopened native checks, with runtime assertions and mutation checks covering navigation, context/detail panels, report fields, traits, shared defaults, roster fields, RSCA rows and sort headings. New dynamic families require a contract. Broader M04 inventory remains in the backlog. |
-| R15 | Archived counseling view/restore; PDF reapply after Undo | Dev (schema 44). Counseling preserves versions/attribution; each PDF attempt retains its own receipt and raw provenance. |
-| P01 | Flexible report search, period overlap filters and named filter sets | Dev (schema 44). Contributor-scoped sets transfer by owner/group GUID; version guards reject stale updates/deletes. |
+| R15 | Archived counseling view/restore; PDF reapply after Undo | Released in 0.53.0 (schema 44). Counseling preserves versions/attribution; each PDF attempt retains its own receipt and raw provenance. |
+| P01 | Flexible report search, period overlap filters and named filter sets | Released in 0.53.0 (schema 44). Contributor-scoped sets transfer by owner/group GUID; version guards reject stale updates/deletes. |
 | M07 | Accessibility (target: Section 508 / WCAG 2.0 AA) | Every input control has an accessible name: its visible label, or a 15-twip `an<Control>` name label that matches the control's visibility. Text contrast meets 4.5:1. test-accessibility guards names, contrast and button captions, with no known gaps. The attended NVDA/JAWS procedure is [docs/Accessibility_Screen_Reader_Test.md](docs/Accessibility_Screen_Reader_Test.md). Under a Windows high-contrast theme, the palette switches to system colors. No screen-reader acceptance. |
 | L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
 | Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |

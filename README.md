@@ -99,12 +99,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.52.0
+### Current release: 0.53.0
 
-Download from the [0.52.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.52.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.53.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.53.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.52.0.accdb:** an empty workspace. Start real work here.
-- **Swift_NAVFIT_Demo_0.52.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.53.0.accdb:** an empty workspace. Start real work here.
+- **Swift_NAVFIT_Demo_0.53.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
 
 > **Not yet tested:**
 > 1. printed fit against the official forms;

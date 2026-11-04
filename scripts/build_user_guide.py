@@ -179,8 +179,8 @@ def render(source, output, chapter_pages):
                     story.append(Spacer(1, 14))
                 else:
                     story.append(Paragraph(inline(line[2:]), styles['chapter']))
-            elif line.startswith('## '):
-                story.append(Paragraph(inline(line[3:]), styles['sub']))
+            elif line.startswith(('## ', '### ')):
+                story.append(Paragraph(inline(line.lstrip('#').strip()), styles['sub']))
             elif re.match(r'^\d+\. ', line):
                 story.append(Paragraph(inline(line), styles['step']))
             elif re.match(r'^\s*- ', lines[i]):

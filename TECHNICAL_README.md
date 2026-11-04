@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.52.0, schema 41 (3 November 2026), tag `v0.52.0` |
+| Latest release | 0.53.0, schema 44 (4 November 2026), tag `v0.53.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.53.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.53.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 44 |
 | Imports accepted | Workspaces of schema 1 to 44, into a target of schema 21 to 44 |
 | Tables / enforced relationships | 79 / 169 |
@@ -560,6 +560,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 4 Nov 2026 | Release 0.53.0; full release gate and historical schemas 1-44 verified. |
 | 4 Nov 2026 | Schema 44: named report filters and import receipt attempts; counseling restore, ISIC import dependency order and dynamic view-family checks (sections 5.2, 9 and 10). |
 | 4 Nov 2026 | Added automatic build/test scratch retention and local path/hash cleanup manifests (section 10). |
 | 3 Nov 2026 | Schema 43: `DirectoryMergeLink` records roster history, departures and dismissals that a member merge moves, so Undo can move them back (section 5.2). |

@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 4 November 2026 (0.53.0-dev, schema 44). This lists open work only. Finished
+Updated 4 November 2026 (0.53.0, schema 44). This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
@@ -42,8 +42,7 @@ to directory batch creation.
 
 ## Review decisions not planned
 
-R01-R13 were completed earlier. R15, P01 and M05 are complete in development
-(0.53.0-dev, schema 44).
+R01-R13 were completed earlier. R15, P01 and M05 shipped in 0.53.0 (schema 44).
 R14's remaining input-data limitation is recorded under F02.
 
 **Not taken:**
