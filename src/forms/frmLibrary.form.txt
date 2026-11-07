@@ -1451,7 +1451,6 @@ Begin Form
                     AfterUpdate ="=UXLoadReportFilter()"
                     ColumnCount =3
                     ColumnWidths ="0;2500;0"
-                    BoundColumn =1
                     LimitToList = NotDefault
                     AutoExpand = NotDefault
                     Begin

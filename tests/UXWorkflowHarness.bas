@@ -142,7 +142,7 @@ Rejected:
     RejectSavedFilter = True
 End Function
 Public Function TestReportFilters() As String
-    Dim f As Access.Form, first As Long, outside As Long, undated As Long, saved As Long, owner As Long, other As Long, group As Long
+    Dim f As Access.Form, first As Long, outside As Long, undated As Long, saved As Long, owner As Long, other As Long, group As Long, i As Long
     Dim values As Object, before As Long, prior As String, rejected As Boolean, stage As String, otherSaved As Long
     On Error GoTo Failed
     before = checks: owner = MajorAuthor()
@@ -173,7 +173,12 @@ Public Function TestReportFilters() As String
     Check UXSaveReportFilter("P01 saved O'Brien", True), "Named filter save failed: " & f!lblCount.Caption
     saved = CLng(f!cboSavedFilter): Set values = ReportFilterCriteria()
     Check UXClearReportFilters() And IsNull(f!txtPeriodFrom) And IsNull(f!cboSavedFilter), "Clear filters retained a period or named selection"
-    f!cboSavedFilter = saved
+    'Choose the filter as a user does, by its list row: the picker returns the filter ID.
+    Check f!cboSavedFilter.BoundColumn = 1, "Saved-filter picker is not bound to the filter ID"
+    For i = 0 To f!cboSavedFilter.ListCount - 1
+        If CLng(f!cboSavedFilter.Column(0, i)) = saved Then f!cboSavedFilter = f!cboSavedFilter.ItemData(i)
+    Next
+    Check Nz(f!cboSavedFilter, "") = CStr(saved), "Choosing a saved filter from the list did not return its ID"
     Check UXLoadReportFilter() And LibraryContains(first) And Not LibraryContains(outside), "Named filter did not restore the list: " & f!lblCount.Caption
     Check f!txtPeriodFrom = #9/30/2026# And CLng(f!lstFolders) = group, "Named period/group scope lost"
     Check f!uxTypeFilter = "EVAL" And f!uxStatusFilter = "Draft" And f!cboRankFilter = "E5" And f!cboArchive = "Active", "Named type/status/rank/archive criteria lost"

@@ -222,7 +222,6 @@ Begin Form
                     Height =400
                     FontSize =10
                     Name ="cboISIC"
-                    BoundColumn =1
                     ColumnWidths ="0;5400"
                     ColumnCount =2
                     TabIndex =3

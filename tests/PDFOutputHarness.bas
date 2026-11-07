@@ -336,8 +336,8 @@ Expected:
  BadDestination = (Err.Number = 76)
 End Function
 Public Function TestPDFDraftsAndKinds(ByVal root As String) As String
- Dim id As Long, g As Long, before As Long, current As Object, row As Object, selected As Object, fields As Object, key As Variant, kind As Variant, folder As String, grid As Access.Form, value As String, state As String, stage As String, countRows As Collection, countIndex As Long
- On Error GoTo Failed
+ Dim id As Long, g As Long, before As Long, current As Object, row As Object, selected As Object, fields As Object, key As Variant, kind As Variant, folder As String, grid As Access.Form, value As String, state As String, stage As String, countRows As Collection, countIndex As Long, isicID As Long
+On Error GoTo Failed
  If DCount("*", "UserProfile") > 0 Then BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
  id = CommitDraft(0, "EVAL", "Pending PDF", "PENDING, EDITOR", Null, Null, "")
  before = CurrentRevision(id)
@@ -372,10 +372,18 @@ Public Function TestPDFDraftsAndKinds(ByVal root As String) As String
  Check row("Fields")("AssignmentRecommendationA") = value, "Queued invalid cell absent from snapshot"
  Check row("Fields")("OfficialComments") = "COEXISTING EDITOR DRAFT" And EditorHasPending(), "Group capture replaced another editor field"
  Check UXGridPendingCount() = 1 And CurrentRevision(id) = before, "Capture drained pending cells"
+ isicID = ISICSave(0, 0, "Synthetic picker ISIC " & NewIdentity(), "N00001", "Synthetic ISIC address")
  Check PDFOutputOpenGroup("frmUXComparison"), "Group PDF entry failed with pending cells"
  With Forms!frmPDFOutput
   Check !cboISIC.RowSourceType = "Table/Query" And !cboISIC.ListCount = DCount("*", "ISIC", "IsArchived=False"), "ISIC choices not listed from the ISIC table"
   Check !cboOnTime.ListCount = 2 And !lblReports.Top >= !cboISIC.Top + !cboISIC.Height And !lblReports.Top >= !cboOnTime.Top + !cboOnTime.Height, "Report-order caption overlaps the summary-letter choices"
+  'Choose the ISIC as a user does, by its list row: the picker must return the ISIC ID.
+  Check !cboISIC.BoundColumn = 1, "ISIC picker is not bound to the ISIC ID"
+  For countIndex = 0 To !cboISIC.ListCount - 1
+   If CLng(!cboISIC.Column(0, countIndex)) = isicID Then !cboISIC = !cboISIC.ItemData(countIndex)
+  Next
+  Check Nz(!cboISIC, "") = CStr(isicID), "Choosing an ISIC from the list did not return its ID"
+  !cboOnTime = !cboOnTime.ItemData(0)
  End With
  Forms!frmPDFOutput!txtFolder = root
  Check PDFOutputPagePreview(), "Group native page preview failed"

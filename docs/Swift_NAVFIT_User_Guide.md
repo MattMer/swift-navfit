@@ -832,7 +832,7 @@ Full dates print as two-digit year, three-letter month and day, such as 26NOV07 
 
 On each report, block 48 prints the reporting senior's address only; the phone number goes on the summary letter. Text that doesn't fit its block prints on an added **additional text** page after the report. A ticked box that has no place on the form, such as Ops Cdr on an EVAL, is listed there too; an unticked box is not. Values a report type no longer uses, such as a physical readiness date saved on an EVAL or FITREP before that field was limited to CHIEFEVAL, are not printed.
 
-**Keep the ISIC list.** Open **Resources > ISICs for summary letters** to add, change or delete an ISIC: a name, its UIC, and the address as it should print (up to four lines). Deleting one removes it from new choices only.
+**Keep the ISIC list.** Open **Resources > ISICs for summary letters** to add, change or delete an ISIC: a name, its UIC, and the address as it should print (up to four lines). The name is only how the ISIC appears in lists. The summary letter prints the address box, so put the command's title on its first line, then its mailing address. When the address is empty, the letter prints the name instead. Deleting one removes it from new choices only.
 
 ---
 

@@ -173,7 +173,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
-                    Caption ="Each summary letter prints the ISIC's address and UIC. Choose a group's ISIC on its Create PDFs screen; the group remembers it."
+                    Caption ="The name is how the ISIC appears in lists. The summary letter prints the address exactly as entered, with the UIC, so include the command in the address. Choose a group's ISIC on its Create PDFs screen; the group remembers it."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
