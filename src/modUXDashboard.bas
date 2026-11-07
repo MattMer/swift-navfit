@@ -12,22 +12,31 @@ End Function
 Public Function UXRevisionMemberLabel(ByVal revisionID As Long) As String
     UXRevisionMemberLabel = UXIdentity(MajorRevisionValue(revisionID, "OfficialName"), MajorRevisionValue(revisionID, "MemberName"))
 End Function
+'The status lists and headers show: ReportLifecycle plus display detail, so a screen
+'never disagrees with the guards. Reopened for correction outranks review status.
 Public Function UXReportState(ByVal reportID As Long) As String
-    Dim revision As Long, routes As DAO.Recordset
-    If Nz(DLookup("IsArchived", "Report", "ReportID=" & reportID), False) Then UXReportState = "Archived": Exit Function
-    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Approved" Then UXReportState = "Local approval": Exit Function
-    If Nz(DLookup("WorkflowState", "Report", "ReportID=" & reportID), "Draft") = "Signed" Then UXReportState = "Signed": Exit Function
+    Dim lifecycle As String, revision As Long, routes As DAO.Recordset
+    lifecycle = ReportLifecycle(reportID)
+    Select Case lifecycle
+        Case "Archived": UXReportState = "Archived": Exit Function
+        Case "Approved": UXReportState = "Local approval": Exit Function
+        Case "Signed": UXReportState = "Signed": Exit Function
+        Case "Missing": UXReportState = "Draft": Exit Function
+    End Select
     If DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Not Null") > 0 And DCount("*", "ReportSignoff", "ReportID=" & reportID & " AND ReopenedAt Is Null") = 0 Then UXReportState = "Reopened for correction": Exit Function
+    If lifecycle = "In review" Then
+        'Saves by the reviewer holding the report keep its review current (F01); only a
+        'group route whose membership changed needs a restart.
+        Set routes = CurrentDb.OpenRecordset("SELECT RunID FROM RouteRun WHERE ReportID=" & reportID & " AND RunState In ('Pending','Accepted')", dbOpenSnapshot)
+        Do While Not routes.EOF
+            If Not RouteIsCurrent(routes!RunID) Then routes.Close: UXReportState = "Review needs restart": Exit Function
+            routes.MoveNext
+        Loop
+        routes.Close
+        'A route awaiting local approval has historically shown as Draft, not In review.
+        If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0 Or DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState='Pending'") > 0 Then UXReportState = "In review": Exit Function
+    End If
     revision = Nz(DLookup("CurrentRevisionID", "Report", "ReportID=" & reportID), 0)
-    'Saves by the reviewer holding the report keep its review current (F01); only a
-    'group route whose membership changed needs a restart.
-    Set routes = CurrentDb.OpenRecordset("SELECT RunID FROM RouteRun WHERE ReportID=" & reportID & " AND RunState In ('Pending','Accepted')", dbOpenSnapshot)
-    Do While Not routes.EOF
-        If Not RouteIsCurrent(routes!RunID) Then routes.Close: UXReportState = "Review needs restart": Exit Function
-        routes.MoveNext
-    Loop
-    routes.Close
-    If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0 Or DCount("*", "RouteRun", "ReportID=" & reportID & " AND RunState='Pending'") > 0 Then UXReportState = "In review": Exit Function
     If DCount("*", "ReviewTask", "ReportID=" & reportID & " AND TaskState='Returned' AND Nz(FinishedRevisionID,RevisionID)=" & revision) > 0 Then UXReportState = "Returned": Exit Function
     UXReportState = "Draft"
 End Function

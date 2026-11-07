@@ -168,11 +168,20 @@ Public Function TestSignoff() As String
     RSSetGroupBaseline g, sid, RSAddBaseline(sid, "E5", #12/31/2025#, 4.2, 100, 420, "Synthetic baseline"), True
     Check MarkGroupReportsSigned(g, #10/9/2026#) = 2 And ReportIsSigned(r1) And ReportIsSigned(r2), "Mark all reports signed failed"
     Check MarkGroupReportsSigned(g, #10/9/2026#) = 0, "Already signed reports marked again"
-    Check ReopenGroupReports(g, "Test reopen") = 2 And Not ReportIsSigned(r1), "Group reopen failed"
+    ' Reports signed one by one were not signed by a completion: a group reopen leaves them.
+    Check ReopenGroupReports(g, "Test reopen") = 0 And ReportIsSigned(r1) And ReportIsSigned(r2), "Group reopen undid signatures the group did not make"
+    Check ReopenSignedReport(r1, "Test reopen") And ReopenSignedReport(r2, "Test reopen") And Not ReportIsSigned(r1), "Individual reopen failed"
     SetGroupWorkflow g, GroupStamp(g), "Completed", #10/10/2026#
     Check ReportIsSigned(r1) And ReportIsSigned(r2) And DLookup("SignedOn", "ReportSignoff", "SignoffID=" & ReportCurrentSignoff(r2)) = #10/10/2026#, "Completing the group did not sign its reports on the given date"
     SetGroupWorkflow g, GroupStamp(g), "In-Work"
     Check Not ReportIsSigned(r1) And Not ReportIsSigned(r2), "Reopening the completed group left reports signed"
+    ' A report signed on its own before completion keeps its signature when the group reopens.
+    Call MarkReportSigned(r1, CurrentRevision(r1), #10/9/2026#)
+    SetGroupWorkflow g, GroupStamp(g), "Completed", #10/10/2026#
+    Check ReportIsSigned(r2) And DLookup("SignedOn", "ReportSignoff", "SignoffID=" & ReportCurrentSignoff(r1)) = #10/9/2026#, "Completion re-signed a report already signed"
+    SetGroupWorkflow g, GroupStamp(g), "In-Work"
+    Check ReportIsSigned(r1) And Not ReportIsSigned(r2), "Group reopen reopened a report signed separately, or kept its own signature"
+    Check ReopenSignedReport(r1, "Test reopen"), "Separately signed report could not be reopened"
     SetGroupWorkflow g, GroupStamp(g), "Completed"
     Check Not ReportIsSigned(r1), "Completing without a signed date signed reports"
     'A Completed group's members change only after Reopen, and completing again
@@ -230,6 +239,23 @@ Public Function TestSignoff() As String
     Check ReopenSignedReport(routed, "Correction") And ReportLifecycle(routed) = "Draft", "Reopened report did not return to draft without the old review"
     Call ArchiveDraft(assigned, True)
     Check ReportLifecycle(assigned) = "Archived", "Archived lifecycle"
+    ' Archiving a report under review ends the review; recovering it does not restart it.
+    Dim archivedReport As Long, archivedRun As Long
+    archivedReport = CommitDraft(0, "EVAL", "Archived in review", "SYNTHETIC, ARCHIVED", #9/16/2025#, #9/15/2026#, "", "Test")
+    archivedRun = StartRoute(archivedReport, template)
+    Check ArchiveDraft(archivedReport, True), "Archive failed"
+    Check DLookup("RunState", "RouteRun", "RunID=" & archivedRun) = "Cancelled" And DCount("*", "RouteRunEvent", "RunID=" & archivedRun & " AND EventKind='Cancelled' AND Notes Like '*archived*'") = 1, "Archiving left the review open or unexplained"
+    Check ReviewHolder(archivedReport) = 0 And UXReportState(archivedReport) = "Archived", "Archived report still held for review"
+    Check ArchiveDraft(archivedReport, False) And ReportLifecycle(archivedReport) = "Draft" And UXReportState(archivedReport) = "Draft", "Recovered report restarted its old review"
+    ' The journal moves forward only.
+    Dim journal As Long, refused As Boolean
+    Check OperationMayBecome("Started", "Prepared") And OperationMayBecome("Prepared", "Completed") And Not OperationMayBecome("Completed", "Failed") And Not OperationMayBecome("Started", "Started"), "Journal transition rules"
+    journal = BeginOperation("Journal rule test", "Synthetic")
+    FinishOperation journal, "Completed", "Done"
+    On Error Resume Next
+    FinishOperation journal, "Failed", "Late failure": refused = (Err.Number = vbObjectError + 1108): Err.Clear
+    On Error GoTo Failed
+    Check refused And DLookup("OperationState", "OperationJournal", "OperationID=" & journal) = "Completed", "A completed operation was changed"
 
     stage = "reports list"
     DoCmd.OpenForm "frmLibrary"

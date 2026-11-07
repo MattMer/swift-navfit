@@ -137,6 +137,15 @@ Failed:
     SwiftRollback w, swiftPrimary: On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function
+'Journal entries move forward only: Started may finish as Completed, Failed or
+'Reviewed, or pause as Prepared (files written, not yet published); Prepared may
+'then finish. Completed, Failed and Reviewed are final.
+Public Function OperationMayBecome(ByVal current As String, ByVal target As String) As Boolean
+    Select Case current
+        Case "Started": OperationMayBecome = (target = "Completed" Or target = "Failed" Or target = "Reviewed" Or target = "Prepared")
+        Case "Prepared": OperationMayBecome = (target = "Completed" Or target = "Failed" Or target = "Reviewed")
+    End Select
+End Function
 Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByVal message As String)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb
@@ -145,6 +154,7 @@ Public Sub FinishOperation(ByVal operationID As Long, ByVal state As String, ByV
     On Error GoTo Failed
     Set r = ownedDB.OpenRecordset("SELECT * FROM OperationJournal WHERE OperationID=" & operationID, dbOpenDynaset)
     If r.EOF Then Err.Raise vbObjectError + 1101, "modOperations.FinishOperation", "Operation entry missing."
+    If Not OperationMayBecome(Nz(r!OperationState, ""), state) Then Err.Raise vbObjectError + 1108, "modOperations.FinishOperation", "Operation " & operationID & " is already " & Nz(r!OperationState, "unknown") & "; it cannot become " & state & "."
     r.Edit: r!OperationState = state
     If state = "Failed" Then r!Outcome = SwiftRedact(message) Else r!Outcome = message
     r!FinishedAt = Now(): r.Update: r.Close
@@ -214,8 +224,14 @@ End Function
 Public Function AcknowledgeOperationUI() As Boolean
     Dim id As Long
     id = Nz(Forms!frmOperations!lstOperations, 0)
-    If Nz(DLookup("OperationState", "OperationJournal", "OperationID=" & id), "") <> "Started" Then Exit Function
-    If MsgBox("Acknowledge this incomplete entry after reviewing reports and import receipts? This does not retry or undo it.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+    Select Case Nz(DLookup("OperationState", "OperationJournal", "OperationID=" & id), "")
+        Case "Started"
+            If MsgBox("Acknowledge this incomplete entry after reviewing reports and import receipts? This does not retry or undo it.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+        Case "Prepared"
+            If MsgBox("Acknowledge this interrupted export after checking its folder for unpublished files? This does not retry or remove them.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+        Case Else
+            Exit Function
+    End Select
     Call FinishOperation(id, "Reviewed", "Incomplete operation acknowledged by active contributor. No data changes performed.")
     Call LoadOperations(): AcknowledgeOperationUI = True
 End Function

@@ -46,7 +46,7 @@ Public Function MarkReportSigned(ByVal reportID As Long, ByVal expectedRevision 
     If DateValue(signedOn) > Date Then Err.Raise vbObjectError + 9604, "modSignoff.MarkReportSigned", "The signed date cannot be in the future."
     RetainReportCheckpoint reportID, "Marked signed"
     operation = BeginOperation("Mark report signed", "Report " & reportID & "; revision " & expectedRevision & "; signed " & Format$(signedOn, "yyyy-mm-dd"))
-    ended = EndReviewsForSigning(reportID)
+    ended = EndOpenReviews(reportID, "Ended because the report was marked signed.")
     Set s = CurrentDb.OpenRecordset("ReportSignoff", dbOpenDynaset)
     s.AddNew: s!SignoffGuid = NewIdentity(): s!ReportID = reportID: s!SignedRevisionID = expectedRevision: s!SignedOn = DateValue(signedOn)
     s!PriorState = state: s!MarkedBy = MajorAuthor(): s!MarkedAt = Now(): s.Update: s.Bookmark = s.LastModified: MarkReportSigned = s!SignoffID: s.Close
@@ -313,7 +313,7 @@ End Sub
 '--- Summary groups ------------------------------------------------------------
 'Mark every active draft or approved report in a group signed on one date.
 'Already signed reports are left as they are. Returns the number marked.
-Public Function MarkGroupReportsSigned(ByVal groupID As Long, ByVal signedOn As Date) As Long
+Public Function MarkGroupReportsSigned(ByVal groupID As Long, ByVal signedOn As Date, Optional ByRef signoffs As String) As Long
     Dim r As DAO.Recordset, w As DAO.Workspace
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If DCount("*", "GroupMember", "GroupID=" & groupID & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0)) > 0 And EditorHasPending() Then Err.Raise vbObjectError + 9640, "modSignoff.MarkGroupReportsSigned", "Save or discard pending edits in the open report first."
@@ -322,7 +322,7 @@ Public Function MarkGroupReportsSigned(ByVal groupID As Long, ByVal signedOn As 
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.CurrentRevisionID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved') ORDER BY r.ReportID", dbOpenSnapshot)
     Do While Not r.EOF
-        Call MarkReportSigned(r!ReportID, r!CurrentRevisionID, signedOn)
+        signoffs = signoffs & IIf(Len(signoffs) > 0, ",", "") & MarkReportSigned(r!ReportID, r!CurrentRevisionID, signedOn)
         MarkGroupReportsSigned = MarkGroupReportsSigned + 1: r.MoveNext
     Loop
     r.Close
@@ -334,9 +334,23 @@ Failed:
     If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0: SwiftRaise swiftPrimary
 End Function
-Public Function ReopenGroupReports(ByVal groupID As Long, ByVal reason As String) As Long
-    Dim r As DAO.Recordset, ids As New Collection, id As Variant
-    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " AND r.WorkflowState='Signed'", dbOpenSnapshot)
+'Leaving Completed reopens only what the completion signed: the sign-offs it
+'recorded that are still each report's current one. A report signed on its own,
+'re-signed since, or archived keeps its signature. Groups completed before the
+'list was kept use the completion time: sign-offs marked at or after it.
+Public Function ReopenGroupReports(ByVal groupID As Long, ByVal reason As String, Optional ByVal completedAt As Variant = Null) As Long
+    Dim r As DAO.Recordset, ids As New Collection, id As Variant, recorded As String, sql As String
+    recorded = GroupPolicyValue(groupID, "CompletionSignoffs")
+    sql = "SELECT r.ReportID FROM (Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID) INNER JOIN ReportSignoff AS s ON s.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND r.WorkflowState='Signed' AND s.ReopenedAt Is Null"
+    sql = sql & " AND s.SignoffID=(SELECT Max(t.SignoffID) FROM ReportSignoff AS t WHERE t.ReportID=r.ReportID AND t.ReopenedAt Is Null)"
+    If Len(recorded) > 0 Then
+        sql = sql & " AND s.SignoffID In (" & recorded & ")"
+    ElseIf IsDate(completedAt) Then
+        sql = sql & " AND s.MarkedAt>=#" & Format$(CDate(completedAt), "yyyy-mm-dd hh:nn:ss") & "#"
+    Else
+        Exit Function
+    End If
+    Set r = CurrentDb.OpenRecordset(sql, dbOpenSnapshot)
     Do While Not r.EOF: ids.Add CLng(r!ReportID): r.MoveNext: Loop
     r.Close
     For Each id In ids: Call ReopenSignedReport(CLng(id), reason): Next

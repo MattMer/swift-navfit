@@ -109,7 +109,9 @@ Public Function TestRouting() As String
     Call FixtureCloseEditor()
     Call ArchiveDraft(reportID, True): Call SwitchContributor(reviewer)
     Check Denied("finish", task), "Archived review accepted"
-    Call SwitchContributor(requester): Check FinishReview(task, "Cancelled", "Archived"), "Archived cancellation blocked"
+    ' Archiving ended the assignment itself, with a recorded reason.
+    Check DLookup("TaskState", "ReviewTask", "TaskID=" & task) = "Cancelled" And DCount("*", "ReviewTaskEvent", "TaskID=" & task & " AND EventKind='Cancelled' AND Notes Like '*archived*'") = 1, "Archiving left the assignment open"
+    Call SwitchContributor(requester)
     Check Denied("assign", reportID, newer, CStr(reviewer)), "Archived report assigned"
     DoCmd.Close acForm, "frmMyWork", acSaveNo
     TestRouting = "PASS: " & checks & " routing assertions": Exit Function

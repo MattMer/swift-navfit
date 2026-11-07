@@ -56,11 +56,11 @@ Public Function TestAuditConversation() As String
  Set r = CurrentDb.OpenRecordset("UserProfile", dbOpenDynaset)
  r.AddNew: r!ProfileGuid = NewIdentity(): r!DisplayName = "Second actor": r.Update: r.Bookmark = r.LastModified: secondActor = r!UserProfileID: r.Close
  SwitchContributor secondActor
- FinishOperation op, "Completed", "First outcome"
+ FinishOperation op, "Prepared", "First outcome"
  Check DLookup("ActorID", "AuditEvent", "JournalSourceID=" & op & " AND SourceVersion=1") = secondActor, "Finishing actor was attributed to the initiator"
  Check DLookup("AuthorProfileID", "OperationJournal", "OperationID=" & op) = actor, "Original operation author changed"
  SwitchContributor actor
- FinishOperation op, "Reviewed", "Second outcome"
+ FinishOperation op, "Completed", "Second outcome"
  Check PersistenceCount("AuditEvent", "JournalSourceID=" & op) = 3, "Operation start/outcomes were overwritten or duplicated"
  Check DLookup("EventDetail", "AuditEvent", "JournalSourceID=" & op & " AND SourceVersion=1") = "First outcome", "Earlier operation outcome was lost"
  Check DLookup("CorrelationGuid", "AuditEvent", "JournalSourceID=" & op) = DLookup("OperationGuid", "OperationJournal", "OperationID=" & op), "Operation correlation differs"

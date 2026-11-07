@@ -380,7 +380,7 @@ If the report is under review, marking it signed ends that review: an open route
 
 The Members grid asks the same question. Shared-field and default changes skip signed reports and say how many they skipped.
 
-**Completing a summary group.** Setting a group to **Completed** asks for the date its reports were signed and marks every draft or locally approved report in the group signed on that date. Setting a completed group back to another status reopens its signed reports for correction after you confirm.
+**Completing a summary group.** Setting a group to **Completed** asks for the date its reports were signed and marks every draft or locally approved report in the group signed on that date. Setting a completed group back to another status reopens, after you confirm, the reports that completion signed. A report you marked signed on its own keeps its signature, and so does an archived one.
 
 **Finding signed reports.** In Reports, choose **Signed** in **Local review status**. The list also has a **Rate** column and a **Rank / rate** filter.
 
@@ -469,7 +469,7 @@ Checkpoints preserve work separately from committed revisions. They do not repla
 
 ## 7.3 Archive, duplicate, and undo
 
-Use the report-selection actions in **Reports** to archive or recover reports. Archive removes an item from active views while retaining its history. Adjust the archive filter to find it again. Duplicate creates a separate report identity; it is not a revision of the original.
+Use the report-selection actions in **Reports** to archive or recover reports. Archive removes an item from active views while retaining its history. Archiving a report under review ends that review (Swift asks first), with a history entry; recovering the report does not restart it. Adjust the archive filter to find it again. Duplicate creates a separate report identity; it is not a revision of the original.
 
 **How to undo.**
 
@@ -480,7 +480,7 @@ Use the report-selection actions in **Reports** to archive or recover reports. A
 | An import that created a new draft | Archive the draft in **Reports** while it is unchanged; that also undoes the import. |
 | Everything since a backup | Restore the backup into a new blank workspace (chapter 17). |
 
-**Settings & Help > Operation history** is a read-only log of operations, import receipts and report activity. It keeps undo only for folder operations from earlier versions.
+**Settings & Help > Operation history** is a read-only log of operations, import receipts and report activity. An entry left **Started**, or a NAVFIT98A export left **Prepared** (files written but not published), can be acknowledged after you check the reports or the export folder. It keeps undo only for folder operations from earlier versions.
 
 **Keep the three protections distinct:** a revision records a saved report change; a checkpoint retains pending editor or note work; a backup protects the workspace file and its complete collection of records.
 

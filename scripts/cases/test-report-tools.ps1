@@ -22,6 +22,8 @@ try {
  $app.LoadFromText(5,'RevisionRetentionHarness',(Join-Path $root 'tests/RevisionRetentionHarness.bas'))
  $retention=$app.Eval('TestRevisionRetention()');Write-Output $retention
  if($retention -notlike 'PASS:*'){throw $retention}
+ $coverage=$app.Eval('TestRevisionReferenceCoverage()');Write-Output $coverage
+ if($coverage -notlike 'PASS:*'){throw $coverage}
 } catch {$primary=$_} finally {
  try{if($app.Eval('CurrentProject.AllForms("frmEditor").IsLoaded')){[void]$app.Eval('UXMessageDiscard()')};[void]$app.Eval('UXLeaveEditor("Discard")')}catch{}
  try{$app.Quit(2)}catch{$cleanup+=$_.Exception.Message}

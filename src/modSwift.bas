@@ -338,6 +338,8 @@ Public Function ArchiveDraft(ByVal reportID As Long, ByVal archived As Boolean, 
     On Error GoTo Failed
     w.BeginTrans
     ExecuteParams "PARAMETERS flag Bit, id Long; UPDATE Report SET IsArchived=flag, ModifiedAt=Now() WHERE ReportID=id", archived, reportID
+    'An archived report leaves review; recovering it does not restart the old review.
+    If archived Then Call EndOpenReviews(reportID, "Ended because the report was archived.")
     Dim eventRow As DAO.Recordset
     Set eventRow = CurrentDb.OpenRecordset("ReportEvent", dbOpenDynaset)
     eventRow.AddNew: eventRow!ReportID = reportID: eventRow!AuthorProfileID = pid: eventRow!EventAt = Now(): eventRow!EventKind = IIf(archived, "Archived", "Recovered")
@@ -610,6 +612,11 @@ Public Function LibraryAction(ByVal action As String) As Boolean
     If CurrentProject.AllForms("frmEditor").IsLoaded Then MsgBox "Close the editor before changing library reports.": Exit Function
     Select Case action
         Case "Archive"
+            If ReportHasOpenReview(id) Then
+                Dim holderWhere As String
+                Call ReviewHolder(id, holderWhere)
+                If MsgBox("This report is under review (" & holderWhere & "). Archiving it ends that review. Archive it?", vbOKCancel + vbQuestion, "Archive report") <> vbOK Then Exit Function
+            End If
             'Archiving a draft an import created, unchanged since, is that import's undo.
             If ImportUndoReceipt(id, 0) > 0 Then UndoNarrativeImport ImportUndoReceipt(id, 0) Else ArchiveDraft id, True
         Case "Recover": ArchiveDraft id, False

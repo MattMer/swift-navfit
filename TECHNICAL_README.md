@@ -607,6 +607,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 6 Nov 2026 | Development 0.54.0: archiving ends open reviews; group reopen limited to completion sign-offs; operation journal forward-only transitions; revision-reference coverage test guards working-state deletion (sections 6.3 and 8). |
 | 6 Nov 2026 | Development 0.54.0: one report lifecycle (`ReportLifecycle`) for group update/default guards; marking signed ends open routes and assignments with a recorded reason (section 6.3). |
 | 6 Nov 2026 | Development 0.54.0: member profile saves update the member's open draft reports (skipping signed, approved, under-review, open and paygrade-conflicting ones); reporting senior fields and block 29 are no longer defaults; CHIEFEVAL-only PFA date stored as the first of its month; ISIC save is atomic. |
 | 6 Nov 2026 | Development 0.54.0: startup location/session warnings and changed-contributor refusal (section 6.2), clock-safe recovery checkpoints (section 8), retained Members-grid review checkpoints and import undo from History (section 6.3). |

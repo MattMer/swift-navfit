@@ -31,6 +31,21 @@ Public Sub RetainReportCheckpoint(ByVal reportID As Long, ByVal reason As String
     AuditRecord "Revision", revision
 End Sub
 
+'Tables that belong to one revision and are deleted with it.
+Public Function RevisionOwnedTable(ByVal tableName As String) As Boolean
+    Select Case tableName
+        Case "RevisionRetention", "RevisionValue", "RevisionChange", "RevisionDate", "RevisionChoice": RevisionOwnedTable = True
+    End Select
+End Function
+'Whether a column points at a revision, so a state it names must never be deleted.
+'Deleting history depends on this rule: a column it misses lets a referenced state go.
+'The retention test fails when a relationship to ReportRevision.RevisionID, or a
+'whole-number column named like a revision, is not recognised here.
+Public Function RevisionReferenceField(ByVal tableName As String, ByVal fieldName As String) As Boolean
+    If RevisionOwnedTable(tableName) Then Exit Function
+    If tableName = "ReportRevision" And fieldName = "RevisionID" Then Exit Function
+    RevisionReferenceField = (fieldName Like "*RevisionID" Or fieldName = "RevisionSourceID" Or fieldName = "ExpectedRevision" Or fieldName = "AppliedRevision" Or fieldName = "BaseRevision")
+End Function
 'References include semantic revision pointers without enforced foreign keys.
 'Never rewrite an undo, conversation, signature, import preview or review pointer.
 Private Function RevisionHasReferences(ByVal revision As Long) As Boolean
@@ -38,19 +53,13 @@ Private Function RevisionHasReferences(ByVal revision As Long) As Boolean
     Set db = CurrentDb
     For Each t In db.TableDefs
         If Left$(t.Name, 4) <> "MSys" And Left$(t.Name, 1) <> "~" Then
-            Select Case t.Name
-                Case "RevisionRetention", "RevisionValue", "RevisionChange", "RevisionDate", "RevisionChoice"
-                Case Else
-                    For Each f In t.Fields
-                        If f.Type = dbLong Then
-                            If f.Name Like "*RevisionID" Or f.Name = "RevisionSourceID" Or f.Name = "ExpectedRevision" Or f.Name = "AppliedRevision" Or f.Name = "BaseRevision" Then
-                                If Not (t.Name = "ReportRevision" And f.Name = "RevisionID") Then
-                                    If PersistenceCount(t.Name, "[" & f.Name & "]=" & revision) > 0 Then RevisionHasReferences = True: Exit Function
-                                End If
-                            End If
-                        End If
-                    Next
-            End Select
+            For Each f In t.Fields
+                If f.Type = dbLong Then
+                    If RevisionReferenceField(t.Name, f.Name) Then
+                        If PersistenceCount(t.Name, "[" & f.Name & "]=" & revision) > 0 Then RevisionHasReferences = True: Exit Function
+                    End If
+                End If
+            Next
         End If
     Next
 End Function

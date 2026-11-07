@@ -127,8 +127,8 @@ Public Function TestUXReadRows() As String
     Check UXSortList("frmLibrary", "lstReports", 6), "Prepared ITA sort failed"
     Check f!lstReports = other, "Sort selection lost"
     DoCmd.Close acForm, "frmLibrary", acSaveNo
-    ' Signed and reopened reports outrank review overlays in both readers, and
-    ' review work on a signed report leaves My Work until it is reopened.
+    ' Signed and reopened reports outrank review overlays in both readers. Signing
+    ' ends the open review, so it leaves My Work and does not return on reopen.
     signed = CommitDraft(0, "EVAL", "Signed title", "SIERRA, MEMBER", #1/1/2026#, #9/30/2026#, "")
     task = AssignReview(signed, CurrentRevision(signed), p, Null, "Review before signing")
     run = StartRoute(signed, template)
@@ -140,7 +140,8 @@ Public Function TestUXReadRows() As String
     ReopenSignedReport signed, "Correct block 43"
     CompareReports
     Check UXReportRowCell(signed, 1) = "Reopened for correction", "Reopened report shown as " & UXReportRowCell(signed, 1)
-    Check UXWorkVisible("Assignment", task, p) And UXWorkVisibleRows(p).Exists("Assignment:" & task), "Reopened report review missing from My Work"
+    Check DLookup("TaskState", "ReviewTask", "TaskID=" & task) = "Cancelled" And DLookup("RunState", "RouteRun", "RunID=" & run) = "Cancelled", "Signing did not end the review"
+    Check Not UXWorkVisible("Assignment", task, p) And Not UXWorkVisibleRows(p).Exists("Assignment:" & task), "Ended review returned to My Work after reopening"
     MarkReportSigned signed, CurrentRevision(signed), Date
     CompareReports
     Check UXReportRowCell(signed, 1) = "Signed", "Re-signed report state"

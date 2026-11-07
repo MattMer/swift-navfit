@@ -157,8 +157,10 @@ profile updates that member's open draft reports. Group defaults follow the
 Front Page layout and exclude the reporting senior (from the group's senior
 record) and block 29. Previous/Next follow the Members view's sort. One lifecycle function
 (`ReportLifecycle`: Archived, Signed, Approved, In review, Draft) backs the group
-update and defaults guards, and marking a report signed ends its open route or
-assignment. The final schema-45
+update and defaults guards, and marking a report signed or archiving it ends its open route or assignment.
+Leaving Completed reopens only reports that completion signed. Operation journal
+entries move forward only; the retention test fails on an unrecognised revision
+pointer. The final schema-45
 development build passed canonical BuildAndTest, focused feature checks, the
 schema 1–45 import matrix, a populated 0.53.0 upgrade and exact current-schema
 retention transfer. These changes are unreleased.

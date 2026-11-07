@@ -20,6 +20,40 @@ Private Function SaveRejected(ByVal id As Long, ByVal expected As Long, ByVal va
 Rejected:
     SaveRejected = True
 End Function
+'Deleting a working state is safe only if every revision pointer is recognised.
+'Fails on a relationship to ReportRevision.RevisionID, or a whole-number column
+'named like a revision, that RevisionReferenceField does not cover.
+Public Function TestRevisionReferenceCoverage() As String
+    Dim db As DAO.Database, rel As DAO.Relation, f As DAO.Field, t As DAO.TableDef, missed As String, n As Long
+    Set db = CurrentDb
+    For Each rel In db.Relations
+        If rel.Table = "ReportRevision" Then
+            For Each f In rel.Fields
+                If f.Name = "RevisionID" Then
+                    n = n + 1
+                    If Not RevisionOwnedTable(rel.ForeignTable) And Not RevisionReferenceField(rel.ForeignTable, f.ForeignName) Then missed = missed & " " & rel.ForeignTable & "." & f.ForeignName
+                End If
+            Next
+        End If
+    Next
+    For Each t In db.TableDefs
+        If Left$(t.Name, 4) <> "MSys" And Left$(t.Name, 1) <> "~" And Not RevisionOwnedTable(t.Name) Then
+            For Each f In t.Fields
+                If f.Type = dbLong And InStr(1, f.Name, "Revision", vbTextCompare) > 0 Then
+                    Select Case t.Name & "." & f.Name
+                        'Not pointers: the revision's own key and number, a count, and a report key.
+                        Case "ReportRevision.RevisionID", "ReportRevision.RevisionNumber", "DraftDisposal.RevisionsCleared", "GroupCompletionReport.RevisionOwnerReportID"
+                        Case Else
+                            n = n + 1
+                            If Not RevisionReferenceField(t.Name, f.Name) Then missed = missed & " " & t.Name & "." & f.Name
+                    End Select
+                End If
+            Next
+        End If
+    Next
+    If Len(missed) > 0 Then TestRevisionReferenceCoverage = "FAIL: revision pointers not protected from deletion:" & missed: Exit Function
+    TestRevisionReferenceCoverage = "PASS: " & n & " revision relationships and columns are protected from working-state deletion"
+End Function
 Public Function TestRevisionRetention() As String
     Dim id As Long, first As Long, working As Long, kept As Long, count As Long, kind As Variant, stage As String
     Dim template As Long, run As Long, message As Long, fields As Object, key As String, rule As String, pass As Long

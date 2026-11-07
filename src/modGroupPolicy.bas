@@ -46,6 +46,8 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 6812, "modGroupPolicy.SetGroupWorkflow", "Recover this group before changing its status."
     old = GroupWorkflow(groupID)
     If old = state And state <> "Completed" Then w.CommitTrans: Exit Sub
+    Dim completedAt As Variant, signoffs As String, recorded As String
+    If old = "Completed" Then completedAt = DLookup("ChangedAt", "GroupLifecycle", "GroupID=" & groupID)
     Set d = PolicyDocument(groupID)
     If state = "Completed" Then RSPostGroupCompletion groupID, d
     db.Execute "DELETE FROM GroupLifecycle WHERE GroupID=" & groupID, dbFailOnError
@@ -55,9 +57,16 @@ Public Sub SetGroupWorkflow(ByVal groupID As Long, ByVal expected As String, ByV
     'Completing again also signs any member left unsigned, so a Completed group
     'never posts a draft without its signed date.
     If state = "Completed" And Not IsNull(signedOn) Then
-        reportsChanged = MarkGroupReportsSigned(groupID, CDate(signedOn)): outcome = "Group completed; " & reportsChanged & " member reports marked signed " & Format$(signedOn, "yyyy-mm-dd") & "."
+        reportsChanged = MarkGroupReportsSigned(groupID, CDate(signedOn), signoffs): outcome = "Group completed; " & reportsChanged & " member reports marked signed " & Format$(signedOn, "yyyy-mm-dd") & "."
+        'Remember exactly which sign-offs the completion made; re-completion adds to them.
+        recorded = GroupPolicyValue(groupID, "CompletionSignoffs")
+        If Len(signoffs) > 0 Then recorded = recorded & IIf(Len(recorded) > 0, ",", "") & signoffs
+        PolicyPut d, "CompletionSignoffs", recorded
+        db.Execute "UPDATE SummaryGroup SET KeySpec=" & QuoteSQL(d.XML) & " WHERE GroupID=" & groupID, dbFailOnError
     ElseIf old = "Completed" And state <> "Completed" Then
-        reportsChanged = ReopenGroupReports(groupID, "Group reopened from Completed to " & state): outcome = "Group reopened; " & reportsChanged & " signed member reports reopened for correction."
+        reportsChanged = ReopenGroupReports(groupID, "Group reopened from Completed to " & state, completedAt): outcome = "Group reopened; " & reportsChanged & " member reports signed by the completion reopened for correction; reports signed separately keep their signatures."
+        Set d = PolicyDocument(groupID): PolicyPut d, "CompletionSignoffs", ""
+        db.Execute "UPDATE SummaryGroup SET KeySpec=" & QuoteSQL(d.XML) & " WHERE GroupID=" & groupID, dbFailOnError
     End If
     db.Execute "UPDATE SummaryGroup SET VersionCounter=VersionCounter+1 WHERE GroupID=" & groupID, dbFailOnError
     op = BeginOperation("Change group workflow", "Group " & groupID & "; BEFORE: " & old & "; AFTER: " & state)
