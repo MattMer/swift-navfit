@@ -371,6 +371,8 @@ When the official report has been signed outside Swift, record it so the workspa
 
 The report becomes read only and its list status shows **Signed**. Mark signed is not an official signature or submission.
 
+If the report is under review, marking it signed ends that review: an open route (including one waiting for local approval) is cancelled and a pending assignment is cancelled, each with a history entry saying the report was marked signed. The Mark signed window says so first, and so does completing a group with reports under review. Reopening a signed report does not restart the old review; start a new one if needed.
+
 **Correcting a signed report.** Start editing any field. Swift asks whether to reopen the report for correction:
 
 - **Yes:** enter an optional reason. The report reopens as a draft, your edit continues, and the reopening is recorded with its reason. Save, and when the corrected report is re-signed, mark it signed again. Both signed versions stay in its history.

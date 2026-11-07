@@ -2,6 +2,36 @@ Attribute VB_Name = "modReportState"
 Option Compare Binary
 Option Explicit
 
+'One answer to "what state is this report in?" for every guard. The report's own
+'WorkflowState holds only Draft, Approved or Signed; review lives in RouteRun and
+'ReviewTask, and archiving is a separate flag. Precedence: Missing, Archived,
+'Signed, Approved, In review, Draft. "In review" means an active route (pending
+'or awaiting local approval) or a pending assignment: someone else may hold it.
+Public Function ReportLifecycle(ByVal reportID As Long) As String
+    Dim r As DAO.Recordset, state As String
+    Set r = CurrentDb.OpenRecordset("SELECT IsArchived,WorkflowState FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
+    If r.EOF Then
+        state = "Missing"
+    ElseIf Nz(r!IsArchived, False) Then
+        state = "Archived"
+    Else
+        state = Nz(r!WorkflowState, "Draft")
+    End If
+    r.Close
+    If state = "Draft" Then
+        If ReportHasOpenReview(reportID) Then state = "In review"
+    End If
+    ReportLifecycle = state
+End Function
+Public Function ReportHasOpenReview(ByVal reportID As Long) As Boolean
+    ReportHasOpenReview = PersistenceCount("RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted')") > 0 Or PersistenceCount("ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0
+End Function
+'Reports a group-wide pull or default may change: drafts and locally approved
+'reports (which reopen). Signed reports are skipped; review blocks the change.
+Public Function ReportTakesGroupChange(ByVal state As String) As Boolean
+    ReportTakesGroupChange = (state = "Draft" Or state = "Approved")
+End Function
+
 Public Function PersistenceCount(ByVal tableName As String, ByVal predicate As String) As Long
     'Use the DAO workspace owning the transaction, including newly imported rows.
     PersistenceCount = CLng(MajorScalar("SELECT Count(*) FROM [" & tableName & "] WHERE " & predicate))

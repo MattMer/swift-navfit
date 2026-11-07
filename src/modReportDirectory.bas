@@ -42,14 +42,14 @@ Public Function UpdateMemberOpenReports(ByVal memberID As Long) As String
         Next
         If changes.Count > 0 Then
             reason = ""
-            If r!WorkflowState = "Signed" Then
-                reason = "signed"
-            ElseIf r!WorkflowState <> "Draft" Then
-                reason = "locally approved"
+            Select Case ReportLifecycle(r!ReportID)
+                Case "Signed": reason = "signed"
+                Case "Approved": reason = "locally approved"
+                Case "In review": reason = "under review"
+            End Select
+            If Len(reason) > 0 Then
             ElseIf r!ReportID = editorID Then
                 reason = "open in the editor"
-            ElseIf ReviewHolder(r!ReportID, holderWhere) > 0 Then
-                reason = "under review"
             ElseIf changes.Exists("RankRate") Then
                 otherGrade = MajorScalar("SELECT TOP 1 m.Paygrade FROM GroupMember AS m INNER JOIN SummaryGroup AS g ON m.GroupID=g.GroupID WHERE m.ReportID=" & r!ReportID & " AND g.IsArchived=False AND m.Paygrade<>" & QuoteSQL(ValidationWornPaygrade(CStr(changes("RankRate")))))
                 If Not IsNull(otherGrade) Then reason = "in a " & otherGrade & " summary group"
@@ -102,7 +102,7 @@ End Function
 'The signature covers report, group and source versions before confirmation and writes.
 Public Function GroupDirectoryPlan(ByVal groupID As Long) As Object
     Dim plan As Object, items As New Collection, r As DAO.Recordset, fields As Object, saved As Object, changes As Object
-    Dim key As Variant, signature As String, sourceSignature As String, member As Long, senior As Long, signed As Long, unconfirmed As Long, grade As String, memberStamp As String
+    Dim key As Variant, signature As String, sourceSignature As String, member As Long, senior As Long, signed As Long, unconfirmed As Long, grade As String, memberStamp As String, lifecycle As String
     If groupID <= 0 Or Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & groupID), True) Then Err.Raise vbObjectError + 9870, "modReportDirectory", "Choose an active summary group."
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Err.Raise vbObjectError + 9870, "modReportDirectory", "Close the report editor before updating group data."
     signature = GroupStamp(groupID): grade = CStr(MajorScalar("SELECT Paygrade FROM SummaryGroup WHERE GroupID=" & groupID))
@@ -130,10 +130,11 @@ Public Function GroupDirectoryPlan(ByVal groupID As Long) As Object
             End If
         Next
         If changes.Count > 0 Then
-            If r!WorkflowState = "Signed" Then
+            lifecycle = ReportLifecycle(r!ReportID)
+            If lifecycle = "Signed" Then
                 signed = signed + 1
             Else
-                If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then r.Close: Err.Raise vbObjectError + 9871, "modReportDirectory", "A report is under review. Finish or reopen its review before updating group data."
+                If Not ReportTakesGroupChange(lifecycle) Then member = r!ReportID: r.Close: Err.Raise vbObjectError + 9871, "modReportDirectory", "Report " & member & " is under review. Finish, pull back or cancel its review before updating group data. No reports changed."
                 If changes.Exists("RankRate") Then
                     If ValidationWornPaygrade(CStr(changes("RankRate"))) <> grade Then r.Close: Err.Raise vbObjectError + 9872, "modReportDirectory", "A directory rank/rate no longer matches this group's paygrade. Review group membership first. No reports changed."
                 End If

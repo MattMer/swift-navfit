@@ -327,6 +327,17 @@ Public Function TestDirectoryActions() As String
     Check IsNull(DLookup("ReportName", "CommandMember", "MemberID=" & memberB)) And IsNull(DLookup("MemberSSN", "CommandMember", "MemberID=" & memberB)), "Refresh wrote old draft values back to member profile"
     Check DLookup("OfficialName", "Report", "ReportID=" & b) = "BETA, DIRECTORY" And DLookup("MemberSSN", "Report", "ReportID=" & b) = "000007002", "Blank member fields cleared saved report data"
     Check DLookup("ReportingSeniorTitle", "Report", "ReportID=" & b) = "UPDATED CO", "Pull-only refresh omitted senior data"
+    stage = "refresh refuses a report under review"
+    Dim reviewTask As Long, refusal As String
+    values("ReportingSeniorTitle") = "REVIEW CO": Call RSSaveSenior(senior, "Directory actions senior", values, 3)
+    reviewTask = AssignReview(b, CurrentRevision(b), AddContributor("Directory reviewer"), Null, "Check it")
+    total = DCount("*", "ReportRevision")
+    On Error Resume Next
+    Call GroupDirectoryPlan(groupID): refusal = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check InStr(refusal, "Report " & b & " is under review") = 1 And DCount("*", "ReportRevision") = total, "Refresh did not refuse the report under review: " & refusal
+    Check FinishReview(reviewTask, "Cancelled", "Test cleanup"), "Review cleanup failed"
+    Check ApplyGroupDirectoryPlan(GroupDirectoryPlan(groupID)) = 2, "Refresh after the review ended failed"
     stage = "source styling"
     DoCmd.OpenForm "frmEditor", , , , , , CStr(a)
     Forms!frmEditor!uxReturnGroup = groupID: Call UXEditorContextChanged: UXDirectorySourceInvalidate
@@ -370,7 +381,7 @@ Public Function TestDirectoryActions() As String
     Next
     Check UXLeaveEditor(), "NOB editor close failed"
     CurrentDb.Execute "UPDATE Report SET WorkflowState='Signed' WHERE ReportID=" & b, dbFailOnError
-    values("ReportingSeniorName") = "AFTER SIGNED": Call RSSaveSenior(senior, "Directory actions senior", values, 3)
+    values("ReportingSeniorName") = "AFTER SIGNED": Call RSSaveSenior(senior, "Directory actions senior", values, 4)
     Set plan = GroupDirectoryPlan(groupID): Check plan("Signed") = 1, "Signed report not skipped"
     Check ApplyGroupDirectoryPlan(plan) = 1 And DLookup("ReportingSeniorName", "Report", "ReportID=" & b) = "ROLLBACK", "Refresh changed signed report"
     TestDirectoryActions = "PASS: directory refresh, stale guard, atomic rollback, source styling, sibling navigation and whole NOB": Exit Function

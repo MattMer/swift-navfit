@@ -155,7 +155,10 @@ restores the marks NOB replaced. Block 20 carries a PFA date on CHIEFEVAL only,
 entered and shown as MM/YY (stored as the first of the month). Saving a member
 profile updates that member's open draft reports. Group defaults follow the
 Front Page layout and exclude the reporting senior (from the group's senior
-record) and block 29. Previous/Next follow the Members view's sort. The final schema-45
+record) and block 29. Previous/Next follow the Members view's sort. One lifecycle function
+(`ReportLifecycle`: Archived, Signed, Approved, In review, Draft) backs the group
+update and defaults guards, and marking a report signed ends its open route or
+assignment. The final schema-45
 development build passed canonical BuildAndTest, focused feature checks, the
 schema 1–45 import matrix, a populated 0.53.0 upgrade and exact current-schema
 retention transfer. These changes are unreleased.

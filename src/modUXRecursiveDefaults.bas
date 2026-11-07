@@ -21,7 +21,7 @@ Private Function BlockCanonical(ByVal key As String, ByVal value As Variant) As 
 End Function
 ' Build an in-memory plan; close every read cursor before any transaction writes.
 Public Function RecursiveDefaultPlan(ByVal groupID As Long, ByVal defaults As Boolean, ByVal reportsCSV As String, ByVal key As String, ByVal value As Variant) As Object
- Dim plan As Object, groups As New Collection, reports As New Collection, values As Object, changes As Object, valid As Object
+ Dim plan As Object, groups As New Collection, reports As New Collection, values As Object, changes As Object, valid As Object, lifecycle As String
  Dim db As DAO.Database, r As DAO.Recordset, sql As String, ids As Object, item As Variant, csv As String, signature As String, approvals As Long, known As Boolean, signed As Long
  For Each item In UXSharedKeys(): If key = item Then known = True
  Next
@@ -60,10 +60,11 @@ Public Function RecursiveDefaultPlan(ByVal groupID As Long, ByVal defaults As Bo
    signature = signature & r!ReportID & ":" & r!CurrentRevisionID & ":" & r!WorkflowState & "|"
    If Not SameFieldValue(values(key), value) Then
     'Signed reports are part of the binder: skip them and say so.
-    If r!WorkflowState = "Signed" Then
+    lifecycle = ReportLifecycle(r!ReportID)
+    If lifecycle = "Signed" Then
      signed = signed + 1
     Else
-     If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.RecursiveDefaultPlan", "A report is locked; no recursive changes were applied."
+     If Not ReportTakesGroupChange(lifecycle) Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.RecursiveDefaultPlan", "Report " & r!ReportID & " is under review. Finish, pull back or cancel its review first; no changes were applied."
      reports.Add Array(CLng(r!ReportID), CLng(r!CurrentRevisionID), CStr(r!WorkflowState))
      If r!WorkflowState = "Approved" Then approvals = approvals + 1
     End If
@@ -167,7 +168,7 @@ End Function
 ' one revision per report. The batch preview is an internal transaction service,
 ' not a screen, button or separate user requirement.
 Public Function UXConfirmReportFields(ByVal groupID As Long, ByVal fields As Object, ByVal reason As String, Optional ByVal decision As VbMsgBoxResult = 0) As Boolean
- Dim db As DAO.Database, r As DAO.Recordset, targets As New Collection, values As Object, key As Variant, changed As Boolean, csv As String, approved As Long
+ Dim db As DAO.Database, r As DAO.Recordset, targets As New Collection, values As Object, key As Variant, changed As Boolean, csv As String, approved As Long, lifecycle As String
  Dim item As Variant, w As DAO.Workspace, trans As Boolean, batch As Long, failure As Long, message As String, signed As Long
  On Error GoTo Failed
  If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & groupID), True) Then Err.Raise vbObjectError + 8202, "modUXRecursiveDefaults.UXConfirmReportFields", "Recover this group first."
@@ -179,9 +180,10 @@ Public Function UXConfirmReportFields(ByVal groupID As Long, ByVal fields As Obj
   For Each key In fields.Keys
    If Not SameFieldValue(values(key), fields(key)) Then changed = True
   Next
-  If changed And r!WorkflowState = "Signed" Then signed = signed + 1: changed = False
+  If changed Then lifecycle = ReportLifecycle(r!ReportID)
+  If changed And lifecycle = "Signed" Then signed = signed + 1: changed = False
   If changed Then
-   If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.UXConfirmReportFields", "A group report is locked."
+   If Not ReportTakesGroupChange(lifecycle) Then Err.Raise vbObjectError + 8204, "modUXRecursiveDefaults.UXConfirmReportFields", "Report " & r!ReportID & " is under review. Finish, pull back or cancel its review first; no changes were applied."
    targets.Add Array(CLng(r!ReportID), CLng(r!CurrentRevisionID), CStr(r!WorkflowState))
    If r!WorkflowState = "Approved" Then approved = approved + 1
    If csv <> "" Then csv = csv & ","
@@ -242,7 +244,7 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
    count = count + 1
    If r!WorkflowState = "Approved" Then approved = approved + 1
    If r!WorkflowState = "Signed" Then signedCount = signedCount + 1
-   If r!WorkflowState <> "Draft" And r!WorkflowState <> "Approved" And r!WorkflowState <> "Signed" Then locked = locked + 1
+   If ReportLifecycle(r!ReportID) = "In review" Then locked = locked + 1
   End If
   r.MoveNext
  Loop
@@ -250,7 +252,7 @@ Public Function UXSharedScope(Optional ByVal key As String = "") As Boolean
  stage = "Show scope"
  message = "Scope: " & title & "; " & count & " active reports, " & approved & " locally approved."
  message = message & " Custom values may be replaced; changed approvals reopen after confirmation. Archived items excluded."
- If locked > 0 Then message = message & " " & locked & " locked reports may block changes."
+ If locked > 0 Then message = message & " " & locked & " reports under review block changes until their review ends."
  If signedCount > 0 Then message = message & " " & signedCount & " signed reports are skipped."
  Forms!frmUXBulk!uxScope.Caption = message: Forms!frmUXBulk!uxScope.ControlTipText = Left$(message, 255)
  UXSharedScope = True: Exit Function

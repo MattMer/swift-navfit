@@ -139,6 +139,28 @@ Public Sub DecideRouteStep(ByVal runID As Long, ByVal decision As String, ByVal 
         Err.Raise vbObjectError + 4306, "modRouteTemplates.DecideRouteStep", "Choose Accepted or Returned."
     End If
 End Sub
+'A signed report is finished: its open route (pending, or awaiting local approval)
+'and pending assignments end, with a history entry saying why. The caller owns the
+'signing transaction. Returns the number of reviews ended.
+Public Function EndReviewsForSigning(ByVal reportID As Long) As Long
+    Dim db As DAO.Database, r As DAO.Recordset, note As String, revision As Long
+    Set db = CurrentDb: revision = CurrentRevision(reportID)
+    note = "Ended because the report was marked signed."
+    Set r = db.OpenRecordset("SELECT * FROM RouteRun WHERE ReportID=" & reportID & " AND RunState In ('Pending','Accepted')", dbOpenDynaset)
+    Do While Not r.EOF
+        r.Edit: r!RunState = "Cancelled": r.Update
+        RouteEventAdd db, r!RunID, "Cancelled", r!CurrentStep, r!CurrentStep, Null, note
+        EndReviewsForSigning = EndReviewsForSigning + 1: r.MoveNext
+    Loop
+    r.Close
+    Set r = db.OpenRecordset("SELECT * FROM ReviewTask WHERE ReportID=" & reportID & " AND TaskState='Pending'", dbOpenDynaset)
+    Do While Not r.EOF
+        r.Edit: r!TaskState = "Cancelled": r!FinishedAt = Now(): r!FinishedRevisionID = revision: r.Update
+        db.Execute "INSERT INTO ReviewTaskEvent (TaskID,AuthorProfileID,EventAt,EventKind,Notes) VALUES (" & r!TaskID & "," & MajorAuthor() & ",Now(),'Cancelled'," & QuoteSQL(note) & ")", dbFailOnError
+        EndReviewsForSigning = EndReviewsForSigning + 1: r.MoveNext
+    Loop
+    r.Close
+End Function
 Public Sub CancelRoute(ByVal runID As Long)
     Dim ownedDB As DAO.Database
     Set ownedDB = CurrentDb

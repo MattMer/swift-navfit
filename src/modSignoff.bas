@@ -32,7 +32,7 @@ Private Sub ReportEventRecord(ByVal reportID As Long, ByVal kind As String, ByVa
 End Sub
 
 Public Function MarkReportSigned(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal signedOn As Date) As Long
-    Dim w As DAO.Workspace, r As DAO.Recordset, s As DAO.Recordset, state As String, operation As Long
+    Dim w As DAO.Workspace, r As DAO.Recordset, s As DAO.Recordset, state As String, operation As Long, ended As Long
     Set w = DBEngine.Workspaces(0): w.BeginTrans
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("SELECT ReportID,IsArchived,WorkflowState,CurrentRevisionID FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
@@ -46,12 +46,13 @@ Public Function MarkReportSigned(ByVal reportID As Long, ByVal expectedRevision 
     If DateValue(signedOn) > Date Then Err.Raise vbObjectError + 9604, "modSignoff.MarkReportSigned", "The signed date cannot be in the future."
     RetainReportCheckpoint reportID, "Marked signed"
     operation = BeginOperation("Mark report signed", "Report " & reportID & "; revision " & expectedRevision & "; signed " & Format$(signedOn, "yyyy-mm-dd"))
+    ended = EndReviewsForSigning(reportID)
     Set s = CurrentDb.OpenRecordset("ReportSignoff", dbOpenDynaset)
     s.AddNew: s!SignoffGuid = NewIdentity(): s!ReportID = reportID: s!SignedRevisionID = expectedRevision: s!SignedOn = DateValue(signedOn)
     s!PriorState = state: s!MarkedBy = MajorAuthor(): s!MarkedAt = Now(): s.Update: s.Bookmark = s.LastModified: MarkReportSigned = s!SignoffID: s.Close
     CurrentDb.Execute "UPDATE Report SET WorkflowState='Signed' WHERE ReportID=" & reportID, dbFailOnError
     ReportEventRecord reportID, "Marked signed", operation
-    FinishOperation operation, "Completed", "Report locked as signed. This records a signature made outside Swift; it is not an official signature or submission."
+    FinishOperation operation, "Completed", "Report locked as signed." & IIf(ended > 0, " " & ended & " open review(s) ended.", "") & " This records a signature made outside Swift; it is not an official signature or submission."
     w.CommitTrans: Exit Function
 Failed:
     Dim swiftPrimary As Object
@@ -193,6 +194,8 @@ Public Function UXSignoffOpen(Optional ByVal reportID As Long = 0) As Boolean
     f!lblReport.Caption = UXMemberLabel(reportID) & " | " & Nz(MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & reportID), "") & " | saved revision " & Nz(MajorScalar("SELECT RevisionNumber FROM ReportRevision WHERE RevisionID=" & signoffRevision), "")
     f!txtSignedOn = Date: f!chkDispose = False
     f!lblStatus.Caption = "Records that this saved version was signed outside Swift. It is not an official signature or submission. The report becomes read only; editing a field later asks whether to reopen it."
+    Dim holderWhere As String
+    If ReviewHolder(reportID, holderWhere) > 0 Then f!lblStatus.Caption = "This report is under review (" & holderWhere & "). Marking it signed ends that review. " & f!lblStatus.Caption
     UXSignoffOpen = True: Exit Function
 Failed:
     If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = Err.Description Else MsgBox Err.Description, vbExclamation, "Mark signed"
@@ -357,6 +360,9 @@ Public Function UXSignoffOpenGroup(ByVal groupID As Long, ByVal completing As Bo
     f!lblReport.Caption = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & groupID), "Summary group") & " | " & GroupSignableCount(groupID) & " reports to mark signed"
     f!txtSignedOn = Date: f!chkDispose = False
     f!lblStatus.Caption = IIf(completing, "Completing this group marks all of its draft and approved reports signed on this date. Reopening the group later reopens them.", "Marks all of this group's draft and approved reports signed on this date. Already signed reports are unchanged.")
+    Dim reviewing As Long
+    reviewing = Nz(MajorScalar("SELECT Count(*) FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False AND r.WorkflowState In ('Draft','Approved') AND (r.ReportID In (SELECT ReportID FROM RouteRun WHERE RunState In ('Pending','Accepted')) OR r.ReportID In (SELECT ReportID FROM ReviewTask WHERE TaskState='Pending'))"), 0)
+    If reviewing > 0 Then f!lblStatus.Caption = f!lblStatus.Caption & " " & reviewing & " of them " & IIf(reviewing = 1, "is", "are") & " under review; signing ends those reviews."
     UXSignoffOpenGroup = True: Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Mark signed"

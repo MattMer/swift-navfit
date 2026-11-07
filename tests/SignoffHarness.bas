@@ -206,6 +206,31 @@ Public Function TestSignoff() As String
     DoCmd.Close acForm, "frmUXSignoff"
     Check UXDisposeDrafts(partial, True) And DCount("*", "DraftDisposal", "ReportID=" & partial) = 1, "Disposal retry failed"
 
+    stage = "lifecycle and signing ends review"
+    ' One lifecycle answer; signing a report under review ends the route or assignment.
+    Dim routed As Long, assigned As Long, reviewer As Long, requester As Long, template As Long, run As Long, task As Long
+    requester = ActiveContributorID(): reviewer = AddContributor("Signoff reviewer")
+    template = CreateRouteTemplate("Signoff route", CStr(reviewer), "")
+    routed = CommitDraft(0, "EVAL", "Routed", "SYNTHETIC, ROUTED", #9/16/2025#, #9/15/2026#, "", "Test")
+    assigned = CommitDraft(0, "EVAL", "Assigned", "SYNTHETIC, ASSIGNED", #9/16/2025#, #9/15/2026#, "", "Test")
+    Check ReportLifecycle(routed) = "Draft" And ReportLifecycle(0) = "Missing", "Draft or missing lifecycle"
+    run = StartRoute(routed, template)
+    task = AssignReview(assigned, CurrentRevision(assigned), reviewer, Null, "Check it")
+    Check ReportLifecycle(routed) = "In review" And ReportLifecycle(assigned) = "In review", "Open review not reported by the lifecycle"
+    Check Not ReportTakesGroupChange("In review") And ReportTakesGroupChange("Approved") And ReportTakesGroupChange("Draft"), "Group change rule"
+    Call UXSignoffOpen(routed)
+    Check InStr(Forms!frmUXSignoff!lblStatus.Caption, "Marking it signed ends that review") > 0, "Sign-off window did not warn about the open review"
+    DoCmd.Close acForm, "frmUXSignoff"
+    Call MarkReportSigned(routed, CurrentRevision(routed), #9/20/2026#)
+    Call MarkReportSigned(assigned, CurrentRevision(assigned), #9/20/2026#)
+    Check DLookup("RunState", "RouteRun", "RunID=" & run) = "Cancelled" And DCount("*", "RouteRunEvent", "RunID=" & run & " AND EventKind='Cancelled' AND Notes Like '*marked signed*'") = 1, "Signing left the route open or unexplained"
+    Check DLookup("TaskState", "ReviewTask", "TaskID=" & task) = "Cancelled" And DCount("*", "ReviewTaskEvent", "TaskID=" & task & " AND EventKind='Cancelled'") = 1, "Signing left the assignment open or unexplained"
+    Check ReviewHolder(routed) = 0 And ReviewHolder(assigned) = 0 And ReportLifecycle(routed) = "Signed", "A signed report is still held for review"
+    Check InStr(DLookup("Outcome", "OperationJournal", "OperationID=" & DMax("OperationID", "OperationJournal", "OperationKind='Mark report signed'")), "1 open review(s) ended") > 0, "Operation record omits the ended review"
+    Check ReopenSignedReport(routed, "Correction") And ReportLifecycle(routed) = "Draft", "Reopened report did not return to draft without the old review"
+    Call ArchiveDraft(assigned, True)
+    Check ReportLifecycle(assigned) = "Archived", "Archived lifecycle"
+
     stage = "reports list"
     DoCmd.OpenForm "frmLibrary"
     Forms!frmLibrary!uxStatusFilter = "Signed": RefreshLibrary
