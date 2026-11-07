@@ -828,6 +828,10 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 
 The summary letter fills its lower section from these choices and from the group's reporting senior record: the ISIC address and UIC, the reporting senior's address, e-mail and phone, the submitted-on-time box, and the date it was created. When the senior record has no address or phone, the values every report in the group shares are used instead.
 
+Full dates print as two-digit year, three-letter month and day, such as 26NOV07 for 7 November 2026: the period of report, date reported, counseling date and signature dates on every report type, and the period end in block 12 of the summary letter. The CHIEFEVAL physical readiness date prints as month and year, such as 11/26.
+
+On each report, block 48 prints the reporting senior's address only; the phone number goes on the summary letter. Text that doesn't fit its block prints on an added **additional text** page after the report. A ticked box that has no place on the form, such as Ops Cdr on an EVAL, is listed there too; an unticked box is not. Values a report type no longer uses, such as a physical readiness date saved on an EVAL or FITREP before that field was limited to CHIEFEVAL, are not printed.
+
 **Keep the ISIC list.** Open **Resources > ISICs for summary letters** to add, change or delete an ISIC: a name, its UIC, and the address as it should print (up to four lines). Deleting one removes it from new choices only.
 
 ---

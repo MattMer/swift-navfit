@@ -49,6 +49,9 @@ $uxModule.Add('Public Function CataloguePage(ByVal kind As String, ByVal key As 
 $uxModule.Add('Select Case kind & ":" & key')
 foreach($kind in @('EVAL','CHIEFEVAL','FITREP')){foreach($field in $uxFields){if($null -ne $field.bindings.$kind.page){$uxModule.Add('Case "'+$kind+':'+$field.key+'": CataloguePage = '+$field.bindings.$kind.page.page)}}}
 $uxModule.Add('Case Else: CataloguePage = 0: End Select: End Function')
+$uxModule.Add('Public Function UXFieldOnForm(ByVal kind As String, ByVal key As String) As Boolean');$uxModule.Add('Select Case kind & ":" & key')
+foreach($kind in @('EVAL','CHIEFEVAL','FITREP')){$onForm=@($uxFields|Where-Object {$null -ne $_.bindings.$kind.page}|ForEach-Object {'"'+$kind+':'+$_.key+'"'});for($i=0;$i -lt $onForm.Count;$i+=20){$uxModule.Add('Case '+(($onForm[$i..([Math]::Min($i+19,$onForm.Count-1))])-join ', ')+': UXFieldOnForm = True')}}
+$uxModule.Add('End Select: End Function')
 $uxModule.Add('Public Function CataloguePageRows(ByVal kind As String, ByVal page As Long) As Collection')
 $uxModule.Add('Dim result As New Collection: Select Case kind & ":" & page')
 foreach($layout in $fieldDefinitions.fixedLayout.PSObject.Properties){
@@ -63,5 +66,6 @@ $uxModule.Add('Public Function UXSharedKeys() As Variant');$uxModule.Add('UXShar
 $uxModule.Add('Public Function UXFieldLabel(ByVal key As String) As String');$uxModule.Add('Select Case key')
 foreach($field in $uxFields){$uxModule.Add('Case "'+$field.key+'": UXFieldLabel = "'+$field.label.Replace('"','""')+'"')}
 $uxModule.Add('Case Else: UXFieldLabel = key');$uxModule.Add('End Select');$uxModule.Add('End Function')
+$uxModule.Add('Public Function UXFieldIsCheckbox(ByVal key As String) As Boolean');$uxModule.Add('Select Case key');$uxModule.Add('Case '+(($uxFields|Where-Object {$_.checkbox}|ForEach-Object {'"'+$_.key+'"'})-join ', ')+': UXFieldIsCheckbox = True');$uxModule.Add('End Select');$uxModule.Add('End Function')
 $uxModulePath=Join-Path $root 'build/modUXFields.bas';[IO.File]::WriteAllText($uxModulePath,($uxModule -join "`r`n")+"`r`n",[Text.UTF8Encoding]::new($false))
 $app.LoadFromText(5,'modUXFields',$uxModulePath);$app.LoadFromText(5,'modUX',(Join-Path $root 'src/modUX.bas'))

@@ -213,7 +213,6 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    RowSourceTypeInt =1
                     OverlapFlags =87
                     TextFontFamily =34
                     IMESentenceMode =3
@@ -444,9 +443,9 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =5
                     Left =300
-                    Top =2900
+                    Top =3150
                     Width =13500
-                    Height =2350
+                    Height =2100
                     FontSize =10
                     TabIndex =7
                     Name ="lstReports"
@@ -456,7 +455,7 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2900
+                    LayoutCachedTop =3150
                     LayoutCachedWidth =13800
                     LayoutCachedHeight =5250
                     ThemeFontIndex =-1
@@ -465,18 +464,18 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =300
-                            Top =2100
+                            Top =2450
                             Width =13500
-                            Height =350
+                            Height =300
                             FontSize =10
                             Name ="lblReports"
                             Caption ="Report order: last name, first name, middle initial. Select a row to view inform"
                                 "ational findings."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
-                            LayoutCachedTop =2100
+                            LayoutCachedTop =2450
                             LayoutCachedWidth =13800
-                            LayoutCachedHeight =2450
+                            LayoutCachedHeight =2750
                             ThemeFontIndex =-1
                         End
                     End
@@ -687,7 +686,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =300
-                    Top =2550
+                    Top =2820
                     Width =800
                     Height =300
                     FontSize =9
@@ -698,9 +697,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",0)"
                     Tag ="SORT:lstReports:0"
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2820
                     LayoutCachedWidth =1100
-                    LayoutCachedHeight =2850
+                    LayoutCachedHeight =3120
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -709,7 +708,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =300
-                    Top =2550
+                    Top =2820
                     Width =800
                     Height =300
                     FontSize =9
@@ -720,9 +719,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",1)"
                     Tag ="SORT:lstReports:1"
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2820
                     LayoutCachedWidth =1100
-                    LayoutCachedHeight =2850
+                    LayoutCachedHeight =3120
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -731,7 +730,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =300
-                    Top =2550
+                    Top =2820
                     Width =800
                     Height =300
                     FontSize =9
@@ -742,9 +741,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",2)"
                     Tag ="SORT:lstReports:2"
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2820
                     LayoutCachedWidth =1100
-                    LayoutCachedHeight =2850
+                    LayoutCachedHeight =3120
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -753,7 +752,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =300
-                    Top =2550
+                    Top =2820
                     Width =800
                     Height =300
                     FontSize =9
@@ -764,9 +763,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",3)"
                     Tag ="SORT:lstReports:3"
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2820
                     LayoutCachedWidth =1100
-                    LayoutCachedHeight =2850
+                    LayoutCachedHeight =3120
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -775,7 +774,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =300
-                    Top =2550
+                    Top =2820
                     Width =800
                     Height =300
                     FontSize =9
@@ -786,9 +785,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmPDFOutput\",\"lstReports\",4)"
                     Tag ="SORT:lstReports:4"
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2550
+                    LayoutCachedTop =2820
                     LayoutCachedWidth =1100
-                    LayoutCachedHeight =2850
+                    LayoutCachedHeight =3120
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

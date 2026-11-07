@@ -243,6 +243,25 @@ Public Function TestPDFOutput(ByVal root As String) As String
  Check DCount("*", "ReportRevision") = before, "Capture changed revisions"
  Check PDFOutputSafePart("123-45-6789 1234567890 / CON") = "ID_ID___CON", "Filename redaction or sanitization failed"
  Check PDFOutputSafePart("CON") = "_CON", "Reserved filename unprotected"
+ 'Block 48 holds the address only; the phone is for the summary letter. An unticked box with
+ 'no place on the form, or a field this report type no longer has, is not added as extra text.
+ Set fields = rows(2)("Fields")
+ fields("ReportingSeniorAddress1") = "1 SYNTHETIC WAY": fields("ReportingSeniorPhone") = "5550001234"
+ fields("ReportOperationalCommander") = "No": fields("ReadinessDate") = "2026-11-01"
+ Check InStr(PDFOutputPlannedText(rows(2), False), "1 SYNTHETIC WAY") > 0, "Block 48 address missing"
+ Check InStr(PDFOutputPlannedText(rows(2), False), "5550001234") = 0, "Phone printed on the report"
+ again = PDFOutputPlannedText(rows(2), True)
+ Check InStr(again, UXFieldLabel("ReportOperationalCommander")) = 0 And InStr(again, "2026-11-01") = 0 And InStr(again, "11/26") = 0, "Unticked or retired field added as extra text: " & again
+ fields("ReportOperationalCommander") = "Yes"
+ Check InStr(PDFOutputPlannedText(rows(2), True), UXFieldLabel("ReportOperationalCommander")) > 0, "Ticked box without a place on the EVAL was dropped"
+ fields("ReportOperationalCommander") = Null: fields("ReadinessDate") = Null: again = ""
+ 'Full dates print as YYMMMDD on every report type and in summary letter block 12.
+ fields("PeriodStart") = DateSerial(2026, 5, 16): fields("PeriodEnd") = DateSerial(2026, 11, 7): fields("DateReported") = "2025-01-31"
+ rows(1)("Fields")("PeriodEnd") = DateSerial(2026, 11, 7)
+ again = PDFOutputPlannedText(rows(2), False)
+ Check InStr(again, "26MAY16") > 0 And InStr(again, "26NOV07") > 0 And InStr(again, "25JAN31") > 0 And InStr(again, "2026-11-07") = 0, "Report dates not printed as YYMMMDD"
+ Check InStr(PDFOutputPlannedText(Nothing, False), "26NOV07") > 0, "Summary letter end date not printed as YYMMMDD"
+ again = ""
  'Synthetic renderer stress values do not alter saved reports.
  Set fields = rows(1)("Fields")
  fields("OfficialName") = "ALPHA, TEST A": fields("OfficialComments") = "OVERFLOW START " & String$(16000, "W") & " OVERFLOW END"
@@ -354,6 +373,10 @@ Public Function TestPDFDraftsAndKinds(ByVal root As String) As String
  Check row("Fields")("OfficialComments") = "COEXISTING EDITOR DRAFT" And EditorHasPending(), "Group capture replaced another editor field"
  Check UXGridPendingCount() = 1 And CurrentRevision(id) = before, "Capture drained pending cells"
  Check PDFOutputOpenGroup("frmUXComparison"), "Group PDF entry failed with pending cells"
+ With Forms!frmPDFOutput
+  Check !cboISIC.RowSourceType = "Table/Query" And !cboISIC.ListCount = DCount("*", "ISIC", "IsArchived=False"), "ISIC choices not listed from the ISIC table"
+  Check !cboOnTime.ListCount = 2 And !lblReports.Top >= !cboISIC.Top + !cboISIC.Height And !lblReports.Top >= !cboOnTime.Top + !cboOnTime.Height, "Report-order caption overlaps the summary-letter choices"
+ End With
  Forms!frmPDFOutput!txtFolder = root
  Check PDFOutputPagePreview(), "Group native page preview failed"
  Check CurrentProject.AllReports("rptPDFOutput").IsLoaded And UXGridPendingCount() = 1, "Page preview lost pending grid cells"

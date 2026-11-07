@@ -337,6 +337,27 @@ Public Sub PDFOutputPreviewPages(ByVal root As String, ByVal includeSummary As B
     DoCmd.OpenReport "rptPDFOutput", acViewPreview
     If outputFailure <> "" Then Err.Raise vbObjectError + 9108, "modPDFOutput.PDFOutputPreviewPages", outputFailure
 End Sub
+'Plans one captured report (or, given Nothing, the captured group's summary letter) without
+'rendering and returns its printed text, or only the text that went to additional-text pages.
+'For checks; the page cache is left as it was.
+Public Function PDFOutputPlannedText(ByVal row As Object, ByVal additionalOnly As Boolean) As String
+    Dim kept As Collection, rows As New Collection, page As Object, slot As Variant, text As String
+    Set kept = printPages: Set printPages = New Collection
+    On Error GoTo Failed
+    If row Is Nothing Then
+        PlanSummary job("Reports")
+    Else
+        rows.Add row: PlanReport row, rows
+    End If
+    For Each page In printPages
+        If Not additionalOnly Or page("Background") = "" Then
+            For Each slot In page("Slots"): text = text & slot(0) & vbLf: Next
+        End If
+    Next
+    Set printPages = kept: PDFOutputPlannedText = text: Exit Function
+Failed:
+    Set printPages = kept: Err.Raise Err.Number, Err.Source, Err.Description
+End Function
 Private Function NewPage(ByVal background As String) As Object
     Dim page As Object, slots As New Collection
     Set page = CreateObject("Scripting.Dictionary"): page.Add "Background", background: page.Add "Slots", slots
@@ -636,6 +657,10 @@ End Function
 Private Function PrintNavyDate(ByVal value As String, Optional ByVal readiness As Boolean = False) As String
     Dim months As Variant, month As Long
     PrintNavyDate = value
+    'Date/time fields arrive as text in this computer's date format; reading them back is exact.
+    If Not IsValidIsoDate(value) And Len(value) > 0 And Not value Like "*[A-Za-z]*" Then
+        If IsDate(value) Then value = Format$(CDate(value), "yyyy-mm-dd")
+    End If
     If Not IsValidIsoDate(value) Then Exit Function
     month = CLng(Mid$(value, 6, 2))
     If readiness Then
@@ -654,7 +679,7 @@ Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule
             Exit Function
         Case "@SeniorCity": FieldValue = SeniorCity(fields): Exit Function
         Case "@SeniorAddress"
-            For Each line In Array(PDFOutputText(fields, "ReportingSeniorAddress1"), PDFOutputText(fields, "ReportingSeniorAddress2"), SeniorCity(fields), PDFOutputText(fields, "ReportingSeniorPhone"), PDFOutputText(fields, "ReportingSeniorDSN"))
+            For Each line In Array(PDFOutputText(fields, "ReportingSeniorAddress1"), PDFOutputText(fields, "ReportingSeniorAddress2"), SeniorCity(fields), PDFOutputText(fields, "ReportingSeniorDSN"))
                 If Len(line) > 0 Then
                     If text <> "" Then text = text & vbCrLf
                     text = text & line
@@ -676,9 +701,12 @@ Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule
     value = PDFOutputText(fields, key)
     If key = "OfficialName" And value = "" Then value = PDFOutputText(fields, "MemberName")
     If key = "MemberSSN" And value = "" Then value = PDFOutputText(fields, "MemberDoDID")
+    'Full dates print as YYMMMDD (26NOV07) on every report type.
+    Select Case key
+        Case "PeriodStart", "PeriodEnd", "DateReported", "CounselingDate", "RaterDate", "SeniorRaterDate": value = PrintNavyDate(value)
+    End Select
     If row("Kind") = "CHIEFEVAL" Then
         Select Case key
-            Case "PeriodStart", "PeriodEnd", "DateReported", "CounselingDate": value = PrintNavyDate(value)
             Case "ReadinessDate": value = PrintNavyDate(value, True)
             Case "MemberSSN", "ReportingSeniorSSN"
                 If Len(value) = 9 And value Like "#########" Then value = Left$(value, 3) & "-" & Mid$(value, 4, 2) & "-" & Right$(value, 4)
@@ -788,7 +816,9 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
     'Private notes and name components are deliberately not repeated as addenda.
     For Each key In DraftFieldKeys()
         If Not covered.Exists(CStr(key)) And PDFOutputText(row("Fields"), CStr(key)) <> "" Then
-            If PDFPrintAdditionalField(CStr(key)) Then extra.Add PrintFieldLabel(CStr(key)) & vbCrLf & PDFOutputText(row("Fields"), CStr(key))
+            'Values for fields this report type no longer has (left by older drafts) are not printed.
+            'An unticked box with no place on this form says nothing; a ticked one is kept.
+            If PDFPrintAdditionalField(CStr(key)) And UXFieldOnForm(CStr(row("Kind")), CStr(key)) And Not (UXFieldIsCheckbox(CStr(key)) And PDFOutputText(row("Fields"), CStr(key)) = "No") Then extra.Add PrintFieldLabel(CStr(key)) & vbCrLf & PDFOutputText(row("Fields"), CStr(key))
         End If
     Next
     AddContinuations CStr(row("Caption")), extra
