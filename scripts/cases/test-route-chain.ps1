@@ -14,4 +14,7 @@ try {
     $result=$app.Eval('TestRouteChain()')
     if(-not $result.StartsWith('PASS:')) {throw $result}
     Write-Output $result
+    $attribution=$app.Eval('TestBundledRouteAttribution()')
+    if($attribution -notlike 'PASS:*'){throw $attribution}
+    Write-Output $attribution
 } finally {if($null -ne $app){$app.Quit(2)}}

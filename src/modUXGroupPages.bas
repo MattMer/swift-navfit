@@ -112,6 +112,9 @@ Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Opti
         End If
     Next
     If UXHasControl(f, "uxAddGroupReport") Then f!uxAddGroupReport.Visible = (Nz(f!uxGroupContext, 0) > 0)
+    f!uxRefreshDirectory.Visible = (Nz(f!uxGroupContext, 0) > 0)
+    f!uxRefreshDirectory.Enabled = False
+    If Nz(f!uxGroupContext, 0) > 0 Then f!uxRefreshDirectory.Enabled = Not Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & f!uxGroupContext), True)
     If UXHasControl(f, "uxCurrentExport") Then
         f!uxCurrentExport.Visible = (Nz(f!uxGroupContext, 0) > 0)
         f!uxCurrentSenior.Visible = f!uxCurrentExport.Visible: f!uxSeniorCaption.Visible = f!uxCurrentExport.Visible
@@ -134,7 +137,8 @@ Public Sub UXPositionGroupFooter(ByVal f As Access.Form)
     f!uxSeniorCaption.Top = bottom + 150
     f!uxCurrentSenior.Top = bottom + 500: f!uxCurrentExport.Top = bottom + 500
     If UXHasControl(f, "uxCurrentPDF") Then f!uxCurrentPDF.Top = bottom + 500
-    If f.Section(acDetail).Height < bottom + 1100 Then f.Section(acDetail).Height = bottom + 1100
+    f!uxRefreshDirectory.Top = bottom + 1000
+    If f.Section(acDetail).Height < bottom + 1650 Then f.Section(acDetail).Height = bottom + 1650
 End Sub
 ' Open report creation from a saved group/default baseline, refusing pending cells,
 ' unapplied bulk changes or archived groups.
@@ -216,6 +220,7 @@ Public Function CreateGroupDraft(ByVal groupID As Long, ByVal groupBaseline As S
     Set values = CreateObject("Scripting.Dictionary")
     For Each key In DraftFieldKeys(): values.Add CStr(key), Null: Next
     For Each key In UXSharedKeys(): values(CStr(key)) = UXEffectiveDefault(groupID, CStr(key)): Next
+    GroupSeniorCreationValues groupID, values
     values("OfficialName") = official: values("RankRate") = rank: values("MemberSSN") = IIf(ssn = "", Null, ssn)
     If Not IsNull(startDate) And Not IsNull(endDate) Then values("PeriodStart") = startDate: values("PeriodEnd") = endDate
     CounselingCreationDefaults values, memberID
@@ -247,6 +252,7 @@ Public Function UXGroupReportCreate() As Boolean
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     Forms!frmEditor!cmdClose.Caption = "Back to group members"
     Forms!frmEditor!uxReturnGroup = createGroup
+    Call UXEditorSiblingState: UXDirectorySourceInvalidate: UXDirectorySourceStyle
     Forms!frmEditor!cmdClose.OnClick = "=UXGroupCreatedReportClose()"
     UXGroupReportCreate = True: Exit Function
 Failed:

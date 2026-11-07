@@ -138,7 +138,7 @@ Public Function TestSignoff() As String
     For i = 0 To f!lstRevisions.ListCount - 1
         If InStr(Nz(f!lstRevisions.Column(3, i), ""), "[Draft contents disposed]") = 1 Then found = True
     Next
-    Check found And f!lstRevisions.ListCount - Abs(f!lstRevisions.ColumnHeads) = DCount("*", "ReportRevision", "ReportID=" & id), "History list missing revisions or the disposed marker"
+    Check found And f!lstRevisions.ListCount - Abs(f!lstRevisions.ColumnHeads) = DCount("*", "ReportRevision", "ReportID=" & id & " AND " & HistoryRevisionPredicate("ReportRevision")), "History list missing retained checkpoints or the disposed marker"
     Check DCount("*", "ReportEvent", "ReportID=" & id & " AND EventKind='Drafts disposed'") = 1, "Disposal event missing"
     Check Not UXDisposeDrafts(id, True), "Second disposal found drafts"
     Call UXLeaveEditor("Discard")

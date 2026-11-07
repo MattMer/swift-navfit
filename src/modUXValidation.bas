@@ -98,9 +98,15 @@ Public Function UXLiveTyped() As Boolean
 End Function
 ' Process dirty validation and due recovery work only. Failed checkpoints retain the
 ' dirty flag so a later tick retries; an unchanged editor does not scan its fields.
+'The next recovery checkpoint time. A schedule more than one interval ahead means
+'the clock went back (time zone change, daylight saving, manual correction);
+'restart the interval instead of waiting out the difference with no checkpoints.
+Public Function CheckpointSchedule(ByVal scheduled As Date, ByVal nowValue As Date) As Date
+    If scheduled = 0 Or scheduled > DateAdd("s", 30, nowValue) Then CheckpointSchedule = DateAdd("s", 30, nowValue) Else CheckpointSchedule = scheduled
+End Function
 Public Function UXLiveTimer() As Boolean
     If validationDirty Or validationDate <> Date Then Call UXLivePaint()
-    If nextCheckpoint = 0 Then nextCheckpoint = DateAdd("s", 30, Now())
+    nextCheckpoint = CheckpointSchedule(nextCheckpoint, Now())
     If Now() >= nextCheckpoint Then
         If recoveryDirty Then
             If CheckpointEditor() Then recoveryDirty = False

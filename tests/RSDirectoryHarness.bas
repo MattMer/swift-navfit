@@ -169,3 +169,30 @@ Public Function TestRSDirectory() As String
 Failed:
     TestRSDirectory = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
 End Function
+
+Public Function TestSeniorApplyDepth() As String
+    Dim senior As Long, baseline As Long, groupID As Long, id As Long, i As Long, pass As Long, fields As Object, values As Object, stage As String
+    On Error GoTo Failed
+    If DCount("*", "Workspace") = 0 Then ConfigureWorkspace "SYNTHETIC SENIOR DEPTH", "Synthetic Tester"
+    Set values = RSSeniorValues(0): values("ReportingSeniorName") = "DEPTH, S": values("ReportingSeniorSSN") = "000000888"
+    senior = RSSaveSenior(0, "Depth senior", values)
+    baseline = RSAddBaseline(senior, "E5", #1/1/2026#, 3, 7, 21)
+    For pass = 1 To 2
+        groupID = CreateSummaryGroup("Depth group " & pass, "EVAL", "E5")
+        For i = 1 To pass + 3
+            id = CommitDraft(0, "EVAL", "Depth report " & pass & ":" & i, "Depth member " & pass & ":" & i, #1/1/2026#, #12/31/2026#, "", "Depth fixture")
+            Set fields = CreateObject("Scripting.Dictionary"): fields("RankRate") = "IT2": fields("MemberSSN") = Format$(pass * 100 + i, "000000000")
+            If pass = 1 Then fields("ObservationStatus") = "NOB"
+            Call CommitSavedFields(id, CurrentRevision(id), fields, "Depth identity")
+            AddGroupMember groupID, id, "E5"
+        Next
+        RSSetGroupBaseline groupID, senior, baseline, True
+        If pass = 2 Then CurrentDb.Execute "UPDATE CommandMember SET RankRate='IT1' WHERE MemberID IN (SELECT l.MemberID FROM MemberReport AS l INNER JOIN GroupMember AS g ON l.ReportID=g.ReportID WHERE g.GroupID=" & groupID & ")", dbFailOnError
+        stage = "apply group " & pass
+        If Not UXConfirmReportFields(groupID, RSSeniorReportValues(senior), "Depth senior apply", vbYes) Then Err.Raise vbObjectError + 4900, , "Apply cancelled"
+        If DCount("*", "Report", "ReportingSeniorSSN='000000888' AND ReportID IN (SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & ")") <> pass + 3 Then Err.Raise vbObjectError + 4900, , "Incomplete senior apply"
+    Next
+    TestSeniorApplyDepth = "PASS: four NOB then five observed members; senior apply and directory sync": Exit Function
+Failed:
+    TestSeniorApplyDepth = "FAIL: " & stage & ": " & Err.Number & " " & Err.Description
+End Function

@@ -43,7 +43,10 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  If f.Width <> viewingWidth + ReportLeft + 650 Then f.Width = viewingWidth + ReportLeft + 650
  'The fixed paper canvas lives beside the application rail, never over it.
  UXNavigationLayout f, False, f.Width
- Place f, "uxContext", 250, 100, 8500, 300
+ Place f, "uxContext", 250, 100, 4700, 300
+ Place f, "uxPreviousReport", 5100, 100, 1400, 400
+ Place f, "uxNextReport", 6700, 100, 1400, 400
+ UXEditorSiblingState
  Place f, "uxReport", 250, 550, 8700, 650
  'Output actions share the top row and end at the content edge with the fields below.
  If UXHasControl(f, "uxCreatePDF") Then Place f, "uxCreatePDF", 9200, 100, 1300, 400
@@ -164,6 +167,7 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  stage = "Arrange layout"
  If Not UXFixedResize() Then GoTo Finished
  stage = "Refresh page"
+ If sheet = 9 Then f!lstRevisions.Requery
  If sheet = 8 Then UXToolsRefresh
  If sheet = 7 Then UXSortHeaders Forms!frmEditor!uxFieldSurface.Form
  stage = "Refresh editor"
@@ -295,6 +299,25 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
   End If
  Next
  f.Width = 12200: f.ScrollBars = 3
+ If f!txtCounselingDate.Visible Then
+  Set c = f!txtCounselingDate: c.Width = f!labelCounselingDate.Width
+  Place f, "uxCounselingCalendar", c.Left + c.Width - 1150, c.Top, 1150, c.Height
+  c.Width = c.Width - 1250
+  f!uxCounselingCalendar.Enabled = Not locked
+ End If
+ If f!txtReadinessDate.Visible Then
+  'Pages shown again keep their geometry: start from the caption width each time.
+  Set c = f!txtReadinessDate: c.Width = f!labelReadinessDate.Width
+  Place f, "uxReadinessCalendar", c.Left + c.Width - 800, c.Top, 800, c.Height
+  c.Width = c.Width - 860
+  f!uxReadinessCalendar.Enabled = Not locked
+ End If
+ If f!txtCounselorName.Visible Then
+  Set c = f!labelCounselorName
+  Place f, "uxCounselorPicker", c.Left, c.Top - 40, c.Width, 280
+  f!uxCounselorPicker.FontSize = 8: f!uxCounselorPicker.Enabled = Not locked
+  c.Visible = False
+ End If
  UXFixedGroupBoxes f
  If f!uxTraitGuidance.Visible Then
   For Each row In ReportPageRows(kind, page)

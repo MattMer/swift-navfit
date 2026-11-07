@@ -187,7 +187,7 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
         If text <> "" And text <> "NOB" Then graded = graded + 1
         If text = "2.0" Then twos = twos + 1
         If observed And recommendation <> "NOB" And text = "" Then VAdd findings, f, reportID, CStr(key), "Incomplete draft", "APP-TRAIT", "Choose a trait mark or NOB as appropriate before final review."
-        If Not observed And text <> "" Then VAdd findings, f, reportID, CStr(key), "Policy issue", "WHOLE-NOB", "Wholly NOB reports leave trait grades blank; review chapters 6/10 exceptions if applicable."
+        If Not observed And text <> "" And text <> "NOB" Then VAdd findings, f, reportID, CStr(key), "Policy issue", "WHOLE-NOB", "Wholly NOB reports use NOB trait marks; remove numeric grades."
         If observed And text = "1.0" And (recommendation = "Promotable" Or recommendation = "Must Promote" Or recommendation = "Early Promote") Then VAdd findings, f, reportID, CStr(key), "Policy issue", "TRAIT-RECOMMENDATION", "A 1.0 trait conflicts with a Promotable or higher recommendation."
         If observed And text = "2.0" And (recommendation = "Must Promote" Or recommendation = "Early Promote") Then VAdd findings, f, reportID, CStr(key), "Policy issue", "TRAIT-TWO", "A 2.0 trait conflicts with Must Promote or Early Promote."
         If observed And text = "2.0" And recommendation = "Promotable" Then
@@ -352,6 +352,17 @@ Public Function GroupKeysResolved(ByVal f As Object, ByVal grade As String, ByVa
     If kind <> "FITREP" And VText(f, "UnitUIC") = "" Then Exit Function
     GroupKeysResolved = True
 End Function
+'A check box never clicked is unanswered; for group consistency it means the same
+'as a cleared box (No). Other blanks stay blank so a missing value is still found.
+Private Function GroupCompareText(ByVal f As Object, ByVal key As String) As String
+    GroupCompareText = VText(f, key)
+    If UXFieldFlag(key) And GroupCompareText = "" Then GroupCompareText = "No"
+End Function
+Private Function GroupShownText(ByVal f As Object, ByVal key As String) As String
+    GroupShownText = VText(f, key)
+    If UXFieldFlag(key) And GroupShownText = "" Then GroupShownText = "No (not answered)"
+    If GroupShownText = "" Then GroupShownText = "blank"
+End Function
 Public Function ValidateLiveGroup(ByVal groupID As Long, Optional ByVal overrides As Object, Optional ByVal membersCSV As String = "@Current", Optional ByVal usePending As Boolean = True) As Collection
     Dim findings As New Collection, rows As New Collection, r As DAO.Recordset, db As DAO.Database, f As Object, item As Object, row As Object, seen As Object, ids As Object, csv As String, officerBasis As String, uicMode As String
     Dim key As Variant, value As String, id As Long, code As String, ep As Long, mp As Long, observed As Long, capacity As Object, grade As String, ldo As Boolean, unknownLDO As Boolean, nonLDO As Boolean, keysUnresolved As Boolean, keysMixed As Boolean, worn As String, expectedKind As String, severity As String
@@ -420,7 +431,7 @@ Public Function ValidateLiveGroup(ByVal groupID As Long, Optional ByVal override
     For Each key In Array("FormKind", "PromotionStatus", "PeriodEnd", "ComponentActive", "ReportRegular", "ReportConcurrent", "ReportOperationalCommander", "BilletSubcategory", "ReportingSeniorName", "ReportingSeniorSSN", "ReportingSeniorGrade", "ReportingSeniorDesignator", "ReportingSeniorTitle", "UnitUIC", "ReportingSeniorUIC", "Designator")
         Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
         For Each row In rows
-            Set f = row("Fields"): value = VText(f, CStr(key))
+            Set f = row("Fields"): value = GroupCompareText(f, CStr(key))
             If key = "ComponentActive" Then value = VComponent(f)
             If key = "PeriodEnd" And IsDate(value) Then value = Format$(CDate(value), "yyyy-mm-dd")
             If key = "Designator" Then
@@ -440,7 +451,7 @@ Public Function ValidateLiveGroup(ByVal groupID As Long, Optional ByVal override
                 If VText(f, "FormKind") = "FITREP" Then code = "GROUP-OFFICER" Else code = "GROUP-ENLISTED"
                 If key = "Designator" Then code = "GROUP-CATEGORY"
                 If key = "ReportingSeniorGrade" Or key = "ReportingSeniorDesignator" Or key = "ReportingSeniorTitle" Then severity = "Needs review": code = "NV-RS-GROUP"
-                VAdd findings, f, CLng(row("ID")), CStr(key), severity, code, "Group members differ in " & UXFieldCaption(CStr(key), VText(f, "FormKind")) & ". This report: " & VText(f, CStr(key)) & ". Verify grouping; UIC exceptions, officer categories and name variations require judgment."
+                VAdd findings, f, CLng(row("ID")), CStr(key), severity, code, "Group members differ in " & UXFieldCaption(CStr(key), VText(f, "FormKind")) & ". This report: " & GroupShownText(f, CStr(key)) & ". Verify grouping; UIC exceptions, officer categories and name variations require judgment."
             Next
         End If
     Next

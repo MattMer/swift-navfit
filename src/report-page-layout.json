@@ -182,15 +182,7 @@
         "key": "ReadinessSummary",
         "x": 6460,
         "y": 2780,
-        "w": 1500,
-        "h": 360,
-        "trait": false
-      },
-      {
-        "key": "ReadinessDate",
-        "x": 8080,
-        "y": 2780,
-        "w": 1700,
+        "w": 3320,
         "h": 360,
         "trait": false
       },
@@ -1369,15 +1361,7 @@
         "key": "ReadinessSummary",
         "x": 6460,
         "y": 2780,
-        "w": 1500,
-        "h": 360,
-        "trait": false
-      },
-      {
-        "key": "ReadinessDate",
-        "x": 8080,
-        "y": 2780,
-        "w": 1700,
+        "w": 3320,
         "h": 360,
         "trait": false
       },

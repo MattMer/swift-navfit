@@ -119,7 +119,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =6700
+            Height =7500
             Name ="Detail"
             Begin
                 Begin Label
@@ -362,6 +362,26 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    BackStyle =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =6300
+                    Width =7800
+                    Height =1100
+                    FontWeight =600
+                    BackColor =13627647
+                    ForeColor =18298
+                    Name ="uxWorkspaceWarning"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =6300
+                    LayoutCachedWidth =8200
+                    LayoutCachedHeight =7400
+                    ThemeFontIndex =-1
                 End
             End
         End

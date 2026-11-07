@@ -18,6 +18,30 @@ Private Function SaveRefused(ByVal id As Long, ByVal key As String, ByVal value 
 Refused:
     SaveRefused = InStr(Err.Description, "Pull it back to edit") > 0
 End Function
+
+Public Function TestBundledRouteAttribution() As String
+    Dim a As Long, h As Long, id As Long, template As Long, run As Long, before As Long, higher As Long, notice As String
+    On Error GoTo Failed
+    a = AddContributor("Attribution holder"): h = AddContributor("Attribution higher")
+    template = CreateRouteTemplate("Bundled attribution", a & "," & h, "")
+    id = CommitDraft(0, "EVAL", "Initial title", "Synthetic attribution", Null, Null, "")
+    run = StartRoute(id, template)
+    Check SwitchContributor(a), "Switch to attribution holder"
+    Edit id, "Title", "Holder title": before = CurrentRevision(id)
+    Check SwitchContributor(h), "Switch to attribution higher"
+    Edit id, "UnitUIC", "12345": higher = CurrentRevision(id)
+    Check DCount("*", "RevisionChange", "RevisionID=" & higher & " AND FieldKey='Title'") = 0, "Holder title wrongly attributed to higher reviewer"
+    Check RevisionRetentionKind(before) = "Protected" And RevisionRetentionKind(higher) = "Protected", "Review context ownership not preserved"
+    Check SwitchContributor(a), "Switch back to attribution holder"
+    Edit id, "Title", "Holder revised title": notice = RouteSaveNotice()
+    Check Len(notice) = 0, "Unchanged higher field wrongly flagged as overridden: " & notice
+    Edit id, "UnitUIC", "54321": notice = RouteSaveNotice()
+    Check InStr(notice, "Overrides a change by Attribution higher") > 0, "Actual higher-field override was lost"
+    Check DCount("*", "ReportRevision", "RevisionID=" & higher & " AND " & HistoryRevisionPredicate("ReportRevision")) = 0, "Technical review context cluttered checkpoint history"
+    TestBundledRouteAttribution = "PASS: bundled saves preserve holder and higher-reviewer field ownership, exact change flags and real overrides": Exit Function
+Failed:
+    TestBundledRouteAttribution = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Private Function Refused(ByVal action As String, ByVal run As Long) As Boolean
     On Error GoTo Failed
     Select Case action
@@ -124,6 +148,18 @@ Public Function TestRouteChain() As String
     Edit member, "Trait33", "4.0"
     RouteGridContext False
     Check Events(groupRun, "Grid change") = 1 And InStr(RouteFlags(groupRun), "Members grid") > 0, "Grid change not logged for the holder"
+    ' Under review a grid mark change is a visible checkpoint; outside review it is not.
+    Dim gridRevision As Long, outside As Long
+    gridRevision = CurrentRevision(member)
+    Check RevisionRetentionKind(gridRevision) = "Checkpoint" And DLookup("CheckpointReason", "RevisionRetention", "RevisionID=" & gridRevision) = "Members grid change", "Routed grid change was not kept as a checkpoint"
+    Check DCount("*", "ReportRevision", "RevisionID=" & gridRevision & " AND " & HistoryRevisionPredicate("ReportRevision")) = 1, "Routed grid change hidden from History"
+    Check RevisionHistoryLabel(gridRevision, Null) = "Checkpoint: Members grid change", "Routed grid change label"
+    outside = CommitDraft(0, "EVAL", "Unrouted member", "SYNTHETIC UNROUTED", #1/1/2026#, #9/30/2026#, "")
+    Edit outside, "Trait34", "3.0"
+    RouteGridContext True
+    Edit outside, "Trait33", "4.0"
+    RouteGridContext False
+    Check RevisionRetentionKind(CurrentRevision(outside)) = "Working", "Unrouted grid change became visible history"
     extra = CommitDraft(0, "EVAL", "Extra member", "SYNTHETIC EXTRA", #1/1/2026#, #9/30/2026#, "")
     AddGroupMember g, extra, "E5"
     Check Not RouteIsCurrent(groupRun) And UXReportState(member) = "Review needs restart", "Membership change did not stale the group route"
@@ -158,6 +194,9 @@ Public Function TestRouteChain() As String
     Check UXOpenReportTool(assigned, "Review"), "Review page did not open"
     Set f = UXReviewForm(): f!txtNote = "Forward from the page"
     Check UXReviewAction("Accept") And DLookup("CurrentStep", "RouteRun", "RunID=" & run) = 2, "Review-page Forward failed: " & f!lblStatus.Caption
+    ' A second, queued click on Forward runs after the first has moved the route on.
+    Check Not UXReviewAction("Accept") And DLookup("CurrentStep", "RouteRun", "RunID=" & run) = 2 And Len(f!lblStatus.Caption) > 0, "Repeated Forward click moved the route twice"
+    Check Events(run, "Forward") = 1, "Repeated Forward click logged a second decision"
     Check UXLeaveEditor("Discard"), "Report close after Forward"
     TestRouteChain = "PASS: " & checks & " shared-draft review chain assertions": Exit Function
 Failed:

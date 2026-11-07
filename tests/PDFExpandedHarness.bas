@@ -77,7 +77,14 @@ Public Function TestExpandedPDF(ByVal directory As String) As String
         Check MajorScalar("SELECT DraftNotes FROM Report WHERE ReportID=" & target) = "Preserve local notes", "Local notes overwritten"
         receipt = Nz(DMax("ImportReceiptID", "ImportReceipt", "ReportID=" & target), 0)
         Check MajorScalar("SELECT BeforeRevisionID FROM ImportReceipt WHERE ImportReceiptID=" & receipt) = revision, "Merge baseline provenance absent"
+        ' Undo lives in the report's History: the replaced state is a visible checkpoint.
+        Check RevisionHistoryLabel(revision, Null) = "Checkpoint: Before PDF import", "State before the import not kept as a checkpoint: " & RevisionHistoryLabel(revision, Null)
+        Check RevisionHistoryLabel(CurrentRevision(target), Null) = "Checkpoint: PDF import", "Imported state not labelled"
+        Check DCount("*", "ReportRevision", "RevisionID=" & revision & " AND " & HistoryRevisionPredicate("ReportRevision")) = 1, "State before the import hidden from History"
+        Check ImportUndoReceipt(target, revision) = receipt, "Restoring the state before the import does not undo it"
+        Check ImportUndoReceipt(target, CurrentRevision(target)) = 0 And ImportUndoReceipt(target, 0) = 0, "Unrelated restore treated as import undo"
         Check UndoNarrativeImport(receipt), "Existing guarded import undo failed"
+        Check ImportUndoReceipt(target, revision) = 0, "Undone import still offered for undo"
         Check MajorScalar("SELECT OfficialComments FROM Report WHERE ReportID=" & target) = "PREVIOUS COMMENTS", "Undo did not restore old comments"
         Check MajorScalar("SELECT ShipStation FROM Report WHERE ReportID=" & target) = "EDIT AFTER PREVIEW", "Undo lost preceding edits"
         Check Not CBool(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & target)), "Merge undo archived existing draft"

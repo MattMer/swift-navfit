@@ -170,7 +170,10 @@ plans, but they never silently override the product invariants below.
     Work on copies.
   - Blank builds stay blank, and Demos contain only synthetic data. Never put
     personnel data in tracked fixtures or send it to external services.
-  - Report history is never deleted, with one exception: draft disposal that the
+  - Retained report history is never deleted. New-policy working states may be
+    replaced atomically after a save, only when no review, signature, message,
+    preview or undo reference needs them. Existing/imported history, narrative
+    saves and workflow checkpoints are retained. A separate exception is draft disposal that the
     user confirms after Mark signed (BUPERSINST 1610.10H, enclosure (2)
     Introduction paragraph 7a). It keeps every signed revision, all
     conversations, reviews, group history and accounting, and records what it

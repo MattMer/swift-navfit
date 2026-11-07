@@ -40,14 +40,14 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.53.0 (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 44 |
-| Imports accepted | Workspaces of schema 1 to 44, into a target of schema 21 to 44 |
-| Tables / enforced relationships | 79 / 169 |
-| VBA modules / forms | 115 / 71 |
+| Application version | 0.54.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Schema version | 45 |
+| Imports accepted | Workspaces of schema 1 to 45, into a target of schema 21 to 45 |
+| Tables / enforced relationships | 80 / 169 |
+| VBA modules / forms | 118 / 72 |
 | Report fields in the catalogue | 100 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 125 / 120 |
+| Test cases / VBA test harnesses | 125 / 121 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -135,6 +135,9 @@ end and back end.
 - **Persistence is revision-based.** Each save writes a new `ReportRevision`
   with a full snapshot in `RevisionValue`, typed dates and choices in
   `RevisionDate` and `RevisionChoice`, and a field-level change log.
+  Routine working states replace their unreferenced predecessor; narrative
+  saves and workflow checkpoints are retained. Unique head identities still
+  reject stale writes even when the preceding working snapshot is removed.
   `ReportHead` points at the authoritative revision. The `Report` value columns
   are a projection cache; reads and saves stop if the cache disagrees with the
   revision.
@@ -208,7 +211,7 @@ added or removed without updating this list.
 | Member directory and rosters | `CommandMember`, `MemberReport`, `PriorEvaluation`, `PriorEvaluationTrait`, `MemberCounseling`, `MemberDeparture`, `RosterImport`, `RosterPresence`, `ReportDueDismissal` | Yes: identity, SSN, roster data (including DoD ID and contact details), prior grades, counseling, departures |
 | Reporting seniors | `ReportingSeniorRecord`, `ReportingSeniorValue`, `RSCABaseline`, `GroupRSCABaseline`, `RSCountedReport` | Yes: senior identity, SSN, contact details (including e-mail); cumulative averages |
 | Directory merge history | `DirectoryMerge`, `DirectoryMergeReport`, `DirectoryMergePrior`, `DirectoryMergeCounseling`, `DirectoryMergeSenior`, `DirectoryMergeLink` | Links between member records before and after a merge |
-| Reports and revisions | `Report`, `ReportHead`, `ReportRevision`, `RevisionValue`, `RevisionChange`, `RevisionDate`, `RevisionChoice`, `ReportEvent`, `ReportSignoff`, `DraftDisposal`, `RecoveryDraft` | Yes: every report field in every saved version, unsaved checkpoints, sign-off and disposal records |
+| Reports and revisions | `Report`, `ReportHead`, `ReportRevision`, `RevisionValue`, `RevisionChange`, `RevisionDate`, `RevisionChoice`, `RevisionRetention`, `ReportEvent`, `ReportSignoff`, `DraftDisposal`, `RecoveryDraft` | Yes: current report fields, retained versions, pending recovery checkpoints, sign-off and disposal records |
 | Imports | `ImportReceipt`, `ImportRawValue`, `WizardPreview` | Yes: raw values as imported (including SSNs) and import provenance |
 | Bulk changes and defaults | `ChangeBatch`, `ChangeItem`, `FieldDefault`, `FieldDefaultLink`, `MeetingProposal` | Yes: field values before and after a change, shared default values |
 | Validation | `ValidationRun`, `ValidationFinding`, `RulePack`, `RuleDefinition`, `TraitDefinition` | Finding messages can quote report values; rule tables hold policy only |
@@ -246,11 +249,14 @@ attempt without rewriting the earlier receipt's source identity or provenance.
 
 ### 5.4 Retention and disposal
 
-Swift deletes nothing on its own schedule. Reports are archived, not deleted,
-and every saved version is kept, because the workspace is the reporting
-senior's long-term binder. A draft that was never needed can be disposed of; the
-disposal is recorded. Disposing of the workspace file, its backups and exports
-follows the command's records and PII disposal procedures.
+Reports are archived, not deleted. A successful save replaces the superseded,
+unreferenced working snapshot created under the schema-45 policy. Narrative
+versions and workflow checkpoints are retained, along with existing/imported
+history and snapshots needed by review, undo, signing, messages or previews.
+After Mark signed, confirmed draft disposal can remove eligible draft contents;
+signed versions, conversations, group/accounting history and the disposal record
+remain. Disposing of the workspace file, its backups and exports follows the
+command's records and PII disposal procedures.
 
 ### 5.5 Items for the command's privacy officer
 
@@ -280,13 +286,24 @@ authentication: anyone who can open the file can choose any contributor. The
 active contributor cannot be deleted. Deleted contributors keep their name on
 their past work, cannot be selected, and are removed from review routes.
 
+Startup warns, without blocking, when the workspace is open from a temporary
+folder, sits in a sync-service folder (by path or cloud-file attribute), is
+read-only, or is already open in another session (from the Access lock file's
+connected-user roster, which gives computer names only). A session whose
+contributor another session changed is refused with that explanation; nothing
+is attributed to the other session's contributor.
+
 ### 6.3 Audit and accountability
 
-Every save is a revision recording the contributor and time, with a field-level
-change log. Review decisions, route events, messages, sign-offs, draft
-disposals, merges, imports and bulk changes are recorded. `AuditEvent` indexes
-these histories. History is never rewritten; restoring an older version writes
-a new revision.
+Changed saves record the current contributor and time. Retained narrative and
+checkpoint versions include field-level differences; routine working snapshots
+and their temporary change rows are replaced. Review decisions, route events,
+messages, sign-offs, draft disposals, merges, imports and bulk changes are
+recorded. `AuditEvent` indexes retained revision and domain histories. Restoring
+an older version saves its values as current without rewriting retained history.
+Members-grid saves on a report under review, and the states before and after an
+import into an existing draft, are retained checkpoints. Restoring the state before
+an import, while the import is the latest change, also marks its receipt undone.
 
 ### 6.4 Integrity
 
@@ -361,6 +378,7 @@ assets, trust boundaries and interfaces. The main residual risks:
 | Risk | Status | Owner |
 | --- | --- | --- |
 | Someone with folder access reads or changes the workspace, or picks another contributor's name | Accepted by design; controlled by folder permissions | Command |
+| Two sessions open one file, or the file sits in a temporary or synced folder | Partly mitigated: startup warns and a changed contributor is refused; one person at a time remains a procedure | Command |
 | The workspace or a backup is copied off approved storage | Command storage and handling controls | Command |
 | A modified copy of the release file circulates | Partly mitigated by published hashes; code signing planned | Maintainer and ISSM |
 | Direct table edits bypass Swift's rules | Partly mitigated by table rules and relationships; integrity hash optional | Maintainer |
@@ -371,7 +389,8 @@ Open recommendations: sign releases; optionally hash each saved revision.
 ## 8. Data integrity and recovery
 
 - Unsaved edits are checkpointed separately from saved revisions, so they
-  survive page changes, failed saves, a VBA reset and a restart.
+  survive page changes, failed saves, a VBA reset and a restart. The 30-second
+  checkpoint interval restarts if the workstation clock goes back.
 - Restoring an earlier version writes a new revision; history is never
   rewritten.
 - Draft disposal keeps the revision rows so every link stays valid.
@@ -391,6 +410,34 @@ Open recommendations: sign releases; optionally hash each saved revision.
   older schema's DDL: 8–20 exact from Git, 21 onward captured from real builds,
   1–7 reconstructed (they predate Git; undocumented column changes there are
   untested).
+
+A group directory refresh uses only confirmed member links and the selected
+reporting senior record. It confirms replacements, checks source/report/group
+versions and preview ownership, preserves unentered member values, applies
+cleared senior fields, skips signed reports and applies eligible changes atomically.
+It rechecks source versions before commit and only pulls values into reports;
+it does not enrich member profiles from older report values during this action. Gray editor fields indicate a current value match
+with a linked record; they remain editable and do not establish import provenance
+or prevent local overrides. Previous/Next uses an explicit summary group and the
+normal pending/save/cancel guards. Block 30 stores either an ISO date or the
+existing NOT REQ / NOT PERF statuses; its Calendar action stages a date without
+saving a revision. Selecting whole-report NOB stages seven NOB marks and an NOB
+promotion recommendation. Schema 45 replaces unreferenced working snapshots after routine saves. Narrative
+saves (main comments, employment, duties and Chief trait comments) and workflow
+checkpoints are retained. Current heads keep unique revision identities for stale
+write guards. Referenced snapshots remain protected for undo, review, signing,
+conversation context and import previews; pre-policy/imported history is never
+pruned. The editor history shows checkpoints and narrative saves. RevisionRetention is
+linked by application checks because ReportRevision has reached the Access index
+limit; migration rejects orphaned retention pointers. Comparisons reject replaced
+working states and clear stale values rather than treating missing snapshots as
+empty fields.
+An active route also protects context when its writer changes, preserving field
+ownership. Route flags use the fields actually changed in that save; higher,
+grid and override contexts remain protected and hidden from checkpoint history.
+An explicit clear of inherited native Block 28 records its actual prior text, even
+when the older canonical snapshot was Null; later routine saves cannot revive
+the native fallback. Imported provenance remains intact.
 
 ## 10. Testing and verification
 
@@ -560,6 +607,10 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 6 Nov 2026 | Development 0.54.0: member profile saves update the member's open draft reports (skipping signed, approved, under-review, open and paygrade-conflicting ones); reporting senior fields and block 29 are no longer defaults; CHIEFEVAL-only PFA date stored as the first of its month; ISIC save is atomic. |
+| 6 Nov 2026 | Development 0.54.0: startup location/session warnings and changed-contributor refusal (section 6.2), clock-safe recovery checkpoints (section 8), retained Members-grid review checkpoints and import undo from History (section 6.3). |
+| 4 Nov 2026 | Schema 45: replaceable working report state, retained narrative/workflow checkpoints and a visible counselor picker. |
+| 4 Nov 2026 | Development 0.54.0: senior-apply transaction ownership, NOB/date entry, source-match indication, guarded directory refresh and sibling report navigation (sections 9-10). |
 | 4 Nov 2026 | Release 0.53.0; full release gate and historical schemas 1-44 verified. |
 | 4 Nov 2026 | Schema 44: named report filters and import receipt attempts; counseling restore, ISIC import dependency order and dynamic view-family checks (sections 5.2, 9 and 10). |
 | 4 Nov 2026 | Added automatic build/test scratch retention and local path/hash cleanup manifests (section 10). |

@@ -79,7 +79,9 @@ Public Sub ApplyFieldBatch(ByVal batchID As Long)
             If r!NewIsNull Then changes.Add CStr(r!FieldKey), Null Else changes.Add CStr(r!FieldKey), r!NewValue.Value
             r.MoveNext
         Loop
-        Call CommitSavedFields(id, expected, changes, "Batch " & batchID & ": " & Left$(Nz(b!BatchNote, ""), 200))
+        'This batch already owns the guard transaction. Avoid exceeding DAO's
+        'nesting limit when a report save also refreshes its member profile.
+        Call CommitSavedFields(id, expected, changes, "Batch " & batchID & ": " & Left$(Nz(b!BatchNote, ""), 200), False)
         rev = CurrentRevision(id)
         CurrentDb.Execute "UPDATE qryChangeItemRevisionIDs SET AppliedRevision=" & rev & " WHERE BatchID=" & batchID & " AND ReportID=" & id, dbFailOnError
     Loop

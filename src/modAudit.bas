@@ -21,6 +21,12 @@ Public Function AuditRecord(ByVal source As String, ByVal id As Long, Optional B
     Dim db As DAO.Database, r As DAO.Recordset, e As DAO.Recordset, sql As String, pointer As String
     Dim report As Variant, revision As Variant, author As Variant, stamp As Variant, label As String, detail As Variant
     Dim guid As String, version As Long, existing As Variant, task As Variant, oldFolder As Variant, newFolder As Variant, caption As Variant
+    If source = "Revision" Then
+        If RevisionRetentionKind(id) = "Working" Then
+            If operation <= 0 Then Exit Function
+            CurrentDb.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & id, dbFailOnError
+        End If
+    End If
     Set db = CurrentDb
     report = Null: revision = Null: author = Null: stamp = Null: task = Null: oldFolder = Null: newFolder = Null: caption = Null: detail = Null
     Select Case source
@@ -76,6 +82,10 @@ Public Sub AuditCorrelateRevision(ByVal revision As Long, ByVal operation As Lon
     Dim db As DAO.Database
     Set db = CurrentDb
     If operation <= 0 Then Exit Sub
+    If RevisionRetentionKind(revision) = "Working" Then
+        db.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & revision, dbFailOnError
+        AuditRecord "Revision", revision, operation
+    End If
     db.Execute "UPDATE AuditEvent SET OperationID=" & operation & ",CorrelationGuid=" & QuoteSQL(CStr(MajorScalar("SELECT OperationGuid FROM OperationJournal WHERE OperationID=" & operation))) & " WHERE RevisionSourceID=" & revision & " AND OperationID Is Null", dbFailOnError
 End Sub
 

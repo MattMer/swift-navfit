@@ -5,13 +5,17 @@ Option Explicit
 Private isicID As Long, isicVersion As Long
 
 Public Function ISICSave(ByVal id As Long, ByVal expectedVersion As Long, ByVal title As String, ByVal uic As String, ByVal address As String) As Long
-    Dim r As DAO.Recordset, operation As Long
+    Dim r As DAO.Recordset, operation As Long, w As DAO.Workspace, trans As Boolean, failure As Object
     title = Trim$(title): uic = UCase$(Trim$(uic)): address = Trim$(address)
     If Len(title) = 0 Or Len(title) > 120 Then Err.Raise vbObjectError + 9901, "modISIC.ISICSave", "Enter the ISIC's name, up to 120 characters."
     If Len(uic) > 6 Or uic Like "*[!A-Z0-9]*" Then Err.Raise vbObjectError + 9902, "modISIC.ISICSave", "The UIC is up to 6 letters and digits."
     If Len(address) > 400 Then Err.Raise vbObjectError + 9903, "modISIC.ISICSave", "Keep the address within 400 characters."
     If UBound(Split(Replace(address, vbCrLf, vbLf), vbLf)) > 3 Then Err.Raise vbObjectError + 9903, "modISIC.ISICSave", "The summary letter has room for four address lines."
     If DCount("*", "ISIC", "IsArchived=False AND ISICID<>" & id & " AND Title=" & QuoteSQL(title)) > 0 Then Err.Raise vbObjectError + 9904, "modISIC.ISICSave", "Another ISIC already has this name."
+    'The ISIC and its operation record commit together; a failure leaves no row.
+    On Error GoTo Failed
+    Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
+    operation = BeginOperation("Save ISIC", title)
     If id = 0 Then
         Set r = CurrentDb.OpenRecordset("ISIC", dbOpenDynaset)
         r.AddNew: r!IsArchived = False: r!VersionCounter = 1
@@ -22,9 +26,15 @@ Public Function ISICSave(ByVal id As Long, ByVal expectedVersion As Long, ByVal 
         r.Edit: r!VersionCounter = r!VersionCounter + 1
     End If
     r!Title = title: r!UIC = IIf(Len(uic) = 0, Null, uic): r!Address = IIf(Len(address) = 0, Null, address)
-    r.Update: r.Bookmark = r.LastModified: ISICSave = r!ISICID: r.Close
-    operation = BeginOperation("Save ISIC", title)
+    r.Update: r.Bookmark = r.LastModified: ISICSave = r!ISICID: r.Close: Set r = Nothing
     FinishOperation operation, "Completed", "ISIC saved for summary letters."
+    w.CommitTrans: trans = False
+    Exit Function
+Failed:
+    Set failure = SwiftFailure("modISIC", "ISICSave", "Save ISIC", Err.Number, Err.Description, Err.Source, IIf(trans, "Active", "Not started"))
+    If Not r Is Nothing Then SwiftClose r, failure, "r"
+    If trans Then SwiftRollback w, failure
+    On Error GoTo 0: SwiftRaise failure
 End Function
 'Deleting hides the ISIC from new choices; groups that used it keep it on record.
 Public Sub ISICDelete(ByVal id As Long)
@@ -105,7 +115,7 @@ End Function
 Public Function UXISICLoad() As Boolean
     Dim f As Access.Form
     Set f = Forms!frmUXISICs
-    f!lstISICs.RowSource = "SELECT ISICID,Title AS [ISIC],Nz(UIC,'') AS [UIC] FROM ISIC WHERE IsArchived=False ORDER BY Title"
+    f!lstISICs.RowSource = "SELECT i.ISICID,i.Title AS [ISIC],IIf(i.UIC Is Null,'',i.UIC) AS [UIC] FROM ISIC AS i WHERE i.IsArchived=False ORDER BY i.Title"
     f!lstISICs.Requery
     UXISICLoad = UXISICNew()
     UXSortHeaders f
@@ -129,7 +139,7 @@ Public Function UXISICSelect() As Boolean
     UXISICSelect = True
 End Function
 Public Function UXISICSave() As Boolean
-    Dim f As Access.Form, id As Long
+    Dim f As Access.Form, id As Long, message As String
     On Error GoTo Failed
     Set f = Forms!frmUXISICs
     id = ISICSave(isicID, isicVersion, Nz(f!txtISICName, ""), Nz(f!txtISICUIC, ""), Nz(f!txtISICAddress, ""))
@@ -138,7 +148,13 @@ Public Function UXISICSave() As Boolean
     f!lblStatus.Caption = "Saved. Choose this ISIC for a group's summary letter when creating its PDFs."
     UXISICSave = True: Exit Function
 Failed:
-    Forms!frmUXISICs!lblStatus.Caption = Err.Description
+    message = Err.Description
+    Resume ShowFailure
+ShowFailure:
+    'Show the list as it is in the workspace, whatever the save did.
+    On Error Resume Next
+    Forms!frmUXISICs!lstISICs.Requery
+    Forms!frmUXISICs!lblStatus.Caption = "Not saved: " & message
 End Function
 Public Function UXISICDelete() As Boolean
     Dim f As Access.Form

@@ -50,12 +50,16 @@ Public Function TestUXWorkflows() As String
     Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Successful checkpoint trapped invalid draft on native close"
     recovery = DLookup("RecoveryDraftID", "RecoveryDraft", "ReportID=" & id)
     Check CurrentRevision(id) = revision And DLookup("MemberSSN", "RecoveryDraft", "RecoveryDraftID=" & recovery) = "123", "Native close lost raw value or changed saved revision"
+    stage = "restore invalid close checkpoint"
     Check RestoreRecoveryDraft(recovery), "Checkpointed invalid draft could not recover"
     Set f = Forms!frmEditor
     f!txtTitle = "Rejected checkpoint": UXSurfaceRefresh
+    stage = "inject checkpoint failure"
     CurrentDb.TableDefs("RecoveryDraft").Fields("DraftTitle").ValidationRule = "<> 'Rejected checkpoint'"
+    stage = "native close with rejected checkpoint"
     NativeClose "Save"
     Check CurrentProject.AllForms("frmEditor").IsLoaded And f!txtTitle = "Rejected checkpoint", "Failed checkpoint closed or lost the pending buffer"
+    stage = "remove checkpoint failure"
     CurrentDb.TableDefs("RecoveryDraft").Fields("DraftTitle").ValidationRule = ""
     f!txtTitle = "Close test": UXSurfaceRefresh
     Check EditorHasPending(), "Failed save cleared dirty state"
@@ -254,4 +258,125 @@ Public Function VerifyChiefRecovery() As String
     VerifyChiefRecovery = "PASS: all 21 Chief comments restored in a new Access session with invalid pending data": Exit Function
 Failed:
     VerifyChiefRecovery = "FAIL: " & Err.Number & " " & Err.Description
+End Function
+
+Private Function RejectDirectoryPlan(ByVal plan As Object) As Boolean
+    On Error GoTo Rejected
+    Call ApplyGroupDirectoryPlan(plan)
+    Exit Function
+Rejected:
+    RejectDirectoryPlan = True
+End Function
+
+Public Function TestDirectoryActions() As String
+    Dim groupID As Long, senior As Long, a As Long, b As Long, memberA As Long, memberB As Long, fields As Object, values As Object
+    Dim plan As Object, key As Variant, findings As Collection, finding As Object, revision As Long, total As Long, stage As String, rule As String, view As Access.AccessObject
+    On Error GoTo Failed
+    stage = "fixture"
+    If DCount("*", "Workspace") = 0 Then ConfigureWorkspace "SYNTHETIC DIRECTORY ACTIONS", "Tester"
+    memberA = SaveDirectoryMember(0, 0, "Directory Alpha", "ALPHA, DIRECTORY", "IT2", "000007001")
+    memberB = SaveDirectoryMember(0, 0, "Directory Beta", "BETA, DIRECTORY", "IT2", "000007002")
+    DirectoryCreationContext memberA
+    a = CommitDraft(0, "EVAL", "Directory A", "Directory Alpha", #1/1/2026#, #12/31/2026#, "")
+    DirectoryCreationContext memberB
+    b = CommitDraft(0, "EVAL", "Directory B", "Directory Beta", #1/1/2026#, #12/31/2026#, "")
+    DirectoryCreationContext 0
+    groupID = CreateSummaryGroup("Directory refresh", "EVAL", "E5"): AddGroupMember groupID, a, "E5": AddGroupMember groupID, b, "E5"
+    Set values = RSSeniorValues(0): values("ReportingSeniorName") = "DIRECTORY, R": values("ReportingSeniorSSN") = "000007099": values("ReportingSeniorTitle") = "CO"
+    senior = RSSaveSenior(0, "Directory actions senior", values)
+    RSSetGroupBaseline groupID, senior, 0, True
+    stage = "refresh"
+    Check UXShowGroupMembers(groupID), "Group members unavailable"
+    Check Forms!frmUXComparison!uxRefreshDirectory.Visible, "Update records action missing"
+    total = DCount("*", "ReportRevision")
+    Check Not UXGroupDirectoryRefresh("frmUXComparison", vbNo) And DCount("*", "ReportRevision") = total, "Cancelled refresh wrote revisions"
+    Check UXGroupDirectoryRefresh("frmUXComparison", vbYes), "Confirmed refresh failed: " & Forms!frmUXComparison!lblStatus.Caption
+    Check DLookup("OfficialName", "Report", "ReportID=" & a) = "ALPHA, DIRECTORY", "Member name not copied"
+    Check DLookup("MemberSSN", "Report", "ReportID=" & b) = "000007002", "Member SSN not copied"
+    Check DLookup("ReportingSeniorSSN", "Report", "ReportID=" & b) = "000007099", "Senior not copied"
+    total = DCount("*", "ReportRevision")
+    Check UXGroupDirectoryRefresh("frmUXComparison", vbYes) And DCount("*", "ReportRevision") = total, "No-op refresh wrote revisions"
+    CurrentDb.Execute "UPDATE CommandMember SET RankRate='GM2',VersionCounter=VersionCounter+1 WHERE MemberID=" & memberB, dbFailOnError
+    Set plan = GroupDirectoryPlan(groupID)
+    CurrentDb.Execute "UPDATE CommandMember SET VersionCounter=VersionCounter+1 WHERE MemberID=" & memberB, dbFailOnError
+    Check RejectDirectoryPlan(plan) And DCount("*", "ReportRevision") = total, "Stale member version accepted"
+    Check ApplyGroupDirectoryPlan(GroupDirectoryPlan(groupID)) = 1, "Fresh member retry failed"
+    Check DLookup("RankRate", "Report", "ReportID=" & b) = "GM2", "Updated member rate not applied"
+    stage = "rollback"
+    values("ReportingSeniorName") = "ROLLBACK": values("ReportingSeniorTitle") = Null
+    Call RSSaveSenior(senior, "Directory actions senior", values, 1)
+    Check UXCloseComparison(False), "Could not close grid for failure injection"
+    For Each view In CurrentProject.AllForms
+        If view.IsLoaded Then DoCmd.Close acForm, view.Name, acSaveNo
+    Next
+    rule = CurrentDb.TableDefs("Report").ValidationRule
+    CurrentDb.TableDefs("Report").ValidationRule = "ReportID<>" & b & " Or ReportingSeniorName<>'ROLLBACK'"
+    total = DCount("*", "ReportRevision"): Set plan = GroupDirectoryPlan(groupID)
+    Check RejectDirectoryPlan(plan), "Late member failure accepted"
+    Check DCount("*", "ReportRevision") = total And DLookup("ReportingSeniorName", "Report", "ReportID=" & a) = "DIRECTORY, R", "Late failure left partial group changes"
+    CurrentDb.TableDefs("Report").ValidationRule = rule
+    Check ApplyGroupDirectoryPlan(GroupDirectoryPlan(groupID)) = 2, "Retry after rollback failed"
+    Check IsNull(DLookup("ReportingSeniorTitle", "Report", "ReportID=" & a)), "Cleared senior detail retained an old senior value"
+    stage = "pull-only refresh"
+    CurrentDb.Execute "UPDATE CommandMember SET ReportName=Null,MemberSSN=Null,VersionCounter=VersionCounter+1 WHERE MemberID=" & memberB, dbFailOnError
+    values("ReportingSeniorTitle") = "UPDATED CO": Call RSSaveSenior(senior, "Directory actions senior", values, 2)
+    Set plan = GroupDirectoryPlan(groupID)
+    plan("Owner") = -1
+    Check RejectDirectoryPlan(plan), "Different contributor accepted another contributor's refresh"
+    Check ApplyGroupDirectoryPlan(GroupDirectoryPlan(groupID)) = 2, "Pull-only refresh failed"
+    Check IsNull(DLookup("ReportName", "CommandMember", "MemberID=" & memberB)) And IsNull(DLookup("MemberSSN", "CommandMember", "MemberID=" & memberB)), "Refresh wrote old draft values back to member profile"
+    Check DLookup("OfficialName", "Report", "ReportID=" & b) = "BETA, DIRECTORY" And DLookup("MemberSSN", "Report", "ReportID=" & b) = "000007002", "Blank member fields cleared saved report data"
+    Check DLookup("ReportingSeniorTitle", "Report", "ReportID=" & b) = "UPDATED CO", "Pull-only refresh omitted senior data"
+    stage = "source styling"
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(a)
+    Forms!frmEditor!uxReturnGroup = groupID: Call UXEditorContextChanged: UXDirectorySourceInvalidate
+    Check UXRefreshEditor(), "Editor source refresh failed"
+    Check Forms!frmEditor!uxFieldSurface.Form!txtOfficialName.BackColor = UXColor("Inherited"), "Member-derived cell not gray"
+    Check Not Forms!frmEditor!uxFieldSurface.Form!txtOfficialName.Locked, "Source match became an edit lock"
+    Check UXSurfaceSetValue("OfficialName", "LOCAL OVERRIDE"), "Source override failed"
+    Check Forms!frmEditor!uxFieldSurface.Form!txtOfficialName.BackColor <> UXColor("Inherited"), "Override still marked as a source match"
+    Check UXLeaveEditor("Discard"), "Override discard failed"
+    stage = "navigation"
+    DoCmd.OpenForm "frmEditor", , , , , , CStr(a)
+    Forms!frmEditor!uxReturnGroup = groupID: Check UXEditorSiblingState(), "Sibling state failed"
+    Check Not Forms!frmEditor!uxPreviousReport.Enabled And Forms!frmEditor!uxNextReport.Enabled, "First report navigation bounds incorrect"
+    Forms!frmEditor!txtNotes = "Sibling pending notes": Call UXEditorChanged
+    Check Not UXEditorSiblingMove(1, "Cancel") And Forms!frmEditor!txtReportID = a, "Cancel left the report"
+    Check UXEditorSiblingMove(1, "Save"), "Next report failed"
+    Check Forms!frmEditor!txtReportID = b And DLookup("DraftNotes", "Report", "ReportID=" & a) = "Sibling pending notes", "Next lost saved pending values"
+    Check Forms!frmEditor!uxPreviousReport.Enabled And Not Forms!frmEditor!uxNextReport.Enabled, "Last report navigation bounds incorrect"
+    Check UXEditorSiblingMove(-1), "Previous report failed"
+    stage = "sorted navigation"
+    ' Previous/Next follow the order the Members table showed when the report opened.
+    Check UXLeaveEditor("Discard"), "Leave before sorted navigation"
+    Check UXShowGroupMembers(groupID), "Members view for sorted navigation"
+    Check UXSortGrid("ReportID") And UXSortGrid("ReportID"), "Members table sort failed"
+    Forms!frmUXComparison!uxTraitGrid.Form.Recordset.MoveFirst
+    Check Forms!frmUXComparison!uxTraitGrid.Form!ReportID = b, "Descending sort did not put report B first"
+    Check UXGridOpenReport(), "Open from the sorted Members view failed"
+    Check Forms!frmEditor!txtReportID = b And Not Forms!frmEditor!uxPreviousReport.Enabled And Forms!frmEditor!uxNextReport.Enabled, "Previous/Next ignore the Members view's sort"
+    Check UXEditorSiblingMove(1) And Forms!frmEditor!txtReportID = a, "Next did not follow the sorted order"
+    Check Forms!frmEditor!uxPreviousReport.Enabled And Not Forms!frmEditor!uxNextReport.Enabled, "Sorted order bounds incorrect"
+    stage = "whole NOB"
+    revision = CurrentRevision(a)
+    Forms!frmEditor!uxFieldSurface.Form.Controls(UXFieldControl("ObservationStatus")) = True
+    Check UXSurfaceEdited("ObservationStatus"), "Whole NOB checkbox failed"
+    For Each key In TraitKeys(): Check Forms!frmEditor.Controls(UXFieldControl(CStr(key))) = "NOB", "Whole NOB did not set every mark": Next
+    Check CurrentRevision(a) = revision, "NOB checkbox saved prematurely"
+    Check UXSaveEditor(), "NOB save failed"
+    Set fields = SavedFields(a): Set findings = ValidateLiveFields(fields, a)
+    For Each finding In findings
+        Check Not (finding("Code") = "WHOLE-NOB" And IsTraitKey(CStr(finding("Key")))), "Explicit NOB trait rejected"
+    Next
+    Check UXLeaveEditor(), "NOB editor close failed"
+    CurrentDb.Execute "UPDATE Report SET WorkflowState='Signed' WHERE ReportID=" & b, dbFailOnError
+    values("ReportingSeniorName") = "AFTER SIGNED": Call RSSaveSenior(senior, "Directory actions senior", values, 3)
+    Set plan = GroupDirectoryPlan(groupID): Check plan("Signed") = 1, "Signed report not skipped"
+    Check ApplyGroupDirectoryPlan(plan) = 1 And DLookup("ReportingSeniorName", "Report", "ReportID=" & b) = "ROLLBACK", "Refresh changed signed report"
+    TestDirectoryActions = "PASS: directory refresh, stale guard, atomic rollback, source styling, sibling navigation and whole NOB": Exit Function
+Failed:
+    TestDirectoryActions = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
+    On Error Resume Next
+    If rule <> "" Or stage = "rollback" Then CurrentDb.TableDefs("Report").ValidationRule = rule
+    DirectoryCreationContext 0
 End Function

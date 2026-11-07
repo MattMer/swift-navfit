@@ -35,7 +35,8 @@ Public Function UXListCell(ByVal value As Variant) As String
 End Function
 Public Function UXViewContracts(ByVal view As String) As Variant
     Select Case view
-        Case UX_EDITOR_VIEW: UXViewContracts = Array("cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface", "uxRecoverySession", "uxRecoveryRevision", "uxReturnGroup")
+        Case "frmUXCounselingDate": UXViewContracts = Array("txtDate", "cmdSave|OnClick|=UXCounselingCalendarUse()", "cmdCancel", "lblStatus")
+        Case UX_EDITOR_VIEW: UXViewContracts = Array("uxPreviousReport", "uxNextReport", "cmdSave|OnClick|=UXSaveEditor()", "txtReportID", "cboKind", "lblSaved", "lblRecovery", "uxFrontPage", "uxBackPage", "uxToolsSurface", "uxRecoverySession", "uxRecoveryRevision", "uxReturnGroup")
         Case UX_MEMBERS_VIEW: UXViewContracts = Array("uxTraitGrid|SourceObject|Form.frmUXTraitRows", "uxGroupContext", "txtMeeting", "lblStatus", "cmdRetryCells|OnClick|=UXGridDrain()", "cmdDiscardCells|OnClick|=UXGridDiscardPending()", "uxCurrentExport|OnClick|=UXCurrentGroupTool(""frmUXComparison"",""Export"")", "uxCurrentPDF|OnClick|=PDFOutputOpenGroup(""frmUXComparison"")")
         Case "frmMyWork": UXViewContracts = Array("lstWork|AfterUpdate|=UXWorkSelection()", "lstWork|OnDblClick|=UXWorkOpen()", "cmdOpenWork|OnClick|=UXWorkOpen()", "cmdDraft|OnClick|=UXWorkOpen(True)", "cmdRefresh|OnClick|=LoadMyWork()", "uxContributor", "chkAll", "txtHistory", "txtNotes", "uxWorkStatus", "cmdAccept|OnClick|=FinishReviewUI(""Accepted"")", "cmdReturn|OnClick|=FinishReviewUI(""Returned"")", "cmdCancel|OnClick|=FinishReviewUI(""Cancelled"")")
         Case "frmUXNativeGroups": UXViewContracts = Array("cmdPreview|OnClick|=UXPreviewNativeGroups()", "cmdApply|OnClick|=UXApplyNativeGroups()", "cmdBack|OnClick|=UXCloseNativeGroups()", "cmdAssignImportGrade|OnClick|=UXAssignNativeGroupGrade()", "lstGroups|OnClick|=UXNativeGroupSelectionChanged()", "txtSource", "txtPreview", "lblStatus", "cboImportGrade")
@@ -321,6 +322,7 @@ Public Function UXLeaveEditor(Optional ByVal decision As String = "") As Boolean
     If Not UXPrepareEditorClose(decision) Then Exit Function
     On Error GoTo Finished
     editorCloseAuthorized = True
+    If CurrentProject.AllForms("frmUXCounselingDate").IsLoaded Then DoCmd.Close acForm, "frmUXCounselingDate", acSaveNo
     If CurrentProject.AllForms("frmUXValidation").IsLoaded Then DoCmd.Close acForm, "frmUXValidation", acSaveNo
     DoCmd.Close acForm, "frmEditor", acSaveNo
     UXLeaveEditor = True
@@ -435,6 +437,7 @@ Public Function UXFieldChanged(ByVal controlName As String, ByVal key As String)
     value = f.Controls(controlName).Value
     If key = "ObservationStatus" Then
         If IsNull(value) Then f!cboObservationStatus = Null Else If value Then f!cboObservationStatus = "NOB" Else f!cboObservationStatus = "Observed"
+        If Nz(f!cboObservationStatus, "") = "NOB" Then UXSetWholeNOB Else UXClearWholeNOB
     Else
         If IsNull(value) Then f.Controls("txt" & key) = Null Else If value Then f.Controls("txt" & key) = "Yes" Else f.Controls("txt" & key) = "No"
     End If
@@ -486,6 +489,7 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
     Else
         f!uxSGA.Caption = "Summary Group Average: " & IIf(groups > 1, "choose the explicit group context", "not assigned to a group")
     End If
+    UXEditorSiblingState
     editorContextReport = id: editorContextGroup = Nz(f!uxGroup, 0): editorContextDirty = False
     End If
     For Each c In f.Controls
@@ -538,6 +542,7 @@ Public Function UXSaveEditor() As Boolean
         End If
     End If
     saved = SaveEditor(): UXSaveEditor = saved
+    If saved Then UXForgetWholeNOB
     If Not UXRefreshEditor() Then
         'The surface reported its own failure before the save outcome was known.
         Set context = SwiftLastFailureContext()

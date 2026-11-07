@@ -259,7 +259,7 @@ Public Function UXResizeWorkspace(ByVal formName As String, Optional ByVal viewp
     UXVisualSet f, "ScrollBars", 2: UXVisualSet f, "Width", width - 100
     UXPositionGroupFooter f
     If UXHasControl(f, "uxCurrentExport") Then
-        If f!uxCurrentExport.Visible Then bottom = f!uxCurrentExport.Top + f!uxCurrentExport.Height
+        If f!uxCurrentExport.Visible Then bottom = f!uxRefreshDirectory.Top + f!uxRefreshDirectory.Height
     End If
     'The rail runs the full window height even when the content is shorter.
     bottom = bottom + 300: If bottom < height - 15 Then bottom = height - 15

@@ -13,7 +13,7 @@ Begin Form
     ItemSuffix =26
     Right =19725
     Bottom =13245
-    Caption ="Operations and import undo"
+    Caption ="Operation history"
     OnActivate ="=UXSortActivate(\"frmOperations\")"
     OnResize ="=UXHelpResize(\"frmOperations\",\"\")"
     OnLoad ="=LoadOperations()"
@@ -129,7 +129,7 @@ Begin Form
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
-                    Caption ="Operations and import undo"
+                    Caption ="Operation history"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =250
@@ -144,17 +144,18 @@ Begin Form
                     Left =400
                     Top =950
                     Width =12600
-                    Height =750
+                    Height =1000
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
                     Caption ="Started entries may represent interrupted work. Inspect receipts before retrying"
-                        ". Undo preserves history and refuses later edits."
+                        ". To undo an import, open the report's History and restore the state before the "
+                        "import, or archive a draft the import created."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =1700
+                    LayoutCachedHeight =1950
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -294,51 +295,12 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =400
-                    Top =10000
-                    Width =6150
-                    Height =500
-                    FontSize =10
-                    TabIndex =3
-                    ForeColor =4205854
-                    Name ="cmdUndo"
-                    Caption ="Undo selected import"
-                    OnClick ="=UndoImportUI()"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =10000
-                    LayoutCachedWidth =6550
-                    LayoutCachedHeight =10500
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
                     Left =6850
                     Top =10000
                     Width =6150
                     Height =500
                     FontSize =10
-                    TabIndex =4
+                    TabIndex =3
                     ForeColor =4205854
                     Name ="cmdReview"
                     Caption ="Acknowledge selected incomplete operation"
@@ -377,7 +339,7 @@ Begin Form
                     Width =6150
                     Height =500
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =4
                     ForeColor =4205854
                     Name ="cmdProvenance"
                     Caption ="Inspect selected import provenance"
@@ -416,7 +378,7 @@ Begin Form
                     Width =6150
                     Height =500
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =5
                     ForeColor =4205854
                     Name ="cmdHome"
                     Caption ="Home"
@@ -451,11 +413,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =10650
+                    Top =10000
                     Width =6150
                     Height =500
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =6
                     ForeColor =4205854
                     Name ="cmdUndoBatch"
                     Caption ="Undo selected folder operation"
@@ -463,9 +425,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =10650
+                    LayoutCachedTop =10000
                     LayoutCachedWidth =6550
-                    LayoutCachedHeight =11150
+                    LayoutCachedHeight =10500
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -493,7 +455,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =8
+                    TabIndex =7
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"
@@ -728,7 +690,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =100
                     Height =100
-                    TabIndex =9
+                    TabIndex =8
                     Name ="uxSortActivateOriginal"
                     DefaultValue ="\"=UXVisualEvent(\"\"frmOperations\"\",\"\"LoadOperations()\"\")\""
 
@@ -744,7 +706,7 @@ Begin Form
                     Top =13000
                     Width =12600
                     Height =2500
-                    TabIndex =10
+                    TabIndex =9
                     Name ="lstAudit"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;2000;2700;2200;900;4400"

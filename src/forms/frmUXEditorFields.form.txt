@@ -2928,14 +2928,15 @@ Begin Form
                     TabIndex =43
                     BorderColor =13285543
                     ForeColor =4205854
+                    ShowDatePicker =0
                     Name ="txtCounselingDate"
-                    Format ="yyyy-mm-dd"
+                    Format ="@"
                     AfterUpdate ="=UXSurfaceEdited(\"CounselingDate\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselingDate"
-                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD. Authorized counseling statu"
-                        "s text is also supported."
+                    ControlTipText ="Enter YYYY-MM-DD, NOT REQ or NOT PERF; Calendar chooses a date."
+
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3201,13 +3202,14 @@ Begin Form
                     TabIndex =47
                     BorderColor =13285543
                     ForeColor =4205854
+                    ShowDatePicker =0
                     Name ="txtReadinessDate"
-                    Format ="yyyy-mm-dd"
+                    Format ="@"
                     AfterUpdate ="=UXSurfaceEdited(\"ReadinessDate\")"
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReadinessDate"
-                    ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
+                    ControlTipText ="Enter the month and year as MM/YY; Calendar chooses a date."
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -7024,6 +7026,82 @@ Begin Form
                     LayoutCachedHeight =2000
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =1000
+                    Top =200
+                    Width =1150
+                    Height =400
+                    FontSize =10
+                    TabIndex =103
+                    Name ="uxCounselingCalendar"
+                    Caption ="Calendar"
+                    OnClick ="=UXCounselingCalendarOpen()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =13400
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =1000
+                    Top =200
+                    Width =1150
+                    Height =400
+                    FontSize =10
+                    TabIndex =104
+                    Name ="uxCounselorPicker"
+                    Caption ="31. Counselor..."
+                    OnClick ="=UXPickPerson(\"CounselorName\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =13400
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =1000
+                    Top =200
+                    Width =1150
+                    Height =400
+                    FontSize =10
+                    TabIndex =105
+                    Name ="uxReadinessCalendar"
+                    Caption ="Pick..."
+                    OnClick ="=UXReadinessCalendarOpen()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Choose the PFA date from a calendar"
+
+                    LayoutCachedLeft =13400
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
                 End
             End
         End

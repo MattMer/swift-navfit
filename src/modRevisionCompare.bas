@@ -7,6 +7,10 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
     recorded = Not r.EOF
     If Not recorded Then
+        If PersistenceCount("ReportRevision", "RevisionID=" & revisionID) = 0 Then
+            r.Close
+            Err.Raise vbObjectError + 807, "modRevisionCompare.SavedValue", "The saved working state changed. Close and reopen comparison against the current report."
+        End If
         If CatalogueFieldVersion(key) > 1 Then
             If Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID), 0) >= CatalogueFieldVersion(key) Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Revision snapshot is missing a required catalogue field: " & key
             SavedValue = Null: r.Close: Exit Function
@@ -78,7 +82,7 @@ Public Function OpenRevisionComparison(ByVal reportID As Long, ByVal older As Lo
         !lblOlder.Caption = "Selected saved revision " & DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & older)
         !lblNewer.Caption = "Compared saved revision " & DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & newer)
     End With
-    Call RefreshComparisonFields()
+    If Not RefreshComparisonFields() Then Exit Function
     Forms!frmRevisionCompare.SetFocus
     OpenRevisionComparison = True
 End Function
@@ -93,6 +97,7 @@ End Function
 
 Public Function RefreshComparisonFields() As Boolean
     Dim f As Form, key As Variant, status As String, changed As Long, shown As Long
+    On Error GoTo Failed
     Set f = Forms!frmRevisionCompare
     f!lstCompareFields.RowSourceType = "Value List": f!lstCompareFields.RowSource = ""
     For Each key In DraftFieldKeys()
@@ -111,7 +116,10 @@ Public Function RefreshComparisonFields() As Boolean
     Else
         f!txtOldValue = "No changed fields. Uncheck Changed fields only to inspect all fields."
     End If
-    RefreshComparisonFields = True
+    RefreshComparisonFields = True: Exit Function
+Failed:
+    f!lstCompareFields.RowSource = "": f!txtOldValue = "": f!txtNewValue = ""
+    f!lblSummary.Caption = Err.Description
 End Function
 
 Private Function ComparisonFieldLabel(ByVal key As String) As String
@@ -154,11 +162,14 @@ End Function
 
 Public Function LoadComparisonValues() As Boolean
     Dim f As Form, key As String
+    On Error GoTo Failed
     Set f = Forms!frmRevisionCompare: key = Nz(f!lstCompareFields, "")
     If key = "" Then Exit Function
     f!txtOldValue = DisplayValue(CLng(f!txtOlder), key)
     f!txtNewValue = DisplayValue(CLng(f!txtNewer), key)
-    LoadComparisonValues = True
+    LoadComparisonValues = True: Exit Function
+Failed:
+    f!txtOldValue = "": f!txtNewValue = "": f!lblSummary.Caption = Err.Description
 End Function
 
 Public Function CloseRevisionComparison() As Boolean

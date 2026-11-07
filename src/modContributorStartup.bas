@@ -42,8 +42,24 @@ End Function
 Public Function ActiveContributorID() As Long
  'Historical directory backfill retains its source actor; it never confirms a session.
  If compatibilityContributor > 0 Then ActiveContributorID = compatibilityContributor: Exit Function
- If Not HasActiveContributor() Then Err.Raise vbObjectError + 8900, "ActiveContributorID", "Choose your contributor for this session before making changes."
+ If Not HasActiveContributor() Then Err.Raise vbObjectError + 8900, "ActiveContributorID", ContributorSessionProblem()
  ActiveContributorID = CLng(TempVars("SwiftContributorID").Value)
+End Function
+
+'Explain a lost session. When this session's own selection is intact but the
+'workspace's retained contributor changed, another session on the file chose it.
+Public Function ContributorSessionProblem() As String
+ Dim profile As Long, retained As Long
+ ContributorSessionProblem = "Choose your contributor for this session before making changes."
+ On Error GoTo Finished
+ profile = CLng(TempVars("SwiftContributorID").Value)
+ If profile < 1 Then Exit Function
+ If StrComp(CStr(TempVars("SwiftContributorPath").Value), CurrentProject.FullName, vbTextCompare) <> 0 Then Exit Function
+ If CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), "")) <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
+ retained = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
+ If retained = profile Or retained = 0 Then Exit Function
+ ContributorSessionProblem = "Another Swift NAVFIT session on this workspace chose " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & retained), "a different contributor") & ". Only one person can use the file at a time. Unsaved edits stay open here. Close the other session, then choose your contributor again from My Work > Contributors."
+Finished:
 End Function
 
 Public Function MigrateDirectoryCompatibility() As Long
@@ -71,6 +87,7 @@ Public Function LoadContributorStartup() As Boolean
   !txtNewContributor = Null
   !lblStatus.Caption = "Choose your name for this launch, or add a contributor."
  End With
+ UXWorkspaceSafetyPaint "frmContributorStart"
  LoadContributorStartup = True
 End Function
 

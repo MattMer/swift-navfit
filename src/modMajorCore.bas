@@ -59,11 +59,13 @@ Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As V
     For i = 0 To UBound(keys): result(i) = values(CStr(keys(i))): Next
     FieldsSubset = result
 End Function
-Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal changes As Object, ByVal reason As String) As Long
+Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal changes As Object, ByVal reason As String, Optional ByVal ownTransaction As Boolean = True, Optional ByVal syncDirectory As Boolean = True) As Long
+    'False is reserved for callers that already own the entire guarded batch.
     Dim db As DAO.Database, r As DAO.Recordset, values As Object, key As Variant, w As DAO.Workspace, failure As Long, message As String, stage As String
     On Error GoTo Failed
     stage = "Begin guarded transaction"
-    Set w = DBEngine.Workspaces(0): w.BeginTrans
+    Set w = DBEngine.Workspaces(0)
+    If ownTransaction Then w.BeginTrans
     stage = "Revision guard": Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT CurrentRevisionID,IsArchived,WorkflowState FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then r.Close: Err.Raise vbObjectError + 4002, "modMajorCore.CommitSavedFields", "Report does not exist."
@@ -87,13 +89,14 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
     stage = "Normal draft commit"
     CommitSavedFields = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values)
-    w.CommitTrans: Exit Function
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values, syncDirectory:=syncDirectory)
+    If ownTransaction Then w.CommitTrans
+    Exit Function
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modMajorCore", "CommitSavedFields", stage, Err.Number, Err.Description, Err.Source, "Unknown")
     failure = CLng(swiftPrimary("Number")): message = stage & ": " & CStr(swiftPrimary("Description"))
-    SwiftRollback w, swiftPrimary
+    If ownTransaction Then SwiftRollback w, swiftPrimary
     If Not r Is Nothing Then SwiftClose r, swiftPrimary, "r"
     On Error GoTo 0
     SwiftRaise swiftPrimary

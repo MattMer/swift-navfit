@@ -44,6 +44,7 @@ Public Function MarkReportSigned(ByVal reportID As Long, ByVal expectedRevision 
     If Nz(r!CurrentRevisionID, 0) = 0 Or r!CurrentRevisionID <> expectedRevision Then Err.Raise vbObjectError + 9603, "modSignoff.MarkReportSigned", "The saved report changed. Reopen it and check the signed version again."
     r.Close
     If DateValue(signedOn) > Date Then Err.Raise vbObjectError + 9604, "modSignoff.MarkReportSigned", "The signed date cannot be in the future."
+    RetainReportCheckpoint reportID, "Marked signed"
     operation = BeginOperation("Mark report signed", "Report " & reportID & "; revision " & expectedRevision & "; signed " & Format$(signedOn, "yyyy-mm-dd"))
     Set s = CurrentDb.OpenRecordset("ReportSignoff", dbOpenDynaset)
     s.AddNew: s!SignoffGuid = NewIdentity(): s!ReportID = reportID: s!SignedRevisionID = expectedRevision: s!SignedOn = DateValue(signedOn)
@@ -286,6 +287,8 @@ Private Sub UXSignoffRefresh(ByVal reportID As Long)
                 GoTo RefreshFailed
             End If
             Forms!frmEditor!uxLocked.Caption = SignedReportCaption(reportID)
+            stage = "History refresh"
+            Forms!frmEditor!lstRevisions.Requery
         End If
     End If
     stage = "Comparison refresh"

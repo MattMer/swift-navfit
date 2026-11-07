@@ -168,3 +168,36 @@ Public Function TestNAVFITNonblocking(ByVal directory As String, ByVal template 
 Failed:
     TestNAVFITNonblocking = "FAIL: " & Err.Number & " " & Err.Source & " " & Err.Description
 End Function
+
+'Narrative pasted from Word: curly quotes, dashes, ellipsis, bullet, non-breaking
+'space, paragraph and soft line breaks. NAVFIT98A validates characters only in
+'blocks 2 and 3, so the export must carry the saved text exactly.
+Public Function TestNAVFITPastedText(ByVal directory As String, ByVal template As String) As String
+    Dim pasted As String, copy As Long, values As Object, native As DAO.Database, r As DAO.Recordset, file As String, exported As Variant, i As Long
+    On Error GoTo Failed
+    checks = 0
+    pasted = "Led " & ChrW(8220) & "Bravo" & ChrW(8221) & " section" & ChrW(8217) & "s 24" & ChrW(8211) & "hour watch" & ChrW(8212) & "zero mishaps" & ChrW(8230) & ChrW(160) & ChrW(8226) & " Qualified EOOW." & vbCrLf & "Second paragraph" & Chr$(11) & "after a soft break."
+    copy = DuplicateDraft(1)
+    Set values = SavedFields(copy)
+    values("OfficialComments") = pasted
+    Call NAVFITCommitFields(copy, values, "Synthetic pasted text", "Pasted text test")
+    Check StrComp(Nz(SavedFields(copy)("OfficialComments"), ""), pasted, vbBinaryCompare) = 0, "Saving changed pasted narrative text"
+    file = directory & "\pasted-text.accdb"
+    Check NAVFITExportReport(copy, file, template) = file, "Pasted narrative blocked export"
+    Set native = DBEngine.OpenDatabase(file, False, True)
+    Set r = native.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+    Check Not r.EOF, "Exported report missing"
+    exported = NAVFITReadFields(r, 2000)("OfficialComments")
+    r.Close: native.Close: Set native = Nothing
+    If StrComp(Nz(exported, ""), pasted, vbBinaryCompare) <> 0 Then
+        For i = 1 To Len(pasted)
+            If Mid$(Nz(exported, ""), i, 1) <> Mid$(pasted, i, 1) Then Exit For
+        Next
+        Check False, "Export changed pasted text at character " & i & ": saved U+" & Hex$(AscW(Mid$(pasted, i, 1) & " ")) & ", exported U+" & Hex$(AscW(Mid$(Nz(exported, "") & " ", i, 1)))
+    End If
+    checks = checks + 1
+    TestNAVFITPastedText = "PASS: " & checks & " Word-pasted narrative save/export assertions": Exit Function
+Failed:
+    If Not native Is Nothing Then native.Close
+    TestNAVFITPastedText = "FAIL: " & Err.Number & " " & Err.Description
+End Function

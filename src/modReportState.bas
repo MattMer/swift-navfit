@@ -48,7 +48,7 @@ Public Sub ValidateCatalogueField(ByVal key As String, ByVal value As Variant)
         If VarType(value) <> vbString Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires text or Null."
         If UXFieldLimit(key) > 0 And Len(value) > UXFieldLimit(key) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " exceeds its canonical field limit."
         If UXFieldDate(key) And Len(value) > 0 Then
-            If Not IsValidIsoDate(CStr(value)) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires a real ISO date."
+            If Not IsValidIsoDate(CStr(value)) And Not (key = "CounselingDate" And IsCounselingStatus(CStr(value))) Then Err.Raise vbObjectError + 8910, "modReportState.ValidateCatalogueField", key & " requires a real ISO date (counseling also accepts NOT REQ / NOT PERF)."
         End If
     End If
     options = UXFieldOptions(key)
@@ -299,6 +299,7 @@ Public Sub AssertDefaultLink(ByVal defaultID As Long)
 End Sub
 
 Public Sub MigrateReportState()
+    AssertRevisionRetention
     Dim db As DAO.Database, r As DAO.Recordset, id As Long
     Set db = CurrentDb
     Set r = db.OpenRecordset("SELECT ReportID,CurrentRevisionID FROM Report", dbOpenSnapshot)

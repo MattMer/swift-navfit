@@ -83,6 +83,7 @@ Public Function UXOpenGroupReport() As Boolean
     Next
     If id = 0 Then Exit Function
     If Not UXLeaveEditor() Then Exit Function
+    UXCaptureListOrder Nz(Forms!frmMajorWorkbench!cboGroup, 0), Forms!frmMajorWorkbench!lstReports
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     UXOpenGroupReport = True
 End Function
@@ -254,9 +255,11 @@ Public Function UXDueCreate() As Boolean
     Dim key As String, id As Long
     On Error GoTo Failed
     key = UXDueKey(): If Len(key) = 0 Then Exit Function
+    'Leave the open report first: a draft created behind an editor that cannot
+    'close would exist without being opened.
+    If Not UXLeaveEditor() Then Exit Function
     id = CreateDueDraft(key)
     UXDueRefresh
-    If Not UXLeaveEditor() Then Exit Function
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     UXDueCreate = True
     Exit Function

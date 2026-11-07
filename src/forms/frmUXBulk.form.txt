@@ -545,7 +545,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =10
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValuePeriodEnd"
@@ -572,7 +572,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =23
+                    TabIndex =15
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueUnitUIC"
@@ -599,7 +599,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =26
+                    TabIndex =17
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueShipStation"
@@ -624,7 +624,7 @@ Begin Form
                     Top =5650
                     Width =3871
                     Height =360
-                    TabIndex =30
+                    TabIndex =20
                     Name ="uxValueObservationStatus"
                     AfterUpdate ="=UXBulkChanged(\"ObservationStatus\")"
                     Tag ="BLX:0:0"
@@ -645,7 +645,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =38
+                    TabIndex =24
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValuePromotionStatus"
@@ -664,141 +664,6 @@ Begin Form
                     BorderThemeColorIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =6400
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =41
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorName"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorName\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =6400
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =6760
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =6400
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =44
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorGrade"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorGrade\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:0"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =6400
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =6760
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =9
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorDesignator"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorDesignator\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:1"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =16
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorTitle"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorTitle\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:1"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =4900
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =22
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorUIC"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorUIC\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:1"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =5260
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin CheckBox
                     Visible = NotDefault
                     TripleState = NotDefault
@@ -807,7 +672,7 @@ Begin Form
                     Top =4900
                     Width =3871
                     Height =360
-                    TabIndex =25
+                    TabIndex =16
                     Name ="uxValueOccasionPeriodic"
                     AfterUpdate ="=UXBulkChanged(\"OccasionPeriodic\")"
                     Tag ="BLX:0:1"
@@ -825,7 +690,7 @@ Begin Form
                     Top =5650
                     Width =3871
                     Height =360
-                    TabIndex =29
+                    TabIndex =19
                     Name ="uxValueOccasionDetachment"
                     AfterUpdate ="=UXBulkChanged(\"OccasionDetachment\")"
                     Tag ="BLX:0:1"
@@ -843,7 +708,7 @@ Begin Form
                     Top =5650
                     Width =3871
                     Height =360
-                    TabIndex =37
+                    TabIndex =23
                     Name ="uxValueOccasionFrocking"
                     AfterUpdate ="=UXBulkChanged(\"OccasionFrocking\")"
                     Tag ="BLX:0:1"
@@ -861,7 +726,7 @@ Begin Form
                     Top =6400
                     Width =3871
                     Height =360
-                    TabIndex =39
+                    TabIndex =25
                     Name ="uxValueOccasionSpecial"
                     AfterUpdate ="=UXBulkChanged(\"OccasionSpecial\")"
                     Tag ="BLX:0:1"
@@ -879,7 +744,7 @@ Begin Form
                     Top =6400
                     Width =3871
                     Height =360
-                    TabIndex =46
+                    TabIndex =28
                     Name ="uxValueReportRegular"
                     AfterUpdate ="=UXBulkChanged(\"ReportRegular\")"
                     Tag ="BLX:0:1"
@@ -897,7 +762,7 @@ Begin Form
                     Top =4150
                     Width =3871
                     Height =360
-                    TabIndex =12
+                    TabIndex =9
                     Name ="uxValueReportConcurrent"
                     AfterUpdate ="=UXBulkChanged(\"ReportConcurrent\")"
                     Tag ="BLX:0:2"
@@ -915,7 +780,7 @@ Begin Form
                     Top =4150
                     Width =3871
                     Height =360
-                    TabIndex =15
+                    TabIndex =11
                     Name ="uxValueReportOperationalCommander"
                     AfterUpdate ="=UXBulkChanged(\"ReportOperationalCommander\")"
                     Tag ="BLX:0:2"
@@ -925,60 +790,6 @@ Begin Form
                     LayoutCachedWidth =12899
                     LayoutCachedHeight =4510
                 End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =11
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValuePrimaryDuty"
-                    AfterUpdate ="=UXBulkChanged(\"PrimaryDuty\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:2:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =13
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueDutyDescription"
-                    AfterUpdate ="=UXBulkChanged(\"DutyDescription\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:2:0"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin CheckBox
                     Visible = NotDefault
                     TripleState = NotDefault
@@ -987,7 +798,7 @@ Begin Form
                     Top =4900
                     Width =3871
                     Height =360
-                    TabIndex =20
+                    TabIndex =13
                     Name ="uxValueComponentActive"
                     AfterUpdate ="=UXBulkChanged(\"ComponentActive\")"
                     Tag ="BLX:0:2"
@@ -1005,7 +816,7 @@ Begin Form
                     Top =4900
                     Width =3871
                     Height =360
-                    TabIndex =28
+                    TabIndex =18
                     Name ="uxValueComponentTAR"
                     AfterUpdate ="=UXBulkChanged(\"ComponentTAR\")"
                     Tag ="BLX:0:2"
@@ -1023,7 +834,7 @@ Begin Form
                     Top =5650
                     Width =3871
                     Height =360
-                    TabIndex =32
+                    TabIndex =21
                     Name ="uxValueComponentInactive"
                     AfterUpdate ="=UXBulkChanged(\"ComponentInactive\")"
                     Tag ="BLX:0:2"
@@ -1041,7 +852,7 @@ Begin Form
                     Top =5650
                     Width =3871
                     Height =360
-                    TabIndex =36
+                    TabIndex =22
                     Name ="uxValueComponentATADSW"
                     AfterUpdate ="=UXBulkChanged(\"ComponentATADSW\")"
                     Tag ="BLX:0:2"
@@ -1061,7 +872,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =42
+                    TabIndex =26
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueDateReported"
@@ -1088,7 +899,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =45
+                    TabIndex =27
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueReadinessSummary"
@@ -1142,7 +953,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =18
+                    TabIndex =12
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueReadinessDate"
@@ -1169,7 +980,7 @@ Begin Form
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =21
+                    TabIndex =14
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueBilletSubcategory"
@@ -1192,308 +1003,11 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =9028
-                    Top =4900
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =27
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorSSN"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorSSN\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:3"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =5260
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =10
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorAddress1"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorAddress1\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =4150
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =17
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorAddress2"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorAddress2\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =4150
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =4510
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =4900
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =19
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorCity"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorCity\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =5260
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =4900
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =24
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorState"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorState\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =4900
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =5260
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =5650
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =33
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorZip"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorZip\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =5650
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =6010
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =5650
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =34
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorPhone"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorPhone\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =5650
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =6010
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
                     Top =6400
                     Width =3871
                     Height =360
                     FontSize =10
-                    TabIndex =40
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorDSN"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorDSN\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:6:0"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =6400
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =6760
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =5650
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =31
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorLastName"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorLastName\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:3"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =5650
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =6010
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =5650
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =35
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorFirstInitial"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorFirstInitial\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:3"
-
-                    LayoutCachedLeft =9028
-                    LayoutCachedTop =5650
-                    LayoutCachedWidth =12899
-                    LayoutCachedHeight =6010
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =4999
-                    Top =6400
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =43
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="uxValueReportingSeniorMiddleInitial"
-                    AfterUpdate ="=UXBulkChanged(\"ReportingSeniorMiddleInitial\")"
-                    FontName ="Segoe UI"
-                    Tag ="BLX:0:3"
-
-                    LayoutCachedLeft =4999
-                    LayoutCachedTop =6400
-                    LayoutCachedWidth =8870
-                    LayoutCachedHeight =6760
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin TextBox
-                    Visible = NotDefault
-                    OverlapFlags =255
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =9028
-                    Top =6400
-                    Width =3871
-                    Height =360
-                    FontSize =10
-                    TabIndex =47
+                    TabIndex =29
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxValueCommandEmployment"
@@ -1537,7 +1051,7 @@ Begin Form
                     Width =3300
                     Height =550
                     FontSize =10
-                    TabIndex =48
+                    TabIndex =30
                     ForeColor =4205854
                     Name ="cmdBack"
                     Caption ="Back to summary groups"
@@ -1664,7 +1178,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =49
+                    TabIndex =31
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxKind"
@@ -1684,7 +1198,7 @@ Begin Form
                     Top =3950
                     Width =10450
                     Height =3700
-                    TabIndex =50
+                    TabIndex =32
                     Name ="uxBlocks"
                     SourceObject ="Form.frmUXSharedFields"
 
@@ -1701,7 +1215,7 @@ Begin Form
                     Width =2500
                     Height =400
                     FontSize =9
-                    TabIndex =51
+                    TabIndex =33
                     ForeColor =4205854
                     Name ="uxBlockSection0"
                     Caption ="Admin data"
@@ -1741,7 +1255,7 @@ Begin Form
                     Width =2500
                     Height =400
                     FontSize =9
-                    TabIndex =52
+                    TabIndex =34
                     ForeColor =4205854
                     Name ="uxBlockSection1"
                     Caption ="Admin data"
@@ -1751,86 +1265,6 @@ Begin Form
                     LayoutCachedLeft =5470
                     LayoutCachedTop =2950
                     LayoutCachedWidth =7970
-                    LayoutCachedHeight =3350
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    AccessKey =32
-                    TextFontFamily =34
-                    Left =8090
-                    Top =2950
-                    Width =2500
-                    Height =400
-                    FontSize =9
-                    TabIndex =53
-                    ForeColor =4205854
-                    Name ="uxBlockSection2"
-                    Caption ="Command && duties"
-                    OnClick ="=UXBulkSection(2)"
-                    FontName ="Segoe UI"
-                    UnicodeAccessKey =32
-
-                    LayoutCachedLeft =8090
-                    LayoutCachedTop =2950
-                    LayoutCachedWidth =10590
-                    LayoutCachedHeight =3350
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =10710
-                    Top =2950
-                    Width =2500
-                    Height =400
-                    FontSize =9
-                    TabIndex =54
-                    ForeColor =4205854
-                    Name ="uxBlockSection6"
-                    Caption ="Final report details"
-                    OnClick ="=UXBulkSection(6)"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =10710
-                    LayoutCachedTop =2950
-                    LayoutCachedWidth =13210
                     LayoutCachedHeight =3350
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1862,7 +1296,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =55
+                    TabIndex =35
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxGroupContext"
@@ -1885,7 +1319,7 @@ Begin Form
                     Width =1900
                     Height =450
                     FontSize =10
-                    TabIndex =56
+                    TabIndex =36
                     ForeColor =4205854
                     Name ="uxGroupTab0"
                     Caption ="Members"
@@ -1926,7 +1360,7 @@ Begin Form
                     Height =450
                     FontSize =10
                     FontWeight =700
-                    TabIndex =57
+                    TabIndex =37
                     ForeColor =16777215
                     Name ="uxGroupTab1"
                     Caption ="Defaults"
@@ -1966,7 +1400,7 @@ Begin Form
                     Width =1950
                     Height =450
                     FontSize =10
-                    TabIndex =58
+                    TabIndex =38
                     ForeColor =4205854
                     Name ="uxGroupTab2"
                     Caption ="Review"
@@ -2006,7 +1440,7 @@ Begin Form
                     Width =2100
                     Height =450
                     FontSize =10
-                    TabIndex =59
+                    TabIndex =39
                     ForeColor =4205854
                     Name ="uxGroupTab4"
                     Caption ="History"
@@ -2046,7 +1480,7 @@ Begin Form
                     Width =2500
                     Height =450
                     FontSize =10
-                    TabIndex =60
+                    TabIndex =40
                     ForeColor =4205854
                     Name ="uxAddGroupReport"
                     Caption ="Add report"
@@ -2106,7 +1540,7 @@ Begin Form
                     Width =3300
                     Height =430
                     FontSize =10
-                    TabIndex =61
+                    TabIndex =41
                     ForeColor =4205854
                     Name ="uxCurrentSenior"
                     Caption ="Reporting senior / PSG RSCA"
@@ -2146,7 +1580,7 @@ Begin Form
                     Width =3300
                     Height =430
                     FontSize =10
-                    TabIndex =62
+                    TabIndex =42
                     ForeColor =4205854
                     Name ="uxCurrentExport"
                     Caption ="Export group to NAVFIT98A"
@@ -2204,7 +1638,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =63
+                    TabIndex =43
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     Caption ="?"
@@ -2242,10 +1676,35 @@ Begin Form
                     Width =3450
                     Height =430
                     FontSize =10
-                    TabIndex =64
+                    TabIndex =44
                     Name ="uxCurrentPDF"
                     Caption ="Preview / create PDFs"
                     OnClick ="=PDFOutputOpenGroup(\"frmUXBulk\")"
+                    FontName ="Segoe UI"
+                    Tag ="GroupFooter"
+
+                    LayoutCachedLeft =9850
+                    LayoutCachedTop =9300
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =9730
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =9000
+                    Width =6200
+                    Height =430
+                    FontSize =10
+                    TabIndex =45
+                    Name ="uxRefreshDirectory"
+                    Caption ="Update reports from member / senior records"
+                    OnClick ="=UXGroupDirectoryRefresh(\"frmUXBulk\")"
                     FontName ="Segoe UI"
                     Tag ="GroupFooter"
 

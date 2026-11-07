@@ -164,6 +164,7 @@ Public Sub ApproveSavedRoute(ByVal runID As Long, ByVal note As String)
     If Nz(r!ApprovedBy, 0) <> MajorAuthor() Then Err.Raise vbObjectError + 4315, "modRouteTemplates.ApproveSavedRoute", "The final assigned reviewer must record local approval."
     If Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 4316, "modRouteTemplates.ApproveSavedRoute", "Report is already locked."
     operation = BeginOperation("Local approval", "Route " & runID & ": " & note)
+    RetainReportCheckpoint r!ReportID, "Local approval"
     ownedDB.Execute "UPDATE Report SET WorkflowState='Approved' WHERE ReportID=" & r!ReportID, dbFailOnError
     Set e = ownedDB.OpenRecordset("ReportEvent", dbOpenDynaset)
     e.AddNew: e!ReportID = r!ReportID: e!AuthorProfileID = MajorAuthor(): e!EventAt = Now(): e!EventKind = "Local approval": e.Update: e.Bookmark = e.LastModified: AuditRecord "Report event", CLng(e!ReportEventID), operation: e.Close
@@ -208,6 +209,13 @@ End Sub
 
 Private Sub RouteEventAdd(ByVal db As DAO.Database, ByVal runID As Long, ByVal kind As String, ByVal fromStep As Variant, ByVal toStep As Variant, ByVal revisionID As Variant, ByVal notes As String)
     Dim e As DAO.Recordset
+    If Not IsNull(revisionID) Then
+        If kind <> "Grid change" And kind <> "Higher change" And kind <> "Override" Then
+            RetainReportCheckpoint CLng(MajorScalar("SELECT ReportID FROM ReportRevision WHERE RevisionID=" & CLng(revisionID))), kind
+        ElseIf RevisionRetentionKind(CLng(revisionID)) = "Working" Then
+            db.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & CLng(revisionID), dbFailOnError
+        End If
+    End If
     Set e = db.OpenRecordset("RouteRunEvent", dbOpenDynaset, dbAppendOnly)
     e.AddNew: e!RunID = runID: e!EventKind = kind: e!FromStep = fromStep: e!ToStep = toStep: e!RevisionID = revisionID
     e!AuthorProfileID = MajorAuthor(): e!EventAt = Now()
@@ -508,6 +516,14 @@ Public Sub RouteRecordSave(ByVal db As DAO.Database, ByVal reportID As Long, ByV
     Dim r As DAO.Recordset, c As DAO.Recordset, key As Variant, holderStep As Long, kind As String, labels As String, overridden As Object, step As Variant, text As String
     saveNotice = ""
     If Len(changedKeys) = 0 Then Exit Sub
+    'Outside review, Members-grid marks replace the working state like any save.
+    'Under a route or a pending assignment the change is kept as a visible
+    'checkpoint, so the holder and later reviewers can compare it in History.
+    If gridContext Then
+        If PersistenceCount("RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted')") > 0 Or PersistenceCount("ReviewTask", "ReportID=" & reportID & " AND TaskState='Pending'") > 0 Then
+            db.Execute "UPDATE RevisionRetention SET RetentionKind='Checkpoint',CheckpointReason='Members grid change' WHERE RevisionID=" & revisionID & " AND RetentionKind In ('Working','Protected')", dbFailOnError
+        End If
+    End If
     kind = Nz(MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & reportID), "")
     For Each key In Split(changedKeys, "|")
         If Len(labels) > 0 Then labels = labels & ", "

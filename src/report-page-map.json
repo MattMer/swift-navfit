@@ -205,11 +205,6 @@
       "block": 20,
       "basis": "Official block order"
     },
-    "ReadinessDate": {
-      "page": 0,
-      "block": 20,
-      "basis": "Official block order"
-    },
     "BilletSubcategory": {
       "page": 0,
       "block": 21,
@@ -930,11 +925,6 @@
       "basis": "Current NAVPERS XFA page subform"
     },
     "ReadinessSummary": {
-      "page": 0,
-      "block": 20,
-      "basis": "Official block order"
-    },
-    "ReadinessDate": {
       "page": 0,
       "block": 20,
       "basis": "Official block order"

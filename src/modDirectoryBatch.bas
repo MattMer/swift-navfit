@@ -60,6 +60,7 @@ Public Function ApplyDirectoryReports(Optional ByRef outcome As String = "") As 
         Set values = CreateObject("Scripting.Dictionary")
         For Each field In DraftFieldKeys(): values.Add CStr(field), Null: Next
         For Each field In UXSharedKeys(): values(CStr(field)) = UXEffectiveDefault(pendingGroup, CStr(field)): Next
+        GroupSeniorCreationValues pendingGroup, values
         values("FormKind") = kind: values("PeriodStart") = fromDate: values("PeriodEnd") = toDate
         values("OfficialName") = r!ReportName: values("RankRate") = r!RankRate: values("MemberSSN") = r!MemberSSN
         CounselingCreationDefaults values, CLng(key)

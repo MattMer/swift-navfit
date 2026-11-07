@@ -12,7 +12,7 @@ try{
  foreach($m in @('NAVFITAdapterHarness','NAVFITGroupExportHarness')){$app.LoadFromText(5,$m,(Join-Path $root ('tests/'+$m+'.bas')))}
  $app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestNAVFITAdapter("'+$source+'","'+(Join-Path $dir 'roundtrip.accdb')+'")');if($result -notlike 'PASS:*'){throw $result};Write-Output $result;$results+=$result
- foreach($test in @('TestNAVFITGroupExport','TestNAVFITNonblocking')){
+ foreach($test in @('TestNAVFITGroupExport','TestNAVFITNonblocking','TestNAVFITPastedText')){
   $result=$app.Eval($test+'("'+$dir+'","'+(Join-Path $root 'FORMS_REFERENCES_TEMPLATES/NAVFIT_BLANK.accdb')+'")');if($result -notlike 'PASS:*'){throw $result};Write-Output $result;$results+=$result
  }
 }catch{$primary=$_}finally{

@@ -4184,6 +4184,32 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
+                Begin CommandButton
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =2850
+                    Top =9000
+                    Width =6200
+                    Height =430
+                    FontSize =10
+                    TabIndex =87
+                    Name ="uxRefreshDirectory"
+                    Caption ="Update reports from member / senior records"
+                    OnClick ="=UXGroupDirectoryRefresh(\"frmMajorWorkbench\")"
+                    FontName ="Segoe UI"
+                    Tag ="GroupFooter"
+
+                    LayoutCachedLeft =9850
+                    LayoutCachedTop =18680
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =19110
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
             End
         End
     End

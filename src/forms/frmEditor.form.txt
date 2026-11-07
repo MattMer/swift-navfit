@@ -7912,6 +7912,56 @@ Begin Form
                     WebImagePaddingBottom =-1
                     Overlaps =1
                 End
+                Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =7700
+                    Top =100
+                    Width =1400
+                    Height =400
+                    FontSize =10
+                    TabIndex =174
+                    Name ="uxPreviousReport"
+                    Caption ="Previous"
+                    OnClick ="=UXEditorSiblingMove(-1)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =13400
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =9300
+                    Top =100
+                    Width =1400
+                    Height =400
+                    FontSize =10
+                    TabIndex =175
+                    Name ="uxNextReport"
+                    Caption ="Next"
+                    OnClick ="=UXEditorSiblingMove(1)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =13400
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
             End
         End
     End

@@ -43,11 +43,12 @@ try {
     $guidBefore=Scalar "SELECT ReportGuid FROM Report WHERE ReportID=$id"
     $firstRevision=Scalar "SELECT CurrentRevisionID FROM Report WHERE ReportID=$id"
     [void](InvokeVba 'CommitDraft' @($id,'EVAL','Changed title','Synthetic Member',[datetime]'2026-01-01',[datetime]'2026-09-30',"Changed notes`r`nLine two",'Edit test'))
-    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'Edit appends a revision'
+    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'Edit saves one working state beside the creation checkpoint'
     [void](InvokeVba 'CommitDraft' @($id,'EVAL','Changed title','Synthetic Member',[datetime]'2026-01-01',[datetime]'2026-09-30',"Changed notes`r`nLine two",'No-op test'))
     Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'No-op save does not append history'
     [void](InvokeVba 'RestoreDraft' @($id,$firstRevision))
-    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 3) 'Restore appends instead of erasing history'
+    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'Restore replaces working state while preserving the creation checkpoint'
+    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE RevisionID=$firstRevision") -eq 1) 'Restore retains its checkpoint source'
     Assert ((Scalar "SELECT Title FROM Report WHERE ReportID=$id") -eq 'Synthetic draft EVAL') 'Restore recovers earlier values'
     Assert ([Convert]::IsDBNull((Scalar "SELECT PeriodStart FROM Report WHERE ReportID=$id"))) 'Restore preserves null date'
     Assert ((Scalar "SELECT ReportGuid FROM Report WHERE ReportID=$id") -eq $guidBefore) 'Stable report identity survives restore'
@@ -56,14 +57,14 @@ try {
     [void](InvokeVba 'ArchiveDraft' @($id,$true))
     $rejected=InvokeVba 'RejectArchived' @($id)
     Assert $rejected 'Archived draft edit rejected'
-    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 3) 'Rejected edit creates no revision'
+    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'Rejected edit creates no revision'
     [void](InvokeVba 'ArchiveDraft' @($id,$false))
     Assert ((Scalar "SELECT Count(*) FROM ReportEvent WHERE ReportID=$id") -eq 2) 'Archive and recovery events retained'
     $wrongType=InvokeVba 'RejectTypeChange' @($id)
     Assert $wrongType 'Existing report type change rejected'
     Assert (InvokeVba 'RejectSnapshotFailure' @($id)) 'Injected snapshot write failure rejected'
     Assert ((Scalar "SELECT Title FROM Report WHERE ReportID=$id") -eq 'Synthetic draft EVAL') 'Failed transaction rolls back report values'
-    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 3) 'Failed transaction rolls back revision history'
+    Assert ((Scalar "SELECT Count(*) FROM ReportRevision WHERE ReportID=$id") -eq 2) 'Failed transaction rolls back revision history'
     Assert ((Scalar "SELECT Count(*) FROM RevisionValue WHERE RevisionID NOT IN (SELECT RevisionID FROM ReportRevision)") -eq 0) 'No orphan snapshots after rollback'
     $blankID=InvokeVba 'CommitDraft' @(0,'EVAL','','',$null,$null,'','Incomplete draft test')
     Assert ($blankID -gt 0) 'Incomplete drafts with empty fields save'
@@ -82,7 +83,7 @@ try {
         if($name -eq 'frmEditor'){$app.DoCmd.OpenForm($name,0,'','',0,0,[string]$id)}else{$app.DoCmd.OpenForm($name)}
         Assert ($app.Eval('Forms("'+$name+'").Controls.Count') -gt 0) "Form opens: $name"
         if($name -eq 'frmLibrary'){Assert ($app.Eval('(Forms!frmLibrary!lstReports.ListCount - Abs(Forms!frmLibrary!lstReports.ColumnHeads)) = 5')) 'Library initially displays active reports'}
-        if($name -eq 'frmEditor'){[void]$app.Eval('UXSelectSection(9)');Assert ($app.Eval('(Forms!frmEditor!lstRevisions.ListCount - Abs(Forms!frmEditor!lstRevisions.ColumnHeads)) = 3')) 'History section displays all revisions'}
+        if($name -eq 'frmEditor'){[void]$app.Eval('UXSelectSection(9)');Assert ($app.Eval('(Forms!frmEditor!lstRevisions.ListCount - Abs(Forms!frmEditor!lstRevisions.ColumnHeads)) = 1')) 'History shows the retained checkpoint and hides working state'}
         if(-not $app.Eval('SmokeFormFits("'+$name+'")')){throw "Control outside form width: $name"}
         $app.DoCmd.Close(2,$name,2)
     }
@@ -121,7 +122,7 @@ try {
     Assert ($app.Eval('Left(Forms!frmEditor!lblSaved.Caption,6)="Saved "')) 'Editor displays save confirmation'
     [void]$app.Eval('ShowHelp("Saving")')
     Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmUXHelp') 'Help becomes the active form'
-    Assert ($app.Eval('InStr(Forms!frmUXHelp!txtGuide,"Save draft creates an atomic revision") > 0')) 'Help contains topic-specific guidance'
+    Assert ($app.Eval('InStr(Forms!frmUXHelp!txtGuide,"Save draft atomically saves the current report") > 0')) 'Help contains topic-specific guidance'
     [void]$app.Eval('CloseHelp()')
     Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmEditor') 'Closing help returns to the editor'
     $app.DoCmd.Close(2,'frmEditor',2)
@@ -130,7 +131,7 @@ try {
     $app.OpenCurrentDatabase($scratch,$true)
     $db=$app.CurrentDb()
     Assert ((Scalar 'SELECT Count(*) FROM Report') -eq 6) 'Reports survive close and reopen'
-    Assert ((Scalar 'SELECT Count(*) FROM ReportRevision') -eq 8) 'Revision history survives close and reopen'
+    Assert ((Scalar 'SELECT Count(*) FROM ReportRevision') -eq 7) 'Checkpoints and current working states survive close and reopen'
     $result=@{Status='PASS';AccessVersion=$app.Version;AccessBuild=$app.Build;TestDatabase=$scratch;Checks=$checks.ToArray();BuildPath=[IO.Path]::GetFullPath($BuildPath);BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash;NAVFITCompatibility='Not tested';Runtime='Not tested'}
     $result|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $out 'smoke-results.json') -Encoding utf8
     $result|ConvertTo-Json -Depth 5

@@ -36,6 +36,24 @@ Public Function TestISIC() As String
     Call ISICSave(isic, 1, "Synthetic Readiness Command", "N12345", "COMMANDER" & vbCrLf & "SYNTHETIC READINESS COMMAND" & vbCrLf & "100 EXAMPLE AVE" & vbCrLf & "EXAMPLE VA 00000")
     Check DLookup("VersionCounter", "ISIC", "ISICID=" & isic) = 2, "ISIC edit not versioned"
 
+    ' The Resources screen saves and lists a new ISIC; a failed save leaves no row.
+    Dim rule As String, before As Long
+    DoCmd.OpenForm "frmUXISICs"
+    Forms!frmUXISICs!txtISICName = "Screen Synthetic ISIC": Forms!frmUXISICs!txtISICUIC = "12345": Forms!frmUXISICs!txtISICAddress = "1 SCREEN WAY"
+    Check UXISICSave(), "Save ISIC failed: " & Forms!frmUXISICs!lblStatus.Caption
+    Check DCount("*", "ISIC", "Title='Screen Synthetic ISIC'") = 1 And Forms!frmUXISICs!lstISICs.ListCount = DCount("*", "ISIC", "IsArchived=False"), "Saved ISIC not listed: rows " & DCount("*", "ISIC", "IsArchived=False") & ", listed " & Forms!frmUXISICs!lstISICs.ListCount
+    Check UXISICNew(), "New ISIC entry did not reset"
+    Forms!frmUXISICs!txtISICName = "Rolled Back ISIC"
+    rule = Nz(CurrentDb.TableDefs("OperationJournal").ValidationRule, "")
+    CurrentDb.TableDefs("OperationJournal").ValidationRule = "[OperationKind]<>'Save ISIC'"
+    before = DCount("*", "ISIC")
+    Check Not UXISICSave(), "Save with a failing operation record reported success"
+    CurrentDb.TableDefs("OperationJournal").ValidationRule = rule
+    Check DCount("*", "ISIC") = before And Forms!frmUXISICs!lstISICs.ListCount = DCount("*", "ISIC", "IsArchived=False"), "Failed ISIC save left a partial row"
+    Check Left$(Forms!frmUXISICs!lblStatus.Caption, 11) = "Not saved: ", "Failure not reported: " & Forms!frmUXISICs!lblStatus.Caption
+    Check UXISICSave() And DCount("*", "ISIC", "Title='Rolled Back ISIC'") = 1, "Retry after failure did not save"
+    DoCmd.Close acForm, "frmUXISICs", acSaveNo
+
     ' A group remembers its ISIC; a deleted ISIC can no longer be chosen.
     g = CreateSummaryGroup("ISIC group", "EVAL", "E5")
     SetGroupISIC g, isic

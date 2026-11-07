@@ -14,6 +14,7 @@ Begin Form
     Right =18525
     Bottom =12795
     Caption ="Set up your Swift NAVFIT workspace"
+    OnLoad ="=UXWorkspaceSafetyPaint(\"frmSetup\")"
     OnActivate ="=UXVisualEvent(\"frmSetup\",\"\")"
     OnResize ="=UXHelpResize(\"frmSetup\",\"\")"
     FilterOnLoad =0
@@ -95,7 +96,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =5950
+            Height =7000
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -365,6 +366,26 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    BackStyle =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5800
+                    Width =9950
+                    Height =1100
+                    FontWeight =600
+                    BackColor =13627647
+                    ForeColor =18298
+                    Name ="uxWorkspaceWarning"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5800
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =6900
+                    ThemeFontIndex =-1
                 End
             End
         End

@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.53.0"
-Public Const SCHEMA_VERSION As Long = 44
+Public Const APP_VERSION As String = "0.54.0-dev"
+Public Const SCHEMA_VERSION As Long = 45
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -103,10 +103,12 @@ End Function
 ' Keep the report write cursor alive through revision-pointer assignment to avoid DAO
 ' lock failures; invalidate editor context after a successful local save.
 Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
-    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0) As Long
+    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0, Optional ByVal syncDirectory As Boolean = True) As Long
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset, snapshotRows As DAO.Recordset, changeRows As DAO.Recordset
     Dim keys As Variant, previous() As Variant, current() As Variant, i As Long
-    Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean, changedKeys As String
+    Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
+    Dim oldHead As Long, retention As String, historyBefore As Object, narrativeChanged As Boolean, actualChangedKeys As String
+    Dim priorEmployment As Variant
     If formKind <> "EVAL" And formKind <> "CHIEFEVAL" And formKind <> "FITREP" Then Err.Raise vbObjectError + 105, "modSwift.CommitDraft", "Choose EVAL, CHIEFEVAL, or FITREP."
     If Len(title) > UXFieldLimit("Title") Or Len(memberName) > UXFieldLimit("MemberName") Then Err.Raise vbObjectError + 106, "modSwift.CommitDraft", "Title or member name exceeds local draft capacity."
     If Not IsNull(startDate) Then
@@ -233,11 +235,32 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then changed = True
         Next
         If Not changed Then
-            r.Close: SyncReportDirectory reportID: w.CommitTrans: Call UXEditorContextChanged(): CommitDraft = reportID: Exit Function
+            r.Close
+            If syncDirectory Then SyncReportDirectory reportID
+            w.CommitTrans: Call UXEditorContextChanged(): CommitDraft = reportID: Exit Function
         End If
         'Under review only the holder saves; Members-grid saves are logged instead.
         RouteSaveGuard reportID
-        parentID = r!CurrentRevisionID
+        oldHead = r!CurrentRevisionID: parentID = oldHead
+        priorEmployment = previous(78)
+        For i = 0 To UBound(keys)
+            If Not SameFieldValue(previous(i), current(i)) Then
+                If Len(actualChangedKeys) > 0 Then actualChangedKeys = actualChangedKeys & "|"
+                actualChangedKeys = actualChangedKeys & CStr(keys(i))
+            End If
+            If RetainedNarrativeKey(CStr(keys(i)), formKind) Then
+                If Not SameFieldValue(previous(i), current(i)) Then narrativeChanged = True
+            End If
+        Next
+        If RevisionRetentionKind(oldHead) = "Working" Then
+            'A different writer during an active route is a review context boundary:
+            'keep its field ownership instead of assigning the bundle to the next writer.
+            If CLng(MajorScalar("SELECT AuthorProfileID FROM ReportRevision WHERE RevisionID=" & oldHead)) <> pid And PersistenceCount("RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted')") > 0 Then
+                db.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & oldHead, dbFailOnError
+            Else
+                parentID = MajorScalar("SELECT ParentRevisionID FROM ReportRevision WHERE RevisionID=" & oldHead)
+            End If
+        End If
         Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
         seq = Nz(rev.Fields(0).Value, 0) + 1: rev.Close: Set rev = Nothing
         r.Edit
@@ -252,6 +275,8 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     r!PeriodStart = startDate: r!PeriodEnd = endDate: r!DraftNotes = notes: r!OfficialComments = current(6): r!ModifiedAt = Now()
     For i = 7 To UBound(keys): r.Fields(keys(i)) = current(i): Next
     r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID
+    If oldHead = 0 Then retention = "Checkpoint" Else If narrativeChanged Then retention = "Narrative" Else retention = "Working"
+    If Not IsNull(parentID) Then Set historyBefore = RevisionFields(CLng(parentID))
     Set rev = db.OpenRecordset("ReportRevision", dbOpenDynaset)
     rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
     rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
@@ -259,14 +284,20 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close: Set rev = Nothing
     Set snapshotRows = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
     Set changeRows = db.OpenRecordset("RevisionChange", dbOpenDynaset, dbAppendOnly)
+    SetRevisionRetention revisionID, retention, IIf(oldHead = 0, "Created", "")
     For i = 0 To UBound(keys)
+        If Not historyBefore Is Nothing Then previous(i) = historyBefore(CStr(keys(i)))
+        If oldHead > 0 And i = 78 Then
+            'A legacy snapshot can contain Null while the editor inherits native
+            'Block 28 text. Preserve an actual clear of that inherited value;
+            'a synthetic Null-to-Null diff would lose its authorship marker.
+            If SameFieldValue(previous(i), current(i)) And Not SameFieldValue(priorEmployment, current(i)) Then previous(i) = priorEmployment
+        End If
         Snapshot snapshotRows, revisionID, CStr(keys(i)), current(i)
         'A first save starts from Null, so fields left empty log nothing (L03); the
         'snapshot above still records every field.
         If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
             AppendChange changeRows, revisionID, CStr(keys(i)), previous(i), current(i)
-            If Len(changedKeys) > 0 Then changedKeys = changedKeys & "|"
-            changedKeys = changedKeys & keys(i)
         End If
     Next
     snapshotRows.Close: Set snapshotRows = Nothing
@@ -279,8 +310,9 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     WriteRevisionFacts revisionID
     AssertReportCache reportID
     AuditRecord "Revision", revisionID, auditOperationID
-    If Not IsEmpty(parentID) And Not IsNull(parentID) Then RouteRecordSave db, reportID, revisionID, changedKeys
-    SyncReportDirectory reportID
+    If Not IsEmpty(parentID) And Not IsNull(parentID) Then RouteRecordSave db, reportID, revisionID, actualChangedKeys
+    If syncDirectory Then SyncReportDirectory reportID
+    RetireWorkingRevision oldHead
     w.CommitTrans
     Call UXEditorContextChanged(): CommitDraft = reportID
     Exit Function
@@ -442,6 +474,7 @@ Public Function LoadEditor() As Boolean
     Set ownedDB = CurrentDb
     Dim f As Form, r As DAO.Recordset, id As Long, block As Long, seniorKey As Variant
     Call UXAssertView(UX_EDITOR_VIEW)
+    UXForgetWholeNOB
     UXFixedForgetLayout
     Set f = Forms!frmEditor: id = Val(Nz(f.OpenArgs, "0")): f!txtReportID = id
     f!cboKind = "EVAL"
@@ -467,7 +500,7 @@ Public Function LoadEditor() As Boolean
         Next
         f!cboPromotionStatus = r!PromotionStatus
         f!cboObservationStatus = r!ObservationStatus: f!cboPromotionRecommendation = r!PromotionRecommendation
-        f!lblSaved.Caption = "Saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!CurrentRevisionID), "?") & " at " & r!ModifiedAt
+        f!lblSaved.Caption = "Saved current report at " & r!ModifiedAt
         f!cmdSave.Enabled = Not r!IsArchived
         f!cmdRestore.Enabled = Not r!IsArchived
         r.Close: f!cboKind.Enabled = False
@@ -488,27 +521,29 @@ End Function
 Private Sub RefreshRevisions()
     Dim f As Form
     Set f = Forms!frmEditor
-    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber AS [Revision], CommittedAt AS [Saved], IIf(Nz(ValuesDisposed,False),'[Draft contents disposed] ','') & Reason AS [Note] FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " ORDER BY RevisionNumber DESC"
+    f!lstRevisions.RowSource = "SELECT RevisionID, RevisionNumber AS [Revision], CommittedAt AS [Saved], IIf(Nz(ValuesDisposed,False),'[Draft contents disposed] ','') & RevisionHistoryLabel(RevisionID,Reason) AS [Note] FROM ReportRevision WHERE ReportID=" & Nz(f!txtReportID, 0) & " AND " & HistoryRevisionPredicate("ReportRevision") & " ORDER BY RevisionNumber DESC"
     f!lstRevisions.Requery
 End Sub
 
 Public Function SaveEditor() As Boolean
-    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean, committed As Boolean, stage As String
+    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean, committed As Boolean, stage As String, oldRevision As Long
     On Error GoTo Failed
     Set f = Forms!frmEditor
     stage = "Capture and validate pending values"
     UXFlushSurface
     UXFormatTypedFields
     Call GuardEditorBaseline()
+    If Nz(f!txtReportID, 0) > 0 Then oldRevision = CurrentRevision(CLng(f!txtReportID))
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     stage = "Write draft revision"
     id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value, EditorPendingFields())
     stage = "Clear committed checkpoint"
     Call DiscardEditorCheckpoint()
+    If oldRevision > 0 And oldRevision <> CurrentRevision(id) Then RetireWorkingRevision oldRevision, True
     stage = "Commit save"
     w.CommitTrans: trans = False: committed = True
     stage = "Refresh saved report display"
-    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved revision " & Nz(DMax("RevisionNumber", "ReportRevision", "ReportID=" & id), "?") & " at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
+    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved current report at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
     Call ResetEditorBaseline()
@@ -532,11 +567,31 @@ Public Function CloseEditor() As Boolean
     CloseEditor = UXLeaveEditor()
 End Function
 
+'The active import receipt that restoring revisionID would undo: the import is the
+'report's latest change and revisionID is the state it replaced. Zero asks for an
+'import that created the draft (it has no prior state; archiving undoes it).
+Public Function ImportUndoReceipt(ByVal reportID As Long, ByVal revisionID As Long) As Long
+    Dim before As String
+    If revisionID = 0 Then before = "BeforeRevisionID Is Null" Else before = "BeforeRevisionID=" & revisionID
+    ImportUndoReceipt = Nz(MajorScalar("SELECT Max(i.ImportReceiptID) FROM ImportReceipt AS i INNER JOIN Report AS r ON i.ReportID=r.ReportID WHERE i.ReportID=" & reportID & " AND i." & before & " AND i.AppliedRevisionID=r.CurrentRevisionID AND (i.IsUndone=False OR i.IsUndone Is Null) AND r.IsArchived=False AND r.WorkflowState='Draft'"), 0)
+End Function
+
 Public Function RestoreSelected() As Boolean
     Dim id As Long, revisionID As Long
     On Error GoTo Failed
     id = Nz(Forms!frmEditor!txtReportID, 0): revisionID = Nz(Forms!frmEditor!lstRevisions, 0)
     If revisionID = 0 Then MsgBox "Select a revision first.": Exit Function
+    'Restoring the state an import replaced is that import's undo: it also releases
+    'the source file so the same file can be imported again.
+    Dim receipt As Long
+    receipt = ImportUndoReceipt(id, revisionID)
+    If receipt > 0 Then
+        If MsgBox("Undo the import? The values from before the import are restored as a new revision, and the same file can be imported again. Unsaved entries will be discarded.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
+        If Not UXLeaveEditor("Discard") Then Exit Function
+        UndoNarrativeImport receipt
+        DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
+        RestoreSelected = True: Exit Function
+    End If
     If MsgBox("Restore selected values as a new revision? Unsaved entries will be discarded.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
     RestoreDraft id, revisionID
     Call DiscardEditorCheckpoint()
@@ -554,7 +609,9 @@ Public Function LibraryAction(ByVal action As String) As Boolean
     If id = 0 Then MsgBox "Select a report first.": Exit Function
     If CurrentProject.AllForms("frmEditor").IsLoaded Then MsgBox "Close the editor before changing library reports.": Exit Function
     Select Case action
-        Case "Archive": ArchiveDraft id, True
+        Case "Archive"
+            'Archiving a draft an import created, unchanged since, is that import's undo.
+            If ImportUndoReceipt(id, 0) > 0 Then UndoNarrativeImport ImportUndoReceipt(id, 0) Else ArchiveDraft id, True
         Case "Recover": ArchiveDraft id, False
         Case "Duplicate": DuplicateDraft id
     End Select

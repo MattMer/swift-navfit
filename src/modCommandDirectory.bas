@@ -2,6 +2,7 @@ Attribute VB_Name = "modCommandDirectory"
 Option Compare Binary
 Option Explicit
 Private creationMember As Long, creationState As String, creationSource As String
+Private lastReportUpdate As String
 Private Function DirectorySSN(ByVal value As Variant) As String
     Dim s As String, i As Long
     s = Trim$(Nz(value, ""))
@@ -129,7 +130,10 @@ Public Function FillRankFromLatestReport(ByVal memberID As Long) As Boolean
     Call SaveDirectoryMember(memberID, r!VersionCounter, r!FullName, Nz(r!ReportName, ""), rank, Nz(r!MemberSSN, ""))
     r.Close: FillRankFromLatestReport = True
 End Function
-Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersion As Long, ByVal displayName As String, ByVal reportName As String, ByVal rank As String, ByVal ssn As String, Optional ByVal sourceKind As String = "Manual", Optional ByVal ruadValues As Variant, Optional ByVal ruadSourceXML As String = "", Optional ByVal dateReported As Variant) As Long
+Public Function LastMemberReportUpdate() As String
+    LastMemberReportUpdate = lastReportUpdate
+End Function
+Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersion As Long, ByVal displayName As String, ByVal reportName As String, ByVal rank As String, ByVal ssn As String, Optional ByVal sourceKind As String = "Manual", Optional ByVal ruadValues As Variant, Optional ByVal ruadSourceXML As String = "", Optional ByVal dateReported As Variant, Optional ByVal updateReports As Boolean = False) As Long
     Dim db As DAO.Database, ruad As Object, ruadXML As String
     Dim r As DAO.Recordset, w As DAO.Workspace, author As Long, failure As Long, message As String, op As Long, duplicate As Variant
     author = MajorAuthor(): displayName = Trim$(displayName): ssn = Trim$(ssn)
@@ -179,8 +183,11 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
     If Not IsMissing(dateReported) Then r!DateReported = dateReported
     r!ModifiedBy = author: r!ModifiedAt = Now(): r.Update: r.Bookmark = r.LastModified: SaveDirectoryMember = r!MemberID: r.Close
     op = BeginOperation("Save command member", displayName & "; rank/rate " & rank & "; SSN " & IIf(ssn = "", "unentered", "ending " & Right$(ssn, 4)))
-    FinishOperation op, "Completed", "Directory profile saved; report fields and prior evaluation records unchanged."
-    w.CommitTrans: Exit Function
+    lastReportUpdate = ""
+    'An edited profile is the source its open reports normally pull from.
+    If updateReports Then lastReportUpdate = UpdateMemberOpenReports(SaveDirectoryMember)
+    FinishOperation op, "Completed", "Directory profile saved; " & IIf(Len(lastReportUpdate) > 0, lastReportUpdate, "report fields unchanged.") & " Prior evaluation records unchanged."
+    w.CommitTrans: UXDirectorySourceInvalidate: Exit Function
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modCommandDirectory", "SaveDirectoryMember", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")

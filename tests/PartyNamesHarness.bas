@@ -102,6 +102,7 @@ Public Function TestPartyNames() As String
     values = Seed(): values(0) = "MARY" & ChrW(&HE9): Call SaveNames(id, "FITREP", values)
     Check Stored(id, "MemberFirstName") = values(0), "Accented name changed"
     first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
+    RetainReportCheckpoint id, "Structured-name case comparison fixture"
     values(0) = LCase$(values(0)): Call SaveNames(id, "FITREP", values)
     Check Stored(id, "MemberFirstName") = values(0), "Case normalized"
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)

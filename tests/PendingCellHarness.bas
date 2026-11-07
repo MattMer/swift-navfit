@@ -55,7 +55,10 @@ Public Function TestPendingCells() As String
  Check UXGridDrain(), "Corrected retry failed"
  Check UXGridPendingCount() = 0, "Retry left cells queued"
  Check DLookup("AssignmentRecommendationA", "Report", "ReportID=" & first) = "VALID" And DLookup("Trait34", "Report", "ReportID=" & second) = "2.0", "Retry lost later cell"
- Check DCount("*", "ReportRevision", "ReportID=" & first & " AND RevisionID>" & revision) = 2, "Retry duplicated successful revision"
+ 'Schema 45 replaces unreferenced working states, so count the change, not the rows:
+ 'the retry must not record the already-saved Trait33 change a second time.
+ Check DCount("*", "RevisionChange", "FieldKey='Trait33' AND RevisionID In (SELECT RevisionID FROM ReportRevision WHERE ReportID=" & first & " AND RevisionID>" & revision & ")") = 1, "Retry duplicated successful revision"
+ Check DCount("*", "RevisionChange", "FieldKey='AssignmentRecommendationA' AND RevisionID=" & CurrentRevision(first)) = 1, "Corrected retry not recorded"
  Check DLookup("AuthorProfileID", "ReportRevision", "RevisionID=" & CurrentRevision(second)) = author, "Retry changed attribution"
  count = DCount("*", "ReportRevision"): Check UXGridDrain() And DCount("*", "ReportRevision") = count, "Empty retry created revisions"
  Check Not Forms!frmUXComparison!cmdRetryCells.Visible, "Recovery actions not cleared"

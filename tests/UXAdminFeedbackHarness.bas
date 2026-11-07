@@ -133,7 +133,11 @@ Private Sub CheckLegacyBlock28()
     Set values = CreateObject("Scripting.Dictionary"): values.Add "CommandEmployment", Null
     Call CommitSavedFields(id, revision, values, "Explicitly clear inherited Block 28")
     Check CurrentRevision(id) <> revision And IsNull(StoredBlock28(id)), "Explicit clear revived prior native Block 28"
+    Check DCount("*", "RevisionChange", "RevisionID=" & CurrentRevision(id) & " AND FieldKey='CommandEmployment' AND Not OldIsNull AND NewIsNull") = 1, "Inherited Block 28 clear lost its actual prior value"
     Check DCount("*", "ImportRawValue", "ImportReceiptID=" & receipt & " AND RawValue='Original native command achievements'") = 1, "Explicit clear removed provenance"
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "Title", "Legacy clear retained"
+    Call CommitSavedFields(id, CurrentRevision(id), values, "Routine save after inherited clear")
+    Check IsNull(StoredBlock28(id)), "Routine save revived cleared native Block 28"
 End Sub
 
 

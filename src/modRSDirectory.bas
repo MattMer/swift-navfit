@@ -155,7 +155,7 @@ Public Function RSSaveSenior(ByVal seniorID As Long, ByVal title As String, ByVa
     r.Close
     operation = BeginOperation("Save reporting senior", "Reporting senior record " & seniorID)
     FinishOperation operation, "Completed", "Directory details saved; report values unchanged."
-    w.CommitTrans: RSSaveSenior = seniorID: Exit Function
+    w.CommitTrans: UXDirectorySourceInvalidate: RSSaveSenior = seniorID: Exit Function
 Failed:
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modRSDirectory", "RSSaveSenior", "Execute", Err.Number, Err.Description, Err.Source, "Unknown")

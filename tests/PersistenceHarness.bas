@@ -95,6 +95,7 @@ Public Function TestPersistence() As String
     CurrentDb.Execute "UPDATE RevisionChoice SET ChoiceValue='Unspecified' WHERE RevisionID=" & rev & " AND ChoiceKind='Retention'", dbFailOnError
     CommitReportChoice a, rev, "Retention", "No": rev = CurrentRevision(a)
     Check MajorRevisionValue(rev, "RetentionYes") = "No" And MajorRevisionValue(rev, "RetentionNo") = "Yes", "Single choice did not produce lossless native flags"
+    RetainReportCheckpoint a, "Typed choice restore fixture"
     Set f = CreateObject("Scripting.Dictionary")
     f.Add "CounselingDate", "NOT PERF": f.Add "CounselorName", "Required explanation"
     f.Add "DateReported", "2024-02-29": f.Add "ReadinessDate", "": f.Add "RaterDate", "2026-10-22"
@@ -106,6 +107,7 @@ Public Function TestPersistence() As String
     Check DLookup("DateState", "RevisionDate", "RevisionID=" & rev & " AND FieldKey='ReadinessDate'") = "Blank", "Empty date coerced to Null"
     Check DLookup("ChoiceValue", "RevisionChoice", "RevisionID=" & rev & " AND ChoiceKind='Retention'") = "Conflict", "Conflicting flags silently coerced"
     Check MajorRevisionValue(rev, "CounselorName") = "Required explanation", "Counseling explanation lost"
+    RetainReportCheckpoint a, "Typed conflict restore fixture"
     RestoreDraft a, old
     Check DLookup("DateState", "RevisionDate", "RevisionID=" & CurrentRevision(a) & " AND FieldKey='CounselingDate'") = "Missing", "Restore retained newer typed facts"
     RestoreDraft a, rev

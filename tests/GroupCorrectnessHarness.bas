@@ -110,6 +110,30 @@ Public Function TestGroupCorrectness() As String
     Check UXApplyGroupMembers(), "Fresh membership preview could not be applied"
     Check DCount("*", "GroupMember", "GroupID=" & g & " AND ReportID=" & ids(3)) = 0 And Not GroupReviewCurrent(g), "Applied membership did not invalidate completeness"
     Check InStr(GroupImpactText(g, , ""), "promotion capacity is unavailable") > 0, "Empty proposed roster implied capacity"
+    stage = "unanswered check boxes"
+    ' A box never clicked (unanswered) and a cleared box (No) are the same for consistency.
+    Dim item As Object, c2 As Long, consistent As Long
+    c2 = CreateSummaryGroup("Check box consistency", "EVAL", "E5")
+    For i = 1 To 3
+        id = CommitDraft(0, "EVAL", "Check box member", "Box member " & i, #1/1/2026#, #9/30/2026#, "", "Test")
+        Set f = SavedFields(id)
+        f("RankRate") = "IT2": f("PromotionStatus") = "REGULAR": f("ComponentActive") = "Yes": f("ReportRegular") = "Yes"
+        f("ReportingSeniorName") = "SYNTHETIC SENIOR": f("ReportingSeniorSSN") = "000000001": f("UnitUIC") = "12345"
+        f("ObservationStatus") = "Observed": f("PromotionRecommendation") = "Promotable"
+        f("ReportConcurrent") = IIf(i = 2, Null, "No"): f("ReportOperationalCommander") = IIf(i = 3, Null, "No")
+        Call SaveFixture(id, f, "Check box consistency")
+        AddGroupMember c2, id, "E5": ids(i) = id
+    Next
+    For Each item In ValidateLiveGroup(c2)
+        If item("Key") = "ReportConcurrent" Or item("Key") = "ReportOperationalCommander" Then consistent = consistent + 1
+    Next
+    Check consistent = 0, "Unanswered and No check boxes reported as inconsistent"
+    Set f = SavedFields(ids(1)): f("ReportConcurrent") = "Yes": Call SaveFixture(ids(1), f, "One concurrent")
+    text = ""
+    For Each item In ValidateLiveGroup(c2)
+        If item("Key") = "ReportConcurrent" Then text = text & item("Message") & "|"
+    Next
+    Check InStr(text, "This report: Yes.") > 0 And InStr(text, "This report: No (not answered).") > 0 And InStr(text, "This report: .") = 0, "Real check box difference not reported clearly: " & text
     TestGroupCorrectness = "PASS: " & checks & " group correctness assertions": Exit Function
 Failed:
     TestGroupCorrectness = "FAIL after " & checks & " at " & stage & ": " & Err.Number & " " & Err.Description

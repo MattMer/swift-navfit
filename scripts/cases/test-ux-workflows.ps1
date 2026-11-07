@@ -14,6 +14,8 @@ try {
     Write-Output $result
     $filters=$app.Eval('TestReportFilters()')
     if($filters -notlike 'PASS:*'){throw $filters};Write-Output $filters
+    $directory=$app.Eval('TestDirectoryActions()')
+    if($directory -notlike 'PASS:*'){throw $directory}; Write-Output $directory
     $app.CloseCurrentDatabase();$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null
     $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
     . (Join-Path (Split-Path $PSScriptRoot -Parent) 'test-contributor-context.ps1')

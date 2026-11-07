@@ -52,6 +52,7 @@
     "src/modRUADProfiles.bas",
     "src/modRecovery.bas",
     "src/modReportContext.bas",
+    "src/modReportDirectory.bas",
     "src/modReportFilters.bas",
     "src/modReportMessages.bas",
     "src/modReportNotes.bas",
@@ -64,6 +65,7 @@
     "src/modReportsDue.bas",
     "src/modReviewComments.bas",
     "src/modRevisionCompare.bas",
+    "src/modRevisionRetention.bas",
     "src/modRoster.bas",
     "src/modRouteTemplates.bas",
     "src/modRouting.bas",
@@ -112,7 +114,8 @@
     "src/modValidationExpansion.bas",
     "src/modValidationReferences.bas",
     "src/modWorkspace.bas",
-    "src/modWorkspaceImport.bas"
+    "src/modWorkspaceImport.bas",
+    "src/modWorkspaceSafety.bas"
   ],
   "generatedModules": [
     "modPDFPrintCatalogue",
@@ -239,6 +242,7 @@
     "frmUXBulk",
     "frmUXComparison",
     "frmUXConfirmIdentity",
+    "frmUXCounselingDate",
     "frmUXCounselingEditor",
     "frmUXDecision",
     "frmUXDirectory",

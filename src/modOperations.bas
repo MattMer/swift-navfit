@@ -211,15 +211,6 @@ Public Function OperationDetails() As Boolean
     If Not r.EOF Then Forms!frmOperations!txtOutcome = r!OperationState & vbCrLf & Nz(r!Outcome, "Started or interrupted. Inspect saved reports and receipts before retrying.") & vbCrLf & Nz(r!SourceDescription, "")
     r.Close: OperationDetails = True
 End Function
-Public Function UndoImportUI() As Boolean
-    On Error GoTo Failed
-    If MsgBox("Undo the selected import? New imported drafts are archived. Reconciled narratives are restored through a new revision. Later edits block undo; provenance stays retained.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
-    UndoImportUI = UndoNarrativeImport(Nz(Forms!frmOperations!lstReceipts, 0))
-    Call LoadOperations()
-    Exit Function
-Failed:
-    MsgBox Err.Description, vbExclamation, "Undo import"
-End Function
 Public Function AcknowledgeOperationUI() As Boolean
     Dim id As Long
     id = Nz(Forms!frmOperations!lstOperations, 0)

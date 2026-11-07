@@ -196,9 +196,14 @@ Public Function ImportPDFPreview(ByVal century As String, ByVal identifierKind A
         If changes.Exists("OfficialName") Then changes.Add "MemberName", Left$(CStr(changes("OfficialName")), 120)
     Else
         id = targetID
+        'Keep the replaced state visible in History: restoring it undoes the import.
+        'A stale target fails in CommitSavedFields and rolls this back.
+        stage = "Retain state before import"
+        RetainReportCheckpoint id, "Before PDF import"
     End If
     stage = "Commit PDF fields"
     Call CommitSavedFields(id, expected, changes, "Reviewed structured PDF import")
+    If targetID > 0 Then RetainReportCheckpoint id, "PDF import"
     If CurrentRevision(id) <> expected Then AuditCorrelateRevision CurrentRevision(id), operationID
     stage = "Retain receipt": Set db = CurrentDb
     Set receipt = db.OpenRecordset("ImportReceipt", dbOpenDynaset)

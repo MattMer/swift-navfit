@@ -106,6 +106,7 @@ Public Function AssignReview(ByVal reportID As Long, ByVal expectedRevision As L
     If r!IsArchived Or r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 1806, "modRouting.AssignReview", "Review assignment requires an active draft."
     If Nz(r!CurrentRevisionID, 0) <> expectedRevision Or expectedRevision = 0 Then Err.Raise vbObjectError + 1807, "modRouting.AssignReview", "Saved revision changed. Refresh before assigning."
     r.Close: Set r = Nothing
+    RetainReportCheckpoint reportID, "Review assigned"
     If RouteValue(db, "SELECT Count(*) FROM ReviewTask WHERE ReportID=" & reportID & " AND TaskState='Pending'") > 0 Then Err.Raise vbObjectError + 1808, "modRouting.AssignReview", "Finish or cancel the pending review before assigning another."
     'Someone already in the report's active review route acts through that route; a
     'separate assignment would give them nothing they can act on.
@@ -154,6 +155,7 @@ Public Function FinishReview(ByVal taskID As Long, ByVal outcome As String, ByVa
         If Nz(RouteValue(db, "SELECT WorkflowState FROM Report WHERE ReportID=" & r!ReportID), "") <> "Draft" Then Err.Raise vbObjectError + 1815, "modRouting.FinishReview", "Reopen local approval before recording review outcomes."
         'F01: the assignee holds the shared draft and may save; finishing records the revision.
     End If
+    RetainReportCheckpoint CLng(r!ReportID), "Review " & outcome
     r.Edit: r!TaskState = outcome: r!FinishedAt = Now(): r!FinishedRevisionID = RouteValue(db, "SELECT CurrentRevisionID FROM Report WHERE ReportID=" & r!ReportID): r.Update: r.Close: Set r = Nothing
     Call RouteEvent(db, taskID, pid, outcome, notes)
     w.CommitTrans: trans = False: FinishReview = True: Exit Function

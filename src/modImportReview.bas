@@ -192,6 +192,8 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
         If target!FormKind <> kind Then Err.Raise vbObjectError + 418, "modImportReview.ImportReviewedNarrative", "Source and destination report types differ."
         If target!CurrentRevisionID <> expectedRevision Then Err.Raise vbObjectError + 419, "modImportReview.ImportReviewedNarrative", "Destination changed after preview. Compare again."
         beforeRevision = target!CurrentRevisionID
+        'Keep the replaced state visible in History: restoring it undoes the import.
+        RetainReportCheckpoint destinationID, "Before NAVFIT98A import"
         If fullReport Then
             If Not IsObject(acceptedChanges) Then Err.Raise vbObjectError + 5111, "modImportReview.ImportReviewedNarrative", "Preview and resolve the returned file against its export baseline first."
             NAVFITCheckTarget destinationID
@@ -200,6 +202,7 @@ Public Function ImportReviewedNarrative(ByVal externalID As Long, Optional ByVal
         id = CommitDraft(destinationID, kind, Nz(target!Title, ""), Nz(target!MemberName, ""), target!PeriodStart, target!PeriodEnd, Nz(target!DraftNotes, ""), "Accept incoming narrative", r!Comments)
         End If
         target.Close
+        RetainReportCheckpoint id, "NAVFIT98A import"
     Else
         If fullReport Then
             If memberDisplay = "" Then memberDisplay = Nz(r!FullName, "Unnamed imported member")

@@ -19,6 +19,9 @@ try {
  $app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestReportTools()');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
+ $app.LoadFromText(5,'RevisionRetentionHarness',(Join-Path $root 'tests/RevisionRetentionHarness.bas'))
+ $retention=$app.Eval('TestRevisionRetention()');Write-Output $retention
+ if($retention -notlike 'PASS:*'){throw $retention}
 } catch {$primary=$_} finally {
  try{if($app.Eval('CurrentProject.AllForms("frmEditor").IsLoaded')){[void]$app.Eval('UXMessageDiscard()')};[void]$app.Eval('UXLeaveEditor("Discard")')}catch{}
  try{$app.Quit(2)}catch{$cleanup+=$_.Exception.Message}

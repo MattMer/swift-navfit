@@ -13,4 +13,6 @@ try {
     if(-not $result.StartsWith('PASS:')){throw $result}
     @{Result=$result;Database=$scratch;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash}|ConvertTo-Json|Set-Content (Join-Path $root 'build/tests/rs-directory-results.json')
     Write-Output $result
+    $depth=$app.Eval('TestSeniorApplyDepth()')
+    if($depth -notlike 'PASS:*'){throw $depth}; Write-Output $depth
 }finally{if($null -ne $app){$app.Quit(2)}}

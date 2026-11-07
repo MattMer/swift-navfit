@@ -16,6 +16,8 @@ try{
  $app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestContributorStartup()');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
+ $safety=$app.Eval('TestWorkspaceSafety()');Write-Output $safety
+ if($safety -notlike 'PASS:*'){throw $safety}
  $app.CloseCurrentDatabase();$app.OpenCurrentDatabase($source,$true)
  AssertChooser
  if($app.Eval('Forms!frmContributorStart!cboContributor.ListCount') -ne 3){throw 'Reopened contributor list lost rows'}
@@ -49,6 +51,22 @@ try{
  $db=$dao.OpenDatabase($target,$false,$true)
  try{$rows=$db.OpenRecordset('SELECT ActiveProfileID FROM Workspace',4);try{if($rows.Fields.Item(0).Value -ne $author){throw 'Cancel changed retained contributor'}}finally{$rows.Close()}}finally{$db.Close()}
 }finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($dao)}
+# Two real sessions on one shared file: the second launch warns before anyone works.
+$shared=Join-Path $folder 'shared.accdb';Copy-Item -LiteralPath $source -Destination $shared
+$first=$null;$second=$null
+try{
+ $first=New-Object -ComObject Access.Application;$first.AutomationSecurity=1;$first.OpenCurrentDatabase($shared,$false)
+ if($first.Eval('Forms!frmContributorStart!uxWorkspaceWarning.Visible')){throw ('Lone session warned: '+$first.Eval('Forms!frmContributorStart!uxWorkspaceWarning.Caption'))}
+ $second=New-Object -ComObject Access.Application;$second.AutomationSecurity=1;$second.OpenCurrentDatabase($shared,$false)
+ if($second.CurrentProject.FullName -ne $shared){throw 'Second shared session did not open'}
+ $warning=[string]$second.Eval('Forms!frmContributorStart!uxWorkspaceWarning.Caption')
+ if(-not $second.Eval('Forms!frmContributorStart!uxWorkspaceWarning.Visible') -or $warning -notlike '*already open in another session (this computer)*'){throw ('Second session not warned: '+$warning)}
+ $second.CloseCurrentDatabase()
+ Write-Output ('PASS: second shared session warned: '+$warning)
+}finally{
+ if($second){try{$second.Quit(2)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($second)}
+ if($first){try{$first.CloseCurrentDatabase()}catch{};try{$first.Quit(2)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($first)}
+}
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash){throw 'Test changed supplied build'}
 @{Status='PASS';BuildPath=$BuildPath;BuildSHA256=$hash;SourceSHA256=$sourceHash;Assertions=$result;Reopen=$true;SettingsImport=$true;ImportedAttribution=$true;BlankCancel=$true;InitializedCancel=$true;SourceUnchanged=$true}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
 Write-Output ('PASS: reopen, Settings & Help import, imported attribution and blank/initialized cancellation; '+$folder)

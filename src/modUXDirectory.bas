@@ -30,8 +30,17 @@ Public Function UXDirectorySave() As Boolean
     Dim f As Access.Form
     On Error GoTo Failed
     Set f = Forms!frmUXMemberEditor
-    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), "Manual", UXRUADValues(), , Nz(f!txtDateReported, ""))
-    DoCmd.Close acForm, f.Name: UXDirectoryLoad: UXDirectorySave = True: Exit Function
+    memberID = SaveDirectoryMember(memberID, memberVersion, Nz(f!txtName, ""), Nz(f!txtReportName, ""), Nz(f!txtRank, ""), Nz(f!txtSSN, ""), "Manual", UXRUADValues(), , Nz(f!txtDateReported, ""), True)
+    UXDirectorySave = True
+    If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad
+    'Stay open to say which open reports took the change and which did not.
+    If Len(LastMemberReportUpdate()) > 0 Then
+        memberVersion = Nz(MajorScalar("SELECT VersionCounter FROM CommandMember WHERE MemberID=" & memberID), 0)
+        f!lblStatus.Caption = Left$("Saved. " & LastMemberReportUpdate(), 1000)
+        UXEditorContextChanged
+        Exit Function
+    End If
+    DoCmd.Close acForm, f.Name: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
 End Function

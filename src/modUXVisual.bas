@@ -40,6 +40,7 @@ Public Function UXColor(ByVal role As String) As Long
   Case "Primary": UXColor = RGB(36, 91, 143)
   Case "Active": UXColor = RGB(14, 112, 107)
   Case "Neutral": UXColor = RGB(229, 236, 243)
+  Case "Inherited": UXColor = RGB(232, 232, 232)
   Case "Border": UXColor = RGB(167, 184, 202)
   Case "Warning": UXColor = RGB(255, 240, 207)
   Case "WarningInk": UXColor = RGB(122, 71, 0)
@@ -111,6 +112,9 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
      UXVisualSet c, "BackStyle", IIf(Len(role) > 0, 1, 0)
      If Len(role) > 0 Then UXVisualSet c, "BackColor", UXColor(role)
      UXVisualSet c, "ForeColor", UXColor(tone)
+    ElseIf key = "uxworkspacewarning" Then
+     UXVisualSet c, "BackStyle", IIf(Len(c.Caption) > 0, 1, 0)
+     If Len(c.Caption) > 0 Then UXVisualSet c, "BackColor", UXColor("Warning"): UXVisualSet c, "ForeColor", UXColor("WarningInk")
     ElseIf key = "uxnarrativecount" Then
      role = UXNarrativeRole(): UXVisualSet c, "BackStyle", IIf(Len(role) > 0, 1, 0)
      If Len(role) > 0 Then UXVisualSet c, "BackColor", UXColor(role): UXVisualSet c, "ForeColor", UXColor(role & "Ink")
@@ -141,6 +145,7 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
    f!uxSGA.Caption = Replace(Split(f!uxSGA.Caption, " (")(0), "Summary Group Average - saved values:", "Group average (saved):")
   End If
  End If
+ If f.Name = "frmUXEditorFields" Then UXDirectorySourceStyle
  UXApplyVisual = True
 Finished:
  painting = False

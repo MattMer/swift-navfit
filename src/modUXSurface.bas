@@ -6,6 +6,8 @@ Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
 Private narrativeFit As Object, narrativePrint As Object, narrativeKey As String
+Private nobReplaced As Object, nobReport As Long
+Private calendarKey As String
 
 ' Reference dimensions are NAVFIT default print rectangles, converted from
 ' hundredths of an inch to twips. Margins sit outside that text rectangle.
@@ -195,6 +197,27 @@ Public Function UXDateEntry(ByVal value As Variant) As Variant
     'Calendar choices become invariant strings; incomplete typed entries remain intact.
     If VarType(value) = vbDate Then UXDateEntry = Format$(value, "yyyy-mm-dd") Else UXDateEntry = value
 End Function
+'Block 20's PFA date is a month: any date in it, MM/YY or M/YY, stores as the first
+'of that month (YYYY-MM-01) and shows as MM/YY. Other text stays raw for correction.
+Public Function UXReadinessDateEntry(ByVal value As Variant) As Variant
+    Dim text As String, parts As Variant, monthNumber As Long, yearNumber As Long
+    If VarType(value) = vbDate Then UXReadinessDateEntry = Format$(DateSerial(Year(value), Month(value), 1), "yyyy-mm-dd"): Exit Function
+    If IsNull(value) Then UXReadinessDateEntry = Null: Exit Function
+    text = Trim$(CStr(value)): UXReadinessDateEntry = value
+    If Len(text) = 0 Then UXReadinessDateEntry = Null: Exit Function
+    If IsValidIsoDate(text) Then UXReadinessDateEntry = Left$(text, 8) & "01": Exit Function
+    If text Like "#/##" Or text Like "##/##" Then
+        parts = Split(text, "/"): monthNumber = CLng(parts(0)): yearNumber = 2000 + CLng(parts(1))
+        If monthNumber >= 1 And monthNumber <= 12 Then UXReadinessDateEntry = Format$(DateSerial(yearNumber, monthNumber, 1), "yyyy-mm-dd")
+    End If
+End Function
+'The surface's view of a buffer value.
+Public Function UXSurfaceShown(ByVal key As String, ByVal value As Variant) As Variant
+    UXSurfaceShown = value
+    If key = "ReadinessDate" Then
+        If IsValidIsoDate(Nz(value, "")) Then UXSurfaceShown = Mid$(value, 6, 2) & "/" & Mid$(value, 3, 2)
+    End If
+End Function
 Public Function UXSurfaceCanonical(ByVal key As String, ByVal value As Variant) As Variant
     If UXFieldFlag(key) Then
         If IsNull(value) Then
@@ -204,6 +227,8 @@ Public Function UXSurfaceCanonical(ByVal key As String, ByVal value As Variant) 
         Else
             UXSurfaceCanonical = IIf(value, "Yes", "No")
         End If
+    ElseIf key = "ReadinessDate" Then
+        UXSurfaceCanonical = UXReadinessDateEntry(value)
     ElseIf UXFieldDate(key) Then
         UXSurfaceCanonical = UXDateEntry(value)
     Else
@@ -244,6 +269,9 @@ Public Function UXSurfaceEdited(ByVal key As String) As Boolean
     'Names, grades and titles are formatted at Save (UXFormatTypedFields), not here:
     'Access also raises this event when a resize briefly moves focus mid-typing.
     Forms!frmEditor.Controls(name) = UXSurfaceCanonical(key, f.Controls(name).Value)
+    If key = "ObservationStatus" Then
+        If Nz(Forms!frmEditor!cboObservationStatus, "") = "NOB" Then UXSetWholeNOB Else UXClearWholeNOB
+    End If
     'The printed Yes/No boxes edit one response. Preserve an imported conflict until
     'the contributor deliberately selects a box, then clear its opposite atomically.
     If key = "RetentionYes" Or key = "RetentionNo" Or key = "StatementYes" Or key = "StatementNo" Then
@@ -294,7 +322,11 @@ Public Function UXSurfaceValidate(ByVal key As String) As Boolean
         If key = "UnitUIC" Or key = "ReportingSeniorUIC" Then digitCount = 0
         If digitCount > 0 And (Len(text) <> digitCount Or text Like "*[!0-9]*") Then message = "Enter exactly " & digitCount & " digits."
         If UXFieldDate(key) Then
-            If Not IsDate(text) And Not (key = "CounselingDate" And IsCounselingStatus(text)) Then message = "Enter a valid date."
+            If key = "ReadinessDate" Then
+                If Not IsValidIsoDate(text) Then message = "Enter the month and year as MM/YY."
+            ElseIf Not IsDate(text) And Not (key = "CounselingDate" And IsCounselingStatus(text)) Then
+                message = "Enter a valid date."
+            End If
         End If
         If (key = "UnitUIC" Or key = "ReportingSeniorUIC") And Not IsValidPolicyUIC(text) Then message = "Enter four digits followed by one letter or digit."
         options = UXFieldOptions(key)
@@ -349,7 +381,7 @@ Public Sub UXSurfaceRestoreField(ByVal key As String)
     If UXFieldFlag(key) Then
         If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = False Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
     Else
-        c.Value = value
+        c.Value = UXSurfaceShown(key, value)
     End If
     surfaceBusy = False
     Exit Sub
@@ -379,10 +411,12 @@ Public Function UXSurfaceRefresh() As Boolean
             If UXFieldFlag(key) Then
                 If IsNull(value) Or Len(Nz(value, "")) = 0 Then c.Value = False Else If key = "ObservationStatus" Then c.Value = (value = "NOB") Else c.Value = (value = "Yes")
             Else
+                value = UXSurfaceShown(key, value)
                 If Not SameFieldValue(c.Value, value) Then c.Value = value
             End If
         End If
     Next
+    UXDirectorySourceStyle
     stage = "Refresh narrative status"
     If UXHasControl(f, "uxNarrativeCount") Then Call UXNarrativeStatus()
     UXSurfaceRefresh = True
@@ -799,4 +833,94 @@ Private Function NameSuffix(ByVal token As String, ByVal position As Long) As Bo
         Case "JR", "SR", "II", "III", "IV": NameSuffix = position >= 1
         Case "V", "VI": NameSuffix = position >= 2
     End Select
+End Function
+
+'Block 16 sets the pending marks; clearing it does not invent observed grades.
+'Marks that a pending whole-report NOB replaced, so clearing block 16 before a
+'save puts them back. A save, another report or a later mark change forgets them.
+Public Sub UXForgetWholeNOB()
+    Set nobReplaced = Nothing: nobReport = 0
+End Sub
+Public Sub UXClearWholeNOB()
+    Dim key As Variant, f As Access.Form, intact As Boolean
+    If nobReplaced Is Nothing Then Exit Sub
+    Set f = Forms!frmEditor
+    If nobReport <> Nz(f!txtReportID, 0) Then UXForgetWholeNOB: Exit Sub
+    intact = True
+    For Each key In nobReplaced.Keys
+        If Nz(f.Controls(UXFieldControl(CStr(key))).Value, "") <> "NOB" Then intact = False
+    Next
+    If intact Then
+        For Each key In nobReplaced.Keys
+            f.Controls(UXFieldControl(CStr(key))) = nobReplaced(key)
+            If CStr(key) <> "PromotionRecommendation" And UXSurfaceAvailable() Then UXSurfaceTrait CLng(Mid$(CStr(key), 6))
+        Next
+    End If
+    UXForgetWholeNOB
+End Sub
+Public Sub UXSetWholeNOB()
+    Dim key As Variant
+    If nobReplaced Is Nothing Then
+        Set nobReplaced = CreateObject("Scripting.Dictionary"): nobReport = Nz(Forms!frmEditor!txtReportID, 0)
+        For Each key In TraitKeys(): nobReplaced.Add CStr(key), Forms!frmEditor.Controls(UXFieldControl(CStr(key))).Value: Next
+        nobReplaced.Add "PromotionRecommendation", Forms!frmEditor.Controls(UXFieldControl("PromotionRecommendation")).Value
+    End If
+    For Each key In TraitKeys()
+        Forms!frmEditor.Controls(UXFieldControl(CStr(key))) = "NOB"
+        If UXSurfaceAvailable() Then UXSurfaceTrait CLng(Mid$(CStr(key), 6))
+    Next
+    Forms!frmEditor.Controls(UXFieldControl("PromotionRecommendation")) = "NOB"
+End Sub
+Public Function UXReadinessCalendarOpen() As Boolean
+    calendarKey = "ReadinessDate"
+    UXReadinessCalendarOpen = UXCalendarOpen()
+End Function
+Public Function UXCounselingCalendarOpen() As Boolean
+    calendarKey = "CounselingDate"
+    UXCounselingCalendarOpen = UXCalendarOpen()
+End Function
+Private Function UXCalendarOpen() As Boolean
+    On Error GoTo Failed
+    If Not UXFlushSurface() Then Exit Function
+    If Not UXSignedEditGuard() Then Exit Function
+    If Nz(Forms!frmEditor!txtReportID, 0) > 0 Then
+        If Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & Forms!frmEditor!txtReportID), True) Then Exit Function
+    End If
+    DoCmd.OpenForm "frmUXCounselingDate"
+    UXCalendarOpen = True: Exit Function
+Failed:
+    Forms!frmEditor!uxError.Caption = "Calendar: " & Err.Description
+End Function
+Public Function UXCounselingCalendarLoad() As Boolean
+    Dim value As Variant
+    UXAssertView "frmUXCounselingDate"
+    If Len(calendarKey) = 0 Then calendarKey = "CounselingDate"
+    value = Forms!frmEditor.Controls(UXFieldControl(calendarKey)).Value
+    If IsDate(value) Then Forms!frmUXCounselingDate!txtDate = CDate(value) Else Forms!frmUXCounselingDate!txtDate = Date
+    If calendarKey = "ReadinessDate" Then
+        Forms!frmUXCounselingDate.Caption = "PFA date": Forms!frmUXCounselingDate!lblHeading.Caption = "20. PFA date"
+        Forms!frmUXCounselingDate!lblStatus.Caption = "Choose any day in the PFA month; block 20 shows it as MM/YY."
+    End If
+    UXCounselingCalendarLoad = True
+End Function
+Public Function UXCounselingCalendarUse() As Boolean
+    Dim selectedDate As String
+    On Error GoTo Failed
+    If Not IsDate(Forms!frmUXCounselingDate!txtDate) Then Err.Raise 5, , "Choose a valid date."
+    If Not UXSignedEditGuard() Then Exit Function
+    selectedDate = Format$(CDate(Forms!frmUXCounselingDate!txtDate), "yyyy-mm-dd")
+    DoCmd.Close acForm, "frmUXCounselingDate", acSaveNo
+    If Len(calendarKey) = 0 Then calendarKey = "CounselingDate"
+    If calendarKey = "ReadinessDate" Then
+        If Not UXSurfaceSetValue(calendarKey, UXSurfaceShown(calendarKey, UXReadinessDateEntry(selectedDate))) Then Exit Function
+    ElseIf Not UXSurfaceSetValue(calendarKey, selectedDate) Then
+        Exit Function
+    End If
+    UXCounselingCalendarUse = True: Exit Function
+Failed:
+    If CurrentProject.AllForms("frmUXCounselingDate").IsLoaded Then
+        Forms!frmUXCounselingDate!lblStatus.Caption = Err.Description
+    Else
+        Forms!frmEditor!uxError.Caption = "Calendar: " & Err.Description
+    End If
 End Function

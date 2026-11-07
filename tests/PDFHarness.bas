@@ -43,7 +43,12 @@ Private Function TestPDFReapply(ByVal directory As String) As Boolean
     rawCount = DCount("*", "ImportRawValue", "ImportReceiptID=" & receipt)
     'Schema-43 receipts have no attempt field. Migration leaves the new field null.
     CurrentDb.Execute "UPDATE ImportReceipt SET ReceiptAttempt=Null WHERE ImportReceiptID=" & receipt, dbFailOnError
-    If Not UndoNarrativeImport(receipt) Then Exit Function
+    'Archiving an unchanged imported draft from Reports is that import's undo.
+    If ImportUndoReceipt(first, 0) <> receipt Then Exit Function
+    DoCmd.OpenForm "frmLibrary"
+    Forms!frmLibrary!lstReports = first
+    If Not LibraryAction("Archive") Then Exit Function
+    DoCmd.Close acForm, "frmLibrary", acSaveNo
     If Not DLookup("IsUndone", "ImportReceipt", "ImportReceiptID=" & receipt) Or Not DLookup("IsArchived", "Report", "ReportID=" & first) Then Exit Function
     second = CommitDraft(0, "EVAL", "Correct PDF destination", "Synthetic PDF reapply", Null, Null, "", "Regression")
     revision = CurrentRevision(second)

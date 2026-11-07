@@ -117,7 +117,30 @@ Public Function TestRecursiveDefaults() As String
  Check Edit("ShipStation", Null, vbYes), "Blank change failed"
  Check IsNull(DLookup("ShipStation", "Report", "ReportID=" & a)), "Blank did not clear report"
  Check Not UXGroupBulkPending(), "Change left staged state"
+ stage = "Report layout": TraceStage stage
+ ' Defaults use the report's Front Page positions, captions and lists; the group's
+ ' reporting senior record, not defaults, supplies blocks 22-27 and 48; block 29 is per Sailor.
+ Dim keyItem As Variant, sub1 As Access.Form
+ For Each keyItem In UXSharedKeys()
+  Check Not (keyItem Like "ReportingSenior*" Or keyItem = "PrimaryDuty" Or keyItem = "DutyDescription"), "Still a default: " & keyItem
+ Next
+ Check Not UXHasControl(Forms!frmUXBulk, "uxBlockSection2") And Not UXHasControl(Forms!frmUXBulk, "uxBlockSection6"), "Command & duties or Final report details tab still present"
+ Set sub1 = Forms!frmUXBulk!uxBlocks.Form
+ Check sub1!valueBilletSubcategory.ControlType = acComboBox And sub1!valueReadinessDetail.ControlType = acComboBox, "Block 20/21 lists not as in the report"
+ Check sub1!labelUnitUIC.FontSize = 8 And sub1!valueUnitUIC.Visible And sub1!valueCommandEmployment.Visible, "Front Page caption style or fields missing"
+ Check sub1!valueUnitUIC.Top < sub1!valueCommandEmployment.Top And sub1!valueUnitUIC.Left > sub1!valueComponentActive.Left, "Defaults not in report block order"
+ Check sub1!valuePeriodStart.Top = sub1!valuePeriodEnd.Top And sub1!valuePeriodStart.Left < sub1!valuePeriodEnd.Left, "Blocks 14 and 15 not on one row"
+ Check Not sub1!valueReadinessDate.Visible, "EVAL defaults show a PFA date"
  UXCloseBlocks
+ stage = "Group senior on new reports": TraceStage stage
+ Dim seniorValues As Object, seniorID As Long, seniorReport As Long
+ Set seniorValues = RSSeniorValues(0)
+ seniorValues("ReportingSeniorName") = "GROUPSENIOR, A": seniorValues("ReportingSeniorTitle") = "CO": seniorValues("ReportingSeniorCity") = "EXAMPLE"
+ seniorID = RSSaveSenior(0, "Defaults test senior", seniorValues)
+ RSSetGroupBaseline ga, seniorID, RSAddBaseline(seniorID, "E5", #1/1/2026#, 4, 100, 400, "Exact fixture"), False
+ seniorReport = CreateGroupDraft(ga, GroupStamp(ga), UXDefaultsStamp(ga), 0, 0, "Senior member", "SENIOR, MEMBER", "IT2", "", Null, Null)
+ Check DLookup("ReportingSeniorName", "Report", "ReportID=" & seniorReport) = "GROUPSENIOR, A" And DLookup("ReportingSeniorTitle", "Report", "ReportID=" & seniorReport) = "CO" And DLookup("ReportingSeniorCity", "Report", "ReportID=" & seniorReport) = "EXAMPLE", "New group report did not take the group's reporting senior"
+ Check IsNull(DLookup("DutyDescription", "Report", "ReportID=" & seniorReport)), "New group report received a block 29 default"
  stage = "Empty group": TraceStage stage
  groups = CreateSummaryGroup("Empty", "EVAL", "E5"): Forms!frmMajorWorkbench!cboGroup = groups
  Check UXOpenGroupDefaults(), "Empty group defaults failed"

@@ -1,6 +1,7 @@
 Attribute VB_Name = "UXDirectoryHarness"
 Option Explicit
 Private n As Long
+Private stage As String
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 6981, , message
     n = n + 1
@@ -53,8 +54,39 @@ Public Function TestUXDirectory() As String
     Check Not UXHistoryApplyIdentity(), "Stale selected member accepted"
     Check UXHistoryIdentityPreview(), "Fresh identity preview failed"
     Check UXHistoryApplyIdentity() And DLookup("MemberID", "MemberReport", "ReportID=" & reportID) = other And CurrentRevision(reportID) = rev, "Corrected member link failed or rewrote report"
-    UXDirectoryClose "frmUXMemberHistory": UXDirectoryClose "frmUXDirectory"
+    UXDirectoryClose "frmUXMemberHistory"
+    ' An edited profile updates the member's open (draft) reports and names the rest.
+    Dim p As Long, draft As Long, signed As Long, reviewed As Long, reviewer As Long, untouched As Long, linked As Variant
+    stage = "profile fixture"
+    p = SaveDirectoryMember(0, 0, "Riley Park", "PARK, RILEY", "IT2", "000000007")
+    draft = CommitDraft(0, "EVAL", "Open draft", "Riley Park", #1/1/2026#, #9/30/2026#, "", "Test", "")
+    signed = CommitDraft(0, "EVAL", "Signed report", "Riley Park", #1/1/2025#, #9/30/2025#, "", "Test", "")
+    reviewed = CommitDraft(0, "EVAL", "Report under review", "Riley Park", #10/1/2025#, #12/31/2025#, "", "Test", "")
+    For Each linked In Array(draft, signed, reviewed)
+        LinkReportDirectoryMember CLng(linked), p, CurrentRevision(CLng(linked)), CLng(DLookup("VersionCounter", "CommandMember", "MemberID=" & p)), "Synthetic link"
+    Next
+    Call MarkReportSigned(signed, CurrentRevision(signed), #10/5/2025#)
+    reviewer = AddContributor("Profile reviewer")
+    Call AssignReview(reviewed, CurrentRevision(reviewed), reviewer, Null, "Check it")
+    untouched = CurrentRevision(signed)
+    stage = "open profile"
+    Forms!frmUXDirectory!lstMembers.Requery: Forms!frmUXDirectory!lstMembers = p
+    Check UXDirectoryEdit(False), "Profile for report update did not open"
+    Forms!frmUXMemberEditor!txtRank = "IT1"
+    stage = "save profile"
+    Check UXDirectorySave(), "Profile save with open reports failed: " & Forms!frmUXMemberEditor!lblStatus.Caption
+    Check CurrentProject.AllForms("frmUXMemberEditor").IsLoaded, "Editor closed without reporting the report update"
+    Check InStr(Forms!frmUXMemberEditor!lblStatus.Caption, "Updated 1 open report") > 0, "Update count not shown: " & Forms!frmUXMemberEditor!lblStatus.Caption
+    Check InStr(Forms!frmUXMemberEditor!lblStatus.Caption, "report " & signed & " (signed)") > 0 And InStr(Forms!frmUXMemberEditor!lblStatus.Caption, "report " & reviewed & " (under review)") > 0, "Skipped reports not named: " & Forms!frmUXMemberEditor!lblStatus.Caption
+    Check DLookup("RankRate", "Report", "ReportID=" & draft) = "IT1", "Open draft did not take the profile change"
+    stage = "skipped reports"
+    Check IsNull(DLookup("RankRate", "Report", "ReportID=" & signed)) And CurrentRevision(signed) = untouched, "Signed report changed"
+    Check IsNull(DLookup("RankRate", "Report", "ReportID=" & reviewed)), "Report under review changed"
+    Forms!frmUXMemberEditor!txtRank = "IT1": Forms!frmUXMemberEditor!txtReportName = "PARK, RILEY J"
+    Check UXDirectorySave(), "Second save from the open editor failed (stale version)"
+    Check DLookup("OfficialName", "Report", "ReportID=" & draft) = "PARK, RILEY J", "Second profile change not applied"
+    UXDirectoryClose "frmUXMemberEditor": UXDirectoryClose "frmUXDirectory"
     TestUXDirectory = "PASS: " & n & " native directory/history UI assertions": Exit Function
 Failed:
-    TestUXDirectory = "FAIL: " & Err.Number & " " & Err.Description
+    TestUXDirectory = "FAIL at " & stage & " after " & n & ": " & Err.Number & " " & Err.Description
 End Function

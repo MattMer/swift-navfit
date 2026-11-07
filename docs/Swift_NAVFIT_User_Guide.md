@@ -1,8 +1,8 @@
 # Swift NAVFIT User Guide
 
-Version 1.7 | 4 November 2026
+Version 1.8-dev | 4 November 2026
 
-For Swift NAVFIT 0.53.0 | schema 44
+For Swift NAVFIT 0.54.0-dev | schema 45
 
 ## Draft. Coordinate. Review. Preserve.
 
@@ -12,7 +12,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 
 **Independent development application.** Local approval and group completion do not constitute official signatures, submission, or Navy approval. Use governing instructions and the command's authorized final processing procedure.
 
-**Guide scope:** Swift NAVFIT 0.53.0 navigation and behavior. Screen maps are orientation diagrams. Screenshots show the Demo workspace's made-up data. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
+**Guide scope:** Swift NAVFIT 0.54.0-dev navigation and behavior. Screen maps are orientation diagrams. Screenshots show the Demo workspace's made-up data. Older releases can have different controls. Physical display, accessibility, and final print acceptance remain separate from automated application checks.
 
 ---
 
@@ -108,6 +108,17 @@ Choose the file that matches your purpose:
 5. Make a backup before substantial data entry or import.
 
 **Expected result:** The workspace is configured and navigation opens normally. A new Blank has no existing reports or command history.
+
+**Startup warnings.** The setup and contributor screens show a yellow warning when the file is somewhere Swift cannot protect it:
+
+| Warning | What to do |
+| --- | --- |
+| Open from a temporary folder (inside a zip file or an e-mail attachment) | Exit. Save the file to an approved folder and open it from there; Windows can delete the temporary copy and your work with it. |
+| In a folder a sync service uploads (OneDrive, a SharePoint library, Dropbox) | Move the workspace to a folder that is not synced. Sync can damage an open Access file or create conflicting copies. |
+| Read-only | Nothing can be saved. Copy the file to a folder you can write to. |
+| Already open in another session | Close the other session first. Swift supports one person at a time. |
+
+The warning does not stop you continuing. A network share is not flagged; only one person should have the file open there at a time. If another session chooses a different contributor while you work, your next action says so and keeps your unsaved edits open.
 
 ## 2.3 Continue an older Swift workspace
 
@@ -244,6 +255,24 @@ Report accessibility problems through **Settings & Help > Support and limitation
 
 # 4. Create, edit, and save reports
 
+In a summary group, **Previous** and **Next** at the top of the editor move
+between the group's active reports in the order its **Members** view showed when
+you opened the report, including any heading sort you chose. A report added since
+comes at the end; a report opened from elsewhere uses alphabetical order. Navigation uses the normal
+save and recovery handling for pending edits. If neither saving nor recovery
+succeeds, the current report stays open.
+
+A gray field matches its linked member or reporting senior record. Hover over
+it for the source hint. It remains editable: a differing local value uses the
+normal background. This is a current-value indicator, not a locked field or
+proof of import origin.
+
+Selecting **16. Not Observed Report (NOB)** sets all seven trait marks and the
+promotion recommendation to **NOB** in the pending draft. Save keeps the change.
+Clearing block 16 before you save puts back the marks it replaced. If you changed
+any mark after selecting NOB, or after saving, clearing block 16 leaves the marks
+for you to grade deliberately.
+
 ## 4.1 Create a draft
 
 1. Open **Reports** and choose the new-report action.
@@ -254,7 +283,7 @@ Report accessibility problems through **Settings & Help > Support and limitation
 
 All seven performance traits are grouped on Front Page for editing. This does not change their official printed-page associations. The pages use fixed field geometry. Resize or scroll the viewing area to reach fields; the report fields do not reflow to a different block order.
 
-Front Page follows the printed form's rows: blocks 5–9 share a row, as do 10–15 and 16–21. Block 21 (billet subcategory) is a list of NAVFIT98A's subcategories. On a CHIEFEVAL, block 20 is the test date followed by the result, chosen from a list, as on NAVPERS 1616/27.
+Front Page follows the printed form's rows: blocks 5–9 share a row, as do 10–15 and 16–21. Block 21 (billet subcategory) is a list of NAVFIT98A's subcategories. On an EVAL or FITREP, block 20 is the physical readiness code only. On a CHIEFEVAL, block 20 is the PFA date followed by the result, chosen from a list, as on NAVPERS 1616/27. Type the PFA month as MM/YY, or choose **Pick...** and any day of that month; either way it shows as MM/YY, so any date in November 2026 shows as **11/26**.
 
 ![An EVAL Front Page: blocks 1 to 31 in the printed form's rows, with the ITA, group average, review actions and save status above.](images/report-editor.png)
 
@@ -304,7 +333,7 @@ Office then accepts those terms in Access, Word and Outlook. To stop using them,
 | State | Meaning and next action |
 | --- | --- |
 | Pending changes | Current editor values differ from saved data. Save when ready. |
-| Saved revision | The report's committed values and change history were recorded together. |
+| Saved revision | The current report values were saved; narrative changes and workflow checkpoints add visible history. |
 | Recovery checkpoint | A separate copy of pending work; it is not a committed revision. |
 | Save failed | Pending values remain available. Correct the indicated entry and retry. |
 | No pending changes | No unsaved report changes are detected. A no-op save does not create history. |
@@ -313,7 +342,7 @@ Incomplete drafts can be saved when their entered values meet storage requiremen
 
 Saving formats entries the way NAVFIT98A does. Names, grades and rates, designators, titles, and rater and counselor names become uppercase. The member's name becomes **LAST, FIRST MI SUFFIX** (for example, *john q smith jr* becomes *SMITH, JOHN Q JR*), and the reporting senior's name becomes **LAST, F M**. Middle names are shortened to initials and periods are removed. A name typed without a comma is read as first, middle, last; type a comma after a last name of more than one word, such as *VAN DER BERG, ANNA*.
 
-Double-click the rater, senior rater or counselor field to fill it from the member directory. The rater and senior rater become **LAST, F M, RANK** (28 characters at most) and the counselor **LAST, F M** (20 at most); a name too long is shortened to the last name, and one that still does not fit is left for you to type.
+Choose the **31. Counselor...** button, or double-click the rater, senior rater or counselor field to fill it from the member directory. The rater and senior rater become **LAST, F M, RANK** (28 characters at most) and the counselor **LAST, F M** (20 at most); a name too long is shortened to the last name, and one that still does not fit is left for you to type.
 
 ![Filling the rater from the member directory.](images/member-picker.png)
 
@@ -408,7 +437,7 @@ Choose **Validation issues** in the report action area, or **Pop out validation 
 | Needs review | A person must verify applicability, an exception, or unavailable evidence. |
 | Information | A note that changes nothing, such as a narrative longer than NAVFIT98A's block. It isn't counted as an issue or recorded in saved readiness. |
 
-Summary-group checks also include grouping, membership, and provisional-capacity reminders. The Demo's clean group has zero member-report findings, but keeps group reminders. A group reminder does not mean every member report has an entry error.
+Summary-group checks also include grouping, membership, and provisional-capacity reminders. When the group's reports must match on a check box, such as Concurrent or Ops Cdr, a box that was never ticked counts as No. The Demo's clean group has zero member-report findings, but keeps group reminders. A group reminder does not mean every member report has an entry error.
 
 ## 6.4 Inspect trait arithmetic
 
@@ -425,7 +454,7 @@ Open **Report tools > Trait calculations**. The view separates current editor va
 3. If an earlier version is needed, use the restore action and confirm its scope.
 4. Verify the restored values and the new saved revision.
 
-Restore appends a revision; it does not erase later history. A meaningful saved change creates history, while an unchanged save does not. Older revisions may lack fields introduced later; inspect the restore preview rather than assuming missing historical fields contain today's values.
+Routine administrative saves update the current report and replace its prior unreferenced working state. History retains the creation checkpoint, workflow checkpoints (routing, forwarding, return, approval and signing), Members-grid changes made while the report is under review, the states before and after an import into an existing draft, and saves that change main comments (EVAL block 43; FITREP block 41; CHIEFEVAL block 40), command employment, duties, or Chief trait comments. Clearing narrative text also retains a version. Unchanged saves add no history. Existing imported history is preserved; older administrative saves are hidden from this view. Snapshots referenced by undo, conversations or previews remain protected. Recovery of pending edits stays separate. If a comparison references a replaced working state, close and reopen the comparison against the current report. Restore saves the selected values into the current report without erasing retained history. Older revisions may lack fields introduced later; inspect the restore preview rather than assuming missing historical fields contain today's values.
 
 ## 7.2 Recover pending report edits
 
@@ -440,7 +469,16 @@ Checkpoints preserve work separately from committed revisions. They do not repla
 
 Use the report-selection actions in **Reports** to archive or recover reports. Archive removes an item from active views while retaining its history. Adjust the archive filter to find it again. Duplicate creates a separate report identity; it is not a revision of the original.
 
-**Settings & Help > Operation history** offers guarded undo for supported operations. Later changes can make an operation ineligible for undo. Read the affected-record scope before applying it.
+**How to undo.**
+
+| To undo | Use |
+| --- | --- |
+| Edits you have not saved | **Undo pending changes** in the report. |
+| A saved change to one report, including an import | The report's **History**: select the version to go back to and restore it. Restoring the **Before PDF import** or **Before NAVFIT98A import** checkpoint undoes that import, as long as nothing was saved after it, and lets you import the same file again. |
+| An import that created a new draft | Archive the draft in **Reports** while it is unchanged; that also undoes the import. |
+| Everything since a backup | Restore the backup into a new blank workspace (chapter 17). |
+
+**Settings & Help > Operation history** is a read-only log of operations, import receipts and report activity. It keeps undo only for folder operations from earlier versions.
 
 **Keep the three protections distinct:** a revision records a saved report change; a checkpoint retains pending editor or note work; a backup protects the workspace file and its complete collection of records.
 
@@ -451,6 +489,8 @@ Use the report-selection actions in **Reports** to archive or recover reports. A
 ## 8.1 Build the member directory
 
 Use the command-member tools associated with report creation to maintain reusable identities. Confirm spelling, identifiers, rank/rate, and paygrade before creating reports. A member-directory record and a report are related but distinct records; prior evaluations remain historical information rather than silently replacing today's report.
+
+Saving a changed profile also updates the member's open reports: the name, rank/rate, SSN, UIC, designator and date reported in every draft confirmed as that member's. The profile window stays open to say how many reports changed and which were not: signed or locally approved reports, reports under review, a report open in the editor, and a rank/rate that no longer matches a summary group's paygrade. Change those through the report once it can be edited, or with **Update reports from member / senior records** in the group.
 
 A member profile also holds **Date reported** (block 9), the date the member reported aboard. Neither roster format carries it, so enter it on the profile; leave it blank when unknown. New reports created for the member (from **Reports due** or from the directory) start with it filled in, and you can still change it on the report. Saving a report with a later date reported updates the profile; an earlier date never moves it back.
 
@@ -500,6 +540,11 @@ In the summary-group trait table, **Prior ITA** and **Prior Promotion** are read
 
 ## 8.5 Track midterm counseling
 
+In a report's block 30, type an ISO date (YYYY-MM-DD), **NOT REQ**, or **NOT PERF**.
+Use **Calendar** to choose a date. **Use date** stages it in the draft; Cancel
+keeps the existing entry. A NOT PERF entry needs its explanation in block 31.
+
+
 BUPERSINST 1610.10H chapter 18 sets a midterm counseling month for each paygrade; a new schedule takes effect 1 January 2027. Swift uses the member's grade/rate from the directory to show when each member is due.
 
 1. Open **My Work > Counseling** to see members who are overdue, due this month, due within 60 days, or whose worksheet disposition is due. Select **Show every active member** to see everyone. Members without a grade/rate are not scheduled; enter it in the command member directory.
@@ -529,6 +574,17 @@ Master chiefs and CWO5s have no Regular periodic report since 3 June 2026, so Sw
 
 # 9. Create and manage summary groups
 
+Use **Update reports from member / senior records** to refresh existing drafts
+from confirmed member profiles and the group's selected reporting senior record.
+Review the field list and confirm replacements. Unentered member values do not
+clear existing entries. The selected senior record replaces its fields, including
+cleared details, so an old senior's contact/name parts are not carried forward.
+Signed reports are skipped; unconfirmed links do not supply member values.
+Locally approved reports return to In-Work. Reports under review or a changed
+paygrade need review before the update. A stale source or failed write leaves
+the entire update unapplied; correct the cause and try again. This action only pulls
+values into reports; it does not update member or reporting senior records.
+
 ## 9.1 Create and open a group
 
 1. Open **Summary groups** and choose **Create Summary Group**.
@@ -545,6 +601,8 @@ In **Choose group members**, each report shows its report number, period, status
 The group workspace provides Members, Defaults, Review, and History. Use its return-to-list action to choose another group. Selecting another main menu closes the working group view; opening a different group should show that group's roster and title.
 
 ## 9.2 Apply defaults deliberately
+
+Defaults are laid out like the report's Front Page, with the same captions, lists and formats. They cover blocks 5 to 21 and block 28. The reporting senior (blocks 22 to 27 and the address and phone, block 48) comes from the reporting senior record selected for the group, and new reports created in the group start with it. Block 29 is written for each Sailor, so it is not a default. Global defaults use the same fields.
 
 1. Open the group's **Defaults** or the selected-group defaults action.
 2. Change the intended shared report block.
@@ -572,7 +630,7 @@ Group status is local tracking. It does not certify that every member is complet
 1. Open the group's **Members** view and its trait table.
 2. Check the member names and prior-value references before editing. Click a member's name to open their report; each member takes one row.
 3. Edit the intended current trait or recommendation cell.
-4. Leave the cell and confirm that the change saved. Valid direct edits save as report revisions.
+4. Leave the cell and confirm that the change saved. Valid direct edits save as report revisions. They appear in the report's History only while it is under review (a route or an assignment); otherwise each one replaces the report's working state.
 
 Failed cells remain pending for correction, retry, or deliberate discard. Resolve pending cells before relying on saved group calculations, changing context, or reordering rows. Table headings sort rows; pending cells save before a new order is applied.
 
@@ -685,7 +743,7 @@ The requester, or a reviewer whose step has already forwarded, can choose **Pull
 
 ## 12.5 Members grid changes
 
-The summary-group **Members** grid is outside the review chain. Coordinators can change a member's marks there at any time, even while the report is with a reviewer. Each change is recorded on the report and flagged to whoever holds it.
+The summary-group **Members** grid is outside the review chain. Coordinators can change a member's marks there at any time, even while the report is with a reviewer. Each change is recorded on the report, flagged to whoever holds it and kept in History as a **Members grid change** checkpoint, so the holder can compare it.
 
 ## 12.6 Approval and restarts
 
@@ -759,7 +817,6 @@ Save report edits before exchange. Export the report or group using the supporte
 
 Swift has no verified equivalent of NAVFIT98A's native final print engine. Its report-editing layout and a clean finding list do not prove final printed fit, signature completion, or acceptance by an official system.
 
-
 ## 14.4 Create PDFs and the summary letter
 
 1. In a report, choose **Create PDF**; in a summary group, choose **Preview / create PDFs**.
@@ -815,9 +872,10 @@ Extraction runs locally inside Swift NAVFIT. Acrobat, Reader, Python, external u
 
 Close the target editor and resolve pending recovery before merging. Changed or locked targets require a fresh preview. Blank or missing source PDF fields do not clear existing values. Source or mapping-choice changes invalidate the preview.
 
-If a PDF was applied to the wrong draft, use the import receipt's **Undo** action
-in operation history first. Then choose the same PDF again, select the correct
-draft and preview/apply it. Each attempt retains its own receipt and raw source
+If a PDF was applied to the wrong draft, open that draft's **History** and restore
+its **Before PDF import** checkpoint; for a new draft the import created, archive
+it in **Reports**. Then choose the same PDF again, select the correct draft and
+preview/apply it. Each attempt retains its own receipt and raw source
 values; Undo does not erase them. An active import of that PDF still prevents a
 duplicate. Undo refuses later edits and locked reports so they are preserved.
 
@@ -876,6 +934,8 @@ When the warning appears, write a verified backup and plan to start a new blank 
 | Symptom or status | Check and next step |
 | --- | --- |
 | Button does nothing at startup | Confirm desktop Access and organizational VBA trust settings; read setup/error text. |
+| Yellow warning at startup | Follow it: move the file out of a temporary, synced or read-only location, or close the other session (section 2.2). |
+| "Another Swift NAVFIT session on this workspace chose..." | Someone else has the file open. Close one session, then choose your contributor again. |
 | Save fails | Correct the reported entry; pending values remain available. Save again and confirm success. |
 | Field is read-only | Check archive state or local approval. Prior-value cells are intentionally read-only. |
 | Accept/Return is disabled | Confirm active contributor, current saved revision, current route step, and report locks. |
@@ -938,7 +998,7 @@ For a repeatable error, retain the file and note the version, action, report/gro
 
 ## 20.1 What this guide establishes
 
-This manual describes the Swift NAVFIT 0.53.0 local workflow. It is not a Navy instruction, authorization to sign, or certification of report policy compliance. Use applicable governing instructions and command procedures for eligibility, required content, signatures, and submission.
+This manual describes the Swift NAVFIT 0.54.0-dev local workflow. It is not a Navy instruction, authorization to sign, or certification of report policy compliance. Use applicable governing instructions and command procedures for eligibility, required content, signatures, and submission.
 
 Swift does not provide BOL login, Navy role acknowledgment, online trusted-agent delegation, email delivery, automatic notifications, official signatures, or official submission. Contributor profiles and reporting-senior records are local data, not Navy account roles.
 
@@ -949,7 +1009,7 @@ Native automated checks cover defined workflows, every earlier workspace schema,
 | Reference | Use in this guide |
 | --- | --- |
 | eNavFit User Guide, Version 1.0, 10 December 2021; supplied 86-page PDF | Training-manual organization: overview, responsibilities, access, navigation, workflow, procedures, and reference material. Its online roles and submission process are not Swift features. |
-| Swift NAVFIT 0.53.0 source and generated control definitions | Current captions, destinations, save guards, messages, review, counseling, Mark signed, calculations and migration procedures. |
+| Swift NAVFIT 0.54.0-dev source and generated control definitions | Current captions, destinations, save guards, messages, review, counseling, Mark signed, calculations and migration procedures. |
 | [Architecture description](architecture/Swift_NAVFIT_Architecture_Description.md) and current project state | Interfaces, data model, rules, standards and boundaries. |
 | Current workspace help and earlier feature documentation | Report editing, groups, members, defaults, RSCA, import/export, recovery, and backup context, reconciled to current navigation. |
 
@@ -957,6 +1017,6 @@ The reference eNavFit manual is used as an organizational model, not reproduced 
 
 ## 20.3 Maintenance
 
-Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covers application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
+Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covers application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. Version 1.8-dev describes the unreleased 0.54.0 development changes. The published PDF remains version 1.7 for 0.53.0 until the next release. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
 
 Start with this guide for current user procedures. Older feature guides retain historical service and verification detail and may describe superseded windows or review/comment behavior. The repository's current-state notes identify the latest delivered artifacts and remaining work.

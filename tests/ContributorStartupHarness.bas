@@ -107,10 +107,12 @@ Public Function TestContributorStartup() As String
  stage = "stale context"
  CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & first & " WHERE WorkspaceID=1", dbFailOnError
  Check Not HasActiveContributor(), "Changed retained ID reused session"
+ Check InStr(ContributorSessionProblem(), "Another Swift NAVFIT session on this workspace chose First contributor") = 1, "Changed contributor not explained: " & ContributorSessionProblem()
  RequiresSelection "Message", report
  Call SwitchContributor(added)
  TempVars.Remove "SwiftContributorPath"
  Check Not HasActiveContributor(), "Incomplete session accepted"
+ Check ContributorSessionProblem() = "Choose your contributor for this session before making changes.", "Incomplete session blamed another session"
  Call SwitchContributor(added)
  Check SwiftAppStartup(), "Final startup failed"
  Check IsNull(Forms!frmContributorStart!cboContributor), "Repeat startup remembered selection"
@@ -119,4 +121,59 @@ Public Function TestContributorStartup() As String
  Exit Function
 Failed:
  TestContributorStartup = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description & " / " & ContributorStartupFailure()
+End Function
+
+'Startup warnings: classify synthetic paths, a real read-only file, the session
+'count of this exclusive fixture and the clock-safe checkpoint schedule.
+Public Function TestWorkspaceSafety() As String
+ Dim stage As String, folder As String, path As String, computers As String, t As Date, text As String
+ On Error GoTo Failed
+ checks = 0
+ stage = "location"
+ Check InStr(WorkspaceLocationWarning(Environ$("TEMP") & "\Temp1_swift.zip\Swift.accdb"), "temporary folder") > 0, "Zip extraction folder not flagged"
+ Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\AppData\Local\Microsoft\Windows\INetCache\Content.Outlook\AB12CD\Swift.accdb"), "temporary folder") > 0, "E-mail attachment folder not flagged"
+ Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\OneDrive - US Navy\Reports\Swift.accdb"), "sync service") > 0, "Commercial OneDrive folder not flagged"
+ Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\Dropbox\Swift.accdb"), "sync service") > 0, "Dropbox folder not flagged"
+ If Len(Environ$("OneDrive")) > 0 Then Check InStr(WorkspaceLocationWarning(Environ$("OneDrive") & "\Swift.accdb"), "sync service") > 0, "Configured OneDrive root not flagged"
+ Check WorkspaceLocationWarning("D:\Command\Evaluations\Swift.accdb") = "", "Ordinary folder flagged"
+ Check WorkspaceLocationWarning("\fileserver\share\Evaluations\Swift.accdb") = "", "Network share flagged as unsafe location"
+ Check WorkspaceLocationWarning("D:\Templates\TempLists\Swift.accdb") = "", "Folder name containing Temp flagged"
+ stage = "read-only file"
+ folder = CurrentProject.Path & "\safety-" & Replace(Replace(NewIdentity(), "{", ""), "}", "")
+ MkDir folder
+ path = folder & "\readonly.accdb"
+ Open path For Output As #1: Print #1, "synthetic": Close #1
+ Check WorkspaceFileWarning(path) = "", "Writable ordinary file flagged"
+ SetAttr path, vbReadOnly
+ Check InStr(WorkspaceFileWarning(path), "read-only") > 0, "Read-only file not flagged"
+ SetAttr path, vbNormal: Kill path: RmDir folder
+ path = "": folder = ""
+ stage = "sessions"
+ Check OtherWorkspaceSessions(computers) = 0 And computers = "", "Exclusive fixture reported another session: " & computers
+ Check ConcurrentSessionWarning(0, "") = "", "No other session produced a warning"
+ Check InStr(ConcurrentSessionWarning(1, "PC-2"), "already open in another session (PC-2)") > 0, "One other session not named"
+ Check InStr(ConcurrentSessionWarning(2, "PC-2, this computer"), "2 other sessions") > 0, "Session count not reported"
+ stage = "notice"
+ text = WorkspaceSafetyNotice()
+ Check InStr(text, "could not check") = 0, "Safety probe failed: " & text
+ Check InStr(text, "already open") = 0, "Exclusive fixture warned about another session"
+ stage = "checkpoint schedule"
+ t = #11/6/2026 10:00:00 AM#
+ Check CheckpointSchedule(0, t) = DateAdd("s", 30, t), "First checkpoint not scheduled"
+ Check CheckpointSchedule(DateAdd("s", 10, t), t) = DateAdd("s", 10, t), "Pending checkpoint moved"
+ Check CheckpointSchedule(DateAdd("s", 30, t), t) = DateAdd("s", 30, t), "Full-interval checkpoint moved"
+ Check CheckpointSchedule(DateAdd("h", 1, t), t) = DateAdd("s", 30, t), "Clock set back an hour stalled checkpoints"
+ Check CheckpointSchedule(DateAdd("h", -1, t), t) = DateAdd("h", -1, t), "Clock moved forward did not leave the checkpoint due"
+ TestWorkspaceSafety = "PASS: " & checks & " workspace location, read-only, session and checkpoint-schedule assertions"
+ Exit Function
+Failed:
+ TestWorkspaceSafety = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
+ 'On Error inside an active handler is ignored; leave the handler before cleanup.
+ Resume Cleanup
+Cleanup:
+ On Error Resume Next
+ If Len(path) > 0 Then
+  If Len(Dir$(path)) > 0 Then SetAttr path, vbNormal: Kill path
+ End If
+ If Len(folder) > 0 Then RmDir folder
 End Function

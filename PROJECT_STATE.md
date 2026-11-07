@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.53.0 | 44 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.54.0-dev | 45 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.53.0 | 44 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.53.0), 4 Nov 2026. Full release gate passed, including schemas 1–44 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
 | Latest source tag | `v0.53.0` | 44 | The release commit. Earlier: `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
@@ -35,8 +35,8 @@ import and print-ready PDF output.
 
 ## Architecture
 
-- **Source:** [src/](src/) holds 110 static VBA modules, JSON catalogues, the
-  AutoExec macro, PDF template images and the 69 forms as normalized Access text
+- **Source:** [src/](src/) holds 112 static VBA modules, JSON catalogues, the
+  AutoExec macro, PDF template images and the 70 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
   lists the modules, forms, generated modules, fingerprinted inputs and six
   resource stages.
@@ -143,8 +143,28 @@ import and print-ready PDF output.
 
 ## Feature status
 
+Development 0.54.0 adds group directory refresh, editable source-match shading,
+report-to-report group navigation, full-NOB mark handling and mixed date/status
+counseling entry. Schema 45 adds replaceable working state, retained
+narrative/workflow checkpoints and a counselor picker button. Later 0.54.0 work
+adds startup warnings for temporary, synced or read-only files and concurrent
+sessions, a clock-safe recovery checkpoint interval, Members-grid checkpoints on
+reports under review, and import undo from report History (Operation history is a
+read-only log apart from legacy folder undo); clearing block 16 before saving
+restores the marks NOB replaced. Block 20 carries a PFA date on CHIEFEVAL only,
+entered and shown as MM/YY (stored as the first of the month). Saving a member
+profile updates that member's open draft reports. Group defaults follow the
+Front Page layout and exclude the reporting senior (from the group's senior
+record) and block 29. Previous/Next follow the Members view's sort. The final schema-45
+development build passed canonical BuildAndTest, focused feature checks, the
+schema 1–45 import matrix, a populated 0.53.0 upgrade and exact current-schema
+retention transfer. These changes are unreleased.
+Earlier intermittent native-close and audit/navigation errors passed on isolated
+rechecks and the final canonical/focused runs; they remain recorded in the shared
+handoff. The migration matrix completed successfully after its monitor timed out.
+
 R15, P01 and M05 are released in 0.53.0 (schema 44). The canonical build and
-full release gate passed on the current source.
+full release gate passed on the tagged 0.53.0 source.
 
 | ID | Item | Status |
 | --- | --- | --- |
