@@ -354,6 +354,7 @@ On Error GoTo Failed
  Check Forms!frmPDFOutput!cmdPagePreview.OnClick = "=PDFOutputPagePreview()", "Native page-preview binding missing"
  Forms!frmPDFOutput!txtFolder = root: Forms!frmPDFOutput!cmdGenerate.SetFocus
  Check PDFOutputCreate(), "Focused Generate button callback failed"
+ Check InStr(Forms!frmPDFOutput!txtFindings, PDFOutputJob()("Folder")) > 0 And InStr(Forms!frmPDFOutput!txtFindings, PDFOutputJob()("Files")(1)) > 0, "Output folder path and files not shown for copying"
  Check CurrentRevision(id) = before And EditorHasPending(), "UI export changed pending editor state"
  Check PDFOutputClose(), "Report PDF preview close failed"
  PDFOutputCapture 0, id, False: Set current = PDFOutputJob(): Set row = current("Reports")(1)

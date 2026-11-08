@@ -343,9 +343,12 @@ workbooks) are read as data:
   (also [CycloneDX](docs/architecture/sbom.cdx.json)) is generated from each
   build and lists every Windows API and COM class the code calls.
 - **No network use.** Runtime external calls are limited to MSXML 6,
-  `Scripting.FileSystemObject`, `ADODB.Stream`, `Shell.Application` (to open a
-  generated PDF) and Windows GDI and crypto API declarations. Swift starts no
-  other programs.
+  `Scripting.FileSystemObject`, `ADODB.Stream` and Windows GDI and crypto API
+  declarations. Swift starts no other programs itself: it opens a generated PDF
+  or its folder through Access's own `Application.FollowHyperlink`, and always
+  shows the folder path to copy. The source check rejects shell objects
+  (`Shell.Application`, `WScript.Shell`, `Shell`, `ShellExecute`), which managed
+  workstations flag as macro threats.
 - **Releases** are published on GitHub with SHA-256 hashes. Builds are made
   fresh from tracked source and checked against it before release.
 - **Code signing is not done yet.** Users must choose **Enable Content**, and a
@@ -607,6 +610,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 7 Nov 2026 | Development 0.54.0: opening PDF output no longer uses `Shell.Application` (flagged by Navy macro threat detection); Access's `FollowHyperlink` opens it, the output path is shown to copy, and the source check rejects shell launches (section 6.7). |
 | 6 Nov 2026 | Development 0.54.0: archiving ends open reviews; group reopen limited to completion sign-offs; operation journal forward-only transitions; revision-reference coverage test guards working-state deletion (sections 6.3 and 8). |
 | 6 Nov 2026 | Development 0.54.0: one report lifecycle (`ReportLifecycle`) for group update/default guards; marking signed ends open routes and assignments with a recorded reason (section 6.3). |
 | 6 Nov 2026 | Development 0.54.0: member profile saves update the member's open draft reports (skipping signed, approved, under-review, open and paygrade-conflicting ones); reporting senior fields and block 29 are no longer defaults; CHIEFEVAL-only PFA date stored as the first of its month; ISIC save is atomic. |

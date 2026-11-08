@@ -16,6 +16,7 @@ foreach($file in $Path){
  $text=[Text.Encoding]::GetEncoding(1252).GetString($bytes)
  $lines=[regex]::Split($text,'\r?\n')
  $name=[IO.Path]::GetFileNameWithoutExtension($file)
+ $inSrc=$file.StartsWith((Join-Path $root 'src\'),[StringComparison]::OrdinalIgnoreCase)
  # Access imports module text as ANSI; UTF-8 punctuation becomes mojibake in the installed module.
  for($i=0;$i -lt $bytes.Length;$i++){if($bytes[$i] -gt 127){$at=([Text.Encoding]::GetEncoding(1252).GetString($bytes,0,$i) -split '\n').Count;Report 'ERROR' $file $at ('Non-ASCII byte 0x{0:X2}; use ASCII (Chr/ChrW for special characters).' -f $bytes[$i]);$errors++;break}}
  if($lines[0] -ne ('Attribute VB_Name = "'+$name+'"')){Report 'ERROR' $file 1 ('First line must be Attribute VB_Name = "'+$name+'".');$errors++}
@@ -53,6 +54,9 @@ foreach($file in $Path){
   foreach($d in $declared){if($d.Groups[1].Value -in @('Open','Imp','Eqv','Xor','Mod','Is','Like','Not','And','Or','Put','Get','Lock','Unlock','Input','Each','In','To','Then','Loop','Wend','Until','Shared')){Report 'ERROR' $file ($n+1) ("'"+$d.Groups[1].Value+"' is a VBA keyword and cannot name a variable or parameter.");$errors++}}
   $label=[regex]::Match($line,'^\s*([A-Za-z_]\w*):(?!=)\s*\S')
   if($label.Success -and $label.Groups[1].Value -notin @('Loop','Next','Else','Do','Wend','Exit','End','Resume','Case','Then','Rem') -and $label.Groups[1].Value -notin $labelTargets){Report 'ERROR' $file ($n+1) ("'"+$label.Groups[1].Value+":' starts the line, so VBA reads it as a label and never calls it. Write 'Call "+$label.Groups[1].Value+":' instead.");$errors++}
+  # Managed (Navy) workstations flag macros that launch programs through shell objects.
+  # Open files with Application.FollowHyperlink instead.
+  if($inSrc -and ($line -replace "'.*$",'') -match '(?i)Shell\.Application|WScript\.Shell|(?:^|[\s=(:])Shell\s*\(|ShellExecute'){Report 'ERROR' $file ($n+1) 'Shell launch (Shell.Application, WScript.Shell, Shell or ShellExecute); managed workstations flag it as a macro threat. Use Application.FollowHyperlink.';$errors++}
   if($line.Length -gt 1023){Report 'ERROR' $file ($n+1) ("Line is $($line.Length) characters; VBA allows 1023.");$errors++}
   if($line.TrimEnd() -match '\s_$'){$run++;if($run -eq 25){Report 'ERROR' $file ($n+1) 'More than 24 line continuations in one statement.';$errors++}}else{$run=0}
   $m=$procedure.Match($line)

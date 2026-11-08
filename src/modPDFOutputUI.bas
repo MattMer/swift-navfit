@@ -113,6 +113,7 @@ Public Function PDFOutputCreate() As Boolean
     'The group remembers its ISIC for the next summary letter.
     If previewGroup > 0 Then SetGroupISIC previewGroup, Nz(f!cboISIC, 0)
     f!lblStatus.Caption = "Completed: " & folder
+    f!txtFindings = PDFOutputResultText(folder, PDFOutputJob()("Files"))
     f!cmdOpenFolder.Enabled = True: f!cmdOpenPDF.Enabled = True
     f!cmdGenerate.Enabled = True: f!cmdRefresh.Enabled = True: f!cmdClose.Enabled = True
     PDFOutputCreate = True: Exit Function
@@ -129,10 +130,18 @@ Public Function PDFOutputOpenResult(ByVal folderOnly As Boolean) As Boolean
     Set current = PDFOutputJob(): path = current("Folder")
     If path = "" Then Exit Function
     If Not folderOnly Then path = path & "\" & current("Files")(1)
-    CreateObject("Shell.Application").ShellExecute path, "", "", "open", 1
+    'Access opens the file as a hyperlink. Shell objects are not used: managed
+    'workstations flag them as macro threats.
+    Application.FollowHyperlink path
     PDFOutputOpenResult = True: Exit Function
 Failed:
-    Forms!frmPDFOutput!lblStatus.Caption = "Unable to open output: " & Err.Description
+    Forms!frmPDFOutput!lblStatus.Caption = "Couldn't open it from here. Copy the folder path from Findings and output information and paste it into File Explorer."
+End Function
+'The output folder and files, in a box the user can select and copy from.
+Public Function PDFOutputResultText(ByVal folder As String, ByVal files As Collection) As String
+    Dim file As Variant
+    PDFOutputResultText = "PDFs saved. To open them, copy this folder path and paste it into File Explorer's address bar:" & vbCrLf & folder & vbCrLf & vbCrLf & "Files:"
+    For Each file In files: PDFOutputResultText = PDFOutputResultText & vbCrLf & file: Next
 End Function
 Public Function PDFOutputClose() As Boolean
     If PDFOutputBusy() Then Exit Function

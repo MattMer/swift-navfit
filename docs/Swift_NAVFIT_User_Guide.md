@@ -825,6 +825,7 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 2. For a group, leave **Summary letter first** ticked to put the FITREP/EVAL summary letter (NAVPERS 1610/1) at the front.
 3. Choose the group's **ISIC (summary letter)** and whether the report was **Submitted on time**. The group remembers its ISIC for next time.
 4. Choose **Preview printed pages** to check the pages, or **Create print-ready PDFs**.
+5. When the PDFs are created, **Findings and output information** shows the output folder's path and file names. Choose **Open first PDF** or **Open output folder**, or copy the path and paste it into File Explorer's address bar. On a workstation that blocks Access from opening files, copying the path is the way to reach them.
 
 The summary letter fills its lower section from these choices and from the group's reporting senior record: the ISIC address and UIC, the reporting senior's address, e-mail and phone, the submitted-on-time box, and the date it was created. When the senior record has no address or phone, the values every report in the group shares are used instead.
 
