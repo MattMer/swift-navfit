@@ -6,7 +6,7 @@
                      "component":  {
                                        "type":  "application",
                                        "name":  "Swift NAVFIT",
-                                       "version":  "0.54.0-dev",
+                                       "version":  "0.54.0",
                                        "licenses":  [
                                                         {
                                                             "license":  {
@@ -193,21 +193,6 @@
                                               {
                                                   "name":  "swift:uses",
                                                   "value":  "8"
-                                              }
-                                          ]
-                       },
-                       {
-                           "type":  "library",
-                           "bom-ref":  "com:Shell.Application",
-                           "name":  "Shell.Application",
-                           "supplier":  {
-                                            "name":  "Microsoft"
-                                        },
-                           "description":  "Opens a generated PDF in the default viewer",
-                           "properties":  [
-                                              {
-                                                  "name":  "swift:uses",
-                                                  "value":  "1"
                                               }
                                           ]
                        },

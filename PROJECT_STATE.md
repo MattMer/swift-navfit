@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.54.0-dev | 45 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.53.0 | 44 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.53.0), 4 Nov 2026. Full release gate passed, including schemas 1–44 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.53.0` | 44 | The release commit. Earlier: `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.54.0 | 45 | Field catalogue version 2. [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.54.0 | 45 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.54.0), 7 Nov 2026. Full release gate passed, including schemas 1–45 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.54.0` | 45 | The release commit. Earlier: `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 
@@ -143,10 +143,10 @@ import and print-ready PDF output.
 
 ## Feature status
 
-Development 0.54.0 adds group directory refresh, editable source-match shading,
+Release 0.54.0 adds group directory refresh, editable source-match shading,
 report-to-report group navigation, full-NOB mark handling and mixed date/status
 counseling entry. Schema 45 adds replaceable working state, retained
-narrative/workflow checkpoints and a counselor picker button. Later 0.54.0 work
+narrative/workflow checkpoints and a counselor picker button. It also
 adds startup warnings for temporary, synced or read-only files and concurrent
 sessions, a clock-safe recovery checkpoint interval, Members-grid checkpoints on
 reports under review, and import undo from report History (Operation history is a
@@ -163,7 +163,7 @@ entries move forward only; the retention test fails on an unrecognised revision
 pointer. The final schema-45
 development build passed canonical BuildAndTest, focused feature checks, the
 schema 1–45 import matrix, a populated 0.53.0 upgrade and exact current-schema
-retention transfer. These changes are unreleased.
+retention transfer. These changes are released in 0.54.0 (7 November 2026).
 Earlier intermittent native-close and audit/navigation errors passed on isolated
 rechecks and the final canonical/focused runs; they remain recorded in the shared
 handoff. The migration matrix completed successfully after its monitor timed out.

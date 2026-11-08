@@ -52,4 +52,4 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 43 | captured | 0.53.0-dev | 78 | DirectoryMergeLink |
 | 44 | captured | 0.54.0-dev | 79 | SavedReportFilter |
 | 45 | captured | 0.54.0-dev | 80 | RevisionRetention |
-| 45 | current build | 0.54.0-dev | 80 | - |
+| 45 | current build | 0.54.0 | 80 | - |

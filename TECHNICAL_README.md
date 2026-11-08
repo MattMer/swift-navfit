@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.53.0, schema 44 (4 November 2026), tag `v0.53.0` |
+| Latest release | 0.54.0, schema 45 (7 November 2026), tag `v0.54.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.54.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.54.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 45 |
 | Imports accepted | Workspaces of schema 1 to 45, into a target of schema 21 to 45 |
 | Tables / enforced relationships | 80 / 169 |
@@ -610,6 +610,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 7 Nov 2026 | Release 0.54.0; full release gate and historical schemas 1-45 verified. |
 | 7 Nov 2026 | Development 0.54.0: opening PDF output no longer uses `Shell.Application` (flagged by Navy macro threat detection); Access's `FollowHyperlink` opens it, the output path is shown to copy, and the source check rejects shell launches (section 6.7). |
 | 6 Nov 2026 | Development 0.54.0: archiving ends open reviews; group reopen limited to completion sign-offs; operation journal forward-only transitions; revision-reference coverage test guards working-state deletion (sections 6.3 and 8). |
 | 6 Nov 2026 | Development 0.54.0: one report lifecycle (`ReportLifecycle`) for group update/default guards; marking signed ends open routes and assignments with a recorded reason (section 6.3). |

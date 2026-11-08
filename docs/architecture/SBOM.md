@@ -2,7 +2,7 @@
 
 # Software bill of materials (SBOM)
 
-Components Swift NAVFIT 0.54.0-dev uses at run time, from a fresh build and the VBA source. The same inventory is in CycloneDX 1.5 form in [sbom.cdx.json](sbom.cdx.json). Swift ships no third-party code libraries: everything it calls at run time is part of Windows or Microsoft Office. Swift NAVFIT itself is licensed under the Apache License 2.0 ([LICENSE](../../LICENSE)).
+Components Swift NAVFIT 0.54.0 uses at run time, from a fresh build and the VBA source. The same inventory is in CycloneDX 1.5 form in [sbom.cdx.json](sbom.cdx.json). Swift ships no third-party code libraries: everything it calls at run time is part of Windows or Microsoft Office. Swift NAVFIT itself is licensed under the Apache License 2.0 ([LICENSE](../../LICENSE)).
 
 ## Platform
 
@@ -37,7 +37,6 @@ Components Swift NAVFIT 0.54.0-dev uses at run time, from a fresh build and the 
 | MSXML2.DOMDocument.6.0 | 13 | XML parsing and writing (PDF form data and exchange) |
 | Scripting.Dictionary | 166 | In-memory keyed collections |
 | Scripting.FileSystemObject | 8 | File and folder checks |
-| Shell.Application | 1 | Opens a generated PDF in the default viewer |
 
 ## Embedded data
 
