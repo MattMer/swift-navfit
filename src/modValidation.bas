@@ -26,6 +26,43 @@ Public Function PromotionCapacity(ByVal paygrade As String, ByVal observedGroupS
     result.Add "SourceHash", NAVY_RULE_SOURCE_HASH
     Set PromotionCapacity = result
 End Function
+' The group's Early Promote and Must Promote spread for its caption: used and allowed,
+' from saved, non-archived members with an observed recommendation (PromotionCapacity).
+Public Function GroupPromotionSpread(ByVal groupID As Long) As String
+    Dim r As DAO.Recordset, grade As String, kind As String, observed As Long, ep As Long, mp As Long, ldo As Boolean, nonLDO As Boolean, cap As Object, text As String, designator As String
+    Set r = CurrentDb.OpenRecordset("SELECT FormKind,Paygrade FROM SummaryGroup WHERE GroupID=" & groupID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Exit Function
+    kind = Nz(r!FormKind, ""): grade = Nz(r!Paygrade, ""): r.Close
+    Set r = CurrentDb.OpenRecordset("SELECT r.PromotionRecommendation,r.ObservationStatus,r.Designator FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE m.GroupID=" & groupID & " AND r.IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        If Nz(r!ObservationStatus, "") <> "NOB" Then
+            Select Case Nz(r!PromotionRecommendation, "")
+                Case "Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote"
+                    observed = observed + 1
+                    If r!PromotionRecommendation = "Early Promote" Then ep = ep + 1
+                    If r!PromotionRecommendation = "Must Promote" Then mp = mp + 1
+                    designator = Nz(r!Designator, "")
+                    If Left$(designator, 1) = "6" Then ldo = True Else nonLDO = True
+            End Select
+        End If
+        r.MoveNext
+    Loop
+    r.Close
+    If observed = 0 Then GroupPromotionSpread = "EP/MP: no observed recommendations yet": Exit Function
+    If (grade = "O1" Or grade = "O2") And ldo And nonLDO Then GroupPromotionSpread = "EP/MP: verify - LDO and other officers are separate summary groups": Exit Function
+    On Error Resume Next
+    Set cap = PromotionCapacity(grade, observed, ldo)
+    If cap Is Nothing Then GroupPromotionSpread = "EP/MP: verify the group paygrade": Exit Function
+    On Error GoTo 0
+    If cap("CombinedMaximum") = 0 Then
+        text = "EP/MP: none allowed for " & grade
+        If ep + mp > 0 Then text = text & " (" & ep + mp & " used - over limit)"
+    Else
+        text = "EP " & ep & " of " & cap("EarlyPromoteMaximum") & " | EP+MP " & ep + mp & " of " & cap("CombinedMaximum")
+        If ep > cap("EarlyPromoteMaximum") Or ep + mp > cap("CombinedMaximum") Then text = text & " - over limit"
+    End If
+    GroupPromotionSpread = text & " (" & observed & " observed)"
+End Function
 Public Function InstallNavyDraftChecks() As Long
     InstallNavyDraftChecks = InstallSharedReadinessPack()
 End Function

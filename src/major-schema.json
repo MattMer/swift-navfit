@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 46,
+  "SchemaVersion": 47,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -59,7 +59,9 @@
     "ISIC",
     "DirectoryMergeLink",
     "SavedReportFilter",
-    "RevisionRetention"
+    "RevisionRetention",
+    "RestrictedException",
+    "RestrictedDismissal"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -304,7 +306,10 @@
     "CREATE TABLE SavedReportFilter (FilterID COUNTER CONSTRAINT PK_SavedReportFilter PRIMARY KEY, FilterGuid TEXT(38) NOT NULL, OwnerProfileGuid TEXT(38) NOT NULL, FilterName TEXT(80) NOT NULL, SearchText TEXT(255), PeriodFrom DATETIME, PeriodThrough DATETIME, FormKind TEXT(12) NOT NULL, ReportState TEXT(30) NOT NULL, RankFilter TEXT(40) NOT NULL, ArchiveMode TEXT(12) NOT NULL, GroupScope TEXT(12) NOT NULL, GroupGuid TEXT(38), VersionCounter LONG NOT NULL, ModifiedAt DATETIME NOT NULL)",
     "CREATE UNIQUE INDEX UX_SavedReportFilter_Guid ON SavedReportFilter (FilterGuid)",
     "CREATE UNIQUE INDEX UX_SavedReportFilter_Name ON SavedReportFilter (OwnerProfileGuid,FilterName)",
-    "CREATE TABLE RevisionRetention (RevisionID LONG CONSTRAINT PK_RevisionRetention PRIMARY KEY, RetentionKind TEXT(20) NOT NULL, CheckpointReason TEXT(255))"
+    "CREATE TABLE RevisionRetention (RevisionID LONG CONSTRAINT PK_RevisionRetention PRIMARY KEY, RetentionKind TEXT(20) NOT NULL, CheckpointReason TEXT(255))",
+    "CREATE TABLE RestrictedException (ExceptionID COUNTER PRIMARY KEY, Phrase TEXT(120) NOT NULL, RuleID TEXT(40), Reason TEXT(255), AddedBy LONG NOT NULL, AddedAt DATETIME NOT NULL, RemovedBy LONG, RemovedAt DATETIME)",
+    "CREATE TABLE RestrictedDismissal (DismissalID COUNTER PRIMARY KEY, ReportID LONG NOT NULL, RuleID TEXT(40) NOT NULL, FieldKey TEXT(64) NOT NULL, MatchText TEXT(255) NOT NULL, Reason TEXT(255), DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
+    "CREATE INDEX IX_RestrictedDismissal_Report ON RestrictedDismissal (ReportID,RuleID)"
   ],
   "Queries": [
     {

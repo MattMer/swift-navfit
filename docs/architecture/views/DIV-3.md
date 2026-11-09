@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 46, application 0.55.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 47, application 0.55.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -1011,6 +1011,38 @@ Microsoft Access (ACE) tables in schema 46, application 0.55.0-dev. Types are Ac
 | ReopenedBy | Long |  |
 | ReopenedAt | Date/Time |  |
 | ReopenReason | Text (255) |  |
+
+## RestrictedDismissal
+
+- **Primary key:** DismissalID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| DismissalID | AutoNumber |  |
+| ReportID | Long | yes |
+| RuleID | Text (40) | yes |
+| FieldKey | Text (64) | yes |
+| MatchText | Text (255) | yes |
+| Reason | Text (255) |  |
+| DismissedBy | Long | yes |
+| DismissedAt | Date/Time | yes |
+| UndoneBy | Long |  |
+| UndoneAt | Date/Time |  |
+
+## RestrictedException
+
+- **Primary key:** ExceptionID
+
+| Column | Type | Required |
+| --- | --- | --- |
+| ExceptionID | AutoNumber |  |
+| Phrase | Text (120) | yes |
+| RuleID | Text (40) |  |
+| Reason | Text (255) |  |
+| AddedBy | Long | yes |
+| AddedAt | Date/Time | yes |
+| RemovedBy | Long |  |
+| RemovedAt | Date/Time |  |
 
 ## ReviewComment
 

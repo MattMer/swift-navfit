@@ -62,6 +62,7 @@ Public Sub VAdd(ByVal findings As Collection, ByVal f As Object, ByVal id As Lon
     item.Add "Member", UXIdentity(VText(f, "OfficialName"), VText(f, "MemberName"))
     item.Add "Label", UXFieldCaption(key, VText(f, "FormKind"))
     item.Add "Message", message: item.Add "Reference", ValidationPolicyReference(code): findings.Add item
+    If Left$(code, 3) = "RC-" Then item("Reference") = RestrictedReference(code)
     If code = "VR-PERIODIC" Then item("Reference") = PeriodicPolicyReference(f)
     If code = "VR-APPLICABILITY" Then item("Reference") = "Policy coverage, not a report defect. " & PeriodicPolicyReference(f)
 End Sub
@@ -216,6 +217,7 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
     ExpandReportValidation findings, f, reportID
     VNarrativeFit findings, f, reportID, kind
     VStarterMarkers findings, f, reportID, kind
+    VRestrictedContent findings, f, reportID, kind, VNarrativeKeys(kind)
     Set ValidateLiveFields = findings
 End Function
 'Information only: never blocks saving, PDF output or NAVFIT98A export. Measures NAVFIT98A's

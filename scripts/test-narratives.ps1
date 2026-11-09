@@ -92,6 +92,7 @@ Invoke-SuiteCase 'navfit-line-fit' {
     }
 }
 Invoke-HarnessCase 'narrative-spelling' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeSpelling()'
+Invoke-HarnessCase 'restricted-content' $BuildPath 'RestrictedContentHarness' 'TestRestrictedContent()'
 Invoke-HarnessCase 'navywriter' $BuildPath 'UXNavyWriterHarness' 'TestUXNavyWriter()' -After {param($app) [void]$app.Eval('UXLeaveEditor("Discard")')}
 
 Complete-SuiteRun 'narratives' $BuildPath $buildHash

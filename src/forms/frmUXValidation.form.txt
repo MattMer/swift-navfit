@@ -325,7 +325,7 @@ Begin Form
                     Left =400
                     Top =5450
                     Width =12600
-                    Height =2900
+                    Height =2050
                     FontSize =10
                     TabIndex =1
                     BorderColor =13285543
@@ -337,7 +337,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =5450
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8350
+                    LayoutCachedHeight =7500
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -359,6 +359,51 @@ Begin Form
                             LayoutCachedTop =5200
                             LayoutCachedWidth =13000
                             LayoutCachedHeight =5400
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =8050
+                    Width =4600
+                    Height =450
+                    FontSize =10
+                    TabIndex =7
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtFindingReason"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =8050
+                    LayoutCachedWidth =5000
+                    LayoutCachedHeight =8500
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =7800
+                            Width =12600
+                            Height =200
+                            FontSize =9
+                            ForeColor =4205854
+                            Name ="lblFindingReason"
+                            Caption ="Reason (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =7800
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =8000
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -436,6 +481,126 @@ Begin Form
                     HoverForeColor =4205854
                     HoverForeThemeColorIndex =-1
                     PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5150
+                    Top =8050
+                    Width =2500
+                    Height =450
+                    FontSize =10
+                    TabIndex =8
+                    ForeColor =16777215
+                    Name ="cmdDismissFinding"
+                    ControlTipText ="Dismiss this content finding for this report only. It is recorded and can be restored under Allowed phrases."
+                    Caption ="Dismiss for this report"
+                    OnClick ="=UXValidationDismiss()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5150
+                    LayoutCachedTop =8050
+                    LayoutCachedWidth =7650
+                    LayoutCachedHeight =8500
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7750
+                    Top =8050
+                    Width =2300
+                    Height =450
+                    FontSize =10
+                    TabIndex =9
+                    ForeColor =16777215
+                    Name ="cmdAllowPhrase"
+                    ControlTipText ="Allow these words for this rule on every report. Recorded; remove it under Allowed phrases."
+                    Caption ="Allow this phrase"
+                    OnClick ="=UXValidationAllow()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7750
+                    LayoutCachedTop =8050
+                    LayoutCachedWidth =10050
+                    LayoutCachedHeight =8500
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =10150
+                    Top =8050
+                    Width =2850
+                    Height =450
+                    FontSize =10
+                    TabIndex =10
+                    ForeColor =16777215
+                    Name ="cmdAllowedList"
+                    ControlTipText ="Review, add and remove allowed phrases and dismissed content findings."
+                    Caption ="Allowed phrases..."
+                    OnClick ="=UXValidationAllowedList()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10150
+                    LayoutCachedTop =8050
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =8500
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
                     PressedForeThemeColorIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2

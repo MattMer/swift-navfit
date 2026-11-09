@@ -257,8 +257,45 @@ Public Function UXDueRefresh() As Boolean
     f!uxDueNote.Caption = note
     UXDueRefresh = True
 End Function
+'The list allows several rows (Drafts + group); the single-report actions need one.
+Private Function UXDueSelected() As Collection
+    Dim result As New Collection, item As Variant
+    With Forms!frmHome!uxReportsDue
+        If .MultiSelect = 0 Then
+            If Not IsNull(.Value) Then result.Add CStr(.Value)
+        Else
+            For Each item In .ItemsSelected: result.Add CStr(.ItemData(item)): Next
+        End If
+    End With
+    Set UXDueSelected = result
+End Function
 Private Function UXDueKey() As String
-    If IsNull(Forms!frmHome!uxReportsDue) Then Forms!frmHome!uxDueNote.Caption = "Select a due report first." Else UXDueKey = CStr(Forms!frmHome!uxReportsDue)
+    Dim selected As Collection
+    Set selected = UXDueSelected()
+    Select Case selected.Count
+        Case 0: Forms!frmHome!uxDueNote.Caption = "Select a due report first."
+        Case 1: UXDueKey = selected(1)
+        Case Else: Forms!frmHome!uxDueNote.Caption = "Select one due report for this action, or use Drafts + group for several."
+    End Select
+End Function
+'Drafts for every selected due report, in new summary groups by report type,
+'paygrade, basis and due date. All or nothing.
+Public Function UXDueCreateGroup() As Boolean
+    Dim selected As Collection, groups As New Collection, count As Long, g As Variant, titles As String
+    On Error GoTo Failed
+    Set selected = UXDueSelected()
+    If selected.Count = 0 Then Forms!frmHome!uxDueNote.Caption = "Select the due reports to create (Ctrl+click or Shift+click for several).": Exit Function
+    If Not UXLeaveEditor() Then Exit Function
+    count = CreateDueBatch(selected, groups)
+    For Each g In groups
+        If titles <> "" Then titles = titles & "; "
+        titles = titles & Nz(DLookup("Title", "SummaryGroup", "GroupID=" & g), "")
+    Next
+    UXDueRefresh
+    Forms!frmHome!uxDueNote.Caption = "Created " & count & IIf(count = 1, " draft", " drafts") & " in " & groups.Count & IIf(groups.Count = 1, " summary group: ", " summary groups: ") & titles & ". Open them from Summary groups."
+    UXDueCreateGroup = True: Exit Function
+Failed:
+    Forms!frmHome!uxDueNote.Caption = Err.Description
 End Function
 Public Function UXDueCreate() As Boolean
     Dim key As String, id As Long

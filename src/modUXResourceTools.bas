@@ -39,6 +39,8 @@ Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPS
  Else
   UXGroupSeniorCaption = UXGroupSeniorCaption & Format$(psg("Value"), "0.00") & IIf(psg("Estimated"), " (estimate)", "") & IIf(psg("Partial"), " (partial traits)", "")
  End If
+ 'Promotion recommendation spread beside the PSG RSCA (saved values, like the PSG).
+ UXGroupSeniorCaption = UXGroupSeniorCaption & " | " & GroupPromotionSpread(id)
 End Function
 Public Sub UXRefreshGroupSenior()
  If CurrentProject.AllForms("frmUXComparison").IsLoaded Then

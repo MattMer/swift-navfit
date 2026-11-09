@@ -192,6 +192,7 @@ silently changes to all reports.
 Each row shows the member, rate, report form, due date and status (overdue, or due in N days). A row clears once a matching draft exists: a Regular report for that member ending on the due date (within 30 days of a detachment date). A Concurrent-only report does not count.
 
 - **Create draft** makes that report for the member, already linked to them: the form for their paygrade, Regular and Periodic (or Detachment of Individual), ending on the due date and starting the day after their latest earlier report. It opens in the editor.
+- **Drafts + group** does the same for several rows at once. Select them with Ctrl+click or Shift+click. Swift creates every draft and a new summary group for each report type, paygrade, basis and due date, named for example *E5 EVAL periodic, ending 2026-03-15*, with the drafts already in it. Either everything is created or, if one row can't be (for example a matching report already exists), nothing is, and the note says which row stopped it. Open the new groups from **Summary groups**.
 - **Dismiss** needs a reason in the box beside it, for example when a detachment report is not needed because the periodic report falls close by.
 - **Departures (N)** opens **My Work > Departures**. Double-click a row to open the member's history.
 
@@ -293,7 +294,7 @@ Front Page follows the printed form's rows: blocks 5â€“9 share a row, as do 10â€
 
 The comments box, and block 44 on an EVAL, use the same font, point size, width and height as Swift's PDF, so the text wraps on screen where it will wrap on paper: Courier New on an EVAL and Times New Roman on a FITREP or CHIEFEVAL. The box shows 12 point and switches to 10 point as soon as the text no longer fits at 12 point, exactly as the PDF does.
 
-Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
+Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It ends with the room left in Swift's PDF, for example **PDF 12 pt: 3 lines left (about 220 characters) before 10 pt**; once the comments need 10 point it reads **... before an added page**, and past that, how many lines continue on the added page. The character count is an estimate from the comments' own average character width. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
 
 | Block | EVAL and FITREP | CHIEFEVAL |
 | --- | --- | --- |
@@ -438,6 +439,18 @@ Checks include pending editor values. They do not create saved report revisions 
 ## 6.2 Keep findings beside the report
 
 Choose **Validation issues** in the report action area, or **Pop out validation issues** from the embedded validation view. The popout is modeless: it can remain open while you return to report fields. Move it beside the report using normal window controls. Refresh or use its field navigation as needed. Close the validation window when finished; closing the report also closes its report popout.
+
+### Possible prohibited or sensitive content
+
+Validation also checks the narrative blocks (comments, blocks 28, 29 and 44, and the CHIEFEVAL performance comments) for wording that BUPERSINST 1610.10H says not to include, such as a previous failure of selection, proceedings or investigations that aren't concluded, a non-punitive letter of caution, marital or family matters, medical issues, an award recommended but not yet received, or civilian employment (enclosure 2, 13-5). It also flags a detachment for cause, classification markings, complaints or reprisal, and, in block 44, achievements that aren't complete yet. As **Information** only, it notes protected characteristics, political activity, personal identifiers such as an SSN, and text in all capitals.
+
+Each finding quotes the words it matched and cites the rule. Swift matches words, not meaning: it can't tell whether a proceeding has concluded, and ordinary duty wording (for example a Corpsman who *screened 400 Sailors for hypertension*) is written to pass. When a finding is acceptable:
+
+- **Dismiss for this report** hides it on this report only. If the matched words change, a new finding appears.
+- **Allow this phrase** skips those words for that rule on every report, for example a command term the check doesn't know.
+- **Allowed phrases...** lists every allowed phrase and dismissed finding with who added it, when and why. Add a phrase for all rules there, or select an entry and choose **Remove or restore selected** to bring its findings back.
+
+Type a reason first if you want one recorded. Dismissing or allowing never changes the report, and both are kept in the operations journal.
 
 ## 6.3 Interpret categories
 
@@ -665,6 +678,8 @@ Comparison color is a drafting aid, not a required direction of change. A higher
 
 ITA describes an individual report's applicable numeric traits. Group trait average describes the saved group basis. PSG RSCA projects the selected reporting senior's historical sum/count together with eligible group traits. These figures have different denominators and can legitimately differ.
 
+Beside the PSG RSCA, the group page shows the promotion recommendation spread against the limits in BUPERSINST 1610.10H table 1-2, for example **EP 1 of 2 | EP+MP 3 of 5 (8 observed)**: Early Promotes used of those allowed, and Early Promotes plus Must Promotes used of the combined limit, from the group's saved, observed recommendations. **Over limit** marks a group past either limit. O-1 and O-2 groups other than LDO show that none are allowed. Like the PSG RSCA, it reads saved reports, so a cell you're still editing in the table counts once it saves.
+
 Read counts and NOB exclusions beside the result. Whole-report NOB, missing traits, partial-NOB entries, and incomplete saved context can prevent a complete comparison or projection. Do not treat a displayed average as proof that group eligibility or promotion limits have been independently verified.
 
 ## 10.4 Use staged comparison proposals
@@ -835,6 +850,8 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 2. For a group, leave **Summary letter first** ticked to put the FITREP/EVAL summary letter (NAVPERS 1610/1) at the front.
 3. Choose the group's **ISIC (summary letter)** and whether the report was **Submitted on time**. The group remembers its ISIC for next time.
 4. Choose **Preview printed pages** to check the pages, or **Create print-ready PDFs**.
+
+To check one report without leaving it, choose **Preview** at the top of the report. It shows that report's printed pages, unsaved edits included, in Access print preview, and creates no file. The first time, it asks you to choose a PDF output folder on **Create PDFs**, because the preview keeps a temporary page file there; the file is removed when you preview again, create PDFs or close the report.
 5. When the PDFs are created, **Findings and output information** shows the output folder's path and file names. Choose **Open first PDF** or **Open output folder**, or copy the path and paste it into File Explorer's address bar. On a workstation that blocks Access from opening files, copying the path is the way to reach them.
 
 The summary letter fills its lower section from these choices and from the group's reporting senior record: the ISIC address and UIC, the reporting senior's address, e-mail and phone, the submitted-on-time box, and the date it was created. When the senior record has no address or phone, the values every report in the group shares are used instead.

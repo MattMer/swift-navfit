@@ -20,6 +20,25 @@ Private Function Refused(ByVal action As String, ByVal key As String) As Boolean
 Failed:
     Refused = True
 End Function
+Private Function BatchRefused(ByVal keys As Collection) As Boolean
+    On Error GoTo Failed
+    Call CreateDueBatch(keys)
+    Exit Function
+Failed:
+    BatchRefused = True
+End Function
+'Observed recommendations for a group's two members, in report order.
+Private Sub SetRecommendation(ByVal groupID As Long, ByVal first As String, ByVal second As String)
+    Dim r As DAO.Recordset, changes As Object, value As String
+    Set r = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & " ORDER BY ReportID", dbOpenSnapshot)
+    value = first
+    Do While Not r.EOF
+        Set changes = CreateObject("Scripting.Dictionary"): changes.Add "ObservationStatus", "Observed": changes.Add "PromotionRecommendation", value
+        Call CommitSavedFields(CLng(r!ReportID), CurrentRevision(CLng(r!ReportID)), changes, "Synthetic recommendation")
+        value = second: r.MoveNext
+    Loop
+    r.Close
+End Sub
 Private Function DateRefused(ByVal member As Long, ByVal value As String) As Boolean
     On Error GoTo Failed
     Call SaveDirectoryMember(member, DLookup("VersionCounter", "CommandMember", "MemberID=" & member), DLookup("FullName", "CommandMember", "MemberID=" & member), Nz(DLookup("ReportName", "CommandMember", "MemberID=" & member), ""), Nz(DLookup("RankRate", "CommandMember", "MemberID=" & member), ""), "", "Manual", , , value)
@@ -103,6 +122,36 @@ Public Function TestReportsDue() As String
     Check DLookup("DateReported", "CommandMember", "MemberID=" & e6) = #1/5/2025#, "A save without the date cleared it"
     SetDateReported e6, ""
     Check IsNull(DLookup("DateReported", "CommandMember", "MemberID=" & e6)), "Blank did not clear date reported"
+
+    ' Drafts + group: several due reports become drafts in new summary groups, one per
+    ' report type, paygrade, basis and due date, all or nothing.
+    Dim baker As Long, carter As Long, keys As Collection, groups As Collection, groupsBefore As Long, reportsBefore As Long, created As Long, e5Group As Long, g As Variant
+    baker = SaveDirectoryMember(0, 0, "BAKER FIVE", "BAKER, FIVE", "IT2", "")
+    carter = SaveDirectoryMember(0, 0, "CARTER FIVE", "CARTER, FIVE", "IT2", "")
+    Set items = ReportsDueItems(asOf)
+    Set keys = New Collection
+    keys.Add DueKey(items, "BAKER FIVE", "Periodic"): keys.Add DueKey(items, "CARTER FIVE", "Periodic"): keys.Add DueKey(items, "OWENS THREE", "Periodic")
+    keys.Add e5 & "|Periodic|2026-03-15" ' already drafted above: refuses the whole batch
+    groupsBefore = DCount("*", "SummaryGroup"): reportsBefore = DCount("*", "Report")
+    Check BatchRefused(keys), "Batch with an already drafted report was accepted"
+    Check DCount("*", "SummaryGroup") = groupsBefore And DCount("*", "Report") = reportsBefore, "Refused batch left drafts or groups behind"
+    keys.Remove 4
+    Set groups = New Collection
+    created = CreateDueBatch(keys, groups)
+    Check created = 3 And groups.Count = 2, "Batch did not make 3 drafts in 2 groups: " & created & " / " & groups.Count
+    For Each g In groups
+        If DLookup("Paygrade", "SummaryGroup", "GroupID=" & g) = "E5" Then e5Group = g
+    Next
+    Check e5Group > 0 And DLookup("Title", "SummaryGroup", "GroupID=" & e5Group) = "E5 EVAL periodic, ending 2026-03-15", "E-5 group title wrong"
+    Check DCount("*", "GroupMember", "GroupID=" & e5Group) = 2, "E-5 group does not hold both drafts"
+    Check DueKey(ReportsDueItems(asOf), "BAKER FIVE", "Periodic") = "" And DueKey(ReportsDueItems(asOf), "OWENS THREE", "Periodic") = "", "Batch drafts did not clear the due items"
+    ' The group caption shows the EP and EP+MP spread beside the PSG RSCA.
+    Check GroupPromotionSpread(e5Group) = "EP/MP: no observed recommendations yet", "Spread without recommendations: " & GroupPromotionSpread(e5Group)
+    SetRecommendation e5Group, "Early Promote", "Must Promote"
+    Check GroupPromotionSpread(e5Group) = "EP 1 of 1 | EP+MP 2 of 2 (2 observed)", "Spread wrong: " & GroupPromotionSpread(e5Group)
+    SetRecommendation e5Group, "Early Promote", "Early Promote"
+    Check InStr(GroupPromotionSpread(e5Group), "EP 2 of 1") = 1 And InStr(GroupPromotionSpread(e5Group), "over limit") > 0, "Over-limit spread not flagged: " & GroupPromotionSpread(e5Group)
+    Check InStr(UXGroupSeniorCaption(e5Group), "| EP 2 of 1") > 0, "Group caption lacks the spread"
     TestReportsDue = "PASS: " & checks & " reports-due calendar, draft, dismissal, detachment and date-reported assertions": Exit Function
 Failed:
     TestReportsDue = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description

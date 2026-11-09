@@ -315,6 +315,10 @@ Public Function UXEditorUnload() As Boolean
     If editorCloseAuthorized Then UXEditorUnload = True Else UXEditorUnload = UXPrepareEditorClose()
     ' Forced Access shutdown can ignore Cancel. Retain raw edits when saving fails.
     If Not UXEditorUnload Then CheckpointEditor Else PDFFieldFitRelease
+    'The editor's print preview page cache goes with it (Create PDFs keeps its own).
+    If UXEditorUnload And Not PDFOutputBusy() Then
+        If Not CurrentProject.AllForms("frmPDFOutput").IsLoaded Then PDFOutputEndPreview
+    End If
 End Function
 ' Close the editor once exit handling succeeds, avoiding a duplicate unload save.
 Public Function UXLeaveEditor(Optional ByVal decision As String = "") As Boolean

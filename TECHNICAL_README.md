@@ -41,13 +41,13 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.55.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 46 |
-| Imports accepted | Workspaces of schema 1 to 46, into a target of schema 21 to 46 |
-| Tables / enforced relationships | 80 / 169 |
-| VBA modules / forms | 118 / 72 |
+| Schema version | 47 |
+| Imports accepted | Workspaces of schema 1 to 47, into a target of schema 21 to 47 |
+| Tables / enforced relationships | 82 / 169 |
+| VBA modules / forms | 120 / 73 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 125 / 121 |
+| Test cases / VBA test harnesses | 125 / 122 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -215,6 +215,7 @@ added or removed without updating this list.
 | Imports | `ImportReceipt`, `ImportRawValue`, `WizardPreview` | Yes: raw values as imported (including SSNs) and import provenance |
 | Bulk changes and defaults | `ChangeBatch`, `ChangeItem`, `FieldDefault`, `FieldDefaultLink`, `MeetingProposal` | Yes: field values before and after a change, shared default values |
 | Validation | `ValidationRun`, `ValidationFinding`, `RulePack`, `RuleDefinition`, `TraitDefinition` | Finding messages can quote report values; rule tables hold policy only |
+| Content-check decisions | `RestrictedDismissal`, `RestrictedException` | Yes: dismissed findings keep the matched words from a report (which can name family members or medical terms) with the report, contributor and reason; allowed phrases are command wording |
 | Summary groups | `SummaryGroup`, `GroupMember`, `GroupSnapshot`, `GroupSnapshotMember`, `GroupCompletion`, `GroupCompletionReport`, `GroupCompletionCurrent`, `GroupLifecycle`, `ComparisonSet`, `ComparisonMember` | Membership and accounting links to reports |
 | Review and collaboration | `ReviewTask`, `ReviewTaskEvent`, `ReviewComment`, `ReviewCommentEvent`, `ReportNote`, `ReportNoteDraft`, `ReportMessage`, `RouteTemplate`, `RouteTemplateStep`, `RouteRun`, `RouteRunStep`, `RouteRunEvent` | Free text written by contributors, which may mention members |
 | Contributors and audit | `UserProfile`, `AuditActor`, `AuditEvent`, `OperationJournal` | Contributor names; operation descriptions (which can name members and show the last four SSN digits) |
@@ -610,6 +611,8 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 9 Nov 2026 | Schema 47: restricted-content check. Reviewed rules in `src/restricted-content.json` (BUPERSINST 1610.10H 13-5 a-j and related paragraphs, plus application checks) generate `modRestrictedRules` via `scripts/generate-restricted-content.py`; `modRestrictedContent` matches whole words with prefixes, near and unless (directional `<`) terms, classification markings, identifiers and capitals in plain VBA, caches per block, and adds `RC-` findings to live validation. `RestrictedDismissal` (per report, rule, block and matched words) and `RestrictedException` (phrase, optional rule) hold dismissals and allowed phrases; both are journaled and reversible (Validation issues, Allowed phrases window). About 1 ms per 5,000-character pass. |
+| 9 Nov 2026 | Line meter adds the PDF room left before 10 pt or an added page (`UXPrintHint`); group caption adds the EP and EP+MP spread from `PromotionCapacity` (`GroupPromotionSpread`); Reports due creates drafts and summary groups together (`CreateDueBatch`, all or nothing); the editor's Preview shows the report's PDF pages with pending edits (`UXEditorPrintPreview`). |
 | 9 Nov 2026 | PDF comments (all three forms) and EVAL block 44 print at 12 pt, or at a reviewed 10 pt fallback (`fallbackSize` in `pdf-print-layout.json`, print row column 14) when the text does not fit at 12; only text that still does not fit goes to the added page. The editor's comments and block 44 boxes take the print box's font, width and height and follow the same 12/10 pt choice live. Block 44 prints below its caption (y 548.5, 30 pt). Measuring fonts are cached per size. Table sorting accepts value lists that end in a separator (Validation issues). |
 | 9 Nov 2026 | Schema 46, field catalogue 3: EVAL block 44 (`Qualifications`) in the editor, NAVFIT98A import/export (`Qualifications` column), PDF import (XFA `BB`) and PDF output. Import of an earlier workspace restores block 44 on EVALs from the retained NAVFIT98A import value (`MigrateQualifications`) and records a report event. Retained NAVFIT98A values are now matched to the imported report by its native `ReportID` (`NativeReportMemo`); the legacy block 28 fallback previously read the row at the position equal to that ID. |
 | 7 Nov 2026 | Release 0.54.0; full release gate and historical schemas 1-45 verified. |

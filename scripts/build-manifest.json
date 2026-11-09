@@ -63,6 +63,8 @@
     "src/modReportTools.bas",
     "src/modReportingSenior.bas",
     "src/modReportsDue.bas",
+    "src/modRestrictedContent.bas",
+    "src/modRestrictedRules.bas",
     "src/modReviewComments.bas",
     "src/modRevisionCompare.bas",
     "src/modRevisionRetention.bas",
@@ -131,6 +133,7 @@
     "src/field-definitions.json",
     "src/navfit-field-map.json",
     "src/navywriter-catalog.json",
+    "src/restricted-content.json",
     "src/pdf-field-map.json",
     "src/pdf-print-layout.json",
     "src/pdf-templates/EVAL-1.png",
@@ -278,6 +281,7 @@
     "frmUXSharedFields",
     "frmUXSignoff",
     "frmUXTraitRows",
+    "frmUXRestrictedList",
     "frmUXValidation",
     "frmUXWorkspaceImport"
   ]

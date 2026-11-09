@@ -7870,6 +7870,32 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =8150
+                    Top =450
+                    Width =1000
+                    Height =400
+                    FontSize =10
+                    TabIndex =177
+                    Name ="uxPrintPreview"
+                    ControlTipText ="Print preview: this report's PDF pages, including unsaved edits. No file is created."
+                    Caption ="Preview"
+                    OnClick ="=UXEditorPrintPreview()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =8150
+                    LayoutCachedTop =450
+                    LayoutCachedWidth =9150
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
                     TabStop = NotDefault
                     OverlapFlags =223
                     TextFontFamily =34

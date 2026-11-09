@@ -50,6 +50,7 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  Place f, "uxReport", 250, 550, 8700, 650
  'Output actions share the top row and end at the content edge with the fields below.
  If UXHasControl(f, "uxCreatePDF") Then Place f, "uxCreatePDF", 9200, 100, 1300, 400
+ If UXHasControl(f, "uxPrintPreview") Then Place f, "uxPrintPreview", 8150, 100, 1000, 400
  If UXHasControl(f, "uxMarkSigned") Then Place f, "uxMarkSigned", 10600, 100, 1450, 400
  Place f, "uxTypeCaption", 9200, 550, 2850, 300
  Place f, "cboKind", 9200, 850, 2850, 350

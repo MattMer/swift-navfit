@@ -6,7 +6,7 @@ Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
 Private narrativeFit As Object, narrativePrint As Object, narrativeKey As String
-Private block44Print As Object, block44Key As String
+Private block44Print As Object, block44Key As String, printHint As String
 Private nobReplaced As Object, nobReport As Long
 Private calendarKey As String
 
@@ -55,6 +55,35 @@ Public Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, By
         .ControlTipText = "Plain text in the PDF's font, size and width: it wraps here as it prints. Swift's PDF uses 12 pt, or 10 pt when 12 pt would not fit. Overflow is retained."
     End With
 End Sub
+' Room left in Swift's PDF: lines, and about how many characters, before the text drops
+' from 12 to 10 pt, or before it continues on an added page. "" when unmeasured.
+Public Function UXPrintHint(ByVal kind As String, ByVal key As String, ByVal text As String) As String
+    Dim parts As Variant, size As Double, fallback As Double, fit As Object, smaller As Object, sample As String, average As Double, perLine As Long, room As Long, stage As String
+    On Error GoTo Unavailable
+    parts = UXPrintBox(kind, key): size = Val(parts(8))
+    If UBound(parts) >= 14 Then fallback = Val(parts(14))
+    Set fit = PDFFieldFit(kind, key, text, size)
+    If fit("Status") <> "Measured" Then Exit Function
+    If fit("Overflow") = 0 Then
+        room = fit("Capacity") - fit("Lines"): stage = IIf(fallback > 0, " before 10 pt", " before an added page")
+    ElseIf fallback > 0 Then
+        size = fallback: Set smaller = PDFFieldFit(kind, key, text, size)
+        If smaller("Status") <> "Measured" Then Exit Function
+        If smaller("Overflow") > 0 Then UXPrintHint = "PDF " & size & " pt: " & smaller("Overflow") & IIf(smaller("Overflow") = 1, " line continues", " lines continue") & " on an added page": Exit Function
+        room = smaller("Capacity") - smaller("Lines"): stage = " before an added page"
+    Else
+        UXPrintHint = "PDF " & size & " pt: " & fit("Overflow") & IIf(fit("Overflow") = 1, " line continues", " lines continue") & " on an added page": Exit Function
+    End If
+    'Characters per line from this text's own average width (exact for Courier New).
+    sample = Replace(Replace(text, vbCr, ""), vbLf, " ")
+    If Len(sample) < 40 Then sample = "Led a team of twelve Sailors through a demanding inspection cycle."
+    average = PDFOutputTextWidth(sample, CStr(parts(7)), size) / Len(sample)
+    If average > 0 Then perLine = Fix((Val(parts(5)) - 1) / average)
+    UXPrintHint = "PDF " & size & " pt: " & room & IIf(room = 1, " line", " lines") & " room (about " & room * perLine & " characters)" & stage
+    Exit Function
+Unavailable:
+    UXPrintHint = ""
+End Function
 ' Match the font size to what the PDF prints for the pending text (12 or 10 pt).
 Private Sub UXNarrativeSize(ByVal c As Access.Control, ByVal kind As String, ByVal key As String, ByVal fit As Object)
     If fit Is Nothing Then Exit Sub
@@ -105,6 +134,7 @@ Public Function UXNarrativeStatus() As Boolean
     If narrativeFit Is Nothing Or narrativeKey <> kind & "|" & text Then
         Set narrativeFit = NAVFITFieldFit(kind, "OfficialComments", text)
         Set narrativePrint = PDFFieldFit(kind, "OfficialComments", text): narrativeKey = kind & "|" & text
+        printHint = UXPrintHint(kind, "OfficialComments", text)
     End If
     UXNarrativeSize f!txtOfficialComments, kind, "OfficialComments", narrativePrint
     'Block 44 follows the same 12 or 10 pt print size on an EVAL.
@@ -117,6 +147,7 @@ Public Function UXNarrativeStatus() As Boolean
     caption = UXNarrativeFitText(narrativeFit)
     If caption <> "" Then caption = caption & " | "
     caption = caption & Len(text) & " characters"
+    If printHint <> "" Then caption = caption & " | " & printHint
     If f!txtOfficialComments.Width < UXNarrativeWidth(kind) Then caption = caption & " | Narrow view: wrapping differs"
     With f!uxNarrativeCount
         If .Caption <> caption Then .Caption = caption

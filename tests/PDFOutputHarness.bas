@@ -360,10 +360,19 @@ On Error GoTo Failed
  Check Forms!frmPDFOutput!lstReports.ListCount = 1 And Forms!frmPDFOutput!cmdGenerate.Enabled, "Report preview inventory or nonblocking action unavailable"
  Check Forms!frmPDFOutput!cmdPagePreview.OnClick = "=PDFOutputPagePreview()", "Native page-preview binding missing"
  Forms!frmPDFOutput!txtFolder = root: Forms!frmPDFOutput!cmdGenerate.SetFocus
- Check PDFOutputCreate(), "Focused Generate button callback failed"
+ Check PDFOutputCreate(), "Focused Generate button callback failed: " & Forms!frmPDFOutput!lblStatus.Caption
  Check InStr(Forms!frmPDFOutput!txtFindings, PDFOutputJob()("Folder")) > 0 And InStr(Forms!frmPDFOutput!txtFindings, PDFOutputJob()("Files")(1)) > 0, "Output folder path and files not shown for copying"
  Check CurrentRevision(id) = before And EditorHasPending(), "UI export changed pending editor state"
  Check PDFOutputClose(), "Report PDF preview close failed"
+ 'Preview in the editor shows the PDF pages with pending edits, saving nothing.
+ PDFOutputRememberFolder root
+ Check UXEditorPrintPreview(), "Editor print preview failed: " & Forms!frmEditor!uxError.Caption
+ Check CurrentProject.AllReports("rptPDFOutput").IsLoaded, "Editor print preview not shown"
+ Check InStr(PDFOutputPlannedText(PDFOutputJob()("Reports")(1), False), "EDITOR PENDING PDF SENTINEL") > 0, "Print preview missed pending text"
+ Check CurrentRevision(id) = before And EditorHasPending(), "Print preview saved or discarded editor draft"
+ PDFOutputEndPreview
+ Check Not CurrentProject.AllReports("rptPDFOutput").IsLoaded, "Print preview did not close"
+ DeleteSetting "SwiftNAVFIT", "PDF-" & MajorScalar("SELECT WorkspaceGuid FROM Workspace WHERE WorkspaceID=1")
  PDFOutputCapture 0, id, False: Set current = PDFOutputJob(): Set row = current("Reports")(1)
  Check Nz(row("Fields")("OfficialComments"), "") <> "EDITOR PENDING PDF SENTINEL", "Saved mode read pending editor buffer"
  Check EditorHasPending(), "Saved capture cleared pending editor"

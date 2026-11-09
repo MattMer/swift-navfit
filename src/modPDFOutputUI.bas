@@ -12,6 +12,30 @@ Public Function PDFOutputOpenReport() As Boolean
 Failed:
     MsgBox Err.Description, vbExclamation, "Create PDFs"
 End Function
+' Print preview from the editor: this report's PDF pages, pending edits included, in
+' Access print preview. Nothing is saved and no PDF is written; the page cache sits in
+' the PDF output folder (it holds report data) and is removed by the next preview,
+' Create PDFs or closing the editor.
+Public Function UXEditorPrintPreview() As Boolean
+    Dim folder As String
+    On Error GoTo Failed
+    If PDFOutputBusy() Then Forms!frmEditor!uxError.Caption = "Wait for the current PDF export to finish.": Exit Function
+    folder = PDFOutputFolderPreference()
+    If folder <> "" Then
+        If Not CreateObject("Scripting.FileSystemObject").FolderExists(folder) Then folder = ""
+    End If
+    If folder = "" Then
+        'The page cache holds report data, so it needs the protected PDF output folder.
+        If PDFOutputOpenReport() Then Forms!frmPDFOutput!lblStatus.Caption = "Choose a PDF output folder once. Preview keeps its temporary page file there; then use Preview in the report again."
+        Exit Function
+    End If
+    If CurrentProject.AllForms("frmPDFOutput").IsLoaded Then DoCmd.Close acForm, "frmPDFOutput", acSaveNo
+    PDFOutputCapture 0, Nz(Forms!frmEditor!txtReportID, 0), True
+    PDFOutputPreviewPages folder, False
+    UXEditorPrintPreview = True: Exit Function
+Failed:
+    Forms!frmEditor!uxError.Caption = "Print preview: " & Err.Description
+End Function
 Public Function PDFOutputOpenGroup(ByVal screen As String) As Boolean
     On Error GoTo Failed
     If PDFOutputBusy() Then Exit Function

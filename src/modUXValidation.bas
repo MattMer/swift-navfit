@@ -195,13 +195,109 @@ Public Function UXValidationSelection() As Boolean
     Dim item As Object
     With Forms!frmUXValidation
         .cmdOpen.Enabled = False: .txtEvidence = "No findings from implemented checks."
+        If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") Then .cmdDismissFinding.Enabled = False: .cmdAllowPhrase.Enabled = False
         If issues Is Nothing Or Nz(.lstIssues, 0) = 0 Then Exit Function
         Set item = issues(CLng(.lstIssues))
         .txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
         .cmdOpen.Enabled = True
+        'Content findings can be dismissed for this report or their words allowed.
+        If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") And item.Exists("Match") Then
+            .cmdDismissFinding.Enabled = (item("ReportID") > 0): .cmdAllowPhrase.Enabled = True
+        End If
     End With
     UXValidationSelection = True
 End Function
+'The selected content finding, or Nothing with a note in the evidence box.
+Private Function UXSelectedContentFinding() As Object
+    Dim item As Object
+    With Forms!frmUXValidation
+        If issues Is Nothing Or Nz(.lstIssues, 0) = 0 Then .txtEvidence = "Select a content finding first.": Exit Function
+        Set item = issues(CLng(.lstIssues))
+        If Not item.Exists("Match") Then .txtEvidence = "Only content findings can be dismissed or allowed.": Exit Function
+    End With
+    Set UXSelectedContentFinding = item
+End Function
+Private Sub UXValidationContentChanged(ByVal note As String)
+    Forms!frmUXValidation!txtFindingReason = Null
+    priorSignature = "": UXLoadValidation
+    Forms!frmUXValidation!txtEvidence = note & vbCrLf & vbCrLf & Forms!frmUXValidation!txtEvidence
+End Sub
+'Dismiss the selected content finding for its report only. Recorded and reversible.
+Public Function UXValidationDismiss() As Boolean
+    Dim item As Object
+    On Error GoTo Failed
+    Set item = UXSelectedContentFinding(): If item Is Nothing Then Exit Function
+    Call RestrictedDismiss(CLng(item("ReportID")), CStr(item("Code")), CStr(item("Key")), CStr(item("Match")), Nz(Forms!frmUXValidation!txtFindingReason, ""))
+    UXValidationContentChanged "Dismissed " & Chr$(34) & item("Match") & Chr$(34) & " for this report. Restore it under Allowed phrases."
+    UXValidationDismiss = True: Exit Function
+Failed:
+    Forms!frmUXValidation!txtEvidence = "Could not dismiss: " & Err.Description
+End Function
+'Allow the selected finding's words for its rule on every report.
+Public Function UXValidationAllow() As Boolean
+    Dim item As Object
+    On Error GoTo Failed
+    Set item = UXSelectedContentFinding(): If item Is Nothing Then Exit Function
+    Call RestrictedAllow(CStr(item("Match")), CStr(item("Code")), Nz(Forms!frmUXValidation!txtFindingReason, ""))
+    UXValidationContentChanged "Allowed " & Chr$(34) & item("Match") & Chr$(34) & " on every report. Remove it under Allowed phrases."
+    UXValidationAllow = True: Exit Function
+Failed:
+    Forms!frmUXValidation!txtEvidence = "Could not allow: " & Err.Description
+End Function
+Public Function UXValidationAllowedList() As Boolean
+    DoCmd.OpenForm "frmUXRestrictedList"
+    UXValidationAllowedList = True
+End Function
+'--- Allowed phrases window -----------------------------------------------------------------
+Public Function UXRestrictedListLoad() As Boolean
+    Dim rows As String, count As Long
+    rows = RestrictedListRows()
+    count = Nz(MajorScalar("SELECT Count(*) FROM RestrictedException WHERE RemovedAt Is Null"), 0) + Nz(MajorScalar("SELECT Count(*) FROM RestrictedDismissal WHERE UndoneAt Is Null"), 0)
+    With Forms!frmUXRestrictedList
+        !lstItems.RowSourceType = "Value List": !lstItems.RowSource = "0;Type;Phrase or words;Rule, who and why" & IIf(Len(rows) > 0, ";" & rows, "")
+        !lblCount.Caption = count & IIf(count = 1, " entry", " entries") & ". Select one to remove an allowed phrase or restore a dismissed finding."
+        !cmdRemoveItem.Enabled = False
+    End With
+    UXRestrictedListLoad = True
+End Function
+Public Function UXRestrictedListSelect() As Boolean
+    Dim key As String
+    key = Nz(Forms!frmUXRestrictedList!lstItems, "")
+    Forms!frmUXRestrictedList!cmdRemoveItem.Enabled = (Left$(key, 2) = "E:" Or Left$(key, 2) = "D:")
+    UXRestrictedListSelect = True
+End Function
+Public Function UXRestrictedListAdd() As Boolean
+    On Error GoTo Failed
+    Call RestrictedAllow(Nz(Forms!frmUXRestrictedList!txtPhrase, ""), "", Nz(Forms!frmUXRestrictedList!txtListReason, ""))
+    Forms!frmUXRestrictedList!txtPhrase = Null: Forms!frmUXRestrictedList!txtListReason = Null
+    Call UXRestrictedListLoad: UXRestrictedRefreshValidation
+    UXRestrictedListAdd = True: Exit Function
+Failed:
+    Forms!frmUXRestrictedList!lblCount.Caption = "Could not allow: " & Err.Description
+End Function
+Public Function UXRestrictedListRemove() As Boolean
+    Dim key As String
+    On Error GoTo Failed
+    key = Nz(Forms!frmUXRestrictedList!lstItems, "")
+    If Left$(key, 2) = "E:" Then
+        RestrictedRemoveException CLng(Mid$(key, 3))
+    ElseIf Left$(key, 2) = "D:" Then
+        RestrictedRestoreDismissal CLng(Mid$(key, 3))
+    Else
+        Forms!frmUXRestrictedList!lblCount.Caption = "Select an allowed phrase or dismissed finding first.": Exit Function
+    End If
+    Call UXRestrictedListLoad: UXRestrictedRefreshValidation
+    UXRestrictedListRemove = True: Exit Function
+Failed:
+    Forms!frmUXRestrictedList!lblCount.Caption = "Could not change it: " & Err.Description
+End Function
+Public Function UXRestrictedListClose() As Boolean
+    DoCmd.Close acForm, "frmUXRestrictedList", acSaveNo
+    UXRestrictedListClose = True
+End Function
+Private Sub UXRestrictedRefreshValidation()
+    If CurrentProject.AllForms("frmUXValidation").IsLoaded Then priorSignature = "": UXLoadValidation
+End Sub
 ' Move the findings page and rebuild its visible rows, keeping page indices nonnegative.
 Public Function UXValidationPage(ByVal offset As Long) As Boolean
     pageIndex = pageIndex + offset: If pageIndex < 0 Then pageIndex = 0
@@ -252,8 +348,14 @@ Public Function UXValidationLayout() As Boolean
     f!lstIssues.Width = width: f!txtEvidence.Width = width
     f!lblIssues.Width = width: f!lblEvidence.Width = width
     f!lstIssues.ColumnWidths = "0;" & CLng(width * 0.2) & ";" & CLng(width * 0.25) & ";" & CLng(width * 0.15) & ";" & CLng(width * 0.38)
-    If height < 8500 Then height = 8500
-    f!txtEvidence.Height = height - 6450
+    If height < 9000 Then height = 9000
+    'Content-finding actions sit in a row above Open and Close.
+    f!txtEvidence.Height = height - 7100
+    f!lblFindingReason.Top = height - 1550: f!txtFindingReason.Top = height - 1300
+    f!txtFindingReason.Width = width * 0.36
+    f!cmdDismissFinding.Top = height - 1300: f!cmdDismissFinding.Left = 550 + width * 0.36: f!cmdDismissFinding.Width = width * 0.2
+    f!cmdAllowPhrase.Top = height - 1300: f!cmdAllowPhrase.Left = 650 + width * 0.56: f!cmdAllowPhrase.Width = width * 0.19
+    f!cmdAllowedList.Top = height - 1300: f!cmdAllowedList.Left = 750 + width * 0.75: f!cmdAllowedList.Width = width * 0.25 - 350
     f!cmdOpen.Top = height - 650: f!cmdBack.Top = height - 650
     f!cmdOpen.Width = width \ 2 - 100: f!cmdBack.Left = 500 + width \ 2: f!cmdBack.Width = width \ 2 - 100
     f.Width = width + 800: f.Section(acDetail).Height = height: f.ScrollBars = 2
