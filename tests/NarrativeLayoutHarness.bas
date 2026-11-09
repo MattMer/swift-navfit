@@ -2,6 +2,7 @@ Attribute VB_Name = "NarrativeLayoutHarness"
 Option Explicit
 Private checks As Long
 Private referenceLastWords As Long
+Private fitSize As Double
 Private Sub Check(ByVal ok As Boolean, ByVal message As String)
     If Not ok Then Err.Raise vbObjectError + 8061, , message
     checks = checks + 1
@@ -23,8 +24,8 @@ Public Function TestNarrativeLayout() As String
             Check UXResizeEditor(CLng(width), 11000), "Resize failed"
             Check c.Width = UXNarrativeWidth(CStr(kind)), "Narrative width changed with viewport"
             Check c.Height = UXNarrativeHeight(CStr(kind)), "Narrative height changed with viewport"
-            Check c.FontName = "Courier New", "Font not locked"
-            Check c.FontSize = UXNarrativeFontSize(CStr(kind)), "Point size differs"
+            Check c.FontName = IIf(kind = "EVAL", "Courier New", "Times New Roman") And c.FontName = UXNarrativeFont(CStr(kind)), "Font differs from the PDF: " & c.FontName
+            Check c.FontSize = 10, "Overflowing comments not shown at the PDF's 10 pt: " & c.FontSize
             Check c.TextFormat = 0 And Not c.FontBold And Not c.FontItalic, "Rich styling remained"
             Check c.LeftMargin = 90 And c.RightMargin = 90, "Margins differ"
             Check surface.Controls("errOfficialComments").Top >= c.Top + c.Height, "Error overlaps narrative"
@@ -41,6 +42,20 @@ Public Function TestNarrativeLayout() As String
         Check UXSelectSection(5), "Comments return failed"
         Check c.Value = value, "Section change lost text"
         Check DLookup("CurrentRevisionID", "Report", "ReportID=" & id) = revision, "Layout created revision"
+        'The box follows the PDF's size choice as the text changes: 12 pt when it fits.
+        c = "Short synthetic comment."
+        Check UXSurfaceEdited("OfficialComments") And UXNarrativeStatus(), "Short edit failed"
+        Check c.FontSize = 12, kind & ": fitting comments not shown at 12 pt: " & c.FontSize
+        Check c.Width = UXNarrativeWidth(CStr(kind)) And c.Height = UXNarrativeHeight(CStr(kind)), "Size change moved the box"
+        If kind = "EVAL" Then
+            With surface!txtQualifications
+                Check .Visible And .FontName = "Courier New" And .FontSize = 12, "Block 44 not in the PDF's font"
+                Check .Width = UXNarrativeWidth("EVAL", "Qualifications") And .Height = UXNarrativeHeight("EVAL", "Qualifications"), "Block 44 box differs from the PDF"
+                Check .Top >= c.Top + c.Height, "Block 44 overlaps the comments"
+            End With
+        End If
+        c = value
+        Check UXSurfaceEdited("OfficialComments") And UXNarrativeStatus() And c.FontSize = 10, "Long comments did not return to 10 pt"
         c = value & vbCrLf & "Pending tail"
         Check UXSurfaceEdited("OfficialComments"), "Visible edit failed"
         Check UXSaveEditor(), "Narrative save failed"
@@ -97,7 +112,7 @@ Private Function Words(ByVal count As Long) As String
 End Function
 Private Sub CheckFit(ByVal kind As String, ByVal key As String, ByVal text As String, ByVal lines As Long, ByVal overflow As Long, ByVal oneWord As Boolean, ByVal label As String)
     Dim fit As Object
-    Set fit = PDFFieldFit(kind, key, text)
+    Set fit = PDFFieldFit(kind, key, text, fitSize)
     Check fit("Status") = "Measured", kind & " " & label & ": " & fit("Status") & " " & fit("Reason")
     Check fit("Lines") = lines, kind & " " & label & ": " & fit("Lines") & " lines, expected " & lines
     Check fit("Overflow") = overflow, kind & " " & label & ": overflow " & fit("Overflow") & ", expected " & overflow
@@ -109,21 +124,25 @@ Public Function TestNarrativeLineFit() As String
     On Error GoTo Failed
     Dim kind As Variant, key As Variant, fit As Object, capacity As Long, width As Double, font As String, size As Double
     Dim text As String, n As Long, id As Long, f As Form, surface As Form, fields As Object, item As Object
-    Dim found As Boolean, counted As Long, started As Double, elapsed As Double, timing As String, stage As String, i As Long, limit As Long
+    Dim found As Boolean, counted As Long, started As Double, elapsed As Double, timing As String, stage As String, i As Long, limit As Long, full As Long
     checks = 0
     ConfigureWorkspace "SYNTHETIC NARRATIVE LINE FIT", "Tester"
     For Each kind In Array("EVAL", "FITREP", "CHIEFEVAL")
         stage = kind & " geometry"
-        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", "")
+        ' Comments print at 12 pt, or 10 pt when they do not fit at 12. The wrap checks below
+        ' measure at 12 pt; the fallback checks follow them.
+        fitSize = 12
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", "", fitSize)
         Check fit("Status") = "Measured", kind & ": printer metrics unavailable: " & fit("Reason")
         capacity = fit("Capacity")
-        ' Line height is the font's own metric: Courier New 11 pt (about 11.8 pt lines) in a 201.5 pt
-        ' box; Times New Roman 10 pt (11.5 pt lines) in 225.3 pt and 71.3 pt boxes.
+        ' Line height is the font's own metric: Courier New 12 pt in a 201.5 pt box; Times New
+        ' Roman 12 pt in 225.3 pt and 71.3 pt boxes. At 10 pt they hold 18, 19 and 6 lines.
         Select Case kind
-            Case "EVAL": width = 539.5: font = "Courier New": size = 11: Check capacity = 17, kind & ": capacity " & capacity
-            Case "FITREP": width = 536: font = "Times New Roman": size = 10: Check capacity = 19, kind & ": capacity " & capacity
-            Case Else: width = 570.344: font = "Times New Roman": size = 10: Check capacity = 6, kind & ": capacity " & capacity
+            Case "EVAL": width = 539.5: font = "Courier New": size = 12: Check capacity = 15, kind & ": capacity " & capacity: limit = 18
+            Case "FITREP": width = 536: font = "Times New Roman": size = 12: Check capacity = 16, kind & ": capacity " & capacity: limit = 19
+            Case Else: width = 570.344: font = "Times New Roman": size = 12: Check capacity = 5, kind & ": capacity " & capacity: limit = 6
         End Select
+        Check PDFFieldFit(CStr(kind), "OfficialComments", "", 10)("Capacity") = limit, kind & ": 10 pt capacity"
         stage = kind & " known texts"
         CheckFit kind, "OfficialComments", "", 0, 0, False, "empty"
         CheckFit kind, "OfficialComments", Numbered(capacity), capacity, 0, False, "exactly full"
@@ -143,12 +162,25 @@ Public Function TestNarrativeLineFit() As String
         Do While ReferenceLines(Words(n + 1), width, font, size) <= capacity: n = n + 1: Loop
         Check ReferenceLines(Words(n), width, font, size) = capacity, "Reference wrap"
         CheckFit kind, "OfficialComments", Words(n), capacity, 0, referenceLastWords = 1, "wrapped exactly full"
+        full = n
         CheckFit kind, "OfficialComments", Words(n + 1), capacity + 1, 1, False, "wrapped one line over"
         text = Left$(Words(500), 2500)
         If Right$(text, 1) = " " Then text = Left$(text, 2499) & "x"
         Check Len(text) = 2500, "2,500-character text"
         n = ReferenceLines(text, width, font, size)
         CheckFit kind, "OfficialComments", text, n, IIf(n > capacity, n - capacity, 0), n <= capacity And referenceLastWords = 1, "2,500 characters"
+        stage = kind & " size fallback"
+        fitSize = 0
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", Numbered(capacity))
+        Check fit("Size") = 12 And fit("Overflow") = 0, kind & ": fitting comments not at 12 pt: " & fit("Size")
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", Numbered(capacity + 1))
+        Check fit("Size") = 10 And fit("Capacity") = limit And fit("Overflow") = 0, kind & ": comments past 12 pt not printed at 10 pt: " & fit("Size")
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", Numbered(limit + 1))
+        Check fit("Size") = 10 And fit("Overflow") = 1, kind & ": overflow not measured at 10 pt"
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", Words(full))
+        Check fit("Size") = 12 And fit("Lines") = capacity And fit("Overflow") = 0, kind & ": wrapped full comments left 12 pt: " & fit("Size")
+        Set fit = PDFFieldFit(CStr(kind), "OfficialComments", text)
+        Check fit("Size") = 10 And fit("Capacity") = limit, kind & ": long comments not at 10 pt"
         stage = kind & " timing"
         Set fit = PDFFieldFit(CStr(kind), "OfficialComments", text)
         started = Timer

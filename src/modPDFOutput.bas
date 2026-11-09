@@ -61,6 +61,9 @@ Private Declare PtrSafe Function PDFGdipDeleteFont Lib "gdiplus" Alias "GdipDele
 Private Declare PtrSafe Function PDFGdipMeasureString Lib "gdiplus" Alias "GdipMeasureString" (ByVal graphics As LongPtr, ByVal text As LongPtr, ByVal length As Long, ByVal font As LongPtr, ByRef layout As PDFRectF, ByVal format As LongPtr, ByRef bounds As PDFRectF, ByRef fitted As Long, ByRef lines As Long) As Long
 Private gdipToken As LongPtr
 Private metricDpiX As Long, metricDpiY As Long, metricKey As String
+'Verified measuring fonts by font|size|bold: switching between 12 and 10 pt reuses them.
+'Typed arrays keep the 64-bit GDI handles exact.
+Private metricFontKeys() As String, metricFontHandles() As LongPtr, metricFontCount As Long
 Public Const PDF_OUTPUT_SLOTS As Long = 340
 
 Public Function PDFOutputBusy() As Boolean
@@ -379,6 +382,15 @@ Private Sub SetMetricFont(ByVal font As String, ByVal size As Double, Optional B
     End If
     key = font & "|" & size & "|" & CStr(bold)
     If key = metricKey Then Exit Sub
+    Dim cachedIndex As Long
+    For cachedIndex = 1 To metricFontCount
+        If metricFontKeys(cachedIndex) = key Then
+            created = metricFontHandles(cachedIndex)
+            previous = PDFSelectObject(metricDC, created)
+            If previous = 0 Or previous = -1 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font could not be selected."
+            metricFont = created: metricKey = key: Exit Sub
+        End If
+    Next
     created = PDFCreateFont(-CLng(size * metricDpiY / 72#), 0, 0, 0, IIf(bold, 700, 400), 0, 0, 0, 1, 7, 0, 2, 0, StrPtr(font))
     If created = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font could not be measured: " & font
     previous = PDFSelectObject(metricDC, created)
@@ -386,13 +398,20 @@ Private Sub SetMetricFont(ByVal font As String, ByVal size As Double, Optional B
         PDFDeleteObject created
         Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font could not be selected."
     End If
-    If metricFont = 0 Then metricOldFont = previous Else PDFDeleteObject metricFont
-    metricFont = created
+    'The DC's own font is restored on close, when cached fonts are deleted.
+    If metricOldFont = 0 Then metricOldFont = previous
+    'An unverified font is not cached: select the DC's font back and delete it.
+    metricFont = created: metricKey = ""
     face = String$(128, vbNullChar)
-    If PDFTextFace(metricDC, 128, StrPtr(face)) = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Selected print font could not be verified."
-    face = Left$(face, InStr(face, vbNullChar) - 1)
-    If StrComp(face, font, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font is unavailable: " & font & ". Windows substituted " & face & "."
-    metricKey = key
+    If PDFTextFace(metricDC, 128, StrPtr(face)) = 0 Then face = "" Else face = Left$(face, InStr(face, vbNullChar) - 1)
+    If StrComp(face, font, vbTextCompare) <> 0 Then
+        PDFSelectObject metricDC, metricOldFont: PDFDeleteObject created: metricFont = 0
+        If face = "" Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Selected print font could not be verified."
+        Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Required print font is unavailable: " & font & ". Windows substituted " & face & "."
+    End If
+    metricFontCount = metricFontCount + 1
+    ReDim Preserve metricFontKeys(1 To metricFontCount): ReDim Preserve metricFontHandles(1 To metricFontCount)
+    metricFontKeys(metricFontCount) = key: metricFontHandles(metricFontCount) = created: metricKey = key
 End Sub
 Public Function PDFOutputTextWidth(ByVal value As String, ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False) As Double
     Dim extent As PDFExtent
@@ -411,9 +430,11 @@ End Function
 Private Sub CloseMetricContext()
     If metricDC <> 0 Then
         If metricOldFont <> 0 Then PDFSelectObject metricDC, metricOldFont
-        If metricFont <> 0 Then PDFDeleteObject metricFont
         PDFDeleteDC metricDC
     End If
+    Dim cachedIndex As Long
+    For cachedIndex = 1 To metricFontCount: PDFDeleteObject metricFontHandles(cachedIndex): Next
+    metricFontCount = 0: Erase metricFontKeys: Erase metricFontHandles
     metricDC = 0: metricFont = 0: metricOldFont = 0: metricKey = ""
 End Sub
 'Release printer metrics when the editor closes; a running export keeps its context.
@@ -467,6 +488,23 @@ Private Function BoxLines(ByVal value As String, ByVal box As Variant, ByVal fon
         If capacity = 0 Then remaining = value Else remaining = Mid$(normalized, CLng(positions(capacity)))
     End If
 End Function
+'A box with a reviewed fallback size (print row column 14) prints at its size when the
+'whole value fits there, otherwise at the fallback: comments are 12 pt, or 10 pt when 12
+'would push text to the added page. Shared by PlanReport and PDFFieldFit.
+Private Function PrintRowSize(ByVal parts As Variant, ByVal value As String, ByVal box As Variant) As Double
+    Dim step As Double, capacity As Long, remaining As String, fallback As Double
+    PrintRowSize = Val(parts(8))
+    If UBound(parts) >= 14 Then fallback = Val(parts(14))
+    If fallback <= 0 Or value = "" Then Exit Function
+    'Wrapping only adds lines, so text wider than every line together (plus the space
+    'dropped at each break) cannot fit; this one measurement spares the full wrap for
+    'long comments.
+    step = PDFLineHeight(CStr(parts(7)), PrintRowSize, (parts(11) = "1"))
+    capacity = Fix((CDbl(box(3)) + 0.0001) / step)
+    If PDFOutputTextWidth(Replace(Replace(value, vbCr, ""), vbLf, " "), CStr(parts(7)), PrintRowSize, (parts(11) = "1")) > capacity * (CDbl(box(2)) - 1 + PDFOutputTextWidth(" ", CStr(parts(7)), PrintRowSize, (parts(11) = "1"))) Then PrintRowSize = fallback: Exit Function
+    Call BoxLines(value, box, CStr(parts(7)), PrintRowSize, (parts(11) = "1"), False, step, capacity, remaining, New Collection)
+    If remaining <> "" Then PrintRowSize = fallback
+End Function
 Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1, Optional ByVal bold As Boolean = False, Optional ByVal spill As Object = Nothing, Optional ByVal compact As Boolean = False)
     Dim lines As Collection, positions As New Collection, i As Long, step As Double, capacity As Long, remaining As String
     If value = "" Then Exit Sub
@@ -503,14 +541,14 @@ End Sub
 'Measure a report field against its printed box for the editor line meter, using the
 'same print rows, wrap and capacity as PlanReport. Never raises: a missing printer or
 'font gives Status "Unavailable" with Reason; a field without a plain text box gives "None".
-Public Function PDFFieldFit(ByVal kind As String, ByVal key As String, ByVal text As String) As Object
+Public Function PDFFieldFit(ByVal kind As String, ByVal key As String, ByVal text As String, Optional ByVal atSize As Double = 0) As Object
     Dim result As Object, row As Variant, parts As Variant, number As Long, found As Boolean
     Dim box As Variant, font As String, size As Double, bold As Boolean, step As Double, capacity As Long
     Dim lines As Collection, positions As New Collection, remaining As String, normalized As String, count As Long, last As String
     On Error GoTo Unavailable
     Set result = CreateObject("Scripting.Dictionary")
     result.Add "Status", "None": result.Add "Lines", 0&: result.Add "Capacity", 0&
-    result.Add "Overflow", 0&: result.Add "OneWordLast", False: result.Add "Reason", ""
+    result.Add "Overflow", 0&: result.Add "OneWordLast", False: result.Add "Reason", "": result.Add "Size", 0#
     Set PDFFieldFit = result
     For number = 1 To 2
         For Each row In PDFPrintRows(kind, number)
@@ -521,7 +559,10 @@ Public Function PDFFieldFit(ByVal kind As String, ByVal key As String, ByVal tex
     Next
     If Not found Then Exit Function
     box = Array(Val(parts(3)), Val(parts(4)), Val(parts(5)), Val(parts(6)))
-    font = parts(7): size = Val(parts(8)): bold = (parts(11) = "1")
+    'atSize measures at one size; otherwise the size the PDF would print at.
+    font = parts(7): bold = (parts(11) = "1")
+    If atSize > 0 Then size = atSize Else size = PrintRowSize(parts, text, box)
+    result("Size") = size
     Set lines = BoxLines(text, box, font, size, bold, False, step, capacity, remaining, positions)
     result("Capacity") = capacity: count = lines.Count
     normalized = Replace(Replace(text, vbCrLf, vbLf), vbCr, vbLf)
@@ -809,7 +850,7 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
                 FitGradeExplanation page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), Val(parts(8)), extra, Val(parts(12)), Val(parts(13))
             Else
                 If parts(1) = "chief-mark" Then align = 2
-                FitText page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), Val(parts(8)), extra, align, (parts(11) = "1")
+                FitText page, value, CStr(row("Caption")) & " / " & PrintFieldLabel(CStr(parts(0))), box, CStr(parts(7)), PrintRowSize(parts, value, box), extra, align, (parts(11) = "1")
             End If
         Next
     Next

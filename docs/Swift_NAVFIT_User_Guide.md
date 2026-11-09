@@ -291,6 +291,8 @@ Front Page follows the printed form's rows: blocks 5â€“9 share a row, as do 10â€
 
 ### Check that the comments fit
 
+The comments box, and block 44 on an EVAL, use the same font, point size, width and height as Swift's PDF, so the text wraps on screen where it will wrap on paper: Courier New on an EVAL and Times New Roman on a FITREP or CHIEFEVAL. The box shows 12 point and switches to 10 point as soon as the text no longer fits at 12 point, exactly as the PDF does.
+
 Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
 
 | Block | EVAL and FITREP | CHIEFEVAL |
@@ -308,13 +310,13 @@ Below the comments box, the line meter shows how many lines the comments take wh
 | "last line holds one word" | Shortening the text slightly would save a line. |
 | Line count unavailable (no printer) | Windows has no printer to measure with. Editing and saving carry on. |
 
-The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF, which prints extra lines on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
+The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF. The PDF prints the comments at 12 point; when they don't fit at 12 point it prints them at 10 point, as the form's "10 or 12 pitch" rule allows, and only text that still doesn't fit continues on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
 
 ### Block 44, qualifications and achievements (EVAL)
 
 An EVAL's Back Page has block 44 between the comments and the promotion recommendation: courses and credit hours, degrees or certificates, qualifications attained, personal awards and community involvement during the period (BUPERSINST 1610.10, EVAL block 44). FITREPs and CHIEFEVALs have no block 44; put qualifications in their comments. Block 44 is personal to each report, so it is not a group default.
 
-The printed box holds about three lines. Longer text continues on an added page of Swift's PDF, and Validation lists an **Information** finding, *Block 44 is longer than its printed box*. NAVFIT98A's own block 44 limit is not measured; check the final print in NAVFIT98A.
+The printed box holds two lines, below the block caption, at 12 point or, when needed, 10 point. Longer text continues on an added page of Swift's PDF, and Validation lists an **Information** finding, *Block 44 is longer than its printed box*. NAVFIT98A's own block 44 limit is not measured; check the final print in NAVFIT98A.
 
 NAVFIT98A imports and exports carry block 44 (its *Qualifications* column), and Swift reads it from an official EVAL PDF. When you import a workspace from an earlier Swift version, each EVAL that came from a NAVFIT98A import gets its original block 44 text back, and its History shows **Block 44 restored from NAVFIT98A**. Text you already entered is never replaced.
 

@@ -15,8 +15,10 @@ foreach($template in $layout.templates){
   foreach($field in $page.fields){
    if($field.box.Count -ne 4 -or $field.box[0] -lt 0 -or $field.box[1] -lt 0 -or $field.box[2] -le 0 -or $field.box[3] -le 0 -or ($field.box[0]+$field.box[2]) -gt 612 -or ($field.box[1]+$field.box[3]) -gt 792){throw ('Print box outside Letter page: '+$key+'/'+$field.source)}
    if($field.size -ne [Math]::Floor($field.size)){throw ('Native Access requires a reviewed whole-point font choice: '+$key+'/'+$field.source)}
+   #A reviewed smaller whole-point size used only when the text does not fit at size.
+   if($field.fallbackSize -and ($field.fallbackSize -ne [Math]::Floor($field.fallbackSize) -or $field.fallbackSize -ge $field.size -or $field.fallbackSize -lt 6 -or $field.rule -ne 'text' -or $field.narrowWidth)){throw ('Invalid fallback print size: '+$key+'/'+$field.source)}
    if($field.narrowWidth -and ($field.narrowWidth -le 0 -or $field.narrowWidth -ge $field.box[2] -or $field.narrowAt -le $field.box[1] -or $field.narrowAt -ge ($field.box[1]+$field.box[3]))){throw ('Invalid boxed-mark text exclusion: '+$key+'/'+$field.source)}
-   $data=@($field.target,$field.rule,$field.selector)+@($field.box|ForEach-Object {$_.ToString([Globalization.CultureInfo]::InvariantCulture)})+@($field.font,[string]$field.size,$(if($field.check){'1'}else{'0'}),$field.source,$(if($field.bold){'1'}else{'0'}),$(if($field.narrowAt){$field.narrowAt.ToString([Globalization.CultureInfo]::InvariantCulture)}else{'0'}),$(if($field.narrowWidth){$field.narrowWidth.ToString([Globalization.CultureInfo]::InvariantCulture)}else{'0'}))
+   $data=@($field.target,$field.rule,$field.selector)+@($field.box|ForEach-Object {$_.ToString([Globalization.CultureInfo]::InvariantCulture)})+@($field.font,[string]$field.size,$(if($field.check){'1'}else{'0'}),$field.source,$(if($field.bold){'1'}else{'0'}),$(if($field.narrowAt){$field.narrowAt.ToString([Globalization.CultureInfo]::InvariantCulture)}else{'0'}),$(if($field.narrowWidth){$field.narrowWidth.ToString([Globalization.CultureInfo]::InvariantCulture)}else{'0'}),$(if($field.fallbackSize){[string]$field.fallbackSize}else{'0'}))
    if(@($data|Where-Object {$_ -match '[|\r\n]'}).Count){throw 'Invalid print field delimiter'}
    $lines.Add('  rows.Add '+(PDFVB ($data -join '|')))
   }

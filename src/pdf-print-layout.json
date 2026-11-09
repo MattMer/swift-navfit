@@ -1312,8 +1312,9 @@
                 201.5
               ],
               "font": "Courier New",
-              "size": 11,
-              "check": false
+              "size": 12,
+              "check": false,
+              "fallbackSize": 10
             },
             {
               "source": "BB",
@@ -1322,13 +1323,14 @@
               "selector": "",
               "box": [
                 38.0,
-                541.5,
+                548.5,
                 539.5,
-                37.0
+                30.0
               ],
               "font": "Courier New",
-              "size": 11,
-              "check": false
+              "size": 12,
+              "check": false,
+              "fallbackSize": 10
             },
             {
               "source": "I:anonymous",
@@ -2897,8 +2899,9 @@
                 225.297
               ],
               "font": "Times New Roman",
-              "size": 10,
-              "check": false
+              "size": 12,
+              "check": false,
+              "fallbackSize": 10
             },
             {
               "source": "I:anonymous",
@@ -4414,8 +4417,9 @@
                 71.328
               ],
               "font": "Times New Roman",
-              "size": 10,
-              "check": false
+              "size": 12,
+              "check": false,
+              "fallbackSize": 10
             },
             {
               "source": "PROMOTIONDROPDOWN",

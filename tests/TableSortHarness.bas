@@ -37,6 +37,10 @@ Public Function TestTableSort() As String
  c.ColumnHeads = True: c.RowSource = "ID;Member;Mark;1;Z;4;2;A;3"
  Check UXSortList("frmLibrary", "lstReports", 1), "Heading Value List sort failed"
  Check c.Column(1, 0) = "Member" And c.Column(1, 1) = "A", "Heading row lost"
+ 'Validation issues builds its list with a separator after every cell, the last included.
+ c.RowSource = "ID;Member;Mark;1;""Z"";4;2;""A"";3;"
+ Check UXSortList("frmLibrary", "lstReports", 1), "Trailing-separator Value List sort failed: " & c.ControlTipText
+ Check c.Column(1, 1) = "A" And c.Column(1, 2) = "Z" And c.ListCount = 3, "Trailing-separator rows wrong: " & c.RowSource
  c.ColumnHeads = False: c.RowSource = ""
  Check UXSortList("frmLibrary", "lstReports", 1), "Empty sort failed"
  DoCmd.Close acForm, "frmLibrary", acSaveNo

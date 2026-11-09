@@ -610,6 +610,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 9 Nov 2026 | PDF comments (all three forms) and EVAL block 44 print at 12 pt, or at a reviewed 10 pt fallback (`fallbackSize` in `pdf-print-layout.json`, print row column 14) when the text does not fit at 12; only text that still does not fit goes to the added page. The editor's comments and block 44 boxes take the print box's font, width and height and follow the same 12/10 pt choice live. Block 44 prints below its caption (y 548.5, 30 pt). Measuring fonts are cached per size. Table sorting accepts value lists that end in a separator (Validation issues). |
 | 9 Nov 2026 | Schema 46, field catalogue 3: EVAL block 44 (`Qualifications`) in the editor, NAVFIT98A import/export (`Qualifications` column), PDF import (XFA `BB`) and PDF output. Import of an earlier workspace restores block 44 on EVALs from the retained NAVFIT98A import value (`MigrateQualifications`) and records a report event. Retained NAVFIT98A values are now matched to the imported report by its native `ReportID` (`NativeReportMemo`); the legacy block 28 fallback previously read the row at the position equal to that ID. |
 | 7 Nov 2026 | Release 0.54.0; full release gate and historical schemas 1-45 verified. |
 | 7 Nov 2026 | Development 0.54.0: opening PDF output no longer uses `Shell.Application` (flagged by Navy macro threat detection); Access's `FollowHyperlink` opens it, the output path is shown to copy, and the source check rejects shell launches (section 6.7). |

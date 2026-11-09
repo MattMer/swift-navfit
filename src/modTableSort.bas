@@ -32,18 +32,19 @@ Public Function UXCompareCells(ByVal a As Variant, ByVal b As Variant) As Long
  End If
 End Function
 Private Function ListTokens(ByVal source As String) As Collection
- Dim result As New Collection, i As Long, quoted As Boolean, token As String, ch As String
+ Dim result As New Collection, i As Long, quoted As Boolean, token As String, ch As String, separated As Boolean
  For i = 1 To Len(source)
-  ch = Mid$(source, i, 1)
+  ch = Mid$(source, i, 1): separated = False
   If ch = """" Then
    If quoted And Mid$(source, i + 1, 1) = """" Then token = token & ch: i = i + 1 Else quoted = Not quoted
   ElseIf ch = ";" And Not quoted Then
-   result.Add token: token = ""
+   result.Add token: token = "": separated = True
   Else
    token = token & ch
   End If
  Next
- If Len(source) > 0 Then result.Add token
+ 'Like Access, a list ending in a separator ("a;b;") has no empty cell after it.
+ If Len(source) > 0 And Not separated Then result.Add token
  Set ListTokens = result
 End Function
 Private Function CellQuote(ByVal value As Variant) As String

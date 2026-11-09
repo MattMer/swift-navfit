@@ -6,36 +6,60 @@ Private surfaceBusy As Boolean
 Private surfaceSection As Long
 Private layoutBusy As Boolean
 Private narrativeFit As Object, narrativePrint As Object, narrativeKey As String
+Private block44Print As Object, block44Key As String
 Private nobReplaced As Object, nobReport As Long
 Private calendarKey As String
 
-' Reference dimensions are NAVFIT default print rectangles, converted from
-' hundredths of an inch to twips. Margins sit outside that text rectangle.
-' EVAL's 9-point default is confirmed by the supplied printed PDF; other types
-' use inspected NAVFIT defaults pending equivalent sample-output verification.
-Public Function UXNarrativeWidth(ByVal kind As String) As Long
-    UXNarrativeWidth = IIf(kind = "CHIEFEVAL", 10944, 10296) + 180
+' The editor box matches Swift's PDF: the print box's font, its width and height in
+' twips, and the size the PDF prints the current text at (12 pt, or 10 pt when the text
+' does not fit at 12). Margins and the vertical scroll bar sit outside the text area.
+Private Const UX_PRINT_FRAME As Long = 465 'left and right margins 180, scroll bar 255, borders 30
+Private Function UXPrintBox(ByVal kind As String, ByVal key As String) As Variant
+    Dim number As Long, row As Variant, parts As Variant
+    For number = 1 To 2
+        For Each row In PDFPrintRows(kind, number)
+            parts = Split(CStr(row), "|")
+            If parts(0) = key And parts(9) <> "1" Then UXPrintBox = parts: Exit Function
+        Next
+    Next
+    Err.Raise vbObjectError + 9120, "modUXSurface.UXPrintBox", "No print box for " & kind & " " & key & "."
 End Function
-Public Function UXNarrativeHeight(ByVal kind As String) As Long
-    UXNarrativeHeight = IIf(kind = "CHIEFEVAL", 1656, 3744) + 180
+Public Function UXNarrativeFont(ByVal kind As String, Optional ByVal key As String = "OfficialComments") As String
+    UXNarrativeFont = CStr(UXPrintBox(kind, key)(7))
 End Function
-Public Function UXNarrativeFontSize(ByVal kind As String) As Long
-    UXNarrativeFontSize = IIf(kind = "CHIEFEVAL", 10, 9)
+Public Function UXNarrativeWidth(ByVal kind As String, Optional ByVal key As String = "OfficialComments") As Long
+    UXNarrativeWidth = CLng(Val(UXPrintBox(kind, key)(5)) * 20) + UX_PRINT_FRAME
+End Function
+Public Function UXNarrativeHeight(ByVal kind As String, Optional ByVal key As String = "OfficialComments") As Long
+    UXNarrativeHeight = CLng(Val(UXPrintBox(kind, key)(6)) * 20) + 180
+End Function
+' The size Swift's PDF prints this text at; the box's own size when it cannot be measured.
+Public Function UXNarrativeFontSize(ByVal kind As String, Optional ByVal key As String = "OfficialComments", Optional ByVal text As String = "") As Long
+    Dim fit As Object
+    UXNarrativeFontSize = CLng(Val(UXPrintBox(kind, key)(8)))
+    Set fit = PDFFieldFit(kind, key, text)
+    If fit("Status") = "Measured" And fit("Size") > 0 Then UXNarrativeFontSize = CLng(fit("Size"))
 End Function
 ' Keep narrative typography and geometry independent of the general field grid.
 ' Smaller viewports retain every value and explicitly disclose changed wrapping.
-Private Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, ByVal available As Long)
+Public Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, ByVal available As Long, Optional ByVal key As String = "OfficialComments")
     With c
-        .FontName = "Courier New": .FontSize = UXNarrativeFontSize(kind)
+        .FontName = UXNarrativeFont(kind, key): .FontSize = UXNarrativeFontSize(kind, key, Nz(UXSurfacePending(.Name, Forms!frmEditor.Controls(.Name)), ""))
         .FontBold = False: .FontItalic = False: .FontUnderline = False
         .TextFormat = 0: .TextAlign = 1: .LineSpacing = 0
         .LeftMargin = 90: .RightMargin = 90: .TopMargin = 90: .BottomMargin = 90
-        .Width = UXNarrativeWidth(kind)
-        If .Width > available Then .Width = available
-        .Height = UXNarrativeHeight(kind)
+        .Width = UXNarrativeWidth(kind, key)
+        If available > 0 And .Width > available Then .Width = available
+        .Height = UXNarrativeHeight(kind, key)
         .ScrollBars = 2: .EnterKeyBehavior = True
-        .ControlTipText = "Plain text; locked Courier New. Overflow is retained. Verify final wrapping in NAVFIT98A."
+        .ControlTipText = "Plain text in the PDF's font, size and width: it wraps here as it prints. Swift's PDF uses 12 pt, or 10 pt when 12 pt would not fit. Overflow is retained."
     End With
+End Sub
+' Match the font size to what the PDF prints for the pending text (12 or 10 pt).
+Private Sub UXNarrativeSize(ByVal c As Access.Control, ByVal kind As String, ByVal key As String, ByVal fit As Object)
+    If fit Is Nothing Then Exit Sub
+    If fit("Status") <> "Measured" Or fit("Size") <= 0 Then Exit Sub
+    If c.FontSize <> fit("Size") Then c.FontSize = fit("Size")
 End Sub
 'Line fit text, e.g. "14 of 18 lines in NAVFIT98A" (NAVFITFieldFit) or "14 of 17 lines"
 '(PDFFieldFit, Swift's PDF); "" when the field has no print box.
@@ -44,6 +68,10 @@ Public Function UXNarrativeFitText(ByVal fit As Object, Optional ByVal navfit As
         Case "Unavailable": UXNarrativeFitText = "Line count unavailable (no printer)"
         Case "Measured"
             UXNarrativeFitText = fit("Lines") & " of " & fit("Capacity") & " lines" & IIf(navfit, " in NAVFIT98A", "")
+            'Swift's PDF prints comments at 12 pt, or 10 pt when they do not fit at 12.
+            If Not navfit And fit.Exists("Size") Then
+                If fit("Size") > 0 Then UXNarrativeFitText = UXNarrativeFitText & " at " & fit("Size") & " pt"
+            End If
             If fit("Overflow") > 0 Then
                 If navfit Then
                     UXNarrativeFitText = UXNarrativeFitText & ": " & fit("Overflow") & IIf(fit("Overflow") = 1, " line", " lines") & " over its limit"
@@ -77,6 +105,14 @@ Public Function UXNarrativeStatus() As Boolean
     If narrativeFit Is Nothing Or narrativeKey <> kind & "|" & text Then
         Set narrativeFit = NAVFITFieldFit(kind, "OfficialComments", text)
         Set narrativePrint = PDFFieldFit(kind, "OfficialComments", text): narrativeKey = kind & "|" & text
+    End If
+    UXNarrativeSize f!txtOfficialComments, kind, "OfficialComments", narrativePrint
+    'Block 44 follows the same 12 or 10 pt print size on an EVAL.
+    If kind = "EVAL" And f!txtQualifications.Visible Then
+        Dim block44 As String
+        block44 = Nz(UXSurfacePending("txtQualifications", Forms!frmEditor!txtQualifications), "")
+        If block44Print Is Nothing Or block44Key <> block44 Then Set block44Print = PDFFieldFit(kind, "Qualifications", block44): block44Key = block44
+        UXNarrativeSize f!txtQualifications, kind, "Qualifications", block44Print
     End If
     caption = UXNarrativeFitText(narrativeFit)
     If caption <> "" Then caption = caption & " | "
@@ -519,14 +555,16 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
                 End With
             End If
             If multi Then c.Height = 2600
-            If key = "OfficialComments" Then UXNarrativeLayout c, kind, usableWidth
+            If key = "OfficialComments" Or (key = "Qualifications" And applicable) Then UXNarrativeLayout c, kind, usableWidth, CStr(key)
             Set c = f.Controls("err" & key): c.Left = x: c.Top = top + IIf(flag, 300, 700): c.Width = fieldWidth: c.Height = 250: c.Visible = True
             If Not applicable Then c.Caption = "Not used on this report type; stored value retained." Else UXSurfaceValidate key
             If multi Then c.Top = top + 2960
             If key = "OfficialComments" Then c.Top = f!txtOfficialComments.Top + f!txtOfficialComments.Height + 40
+            If key = "Qualifications" And applicable Then c.Top = f!txtQualifications.Top + f!txtQualifications.Height + 40
             If multi Then
                 rowHeight = 3240
                 If key = "OfficialComments" Then rowHeight = f!txtOfficialComments.Height + 640
+                If key = "Qualifications" And applicable Then rowHeight = f!txtQualifications.Height + 640
             ElseIf flag Then
                 If rowHeight < 380 Then rowHeight = 380
             Else

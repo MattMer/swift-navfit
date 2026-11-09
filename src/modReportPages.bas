@@ -283,9 +283,10 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
     c.EnterKeyBehavior = True: c.ScrollBars = 2
     c.ControlTipText = UXFieldCaption("Trait" & Mid$(key, 6, 2), kind) & " / authored performance comment " & Right$(key, 1)
    End If
+   'Comments and block 44 wrap as Swift's PDF prints them: its font, size, width and height.
+   If key = "Qualifications" And UXFieldApplies(key, kind) Then UXNarrativeLayout c, kind, 0, key
    If key = "OfficialComments" Then
-    c.FontName = "Courier New": c.FontSize = UXNarrativeFontSize(kind): c.TextFormat = 0: c.Width = UXNarrativeWidth(kind)
-    c.LeftMargin = 90: c.RightMargin = 90: c.TopMargin = 90: c.BottomMargin = 90: c.ScrollBars = 2
+    UXNarrativeLayout c, kind, 0
     Place f, "uxNarrativeCount", c.Left, c.Top + c.Height + 260, 11400, 400
     Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: f!cmdSnippets.Enabled = Not locked
     Place f, "cmdSpelling", 3500, c.Top + c.Height + 700, 2400, 400: f!cmdSpelling.Enabled = Not locked
