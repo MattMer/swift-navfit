@@ -165,7 +165,7 @@ Public Function UXSpellKey(ByVal c As Access.Control) As String
     If c Is Nothing Then Exit Function
     If c.Parent.Name <> "frmUXEditorFields" Or Left$(c.Tag, 5) <> "SURF:" Then Exit Function
     key = Mid$(c.Tag, 6)
-    If key = "OfficialComments" Or key = "CommandEmployment" Or key = "DutyDescription" Or key Like "Trait3#Comment#" Then UXSpellKey = key
+    If key = "OfficialComments" Or key = "CommandEmployment" Or key = "DutyDescription" Or key = "Qualifications" Or key Like "Trait3#Comment#" Then UXSpellKey = key
 End Function
 ' Enter the text the spelling dialog left in the field as if typed: pending buffer, inline
 ' validation and recovery follow UXSurfaceSetValue. Unchanged text changes nothing.

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 45,
+  "SchemaVersion": 46,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",

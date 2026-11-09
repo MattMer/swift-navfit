@@ -3823,6 +3823,36 @@ Begin Form
                 End
                 Begin TextBox
                     Visible = NotDefault
+                    EnterKeyBehavior = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =4999
+                    Top =4250
+                    Width =8058
+                    Height =2200
+                    FontSize =10
+                    TabIndex =176
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtQualifications"
+                    AfterUpdate ="=UXRefreshEditor()"
+                    FontName ="Segoe UI"
+                    OnChange ="=UXLiveTyped()"
+                    Tag ="BUFFER"
+
+                    LayoutCachedLeft =4999
+                    LayoutCachedTop =4250
+                    LayoutCachedWidth =13057
+                    LayoutCachedHeight =6450
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    Visible = NotDefault
                     ScrollBars =2
                     OverlapFlags =255
                     TextFontFamily =34
@@ -6753,6 +6783,27 @@ Begin Form
                     ForeColor =4205854
                     Name ="uxLabelTrait39Comment3"
                     Caption ="39. Performance comment 3"
+                    FontName ="Segoe UI"
+                    Tag ="BUFFER"
+                    LayoutCachedLeft =4999
+                    LayoutCachedTop =3900
+                    LayoutCachedWidth =8870
+                    LayoutCachedHeight =4220
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    Left =4999
+                    Top =3900
+                    Width =3871
+                    Height =320
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxLabelQualifications"
+                    Caption ="44. Qualifications/Achievements"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =4999

@@ -8,15 +8,15 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Dim tables As Variant, n As Variant, i As Long, ver As Long, sql As String
     Dim names As String, vals As String, trans As Boolean, message As String, stage As String, sourceSQL As String, temporaryQuery As String
     Dim fieldName As String, deferred As Variant, relationPair As Variant, copyStarted As Single, verifyStarted As Single
-    Dim table As DAO.TableDef, known As Boolean, targetVersion As Long, copiedRows As Long, checkedRows As Long, committed As Boolean
+    Dim table As DAO.TableDef, known As Boolean, targetVersion As Long, copiedRows As Long, checkedRows As Long, committed As Boolean, restored As Long
     On Error GoTo Failed
     Set reader = DBEngine.CreateWorkspace("SwiftRead", "admin", "", dbUseJet)
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 45 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
+    If ver < 1 Or ver > 46 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion < 21 Or targetVersion > 45 Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through 45."
+    If targetVersion < 21 Or targetVersion > 46 Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through 46."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
@@ -193,6 +193,12 @@ NextCheck:
     If targetVersion >= 22 And ver < 29 Then Call MigrateLegacyReportNotes
     If targetVersion >= 23 And ver < 23 Then Call MigrateDirectoryCompatibility()
     If targetVersion >= 26 Then Call MigrateReportMessages
+    'Schema 46 adds EVAL block 44. Before audit history so its events are audited.
+    If targetVersion >= 46 And ver < 46 And ver >= 4 Then
+        stage = "Restore block 44"
+        If showProgress Then Application.Run "WorkspaceImportProgress", "Restoring EVAL block 44 from NAVFIT98A imports..."
+        restored = MigrateQualifications()
+    End If
     If targetVersion >= 29 Then MigrateAuditHistory
     If Len(expectedHash) > 0 Then
         If showProgress Then Application.Run "WorkspaceImportProgress", "All copied fields verified. Checking source is unchanged..."
@@ -204,6 +210,7 @@ NextCheck:
     ResetActiveContributor
     UXLoadContext
     MigrateWorkspace = "PASS: all original rows and fields verified; schema " & ver & " to " & targetVersion
+    If restored > 0 Then MigrateWorkspace = MigrateWorkspace & "; block 44 restored on " & restored & IIf(restored = 1, " report", " reports") & " from NAVFIT98A imports"
     Exit Function
 Failed:
     Dim swiftPrimary As Object
@@ -316,6 +323,49 @@ Private Function MigrationDifference(ByVal field As DAO.Field) As String
             Err.Raise vbObjectError + 312, "modMigration.MigrationDifference", "Unsupported verification field type: " & field.name & " (" & field.Type & ")"
     End Select
     MigrationDifference = "((" & a & " Is Null)<>(" & b & " Is Null) OR " & compare & ")"
+End Function
+
+'Schema 46 adds EVAL block 44 (Qualifications). Each NAVFIT98A full import kept the
+'native Qualifications column in ImportRawValue (read with NativeReportMemo). For an EVAL whose latest active full
+'import carried text, add that text to the import's revision and each later one that
+'does not record the field, then to the report cache when its head is among them.
+'Disposed revisions, earlier revisions and recorded values are left alone. A report
+'event records the restore. Returns the number of reports restored.
+Public Function MigrateQualifications() As Long
+    Dim db As DAO.Database, reports As DAO.Recordset, raw As DAO.Recordset, revisions As DAO.Recordset, values As DAO.Recordset, e As DAO.Recordset
+    Dim receipt As Variant, text As String, head As Long, headRestored As Boolean, author As Long, applied As Long
+    Set db = CurrentDb
+    Set reports = db.OpenRecordset("SELECT ReportID FROM Report WHERE FormKind='EVAL' ORDER BY ReportID", dbOpenSnapshot)
+    Do While Not reports.EOF
+        receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reports!ReportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
+        If Not IsNull(receipt) Then
+            text = "": applied = 0
+            text = Nz(NativeReportMemo(CLng(receipt), "Qualifications"), "")
+            Set raw = db.OpenRecordset("SELECT AppliedRevisionID,AuthorProfileID FROM ImportReceipt WHERE ImportReceiptID=" & CLng(receipt), dbOpenSnapshot)
+            applied = Nz(raw!AppliedRevisionID, 0): author = raw!AuthorProfileID
+            raw.Close
+            If Len(Trim$(text)) > 0 And applied > 0 Then
+                head = ReportHeadRevision(reports!ReportID): headRestored = False
+                Set revisions = db.OpenRecordset("SELECT RevisionID FROM ReportRevision WHERE ReportID=" & reports!ReportID & " AND RevisionID>=" & applied & " AND Not Nz(ValuesDisposed,False) AND RevisionID Not In (SELECT RevisionID FROM RevisionValue WHERE FieldKey='Qualifications') ORDER BY RevisionID", dbOpenSnapshot)
+                If Not revisions.EOF Then
+                    Set values = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
+                    Do While Not revisions.EOF
+                        values.AddNew: values!RevisionID = revisions!RevisionID: values!FieldKey = "Qualifications": values!ValueText = text: values!IsNullValue = False: values.Update
+                        If revisions!RevisionID = head Then headRestored = True
+                        revisions.MoveNext
+                    Loop
+                    values.Close
+                    If headRestored Then db.Execute "UPDATE Report SET Qualifications=" & QuoteSQL(text) & " WHERE ReportID=" & reports!ReportID, dbFailOnError
+                    Set e = db.OpenRecordset("ReportEvent", dbOpenDynaset)
+                    e.AddNew: e!ReportID = reports!ReportID: e!AuthorProfileID = author: e!EventAt = Now(): e!EventKind = "Block 44 restored from NAVFIT98A": e.Update: e.Close
+                    MigrateQualifications = MigrateQualifications + 1
+                End If
+                revisions.Close
+            End If
+        End If
+        reports.MoveNext
+    Loop
+    reports.Close
 End Function
 
 Private Function IsMajorTable(ByVal name As String) As Boolean

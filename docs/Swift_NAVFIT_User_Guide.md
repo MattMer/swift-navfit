@@ -310,9 +310,17 @@ Below the comments box, the line meter shows how many lines the comments take wh
 
 The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF, which prints extra lines on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
 
+### Block 44, qualifications and achievements (EVAL)
+
+An EVAL's Back Page has block 44 between the comments and the promotion recommendation: courses and credit hours, degrees or certificates, qualifications attained, personal awards and community involvement during the period (BUPERSINST 1610.10, EVAL block 44). FITREPs and CHIEFEVALs have no block 44; put qualifications in their comments. Block 44 is personal to each report, so it is not a group default.
+
+The printed box holds about three lines. Longer text continues on an added page of Swift's PDF, and Validation lists an **Information** finding, *Block 44 is longer than its printed box*. NAVFIT98A's own block 44 limit is not measured; check the final print in NAVFIT98A.
+
+NAVFIT98A imports and exports carry block 44 (its *Qualifications* column), and Swift reads it from an official EVAL PDF. When you import a workspace from an earlier Swift version, each EVAL that came from a NAVFIT98A import gets its original block 44 text back, and its History shows **Block 44 restored from NAVFIT98A**. Text you already entered is never replaced.
+
 ### Check spelling
 
-Choose **Check spelling** beside the line meter, or press **F7** in any narrative block: the comments, block 28 (command employment), block 29 (primary duties) and, on a CHIEFEVAL, each performance comment. Spell check uses Microsoft Office's own spelling checker on this computer; your text is never sent anywhere. The button checks the narrative block you were last in, or the comments.
+Choose **Check spelling** beside the line meter, or press **F7** in any narrative block: the comments, block 28 (command employment), block 29 (primary duties), block 44 on an EVAL and, on a CHIEFEVAL, each performance comment. Spell check uses Microsoft Office's own spelling checker on this computer; your text is never sent anywhere. The button checks the narrative block you were last in, or the comments.
 
 Corrections you accept become pending edits, like typing: they appear in the line meter and validation, are kept in recovery, and are saved when you choose **Save draft**. On a signed report, Swift first asks whether to reopen it for correction, as it does when you type.
 

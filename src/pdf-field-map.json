@@ -204,6 +204,11 @@
       "target": "SeniorRaterDate",
       "conversion": "date-text",
       "source": "P"
+    },
+    {
+      "target": "Qualifications",
+      "conversion": "text",
+      "source": "BB"
     }
   ],
   "CHIEFEVAL": [

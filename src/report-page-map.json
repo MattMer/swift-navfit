@@ -304,6 +304,11 @@
       "page": 0,
       "block": 28,
       "basis": "Current NAVPERS XFA page subform"
+    },
+    "Qualifications": {
+      "page": 1,
+      "block": 44,
+      "basis": "Current NAVPERS XFA page subform"
     }
   },
   "CHIEFEVAL": {

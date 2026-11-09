@@ -1316,6 +1316,21 @@
               "check": false
             },
             {
+              "source": "BB",
+              "target": "Qualifications",
+              "rule": "text",
+              "selector": "",
+              "box": [
+                38.0,
+                541.5,
+                539.5,
+                37.0
+              ],
+              "font": "Courier New",
+              "size": 11,
+              "check": false
+            },
+            {
               "source": "I:anonymous",
               "target": "PromotionRecommendation",
               "rule": "recommendation",
@@ -4692,7 +4707,7 @@
     "MemberDoDID": "Identifier fallback when MemberSSN is blank",
     "structuredNames": "Represented by their formatted public name fields; raw components are not repeated",
     "signatureFields": "No graphic signatures or inferred signature dates are created",
-    "unrecordedOfficialFields": "Blank: EVAL qualifications, CHIEF ranking position/total and block 44 RSCA (no report-scoped saved value; computed PSG RSCA is not substituted), submission timeliness/acceptance, ISIC details and signature-only name/date fields."
+    "unrecordedOfficialFields": "Blank: CHIEF ranking position/total and block 44 RSCA (no report-scoped saved value; computed PSG RSCA is not substituted), submission timeliness/acceptance, ISIC details and signature-only name/date fields."
   },
   "staticTextPolicy": "PDF.js XFA print layer at 300 dpi. EVAL/FITREP static draws top-aligned to prevent tall single-line containers overlapping subsequent draws. CHIEFEVAL retains its original vertical alignment and explicit 10-point checkbox squares centered in the XFA check-button layout. Widget values/buttons are hidden; no user data/signatures are baked into assets."
 }

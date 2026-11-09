@@ -26,6 +26,7 @@ Public Function TestExpandedPDF(ByVal directory As String) As String
         before = DCount("*", "ReportRevision")
         Set p = PreviewStructuredPDF(path): Set values = PDFMappedValues("20", "SSN")
         Check values("CommandEmployment") = "SYNTHETIC BLOCK 28: Training and command achievements.", "Block 28 text lost: " & kind
+        If kind = "EVAL" Then Check values("Qualifications") = "SYNTHETIC BLOCK 44: Completed a fictional course.", "Block 44 text lost" Else Check Not values.Exists("Qualifications"), "Block 44 mapped on " & kind
         Check values.Count = PDFMappingCount(CStr(kind)), "Expanded field count wrong: " & kind & " / " & values.Count
         Check DCount("*", "ReportRevision") = before, "Extraction/preview wrote a revision"
         Check values("UnitUIC") = "12345" And values("ReportingSeniorUIC") = "54321", "UIC fields swapped"

@@ -261,6 +261,13 @@ Public Function TestPDFOutput(ByVal root As String) As String
  again = PDFOutputPlannedText(rows(2), False)
  Check InStr(again, "26MAY16") > 0 And InStr(again, "26NOV07") > 0 And InStr(again, "25JAN31") > 0 And InStr(again, "2026-11-07") = 0, "Report dates not printed as YYMMMDD"
  Check InStr(PDFOutputPlannedText(Nothing, False), "26NOV07") > 0, "Summary letter end date not printed as YYMMMDD"
+ 'Block 44 prints in its EVAL box; text past the box continues on an added page.
+ fields("Qualifications") = "SYNTHETIC BLOCK 44 COURSE"
+ Check InStr(PDFOutputPlannedText(rows(2), False), "SYNTHETIC BLOCK 44 COURSE") > 0 And InStr(PDFOutputPlannedText(rows(2), True), "SYNTHETIC BLOCK 44 COURSE") = 0, "Block 44 not printed in its box"
+ fields("Qualifications") = "BLOCK44 LINE 1" & vbCrLf & "BLOCK44 LINE 2" & vbCrLf & "BLOCK44 LINE 3" & vbCrLf & "BLOCK44 LINE 4" & vbCrLf & "BLOCK44 LINE 5" & vbCrLf & "BLOCK44 LAST"
+ again = PDFOutputPlannedText(rows(2), True)
+ Check InStr(again, "BLOCK44 LAST") > 0 And InStr(again, "BLOCK44 LINE 1") = 0, "Block 44 overflow not continued on an added page: " & again
+ fields("Qualifications") = Null
  again = ""
  'Synthetic renderer stress values do not alter saved reports.
  Set fields = rows(1)("Fields")

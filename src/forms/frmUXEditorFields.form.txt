@@ -6757,6 +6757,76 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin TextBox
+                    EnterKeyBehavior = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =255
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =200
+                    Top =200
+                    Width =3600
+                    Height =450
+                    FontSize =10
+                    TabIndex =106
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtQualifications"
+                    AfterUpdate ="=UXSurfaceEdited(\"Qualifications\")"
+                    FontName ="Segoe UI"
+                    OnChange ="=UXLiveTyped()"
+                    OnKeyUp ="=UXNarrativeCaret(\"Qualifications\")"
+                    OnMouseUp ="=UXNarrativeCaret(\"Qualifications\")"
+                    Tag ="SURF:Qualifications"
+
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =200
+                    LayoutCachedWidth =3800
+                    LayoutCachedHeight =650
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =255
+                            TextFontFamily =34
+                            Left =200
+                            Top =100
+                            Width =3600
+                            Height =450
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="labelQualifications"
+                            Caption ="Qualifications/Achievements"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =200
+                            LayoutCachedTop =100
+                            LayoutCachedWidth =3800
+                            LayoutCachedHeight =550
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin Label
+                    OverlapFlags =223
+                    TextFontFamily =34
+                    Left =200
+                    Top =900
+                    Width =3600
+                    Height =250
+                    FontSize =9
+                    ForeColor =4205854
+                    Name ="errQualifications"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =200
+                    LayoutCachedTop =900
+                    LayoutCachedWidth =3800
+                    LayoutCachedHeight =1150
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
                     Locked = NotDefault
                     ScrollBars =2
                     OverlapFlags =223

@@ -10,8 +10,8 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.54.0"
-Public Const SCHEMA_VERSION As Long = 45
+Public Const APP_VERSION As String = "0.55.0-dev"
+Public Const SCHEMA_VERSION As Long = 46
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -629,7 +629,7 @@ Failed:
 End Function
 
 Public Function LoadSupport() As Boolean
-    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & WorkspaceSizeText(WorkspaceFileBytes()) & vbCrLf & "NAVFIT adapter: 75 mapped saved values; 128 native columns retained; report/group export and guarded return preview; verify files in NAVFIT98A" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
+    Forms!frmSupport!txtDiagnostics = "Swift " & APP_VERSION & vbCrLf & "Schema " & SCHEMA_VERSION & vbCrLf & "Access " & Application.Version & " build " & Application.Build & vbCrLf & "File: " & CurrentProject.FullName & vbCrLf & WorkspaceSizeText(WorkspaceFileBytes()) & vbCrLf & "NAVFIT adapter: 76 EVAL, 75 FITREP and 96 CHIEFEVAL mapped saved values; 128 native columns retained; report/group export and guarded return preview; verify files in NAVFIT98A" & vbCrLf & "Policy validation: limited live report/group diagnostics with source references; not Navy-ready certification" & vbCrLf & "PDF import: limited structured-field mapping with preview and provenance" & vbCrLf & "Timestamps: workstation local time; offset capture not yet implemented" & vbCrLf & "Local profiles and audit records are not strong authentication or tamper-resistant security."
     LoadSupport = True
 End Function
 
@@ -692,10 +692,27 @@ Public Function StoredBlock28(ByVal reportID As Long) As Variant
     r.Close
     receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
     If IsNull(receipt) Then Exit Function
-    nativeID = Nz(DLookup("ExternalReportID", "ImportReceipt", "ImportReceiptID=" & CLng(receipt)), 0)
-    Set r = db.OpenRecordset("SELECT RawValue,IsNullValue FROM ImportRawValue WHERE ImportReceiptID=" & CLng(receipt) & " AND SourceRow=" & nativeID & " AND SourceTable IN ('Reports','RawReports') AND FieldKey='Achievements' AND DAOType=12", dbOpenSnapshot)
+    StoredBlock28 = NativeReportMemo(CLng(receipt), "Achievements")
+End Function
+
+'A retained NAVFIT98A memo for the imported report, or Null. ImportRawValue keeps every
+'row of the source file; SourceRow is the row's position there, so the report's row is
+'the one whose own ReportID is the receipt's ExternalReportID.
+Public Function NativeReportMemo(ByVal receipt As Long, ByVal fieldKey As String) As Variant
+    Dim db As DAO.Database, r As DAO.Recordset, nativeID As Long, sourceTable As String, row As Long
+    NativeReportMemo = Null
+    'Recordsets, not DLookup: workspace import calls this inside its transaction, whose
+    'uncommitted rows domain functions do not see.
+    Set db = CurrentDb
+    Set r = db.OpenRecordset("SELECT ExternalReportID FROM ImportReceipt WHERE ImportReceiptID=" & receipt, dbOpenSnapshot)
+    If Not r.EOF Then nativeID = Nz(r!ExternalReportID, 0)
+    r.Close
+    Set r = db.OpenRecordset("SELECT SourceTable,SourceRow FROM ImportRawValue WHERE ImportReceiptID=" & receipt & " AND SourceTable IN ('Reports','RawReports') AND FieldKey='ReportID' AND Not IsNullValue AND RawValue=" & QuoteSQL(CStr(nativeID)) & " ORDER BY SourceTable DESC", dbOpenSnapshot)
+    If r.EOF Then r.Close: Exit Function
+    sourceTable = r!SourceTable: row = r!SourceRow: r.Close
+    Set r = db.OpenRecordset("SELECT RawValue,IsNullValue FROM ImportRawValue WHERE ImportReceiptID=" & receipt & " AND SourceTable=" & QuoteSQL(sourceTable) & " AND SourceRow=" & row & " AND FieldKey=" & QuoteSQL(fieldKey) & " AND DAOType=12", dbOpenSnapshot)
     If Not r.EOF Then
-        If Not r!IsNullValue Then StoredBlock28 = Nz(r!RawValue.Value, "")
+        If Not r!IsNullValue Then NativeReportMemo = Nz(r!RawValue.Value, "")
     End If
     r.Close
 End Function

@@ -2,7 +2,7 @@
 
 # AV-2 Integrated Dictionary
 
-Report fields from the canonical field catalogue (`src/field-definitions.json`, catalogue version 2). Each field has the same key in the editor, saved revisions, recovery, NAVFIT98A mapping and PDF mapping. Terms such as ITA, PSG RSCA and stale are defined in the [user guide glossary](../../Swift_NAVFIT_User_Guide.md#192-glossary); tables are described in [DIV-3](DIV-3.md).
+Report fields from the canonical field catalogue (`src/field-definitions.json`, catalogue version 3). Each field has the same key in the editor, saved revisions, recovery, NAVFIT98A mapping and PDF mapping. Terms such as ITA, PSG RSCA and stale are defined in the [user guide glossary](../../Swift_NAVFIT_User_Guide.md#192-glossary); tables are described in [DIV-3](DIV-3.md).
 
 | Key | Label | Block | Storage | Choices |
 | --- | --- | --- | --- | --- |
@@ -106,3 +106,4 @@ Report fields from the canonical field catalogue (`src/field-definitions.json`, 
 | Trait39Comment1 | Performance comment 1 | 39 | LONGTEXT |  |
 | Trait39Comment2 | Performance comment 2 | 39 | LONGTEXT |  |
 | Trait39Comment3 | Performance comment 3 | 39 | LONGTEXT |  |
+| Qualifications | Qualifications/Achievements | - | LONGTEXT |  |

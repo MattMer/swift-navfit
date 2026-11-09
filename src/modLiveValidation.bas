@@ -223,6 +223,7 @@ End Function
 Private Function VNarrativeKeys(ByVal kind As String) As Collection
     Dim keys As New Collection, trait As Long, part As Long
     keys.Add "CommandEmployment": keys.Add "DutyDescription": keys.Add "OfficialComments"
+    If kind = "EVAL" Then keys.Add "Qualifications"
     If kind = "CHIEFEVAL" Then
         For trait = 33 To 39: For part = 1 To 3: keys.Add "Trait" & trait & "Comment" & part: Next: Next
     End If
@@ -235,6 +236,11 @@ Private Sub VNarrativeFit(ByVal findings As Collection, ByVal f As Object, ByVal
             If Len(Nz(f(key), "")) > 0 Then
                 Set fit = NAVFITFieldFit(kind, CStr(key), Nz(f(key), ""))
                 If fit("Overflow") > 0 Then VAdd findings, f, id, CStr(key), "Information", "APP-NARRATIVE-FIT", "Narrative is longer than NAVFIT98A's block: " & UXNarrativeFitText(fit) & ". NAVFIT98A warns that text past " & fit("Capacity") & IIf(fit("Capacity") = 1, " line", " lines") & " will be truncated when printed. Saving, Swift PDF output and NAVFIT98A export are not affected."
+                'Block 44's NAVFIT98A print box is not measured; report Swift's printed box.
+                If key = "Qualifications" Then
+                    Set fit = PDFFieldFit(kind, CStr(key), Nz(f(key), ""))
+                    If fit("Overflow") > 0 Then VAdd findings, f, id, CStr(key), "Information", "APP-BLOCK44-FIT", "Block 44 is longer than its printed box: " & UXNarrativeFitText(fit, False) & ". Swift's PDF prints the rest on an added page. Saving and NAVFIT98A export are not affected."
+                End If
             End If
         End If
     Next

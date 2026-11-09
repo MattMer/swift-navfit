@@ -34,7 +34,8 @@ def create(output):
                 'BilletSubcategory':'SPECIAL01', 'PromotionStatus':'REGULAR',
                 'PromotionRecommendation':'Must Promote', 'ReportingSeniorAddress1':'123 TEST ROAD',
                 'ReportingSeniorAddress2':'SUITE 2', 'ReportingSeniorPhone':'0000000000', 'ReportingSeniorDSN':'0000000',
-                'RaterName':'EXAMPLE, R', 'SeniorRaterName':'EXAMPLE, S'}
+                'RaterName':'EXAMPLE, R', 'SeniorRaterName':'EXAMPLE, S',
+                'Qualifications':'SYNTHETIC BLOCK 44: Completed a fictional course.'}
             for block in range(33, 40):
                 for entry in range(1, 4):
                     values[f'Trait{block}Comment{entry}'] = f'SYNTHETIC PDF COMMENT {block}.{entry}'

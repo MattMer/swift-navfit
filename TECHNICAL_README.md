@@ -40,12 +40,12 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.54.0 (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 45 |
-| Imports accepted | Workspaces of schema 1 to 45, into a target of schema 21 to 45 |
+| Application version | 0.55.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Schema version | 46 |
+| Imports accepted | Workspaces of schema 1 to 46, into a target of schema 21 to 46 |
 | Tables / enforced relationships | 80 / 169 |
 | VBA modules / forms | 118 / 72 |
-| Report fields in the catalogue | 100 |
+| Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 125 / 121 |
 <!-- end generated:readme-facts -->
@@ -610,6 +610,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 9 Nov 2026 | Schema 46, field catalogue 3: EVAL block 44 (`Qualifications`) in the editor, NAVFIT98A import/export (`Qualifications` column), PDF import (XFA `BB`) and PDF output. Import of an earlier workspace restores block 44 on EVALs from the retained NAVFIT98A import value (`MigrateQualifications`) and records a report event. Retained NAVFIT98A values are now matched to the imported report by its native `ReportID` (`NativeReportMemo`); the legacy block 28 fallback previously read the row at the position equal to that ID. |
 | 7 Nov 2026 | Release 0.54.0; full release gate and historical schemas 1-45 verified. |
 | 7 Nov 2026 | Development 0.54.0: opening PDF output no longer uses `Shell.Application` (flagged by Navy macro threat detection); Access's `FollowHyperlink` opens it, the output path is shown to copy, and the source check rejects shell launches (section 6.7). |
 | 6 Nov 2026 | Development 0.54.0: archiving ends open reviews; group reopen limited to completion sign-offs; operation journal forward-only transitions; revision-reference coverage test guards working-state deletion (sections 6.3 and 8). |

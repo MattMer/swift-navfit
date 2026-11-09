@@ -166,6 +166,14 @@ Public Function TestNarrativeLineFit() As String
             CheckFit kind, "Trait33Comment1", "Short comment", 1, 0, False, "Chief comment"
             CheckFit kind, "Trait39Comment3", Numbered(3), 3, 1, False, "Chief comment over"
         End If
+        'Block 44 prints only on the EVAL back page (XFA field BB).
+        If kind = "EVAL" Then
+            Set fit = PDFFieldFit(CStr(kind), "Qualifications", Numbered(10))
+            Check fit("Status") = "Measured" And fit("Capacity") >= 2 And fit("Capacity") <= 3 And fit("Overflow") = 10 - fit("Capacity"), "EVAL block 44 fit " & fit("Capacity")
+            CheckFit kind, "Qualifications", "Synthetic qualification", 1, 0, False, "Block 44 short"
+        Else
+            Check PDFFieldFit(CStr(kind), "Qualifications", "x")("Status") = "None", kind & ": block 44 has a print box"
+        End If
         Check PDFFieldFit("UNKNOWN", "OfficialComments", "x")("Status") = "None", "Unknown report type"
         stage = kind & " finding"
         limit = IIf(kind = "CHIEFEVAL", 6, 18)
@@ -190,6 +198,16 @@ Public Function TestNarrativeLineFit() As String
         For Each item In ValidateLiveFields(fields, id)
             Check item("Code") <> "APP-NARRATIVE-FIT", kind & ": a fitting narrative has a finding"
         Next
+        'Block 44 reports Swift's printed box on EVALs and nothing on other types.
+        fields("Qualifications") = Numbered(6): found = False
+        For Each item In ValidateLiveFields(fields, id)
+            If item("Code") = "APP-BLOCK44-FIT" Then
+                Check kind = "EVAL" And item("Key") = "Qualifications" And item("Severity") = "Information" And InStr(item("Message"), "continue on an added page") > 0, kind & ": block 44 finding " & item("Message")
+                found = True
+            End If
+        Next
+        Check found = (kind = "EVAL"), kind & ": block 44 overflow finding"
+        fields("Qualifications") = Null
         ' P02: a starter placeholder left in a narrative is information only.
         fields("DutyDescription") = "Led [TEAM/SCOPE] of 12, achieving [MEASURABLE RESULT]."
         found = False
@@ -301,6 +319,7 @@ Public Function TestNarrativeSpelling() As String
         Check UXSpellKey(surface.Controls(UXFieldControl("OfficialName"))) = "", kind & ": name field covered"
         Check UXSpellKey(Nothing) = "", "No control"
         If kind = "CHIEFEVAL" Then Check UXSpellKey(surface.Controls(UXFieldControl("Trait36Comment2"))) = "Trait36Comment2", "Chief comment not covered"
+        Check UXSpellKey(surface.Controls(UXFieldControl("Qualifications"))) = "Qualifications", kind & ": block 44 not covered"
         stage = kind & " unchanged text"
         Set c = surface!txtOfficialComments
         c.SetFocus

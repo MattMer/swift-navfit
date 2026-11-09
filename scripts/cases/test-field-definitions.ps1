@@ -5,7 +5,7 @@ $catalogue=Get-Content (Join-Path $root 'src/field-definitions.json') -Raw|Conve
 $fields=@($catalogue.fields|Sort-Object ordinal)
 $checks=0
 function Check([bool]$ok,[string]$message){if(-not $ok){throw $message};$script:checks++}
-Check ($catalogue.catalogueVersion -eq 2) 'Unsupported catalogue version'
+Check ($catalogue.catalogueVersion -eq 3) 'Unsupported catalogue version'
 Check (@($fields.key|Sort-Object -Unique).Count -eq $fields.Count) 'Duplicate field keys'
 Check (@($fields.control|Sort-Object -Unique).Count -eq $fields.Count) 'Duplicate editor controls'
 for($i=0;$i -lt $fields.Count;$i++){

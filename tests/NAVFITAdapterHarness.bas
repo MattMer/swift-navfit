@@ -7,11 +7,12 @@ Private Sub Check(ByVal condition As Boolean, ByVal message As String)
     If Not condition Then Err.Raise vbObjectError + 5200, , message
 End Sub
 Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath As String) As String
+    Dim blockSeen As Boolean
     Dim source As DAO.Database, target As DAO.Database, r As DAO.Recordset, t As DAO.Recordset, values As Object, row As Variant, parts As Variant, k As Variant, n As Long, id As Long, incoming As Object, saved As Object, key As Variant
     On Error GoTo Failed
     checks = 0
     For Each k In Array("EVAL", "CHIEFEVAL", "FITREP")
-        Check NAVFITMapRows(CStr(k)).Count = IIf(k = "CHIEFEVAL", 96, 75), "Incomplete saved-field coverage"
+        Check NAVFITMapRows(CStr(k)).Count = IIf(k = "CHIEFEVAL", 96, IIf(k = "EVAL", 76, 75)), "Incomplete saved-field coverage"
         For n = 0 To 5
             Check NAVFITEncode(NAVFITDecode(n, "trait"), "trait") = n, "Trait code round trip"
             Check NAVFITEncode(NAVFITDecode(n, "promotion"), "promotion") = n, "Promotion code round trip"
@@ -54,8 +55,15 @@ Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath A
             If key <> "SourceHash" Then Check SameFieldValue(incoming(key), saved(key)), "Imported field mismatch " & key
         Next
         Check DCount("*", "ImportReceipt", "ReportID=" & id & " AND AdapterVersion='navfit-full-v1/local-CStr'") = 1, "Full receipt missing"
+        'Block 44 (Qualifications) is EVAL-only; other types keep it as a retained native value.
+        If saved("FormKind") = "EVAL" Then
+            Check InStr(Nz(saved("Qualifications"), ""), "SYNTHETIC EVAL Qualifications" & vbCrLf) = 1, "EVAL block 44 not imported": blockSeen = True
+        Else
+            Check IsNull(saved("Qualifications")), saved("FormKind") & " imported block 44"
+        End If
     Next
     Call CloseReviewFile
+    Check blockSeen, "No EVAL import checked block 44"
     TestNAVFITAdapter = "PASS: " & checks & " NAVFIT adapter assertions": Exit Function
 Failed:
     TestNAVFITAdapter = "FAIL: " & Err.Number & " " & Err.Description

@@ -1,11 +1,22 @@
 # Swift NAVFIT priority backlog
 
-Updated 7 November 2026 (0.54.0, schema 45). This lists open work only. Finished
+Updated 9 November 2026 (0.55.0-dev, schema 46). This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
 done, only the remainder is listed. Product invariants and release gates are in
 [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+## EVAL block 44 (9 Nov 2026)
+
+**Implemented in development** (0.55.0-dev, schema 46, field catalogue 3): EVAL
+block 44 (Qualifications/Achievements) on the Back Page, NAVFIT98A import/export
+(`Qualifications`), PDF import (XFA `BB`), PDF output with an added page for
+overflow, and restore from retained NAVFIT98A imports when an earlier workspace
+is imported. **Still open:** NAVFIT98A's own block 44 print box and limit are
+not measured (no line meter, only Swift's PDF fit finding); confirm the printed
+fit of `BB` on paper; capture `tests/historical-schemas/schema-46.sql` before
+the next schema change.
 
 ## Planned features (user decisions, 1 Nov 2026)
 

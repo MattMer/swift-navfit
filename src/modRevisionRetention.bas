@@ -9,7 +9,7 @@ Public Function RevisionRetentionKind(ByVal revision As Long) As String
 End Function
 
 Public Function RetainedNarrativeKey(ByVal key As String, ByVal kind As String) As Boolean
-    RetainedNarrativeKey = (key = "OfficialComments" Or key = "CommandEmployment" Or key = "DutyDescription")
+    RetainedNarrativeKey = (key = "OfficialComments" Or key = "CommandEmployment" Or key = "DutyDescription" Or key = "Qualifications")
     If kind = "CHIEFEVAL" And key Like "Trait##Comment#" Then RetainedNarrativeKey = True
 End Function
 
@@ -83,7 +83,7 @@ End Sub
 Public Function HistoryRevisionPredicate(ByVal alias As String) As String
     Dim id As String, narrative As String
     id = alias & ".RevisionID"
-    narrative = "FieldKey In ('OfficialComments','CommandEmployment','DutyDescription') Or FieldKey Like 'Trait##Comment#'"
+    narrative = "FieldKey In ('OfficialComments','CommandEmployment','DutyDescription','Qualifications') Or FieldKey Like 'Trait##Comment#'"
     HistoryRevisionPredicate = "(" & id & " In (SELECT RevisionID FROM RevisionRetention WHERE RetentionKind In ('Checkpoint','Narrative')) OR (" & id & " Not In (SELECT RevisionID FROM RevisionRetention) AND (" & alias & ".ParentRevisionID Is Null"
     HistoryRevisionPredicate = HistoryRevisionPredicate & " OR " & id & " In (SELECT RevisionID FROM RevisionChange WHERE " & narrative & ")"
     HistoryRevisionPredicate = HistoryRevisionPredicate & " OR " & id & " In (SELECT RevisionID FROM RouteRunEvent) OR " & id & " In (SELECT RevisionID FROM RouteRun)"

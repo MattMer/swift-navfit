@@ -95,7 +95,8 @@ Public Function TestUXAdminFeedback() As String
     Check Not RSSeniorDirty(), "Blank directory has phantom pending values"
     DoCmd.Close acForm, "frmUXSeniorEditor", acSaveNo
     CheckLegacyBlock28
-    TestUXAdminFeedback = "PASS: " & checks & " admin, Block 28, comparison and snippet assertions": Exit Function
+    CheckBlock44Backfill
+    TestUXAdminFeedback = "PASS: " & checks & " admin, Block 28, Block 44 backfill, comparison and snippet assertions": Exit Function
 Failed:
     TestUXAdminFeedback = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function
@@ -111,7 +112,14 @@ Private Sub CheckLegacyBlock28()
     Set r = db.OpenRecordset("ImportRawValue", dbOpenDynaset)
     r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Folders": r!SourceRow = 42
     r!FieldOrdinal = 1: r!FieldKey = "Achievements": r!DAOType = 12: r!RawValue = "Wrong folder default": r!IsNullValue = False: r.Update
-    r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 42
+    'SourceRow is the row's position in the source file; each row's ReportID identifies it.
+    r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 0
+    r!FieldOrdinal = 0: r!FieldKey = "ReportID": r!DAOType = 4: r!RawValue = "41": r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 0
+    r!FieldOrdinal = 1: r!FieldKey = "Achievements": r!DAOType = 12: r!RawValue = "Another report's achievements": r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 1
+    r!FieldOrdinal = 0: r!FieldKey = "ReportID": r!DAOType = 4: r!RawValue = "42": r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = receipt: r!SourceTable = "Reports": r!SourceRow = 1
     r!FieldOrdinal = 1: r!FieldKey = "Achievements": r!DAOType = 12: r!RawValue = "Original native command achievements": r!IsNullValue = False: r.Update: r.Close
     'A current first revision records Block 28 in its snapshot, so the native value is not projected.
     Check IsNull(StoredBlock28(id)), "New report projected retained native Block 28"
@@ -138,6 +146,79 @@ Private Sub CheckLegacyBlock28()
     Set values = CreateObject("Scripting.Dictionary"): values.Add "Title", "Legacy clear retained"
     Call CommitSavedFields(id, CurrentRevision(id), values, "Routine save after inherited clear")
     Check IsNull(StoredBlock28(id)), "Routine save revived cleared native Block 28"
+End Sub
+'Schema 46 restores EVAL block 44 from the retained NAVFIT98A Qualifications column.
+Private Function SyntheticNavfitReceipt(ByVal id As Long, ByVal nativeID As Long, ByVal applied As Long, ByVal text As String, Optional ByVal undone As Boolean = False) As Long
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("ImportReceipt", dbOpenDynaset)
+    r.AddNew: r!ReceiptGuid = NewIdentity(): r!SourceHash = String$(64, "0"): r!ExternalReportID = nativeID: r!ReportID = id
+    r!AuthorProfileID = MajorAuthor(): r!ImportedAt = Now(): r!AdapterVersion = "navfit-full-v1/local-CStr": r!IsUndone = undone: r!AppliedRevisionID = applied
+    r.Update: r.Bookmark = r.LastModified: SyntheticNavfitReceipt = r!ImportReceiptID: r.Close
+    Set r = CurrentDb.OpenRecordset("ImportRawValue", dbOpenDynaset)
+    r.AddNew: r!ImportReceiptID = SyntheticNavfitReceipt: r!SourceTable = "Folders": r!SourceRow = nativeID
+    r!FieldOrdinal = 1: r!FieldKey = "Qualifications": r!DAOType = 12: r!RawValue = "Wrong folder default": r!IsNullValue = False: r.Update
+    'Row 0 is another report in the same NAVFIT98A file; row 1 is this one.
+    r.AddNew: r!ImportReceiptID = SyntheticNavfitReceipt: r!SourceTable = "Reports": r!SourceRow = 0
+    r!FieldOrdinal = 0: r!FieldKey = "ReportID": r!DAOType = 4: r!RawValue = CStr(nativeID + 100): r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = SyntheticNavfitReceipt: r!SourceTable = "Reports": r!SourceRow = 0
+    r!FieldOrdinal = 1: r!FieldKey = "Qualifications": r!DAOType = 12: r!RawValue = "Another report's qualifications": r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = SyntheticNavfitReceipt: r!SourceTable = "Reports": r!SourceRow = 1
+    r!FieldOrdinal = 0: r!FieldKey = "ReportID": r!DAOType = 4: r!RawValue = CStr(nativeID): r!IsNullValue = False: r.Update
+    r.AddNew: r!ImportReceiptID = SyntheticNavfitReceipt: r!SourceTable = "Reports": r!SourceRow = 1
+    r!FieldOrdinal = 1: r!FieldKey = "Qualifications": r!DAOType = 12: r!RawValue = text: r!IsNullValue = False: r.Update: r.Close
+End Function
+Private Sub MakePreBlock44(ByVal id As Long)
+    'Before schema 46 no snapshot recorded block 44 and the cache column was empty.
+    CurrentDb.Execute "DELETE FROM RevisionValue WHERE FieldKey='Qualifications' AND RevisionID In (SELECT RevisionID FROM ReportRevision WHERE ReportID=" & id & ")", dbFailOnError
+    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=2 WHERE ReportID=" & id, dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET Qualifications=Null WHERE ReportID=" & id, dbFailOnError
+End Sub
+Private Sub CheckBlock44Backfill()
+    Dim id As Long, before As Long, applied As Long, fitrep As Long, undone As Long, recorded As Long, values As Object, text As String, restoredCount As Long
+    text = "Synthetic qualification: completed a fictional course." & vbCrLf & "Synthetic award."
+    'Revision 1 is created before the import, so it predates the imported text.
+    id = CommitDraft(0, "EVAL", "Block 44 source", "Synthetic block 44 member", Null, Null, "")
+    before = CurrentRevision(id)
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "Title", "Block 44 imported"
+    Call CommitSavedFields(id, before, values, "Synthetic NAVFIT import")
+    applied = CurrentRevision(id)
+    Call SyntheticNavfitReceipt(id, 44, applied, text)
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "DraftNotes", "Later local edit"
+    Call CommitSavedFields(id, applied, values, "Later edit")
+    MakePreBlock44 id
+    'Other report types never carry block 44, an undone import is not used and a
+    'recorded value (even an empty one) is never replaced.
+    fitrep = CommitDraft(0, "FITREP", "Block 44 FITREP", "Synthetic officer", Null, Null, "")
+    Call SyntheticNavfitReceipt(fitrep, 45, CurrentRevision(fitrep), "FITREP qualifications text")
+    MakePreBlock44 fitrep
+    undone = CommitDraft(0, "EVAL", "Block 44 undone", "Synthetic undone member", Null, Null, "")
+    Call SyntheticNavfitReceipt(undone, 46, CurrentRevision(undone), "Undone import text", True)
+    MakePreBlock44 undone
+    recorded = CommitDraft(0, "EVAL", "Block 44 recorded", "Synthetic recorded member", Null, Null, "")
+    Call SyntheticNavfitReceipt(recorded, 47, CurrentRevision(recorded), "Native text never applied")
+    'Workspace import runs the restore inside its transaction.
+    DBEngine.Workspaces(0).BeginTrans
+    restoredCount = MigrateQualifications()
+    DBEngine.Workspaces(0).CommitTrans
+    Check restoredCount >= 1, "Block 44 restored nothing"
+    Check Nz(DLookup("Qualifications", "Report", "ReportID=" & id), "") = text, "Block 44 cache not restored"
+    AssertReportCache id
+    Check SavedFields(id)("Qualifications") = text, "Saved values omit restored block 44"
+    Check DCount("*", "RevisionValue", "FieldKey='Qualifications' AND RevisionID=" & before) = 0, "Revision before the import gained block 44"
+    Check DCount("*", "RevisionValue", "FieldKey='Qualifications' AND RevisionID>=" & applied & " AND RevisionID In (SELECT RevisionID FROM ReportRevision WHERE ReportID=" & id & ")") = DCount("*", "ReportRevision", "ReportID=" & id & " AND RevisionID>=" & applied & " AND Not Nz(ValuesDisposed,False)"), "Import and later revisions not all restored"
+    Check DCount("*", "ReportEvent", "ReportID=" & id & " AND EventKind='Block 44 restored from NAVFIT98A'") = 1, "Restore event missing"
+    Check IsNull(DLookup("Qualifications", "Report", "ReportID=" & fitrep)) And DCount("*", "ReportEvent", "ReportID=" & fitrep & " AND EventKind Like 'Block 44*'") = 0, "FITREP gained block 44"
+    Check IsNull(DLookup("Qualifications", "Report", "ReportID=" & undone)) And DCount("*", "ReportEvent", "ReportID=" & undone & " AND EventKind Like 'Block 44*'") = 0, "Undone import restored block 44"
+    Check IsNull(DLookup("Qualifications", "Report", "ReportID=" & recorded)) And DCount("*", "ReportEvent", "ReportID=" & recorded & " AND EventKind Like 'Block 44*'") = 0, "Recorded block 44 replaced"
+    AssertReportCache fitrep: AssertReportCache undone: AssertReportCache recorded
+    'Running again changes nothing.
+    Call MigrateQualifications
+    Check DCount("*", "ReportEvent", "ReportID=" & id & " AND EventKind Like 'Block 44*'") = 1, "Second restore repeated the event"
+    'The restored value is the report's own from here: a later save keeps it.
+    Set values = CreateObject("Scripting.Dictionary"): values.Add "Title", "Block 44 kept"
+    Call CommitSavedFields(id, CurrentRevision(id), values, "Routine save after restore")
+    Check RevisionFields(CurrentRevision(id))("Qualifications") = text And Nz(DLookup("Qualifications", "Report", "ReportID=" & id), "") = text, "Routine save changed restored block 44"
+    AssertReportCache id
 End Sub
 
 

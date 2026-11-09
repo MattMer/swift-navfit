@@ -14,10 +14,10 @@ try{
    $classification=if($binding.Count){'Mapped saved value'}elseif($f.Name -in @('ReportID','ReportType','Parent','IsValidated')){'Native identity or validation state'}else{'Retained native-only value'}
    $rows+=@{NativeField=$f.Name;DAOType=$f.Type;Size=$f.Size;SwiftFields=@($binding.target);Conversion=@($binding.conversion);ReferencedByNativeLoader=($f.Name.ToLowerInvariant() -in $strings);Classification=$classification}
   }
-  $expected=if($kind -eq 'CHIEFEVAL'){96}else{75}
+  $expected=switch($kind){'CHIEFEVAL'{96}'EVAL'{76}default{75}}
   if($rows.Count -ne 128 -or @($map.$kind).Count -ne $expected){throw ("Unexpected coverage: $kind rows=$($rows.Count) map=$(@($map.$kind).Count)")}
   $result.Forms[$kind]=$rows
  }
 }finally{$db.Close()}
 $result|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $OutputPath -Encoding UTF8
-Write-Output ('Covered 128 native columns; 75 EVAL/FITREP and 96 Chief saved mappings: '+$OutputPath)
+Write-Output ('Covered 128 native columns; 76 EVAL, 75 FITREP and 96 Chief saved mappings: '+$OutputPath)

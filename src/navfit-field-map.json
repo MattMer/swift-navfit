@@ -374,6 +374,11 @@
       "target": "Trait39",
       "conversion": "trait",
       "source": "LEAD"
+    },
+    {
+      "target": "Qualifications",
+      "conversion": "text",
+      "source": "Qualifications"
     }
   ],
   "CHIEFEVAL": [

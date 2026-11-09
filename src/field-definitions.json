@@ -1,5 +1,5 @@
 {
-  "catalogueVersion": 2,
+  "catalogueVersion": 3,
   "fields": [
     {
       "key": "FormKind",
@@ -6818,6 +6818,61 @@
         }
       },
       "recoveryKey": "Trait39Comment3"
+    },
+    {
+      "key": "Qualifications",
+      "label": "Qualifications/Achievements",
+      "section": 5,
+      "block": "",
+      "limit": null,
+      "date": false,
+      "digits": null,
+      "options": null,
+      "multiline": true,
+      "blocks": {
+        "EVAL": "44"
+      },
+      "forms": [
+        "EVAL"
+      ],
+      "ordinal": 100,
+      "control": "txtQualifications",
+      "storageType": "LONGTEXT",
+      "definitionVersion": 3,
+      "bindings": {
+        "EVAL": {
+          "pdf": [
+            {
+              "conversion": "text",
+              "source": "BB",
+              "ordinal": 41
+            }
+          ],
+          "navfit": [
+            {
+              "conversion": "text",
+              "source": "Qualifications",
+              "ordinal": 75
+            }
+          ],
+          "page": {
+            "page": 1,
+            "block": 44,
+            "basis": "Current NAVPERS XFA page subform"
+          }
+        },
+        "CHIEFEVAL": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        },
+        "FITREP": {
+          "pdf": [],
+          "navfit": [],
+          "page": null
+        }
+      },
+      "recoveryKey": "Qualifications"
     }
   ],
   "fixedLayout": {
@@ -7170,7 +7225,7 @@
       ]
     },
     "EVAL:1": {
-      "height": 12084,
+      "height": 13654,
       "fields": [
         {
           "key": "AssignmentRecommendationA",
@@ -7213,9 +7268,17 @@
           "trait": false
         },
         {
-          "key": "PromotionRecommendation",
+          "key": "Qualifications",
           "x": 180,
           "y": 7514,
+          "w": 11600,
+          "h": 1000,
+          "trait": false
+        },
+        {
+          "key": "PromotionRecommendation",
+          "x": 180,
+          "y": 9084,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7223,7 +7286,7 @@
         {
           "key": "RetentionYes",
           "x": 4100,
-          "y": 7514,
+          "y": 9084,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7231,7 +7294,7 @@
         {
           "key": "RetentionNo",
           "x": 8020,
-          "y": 7514,
+          "y": 9084,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7239,7 +7302,7 @@
         {
           "key": "ReportingSeniorAddress1",
           "x": 180,
-          "y": 8444,
+          "y": 10014,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7247,7 +7310,7 @@
         {
           "key": "ReportingSeniorAddress2",
           "x": 4100,
-          "y": 8444,
+          "y": 10014,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7255,7 +7318,7 @@
         {
           "key": "ReportingSeniorCity",
           "x": 8020,
-          "y": 8444,
+          "y": 10014,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7263,7 +7326,7 @@
         {
           "key": "ReportingSeniorState",
           "x": 180,
-          "y": 9374,
+          "y": 10944,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7271,7 +7334,7 @@
         {
           "key": "ReportingSeniorZip",
           "x": 4100,
-          "y": 9374,
+          "y": 10944,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7279,7 +7342,7 @@
         {
           "key": "ReportingSeniorPhone",
           "x": 8020,
-          "y": 9374,
+          "y": 10944,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7287,7 +7350,7 @@
         {
           "key": "ReportingSeniorDSN",
           "x": 180,
-          "y": 10304,
+          "y": 11874,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7295,7 +7358,7 @@
         {
           "key": "SeniorRaterName",
           "x": 4100,
-          "y": 10304,
+          "y": 11874,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7303,7 +7366,7 @@
         {
           "key": "SeniorRaterDate",
           "x": 8020,
-          "y": 10304,
+          "y": 11874,
           "w": 3760,
           "h": 360,
           "trait": false
@@ -7311,7 +7374,7 @@
         {
           "key": "StatementYes",
           "x": 180,
-          "y": 11234,
+          "y": 12804,
           "w": 5720,
           "h": 360,
           "trait": false
@@ -7319,7 +7382,7 @@
         {
           "key": "StatementNo",
           "x": 6060,
-          "y": 11234,
+          "y": 12804,
           "w": 5720,
           "h": 360,
           "trait": false
