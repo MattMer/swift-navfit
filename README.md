@@ -48,7 +48,7 @@ The 45-page user guide covers setup, drafting, notes, validation, summary groups
 - **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
 - **People from the directory:** fill the rater, senior rater and counselor from the member directory, add contributors from it, and remove contributors who leave.
 
-![Overview: recent reports and the Reports due list, showing overdue and upcoming periodic reports and a detachment report, with Create draft, Dismiss and Departures](docs/images/overview-reports-due.png)
+![Overview: recent reports and the Reports due list, showing overdue and upcoming periodic reports and a detachment report, with Create draft, Drafts + group, Departures and Dismiss](docs/images/overview-reports-due.png)
 
 ### Catch problems while drafting
 

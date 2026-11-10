@@ -198,7 +198,7 @@ Each row shows the member, rate, report form, due date and status (overdue, or d
 
 Members with no rank/rate are counted below the list, because no due date can be worked out for them. Swift does not decide whether a report is required; check eligibility against current policy.
 
-![Overview: recent reports and the Reports due list, with Create draft, Dismiss and Departures.](images/overview-reports-due.png)
+![Overview: recent reports and the Reports due list, with Create draft, Drafts + group, Departures and Dismiss.](images/overview-reports-due.png)
 
 ## 3.2 Report workspace map
 
