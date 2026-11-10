@@ -16,6 +16,9 @@ Private Const CACHE_LIMIT As Long = 64
 Private compiled As Boolean
 Private ruleRows() As Variant, ruleIndexByID As Object
 Private groupRule() As Long, groupTerms() As Variant, groupNear() As Variant, groupWithin() As Long, groupUnless() As Variant, groupCount As Long
+Private groupID() As String, groupLabel() As String, groupShown() As String
+'Checks turned off in this workspace (RestrictedCheckOff), by group ID.
+Private checksOff As Object
 Private exceptionsLoaded As Boolean, exceptionTerms As Collection
 Private results As Object, resultOrder As Collection
 Private dismissedReport As Long, dismissed As Object
@@ -39,11 +42,13 @@ Private Sub Compile()
     groupCount = RestrictedMatchCount()
     ReDim groupRule(0 To groupCount - 1): ReDim groupTerms(0 To groupCount - 1): ReDim groupNear(0 To groupCount - 1)
     ReDim groupWithin(0 To groupCount - 1): ReDim groupUnless(0 To groupCount - 1)
+    ReDim groupID(0 To groupCount - 1): ReDim groupLabel(0 To groupCount - 1): ReDim groupShown(0 To groupCount - 1)
     For i = 0 To groupCount - 1
         row = RestrictedMatch(i)
         groupRule(i) = CLng(row(0)): groupWithin(i) = CLng(row(3))
         If ruleRows(groupRule(i))(7) = "marking" Then groupTerms(i) = Split(CStr(row(1)), "~") Else groupTerms(i) = SplitTerms(CStr(row(1)))
         groupNear(i) = SplitTerms(CStr(row(2))): groupUnless(i) = SplitTerms(CStr(row(4)))
+        groupID(i) = CStr(row(5)): groupLabel(i) = CStr(row(6)): groupShown(i) = CStr(row(7))
     Next
     compiled = True
 End Sub
@@ -192,7 +197,7 @@ Private Sub LoadDismissals(ByVal reportID As Long)
 End Sub
 'Forget cached results after exceptions or dismissals change.
 Public Sub RestrictedInvalidate()
-    exceptionsLoaded = False: dismissedReport = -1
+    exceptionsLoaded = False: dismissedReport = -1: Set checksOff = Nothing
     Set results = Nothing: Set resultOrder = Nothing
 End Sub
 Private Function Excepted(ByVal ruleID As String, ByVal span As Variant, ByRef words() As String, ByVal index As Object, ByVal memo As Object) As Boolean
@@ -298,6 +303,7 @@ Private Function BlockMatches(ByVal kind As String, ByVal key As String, ByVal t
     Dim g As Long, row As Variant, t As Long, hit As Variant, near As Variant, ruleID As String, raw As New Collection, span As Variant, text0 As String, blocks As String, item As Variant
     Compile
     If Not exceptionsLoaded Then LoadExceptions: Set results = Nothing
+    If checksOff Is Nothing Then LoadChecksOff: Set results = Nothing
     If results Is Nothing Then Set results = CreateObject("Scripting.Dictionary"): Set resultOrder = New Collection
     cacheKey = kind & "|" & key & "|" & text
     If results.Exists(cacheKey) Then Set BlockMatches = results(cacheKey): Exit Function
@@ -305,7 +311,9 @@ Private Function BlockMatches(ByVal kind As String, ByVal key As String, ByVal t
     words = Tokenize(text, starts, lengths): Set index = WordIndex(words)
     For g = 0 To groupCount - 1
         row = ruleRows(groupRule(g)): ruleID = CStr(row(0)): blocks = CStr(row(8))
-        If Len(blocks) = 0 Or InStr("|" & blocks & "|", "|" & key & "|") > 0 Then
+        If checksOff.Exists(groupID(g)) Then
+            'Turned off in this workspace.
+        ElseIf Len(blocks) = 0 Or InStr("|" & blocks & "|", "|" & key & "|") > 0 Then
             Select Case row(7)
                 Case "marking"
                     Set raw = New Collection: MarkingHits groupTerms(g), text, raw
@@ -387,6 +395,85 @@ Unavailable:
     'A catalogue or workspace problem must not stop the other checks.
     VAdd findings, f, id, "OfficialComments", "Information", "APP-RESTRICTED", "The restricted-content check could not run: " & Err.Description
 End Sub
+
+'--- Checks turned on and off -----------------------------------------------------------
+'Every check (match group) is on unless its ID is in RestrictedCheckOff. Only the current
+'state is kept; turning checks on or off records no history.
+Private Sub LoadChecksOff()
+    Dim r As DAO.Recordset
+    Set checksOff = CreateObject("Scripting.Dictionary")
+    Set r = CurrentDb.OpenRecordset("SELECT GroupID FROM RestrictedCheckOff", dbOpenSnapshot)
+    Do While Not r.EOF: checksOff(CStr(r!GroupID)) = True: r.MoveNext: Loop
+    r.Close
+End Sub
+Private Function CheckIndex(ByVal id As String) As Long
+    Dim g As Long
+    Compile
+    For g = 0 To groupCount - 1
+        If groupID(g) = id Then CheckIndex = g: Exit Function
+    Next
+    Err.Raise vbObjectError + 9854, "modRestrictedContent.CheckIndex", "Unknown content check: " & id
+End Function
+Public Function RestrictedCheckCount() As Long
+    Call Compile: RestrictedCheckCount = groupCount
+End Function
+Public Function RestrictedChecksOffCount() As Long
+    Dim g As Long
+    Compile
+    If checksOff Is Nothing Then LoadChecksOff
+    For g = 0 To groupCount - 1
+        If checksOff.Exists(groupID(g)) Then RestrictedChecksOffCount = RestrictedChecksOffCount + 1
+    Next
+End Function
+Public Function RestrictedCheckIsOn(ByVal id As String) As Boolean
+    Call CheckIndex(id)
+    If checksOff Is Nothing Then LoadChecksOff
+    RestrictedCheckIsOn = Not checksOff.Exists(id)
+End Function
+Public Sub RestrictedSetCheck(ByVal id As String, ByVal turnOn As Boolean)
+    Call CheckIndex(id)
+    If turnOn Then
+        CurrentDb.Execute "DELETE FROM RestrictedCheckOff WHERE GroupID=" & QuoteSQL(id), dbFailOnError
+    ElseIf PersistenceCount("RestrictedCheckOff", "GroupID=" & QuoteSQL(id)) = 0 Then
+        CurrentDb.Execute "INSERT INTO RestrictedCheckOff (GroupID) VALUES (" & QuoteSQL(id) & ")", dbFailOnError
+    End If
+    RestrictedInvalidate
+End Sub
+Public Sub RestrictedSetAllChecks(ByVal turnOn As Boolean)
+    Dim g As Long
+    Compile
+    CurrentDb.Execute "DELETE FROM RestrictedCheckOff", dbFailOnError
+    If Not turnOn Then
+        For g = 0 To groupCount - 1
+            CurrentDb.Execute "INSERT INTO RestrictedCheckOff (GroupID) VALUES (" & QuoteSQL(groupID(g)) & ")", dbFailOnError
+        Next
+    End If
+    RestrictedInvalidate
+End Sub
+'List rows for the Checks page: group ID; On/Off; check; pattern (shortened); why.
+Public Function RestrictedCheckRows() As String
+    Dim g As Long, rows As String, shown As String, row As Variant
+    Compile
+    If checksOff Is Nothing Then LoadChecksOff
+    For g = 0 To groupCount - 1
+        row = ruleRows(groupRule(g))
+        shown = groupShown(g): If Len(shown) > 160 Then shown = Left$(shown, 157) & "..."
+        rows = rows & IIf(rows = "", "", ";") & UXListCell(groupID(g)) & ";" & UXListCell(IIf(checksOff.Exists(groupID(g)), "Off", "On")) & ";" & _
+            UXListCell(Capitalized(CStr(row(1))) & IIf(groupLabel(g) <> CStr(row(1)), " - " & groupLabel(g), "")) & ";" & UXListCell(shown) & ";" & UXListCell(CStr(row(9)))
+    Next
+    RestrictedCheckRows = rows
+End Function
+Private Function Capitalized(ByVal text As String) As String
+    Capitalized = UCase$(Left$(text, 1)) & Mid$(text, 2)
+End Function
+'Full detail for one check: its pattern, why, and the policy citation.
+Public Function RestrictedCheckDetail(ByVal id As String) As String
+    Dim g As Long, row As Variant
+    g = CheckIndex(id): row = ruleRows(groupRule(g))
+    If checksOff Is Nothing Then LoadChecksOff
+    RestrictedCheckDetail = Capitalized(CStr(row(1))) & " - " & groupLabel(g) & IIf(checksOff.Exists(id), " (turned off)", " (on)") & vbCrLf & vbCrLf & _
+        "Pattern: " & groupShown(g) & vbCrLf & vbCrLf & "Why: " & row(9) & vbCrLf & vbCrLf & RestrictedReference(CStr(row(0)))
+End Function
 
 '--- Dismissals and exceptions -----------------------------------------------------------
 Public Function RestrictedDismiss(ByVal reportID As Long, ByVal ruleID As String, ByVal fieldKey As String, ByVal matched As String, ByVal reason As String) As Long

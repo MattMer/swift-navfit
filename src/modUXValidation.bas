@@ -181,7 +181,7 @@ Public Function UXLoadValidation() As Boolean
         If selected > 0 Then f!lstIssues = selected Else f!lstIssues = Null
         UXValidationSelection
     End If
-    f!lblCount.Caption = i & " findings from implemented checks. Coverage is limited; zero findings does not establish Navy readiness."
+    f!lblCount.Caption = i & " findings from implemented checks. Coverage is limited; zero findings does not establish Navy readiness." & IIf(RestrictedChecksOffCount() > 0, " Content checks: " & RestrictedChecksOffCount() & " of " & RestrictedCheckCount() & " turned off.", "")
     f!cmdPrevious.Enabled = pageIndex > 0: f!cmdNext.Enabled = i > (pageIndex + 1) * 50
     f!cmdNext.ControlTipText = "Page " & (pageIndex + 1) & "; 50 findings per page. Full finding and citation appear below."
     UXLoadValidation = True: Exit Function
@@ -259,6 +259,70 @@ Public Function UXRestrictedListLoad() As Boolean
         !cmdRemoveItem.Enabled = False
     End With
     UXRestrictedListLoad = True
+End Function
+'Two pages in one window: allowed phrases and dismissed findings, or the checks themselves.
+Public Function UXRestrictedListPage(ByVal page As Long) As Boolean
+    Dim name As Variant
+    With Forms!frmUXRestrictedList
+        'Access cannot hide the control that has the focus: move it to this page's button.
+        On Error Resume Next
+        If page = 1 Then .cmdPageChecks.SetFocus Else .cmdPageAllowed.SetFocus
+        On Error GoTo 0
+        For Each name In Array("lstItems", "txtPhrase", "txtListReason", "cmdAddPhrase", "cmdRemoveItem")
+            .Controls(name).Visible = (page = 0)
+        Next
+        For Each name In Array("lstChecks", "txtCheckDetail", "cmdToggleCheck", "cmdAllChecksOff", "cmdAllChecksOn")
+            .Controls(name).Visible = (page = 1)
+        Next
+        .cmdPageAllowed.FontBold = (page = 0): .cmdPageChecks.FontBold = (page = 1)
+        If page = 1 Then
+            .lblBasis.Caption = "Every check is on unless turned off here. A check that is off finds nothing on any report in this workspace. The pattern column is a regular-expression-style summary of the words each check looks for."
+            Call UXChecksLoad
+        Else
+            .lblBasis.Caption = "An allowed phrase is skipped by the content check on every report. A dismissed finding stays hidden on its report while its words are unchanged. Removing either brings its findings back."
+            Call UXRestrictedListLoad
+        End If
+    End With
+    UXRestrictedListPage = True
+End Function
+Public Function UXChecksLoad() As Boolean
+    Dim selected As String, total As Long, off As Long
+    With Forms!frmUXRestrictedList
+        selected = Nz(!lstChecks, "")
+        !lstChecks.RowSourceType = "Value List"
+        !lstChecks.RowSource = "0;On;Check;Pattern;Why" & ";" & RestrictedCheckRows()
+        If selected <> "" Then !lstChecks = selected
+        total = RestrictedCheckCount(): off = RestrictedChecksOffCount()
+        !lblCount.Caption = total - off & " of " & total & " checks on."
+    End With
+    UXChecksSelect
+    UXChecksLoad = True
+End Function
+Public Function UXChecksSelect() As Boolean
+    With Forms!frmUXRestrictedList
+        .cmdToggleCheck.Enabled = (Nz(!lstChecks, "") <> "")
+        If Nz(!lstChecks, "") = "" Then .txtCheckDetail = "Select a check to see its full pattern, why it exists and its source." Else .txtCheckDetail = RestrictedCheckDetail(CStr(!lstChecks))
+    End With
+    UXChecksSelect = True
+End Function
+Public Function UXChecksToggle() As Boolean
+    Dim id As String
+    On Error GoTo Failed
+    id = Nz(Forms!frmUXRestrictedList!lstChecks, "")
+    If id = "" Then Forms!frmUXRestrictedList!lblCount.Caption = "Select a check first.": Exit Function
+    RestrictedSetCheck id, Not RestrictedCheckIsOn(id)
+    Call UXChecksLoad: UXRestrictedRefreshValidation
+    UXChecksToggle = True: Exit Function
+Failed:
+    Forms!frmUXRestrictedList!lblCount.Caption = "Could not change it: " & Err.Description
+End Function
+Public Function UXChecksAll(ByVal turnOn As Boolean) As Boolean
+    On Error GoTo Failed
+    RestrictedSetAllChecks turnOn
+    Call UXChecksLoad: UXRestrictedRefreshValidation
+    UXChecksAll = True: Exit Function
+Failed:
+    Forms!frmUXRestrictedList!lblCount.Caption = "Could not change them: " & Err.Description
 End Function
 Public Function UXRestrictedListSelect() As Boolean
     Dim key As String

@@ -18,8 +18,8 @@ Begin Form
     Top =1980
     Right =21855
     Bottom =14775
-    Caption ="Allowed phrases"
-    OnLoad ="=UXRestrictedListLoad()"
+    Caption ="Content checks"
+    OnLoad ="=UXRestrictedListPage(0)"
     FilterOnLoad =0
     AllowLayoutView =0
     NoSaveCTIWhenDisabled =1
@@ -133,7 +133,7 @@ Begin Form
                     FontSize =22
                     ForeColor =4205854
                     Name ="lblHeading"
-                    Caption ="Allowed phrases and dismissed content findings"
+                    Caption ="Content checks"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =250
@@ -164,20 +164,98 @@ Begin Form
                 Begin Label
                     OverlapFlags =93
                     TextFontFamily =34
-                    Left =400
+                    Left =6400
                     Top =1750
-                    Width =12600
+                    Width =6600
                     Height =300
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblCount"
                     FontName ="Segoe UI"
-                    LayoutCachedLeft =400
+                    LayoutCachedLeft =6400
                     LayoutCachedTop =1750
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =2050
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3400
+                    Top =1700
+                    Width =2800
+                    Height =450
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =16777215
+                    Name ="cmdPageChecks"
+                    Caption ="Checks"
+                    OnClick ="=UXRestrictedListPage(1)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3400
+                    LayoutCachedTop =1700
+                    LayoutCachedWidth =6200
+                    LayoutCachedHeight =2150
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =1700
+                    Width =2900
+                    Height =450
+                    FontSize =10
+                    TabIndex =6
+                    ForeColor =16777215
+                    Name ="cmdPageAllowed"
+                    Caption ="Allowed and dismissed"
+                    OnClick ="=UXRestrictedListPage(0)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1700
+                    LayoutCachedWidth =3300
+                    LayoutCachedHeight =2150
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
                 End
                 Begin ListBox
                     ColumnHeads = NotDefault
@@ -231,6 +309,57 @@ Begin Form
                         End
                     End
                 End
+                Begin ListBox
+                    ColumnHeads = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =5
+                    Left =400
+                    Top =2400
+                    Width =12600
+                    Height =2700
+                    FontSize =10
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    TabIndex =8
+                    Name ="lstChecks"
+                    OnDblClick ="=UXChecksToggle()"
+                    RowSourceType ="Table/Query"
+                    ColumnWidths ="0;700;3300;4900;3600"
+                    AfterUpdate ="=UXChecksSelect()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =5100
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =215
+                            TextFontFamily =34
+                            Left =400
+                            Top =2200
+                            Width =12600
+                            Height =180
+                            FontSize =9
+                            ForeColor =4205854
+                            Name ="lblChecks"
+                            Caption ="Checks (double-click or Turn on/off to change one)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2200
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =2380
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin TextBox
                     OverlapFlags =85
                     AccessKey =69
@@ -268,6 +397,53 @@ Begin Form
                             ForeColor =4205854
                             Name ="lblPhrase"
                             Caption ="&Phrase to allow on every report (all rules)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =5400
+                            LayoutCachedWidth =13000
+                            LayoutCachedHeight =5600
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =5650
+                    Width =12600
+                    Height =1600
+                    FontSize =10
+                    TabIndex =9
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Locked = NotDefault
+                    ScrollBars =2
+                    Name ="txtCheckDetail"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5650
+                    LayoutCachedWidth =13000
+                    LayoutCachedHeight =7250
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =5400
+                            Width =12600
+                            Height =200
+                            FontSize =9
+                            ForeColor =4205854
+                            Name ="lblCheckDetail"
+                            Caption ="Selected check: pattern, why and source"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =5400
@@ -381,6 +557,123 @@ Begin Form
                     LayoutCachedTop =7150
                     LayoutCachedWidth =3400
                     LayoutCachedHeight =7600
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6600
+                    Top =7400
+                    Width =3000
+                    Height =450
+                    FontSize =10
+                    TabIndex =12
+                    ForeColor =16777215
+                    Name ="cmdAllChecksOn"
+                    Caption ="Turn all on"
+                    OnClick ="=UXChecksAll(True)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6600
+                    LayoutCachedTop =7400
+                    LayoutCachedWidth =9600
+                    LayoutCachedHeight =7850
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3500
+                    Top =7400
+                    Width =3000
+                    Height =450
+                    FontSize =10
+                    TabIndex =11
+                    ForeColor =16777215
+                    Name ="cmdAllChecksOff"
+                    Caption ="Turn all off"
+                    OnClick ="=UXChecksAll(False)"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3500
+                    LayoutCachedTop =7400
+                    LayoutCachedWidth =6500
+                    LayoutCachedHeight =7850
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =7400
+                    Width =3000
+                    Height =450
+                    FontSize =10
+                    TabIndex =10
+                    ForeColor =16777215
+                    Name ="cmdToggleCheck"
+                    Caption ="Turn on/off"
+                    OnClick ="=UXChecksToggle()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =7400
+                    LayoutCachedWidth =3400
+                    LayoutCachedHeight =7850
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980

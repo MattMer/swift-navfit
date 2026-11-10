@@ -53,4 +53,5 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 44 | captured | 0.54.0-dev | 79 | SavedReportFilter |
 | 45 | captured | 0.54.0-dev | 80 | RevisionRetention |
 | 46 | captured | 0.55.0-dev | 80 | - |
-| 47 | current build | 0.55.0-dev | 82 | RestrictedDismissal, RestrictedException |
+| 47 | captured | 0.55.0-dev | 82 | RestrictedDismissal, RestrictedException |
+| 48 | current build | 0.55.0-dev | 83 | RestrictedCheckOff |

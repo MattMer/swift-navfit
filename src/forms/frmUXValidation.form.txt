@@ -578,8 +578,8 @@ Begin Form
                     TabIndex =10
                     ForeColor =16777215
                     Name ="cmdAllowedList"
-                    ControlTipText ="Review, add and remove allowed phrases and dismissed content findings."
-                    Caption ="Allowed phrases..."
+                    ControlTipText ="Turn content checks on or off, and review allowed phrases and dismissed findings."
+                    Caption ="Content checks..."
                     OnClick ="=UXValidationAllowedList()"
                     FontName ="Segoe UI"
 

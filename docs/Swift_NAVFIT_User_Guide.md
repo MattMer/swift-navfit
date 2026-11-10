@@ -448,7 +448,7 @@ Each finding quotes the words it matched and cites the rule. Swift matches words
 
 - **Dismiss for this report** hides it on this report only. If the matched words change, a new finding appears.
 - **Allow this phrase** skips those words for that rule on every report, for example a command term the check doesn't know.
-- **Allowed phrases...** lists every allowed phrase and dismissed finding with who added it, when and why. Add a phrase for all rules there, or select an entry and choose **Remove or restore selected** to bring its findings back.
+- **Content checks...** opens a window with two pages. **Allowed and dismissed** lists every allowed phrase and dismissed finding with who added it, when and why; add a phrase for all rules there, or select an entry and choose **Remove or restore selected** to bring its findings back. **Checks** lists the 24 checks, each with its pattern written like a regular expression (for example `\b(failure\s+of\s+selection|passed\s+over|fos)\b`, where `\w*` means any ending and *within 3 words of* means the words must sit close together) and why it exists. Every check is on until you turn it off: select one and choose **Turn on/off** (or double-click it), or use **Turn all off** and **Turn all on**. A check that is off finds nothing on any report in the workspace, and Validation issues says how many are off. Turning checks on or off isn't recorded.
 
 Type a reason first if you want one recorded. Dismissing or allowing never changes the report, and both are kept in the operations journal.
 

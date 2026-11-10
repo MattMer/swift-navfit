@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source": "BUPERSINST 1610.10H CH-2 (26 May 2026 compilation), enclosure (2)",
-  "notes": "Reviewed patterns for possible prohibited or sensitive comments in narrative blocks. Matching is on whole lower-case words; '*' ends a word prefix; hyphens and punctuation separate words and a trailing 's is dropped. 'near' requires one of its terms within 'within' words of the match; 'unless' suppresses a match when one of its terms touches the match or its near term. Findings are review prompts (Needs review), never edits or blocks. Severity: 'Needs review' for BUPERSINST prohibitions, 'Information' for application checks (protected characteristics, political activity, personal identifiers, all capitals). An unless term starting with < counts only before the match, up to twice as far away (duty verbs: 'screened 400 Sailors for hypertension').",
+  "notes": "Reviewed patterns for possible prohibited or sensitive comments in narrative blocks. Matching is on whole lower-case words; '*' ends a word prefix; hyphens and punctuation separate words and a trailing 's is dropped. 'near' requires one of its terms within 'within' words of the match; 'unless' suppresses a match when one of its terms touches the match or its near term. Findings are review prompts (Needs review), never edits or blocks. Severity: 'Needs review' for BUPERSINST prohibitions, 'Information' for application checks (protected characteristics, political activity, personal identifiers, all capitals). An unless term starting with < counts only before the match, up to twice as far away (duty verbs: 'screened 400 Sailors for hypertension'). Each match group has a stable id (rule.suffix) used to turn it off in a workspace; 'why' is the plain-language reason shown in the Content checks window.",
   "personal": [
     "his",
     "her",
@@ -27,6 +27,8 @@
       "excerpt": "Do not comment on the following, except as noted: a. Previous failure of selection (FOS);",
       "matches": [
         {
+          "id": "RC-FOS.words",
+          "label": "failure of selection wording",
           "terms": [
             "failure of selection",
             "failures of selection",
@@ -40,6 +42,8 @@
           ]
         },
         {
+          "id": "RC-FOS.not-selected",
+          "label": "\"not selected\" near a board or grade",
           "terms": [
             "not selected",
             "was not picked up",
@@ -67,7 +71,8 @@
           "within": 6
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Selection boards may not consider a previous failure of selection, so reports must not mention one."
     },
     {
       "id": "RC-RESIGNATION",
@@ -78,6 +83,8 @@
       "excerpt": "b. Submission or withdrawal of resignation under honorable circumstances;",
       "matches": [
         {
+          "id": "RC-RESIGNATION.all",
+          "label": "resignation submitted or withdrawn",
           "terms": [
             "resign*",
             "letter of resignation",
@@ -89,7 +96,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "A resignation submitted or withdrawn under honorable circumstances is not to be recorded in a report."
     },
     {
       "id": "RC-PROCEEDINGS",
@@ -100,6 +108,8 @@
       "excerpt": "c. Judicial or nonjudicial proceedings not concluded;",
       "matches": [
         {
+          "id": "RC-PROCEEDINGS.pending",
+          "label": "pending or alleged, near NJP, court-martial or charges",
           "terms": [
             "pending",
             "awaiting",
@@ -163,6 +173,8 @@
           ]
         },
         {
+          "id": "RC-PROCEEDINGS.status",
+          "label": "under investigation or pending separation",
           "terms": [
             "under investigation",
             "being investigated",
@@ -180,7 +192,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Proceedings that have not concluded may not be mentioned; misconduct is reported only once established."
     },
     {
       "id": "RC-EXONERATED",
@@ -191,6 +204,8 @@
       "excerpt": "Reports may not mention non-punitive censure or investigatory, judicial, or other proceedings which are not concluded or which have exonerated the Service member.",
       "matches": [
         {
+          "id": "RC-EXONERATED.all",
+          "label": "proceedings that exonerated the member",
           "terms": [
             "acquit*",
             "exonerat*",
@@ -224,7 +239,8 @@
           "within": 8
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Proceedings that exonerated the member may not be mentioned at all."
     },
     {
       "id": "RC-CENSURE",
@@ -235,6 +251,8 @@
       "excerpt": "d. Non-punitive letters of caution are leadership tools and should not be mentioned in an official record;",
       "matches": [
         {
+          "id": "RC-CENSURE.all",
+          "label": "non-punitive letter of caution or censure",
           "terms": [
             "letter of caution",
             "letters of caution",
@@ -261,7 +279,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Non-punitive letters of caution and similar censure are leadership tools, not part of the official record."
     },
     {
       "id": "RC-INVESTIGATION",
@@ -272,6 +291,8 @@
       "excerpt": "e. Investigations and investigative reports; (1) Do not refer to investigations until they are concluded and do not quote directly from investigative reports;",
       "matches": [
         {
+          "id": "RC-INVESTIGATION.subject",
+          "label": "subject of an investigation",
           "terms": [
             "subject of",
             "named in",
@@ -297,6 +318,8 @@
           "within": 4
         },
         {
+          "id": "RC-INVESTIGATION.quoted",
+          "label": "investigation findings or reports",
           "terms": [
             "according to the investigation",
             "investigation found",
@@ -315,7 +338,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Investigations may not be referred to until concluded, and investigative reports may not be quoted."
     },
     {
       "id": "RC-FAMILY",
@@ -326,6 +350,8 @@
       "excerpt": "f. Marital status, spouse, or family members: Do not comment on the member's marital status or the activities of the member's spouse or family members;",
       "matches": [
         {
+          "id": "RC-FAMILY.marital",
+          "label": "marital status and spouse",
           "terms": [
             "wife",
             "wives",
@@ -359,6 +385,8 @@
           ]
         },
         {
+          "id": "RC-FAMILY.relatives",
+          "label": "family members near his/her/their",
           "terms": [
             "son",
             "sons",
@@ -423,7 +451,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Reports may not comment on marital status or on a spouse or family members."
     },
     {
       "id": "RC-MEDICAL",
@@ -434,6 +463,8 @@
       "excerpt": "g. (1) Do not quote from medical reports or summaries and do not include comments pertaining to medical issues (physical and or psychological) such as pregnancy, hypertension, etc.",
       "matches": [
         {
+          "id": "RC-MEDICAL.conditions",
+          "label": "medical conditions, leave and boards",
           "terms": [
             "pregnan*",
             "maternity",
@@ -541,6 +572,8 @@
           ]
         },
         {
+          "id": "RC-MEDICAL.general",
+          "label": "general health words near his/her/their",
           "terms": [
             "illness",
             "injur*",
@@ -615,7 +648,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Reports may not comment on medical issues, physical or psychological, or quote medical reports."
     },
     {
       "id": "RC-COURTS",
@@ -626,6 +660,8 @@
       "excerpt": "h. (1) Do not comment on performance as a courts-martial member, a summary courts-martial officer, or a member of a board of inquiry or an administrative discharge board, except to note having served without identifying the particular case.",
       "matches": [
         {
+          "id": "RC-COURTS.all",
+          "label": "service on a court-martial or board",
           "terms": [
             "court martial member",
             "member of a court martial",
@@ -649,7 +685,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Service on a court-martial or board may be noted, but performance in a particular case may not be evaluated."
     },
     {
       "id": "RC-AWARD-RECOMMENDED",
@@ -660,6 +697,8 @@
       "excerpt": "i. Recommended Awards or Decorations. Do not refer to award recommendations. Awards and decorations should be mentioned only when received;",
       "matches": [
         {
+          "id": "RC-AWARD-RECOMMENDED.all",
+          "label": "award recommended but not received",
           "terms": [
             "recommended for",
             "nominated for",
@@ -750,7 +789,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Awards may be mentioned only once received, never while recommended or pending."
     },
     {
       "id": "RC-CIVILIAN",
@@ -761,6 +801,8 @@
       "excerpt": "j. Civilian Employment. Do not make comments regarding a member's potential for civilian employment or the civilian employment of reservists.",
       "matches": [
         {
+          "id": "RC-CIVILIAN.all",
+          "label": "civilian employment",
           "terms": [
             "civilian job*",
             "civilian career*",
@@ -793,7 +835,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Reports may not comment on potential for civilian employment or a reservist's civilian job."
     },
     {
       "id": "RC-DFC",
@@ -804,6 +847,8 @@
       "excerpt": "Do not mention the detachment for cause request in a FITREP, CHIEFEVAL, or EVAL unless PERS-83 has approved it.",
       "matches": [
         {
+          "id": "RC-DFC.all",
+          "label": "detachment for cause request",
           "terms": [
             "detachment for cause",
             "detached for cause",
@@ -815,7 +860,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "A detachment for cause request may not be mentioned unless PERS-83 has approved it."
     },
     {
       "id": "RC-CLASSIFIED",
@@ -827,6 +873,8 @@
       "kind": "marking",
       "matches": [
         {
+          "id": "RC-CLASSIFIED.all",
+          "label": "classified markings or content",
           "terms": [
             "(S)",
             "(C)",
@@ -845,7 +893,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "The report form may never be classified; classified comments go in a separate letter-supplement."
     },
     {
       "id": "RC-REPRISAL",
@@ -856,6 +905,8 @@
       "excerpt": "Reporting seniors, raters, and senior raters are prohibited from evaluating personnel who have filed an accusation of sexual misconduct against the reporting senior, rater, or senior rater during the pendency of the investigation",
       "matches": [
         {
+          "id": "RC-REPRISAL.all",
+          "label": "complaints, protected communications or reprisal",
           "terms": [
             "filed a complaint",
             "filed an complaint",
@@ -914,7 +965,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Complaints, protected communications and victim status must not appear in a way that could suggest reprisal."
     },
     {
       "id": "RC-PROTECTED",
@@ -925,6 +977,8 @@
       "excerpt": "Comments should describe performance, not personal characteristics protected by equal opportunity policy.",
       "matches": [
         {
+          "id": "RC-PROTECTED.all",
+          "label": "race, religion, sex, age or other protected characteristic",
           "terms": [
             "race",
             "racial",
@@ -1012,7 +1066,8 @@
           ]
         }
       ],
-      "severity": "Information"
+      "severity": "Information",
+      "why": "Comments should describe performance, not characteristics protected by equal opportunity policy."
     },
     {
       "id": "RC-POLITICAL",
@@ -1023,6 +1078,8 @@
       "excerpt": "Comments should not describe partisan political activity or affiliation.",
       "matches": [
         {
+          "id": "RC-POLITICAL.all",
+          "label": "political activity or affiliation",
           "terms": [
             "democrat*",
             "republican*",
@@ -1055,7 +1112,8 @@
           ]
         }
       ],
-      "severity": "Information"
+      "severity": "Information",
+      "why": "Comments should not describe partisan political activity or affiliation."
     },
     {
       "id": "RC-PII",
@@ -1067,6 +1125,8 @@
       "kind": "pii",
       "matches": [
         {
+          "id": "RC-PII.all",
+          "label": "personal identifiers in narrative text",
           "terms": [
             "ssn",
             "social security",
@@ -1081,7 +1141,8 @@
           ]
         }
       ],
-      "severity": "Information"
+      "severity": "Information",
+      "why": "Identifiers belong in their own blocks; narrative text is copied and printed more widely."
     },
     {
       "id": "RC-CAPS",
@@ -1093,10 +1154,13 @@
       "kind": "caps",
       "matches": [
         {
+          "id": "RC-CAPS.all",
+          "label": "text in all capitals",
           "terms": []
         }
       ],
-      "severity": "Information"
+      "severity": "Information",
+      "why": "The comments block requires upper and lower case."
     },
     {
       "id": "RC-ANTICIPATED",
@@ -1110,6 +1174,8 @@
       ],
       "matches": [
         {
+          "id": "RC-ANTICIPATED.all",
+          "label": "anticipated rather than completed achievement",
           "terms": [
             "will complete",
             "will graduate",
@@ -1145,7 +1211,8 @@
           ]
         }
       ],
-      "severity": "Needs review"
+      "severity": "Needs review",
+      "why": "Block 44 is for completed achievements only, not anticipated ones."
     }
   ]
 }

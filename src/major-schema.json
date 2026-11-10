@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 47,
+  "SchemaVersion": 48,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -61,7 +61,8 @@
     "SavedReportFilter",
     "RevisionRetention",
     "RestrictedException",
-    "RestrictedDismissal"
+    "RestrictedDismissal",
+    "RestrictedCheckOff"
   ],
   "SQL": [
     "CREATE TABLE SummaryGroup (GroupID COUNTER PRIMARY KEY, GroupGuid TEXT(38) NOT NULL, Title TEXT(120) NOT NULL, FormKind TEXT(12) NOT NULL, Paygrade TEXT(5) NOT NULL, KeySpec LONGTEXT, VersionCounter LONG, IsArchived BIT)",
@@ -309,7 +310,8 @@
     "CREATE TABLE RevisionRetention (RevisionID LONG CONSTRAINT PK_RevisionRetention PRIMARY KEY, RetentionKind TEXT(20) NOT NULL, CheckpointReason TEXT(255))",
     "CREATE TABLE RestrictedException (ExceptionID COUNTER PRIMARY KEY, Phrase TEXT(120) NOT NULL, RuleID TEXT(40), Reason TEXT(255), AddedBy LONG NOT NULL, AddedAt DATETIME NOT NULL, RemovedBy LONG, RemovedAt DATETIME)",
     "CREATE TABLE RestrictedDismissal (DismissalID COUNTER PRIMARY KEY, ReportID LONG NOT NULL, RuleID TEXT(40) NOT NULL, FieldKey TEXT(64) NOT NULL, MatchText TEXT(255) NOT NULL, Reason TEXT(255), DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
-    "CREATE INDEX IX_RestrictedDismissal_Report ON RestrictedDismissal (ReportID,RuleID)"
+    "CREATE INDEX IX_RestrictedDismissal_Report ON RestrictedDismissal (ReportID,RuleID)",
+    "CREATE TABLE RestrictedCheckOff (GroupID TEXT(60) CONSTRAINT PK_RestrictedCheckOff PRIMARY KEY)"
   ],
   "Queries": [
     {

@@ -160,6 +160,34 @@ Public Function TestRestrictedContent() As String
     Check Flags("His wife attended fleet week.") = "RC-FAMILY", "All-rule phrase hid an unrelated word"
     RestrictedRemoveException exception
 
+    ' Checks: 24 groups, each with a pattern and a reason; turning one off stops only it.
+    Check RestrictedCheckCount() = 24 And RestrictedChecksOffCount() = 0, "Checks not all on by default"
+    Check InStr(RestrictedCheckDetail("RC-FOS.words"), "Pattern: \b(failure\s+of\s+selection") > 0 And InStr(RestrictedCheckDetail("RC-FOS.words"), "Why: ") > 0, "Check detail missing: " & RestrictedCheckDetail("RC-FOS.words")
+    Check InStr(RestrictedCheckDetail("RC-MEDICAL.general"), "within 3 words of") > 0, "Near terms not described"
+    RestrictedSetCheck "RC-MEDICAL.conditions", False
+    Check Flags("Despite her pregnancy, she qualified.") = "" And Flags("Despite his illness, he qualified.") = "RC-MEDICAL", "Turning one check off was not limited to it"
+    Check RestrictedChecksOffCount() = 1 And Not RestrictedCheckIsOn("RC-MEDICAL.conditions") And PersistenceCount("RestrictedCheckOff", "True") = 1, "Turned-off check not stored"
+    RestrictedSetCheck "RC-MEDICAL.conditions", True
+    Check Flags("Despite her pregnancy, she qualified.") = "RC-MEDICAL" And PersistenceCount("RestrictedCheckOff", "True") = 0, "Check did not turn back on"
+    RestrictedSetAllChecks False
+    Check RestrictedChecksOffCount() = 24 And Flags("Was passed over for LCDR, but recently married.") = "", "All off still found content"
+    RestrictedSetAllChecks True
+    Check RestrictedChecksOffCount() = 0 And Flags("Was passed over for LCDR, but recently married.") = "RC-FAMILY|RC-FOS", "All on did not restore checks"
+    Check BadCheck("RC-NOT.a-check"), "Unknown check accepted"
+    ' The window: Checks page, select, toggle, and the all buttons.
+    DoCmd.OpenForm "frmUXRestrictedList"
+    Check Forms!frmUXRestrictedList!lstItems.Visible And Not Forms!frmUXRestrictedList!lstChecks.Visible, "Window did not open on allowed phrases"
+    Check UXRestrictedListPage(1) And Forms!frmUXRestrictedList!lstChecks.Visible And Not Forms!frmUXRestrictedList!lstItems.Visible, "Checks page not shown"
+    Check Forms!frmUXRestrictedList!lstChecks.ListCount = 25, "Checks list rows: " & Forms!frmUXRestrictedList!lstChecks.ListCount
+    Forms!frmUXRestrictedList!lstChecks = "RC-FOS.words": Call UXChecksSelect
+    Check InStr(Forms!frmUXRestrictedList!txtCheckDetail, "Why: ") > 0, "Selected check detail missing"
+    Check UXChecksToggle(), "Turn on/off failed: " & Forms!frmUXRestrictedList!lblCount.Caption
+    Check Not RestrictedCheckIsOn("RC-FOS.words"), "Turn on/off did not turn the check off"
+    Check CheckRowState("RC-FOS.words") = "Off", "List does not show the check as off: " & CheckRowState("RC-FOS.words")
+    Check UXChecksAll(False) And RestrictedChecksOffCount() = 24 And UXChecksAll(True) And RestrictedChecksOffCount() = 0, "Turn all off/on failed"
+    Check InStr(Forms!frmUXRestrictedList!lblCount.Caption, "24 of 24 checks on") > 0, "Count caption: " & Forms!frmUXRestrictedList!lblCount.Caption
+    Check UXRestrictedListPage(0) And UXRestrictedListClose(), "Window close failed"
+
     ' A full pass over 5,000 characters is fast (cached passes are near free).
     text = ""
     Do While Len(text) < 5000: text = text & "Led a team of twelve Sailors through a demanding inspection cycle, earning zero discrepancies and a Navy and Marine Corps Achievement Medal. ": Loop
@@ -168,9 +196,25 @@ Public Function TestRestrictedContent() As String
     For i = 1 To 5: Call RestrictedMatches("EVAL", "OfficialComments", text & i, 0): Next
     elapsed = (Timer - started) * 1000 / 5
     Check elapsed < 100, "Content check took " & Format$(elapsed, "0.0") & " ms for 5,000 characters"
-    TestRestrictedContent = "PASS: " & checks & " restricted-content rule, false-positive, dismissal, allowed-phrase and timing assertions; " & Format$(elapsed, "0.0") & " ms per 5,000-character pass": Exit Function
+    TestRestrictedContent = "PASS: " & checks & " restricted-content rule, false-positive, dismissal, allowed-phrase, check on/off and timing assertions; " & Format$(elapsed, "0.0") & " ms per 5,000-character pass": Exit Function
 Failed:
     TestRestrictedContent = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+'The On/Off cell for a check in the open window's list, found by its ID.
+Private Function CheckRowState(ByVal id As String) As String
+    Dim i As Long
+    With Forms!frmUXRestrictedList!lstChecks
+        For i = 0 To .ListCount - 1
+            If .Column(0, i) = id Then CheckRowState = .Column(1, i): Exit Function
+        Next
+    End With
+End Function
+Private Function BadCheck(ByVal id As String) As Boolean
+    On Error GoTo Refused
+    RestrictedSetCheck id, False
+    Exit Function
+Refused:
+    BadCheck = True
 End Function
 Private Function BadAllow(ByVal phrase As String, ByVal rule As String) As Boolean
     On Error GoTo Refused

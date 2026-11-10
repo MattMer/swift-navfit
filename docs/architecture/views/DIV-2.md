@@ -2,7 +2,7 @@
 
 # DIV-2 Logical Data Model
 
-Entities and enforced relationships in schema 47. 82 entities; 169 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
+Entities and enforced relationships in schema 48. 83 entities; 169 relationships. Some links are deliberately not enforced as relationships (Access allows 32 indexes per table, and saves replace `ReportHead` rows); those are checked in code and listed as fields in [DIV-3](DIV-3.md).
 
 ```mermaid
 erDiagram
