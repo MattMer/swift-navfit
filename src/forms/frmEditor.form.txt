@@ -30,7 +30,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -58,7 +58,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -108,7 +108,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -127,7 +127,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -148,7 +148,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -614,6 +614,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstRevisions"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Revision history"
                             LayoutCachedLeft =5250
                             LayoutCachedTop =4800
@@ -4243,6 +4245,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxGroup"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Summary group"
                             LayoutCachedLeft =11350
                             LayoutCachedTop =1950
@@ -6956,6 +6960,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxSeniorRecord"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Reporting senior record"
                             LayoutCachedLeft =5250
                             LayoutCachedTop =3150
@@ -7098,6 +7104,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxErrorList"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Validation errors"
                             LayoutCachedLeft =5250
                             LayoutCachedTop =3200
@@ -7148,6 +7156,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -7199,6 +7209,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactSection"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Report section"
                             LayoutCachedLeft =250
                             LayoutCachedTop =2650
@@ -7526,6 +7538,8 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxRecoverySession"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
 
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
@@ -7544,6 +7558,8 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxRecoveryRevision"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
 
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
@@ -7562,6 +7578,8 @@ Begin Form
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxReturnGroup"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
 
                     LayoutCachedWidth =100
                     LayoutCachedHeight =100
@@ -7779,6 +7797,8 @@ Begin Form
                     TabIndex =169
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmEditor\")"
                     ControlTipText ="Help for this window"
@@ -7934,7 +7954,7 @@ Begin Form
                     Name ="cmdDisposeDrafts"
                     Caption ="Dispose of drafts"
                     OnClick ="=UXDisposeDrafts()"
-                    FontName ="Aptos Display"
+                    FontName ="Segoe UI"
                     Tag ="LOCAL:9"
                     ControlTipText ="After signing: remove superseded drafts. Signed versions and conversations stay."
                     LeftPadding =0

@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -94,7 +94,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -113,7 +113,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -134,7 +134,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -231,16 +231,19 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2850
-                            Top =2400
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtSearch"
-                            Caption ="Search snippets"
+                            Top =2050
+                            Width =2940
+                            Height =300
+                            FontSize =10
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblSearch"
+                            Caption ="Search"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =2400
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =2415
+                            LayoutCachedTop =2050
+                            LayoutCachedWidth =5790
+                            LayoutCachedHeight =2350
                         End
                     End
                 End
@@ -319,6 +322,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstSnippets"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Snippets"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =3450
@@ -498,9 +503,9 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =7600
+                    Top =7700
                     Width =10584
-                    Height =3800
+                    Height =3750
                     FontSize =10
                     TabIndex =7
                     BorderColor =13285543
@@ -509,9 +514,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =7600
+                    LayoutCachedTop =7700
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =11400
+                    LayoutCachedHeight =11450
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -520,16 +525,19 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2850
-                            Top =7600
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtBody"
+                            Top =7350
+                            Width =2940
+                            Height =300
+                            FontSize =10
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblSnippetText"
                             Caption ="Snippet text"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =7600
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =7615
+                            LayoutCachedTop =7350
+                            LayoutCachedWidth =5790
+                            LayoutCachedHeight =7650
                         End
                     End
                 End
@@ -1134,6 +1142,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -1146,21 +1156,21 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =10934
-                    Top =950
+                    Top =925
                     Width =2500
                     FontSize =10
                     TabIndex =21
                     ForeColor =4205854
-                    Height =400
+                    Height =450
                     Name ="uxSources"
                     Caption ="Browse sources"
                     OnClick ="=UXOpenSnippetSources()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =10934
-                    LayoutCachedTop =950
+                    LayoutCachedTop =925
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =1350
+                    LayoutCachedHeight =1375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1192,6 +1202,8 @@ Begin Form
                     TabIndex =22
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmSnippets\")"
                     ControlTipText ="Help for this window"
@@ -1316,6 +1328,8 @@ Begin Form
                     Height =100
                     TabIndex =23
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmSnippets\"\",\"\"UXLoadContext()\"\")\""
 
                     LayoutCachedWidth =100

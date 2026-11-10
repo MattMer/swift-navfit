@@ -31,7 +31,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -47,7 +47,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -86,7 +86,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -105,7 +105,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -503,9 +503,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =8000
+                    Top =7975
                     Width =6000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =4
                     ForeColor =16777215
@@ -515,9 +515,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =8000
+                    LayoutCachedTop =7975
                     LayoutCachedWidth =6400
-                    LayoutCachedHeight =8500
+                    LayoutCachedHeight =8525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -698,9 +698,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6800
-                    Top =8000
+                    Top =7975
                     Width =6000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =5
                     ForeColor =4205854
@@ -710,9 +710,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6800
-                    LayoutCachedTop =8000
+                    LayoutCachedTop =7975
                     LayoutCachedWidth =12800
-                    LayoutCachedHeight =8500
+                    LayoutCachedHeight =8525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

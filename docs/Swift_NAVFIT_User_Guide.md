@@ -193,7 +193,7 @@ Each row shows the member, rate, report form, due date and status (overdue, or d
 
 - **Create draft** makes that report for the member, already linked to them: the form for their paygrade, Regular and Periodic (or Detachment of Individual), ending on the due date and starting the day after their latest earlier report. It opens in the editor.
 - **Drafts + group** does the same for several rows at once. Select them with Ctrl+click or Shift+click. Swift creates every draft and a new summary group for each report type, paygrade, basis and due date, named for example *E5 EVAL periodic, ending 2026-03-15*, with the drafts already in it. Either everything is created or, if one row can't be (for example a matching report already exists), nothing is, and the note says which row stopped it. Open the new groups from **Summary groups**.
-- **Dismiss** needs a reason in the box beside it, for example when a detachment report is not needed because the periodic report falls close by.
+- **Dismiss** needs a reason in the **Dismiss reason** box beside it, for example when a detachment report is not needed because the periodic report falls close by.
 - **Departures (N)** opens **My Work > Departures**. Double-click a row to open the member's history.
 
 Members with no rank/rate are counted below the list, because no due date can be worked out for them. Swift does not decide whether a report is required; check eligibility against current policy.
@@ -612,7 +612,7 @@ values into reports; it does not update member or reporting senior records.
 
 ## 9.1 Create and open a group
 
-1. Open **Summary groups** and choose **Create Summary Group**.
+1. Open **Summary groups** and choose **Create summary group**.
 2. Enter the group context, including its title, report type, and paygrade as requested.
 3. Open the group and add the intended reports or create reports in its context.
 4. Check the roster and group findings against the applicable summary-group criteria.

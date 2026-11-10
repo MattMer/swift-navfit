@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -92,7 +92,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -113,7 +113,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -639,6 +639,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstSeniors"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Reporting seniors"
                             LayoutCachedLeft =2866
                             LayoutCachedTop =2700
@@ -823,6 +825,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -841,6 +845,8 @@ Begin Form
                     TabIndex =10
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXSeniors\")"
                     ControlTipText ="Help for this window"
@@ -876,6 +882,8 @@ Begin Form
                     Height =100
                     TabIndex =11
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmUXSeniors\"\",\"\"UXLoadContext()\"\")\""
 
                     LayoutCachedWidth =100

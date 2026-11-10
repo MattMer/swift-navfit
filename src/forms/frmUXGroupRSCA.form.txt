@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -105,7 +105,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -125,7 +125,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -684,9 +684,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =9600
+                    Top =9575
                     Width =4740
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =12
                     ForeColor =4205854
@@ -696,9 +696,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =9600
+                    LayoutCachedTop =9575
                     LayoutCachedWidth =7606
-                    LayoutCachedHeight =10100
+                    LayoutCachedHeight =10125
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -723,9 +723,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8080
-                    Top =9600
+                    Top =9575
                     Width =4740
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =13
                     ForeColor =4205854
@@ -735,9 +735,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8080
-                    LayoutCachedTop =9600
+                    LayoutCachedTop =9575
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =10100
+                    LayoutCachedHeight =10125
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -838,6 +838,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -881,6 +883,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtCalculationContext"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Calculation details"
                             LayoutCachedLeft =2866
                             LayoutCachedTop =6750
@@ -939,6 +943,8 @@ Begin Form
                     TabIndex =16
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXGroupRSCA\")"
                     ControlTipText ="Help for this window"

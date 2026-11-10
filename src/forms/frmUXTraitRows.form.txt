@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -43,7 +43,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -82,7 +82,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -102,7 +102,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -478,6 +478,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anMember"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Member"
                             LayoutCachedLeft =30
                             LayoutCachedTop =30
@@ -524,6 +526,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anRowStatus"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Row status"
                             LayoutCachedLeft =750
                             LayoutCachedTop =40
@@ -639,6 +643,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait33"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 33"
                             LayoutCachedLeft =2900
                             LayoutCachedTop =40
@@ -685,6 +691,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait34"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 34"
                             LayoutCachedLeft =3720
                             LayoutCachedTop =40
@@ -731,6 +739,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait35"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 35"
                             LayoutCachedLeft =4540
                             LayoutCachedTop =40
@@ -777,6 +787,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait36"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 36"
                             LayoutCachedLeft =5360
                             LayoutCachedTop =40
@@ -823,6 +835,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait37"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 37"
                             LayoutCachedLeft =6180
                             LayoutCachedTop =40
@@ -869,6 +883,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait38"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 38"
                             LayoutCachedLeft =7000
                             LayoutCachedTop =40
@@ -915,6 +931,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anTrait39"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait 39"
                             LayoutCachedLeft =7820
                             LayoutCachedTop =40
@@ -980,6 +998,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anITA"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="ITA"
                             LayoutCachedLeft =8800
                             LayoutCachedTop =40
@@ -1027,6 +1047,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anPromotionRecommendation"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Promotion recommendation"
                             LayoutCachedLeft =9700
                             LayoutCachedTop =40
@@ -1070,6 +1092,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anAssignmentRecommendationA"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Career recommendation 1"
                             LayoutCachedLeft =11150
                             LayoutCachedTop =40
@@ -1113,6 +1137,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anAssignmentRecommendationB"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Career recommendation 2"
                             LayoutCachedLeft =12550
                             LayoutCachedTop =40
@@ -1159,6 +1185,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anPriorITA"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Prior ITA"
                             LayoutCachedLeft =13950
                             LayoutCachedTop =40
@@ -1205,6 +1233,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anPriorPromotion"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Prior promotion recommendation"
                             LayoutCachedLeft =14950
                             LayoutCachedTop =40

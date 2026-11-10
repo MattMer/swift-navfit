@@ -30,7 +30,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -46,7 +46,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -85,7 +85,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -105,7 +105,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -200,9 +200,9 @@ Begin Form
                     TextFontFamily =34
                     FontSize =10
                     Left =400
-                    Top =3100
+                    Top =3075
                     Width =7800
-                    Height =500
+                    Height =550
                     TabIndex =1
                     ForeColor =4205854
                     Name ="cmdContinue"
@@ -211,9 +211,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3100
+                    LayoutCachedTop =3075
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =3600
+                    LayoutCachedHeight =3625
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -329,9 +329,9 @@ Begin Form
                     TextFontFamily =34
                     FontSize =10
                     Left =400
-                    Top =5800
+                    Top =5775
                     Width =7800
-                    Height =400
+                    Height =450
                     TabIndex =4
                     ForeColor =4205854
                     Name ="cmdCancel"
@@ -340,9 +340,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5800
+                    LayoutCachedTop =5775
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =6200
+                    LayoutCachedHeight =6225
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

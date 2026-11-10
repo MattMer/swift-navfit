@@ -29,7 +29,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -57,7 +57,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -107,7 +107,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -127,7 +127,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -6860,6 +6860,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxTraitGuidance"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Trait guidance"
                             LayoutCachedLeft =200
                             LayoutCachedTop =9500
@@ -7101,9 +7103,9 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =1000
-                    Top =200
+                    Top =175
                     Width =1150
-                    Height =400
+                    Height =450
                     FontSize =10
                     TabIndex =103
                     Name ="uxCounselingCalendar"
@@ -7111,10 +7113,10 @@ Begin Form
                     OnClick ="=UXCounselingCalendarOpen()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =13400
-                    LayoutCachedTop =450
-                    LayoutCachedWidth =14600
-                    LayoutCachedHeight =850
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =175
+                    LayoutCachedWidth =2150
+                    LayoutCachedHeight =625
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -7126,9 +7128,9 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =1000
-                    Top =200
+                    Top =175
                     Width =1150
-                    Height =400
+                    Height =450
                     FontSize =10
                     TabIndex =104
                     Name ="uxCounselorPicker"
@@ -7136,10 +7138,10 @@ Begin Form
                     OnClick ="=UXPickPerson(\"CounselorName\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =13400
-                    LayoutCachedTop =450
-                    LayoutCachedWidth =14600
-                    LayoutCachedHeight =850
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =175
+                    LayoutCachedWidth =2150
+                    LayoutCachedHeight =625
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -7151,9 +7153,9 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =1000
-                    Top =200
+                    Top =175
                     Width =1150
-                    Height =400
+                    Height =450
                     FontSize =10
                     TabIndex =105
                     Name ="uxReadinessCalendar"
@@ -7162,10 +7164,10 @@ Begin Form
                     FontName ="Segoe UI"
                     ControlTipText ="Choose the PFA date from a calendar"
 
-                    LayoutCachedLeft =13400
-                    LayoutCachedTop =450
-                    LayoutCachedWidth =14600
-                    LayoutCachedHeight =850
+                    LayoutCachedLeft =1000
+                    LayoutCachedTop =175
+                    LayoutCachedWidth =2150
+                    LayoutCachedHeight =625
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2

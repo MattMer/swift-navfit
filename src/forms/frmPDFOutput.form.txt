@@ -29,7 +29,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -45,7 +45,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -95,7 +95,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -114,7 +114,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -135,7 +135,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -540,9 +540,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =300
-                    Top =9500
+                    Top =9475
                     Width =6100
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =9
                     Name ="cmdPagePreview"
@@ -551,9 +551,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =9500
+                    LayoutCachedTop =9475
                     LayoutCachedWidth =6400
-                    LayoutCachedHeight =10000
+                    LayoutCachedHeight =10025
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -564,9 +564,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =300
-                    Top =8800
+                    Top =8775
                     Width =2700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =10
                     Name ="cmdRefresh"
@@ -575,9 +575,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =8800
+                    LayoutCachedTop =8775
                     LayoutCachedWidth =3000
-                    LayoutCachedHeight =9300
+                    LayoutCachedHeight =9325
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -588,9 +588,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =3200
-                    Top =8800
+                    Top =8775
                     Width =3200
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =11
                     Name ="cmdGenerate"
@@ -599,9 +599,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =3200
-                    LayoutCachedTop =8800
+                    LayoutCachedTop =8775
                     LayoutCachedWidth =6400
-                    LayoutCachedHeight =9300
+                    LayoutCachedHeight =9325
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -612,9 +612,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6600
-                    Top =8800
+                    Top =8775
                     Width =2300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =12
                     Name ="cmdOpenPDF"
@@ -623,9 +623,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6600
-                    LayoutCachedTop =8800
+                    LayoutCachedTop =8775
                     LayoutCachedWidth =8900
-                    LayoutCachedHeight =9300
+                    LayoutCachedHeight =9325
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -636,9 +636,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9100
-                    Top =8800
+                    Top =8775
                     Width =2300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =13
                     Name ="cmdOpenFolder"
@@ -647,9 +647,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9100
-                    LayoutCachedTop =8800
+                    LayoutCachedTop =8775
                     LayoutCachedWidth =11400
-                    LayoutCachedHeight =9300
+                    LayoutCachedHeight =9325
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -660,9 +660,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =11600
-                    Top =8800
+                    Top =8775
                     Width =2200
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =14
                     Name ="cmdClose"
@@ -671,9 +671,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11600
-                    LayoutCachedTop =8800
+                    LayoutCachedTop =8775
                     LayoutCachedWidth =13800
-                    LayoutCachedHeight =9300
+                    LayoutCachedHeight =9325
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -798,6 +798,8 @@ Begin Form
                     Height =100
                     TabIndex =15
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"\""
 
                     LayoutCachedWidth =100

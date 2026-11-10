@@ -26,7 +26,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -42,7 +42,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -81,7 +81,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -100,7 +100,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -210,6 +210,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstHistory"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Report history"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2500
@@ -240,9 +242,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6400
+                    Top =6375
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
@@ -252,9 +254,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6400
+                    LayoutCachedTop =6375
                     LayoutCachedWidth =4400
-                    LayoutCachedHeight =6900
+                    LayoutCachedHeight =6925
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -279,9 +281,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4650
-                    Top =6400
+                    Top =6375
                     Width =4100
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =2
                     ForeColor =4205854
@@ -291,9 +293,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4650
-                    LayoutCachedTop =6400
+                    LayoutCachedTop =6375
                     LayoutCachedWidth =8750
-                    LayoutCachedHeight =6900
+                    LayoutCachedHeight =6925
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -318,9 +320,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9000
-                    Top =6400
+                    Top =6375
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =3
                     ForeColor =4205854
@@ -330,9 +332,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9000
-                    LayoutCachedTop =6400
+                    LayoutCachedTop =6375
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6900
+                    LayoutCachedHeight =6925
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -357,9 +359,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =7150
+                    Top =7125
                     Width =12600
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =4
                     ForeColor =4205854
@@ -369,9 +371,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7150
+                    LayoutCachedTop =7125
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =7650
+                    LayoutCachedHeight =7675
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -402,6 +404,8 @@ Begin Form
                     TabIndex =5
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXMemberHistory\")"
                     ControlTipText ="Help for this window"
@@ -570,6 +574,8 @@ Begin Form
                     Height =100
                     TabIndex =6
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmUXMemberHistory\"\",\"\"\"\")\""
 
                     LayoutCachedWidth =100
@@ -583,6 +589,8 @@ Begin Form
                     Height =450
                     FontSize =10
                     Name ="lblCounselingStatus"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Counseling"
                     LayoutCachedLeft =400
                     LayoutCachedTop =7900
@@ -602,6 +610,8 @@ Begin Form
                     FontSize =10
                     TabIndex =7
                     Name ="lstCounseling"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Value List"
                     ColumnWidths ="0;2200;2200;4000;3800"
                     OnDblClick ="=UXCounselingOpen(False)"
@@ -619,6 +629,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstCounseling"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Counseling history"
                             LayoutCachedLeft =400
                             LayoutCachedTop =8800
@@ -635,6 +647,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_0"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmUXMemberHistory\",\"lstCounseling\",0)"
                     Tag ="SORT:lstCounseling:0"
@@ -651,6 +665,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_1"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmUXMemberHistory\",\"lstCounseling\",1)"
                     Tag ="SORT:lstCounseling:1"
@@ -667,6 +683,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_2"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmUXMemberHistory\",\"lstCounseling\",2)"
                     Tag ="SORT:lstCounseling:2"
@@ -683,6 +701,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_3"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmUXMemberHistory\",\"lstCounseling\",3)"
                     Tag ="SORT:lstCounseling:3"
@@ -699,6 +719,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_4"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmUXMemberHistory\",\"lstCounseling\",4)"
                     Tag ="SORT:lstCounseling:4"
@@ -710,19 +732,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =400
-                    Top =10600
+                    Top =10575
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =8
                     Name ="cmdCounselingAdd"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Record counseling"
                     OnClick ="=UXCounselingOpen(True)"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =10600
+                    LayoutCachedTop =10575
                     LayoutCachedWidth =4400
-                    LayoutCachedHeight =11100
+                    LayoutCachedHeight =11125
                     Gradient =0
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -732,19 +756,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =4650
-                    Top =10600
+                    Top =10575
                     Width =4100
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =9
                     Name ="cmdCounselingEdit"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Edit selected counseling"
                     OnClick ="=UXCounselingOpen(False)"
 
                     LayoutCachedLeft =4650
-                    LayoutCachedTop =10600
+                    LayoutCachedTop =10575
                     LayoutCachedWidth =8750
-                    LayoutCachedHeight =11100
+                    LayoutCachedHeight =11125
                     Gradient =0
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -754,19 +780,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =9000
-                    Top =10600
+                    Top =10575
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =10
                     Name ="cmdCounselingArchive"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Archive selected counseling"
                     OnClick ="=UXCounselingArchive()"
 
                     LayoutCachedLeft =9000
-                    LayoutCachedTop =10600
+                    LayoutCachedTop =10575
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =11100
+                    LayoutCachedHeight =11125
                     Gradient =0
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -790,6 +818,8 @@ Begin Form
                             FontSize =9
                             ForeColor =2692374
                             Name ="lblchkArchivedCounseling"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Archived counseling"
                         End
                     End

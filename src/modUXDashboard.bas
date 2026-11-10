@@ -238,7 +238,7 @@ Public Function UXDashboardRefresh() As Boolean
     End If
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
     f!cmdRecovery.Enabled = (recoveryCount > 0)
-    f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],PeriodStart AS [Period from],PeriodEnd AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
+    f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],Format(PeriodStart,'yyyy-mm-dd') AS [Period from],Format(PeriodEnd,'yyyy-mm-dd') AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
     f!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
     If UXHasControl(f, "uxReportsDue") Then UXDueRefresh
     UXDashboardRefresh = True

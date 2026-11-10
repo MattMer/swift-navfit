@@ -43,7 +43,9 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  If f.Width <> viewingWidth + ReportLeft + 650 Then f.Width = viewingWidth + ReportLeft + 650
  'The fixed paper canvas lives beside the application rail, never over it.
  UXNavigationLayout f, False, f.Width
- Place f, "uxContext", 250, 100, 4700, 300
+ 'Two short lines (workspace, then contributor) fit left of the report buttons.
+ Place f, "uxContext", 250, 40, 4700, 500
+ If f!uxContext.FontSize <> 9 Then f!uxContext.FontSize = 9
  Place f, "uxPreviousReport", 5100, 100, 1400, 400
  Place f, "uxNextReport", 6700, 100, 1400, 400
  UXEditorSiblingState

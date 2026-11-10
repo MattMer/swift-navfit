@@ -902,7 +902,12 @@ Public Function UXLoadContext() As Boolean
     context = Replace(Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & ActiveContributorCaption(), "&", "&&")
     For Each f In Forms
         If UXHasControl(f, "uxContext") Then
-            If f!uxContext.Caption <> context Then f!uxContext.Caption = context
+            'The editor's report buttons share its context row, so it takes two lines there.
+            If f.Name = "frmEditor" Then
+                If f!uxContext.Caption <> Replace(context, " | Contributor: ", vbCrLf & "Contributor: ") Then f!uxContext.Caption = Replace(context, " | Contributor: ", vbCrLf & "Contributor: ")
+            ElseIf f!uxContext.Caption <> context Then
+                f!uxContext.Caption = context
+            End If
         End If
     Next
     'Only the visible workspace needs geometry; unchanged dimensions are cached.

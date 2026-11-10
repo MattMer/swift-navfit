@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -43,7 +43,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -82,7 +82,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -101,7 +101,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -194,6 +194,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstOperations"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Operations"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2350
@@ -236,6 +238,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtOutcome"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Outcome"
                             LayoutCachedLeft =400
                             LayoutCachedTop =4400
@@ -296,9 +300,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6850
-                    Top =10000
+                    Top =9975
                     Width =6150
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =3
                     ForeColor =4205854
@@ -308,9 +312,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6850
-                    LayoutCachedTop =10000
+                    LayoutCachedTop =9975
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =10500
+                    LayoutCachedHeight =10525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -335,9 +339,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6850
-                    Top =10650
+                    Top =10625
                     Width =6150
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =4
                     ForeColor =4205854
@@ -347,9 +351,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6850
-                    LayoutCachedTop =10650
+                    LayoutCachedTop =10625
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =11150
+                    LayoutCachedHeight =11175
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -374,9 +378,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =11300
+                    Top =11275
                     Width =6150
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =5
                     ForeColor =4205854
@@ -386,9 +390,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =11300
+                    LayoutCachedTop =11275
                     LayoutCachedWidth =6550
-                    LayoutCachedHeight =11800
+                    LayoutCachedHeight =11825
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -413,9 +417,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =10000
+                    Top =9975
                     Width =6150
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =6
                     ForeColor =4205854
@@ -425,9 +429,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =10000
+                    LayoutCachedTop =9975
                     LayoutCachedWidth =6550
-                    LayoutCachedHeight =10500
+                    LayoutCachedHeight =10525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -458,6 +462,8 @@ Begin Form
                     TabIndex =7
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmOperations\")"
                     ControlTipText ="Help for this window"
@@ -692,6 +698,8 @@ Begin Form
                     Height =100
                     TabIndex =8
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmOperations\"\",\"\"LoadOperations()\"\")\""
 
                     LayoutCachedWidth =100
@@ -708,6 +716,8 @@ Begin Form
                     Height =2500
                     TabIndex =9
                     Name ="lstAudit"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;2000;2700;2200;900;4400"
                     AfterUpdate ="=AuditDetails()"
@@ -725,6 +735,8 @@ Begin Form
                             Width =12600
                             Height =350
                             Name ="lblAudit"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Report activity - domain evidence and operation correlation"
                             LayoutCachedLeft =400
                             LayoutCachedTop =12500

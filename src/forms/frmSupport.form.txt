@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -43,7 +43,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -82,7 +82,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -151,6 +151,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtDiagnostics"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Diagnostics"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1100
@@ -208,6 +210,8 @@ Begin Form
                     TabIndex =2
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmSupport\")"
                     ControlTipText ="Help for this window"

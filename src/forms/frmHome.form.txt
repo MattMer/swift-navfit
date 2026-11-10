@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -92,7 +92,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -113,7 +113,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -127,7 +127,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =12600
+            Height =13400
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -135,7 +135,7 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =12600
+                    Height =13400
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
@@ -245,9 +245,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =4100
+                    Top =4075
                     Width =3300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -257,9 +257,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4075
                     LayoutCachedWidth =6150
-                    LayoutCachedHeight =4600
+                    LayoutCachedHeight =4625
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -286,9 +286,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =4100
+                    Top =4150
                     Width =4819
-                    Height =650
+                    Height =550
                     FontSize =10
                     TabIndex =9
                     ForeColor =4205854
@@ -298,9 +298,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4150
                     LayoutCachedWidth =7685
-                    LayoutCachedHeight =4750
+                    LayoutCachedHeight =4700
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -837,9 +837,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =7870
+                    Top =7845
                     Width =3300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =13
                     ForeColor =4205854
@@ -849,9 +849,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =7870
+                    LayoutCachedTop =7845
                     LayoutCachedWidth =6150
-                    LayoutCachedHeight =8370
+                    LayoutCachedHeight =8395
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -877,9 +877,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6350
-                    Top =7870
+                    Top =7845
                     Width =3300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =14
                     ForeColor =4205854
@@ -889,9 +889,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6350
-                    LayoutCachedTop =7870
+                    LayoutCachedTop =7845
                     LayoutCachedWidth =9650
-                    LayoutCachedHeight =8370
+                    LayoutCachedHeight =8395
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -947,6 +947,8 @@ Begin Form
                     TabIndex =18
                     MultiSelect =2
                     Name ="uxReportsDue"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Value List"
                     ColumnWidths ="0;3600;1200;2400;1600;1650"
                     OnDblClick ="=UXDueOpenMember()"
@@ -964,6 +966,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxReportsDue"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Reports due"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =9450
@@ -981,6 +985,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_0"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",0)"
                     Tag ="SORT:uxReportsDue:0"
@@ -998,6 +1004,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_1"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",1)"
                     Tag ="SORT:uxReportsDue:1"
@@ -1015,6 +1023,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_2"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",2)"
                     Tag ="SORT:uxReportsDue:2"
@@ -1032,6 +1042,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_3"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",3)"
                     Tag ="SORT:uxReportsDue:3"
@@ -1049,6 +1061,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_4"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",4)"
                     Tag ="SORT:uxReportsDue:4"
@@ -1066,6 +1080,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_uxReportsDue_5"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmHome\",\"uxReportsDue\",5)"
                     Tag ="SORT:uxReportsDue:5"
@@ -1078,9 +1094,9 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =2850
-                    Top =11350
-                    Width =3700
+                    Left =4800
+                    Top =11950
+                    Width =6100
                     Height =450
                     FontSize =10
                     TabIndex =19
@@ -1089,10 +1105,10 @@ Begin Form
                     Name ="txtDueReason"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =11350
-                    LayoutCachedWidth =6550
-                    LayoutCachedHeight =11800
+                    LayoutCachedLeft =4800
+                    LayoutCachedTop =11950
+                    LayoutCachedWidth =10900
+                    LayoutCachedHeight =12400
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -1101,25 +1117,28 @@ Begin Form
                         Begin Label
                             OverlapFlags =95
                             Left =2850
-                            Top =11350
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtDueReason"
-                            Caption ="Reason to dismiss a due report"
+                            Top =12000
+                            Width =1900
+                            Height =350
+                            FontSize =10
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblDueReason"
+                            Caption ="Dismiss reason"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =11350
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =11365
+                            LayoutCachedTop =12000
+                            LayoutCachedWidth =4750
+                            LayoutCachedHeight =12350
                         End
                     End
                 End
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =6700
+                    Left =2850
                     Top =11350
-                    Width =2100
+                    Width =2400
                     Height =450
                     FontSize =10
                     TabIndex =20
@@ -1129,9 +1148,9 @@ Begin Form
                     OnClick ="=UXDueCreate()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =6700
+                    LayoutCachedLeft =2850
                     LayoutCachedTop =11350
-                    LayoutCachedWidth =8800
+                    LayoutCachedWidth =5250
                     LayoutCachedHeight =11800
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1157,8 +1176,8 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =10900
-                    Top =11900
+                    Left =5400
+                    Top =11350
                     Width =2400
                     Height =450
                     FontSize =10
@@ -1170,49 +1189,9 @@ Begin Form
                     OnClick ="=UXDueCreateGroup()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =10900
-                    LayoutCachedTop =11900
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =12350
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =8950
-                    Top =11350
-                    Width =2100
-                    Height =450
-                    FontSize =10
-                    TabIndex =21
-                    ForeColor =4205854
-                    Name ="cmdDueDismiss"
-                    Caption ="Dismiss"
-                    OnClick ="=UXDueDismiss()"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =8950
+                    LayoutCachedLeft =5400
                     LayoutCachedTop =11350
-                    LayoutCachedWidth =11050
+                    LayoutCachedWidth =7800
                     LayoutCachedHeight =11800
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1238,9 +1217,49 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =11200
+                    Left =11050
+                    Top =11950
+                    Width =2250
+                    Height =450
+                    FontSize =10
+                    TabIndex =21
+                    ForeColor =4205854
+                    Name ="cmdDueDismiss"
+                    Caption ="Dismiss"
+                    OnClick ="=UXDueDismiss()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11050
+                    LayoutCachedTop =11950
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =12400
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7950
                     Top =11350
-                    Width =2100
+                    Width =2400
                     Height =450
                     FontSize =10
                     TabIndex =22
@@ -1250,9 +1269,9 @@ Begin Form
                     OnClick ="=UXDueDepartures()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =11200
+                    LayoutCachedLeft =7950
                     LayoutCachedTop =11350
-                    LayoutCachedWidth =13300
+                    LayoutCachedWidth =10350
                     LayoutCachedHeight =11800
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -1279,18 +1298,18 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =11900
-                    Width =7900
-                    Height =450
+                    Top =12550
+                    Width =10450
+                    Height =650
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxDueNote"
                     Caption =""
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =11900
-                    LayoutCachedWidth =10750
-                    LayoutCachedHeight =12350
+                    LayoutCachedTop =12550
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =13200
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -1336,6 +1355,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -1416,9 +1437,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6350
-                    Top =4100
+                    Top =4075
                     Width =3300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =16
                     ForeColor =4205854
@@ -1428,9 +1449,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6350
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4075
                     LayoutCachedWidth =9650
-                    LayoutCachedHeight =4600
+                    LayoutCachedHeight =4625
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1462,6 +1483,8 @@ Begin Form
                     TabIndex =17
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmHome\")"
                     ControlTipText ="Help for this window"

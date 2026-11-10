@@ -30,7 +30,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -46,7 +46,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -96,7 +96,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -116,7 +116,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -222,9 +222,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =4000
+                    Top =3975
                     Width =6000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =2
                     ForeColor =16777215
@@ -234,9 +234,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =4000
+                    LayoutCachedTop =3975
                     LayoutCachedWidth =6400
-                    LayoutCachedHeight =4500
+                    LayoutCachedHeight =4525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -261,9 +261,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6700
-                    Top =4000
+                    Top =3975
                     Width =6300
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =3
                     ForeColor =4205854
@@ -273,9 +273,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6700
-                    LayoutCachedTop =4000
+                    LayoutCachedTop =3975
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4500
+                    LayoutCachedHeight =4525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -306,6 +306,8 @@ Begin Form
                     TabIndex =4
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXSignoff\")"
                     ControlTipText ="Help for this window"
@@ -342,6 +344,8 @@ Begin Form
                     Height =400
                     FontSize =10
                     Name ="lblReport"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption =" "
                     LayoutCachedLeft =400
                     LayoutCachedTop =850
@@ -393,7 +397,7 @@ Begin Form
                             Name ="lblDispose"
                             Caption ="Dispose of drafts now (superseded draft versions, recovery and unposted note dra"
                                 "fts)"
-                            FontName ="Aptos Display"
+                            FontName ="Segoe UI"
                             LeftPadding =0
                             TopPadding =0
                             RightPadding =0

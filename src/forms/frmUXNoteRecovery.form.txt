@@ -26,7 +26,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -42,7 +42,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -81,7 +81,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -100,7 +100,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -172,6 +172,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstDrafts"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Unfinished notes"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1600
@@ -204,9 +206,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5550
+                    Top =5525
                     Width =6100
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
@@ -216,9 +218,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5550
+                    LayoutCachedTop =5525
                     LayoutCachedWidth =6500
-                    LayoutCachedHeight =6050
+                    LayoutCachedHeight =6075
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -243,9 +245,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6800
-                    Top =5550
+                    Top =5525
                     Width =6200
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =2
                     ForeColor =4205854
@@ -255,9 +257,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6800
-                    LayoutCachedTop =5550
+                    LayoutCachedTop =5525
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6050
+                    LayoutCachedHeight =6075
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -288,6 +290,8 @@ Begin Form
                     TabIndex =3
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXNoteRecovery\")"
                     ControlTipText ="Help for this window"
@@ -390,6 +394,8 @@ Begin Form
                     Height =100
                     TabIndex =4
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmUXNoteRecovery\"\",\"\"\"\")\""
 
                     LayoutCachedWidth =100

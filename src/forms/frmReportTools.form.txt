@@ -23,7 +23,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -39,7 +39,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -78,7 +78,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -97,7 +97,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -339,6 +339,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstMessages"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Message threads"
                             LayoutCachedLeft =200
                             LayoutCachedTop =1250
@@ -440,9 +442,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =200
-                    Top =6350
+                    Top =6335
                     Width =3900
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =10
                     ForeColor =4205854
@@ -452,9 +454,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =200
-                    LayoutCachedTop =6350
+                    LayoutCachedTop =6335
                     LayoutCachedWidth =4100
-                    LayoutCachedHeight =6770
+                    LayoutCachedHeight =6785
                     ForeThemeColorIndex =-1
                     UseTheme =0
                     Gradient =0
@@ -472,9 +474,9 @@ Begin Form
                     OverlapFlags =255
                     TextFontFamily =34
                     Left =4300
-                    Top =4100
+                    Top =4085
                     Width =3600
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -484,9 +486,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4300
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4085
                     LayoutCachedWidth =7900
-                    LayoutCachedHeight =4520
+                    LayoutCachedHeight =4535
                     ForeThemeColorIndex =-1
                     UseTheme =0
                     Gradient =0
@@ -504,9 +506,9 @@ Begin Form
                     OverlapFlags =255
                     TextFontFamily =34
                     Left =8100
-                    Top =4100
+                    Top =4085
                     Width =3900
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =12
                     ForeColor =4205854
@@ -516,9 +518,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8100
-                    LayoutCachedTop =4100
+                    LayoutCachedTop =4085
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =4520
+                    LayoutCachedHeight =4535
                     ForeThemeColorIndex =-1
                     UseTheme =0
                     Gradient =0
@@ -769,6 +771,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstFindings"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Validation findings"
                             LayoutCachedLeft =200
                             LayoutCachedTop =1300
@@ -807,6 +811,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtEvidence"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Finding details"
                             LayoutCachedLeft =200
                             LayoutCachedTop =3700
@@ -1161,6 +1167,8 @@ Begin Form
                     Height =100
                     TabIndex =26
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"\""
 
                     LayoutCachedWidth =100

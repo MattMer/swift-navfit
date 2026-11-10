@@ -92,7 +92,9 @@ Public Function UXWindowHelpLayout(ByVal formName As String, Optional ByVal view
     UXVisualSet f!cmdWindowHelp, "Width", 500: UXVisualSet f!cmdWindowHelp, "Height", 400
     If UXHasControl(f, "uxContext") Then
         'The editor's output actions share the context line's row.
-        If UXHasControl(f, "uxCreatePDF") Then
+        If UXHasControl(f, "uxPreviousReport") Then
+            UXVisualSet f!uxContext, "Width", f!uxPreviousReport.Left - f!uxContext.Left - 150
+        ElseIf UXHasControl(f, "uxCreatePDF") Then
             UXVisualSet f!uxContext, "Width", f!uxCreatePDF.Left - f!uxContext.Left - 150
         Else
             UXVisualSet f!uxContext, "Width", f!cmdWindowHelp.Left - f!uxContext.Left - 150

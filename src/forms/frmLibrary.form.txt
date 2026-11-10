@@ -28,7 +28,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -56,7 +56,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -95,7 +95,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -114,7 +114,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -135,7 +135,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -224,6 +224,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstFolders"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Folders"
                             LayoutCachedLeft =2866
                             LayoutCachedTop =1500
@@ -366,6 +368,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstReports"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Reports"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =3250
@@ -1073,9 +1077,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5904
-                    Top =840
+                    Top =815
                     Width =2590
-                    Height =500
+                    Height =550
                     FontSize =10
                     FontWeight =700
                     TabIndex =19
@@ -1086,9 +1090,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5904
-                    LayoutCachedTop =840
+                    LayoutCachedTop =815
                     LayoutCachedWidth =8494
-                    LayoutCachedHeight =1340
+                    LayoutCachedHeight =1365
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -1215,9 +1219,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =11664
-                    Top =2520
+                    Top =2495
                     Width =1575
-                    Height =400
+                    Height =450
                     FontSize =10
                     TabIndex =23
                     ForeColor =4205854
@@ -1227,9 +1231,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11664
-                    LayoutCachedTop =2520
+                    LayoutCachedTop =2495
                     LayoutCachedWidth =13239
-                    LayoutCachedHeight =2920
+                    LayoutCachedHeight =2945
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1292,6 +1296,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -1326,6 +1332,8 @@ Begin Form
                     TabIndex =24
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmLibrary\")"
                     ControlTipText ="Help for this window"
@@ -1365,6 +1373,8 @@ Begin Form
                     FontSize =10
                     TabIndex =25
                     Name ="cboRankFilter"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Value List"
                     RowSource ="\"All ranks/rates\""
                     AfterUpdate ="=RefreshLibrary()"
@@ -1383,6 +1393,8 @@ Begin Form
                             Height =300
                             FontSize =10
                             Name ="lblcboRankFilter"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Rank / rate"
                             LayoutCachedLeft =11664
                             LayoutCachedTop =1450
@@ -1397,6 +1409,8 @@ Begin Form
                     Width =1800
                     Height =450
                     Name ="txtPeriodFrom"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     FontSize =10
                     ForeColor =2692374
                     BackColor =16777215
@@ -1411,6 +1425,8 @@ Begin Form
                             FontSize =9
                             ForeColor =2692374
                             Name ="lbltxtPeriodFrom"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Period overlaps from"
                         End
                     End
@@ -1421,6 +1437,8 @@ Begin Form
                     Width =1800
                     Height =450
                     Name ="txtPeriodThrough"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     FontSize =10
                     ForeColor =2692374
                     BackColor =16777215
@@ -1435,6 +1453,8 @@ Begin Form
                             FontSize =9
                             ForeColor =2692374
                             Name ="lbltxtPeriodThrough"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Through"
                         End
                     End
@@ -1445,6 +1465,8 @@ Begin Form
                     Width =2500
                     Height =450
                     Name ="cboSavedFilter"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     FontSize =10
                     ForeColor =2692374
                     BackColor =16777215
@@ -1462,6 +1484,8 @@ Begin Form
                             FontSize =9
                             ForeColor =2692374
                             Name ="lblcboSavedFilter"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Saved filter"
                         End
                     End
@@ -1472,6 +1496,8 @@ Begin Form
                     Width =1500
                     Height =450
                     Name ="cmdSaveFilter"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     FontSize =10
                     ForeColor =2692374
                     BackColor =16777215
@@ -1484,6 +1510,8 @@ Begin Form
                     Width =1550
                     Height =450
                     Name ="cmdDeleteFilter"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     FontSize =10
                     ForeColor =2692374
                     BackColor =16777215

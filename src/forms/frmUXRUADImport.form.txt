@@ -30,7 +30,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -46,7 +46,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -96,7 +96,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -115,7 +115,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -136,7 +136,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -225,6 +225,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtPath"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Roster file (NRRM CSV or MNA workbook)"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1350
@@ -383,6 +385,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstRows"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="RUAD rows"
                             LayoutCachedLeft =400
                             LayoutCachedTop =3250
@@ -599,6 +603,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtDetails"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Row details"
                             LayoutCachedLeft =6100
                             LayoutCachedTop =4100
@@ -631,9 +637,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =7900
+                    Top =7875
                     Width =3800
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =9
                     ForeColor =4205854
@@ -643,9 +649,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7900
+                    LayoutCachedTop =7875
                     LayoutCachedWidth =4200
-                    LayoutCachedHeight =8400
+                    LayoutCachedHeight =8425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -671,9 +677,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4500
-                    Top =7900
+                    Top =7875
                     Width =3800
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =10
                     ForeColor =8746084
@@ -683,9 +689,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4500
-                    LayoutCachedTop =7900
+                    LayoutCachedTop =7875
                     LayoutCachedWidth =8300
-                    LayoutCachedHeight =8400
+                    LayoutCachedHeight =8425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -710,9 +716,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8600
-                    Top =7900
+                    Top =7875
                     Width =4400
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -722,9 +728,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8600
-                    LayoutCachedTop =7900
+                    LayoutCachedTop =7875
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8400
+                    LayoutCachedHeight =8425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -755,6 +761,8 @@ Begin Form
                     TabIndex =13
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXRUADImport\")"
                     ControlTipText ="Help for this window"
@@ -901,6 +909,8 @@ Begin Form
                     Height =100
                     TabIndex =14
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmUXRUADImport\"\",\"\"\"\")\""
 
                     LayoutCachedWidth =100

@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -93,7 +93,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -168,9 +168,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =2850
+                    Top =2875
                     Width =10584
-                    Height =600
+                    Height =550
                     FontSize =10
                     ForeColor =4205854
                     Name ="cmdNAVFIT"
@@ -179,9 +179,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2850
+                    LayoutCachedTop =2875
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =3450
+                    LayoutCachedHeight =3425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -206,9 +206,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =3700
+                    Top =3725
                     Width =10584
-                    Height =600
+                    Height =550
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
@@ -218,9 +218,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3700
+                    LayoutCachedTop =3725
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =4300
+                    LayoutCachedHeight =4275
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -245,9 +245,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =5400
+                    Top =5375
                     Width =2940
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =2
                     ForeColor =4205854
@@ -257,9 +257,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =5400
+                    LayoutCachedTop =5375
                     LayoutCachedWidth =5790
-                    LayoutCachedHeight =5900
+                    LayoutCachedHeight =5925
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -626,6 +626,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -644,6 +646,8 @@ Begin Form
                     TabIndex =10
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXImportChoose\")"
                     ControlTipText ="Help for this window"

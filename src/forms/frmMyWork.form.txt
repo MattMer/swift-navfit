@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -55,7 +55,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -105,7 +105,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -124,7 +124,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -145,7 +145,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -362,6 +362,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtContributor"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Contributor name"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =4350
@@ -456,9 +458,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =10100
-                    Top =3840
+                    Top =3815
                     Width =3200
-                    Height =400
+                    Height =450
                     FontSize =10
                     TabIndex =53
                     ForeColor =4205854
@@ -469,9 +471,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =10100
-                    LayoutCachedTop =3840
+                    LayoutCachedTop =3815
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =4240
+                    LayoutCachedHeight =4265
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -612,6 +614,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstTasks"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Tasks"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =3350
@@ -627,9 +631,9 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =5850
+                    Top =6150
                     Width =10450
-                    Height =1300
+                    Height =1250
                     FontSize =10
                     TabIndex =7
                     BorderColor =13285543
@@ -639,9 +643,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =5850
+                    LayoutCachedTop =6150
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =7150
+                    LayoutCachedHeight =7400
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -650,16 +654,19 @@ Begin Form
                         Begin Label
                             OverlapFlags =95
                             Left =2850
-                            Top =5850
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtHistory"
-                            Caption ="Assignment history"
+                            Top =5800
+                            Width =10450
+                            Height =300
+                            FontSize =10
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblHistory"
+                            Caption ="Selected work item history"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =5850
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =5865
+                            LayoutCachedTop =5800
+                            LayoutCachedWidth =13300
+                            LayoutCachedHeight =6100
                         End
                     End
                 End
@@ -876,9 +883,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5500
-                    Top =8700
+                    Top =8675
                     Width =2400
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -889,9 +896,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =8700
+                    LayoutCachedTop =8675
                     LayoutCachedWidth =7900
-                    LayoutCachedHeight =9200
+                    LayoutCachedHeight =9225
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -917,9 +924,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8150
-                    Top =8700
+                    Top =8675
                     Width =2400
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =12
                     ForeColor =2500257
@@ -930,9 +937,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =8150
-                    LayoutCachedTop =8700
+                    LayoutCachedTop =8675
                     LayoutCachedWidth =10550
-                    LayoutCachedHeight =9200
+                    LayoutCachedHeight =9225
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -958,9 +965,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10800
-                    Top =8700
+                    Top =8675
                     Width =2500
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =13
                     ForeColor =4205854
@@ -971,9 +978,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =10800
-                    LayoutCachedTop =8700
+                    LayoutCachedTop =8675
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =9200
+                    LayoutCachedHeight =9225
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -998,10 +1005,10 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =2850
-                    Top =8700
-                    Width =2400
-                    Height =500
+                    Left =8200
+                    Top =7650
+                    Width =5100
+                    Height =450
                     FontSize =10
                     TabIndex =10
                     ForeColor =4205854
@@ -1011,10 +1018,10 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
 
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =8700
-                    LayoutCachedWidth =5250
-                    LayoutCachedHeight =9200
+                    LayoutCachedLeft =8200
+                    LayoutCachedTop =7650
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =8100
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1384,9 +1391,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxWorkTab0"
@@ -1395,9 +1402,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =4550
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1422,9 +1429,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4600
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
@@ -1434,9 +1441,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4600
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =6300
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1462,9 +1469,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6350
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =2
                     ForeColor =4205854
@@ -1474,9 +1481,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6350
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =8050
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1593,6 +1600,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anuxCompactNav"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Workspace navigation"
                             LayoutCachedLeft =250
                             LayoutCachedTop =150
@@ -1641,6 +1650,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstWork"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="My work"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =3400
@@ -1672,8 +1683,8 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =8100
-                    Width =10450
+                    Top =7650
+                    Width =5100
                     Height =450
                     FontSize =10
                     TabIndex =9
@@ -1685,9 +1696,9 @@ Begin Form
                     Tag ="MWX:body"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =8100
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =8550
+                    LayoutCachedTop =7650
+                    LayoutCachedWidth =7950
+                    LayoutCachedHeight =8100
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1769,6 +1780,8 @@ Begin Form
                     TabIndex =32
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmMyWork\")"
                     ControlTipText ="Help for this window"
@@ -1800,9 +1813,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8100
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =33
                     ForeColor =4205854
@@ -1812,9 +1825,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8100
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =9800
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     ForeThemeColorIndex =-1
                     UseTheme =0
                     Gradient =0
@@ -2099,6 +2112,8 @@ Begin Form
                     Height =100
                     TabIndex =37
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmMyWork\"\",\"\"UXWorkChanged()\"\")\""
 
                     LayoutCachedWidth =100
@@ -2107,19 +2122,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =9850
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =38
                     Name ="uxWorkCounselingTab"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Counseling"
                     OnClick ="=UXMyWorkMode(\"Counseling\")"
 
                     LayoutCachedLeft =9850
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =11550
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     Gradient =0
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -2135,6 +2152,8 @@ Begin Form
                     Height =550
                     FontSize =10
                     Name ="lblCounselingScope"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Midterm counseling"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
@@ -2170,6 +2189,8 @@ Begin Form
                             Height =400
                             FontSize =10
                             Name ="lblCounselingAll"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Show every active member"
                             Tag ="MWX:body"
                             LayoutCachedLeft =3300
@@ -2193,6 +2214,8 @@ Begin Form
                     FontSize =10
                     TabIndex =40
                     Name ="lstCounseling"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Value List"
                     ColumnWidths ="0;3300;1100;2000;1100;1400;1500"
                     OnDblClick ="=UXMyWorkCounselingRecord()"
@@ -2212,6 +2235,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstCounseling"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Midterm counseling"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =4000
@@ -2229,6 +2254,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_0"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",0)"
                     Tag ="SORT:lstCounseling:0"
@@ -2246,6 +2273,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_1"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",1)"
                     Tag ="SORT:lstCounseling:1"
@@ -2263,6 +2292,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_2"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",2)"
                     Tag ="SORT:lstCounseling:2"
@@ -2280,6 +2311,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_3"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",3)"
                     Tag ="SORT:lstCounseling:3"
@@ -2297,6 +2330,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_4"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",4)"
                     Tag ="SORT:lstCounseling:4"
@@ -2314,6 +2349,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_5"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",5)"
                     Tag ="SORT:lstCounseling:5"
@@ -2331,6 +2368,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstCounseling_6"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstCounseling\",6)"
                     Tag ="SORT:lstCounseling:6"
@@ -2349,6 +2388,8 @@ Begin Form
                     FontSize =10
                     TabIndex =41
                     Name ="cmdCounselingRecord"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Record counseling for selected member"
                     OnClick ="=UXMyWorkCounselingRecord()"
                     Tag ="MWX:body"
@@ -2374,6 +2415,8 @@ Begin Form
                     FontSize =10
                     TabIndex =42
                     Name ="cmdCounselingMember"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Open member history"
                     OnClick ="=UXMyWorkCounselingMember()"
                     Tag ="MWX:body"
@@ -2392,19 +2435,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =11600
-                    Top =1850
+                    Top =1825
                     Width =1700
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =44
                     Name ="uxWorkDeparturesTab"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Departures"
                     OnClick ="=UXMyWorkMode(\"Departures\")"
 
                     LayoutCachedLeft =11600
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =1825
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =2350
+                    LayoutCachedHeight =2375
                     Gradient =0
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -2420,6 +2465,8 @@ Begin Form
                     Height =550
                     FontSize =10
                     Name ="lblDeparturesScope"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Departures"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
@@ -2455,6 +2502,8 @@ Begin Form
                             Height =400
                             FontSize =10
                             Name ="lblDeparturesAll"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Also show dismissed and returned departures"
                             Tag ="MWX:body"
                             LayoutCachedLeft =3300
@@ -2478,6 +2527,8 @@ Begin Form
                     FontSize =10
                     TabIndex =46
                     Name ="lstDepartures"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Value List"
                     ColumnWidths ="0;3200;1100;2100;1400;1300;1350"
                     OnDblClick ="=UXMyWorkDepartureMember()"
@@ -2497,6 +2548,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstDepartures"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Departures to review"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =4000
@@ -2514,6 +2567,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_0"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",0)"
                     Tag ="SORT:lstDepartures:0"
@@ -2531,6 +2586,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_1"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",1)"
                     Tag ="SORT:lstDepartures:1"
@@ -2548,6 +2605,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_2"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",2)"
                     Tag ="SORT:lstDepartures:2"
@@ -2565,6 +2624,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_3"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",3)"
                     Tag ="SORT:lstDepartures:3"
@@ -2582,6 +2643,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_4"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",4)"
                     Tag ="SORT:lstDepartures:4"
@@ -2599,6 +2662,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_5"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",5)"
                     Tag ="SORT:lstDepartures:5"
@@ -2616,6 +2681,8 @@ Begin Form
                     Height =300
                     FontSize =9
                     Name ="sort_lstDepartures_6"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Sort"
                     OnClick ="=UXSortList(\"frmMyWork\",\"lstDepartures\",6)"
                     Tag ="SORT:lstDepartures:6"
@@ -2633,6 +2700,8 @@ Begin Form
                     Height =350
                     FontSize =10
                     Name ="lblDepartureEntry"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Detachment date (for Confirm) and reason (required to Dismiss)"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
@@ -2673,6 +2742,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtDepartureDate"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Detachment date"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =6750
@@ -2714,6 +2785,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtDepartureReason"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Departure reason"
                             LayoutCachedLeft =5450
                             LayoutCachedTop =6750
@@ -2732,6 +2805,8 @@ Begin Form
                     FontSize =10
                     TabIndex =49
                     Name ="cmdDepartureConfirm"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Confirm departure"
                     OnClick ="=UXMyWorkDepartureResolve(\"Confirm\")"
                     Tag ="MWX:body"
@@ -2757,6 +2832,8 @@ Begin Form
                     FontSize =10
                     TabIndex =50
                     Name ="cmdDepartureDismiss"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Dismiss (still aboard)"
                     OnClick ="=UXMyWorkDepartureResolve(\"Dismiss\")"
                     Tag ="MWX:body"
@@ -2782,6 +2859,8 @@ Begin Form
                     FontSize =10
                     TabIndex =51
                     Name ="cmdDepartureMember"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Open member history"
                     OnClick ="=UXMyWorkDepartureMember()"
                     Tag ="MWX:body"
@@ -2810,6 +2889,8 @@ Begin Form
                     FontSize =10
                     TabIndex =43
                     Name ="lstContributors"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;6800"
                     OnDblClick ="=ContributorUI(\"Switch\")"
@@ -2830,6 +2911,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstContributors"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Contributors"
                             LayoutCachedLeft =2850
                             LayoutCachedTop =2900

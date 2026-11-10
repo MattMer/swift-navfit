@@ -26,7 +26,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -42,7 +42,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -81,7 +81,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -100,7 +100,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -121,7 +121,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -237,6 +237,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtContext"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Source context"
                             LayoutCachedLeft =400
                             LayoutCachedTop =1750
@@ -281,6 +283,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancboTable"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Source table"
                             LayoutCachedLeft =400
                             LayoutCachedTop =4200
@@ -472,6 +476,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstFields"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Fields"
                             LayoutCachedLeft =400
                             LayoutCachedTop =5650
@@ -575,6 +581,8 @@ Begin Form
                     TabIndex =9
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmProvenance\")"
                     ControlTipText ="Help for this window"
@@ -765,6 +773,8 @@ Begin Form
                     Height =100
                     TabIndex =10
                     Name ="uxSortActivateOriginal"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     DefaultValue ="\"=UXVisualEvent(\"\"frmProvenance\"\",\"\"\"\")\""
 
                     LayoutCachedWidth =100

@@ -91,8 +91,16 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
      role = "Error": tone = "ErrorInk"
     ElseIf key = "uxmarksigned" Or key = "uxmarksignedmember" Or key = "uxmarkgroupsigned" Then
      role = "Primary": tone = "White": UXVisualSet c, "BackStyle", 1
-    ElseIf c.FontBold Or key = "cmdsave" Or key = "cmdapply" Or key = "cmdcreate" Or key = "cmdnew" Or key = "cmdimport" Or key = "cmdexport" Or key = "cmdopen" Then
+    ElseIf c.FontBold Or key = "cmdsave" Or key = "cmdapply" Or key = "cmdcreate" Or key = "cmdimport" Or key = "cmdexport" Or key = "cmdopen" Then
      role = "Primary": tone = "White"
+    ElseIf key = "cmdnew" Then
+     'One main action per screen: New leads only where there is no available Open, or no Save.
+     If Not UXHasControl(f, "cmdSave") Then
+      role = "Primary": tone = "White"
+      If UXHasControl(f, "cmdOpen") Then
+       If f!cmdOpen.Enabled Then role = "Neutral": tone = "Ink"
+      End If
+     End If
     End If
     If key = "uxdirty" Then
      role = UXStatusRole(c.Caption, key)

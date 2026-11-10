@@ -26,7 +26,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -42,7 +42,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -81,7 +81,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -100,7 +100,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -121,7 +121,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =2102279
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -316,9 +316,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =5700
-                    Top =1700
+                    Top =1685
                     Width =6300
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
@@ -329,9 +329,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =5700
-                    LayoutCachedTop =1700
+                    LayoutCachedTop =1685
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =2120
+                    LayoutCachedHeight =2135
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -463,6 +463,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstSteps"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Route steps"
                             LayoutCachedLeft =200
                             LayoutCachedTop =4300
@@ -506,6 +508,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtStep"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Step details"
                             LayoutCachedLeft =6200
                             LayoutCachedTop =4300
@@ -566,9 +570,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =200
-                    Top =7400
+                    Top =7385
                     Width =2800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =6
                     ForeColor =4205854
@@ -579,9 +583,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =200
-                    LayoutCachedTop =7400
+                    LayoutCachedTop =7385
                     LayoutCachedWidth =3000
-                    LayoutCachedHeight =7820
+                    LayoutCachedHeight =7835
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -607,9 +611,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =3200
-                    Top =7400
+                    Top =7385
                     Width =2800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =7
                     ForeColor =2500257
@@ -620,9 +624,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =3200
-                    LayoutCachedTop =7400
+                    LayoutCachedTop =7385
                     LayoutCachedWidth =6000
-                    LayoutCachedHeight =7820
+                    LayoutCachedHeight =7835
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -648,9 +652,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =6200
-                    Top =7400
+                    Top =7385
                     Width =2800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =8
                     ForeColor =4205854
@@ -661,9 +665,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =6200
-                    LayoutCachedTop =7400
+                    LayoutCachedTop =7385
                     LayoutCachedWidth =9000
-                    LayoutCachedHeight =7820
+                    LayoutCachedHeight =7835
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -689,9 +693,9 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =9200
-                    Top =7400
+                    Top =7385
                     Width =2800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =9
                     ForeColor =4205854
@@ -702,9 +706,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =9200
-                    LayoutCachedTop =7400
+                    LayoutCachedTop =7385
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =7820
+                    LayoutCachedHeight =7835
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -730,9 +734,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =200
-                    Top =7950
+                    Top =7935
                     Width =3800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =10
                     ForeColor =4205854
@@ -743,9 +747,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =200
-                    LayoutCachedTop =7950
+                    LayoutCachedTop =7935
                     LayoutCachedWidth =4000
-                    LayoutCachedHeight =8370
+                    LayoutCachedHeight =8385
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -770,9 +774,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4200
-                    Top =7950
+                    Top =7935
                     Width =3800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -783,9 +787,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =4200
-                    LayoutCachedTop =7950
+                    LayoutCachedTop =7935
                     LayoutCachedWidth =8000
-                    LayoutCachedHeight =8370
+                    LayoutCachedHeight =8385
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -810,9 +814,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8200
-                    Top =7950
+                    Top =7935
                     Width =3800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =12
                     ForeColor =4205854
@@ -823,9 +827,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =8200
-                    LayoutCachedTop =7950
+                    LayoutCachedTop =7935
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =8370
+                    LayoutCachedHeight =8385
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -869,9 +873,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =200
-                    Top =9550
+                    Top =9535
                     Width =5700
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =13
                     ForeColor =4205854
@@ -881,9 +885,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =200
-                    LayoutCachedTop =9550
+                    LayoutCachedTop =9535
                     LayoutCachedWidth =5900
-                    LayoutCachedHeight =9970
+                    LayoutCachedHeight =9985
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -908,9 +912,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6200
-                    Top =9550
+                    Top =9535
                     Width =5800
-                    Height =420
+                    Height =450
                     FontSize =10
                     TabIndex =14
                     ForeColor =4205854
@@ -921,9 +925,9 @@ Begin Form
                     Tag ="ROUTE"
 
                     LayoutCachedLeft =6200
-                    LayoutCachedTop =9550
+                    LayoutCachedTop =9535
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =9970
+                    LayoutCachedHeight =9985
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -977,6 +981,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancboReviewMode"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Review mode"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -1062,6 +1068,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="antxtAssignmentHistory"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Assignment history"
                             LayoutCachedLeft =200
                             LayoutCachedTop =3350

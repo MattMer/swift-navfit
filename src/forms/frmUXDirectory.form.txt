@@ -27,7 +27,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -43,7 +43,7 @@ Begin Form
             FontSize =11
             FontWeight =400
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ForeThemeColorIndex =0
             ForeTint =75.0
@@ -82,7 +82,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -101,7 +101,7 @@ Begin Form
             FontSize =11
             ForeColor =4210752
             BorderColor =10921638
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             AllowValueListEdits =1
             InheritValueList =1
@@ -162,9 +162,9 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     IMESentenceMode =3
-                    Left =400
+                    Left =1350
                     Top =1750
-                    Width =9500
+                    Width =8550
                     Height =450
                     FontSize =10
                     BorderColor =13285543
@@ -173,7 +173,7 @@ Begin Form
                     AfterUpdate ="=UXDirectoryLoad()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =400
+                    LayoutCachedLeft =1350
                     LayoutCachedTop =1750
                     LayoutCachedWidth =9900
                     LayoutCachedHeight =2200
@@ -185,16 +185,19 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =1750
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtSearch"
-                            Caption ="Search members"
+                            Top =1800
+                            Width =900
+                            Height =350
+                            FontSize =10
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblSearch"
+                            Caption ="Search"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =1750
-                            LayoutCachedWidth =415
-                            LayoutCachedHeight =1765
+                            LayoutCachedTop =1800
+                            LayoutCachedWidth =1300
+                            LayoutCachedHeight =2150
                         End
                     End
                 End
@@ -275,6 +278,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anlstMembers"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="Members"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2400
@@ -287,9 +292,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5900
+                    Top =5875
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =3
                     ForeColor =16777215
@@ -299,9 +304,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5900
+                    LayoutCachedTop =5875
                     LayoutCachedWidth =4400
-                    LayoutCachedHeight =6400
+                    LayoutCachedHeight =6425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -326,9 +331,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4650
-                    Top =5900
+                    Top =5875
                     Width =4100
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =4
                     ForeColor =4205854
@@ -338,9 +343,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4650
-                    LayoutCachedTop =5900
+                    LayoutCachedTop =5875
                     LayoutCachedWidth =8750
-                    LayoutCachedHeight =6400
+                    LayoutCachedHeight =6425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -365,9 +370,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9000
-                    Top =5900
+                    Top =5875
                     Width =4000
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =5
                     ForeColor =4205854
@@ -377,9 +382,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9000
-                    LayoutCachedTop =5900
+                    LayoutCachedTop =5875
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6400
+                    LayoutCachedHeight =6425
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -404,9 +409,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6600
+                    Top =6575
                     Width =12600
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =6
                     ForeColor =4205854
@@ -416,9 +421,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6600
+                    LayoutCachedTop =6575
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =7100
+                    LayoutCachedHeight =7125
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -443,9 +448,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =7300
+                    Top =7275
                     Width =12600
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =7
                     ForeColor =4205854
@@ -455,9 +460,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7300
+                    LayoutCachedTop =7275
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =7800
+                    LayoutCachedHeight =7825
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -482,9 +487,9 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =8000
+                    Top =7975
                     Width =12600
-                    Height =500
+                    Height =550
                     FontSize =10
                     TabIndex =8
                     ForeColor =4205854
@@ -494,9 +499,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =8000
+                    LayoutCachedTop =7975
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8500
+                    LayoutCachedHeight =8525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -527,6 +532,8 @@ Begin Form
                     TabIndex =9
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="?"
                     OnClick ="=UXWindowHelp(\"frmUXDirectory\")"
                     ControlTipText ="Help for this window"
@@ -558,19 +565,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     Left =400
-                    Top =8700
+                    Top =8675
                     Width =12600
-                    Height =500
+                    Height =550
                     TabIndex =10
                     ForeColor =16777215
                     Name ="cmdMerge"
+                    FontName ="Segoe UI"
+                    ThemeFontIndex =-1
                     Caption ="Review possible duplicate Sailors"
                     OnClick ="=UXDirectoryMergeOpen()"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =8700
+                    LayoutCachedTop =8675
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =9200
+                    LayoutCachedHeight =9225
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =5948108

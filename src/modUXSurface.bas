@@ -671,7 +671,7 @@ Public Function UXResizeEditor(Optional ByVal viewportWidth As Long = 0, Optiona
         GoTo Render
     End If
     f.ScrollBars = 0
-    f!uxContext.Left = 2850: f!uxContext.Top = 300
+    f!uxContext.Left = 2850: f!uxContext.Top = 300: f!uxContext.Height = 520
     f!uxReport.Left = 2850: f!uxReport.Top = 850: f!uxReport.Width = width - 5900: f!uxReport.Height = 650
     f!cboKind.Left = width - 2850: f!cboKind.Top = 1000: f!cboKind.Width = 2500
     f!uxTypeCaption.Left = width - 4650: f!uxTypeCaption.Top = 650: f!uxTypeCaption.Width = 4300

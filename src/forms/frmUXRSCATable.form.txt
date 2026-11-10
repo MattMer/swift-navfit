@@ -22,7 +22,7 @@ Begin Form
             FontSize =11
             BorderColor =8355711
             ForeColor =6710886
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             GridlineColor =10921638
             ThemeFontIndex =1
             BackThemeColorIndex =1
@@ -42,7 +42,7 @@ Begin Form
             FontSize =11
             BorderColor =10921638
             ForeColor =4210752
-            FontName ="Aptos"
+            FontName ="Segoe UI"
             AsianLineBreak =1
             GridlineColor =10921638
             BackThemeColorIndex =1
@@ -215,6 +215,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E1 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =500
@@ -258,6 +260,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E1 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =500
@@ -301,6 +305,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E1 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =500
@@ -381,6 +387,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E2 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =890
@@ -424,6 +432,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E2 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =890
@@ -467,6 +477,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E2 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =890
@@ -547,6 +559,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E3 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =1280
@@ -590,6 +604,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E3 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =1280
@@ -633,6 +649,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E3 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =1280
@@ -713,6 +731,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E4 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =1670
@@ -756,6 +776,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E4 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =1670
@@ -799,6 +821,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E4 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =1670
@@ -879,6 +903,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E5 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =2060
@@ -922,6 +948,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E5 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =2060
@@ -965,6 +993,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E5 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =2060
@@ -1045,6 +1075,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E6 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =2450
@@ -1088,6 +1120,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E6 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =2450
@@ -1131,6 +1165,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E6 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =2450
@@ -1211,6 +1247,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E7 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =2840
@@ -1254,6 +1292,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E7 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =2840
@@ -1297,6 +1337,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E7 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =2840
@@ -1377,6 +1419,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E8 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =3230
@@ -1420,6 +1464,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E8 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =3230
@@ -1463,6 +1509,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E8 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =3230
@@ -1543,6 +1591,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgE9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E9 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =3620
@@ -1586,6 +1636,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountE9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E9 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =3620
@@ -1629,6 +1681,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateE9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="E9 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =3620
@@ -1709,6 +1763,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgW1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W1 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =4010
@@ -1752,6 +1808,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountW1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W1 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =4010
@@ -1795,6 +1853,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateW1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W1 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =4010
@@ -1875,6 +1935,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgW2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W2 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =4400
@@ -1918,6 +1980,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountW2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W2 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =4400
@@ -1961,6 +2025,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateW2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W2 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =4400
@@ -2041,6 +2107,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgW3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W3 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =4790
@@ -2084,6 +2152,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountW3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W3 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =4790
@@ -2127,6 +2197,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateW3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W3 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =4790
@@ -2207,6 +2279,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgW4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W4 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =5180
@@ -2250,6 +2324,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountW4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W4 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =5180
@@ -2293,6 +2369,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateW4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W4 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =5180
@@ -2373,6 +2451,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgW5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W5 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =5570
@@ -2416,6 +2496,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountW5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W5 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =5570
@@ -2459,6 +2541,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateW5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="W5 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =5570
@@ -2539,6 +2623,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O1 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =5960
@@ -2582,6 +2668,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O1 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =5960
@@ -2625,6 +2713,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO1"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O1 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =5960
@@ -2705,6 +2795,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O2 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =6350
@@ -2748,6 +2840,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O2 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =6350
@@ -2791,6 +2885,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO2"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O2 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =6350
@@ -2871,6 +2967,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O3 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =6740
@@ -2914,6 +3012,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O3 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =6740
@@ -2957,6 +3057,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO3"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O3 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =6740
@@ -3037,6 +3139,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O4 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =7130
@@ -3080,6 +3184,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O4 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =7130
@@ -3123,6 +3229,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO4"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O4 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =7130
@@ -3203,6 +3311,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O5 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =7520
@@ -3246,6 +3356,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O5 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =7520
@@ -3289,6 +3401,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO5"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O5 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =7520
@@ -3369,6 +3483,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O6 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =7910
@@ -3412,6 +3528,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O6 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =7910
@@ -3455,6 +3573,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO6"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O6 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =7910
@@ -3535,6 +3655,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O7 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =8300
@@ -3578,6 +3700,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O7 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =8300
@@ -3621,6 +3745,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO7"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O7 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =8300
@@ -3701,6 +3827,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O8 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =8690
@@ -3744,6 +3872,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O8 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =8690
@@ -3787,6 +3917,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO8"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O8 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =8690
@@ -3867,6 +3999,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O9 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =9080
@@ -3910,6 +4044,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O9 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =9080
@@ -3953,6 +4089,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO9"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O9 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =9080
@@ -4033,6 +4171,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="anavgO10"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O10 RSCA"
                             LayoutCachedLeft =1100
                             LayoutCachedTop =9470
@@ -4076,6 +4216,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="ancountO10"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O10 previous graded traits"
                             LayoutCachedLeft =2400
                             LayoutCachedTop =9470
@@ -4119,6 +4261,8 @@ Begin Form
                             Height =15
                             FontSize =1
                             Name ="andateO10"
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
                             Caption ="O10 as of date"
                             LayoutCachedLeft =4600
                             LayoutCachedTop =9470
