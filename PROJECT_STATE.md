@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.55.0-dev | 48 | Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.54.0 | 45 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.54.0), 7 Nov 2026. Full release gate passed, including schemas 1–45 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.54.0` | 45 | The release commit. Earlier: `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.55.0 | 48 | Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.55.0 | 48 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.55.0), 9 Nov 2026. Full release gate passed, including schemas 1–48 and retained populated releases. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
+| Latest source tag | `v0.55.0` | 48 | The release commit. Earlier: `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 
@@ -142,6 +142,16 @@ import and print-ready PDF output.
     Settings & Help import into a new blank workspace.
 
 ## Feature status
+
+Release 0.55.0 (9 November 2026, schema 48) adds EVAL block 44
+(Qualifications/Achievements) on the Back Page with NAVFIT98A and PDF import,
+PDF output and restore from retained NAVFIT98A imports; PDF comments printed at
+12 point with a 10-point fallback, and editor boxes that match the printed box;
+fit hints in the line meter; the EP and EP+MP spread beside the group RSCA;
+drafts and a summary group created together from Reports due; a print preview
+from the editor; a restricted-content check with dismissals, allowed phrases and
+checks that can be turned off; and screen polish (one font, labelled boxes, one
+main action per screen).
 
 Release 0.54.0 adds group directory refresh, editable source-match shading,
 report-to-report group navigation, full-NOB mark handling and mixed date/status

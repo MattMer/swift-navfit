@@ -329,6 +329,7 @@ Begin Form
                     ColumnWidths ="0;700;3300;4900;3600"
                     AfterUpdate ="=UXChecksSelect()"
                     FontName ="Segoe UI"
+                    OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =2400
@@ -746,5 +747,10 @@ Option Compare Database
 
 Private Sub lstItems_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If UXSortNativeHeader(Me.name, "lstItems", X, Y) Then Exit Sub
+
+End Sub
+
+Private Sub lstChecks_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstChecks", X, Y) Then Exit Sub
 
 End Sub

@@ -1,8 +1,8 @@
 # Swift NAVFIT User Guide
 
-Version 1.8 | 7 November 2026
+Version 1.9 | 9 November 2026
 
-For Swift NAVFIT 0.54.0 | schema 45
+For Swift NAVFIT 0.55.0 | schema 48
 
 ## Draft. Coordinate. Review. Preserve.
 
@@ -1051,6 +1051,6 @@ The reference eNavFit manual is used as an organizational model, not reproduced 
 
 ## 20.3 Maintenance
 
-Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covered application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. Version 1.8, 7 November 2026, covers application 0.54.0, schema 45, including startup safety warnings, the report lifecycle, ISIC and date fixes on PDF output, and opening PDF output without shell objects. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
+Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covered application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. Version 1.8, 7 November 2026, covers application 0.54.0, schema 45, including startup safety warnings, the report lifecycle, ISIC and date fixes on PDF output, and opening PDF output without shell objects. Version 1.9, 9 November 2026, covers application 0.55.0, schema 48, including EVAL block 44, PDF comments at 12 or 10 point, fit hints, the EP and EP+MP spread, drafts and a summary group from Reports due, the print preview and content checks. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
 
 Start with this guide for current user procedures. Older feature guides retain historical service and verification detail and may describe superseded windows or review/comment behavior. The repository's current-state notes identify the latest delivered artifacts and remaining work.

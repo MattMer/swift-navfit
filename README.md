@@ -10,7 +10,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 43-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 45-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 
@@ -99,12 +99,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.54.0
+### Current release: 0.55.0
 
-Download from the [0.54.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.54.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.55.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.55.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.54.0.accdb:** an empty workspace. Start real work here.
-- **Swift_NAVFIT_Demo_0.54.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_Blank_0.55.0.accdb:** an empty workspace. Start real work here.
+- **Swift_NAVFIT_Demo_0.55.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
 
 > **Not yet tested:**
 > 1. printed fit against the official forms;

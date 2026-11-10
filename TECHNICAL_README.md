@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.54.0, schema 45 (7 November 2026), tag `v0.54.0` |
+| Latest release | 0.55.0, schema 48 (9 November 2026), tag `v0.55.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.55.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.55.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 48 |
 | Imports accepted | Workspaces of schema 1 to 48, into a target of schema 21 to 48 |
 | Tables / enforced relationships | 83 / 169 |
@@ -611,6 +611,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 9 Nov 2026 | Release 0.55.0; full release gate and historical schemas 1-48 verified. |
 | 9 Nov 2026 | Screen polish, no schema change: every form control names Segoe UI (Aptos defaults and theme fonts removed); buttons use two heights, 450 or 550 twips, except 14 where the taller size would overlap; a New button is the main (dark blue) action only when the screen has no available Open and no Save; the editor's context line takes two lines beside the report buttons; visible labels for the Reports due dismiss reason, member directory and snippet search, snippet text and My Work history; Overview recent reports show ISO dates; Summary groups buttons in sentence case. |
 | 9 Nov 2026 | Schema 48: content checks can be turned off per match group (24, with stable IDs such as `RC-MEDICAL.conditions`). `RestrictedCheckOff` holds only the IDs that are off; no history is kept. The generator adds each group's label, the rule's plain-language reason and a regex-style display built from the same terms; the Content checks window has a Checks page with Turn on/off, Turn all off and Turn all on. |
 | 9 Nov 2026 | Schema 47: restricted-content check. Reviewed rules in `src/restricted-content.json` (BUPERSINST 1610.10H 13-5 a-j and related paragraphs, plus application checks) generate `modRestrictedRules` via `scripts/generate-restricted-content.py`; `modRestrictedContent` matches whole words with prefixes, near and unless (directional `<`) terms, classification markings, identifiers and capitals in plain VBA, caches per block, and adds `RC-` findings to live validation. `RestrictedDismissal` (per report, rule, block and matched words) and `RestrictedException` (phrase, optional rule) hold dismissals and allowed phrases; both are journaled and reversible (Validation issues, Allowed phrases window). About 1 ms per 5,000-character pass. |
