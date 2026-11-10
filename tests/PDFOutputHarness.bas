@@ -288,6 +288,58 @@ Public Function TestPDFOutput(ByVal root As String) As String
 Failed:
  TestPDFOutput = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
 End Function
+Private Function PDFFilePageCount(ByVal path As String) As Long
+ Dim f As Integer, data As String, at As Long
+ f = FreeFile: Open path For Binary Access Read As #f: data = Space$(LOF(f)): Get #f, , data: Close #f
+ at = InStr(1, data, "/Type/Page", vbBinaryCompare)
+ Do While at > 0
+  If Mid$(data, at + 10, 1) <> "s" Then PDFFilePageCount = PDFFilePageCount + 1
+  at = InStr(at + 10, data, "/Type/Page", vbBinaryCompare)
+ Loop
+End Function
+Private Function PacketPageCount(ByVal folder As String) As Long
+ Dim file As Variant
+ For Each file In PDFOutputJob()("Files")
+  If Right$(file, 12) = "__Packet.pdf" Then PacketPageCount = PDFFilePageCount(folder & "\" & file)
+ Next
+End Function
+'Pages print edge to edge. With a physical printer as Access's printer, Access spread each
+'page over several and warned that the section was wider than the page (0.55.0 on a
+'workstation whose default printer was a network printer). Output must not depend on it.
+Public Function TestPDFLayoutPrinter(ByVal root As String) As String
+ Dim g As Long, id As Long, other As Long, selected As Object, p As Access.Printer, layout As String, margined As String, expected As Long, folder As String
+ On Error GoTo Failed
+ layout = PDFLayoutPrinterName()
+ For Each p In Application.Printers
+  If p.DeviceName = "Microsoft Print to PDF" Then Check layout = p.DeviceName, "Microsoft Print to PDF is installed but not used for layout: " & layout
+ Next
+ For Each p In Application.Printers
+  If p.DeviceName <> layout And InStr(1, p.DeviceName, "PDF", vbTextCompare) = 0 And InStr(1, p.DeviceName, "XPS", vbTextCompare) = 0 And InStr(1, p.DeviceName, "Fax", vbTextCompare) = 0 Then margined = p.DeviceName: Exit For
+ Next
+ If DCount("*", "UserProfile") > 0 Then BindActiveContributor CLng(DMin("UserProfileID", "UserProfile"))
+ ConfigureWorkspace "SYNTHETIC PDF PRINTER", "Tester"
+ g = CreateSummaryGroup("Synthetic Printer Group", "EVAL", "E5")
+ id = CommitDraft(0, "EVAL", "Printer draft one", "ONE, TEST", Null, Null, "")
+ other = CommitDraft(0, "EVAL", "Printer draft two", "TWO, TEST", Null, Null, "")
+ AddGroupMember g, id, "E5": AddGroupMember g, other, "E5"
+ PDFOutputCapture g, 0, False
+ Set selected = CreateObject("Scripting.Dictionary"): selected(CStr(id)) = True: selected(CStr(other)) = True
+ Set Application.Printer = Application.Printers(layout)
+ folder = PDFOutputGenerate(root, selected, "Combined packet", True): expected = PacketPageCount(folder)
+ Check expected > 0, "Packet page count unreadable"
+ Check Application.Printer.DeviceName = layout, "Access printer not left as it was"
+ If margined <> "" Then
+  Set Application.Printer = Application.Printers(margined)
+  folder = PDFOutputGenerate(root, selected, "Combined packet", True)
+  Check PacketPageCount(folder) = expected, "Pages depend on Access's printer (" & margined & "): " & PacketPageCount(folder) & " pages, expected " & expected
+  Check Application.Printer.DeviceName = margined, "Access printer not restored after PDF output"
+ End If
+ Set Application.Printer = Nothing
+ TestPDFLayoutPrinter = "PASS: " & n & " layout printer assertions; " & expected & "-page packet laid out on " & layout & IIf(margined = "", "; no other printer installed to compare", "; same pages with " & margined & " as Access's printer"): Exit Function
+Failed:
+ Set Application.Printer = Nothing
+ TestPDFLayoutPrinter = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
+End Function
 Public Function TestPDFBoundaries(ByVal root As String) As String
  Dim g As Long, id As Long, current As Object, seed As Object, row As Object, fields As Object, rows As New Collection, selected As Object, key As Variant, i As Long, folder As String, other As Object, before As Long
  On Error GoTo Failed

@@ -35,6 +35,7 @@ Private Declare PtrSafe Function PDFTextExtent Lib "gdi32" Alias "GetTextExtentP
 Private Declare PtrSafe Function PDFTextMetrics Lib "gdi32" Alias "GetTextMetricsW" (ByVal dc As LongPtr, ByRef result As PDFFontMetrics) As Long
 Private Declare PtrSafe Function PDFTextFace Lib "gdi32" Alias "GetTextFaceW" (ByVal dc As LongPtr, ByVal count As Long, ByVal buffer As LongPtr) As Long
 Private metricDC As LongPtr, metricFont As LongPtr, metricOldFont As LongPtr
+Private layoutPrinter As String, sessionPrinter As Access.Printer
 'NAVFIT98A prints narratives with .NET Graphics.DrawString (GDI+) into fixed rectangles.
 'GdipMeasureString is the same layout engine. learn.microsoft.com/windows/win32/api/gdiplusflat/
 Private Type PDFRectF
@@ -309,6 +310,7 @@ Failed:
 End Function
 Private Sub ClosePrintReport()
     If CurrentProject.AllReports("rptPDFOutput").IsLoaded Then DoCmd.Close acReport, "rptPDFOutput", acSaveNo
+    RestoreSessionPrinter
     CloseMetricContext
 End Sub
 Public Sub PDFOutputEndPreview()
@@ -321,6 +323,7 @@ Public Sub PDFOutputEndPreview()
     previewFolder = "": cachePath = ""
 End Sub
 Public Function PDFOutputReportClosed() As Boolean
+    RestoreSessionPrinter
     If CurrentProject.AllForms("frmPDFOutput").IsLoaded Then Forms!frmPDFOutput.Visible = True
     PDFOutputReportClosed = True
 End Function
@@ -337,6 +340,7 @@ Public Sub PDFOutputPreviewPages(ByVal root As String, ByVal includeSummary As B
     previewFolder = fs.BuildPath(root, "PDF_Preview_" & ShortIdentity(NewIdentity()) & ".partial")
     fs.CreateFolder previewFolder: cachePath = previewFolder & "\pages.accdb"
     Call WritePageCache: outputFailure = ""
+    UsePDFLayoutPrinter
     DoCmd.OpenReport "rptPDFOutput", acViewPreview
     If outputFailure <> "" Then Err.Raise vbObjectError + 9108, "modPDFOutput.PDFOutputPreviewPages", outputFailure
 End Sub
@@ -374,7 +378,7 @@ End Sub
 Private Sub SetMetricFont(ByVal font As String, ByVal size As Double, Optional ByVal bold As Boolean = False)
     Dim driver As String, device As String, key As String, face As String, created As LongPtr, previous As LongPtr
     If metricDC = 0 Then
-        driver = "WINSPOOL": device = Application.Printer.DeviceName
+        driver = "WINSPOOL": device = PDFLayoutPrinterName()
         metricDC = PDFCreateDC(StrPtr(driver), StrPtr(device), 0, 0)
         If metricDC = 0 Then Err.Raise vbObjectError + 9110, "modPDFOutput.SetMetricFont", "Printer font metrics are unavailable. No PDF was generated."
         metricDpiX = PDFDeviceCaps(metricDC, 88): metricDpiY = PDFDeviceCaps(metricDC, 90)
@@ -427,7 +431,56 @@ Private Function PDFLineHeight(ByVal font As String, ByVal size As Double, Optio
     PDFLineHeight = metrics.Height * 72# / metricDpiY
     If Not compact Then PDFLineHeight = PDFLineHeight + metrics.ExternalLeading * 72# / metricDpiY
 End Function
+'Pages print edge to edge on Letter paper, so they are laid out on a printer with no
+'unprintable margin. Physical printers have one, and with one as the Windows default
+'Access spreads each page over several and warns that the section is wider than the
+'page. Microsoft Print to PDF (part of Windows) has none and is preferred; otherwise
+'any installed printer without a margin, the default first.
+Public Function PDFLayoutPrinterName() As String
+    Dim p As Access.Printer
+    If layoutPrinter <> "" Then PDFLayoutPrinterName = layoutPrinter: Exit Function
+    For Each p In Application.Printers
+        If p.DeviceName = "Microsoft Print to PDF" Then If PDFPrinterFullPage(p.DeviceName) Then layoutPrinter = p.DeviceName
+    Next
+    If layoutPrinter = "" Then If PDFPrinterFullPage(Application.Printer.DeviceName) Then layoutPrinter = Application.Printer.DeviceName
+    If layoutPrinter = "" Then
+        For Each p In Application.Printers
+            If PDFPrinterFullPage(p.DeviceName) Then layoutPrinter = p.DeviceName: Exit For
+        Next
+    End If
+    If layoutPrinter = "" Then Err.Raise vbObjectError + 9112, "modPDFOutput.PDFLayoutPrinterName", "Swift lays PDF pages out on Microsoft Print to PDF, which is part of Windows, and it is not available on this computer. Ask your IT support to turn it on (Windows features: Microsoft Print to PDF). No PDF was generated."
+    PDFLayoutPrinterName = layoutPrinter
+End Function
+'The report follows Access's printer, and a report cannot change printer when it opens
+'(error 2591), so Access's printer is switched for this session only while pages are laid
+'out. The Windows default printer is not changed.
+Private Sub UsePDFLayoutPrinter()
+    Dim name As String
+    name = PDFLayoutPrinterName()
+    If Application.Printer.DeviceName = name Then Exit Sub
+    If sessionPrinter Is Nothing Then Set sessionPrinter = Application.Printer
+    Set Application.Printer = Application.Printers(name)
+End Sub
+'Back to the printer Access had: the Windows default when that is the one, so Access
+'keeps following later changes to it.
+Private Sub RestoreSessionPrinter()
+    If sessionPrinter Is Nothing Then Exit Sub
+    On Error Resume Next
+    Set Application.Printer = Nothing
+    If Application.Printer.DeviceName <> sessionPrinter.DeviceName Then Set Application.Printer = sessionPrinter
+    Set sessionPrinter = Nothing
+End Sub
+Private Function PDFPrinterFullPage(ByVal device As String) As Boolean
+    Dim dc As LongPtr, driver As String
+    driver = "WINSPOOL"
+    dc = PDFCreateDC(StrPtr(driver), StrPtr(device), 0, 0)
+    If dc = 0 Then Exit Function
+    'PHYSICALOFFSETX/Y: the unprintable margin in device pixels.
+    PDFPrinterFullPage = (PDFDeviceCaps(dc, 112) = 0 And PDFDeviceCaps(dc, 113) = 0)
+    PDFDeleteDC dc
+End Function
 Private Sub CloseMetricContext()
+    layoutPrinter = ""
     If metricDC <> 0 Then
         If metricOldFont <> 0 Then PDFSelectObject metricDC, metricOldFont
         PDFDeleteDC metricDC
@@ -957,6 +1010,7 @@ Private Sub EmitPDF(ByVal destination As String)
     Set fs = CreateObject("Scripting.FileSystemObject")
     If fs.FileExists(destination) Or fs.FolderExists(destination) Then Err.Raise vbObjectError + 9107, "modPDFOutput.EmitPDF", "PDF destination already exists. Existing output was preserved."
     Call WritePageCache: outputFailure = ""
+    UsePDFLayoutPrinter
     DoCmd.OpenReport "rptPDFOutput", acViewPreview, , , acHidden
     DoCmd.OutputTo acOutputReport, "rptPDFOutput", acFormatPDF, destination, False, , , acExportQualityPrint
     ClosePrintReport

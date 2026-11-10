@@ -149,6 +149,8 @@ try {
     $macro=Join-Path $root 'src\AutoExec.txt'
     $app.LoadFromText(4,'AutoExec',$macro)
     $app.DoCmd.RunCommand(126)
+    # Hidden Access skips past a compile error without saying so; fail the build instead.
+    if(-not $app.IsCompiled){throw 'VBA source does not compile. Open the build in Access and use Debug > Compile to find the line.'}
     $app.CloseCurrentDatabase()
     $app.OpenCurrentDatabase($OutputPath,$true)
     . (Join-Path $PSScriptRoot 'verify-built-application.ps1')

@@ -309,7 +309,7 @@ Below the comments box, the line meter shows how many lines the comments take wh
 | Amber, "last line" | The comments fill the block; the next line will not fit. |
 | Red, "2 lines over its limit" | NAVFIT98A warns that text past its limit will be truncated when printed. |
 | "last line holds one word" | Shortening the text slightly would save a line. |
-| Line count unavailable (no printer) | Windows has no printer to measure with. Editing and saving carry on. |
+| Line count unavailable (no printer) | Swift measures text on Microsoft Print to PDF, and it is not available on this computer. Editing and saving carry on; ask IT support to turn it on (see 18.1). |
 
 The meter reproduces NAVFIT98A's print wrapping (Courier New in its printed block sizes) at its default comments pitch, which is how Swift's exports print. Hover over the meter to see the same comments measured on Swift's own PDF. The PDF prints the comments at 12 point; when they don't fit at 12 point it prints them at 10 point, as the form's "10 or 12 pitch" rule allows, and only text that still doesn't fit continues on an added page. Check the final print in NAVFIT98A. Validation also lists an **Information** finding, *Narrative is longer than NAVFIT98A's block*, for the comments, command employment, primary duties and, on a CHIEFEVAL, each performance comment. It never blocks saving, PDF output or NAVFIT98A export.
 
@@ -849,7 +849,7 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 1. In a report, choose **Create PDF**; in a summary group, choose **Preview / create PDFs**.
 2. For a group, leave **Summary letter first** ticked to put the FITREP/EVAL summary letter (NAVPERS 1610/1) at the front.
 3. Choose the group's **ISIC (summary letter)** and whether the report was **Submitted on time**. The group remembers its ISIC for next time.
-4. Choose **Preview printed pages** to check the pages, or **Create print-ready PDFs**.
+4. Choose **Preview printed pages** to check the pages, or **Create print-ready PDFs**. Swift lays the pages out on Microsoft Print to PDF, so your default printer does not matter.
 
 To check one report without leaving it, choose **Preview** at the top of the report. It shows that report's printed pages, unsaved edits included, in Access print preview, and creates no file. The first time, it asks you to choose a PDF output folder on **Create PDFs**, because the preview keeps a temporary page file there; the file is removed when you preview again, create PDFs or close the report.
 5. When the PDFs are created, **Findings and output information** shows the output folder's path and file names. Choose **Open first PDF** or **Open output folder**, or copy the path and paste it into File Explorer's address bar. On a workstation that blocks Access from opening files, copying the path is the way to reach them.
@@ -959,16 +959,16 @@ Microsoft Access cannot grow a database file past 2 GB. **Settings & Help** show
 
 When the warning appears, write a verified backup and plan to start a new blank workspace for new reports. Keep the full workspace and its backups as the record of earlier reports; nothing in it is deleted. Swift does not yet copy the member directory, reporting seniors or RSCA baselines into a new workspace on its own; re-enter or import those you still need.
 
----
-
-# 18. Troubleshooting and status reference
-
-
 ## 17.4 Check for a newer version
 
 **Settings & Help > About this version** shows the version you are running, its release date and the address where new releases are published. Copy the address into a web browser to check for a newer version. Swift NAVFIT never connects to the internet itself.
 
 Once a release is 90 days old, **Overview** shows one line above the heading saying so. It is a reminder only: the version keeps working. To upgrade, download the new Blank, then use **Import data from a previous Swift NAVFIT version** in the new file (see 17.1). Keep the old file until you have checked the new one.
+
+---
+
+# 18. Troubleshooting and status reference
+
 
 ## 18.1 Find the next action
 
@@ -985,6 +985,7 @@ Once a release is 90 days old, **Overview** shows one line above the heading say
 | Prior ITA is missing | Inspect the member link and prior evaluation records. Do not enter it in the read-only group reference cell. |
 | Import looks busy | Read the timestamped progress log. Wait for success/failure instead of launching another import. |
 | Workspace import rejected | Use an empty new Blank; check supported source version and log. Preserve the old file. |
+| "The section width is greater than the page width" when creating PDFs, or report pages split across several PDF pages | Swift lays PDF pages out on **Microsoft Print to PDF**, which is part of Windows, whatever your default printer is. If it says Microsoft Print to PDF is not available, ask IT support to turn it on (Windows features). Releases up to 0.55.0 use the Windows default printer instead: make Microsoft Print to PDF the default while you create PDFs (in **Settings > Bluetooth & devices > Printers & scanners**, turn off **Let Windows manage my default printer** first), then set your usual printer back. |
 | Cannot leave a report | Correct a failed save/checkpoint, or record/clear unfinished review decision text. Do not force-close to bypass it. |
 | Report/group seems missing | Clear search and filters; check archive status and the selected summary group. |
 | Notes are not in review queue | Open My Work's Report notes tab; communication is independent of approval tasks. |

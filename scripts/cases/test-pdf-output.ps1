@@ -60,6 +60,9 @@ try {
  $result=$app.Eval('TestPDFDraftsAndKinds("'+$folder.Replace('"','""')+'")');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
  $results+=$result
+ $result=$app.Eval('TestPDFLayoutPrinter("'+$folder.Replace('"','""')+'")');Write-Output $result
+ if($result -notlike 'PASS:*'){throw $result}
+ $results+=$result
  $result=$app.Eval('TestPDFBoundaries("'+$folder.Replace('"','""')+'")');Write-Output $result
  if($result -notlike 'PASS:*'){throw $result}
  $results+=$result
