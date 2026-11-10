@@ -106,7 +106,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =9000
+            Height =10700
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -828,7 +828,53 @@ Begin Form
                     LayoutCachedHeight =8850
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
-                End            End
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =2850
+                    Top =9400
+                    Width =9950
+                    Height =1100
+                    FontSize =10
+                    TabIndex =15
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtAbout"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =9400
+                    LayoutCachedWidth =12800
+                    LayoutCachedHeight =10500
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            Left =2850
+                            Top =9050
+                            Width =4000
+                            Height =350
+                            FontSize =10
+                            FontWeight =700
+                            FontName ="Segoe UI"
+                            ThemeFontIndex =-1
+                            ForeColor =4205854
+                            Name ="lblAbout"
+                            Caption ="About this version"
+                            LayoutCachedLeft =2850
+                            LayoutCachedTop =9050
+                            LayoutCachedWidth =6850
+                            LayoutCachedHeight =9400
+                        End
+                    End
+                End
+            End
         End
     End
 End

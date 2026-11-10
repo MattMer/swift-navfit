@@ -84,6 +84,7 @@ R14's remaining input-data limitation is recorded under F02.
 | ID | Work |
 | --- | --- |
 | T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. |
+| T06 | **Remove pre-35 import code with the next schema change (owner decision, 10 Nov 2026).** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 
@@ -117,7 +118,7 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
    provisioning can be resumed, and never overwrites existing command data.
 
 **Product invariants that still apply** ([CONTRIBUTING.md](../CONTRIBUTING.md#product-invariants-non-negotiable)):
-- Every release imports every earlier schema, in either mode.
+- Every release imports every supported schema, in either mode.
 - Schema changes are additive and versioned in both modes, and the SharePoint
   schema carries its own version, checked against the front end's.
 - Report history is never deleted, except confirmed draft disposal.
@@ -243,7 +244,7 @@ differs from SharePoint Online in sign-in and limits.
 - An incompatible or newer workspace is refused with a clear diagnosis.
 - Insufficient permissions are detected before any change is made.
 - Two concurrent users can't silently overwrite each other's edits.
-- Every earlier schema still imports.
+- Every supported schema still imports.
 - Native tests cover the provider layer in both modes; shared-mode tests run
   against a synthetic test site only.
 

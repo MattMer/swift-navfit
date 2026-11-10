@@ -669,6 +669,25 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
+                    Visible = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2850
+                    Top =680
+                    Width =10450
+                    Height =320
+                    FontSize =9
+                    ForeColor =4205854
+                    Name ="uxUpdateNote"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =680
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =1000
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =220

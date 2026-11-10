@@ -20,5 +20,5 @@ flowchart LR
 | I2 | Official PDF output | out | PDF on NAVPERS fillable templates | Unique sanitized filenames without SSNs; overflow handling; readback of saved fields | `test-pdf-output`, `test-pdf-reading` |
 | I3 | Structured PDF import | in | PDF (embedded form data) | Preview before commit; provenance retained | `test-external-import`, `test-pdf-reading`, `test-external-import` |
 | I4 | RUAD roster import | in | CSV | Match preview; manual-change protection | `test-external-import -SamplePath <synthetic CSV>`, `test-external-import` |
-| I5 | Earlier-workspace import | in | Access database, schemas 1–34 | Read-only DAO; source code never executed; every value verified before commit; blank target only | `test-workspace-migration`, `test-import-engine` |
+| I5 | Earlier-workspace import | in | Access database, schema 35 (release 0.49.0) to current | Read-only DAO; source code never executed; every value verified before commit; blank target only | `test-workspace-migration`, `test-import-engine` |
 | I6 | Backup and restore | out / in | Access database + JSON verification | Row-by-row verification; restore only into a blank workspace | `test-recovery` |

@@ -65,7 +65,15 @@ try {
  $app.DoCmd.OpenForm('frmUXSettings');[void]$app.Eval('UXSettingsActivate()')
  AssertBackup ($app.Eval('Forms!frmUXSettings!uxWorkspaceSize.Caption') -like 'Workspace file: * MB of the 2 GB Access limit (*%).') 'Settings & Help does not show the workspace size'
  AssertBackup ($app.Eval('WorkspaceFileBytes()') -eq (Get-Item -LiteralPath $source).Length) 'Workspace size differs from the file on disk'
+ AssertBackup ($app.Eval('Forms!frmUXSettings!txtAbout') -like ('Swift NAVFIT * schema *Newer releases: https://*does not connect to the internet.')) 'Settings & Help does not show About this version'
  $app.DoCmd.Close(2,'frmUXSettings',2)
+ #About this version and the 90-day Overview reminder: text only, no network use.
+ AssertBackup ($app.Eval('AppAboutText("")') -like '*Development build, not a published release.*') 'About text for a development build differs'
+ AssertBackup ($app.Eval('AppAboutText("2026-11-10")') -like '*Released 10 * 2026.*') 'About text does not show the release date'
+ AssertBackup (-not $app.Eval('UpdateReminderText("",DateSerial(2030,1,1))')) 'A development build shows the update reminder'
+ AssertBackup (-not $app.Eval('UpdateReminderText("2026-11-10",DateSerial(2027,2,7))')) 'Update reminder shows before 90 days'
+ AssertBackup ($app.Eval('UpdateReminderText("2026-11-10",DateSerial(2027,2,8))') -like 'This version is from 10 * 2026, over 90 days ago.*') 'Update reminder missing at 90 days'
+ AssertBackup (-not $app.Eval('UpdateReminderText("not-a-date",DateSerial(2030,1,1))')) 'An invalid release date shows the update reminder'
  $result=$app.Eval('PrepareBackupCheckpoint()');AssertBackup ($result -like 'PASS:*') $result
  AssertBackup ([bool]$app.Eval('CurrentProject.AllForms("frmEditor").IsLoaded')) 'Editor was not open with pending values'
  $evidence=$app.Eval('TryWorkspaceBackup('+(Quote $backup)+')')

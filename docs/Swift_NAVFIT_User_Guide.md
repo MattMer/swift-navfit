@@ -943,7 +943,7 @@ Use report Notes and replies for discussion. Use the official Front/Back report 
 
 Swift copies by table, restores relationships, and verifies original source values before committing. The source is read-only; source forms/code are not installed into the new application. Initial setup details in an otherwise blank destination are replaced by the source workspace's details.
 
-This is a whole-workspace transfer into an empty destination, not a merge between populated files. Future schemas and unrecognized source tables are rejected. On a reported failure, read the log and retain both files; do not delete source tables to force acceptance. The r126 release was tested against retained schema 1-26 fixtures.
+This is a whole-workspace transfer into an empty destination, not a merge between populated files. Future schemas and unrecognized source tables are rejected. Workspaces from before release 0.49.0 (schema 35) are also rejected: import such a file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace. On a reported failure, read the log and retain both files; do not delete source tables to force acceptance. The r126 release was tested against retained schema 1-26 fixtures.
 
 ## 17.2 Backup and restore
 
@@ -962,6 +962,13 @@ When the warning appears, write a verified backup and plan to start a new blank 
 ---
 
 # 18. Troubleshooting and status reference
+
+
+## 17.4 Check for a newer version
+
+**Settings & Help > About this version** shows the version you are running, its release date and the address where new releases are published. Copy the address into a web browser to check for a newer version. Swift NAVFIT never connects to the internet itself.
+
+Once a release is 90 days old, **Overview** shows one line above the heading saying so. It is a reminder only: the version keeps working. To upgrade, download the new Blank, then use **Import data from a previous Swift NAVFIT version** in the new file (see 17.1). Keep the old file until you have checked the new one.
 
 ## 18.1 Find the next action
 
@@ -1036,7 +1043,7 @@ This manual describes the Swift NAVFIT 0.54.0 local workflow. It is not a Navy i
 
 Swift does not provide BOL login, Navy role acknowledgment, online trusted-agent delegation, email delivery, automatic notifications, official signatures, or official submission. Contributor profiles and reporting-senior records are local data, not Navy account roles.
 
-Native automated checks cover defined workflows, every earlier workspace schema, accessibility names and contrast, and malformed import files. They do not establish physical display/DPI acceptance, screen-reader acceptance, every policy case, every NAVFIT round trip, or final printed fit. Free Access Runtime is not a supported target. Consult current release evidence for other platform limitations.
+Native automated checks cover defined workflows, every released workspace schema, accessibility names and contrast, and malformed import files. They do not establish physical display/DPI acceptance, screen-reader acceptance, every policy case, every NAVFIT round trip, or final printed fit. Free Access Runtime is not a supported target. Consult current release evidence for other platform limitations.
 
 ## 20.2 Reference basis
 

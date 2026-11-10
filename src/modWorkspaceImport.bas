@@ -135,7 +135,8 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  Set source = reader.OpenDatabase(path, False, True)
  stage = "Read source schema"
  Set r = source.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot): version = r!SchemaVersion: r.Close: Set r = Nothing
- If version < 1 Or version > SCHEMA_VERSION Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This source version is not supported by the current app. No data was changed."
+ If version >= 1 And version < 35 Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This workspace is from before release 0.49.0 (schema " & version & "). Import it into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here. No data was changed."
+ If version < 35 Or version > SCHEMA_VERSION Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "This source version is not supported by the current app. No data was changed."
  text = "Source: " & path & vbCrLf & "Schema " & version & " -> " & SCHEMA_VERSION & vbCrLf & vbCrLf
  stage = "Check backup receipt"
  Dim receipt As String

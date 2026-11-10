@@ -40,9 +40,9 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.55.0 (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.56.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 48 |
-| Imports accepted | Workspaces of schema 1 to 48, into a target of schema 21 to 48 |
+| Imports accepted | Workspaces of schema 35 to 48, into a target of schema 21 to 48 |
 | Tables / enforced relationships | 83 / 169 |
 | VBA modules / forms | 120 / 73 |
 | Report fields in the catalogue | 101 |
@@ -162,7 +162,7 @@ Every exchange is a file the user chooses. None is automatic.
 | Structured PDF import | in | PDF with embedded form data | Preview before anything is applied; provenance kept |
 | NRRM roster import | in | CSV | Match preview; manual changes on profiles are protected |
 | MNA roster import | in | Excel workbook (`.xlsx`), read as text by the Access engine | Headers checked; preview before anything is applied |
-| Earlier-workspace import | in | Access database (every earlier schema) | Read-only; its code is never run; every value verified before commit; blank target only |
+| Earlier-workspace import | in | Access database (schema 35 onward) | Read-only; its code is never run; every value verified before commit; blank target only |
 | Backup and restore | out and in | Access database with a verification record | Row-by-row verification; restore only into a blank workspace |
 
 The [SV-1 view](docs/architecture/views/SV-1.md) lists the test runner for each
@@ -403,13 +403,18 @@ Open recommendations: sign releases; optionally hash each saved revision.
 
 ## 9. Compatibility and upgrades
 
-- The importer accepts source workspaces of every earlier schema, from 1 to the
-  current one, into a target of schema 21 or later. It refuses a populated
+- The importer accepts source workspaces from schema 35 (release 0.49.0) to the
+  current one, into a target of schema 21 or later. Older workspaces are
+  refused with advice to import them into a 0.55.0 Blank first, which still
+  imports schemas 1–48. It refuses a populated
   target, an unknown source table, or a source newer than the application.
 - Referenced ISIC organizations are copied before summary groups so their links
   remain valid during schema 42 and later imports.
 - Every value is compared with the source before the import commits.
-- Every release runs the workspace-migration suite over every schema.
+- Every release runs the workspace-migration suite over every schema that
+  shipped in a release, listed in
+  [release-schemas.json](tests/historical-schemas/release-schemas.json), plus the
+  current one.
   [tests/historical-schemas](tests/historical-schemas/README.md) holds each
   older schema's DDL: 8–20 exact from Git, 21 onward captured from real builds,
   1–7 reconstructed (they predate Git; undocumented column changes there are
@@ -611,6 +616,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 10 Nov 2026 | Imports accepted from schema 35 (release 0.49.0) onward; the release gate tests release schemas only. Settings & Help > About this version and a 90-day Overview reminder, both offline. |
 | 9 Nov 2026 | Release 0.55.0; full release gate and historical schemas 1-48 verified. |
 | 9 Nov 2026 | Screen polish, no schema change: every form control names Segoe UI (Aptos defaults and theme fonts removed); buttons use two heights, 450 or 550 twips, except 14 where the taller size would overlap; a New button is the main (dark blue) action only when the screen has no available Open and no Save; the editor's context line takes two lines beside the report buttons; visible labels for the Reports due dismiss reason, member directory and snippet search, snippet text and My Work history; Overview recent reports show ISO dates; Summary groups buttons in sentence case. |
 | 9 Nov 2026 | Schema 48: content checks can be turned off per match group (24, with stable IDs such as `RC-MEDICAL.conditions`). `RestrictedCheckOff` holds only the IDs that are off; no history is kept. The generator adds each group's label, the rule's plain-language reason and a regex-style display built from the same terms; the Content checks window has a Checks page with Turn on/off, Turn all off and Turn all on. |

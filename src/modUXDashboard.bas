@@ -228,6 +228,10 @@ Public Function UXDashboardRefresh() As Boolean
     If Not UXHasControl(f, "uxRecentReports") Then Exit Function
     pid = ActiveContributorID()
     If UXHasControl(f, "uxContributor") Then f!uxContributor = pid
+    If UXHasControl(f, "uxUpdateNote") Then
+        f!uxUpdateNote.Caption = UpdateReminderText(APP_RELEASE_DATE, Date)
+        f!uxUpdateNote.Visible = (Len(f!uxUpdateNote.Caption) > 0)
+    End If
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
     f!uxGroupCount.Caption = CStr(DCount("*", "SummaryGroup", "IsArchived=False"))
     f!uxWorkCount.Caption = CStr(UXWorkCount())

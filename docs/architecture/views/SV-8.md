@@ -2,7 +2,7 @@
 
 # SV-8 Systems Evolution
 
-Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-workspace-migration`). Changes are additive: tables are added, never removed or renamed.
+Schema history from `tests/historical-schemas/` and the current build. Each release imports workspaces from schema 35 (release 0.49.0) onward through the production import (`test-workspace-migration`); release 0.55.0 also imports schemas 1-34 and bridges older workspaces. Changes are additive: tables are added, never removed or renamed.
 
 | Schema | Definition | Application | Tables | Tables added |
 | --- | --- | --- | --- | --- |
@@ -54,4 +54,4 @@ Schema history from `tests/historical-schemas/` and the current build. Every rel
 | 45 | captured | 0.54.0-dev | 80 | RevisionRetention |
 | 46 | captured | 0.55.0-dev | 80 | - |
 | 47 | captured | 0.55.0-dev | 82 | RestrictedDismissal, RestrictedException |
-| 48 | current build | 0.55.0 | 83 | RestrictedCheckOff |
+| 48 | current build | 0.56.0-dev | 83 | RestrictedCheckOff |

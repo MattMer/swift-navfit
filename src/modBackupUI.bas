@@ -28,6 +28,34 @@ Public Function UXSettingsActivate() As Boolean
     With Forms!frmUXSettings!uxWorkspaceSize
         .Caption = WorkspaceSizeText(bytes): .FontBold = WorkspaceSizeNearLimit(bytes)
     End With
+    If UXHasControl(Forms!frmUXSettings, "txtAbout") Then Forms!frmUXSettings!txtAbout = AppAboutText(APP_RELEASE_DATE)
+End Function
+'Version, release date and where to find newer releases. Text only: no network use.
+Public Function AppAboutText(ByVal releaseDate As String) As String
+    Dim text As String, released As Variant
+    text = "Swift NAVFIT " & APP_VERSION & ", schema " & SCHEMA_VERSION & "." & vbCrLf
+    released = ReleaseDateValue(releaseDate)
+    If IsNull(released) Then
+        text = text & "Development build, not a published release." & vbCrLf
+    Else
+        text = text & "Released " & Format$(released, "d mmmm yyyy") & "." & vbCrLf
+    End If
+    AppAboutText = text & "Newer releases: " & APP_UPDATES_URL & vbCrLf & "Copy the address into a web browser. Swift NAVFIT does not connect to the internet."
+End Function
+'A one-line Overview note once a release is 90 or more days old; empty otherwise.
+Public Function UpdateReminderText(ByVal releaseDate As String, ByVal today As Date) As String
+    Dim released As Variant
+    released = ReleaseDateValue(releaseDate)
+    If IsNull(released) Then Exit Function
+    If DateDiff("d", released, today) < 90 Then Exit Function
+    UpdateReminderText = "This version is from " & Format$(released, "d mmm yyyy") & ", over 90 days ago. A newer release may be available: see Settings & Help, About this version."
+End Function
+'yyyy-mm-dd to a date without relying on regional settings; Null when empty or invalid.
+Private Function ReleaseDateValue(ByVal releaseDate As String) As Variant
+    ReleaseDateValue = Null
+    If Not releaseDate Like "####-##-##" Then Exit Function
+    On Error Resume Next
+    ReleaseDateValue = DateSerial(CInt(Left$(releaseDate, 4)), CInt(Mid$(releaseDate, 6, 2)), CInt(Right$(releaseDate, 2)))
 End Function
 Public Function GuidedWorkspaceBackup() As Boolean
     Dim folder As Object, destination As String, evidence As String

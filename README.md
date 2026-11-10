@@ -10,7 +10,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 45-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 46-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 

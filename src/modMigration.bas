@@ -14,7 +14,10 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Set s = reader.OpenDatabase(sourcePath, False, True)
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
-    If ver < 1 Or ver > 48 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
+    'Schema 35 (release 0.49.0, the first public release) is the oldest imported.
+    'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces.
+    If ver >= 1 And ver < 35 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema " & ver & ". This version imports workspaces from release 0.49.0 (schema 35) onward. Import the file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here."
+    If ver < 35 Or ver > 48 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
     If targetVersion < 21 Or targetVersion > 48 Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through 48."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Migration cannot downgrade the source schema."

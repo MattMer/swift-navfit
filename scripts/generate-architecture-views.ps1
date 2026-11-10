@@ -126,7 +126,7 @@ $ov6a+='## Expanded rules with verified citations';$ov6a+='';$ov6a+='From `src/m
 $ov6a+=(Table @('Rule','Printed page','Locator') @($references|Sort-Object Code|ForEach-Object {,@($_.Code,$_.Page,$_.Locator)}))
 $out['OV-6a.md']=($ov6a -join $nl).TrimEnd()
 
-$sv8=@($generated,'','# SV-8 Systems Evolution','',('Schema history from `tests/historical-schemas/` and the current build. Every release imports every earlier schema through the production import (`test-workspace-migration`). Changes are additive: tables are added, never removed or renamed.'),'')
+$sv8=@($generated,'','# SV-8 Systems Evolution','',('Schema history from `tests/historical-schemas/` and the current build. Each release imports workspaces from schema 35 (release 0.49.0) onward through the production import (`test-workspace-migration`); release 0.55.0 also imports schemas 1-34 and bridges older workspaces. Changes are additive: tables are added, never removed or renamed.'),'')
 $prev=@();$rows=@()
 foreach($h in $history){$added=@($h.Tables|Where-Object {$prev -notcontains $_}|Sort-Object);$rows+=,@($h.Schema,$h.Kind,$h.App,$h.Tables.Count,$(if($prev.Count -eq 0){'(first captured)'}elseif($added.Count){$added -join ', '}else{'-'}));$prev=$h.Tables}
 $current=@($tables.Name);$added=@($current|Where-Object {$prev -notcontains $_}|Sort-Object)
@@ -159,13 +159,13 @@ $cdx=[ordered]@{bomFormat='CycloneDX';specVersion='1.5';version=1
  )}
 $out['../sbom.cdx.json']=($cdx|ConvertTo-Json -Depth 10)
 $migration=ReadText 'src/modMigration.bas'
-$sourceMax=[regex]::Match($migration,'If ver < 1 Or ver > (\d+) Then').Groups[1].Value
+$sourceRange=[regex]::Match($migration,'If ver < (\d+) Or ver > (\d+) Then');$sourceMin=$sourceRange.Groups[1].Value;$sourceMax=$sourceRange.Groups[2].Value
 $targetRange=[regex]::Match($migration,'targetVersion < (\d+) Or targetVersion > (\d+) Then')
 if(-not $sourceMax -or -not $targetRange.Success){throw 'Importer schema range not found in src/modMigration.bas'}
 $readmeFacts=@('| Fact | Value |','| --- | --- |',
  ('| Application version | '+$meta.App+' (`APP_VERSION` in `src/modSwift.bas`) |'),
  ('| Schema version | '+$meta.Schema+' |'),
- ('| Imports accepted | Workspaces of schema 1 to '+$sourceMax+', into a target of schema '+$targetRange.Groups[1].Value+' to '+$targetRange.Groups[2].Value+' |'),
+ ('| Imports accepted | Workspaces of schema '+$sourceMin+' to '+$sourceMax+', into a target of schema '+$targetRange.Groups[1].Value+' to '+$targetRange.Groups[2].Value+' |'),
  ('| Tables / enforced relationships | '+$tables.Count+' / '+$relations.Count+' |'),
  ('| VBA modules / forms | '+$modules+' / '+$forms+' |'),
  ('| Report fields in the catalogue | '+@($catalogue.fields).Count+' |'),

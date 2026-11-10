@@ -1,6 +1,10 @@
 # Historical schema definitions
 
-One file per Swift NAVFIT schema older than the current build.
+One file per Swift NAVFIT schema older than the current build. Since 10 November
+2026 the importer accepts schema 35 (release 0.49.0) onward, and the import test
+builds only the schemas listed in [release-schemas.json](release-schemas.json)
+plus the current one. The older files stay as the record of what shipped;
+release 0.55.0 was the last to import them.
 [test-swift-data-import.ps1](../../scripts/test-swift-data-import.ps1) builds each
 into a data-only database, seeds synthetic rows, imports it through the
 production Settings import and compares every row and field. Old release files

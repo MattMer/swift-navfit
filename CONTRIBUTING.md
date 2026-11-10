@@ -48,7 +48,7 @@ All scripts below live in [scripts/](scripts/). Native tests generally take
 | Report people | test-member-profiles.ps1; all 13 fields, revisions, restore, rollback and fresh-process recovery |
 | Structured names | test-member-profiles.ps1; ten parts/full names, punctuation/accents/case; no silent name normalization |
 | Viewing area/identity | test-workspace-presentation.ps1; control geometry, active field/caret; not physical DPI acceptance |
-| Schema/import engine | [test-workspace-migration.ps1](scripts/test-workspace-migration.ps1) -BuildPath <fresh blank> imports a seeded synthetic source for every schema from 1 to the build's, built from the per-schema files in [tests/historical-schemas](tests/historical-schemas/README.md), plus populated kept releases in `output/`; -Schemas '1-7,20' narrows a focused run. Use test-import-engine.ps1 -Tier release for engine verification as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
+| Schema/import engine | [test-workspace-migration.ps1](scripts/test-workspace-migration.ps1) -BuildPath <fresh blank> imports a seeded synthetic source for every schema that shipped in a release (listed in [release-schemas.json](tests/historical-schemas/release-schemas.json)) and the build's own, built from the per-schema files in [tests/historical-schemas](tests/historical-schemas/README.md), plus populated kept releases of those schemas in `output/`; -Schemas '35-41,44' narrows a focused run. Use test-import-engine.ps1 -Tier release for engine verification as applicable; exact values, IDs/relationships, source hashes, rollback/retry and reopen |
 | Canonical report definitions/revisions and typed persistence | test-source-contracts.ps1 (static; -BuildPath -Tier extended adds native catalogue recovery); test-recovery.ps1; test-workspace-migration.ps1 -BuildPath <fresh blank> -Cases test-persistence-transfer -LegacyTemplate <schema-27 blank> (manual case); exact raw/null/status/choice preservation, catalogue field extension, revision/cache ownership, constraints and rollback |
 | Summary-group completion/RSCA | test-reporting-senior-accounting.ps1; reconciliation, correction, duplicate/deletion/senior guards, cancelled legacy state and idempotent XML backfill. The default full suite also retains historical UI assertions; report any separate preexisting UI failure explicitly |
 | Provenance viewer | test-workspace-resources.ps1 on a current blank; self-contained synthetic receipts/raw values, filter isolation, Null/empty/long text and reopen; no external fixture required |
@@ -139,7 +139,10 @@ plans, but they never silently override the product invariants below.
 ## Product invariants (non-negotiable)
 
 - **Historical import:**
-  - Every release must import data from every previously supported schema.
+  - Every release must import data from every supported schema: schema 35
+    (release 0.49.0, the first public release) through the current one.
+    Release 0.55.0 is the last to import schemas 1–34; older workspaces go
+    through a 0.55.0 Blank first.
   - Preserve rows, fields, IDs and relationships, revision/review history,
     provenance, recovery, command members, notes, defaults and reporting-senior
     history.
@@ -149,9 +152,14 @@ plans, but they never silently override the product invariants below.
   - Never silently replace a populated workspace or merge records by ID.
 - **Schema policy:**
   - Changes are additive and versioned.
-  - The importer accepts source schemas 1 through the current `SCHEMA_VERSION`.
-    When the schema changes, raise the hard-coded bound in `modMigration`
-    alongside it. Never narrow the range.
+  - The importer accepts source schemas 35 through the current `SCHEMA_VERSION`.
+    When the schema changes, raise the hard-coded upper bound in `modMigration`
+    alongside it, and add the outgoing release's schema to
+    `tests/historical-schemas/release-schemas.json`. Raise the floor only on the
+    owner's decision, keeping one release that bridges the dropped schemas.
+  - The release gate tests every schema that shipped in a release plus the
+    current one. Development-only schemas between releases stay accepted but
+    are not retested.
   - Do not claim retesting you did not perform. PROJECT_STATE.md records which
     schemas were tested when, and the r128 old-output waiver.
 - **Report editor:**
@@ -267,7 +275,10 @@ folder in the repository.
 
 ## Releases (explicit request only)
 
-1. Build a new Blank and a separate synthetic Demo.
+1. Set `APP_VERSION` to the release number and `APP_RELEASE_DATE` to the release
+   date (yyyy-mm-dd) in `src/modSwift.bas`; after the release, return to the next
+   `-dev` version with an empty `APP_RELEASE_DATE`. Then build a new Blank and a
+   separate synthetic Demo.
 2. Run `scripts/release-check.ps1 -BlankPath <blank> -DemoPath <demo>` plus the
    feature-specific, data-transfer, rollback and unsupported-source checks that
    apply.

@@ -2,7 +2,7 @@ param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$Schemas,[string]$C
 $ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/data-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $dao=New-Object -ComObject DAO.DBEngine.120
-#Every schema from 1 to the build's schema gets a populated synthetic source.
+#Every supported schema that shipped in a release, plus the build's own, gets a populated synthetic source.
 #tests/historical-schemas holds one definition file per older schema (exact git
 #DDL, DDL captured from a real build, or a documented reconstruction); the
 #current schema is a copy of the build itself. Synthetic rows exercise every
@@ -29,8 +29,15 @@ $unicode=-join @([char]0x00C9,[char]0x00FC,[char]0x4E2D,[char]0x2019)
 $fieldDefinitions=@{};foreach($f in (Get-Content (Join-Path $root 'src/field-definitions.json') -Raw -Encoding UTF8|ConvertFrom-Json).fields){$fieldDefinitions[$f.key]=$f}
 function Scalar([string]$path,[string]$sql){$db=$dao.OpenDatabase($path,$false,$true);try{$r=$db.OpenRecordset($sql,4);$v=$r.Fields.Item(0).Value;$r.Close();return $v}finally{$db.Close()}}
 $current=[int](Scalar $BuildPath 'SELECT SchemaVersion FROM AppMetadata')
-#-Schemas takes a list such as '1-7,20' for focused runs; the default is every schema.
-$requested=if($Schemas){@($Schemas -split ','|ForEach-Object {if($_ -match '^\s*(\d+)\s*-\s*(\d+)\s*$'){[int]$Matches[1]..[int]$Matches[2]}else{[int]$_}})}elseif($CurrentFixturesOnly){@($current)}else{@(1..$current)}
+#Supported sources start at the release floor (tests/historical-schemas/release-schemas.json,
+#matched against modMigration). The default covers every schema that shipped in a release plus
+#the build's own; -Schemas takes a list such as '35-41,44' for focused runs.
+$releaseList=Get-Content (Join-Path $root 'tests/historical-schemas/release-schemas.json') -Raw|ConvertFrom-Json
+$minimum=[int]$releaseList.minimum
+$floor=[regex]::Match((Get-Content (Join-Path $root 'src/modMigration.bas') -Raw),'If ver < (\d+) Or ver > (\d+) Then')
+if(-not $floor.Success -or [int]$floor.Groups[1].Value -ne $minimum){throw 'release-schemas.json minimum does not match the importer floor in modMigration'}
+$releaseSchemas=@($releaseList.releases|ForEach-Object {[int]$_.schema}|Where-Object {$_ -ge $minimum -and $_ -le $current})
+$requested=if($Schemas){@($Schemas -split ','|ForEach-Object {if($_ -match '^\s*(\d+)\s*-\s*(\d+)\s*$'){[int]$Matches[1]..[int]$Matches[2]}else{[int]$_}})}elseif($CurrentFixturesOnly){@($current)}else{@($releaseSchemas+$current|Sort-Object -Unique)}
 # Reflection preserves DAO's Variant setter across mixed string/date/number fields.
 function SetField($record,[string]$key,$value){$field=$record.Fields.Item($key);[void]$field.GetType().InvokeMember('Value',[Reflection.BindingFlags]::SetProperty,$null,$field,@($value))}
 function IsNullValue($value){return $null -eq $value -or [Convert]::IsDBNull($value)}
@@ -278,7 +285,7 @@ if($FixturePath){
 }
 $fixtures=[ordered]@{}
 foreach($schema in ($requested|Sort-Object -Unique)){
- if($schema -lt 1 -or $schema -gt $current){throw ('Schema '+$schema+' is outside 1-'+$current)}
+ if($schema -lt $minimum -or $schema -gt $current){throw ('Schema '+$schema+' is outside the supported '+$minimum+'-'+$current)}
  $entries=@(if($schema -eq $current){$null}else{$catalogue|Where-Object {$_.schema -eq $schema}})
  if(-not $entries.Count){throw ('tests/historical-schemas has no definition for schema '+$schema+'; capture it with scripts/capture-schema-definition.ps1')}
  foreach($entry in $entries){
@@ -364,11 +371,13 @@ try{
  $rejected=(CallImport $bad) -like 'REJECTED:*'
  if(-not $rejected -or $app.Eval('DLookup("CommandName","Workspace")') -ne $bootstrap -or $app.Eval('DCount("*","ReportRevision")') -ne 0){throw 'Failed import did not restore bootstrap/empty data'}
  if($app.Eval('TryWorkspaceImport("'+$source+'","changed-hash")') -notlike 'REJECTED:*'){throw 'Changed-source guard failed'}
- foreach($guard in @('future','unknown')){
+ foreach($guard in @('future','unknown','old')){
   $invalid=Join-Path $folder ($guard+'-source.accdb');Copy-Item -LiteralPath $source -Destination $invalid
   $db=$dao.OpenDatabase($invalid)
-  try{if($guard -eq 'future'){$db.Execute('UPDATE AppMetadata SET SchemaVersion=999',128)}else{$db.Execute('CREATE TABLE FutureData (Item Long)',128)}}finally{$db.Close()}
-  if((CallImport $invalid) -notlike 'REJECTED:*' -or $app.Eval('DLookup("CommandName","Workspace")') -ne $bootstrap){throw ($guard+' guard failed')}
+  try{if($guard -eq 'future'){$db.Execute('UPDATE AppMetadata SET SchemaVersion=999',128)}elseif($guard -eq 'old'){$db.Execute('UPDATE AppMetadata SET SchemaVersion='+($minimum-1),128)}else{$db.Execute('CREATE TABLE FutureData (Item Long)',128)}}finally{$db.Close()}
+  $outcome=CallImport $invalid
+  if($outcome -notlike 'REJECTED:*' -or $app.Eval('DLookup("CommandName","Workspace")') -ne $bootstrap){throw ($guard+' guard failed')}
+  if($guard -eq 'old' -and $outcome -notlike '*0.55.0*'){throw ('Too-old source was rejected without the 0.55.0 bridge advice: '+$outcome)}
  }
  #A failure inside a post-copy migration (here a contributor whose audit identity
  #differs) must reach the import's own rollback, not an unhandled run-time dialog.
@@ -385,8 +394,8 @@ try{
  $rows=$app.Eval('DCount("*","Report")')
  if((CallImport $source) -notlike 'REJECTED:*' -or $app.Eval('DCount("*","Report")') -ne $rows){throw 'Populated target guard failed'}
  $app.CloseCurrentDatabase()
- $receipt=@{Status='PASS';Build=$BuildPath;BuildSchema=$current;Fixtures=$results;KeptReleases=$keptResults;HistoricalFixturesRetested=(-not $CurrentFixturesOnly);Rollback=$true;ChangedSourceRejected=$true;PopulatedTargetRejected=$true;UnknownTableRejected=$true;FutureSchemaRejected=$true;UIEntryPointTested=$true;AuditIdentityConflictRejected=($auditGuard -eq $true);Evidence=$folder}
+ $receipt=@{Status='PASS';Build=$BuildPath;BuildSchema=$current;Fixtures=$results;KeptReleases=$keptResults;HistoricalFixturesRetested=(-not $CurrentFixturesOnly);Rollback=$true;ChangedSourceRejected=$true;PopulatedTargetRejected=$true;UnknownTableRejected=$true;FutureSchemaRejected=$true;OldSchemaRejected=$true;SupportedMinimum=$minimum;UIEntryPointTested=$true;AuditIdentityConflictRejected=($auditGuard -eq $true);Evidence=$folder}
  $receipt|ConvertTo-Json -Depth 7|Set-Content (Join-Path $folder 'matrix.json')
  $receipt|ConvertTo-Json -Depth 7|Set-Content (Join-Path $root 'build/r115-data-import-verification.json')
- Write-Output ('PASS: '+$results.Count+' schema fixtures ('+(($results|ForEach-Object {$_.Schema})-join ',')+') and '+$keptResults.Count+' kept releases; production import, independent exact comparison, bootstrap rollback, changed-source, unknown-table, future-schema and populated-target guards; '+$folder)
+ Write-Output ('PASS: '+$results.Count+' schema fixtures ('+(($results|ForEach-Object {$_.Schema})-join ',')+') and '+$keptResults.Count+' kept releases; production import, independent exact comparison, bootstrap rollback, changed-source, unknown-table, too-old, future-schema and populated-target guards; '+$folder)
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

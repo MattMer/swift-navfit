@@ -1,0 +1,13 @@
+{
+  "note": "Schemas that shipped in a GitHub release. The import test covers these plus the build's own schema. When a release raises SCHEMA_VERSION, add the outgoing release here. minimum must match the floor in src/modMigration.bas.",
+  "minimum": 35,
+  "releases": [
+    { "version": "0.49.0", "schema": 35 },
+    { "version": "0.50.0", "schema": 35 },
+    { "version": "0.51.0", "schema": 36 },
+    { "version": "0.52.0", "schema": 41 },
+    { "version": "0.53.0", "schema": 44 },
+    { "version": "0.54.0", "schema": 45 },
+    { "version": "0.55.0", "schema": 48 }
+  ]
+}
