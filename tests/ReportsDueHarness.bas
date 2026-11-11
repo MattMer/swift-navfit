@@ -8,9 +8,18 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
 End Sub
 'The due item key for a member and basis, or "" when it is not listed.
 Private Function DueKey(ByVal items As Collection, ByVal name As String, ByVal basis As String) As String
+    Dim item As Variant, listed As String
+    'Items show the official report name (EVANS, FIVE); tests name members by display name.
+    listed = Nz(DLookup("ReportName", "CommandMember", "FullName='" & Replace(name, "'", "''") & "'"), name)
+    For Each item In items
+        If item(1) = listed And item(3) = basis Then DueKey = item(0) & "|" & item(3) & "|" & Format$(item(5), "yyyy-mm-dd"): Exit Function
+    Next
+End Function
+'The name a member is listed under in reports due.
+Private Function ListedAs(ByVal items As Collection, ByVal memberID As Long) As String
     Dim item As Variant
     For Each item In items
-        If item(1) = name And item(3) = basis Then DueKey = item(0) & "|" & item(3) & "|" & Format$(item(5), "yyyy-mm-dd"): Exit Function
+        If item(0) = memberID Then ListedAs = item(1): Exit Function
     Next
 End Function
 Private Function Refused(ByVal action As String, ByVal key As String) As Boolean
@@ -65,6 +74,7 @@ Public Function TestReportsDue() As String
     Set items = ReportsDueItems(asOf, missing)
     Check missing = 1, "Member without rank/rate not counted"
     Check DueKey(items, "EVANS FIVE", "Periodic") = e5 & "|Periodic|2026-03-15", "E-5 periodic date wrong"
+    Check ListedAs(items, e5) = "EVANS, FIVE", "Reports due not listed as LAST, FIRST"
     Check DueKey(items, "EDWARDS SIX", "Periodic") = e6 & "|Periodic|2025-11-15", "Overdue E-6 periodic missing"
     Check DueKey(items, "OWENS THREE", "Periodic") = o3 & "|Periodic|2026-01-31", "O-3 periodic date wrong"
     Check DueKey(items, "MASTER CHIEF", "Periodic") = e9 & "|Periodic|2026-04-15", "E-9 periodic before NAVADMIN 132/26 missing"
@@ -104,7 +114,7 @@ Public Function TestReportsDue() As String
     id = CreateDueDraft(key)
     Check DLookup("OccasionDetachment", "Report", "ReportID=" & id) = "Yes" And DLookup("PeriodStart", "Report", "ReportID=" & id) = #3/16/2026#, "Detachment draft wrong or did not start after the last report"
     Check DueKey(ReportsDueItems(asOf), "EVANS FIVE", "Detachment") = "", "Detachment draft did not clear the item"
-    Check InStr(ReportsDueRows(), "OWENS, THREE") = 0 And InStr(ReportsDueRows(), "OWENS THREE") > 0, "Due list rows wrong"
+    Check InStr(ReportsDueRows(), """OWENS, THREE""") > 0 And InStr(ReportsDueRows(), """OWENS THREE""") = 0, "Due list rows not LAST, FIRST"
 
     ' Date reported: entered on the profile, copied into new drafts, moved forward by a saved report.
     Check DateRefused(e6, "not a date") And DateRefused(e6, Format$(DateAdd("yyyy", 2, Date), "yyyy-mm-dd")), "Invalid date reported accepted"

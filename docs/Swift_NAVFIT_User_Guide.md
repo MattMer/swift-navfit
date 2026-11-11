@@ -127,13 +127,13 @@ Do not overwrite the old file with a new Blank. Open a separate new Blank and us
 ## 2.4 Change the active contributor
 
 1. Finish or save report work and close the report editor.
-2. Open **My Work**, then **Contributors**.
+2. Open **Resources**, then **Contributors**. The Contributors window opens.
 3. Double-click a name in the list (or select it and choose **Switch contributor**), or add a new contributor.
 4. Confirm the displayed active name before posting notes or recording review decisions.
 
 Contributor switching is guarded while report work is open. Do not bypass the guard by editing tables or creating a duplicate profile to impersonate another person.
 
-**Add a contributor.** Type a name and choose **Add contributor**, or choose **Add from directory** and pick a command member; the contributor is then named with their rank/rate and report name (for example, *LCDR JONES, PAUL A*) and linked to that member.
+**Add a contributor.** Type a name in **New contributor name** and choose **Add contributor**, or choose **Add from directory** and pick a command member; the contributor is then named with their rank/rate and report name (for example, *LCDR JONES, PAUL A*) and linked to that member.
 
 **Delete a contributor.** Select them and choose **Delete contributor**. You cannot delete the active contributor. Deleting someone:
 - removes them from every route template (a template left with no reviewers is deleted) and from every active review route. Later steps move up; if they held a report, the next reviewer now holds it; if they were the last reviewer, the route is complete with the reviewer before them; a route with no reviewer left is cancelled;
@@ -141,8 +141,6 @@ Contributor switching is guarded while report work is open. Do not bypass the gu
 - keeps their name on everything they already did (saved revisions, messages, decisions).
 
 Adding the same name again brings their profile back.
-
-![My Work > Contributors: switch, delete, or add a contributor by name or from the member directory.](images/my-work-contributors.png)
 
 ---
 
@@ -155,8 +153,8 @@ Adding the same name again brings their profile back.
 | Overview | Workspace status, work counts, reports due, and recovery entry points. |
 | Reports | Search, filters, report creation, import, and selected-report actions. |
 | Summary groups | Membership, shared defaults, traits, group status, and closeout. |
-| My Work | Assigned reviews, current route work, contributor controls, and report conversations. |
-| Resources | Reporting seniors, narrative snippets, and reference tools. |
+| My Work | Assigned reviews, current route work, the active contributor, and report conversations. |
+| Resources | Reporting seniors, contributors, the member directory, ISICs, narrative snippets, and reference tools. |
 | Settings & Help | Help, backups, transfer from older Swift versions, operation history, and diagnostics. |
 
 The top-right **?** opens help for the current window. Use the application's navigation and return buttons to keep the report or group context correct. Leaving a report follows its normal save/recovery guards. Leaving a group closes its working view so another group can open with the correct context.
@@ -292,7 +290,7 @@ Front Page follows the printed form's rows: blocks 5â€“9 share a row, as do 10â€
 
 ### Check that the comments fit
 
-The comments box, and block 44 on an EVAL, use the same font, point size, width and height as Swift's PDF, so the text wraps on screen where it will wrap on paper: Courier New on an EVAL and Times New Roman on a FITREP or CHIEFEVAL. The box shows 12 point and switches to 10 point as soon as the text no longer fits at 12 point, exactly as the PDF does.
+The comments box, and block 44 on an EVAL, use the same font, point size and width as Swift's PDF, so the text wraps on screen where it will wrap on paper, and each box is tall enough to show every line the PDF holds without scrolling: Courier New on an EVAL and Times New Roman on a FITREP or CHIEFEVAL. The box shows 12 point and switches to 10 point as soon as the text no longer fits at 12 point, exactly as the PDF does.
 
 Below the comments box, the line meter shows how many lines the comments take when NAVFIT98A prints them, for example **14 of 18 lines in NAVFIT98A**. It ends with the room left in Swift's PDF, for example **PDF 12 pt: 3 lines left (about 220 characters) before 10 pt**; once the comments need 10 point it reads **... before an added page**, and past that, how many lines continue on the added page. The character count is an estimate from the comments' own average character width. It updates shortly after you stop typing. The limits are NAVFIT98A's own, and they differ by report type:
 

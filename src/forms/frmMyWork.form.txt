@@ -246,7 +246,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =21
+                    TabIndex =20
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtReportID"
@@ -272,7 +272,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =22
+                    TabIndex =21
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtExpectedRevision"
@@ -288,220 +288,13 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin CommandButton
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =10100
-                    Top =2900
-                    Width =3200
-                    Height =400
-                    FontSize =10
-                    TabIndex =23
-                    ForeColor =4205854
-                    Name ="cmdSwitch"
-                    Caption ="Switch contributor"
-                    OnClick ="=ContributorUI(\"Switch\")"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =10100
-                    LayoutCachedTop =2900
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =3300
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
-                Begin TextBox
-                    OverlapFlags =223
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    Left =2850
-                    Top =4350
-                    Width =7000
-                    Height =450
-                    FontSize =10
-                    TabIndex =24
-                    BorderColor =13285543
-                    ForeColor =4205854
-                    Name ="txtContributor"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =9850
-                    LayoutCachedHeight =4800
-                    BackThemeColorIndex =-1
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                    Begin
-                        Begin Label
-                            OverlapFlags =93
-                            Left =2850
-                            Top =4350
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="antxtContributor"
-                            FontName ="Segoe UI"
-                            ThemeFontIndex =-1
-                            Caption ="Contributor name"
-                            LayoutCachedLeft =2850
-                            LayoutCachedTop =4350
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =4365
-                        End
-                    End
-                End
-                Begin CommandButton
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =10100
-                    Top =4350
-                    Width =3200
-                    Height =450
-                    FontSize =10
-                    TabIndex =25
-                    ForeColor =4205854
-                    Name ="cmdAdd"
-                    Caption ="Add contributor"
-                    OnClick ="=ContributorUI(\"Add\")"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =10100
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =4800
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
-                Begin CommandButton
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =10100
-                    Top =3370
-                    Width =3200
-                    Height =400
-                    FontSize =10
-                    TabIndex =52
-                    ForeColor =4205854
-                    Name ="cmdDeleteContributor"
-                    Caption ="Delete contributor"
-                    OnClick ="=ContributorUI(\"Delete\")"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =10100
-                    LayoutCachedTop =3370
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =3770
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
-                Begin CommandButton
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =10100
-                    Top =3815
-                    Width =3200
-                    Height =450
-                    FontSize =10
-                    TabIndex =53
-                    ForeColor =4205854
-                    Name ="cmdAddDirectory"
-                    Caption ="Add from directory"
-                    OnClick ="=ContributorUI(\"Directory\")"
-                    FontName ="Segoe UI"
-                    Tag ="MWX:body"
-
-                    LayoutCachedLeft =10100
-                    LayoutCachedTop =3815
-                    LayoutCachedWidth =13300
-                    LayoutCachedHeight =4265
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
                 Begin CheckBox
                     OverlapFlags =93
                     Left =2850
                     Top =2500
                     Width =300
                     Height =300
-                    TabIndex =4
+                    TabIndex =3
                     Name ="chkAll"
                     AfterUpdate ="=LoadMyWork()"
                     DefaultValue ="False"
@@ -542,7 +335,7 @@ Begin Form
                     Width =2300
                     Height =450
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =4
                     ForeColor =4205854
                     Name ="cmdRefresh"
                     Caption ="Refresh"
@@ -586,7 +379,7 @@ Begin Form
                     Width =10450
                     Height =1350
                     FontSize =10
-                    TabIndex =26
+                    TabIndex =22
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstTasks"
@@ -635,7 +428,7 @@ Begin Form
                     Width =10450
                     Height =1250
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =6
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtHistory"
@@ -700,7 +493,7 @@ Begin Form
                     Width =4800
                     Height =450
                     FontSize =10
-                    TabIndex =27
+                    TabIndex =23
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboReviewer"
@@ -749,7 +542,7 @@ Begin Form
                     Width =5200
                     Height =450
                     FontSize =10
-                    TabIndex =28
+                    TabIndex =24
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDue"
@@ -800,7 +593,7 @@ Begin Form
                     Width =10450
                     Height =1200
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =7
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtNotes"
@@ -846,7 +639,7 @@ Begin Form
                     Width =10450
                     Height =500
                     FontSize =10
-                    TabIndex =29
+                    TabIndex =25
                     ForeColor =4205854
                     Name ="cmdAssign"
                     Caption ="Assign saved revision"
@@ -887,7 +680,7 @@ Begin Form
                     Width =2400
                     Height =550
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =10
                     ForeColor =4205854
                     Name ="cmdAccept"
                     Caption ="Accept selected review"
@@ -928,7 +721,7 @@ Begin Form
                     Width =2400
                     Height =550
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =11
                     ForeColor =2500257
                     Name ="cmdReturn"
                     Caption ="Return selected review"
@@ -969,7 +762,7 @@ Begin Form
                     Width =2500
                     Height =550
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =12
                     ForeColor =4205854
                     Name ="cmdCancel"
                     Caption ="Cancel selected review"
@@ -1010,7 +803,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =9
                     ForeColor =4205854
                     Name ="cmdDraft"
                     Caption ="Open selected report"
@@ -1051,7 +844,7 @@ Begin Form
                     Width =3397
                     Height =550
                     FontSize =10
-                    TabIndex =30
+                    TabIndex =26
                     ForeColor =4205854
                     Name ="cmdHome"
                     Caption ="Home"
@@ -1129,7 +922,7 @@ Begin Form
                     Width =2100
                     Height =550
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =14
                     ForeColor =16777215
                     Name ="uxNav0"
                     Caption ="Overview"
@@ -1170,7 +963,7 @@ Begin Form
                     Width =2100
                     Height =550
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =15
                     ForeColor =16777215
                     Name ="uxNav1"
                     Caption ="Reports"
@@ -1211,7 +1004,7 @@ Begin Form
                     Width =2100
                     Height =550
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =16
                     ForeColor =16777215
                     Name ="uxNav2"
                     Caption ="Summary groups"
@@ -1253,7 +1046,7 @@ Begin Form
                     Height =550
                     FontSize =10
                     FontWeight =700
-                    TabIndex =18
+                    TabIndex =17
                     ForeColor =16777215
                     Name ="uxNav3"
                     Caption ="My Work"
@@ -1294,7 +1087,7 @@ Begin Form
                     Width =2100
                     Height =550
                     FontSize =10
-                    TabIndex =19
+                    TabIndex =18
                     ForeColor =16777215
                     Name ="uxNav4"
                     Caption ="Resources"
@@ -1335,7 +1128,7 @@ Begin Form
                     Width =2100
                     Height =550
                     FontSize =10
-                    TabIndex =20
+                    TabIndex =19
                     ForeColor =16777215
                     Name ="uxNav5"
                     Caption ="Settings && Help"
@@ -1465,46 +1258,6 @@ Begin Form
                     WebImagePaddingBottom =1
                     Overlaps =1
                 End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =6350
-                    Top =1825
-                    Width =1700
-                    Height =550
-                    FontSize =10
-                    TabIndex =2
-                    ForeColor =4205854
-                    Name ="uxWorkTab2"
-                    Caption ="Contributors"
-                    OnClick ="=UXMyWorkMode(\"Contributors\")"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =6350
-                    LayoutCachedTop =1825
-                    LayoutCachedWidth =8050
-                    LayoutCachedHeight =2375
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
                 Begin ComboBox
                     LimitToList = NotDefault
                     OverlapFlags =223
@@ -1516,7 +1269,7 @@ Begin Form
                     Width =10450
                     Height =450
                     FontSize =10
-                    TabIndex =31
+                    TabIndex =27
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxAssignReport"
@@ -1570,7 +1323,7 @@ Begin Form
                     Width =2500
                     Height =400
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =13
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxCompactNav"
@@ -1621,7 +1374,7 @@ Begin Form
                     Width =10450
                     Height =2300
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =5
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstWork"
@@ -1687,7 +1440,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =8
                     ForeColor =4205854
                     Name ="cmdOpenWork"
                     Caption ="Open selected work"
@@ -1730,7 +1483,7 @@ Begin Form
                     Width =4000
                     Height =420
                     FontSize =10
-                    TabIndex =3
+                    TabIndex =2
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxContributor"
@@ -1777,7 +1530,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =32
+                    TabIndex =28
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"
@@ -1812,21 +1565,21 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =8100
+                    Left =6350
                     Top =1825
                     Width =1700
                     Height =550
                     FontSize =10
-                    TabIndex =33
+                    TabIndex =29
                     ForeColor =4205854
                     Name ="uxWorkNotesTab"
                     Caption ="Report notes"
                     OnClick ="=UXMyWorkMode(\"Notes\")"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =8100
+                    LayoutCachedLeft =6350
                     LayoutCachedTop =1825
-                    LayoutCachedWidth =9800
+                    LayoutCachedWidth =8050
                     LayoutCachedHeight =2375
                     ForeThemeColorIndex =-1
                     UseTheme =0
@@ -1851,7 +1604,7 @@ Begin Form
                     Width =10450
                     Height =3700
                     FontSize =10
-                    TabIndex =34
+                    TabIndex =30
                     Name ="lstReportNotes"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;0;3200;1700;3500;1800"
@@ -1894,7 +1647,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =35
+                    TabIndex =31
                     ForeColor =4205854
                     Name ="cmdOpenReportNote"
                     Caption ="Open selected report conversation"
@@ -1926,7 +1679,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =36
+                    TabIndex =32
                     ForeColor =4205854
                     Name ="cmdRefreshReportNotes"
                     Caption ="Refresh report notes"
@@ -2110,7 +1863,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =100
                     Height =100
-                    TabIndex =37
+                    TabIndex =33
                     Name ="uxSortActivateOriginal"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2121,21 +1874,21 @@ Begin Form
                 End
                 Begin CommandButton
                     OverlapFlags =85
-                    Left =9850
+                    Left =8100
                     Top =1825
                     Width =1700
                     Height =550
                     FontSize =10
-                    TabIndex =38
+                    TabIndex =34
                     Name ="uxWorkCounselingTab"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
                     Caption ="Counseling"
                     OnClick ="=UXMyWorkMode(\"Counseling\")"
 
-                    LayoutCachedLeft =9850
+                    LayoutCachedLeft =8100
                     LayoutCachedTop =1825
-                    LayoutCachedWidth =11550
+                    LayoutCachedWidth =9800
                     LayoutCachedHeight =2375
                     Gradient =0
                     WebImagePaddingLeft =2
@@ -2169,7 +1922,7 @@ Begin Form
                     Width =300
                     Height =300
                     ColumnOrder =0
-                    TabIndex =39
+                    TabIndex =35
                     Name ="chkCounselingAll"
                     DefaultValue ="False"
                     AfterUpdate ="=UXMyWorkCounseling()"
@@ -2212,7 +1965,7 @@ Begin Form
                     Height =3100
                     ColumnOrder =0
                     FontSize =10
-                    TabIndex =40
+                    TabIndex =36
                     Name ="lstCounseling"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2386,7 +2139,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =41
+                    TabIndex =37
                     Name ="cmdCounselingRecord"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2413,7 +2166,7 @@ Begin Form
                     Width =5100
                     Height =450
                     FontSize =10
-                    TabIndex =42
+                    TabIndex =38
                     Name ="cmdCounselingMember"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2434,21 +2187,21 @@ Begin Form
                 End
                 Begin CommandButton
                     OverlapFlags =85
-                    Left =11600
+                    Left =9850
                     Top =1825
                     Width =1700
                     Height =550
                     FontSize =10
-                    TabIndex =44
+                    TabIndex =39
                     Name ="uxWorkDeparturesTab"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
                     Caption ="Departures"
                     OnClick ="=UXMyWorkMode(\"Departures\")"
 
-                    LayoutCachedLeft =11600
+                    LayoutCachedLeft =9850
                     LayoutCachedTop =1825
-                    LayoutCachedWidth =13300
+                    LayoutCachedWidth =11550
                     LayoutCachedHeight =2375
                     Gradient =0
                     WebImagePaddingLeft =2
@@ -2482,7 +2235,7 @@ Begin Form
                     Width =300
                     Height =300
                     ColumnOrder =0
-                    TabIndex =45
+                    TabIndex =40
                     Name ="chkDeparturesAll"
                     DefaultValue ="False"
                     AfterUpdate ="=UXMyWorkDepartures()"
@@ -2525,7 +2278,7 @@ Begin Form
                     Height =2250
                     ColumnOrder =0
                     FontSize =10
-                    TabIndex =46
+                    TabIndex =41
                     Name ="lstDepartures"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2718,7 +2471,7 @@ Begin Form
                     Width =2400
                     Height =450
                     FontSize =10
-                    TabIndex =47
+                    TabIndex =42
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDepartureDate"
@@ -2761,7 +2514,7 @@ Begin Form
                     Width =7850
                     Height =450
                     FontSize =10
-                    TabIndex =48
+                    TabIndex =43
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDepartureReason"
@@ -2803,7 +2556,7 @@ Begin Form
                     Width =3400
                     Height =450
                     FontSize =10
-                    TabIndex =49
+                    TabIndex =44
                     Name ="cmdDepartureConfirm"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2830,7 +2583,7 @@ Begin Form
                     Width =3400
                     Height =450
                     FontSize =10
-                    TabIndex =50
+                    TabIndex =45
                     Name ="cmdDepartureDismiss"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2857,7 +2610,7 @@ Begin Form
                     Width =3350
                     Height =450
                     FontSize =10
-                    TabIndex =51
+                    TabIndex =46
                     Name ="cmdDepartureMember"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
@@ -2875,51 +2628,6 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                     Overlaps =1
-                End
-                Begin ListBox
-                    Visible = NotDefault
-                    OverlapFlags =247
-                    IMESentenceMode =3
-                    ColumnCount =2
-                    Left =2850
-                    Top =2900
-                    Width =7000
-                    Height =1300
-                    ColumnOrder =0
-                    FontSize =10
-                    TabIndex =43
-                    Name ="lstContributors"
-                    FontName ="Segoe UI"
-                    ThemeFontIndex =-1
-                    RowSourceType ="Table/Query"
-                    ColumnWidths ="0;6800"
-                    OnDblClick ="=ContributorUI(\"Switch\")"
-                    Tag ="MWX:body"
-                    ControlTipText ="Double-click a contributor, or select one and choose Switch contributor."
-
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =2900
-                    LayoutCachedWidth =9850
-                    LayoutCachedHeight =4200
-                    Begin
-                        Begin Label
-                            Visible = NotDefault
-                            OverlapFlags =127
-                            Left =2850
-                            Top =2900
-                            Width =15
-                            Height =15
-                            FontSize =1
-                            Name ="anlstContributors"
-                            FontName ="Segoe UI"
-                            ThemeFontIndex =-1
-                            Caption ="Contributors"
-                            LayoutCachedLeft =2850
-                            LayoutCachedTop =2900
-                            LayoutCachedWidth =2865
-                            LayoutCachedHeight =2915
-                        End
-                    End
                 End
             End
         End

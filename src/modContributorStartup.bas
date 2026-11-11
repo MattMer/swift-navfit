@@ -58,7 +58,7 @@ Public Function ContributorSessionProblem() As String
  If CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), "")) <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
  retained = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
  If retained = profile Or retained = 0 Then Exit Function
- ContributorSessionProblem = "Another Swift NAVFIT session on this workspace chose " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & retained), "a different contributor") & ". Only one person can use the file at a time. Unsaved edits stay open here. Close the other session, then choose your contributor again from My Work > Contributors."
+ ContributorSessionProblem = "Another Swift NAVFIT session on this workspace chose " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & retained), "a different contributor") & ". Only one person can use the file at a time. Unsaved edits stay open here. Close the other session, then choose your contributor again from Resources > Contributors."
 Finished:
 End Function
 

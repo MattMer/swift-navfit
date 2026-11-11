@@ -7,6 +7,7 @@ Private surfaceSection As Long
 Private layoutBusy As Boolean
 Private narrativeFit As Object, narrativePrint As Object, narrativeKey As String
 Private block44Print As Object, block44Key As String, printHint As String
+Private narrativeHeights As Object
 Private nobReplaced As Object, nobReport As Long
 Private calendarKey As String
 
@@ -30,8 +31,30 @@ End Function
 Public Function UXNarrativeWidth(ByVal kind As String, Optional ByVal key As String = "OfficialComments") As Long
     UXNarrativeWidth = CLng(Val(UXPrintBox(kind, key)(5)) * 20) + UX_PRINT_FRAME
 End Function
+'Tall enough to show every line the PDF holds, at 12 pt and at the 10 pt fallback, without
+'scrolling: screen lines are taller than printed ones. Never shorter than the print box.
 Public Function UXNarrativeHeight(ByVal kind As String, Optional ByVal key As String = "OfficialComments") As Long
-    UXNarrativeHeight = CLng(Val(UXPrintBox(kind, key)(6)) * 20) + 180
+    Dim parts As Variant, size As Variant, fit As Object, line As Long, lines As Long, need As Long
+    parts = UXPrintBox(kind, key)
+    UXNarrativeHeight = CLng(Val(parts(6)) * 20) + 180
+    If Not narrativeHeights Is Nothing Then
+        If narrativeHeights.Exists(kind & "|" & key) Then UXNarrativeHeight = narrativeHeights(kind & "|" & key): Exit Function
+    Else
+        Set narrativeHeights = CreateObject("Scripting.Dictionary")
+    End If
+    On Error GoTo Done
+    For Each size In Array(Val(parts(8)), IIf(UBound(parts) >= 14, Val(parts(14)), 0))
+        If size > 0 Then
+            Set fit = PDFFieldFit(kind, key, "W", CDbl(size))
+            line = PDFScreenLineTwips(CStr(parts(7)), CDbl(size))
+            If fit("Status") = "Measured" And line > 0 Then
+                lines = fit("Capacity"): need = lines * line + 180 + line \ 2
+                If need > UXNarrativeHeight Then UXNarrativeHeight = need
+            End If
+        End If
+    Next
+    narrativeHeights(kind & "|" & key) = UXNarrativeHeight
+Done:
 End Function
 ' The size Swift's PDF prints this text at; the box's own size when it cannot be measured.
 Public Function UXNarrativeFontSize(ByVal kind As String, Optional ByVal key As String = "OfficialComments", Optional ByVal text As String = "") As Long

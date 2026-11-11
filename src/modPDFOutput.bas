@@ -479,6 +479,23 @@ Private Function PDFPrinterFullPage(ByVal device As String) As Boolean
     PDFPrinterFullPage = (PDFDeviceCaps(dc, 112) = 0 And PDFDeviceCaps(dc, 113) = 0)
     PDFDeleteDC dc
 End Function
+'One line of text on screen, in twips: how tall an editor line is at this font and size.
+'Screen lines are taller than printed ones, so a box sized from the print box alone
+'shows fewer lines than the PDF holds. 0 when the screen cannot be measured.
+Public Function PDFScreenLineTwips(ByVal font As String, ByVal size As Double) As Long
+    Dim dc As LongPtr, created As LongPtr, previous As LongPtr, driver As String, dpi As Long, metrics As PDFFontMetrics
+    driver = "DISPLAY"
+    dc = PDFCreateDC(StrPtr(driver), 0, 0, 0)
+    If dc = 0 Then Exit Function
+    dpi = PDFDeviceCaps(dc, 90)
+    If dpi > 0 Then created = PDFCreateFont(-CLng(size * dpi / 72#), 0, 0, 0, 400, 0, 0, 0, 1, 7, 0, 2, 0, StrPtr(font))
+    If created <> 0 Then
+        previous = PDFSelectObject(dc, created)
+        If PDFTextMetrics(dc, metrics) <> 0 Then PDFScreenLineTwips = CLng((metrics.Height + metrics.ExternalLeading) * 1440# / dpi)
+        PDFSelectObject dc, previous: PDFDeleteObject created
+    End If
+    PDFDeleteDC dc
+End Function
 Private Sub CloseMetricContext()
     layoutPrinter = ""
     If metricDC <> 0 Then
@@ -802,6 +819,9 @@ Private Function FieldValue(ByVal row As Object, ByVal key As String, ByVal rule
     If row("Kind") = "CHIEFEVAL" Then
         Select Case key
             Case "ReadinessDate": value = PrintNavyDate(value, True)
+            'Block 20's result is edited as ReadinessDetail on a CHIEFEVAL; older or imported
+            'reports may hold it in ReadinessSummary (validation reads them in the same order).
+            Case "ReadinessSummary": If PDFOutputText(fields, "ReadinessDetail") <> "" Then value = PDFOutputText(fields, "ReadinessDetail")
             Case "MemberSSN", "ReportingSeniorSSN"
                 If Len(value) = 9 And value Like "#########" Then value = Left$(value, 3) & "-" & Mid$(value, 4, 2) & "-" & Right$(value, 4)
         End Select

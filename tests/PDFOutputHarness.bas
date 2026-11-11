@@ -490,6 +490,9 @@ On Error GoTo Failed
   For Each key In Array("ComponentActive", "OccasionPeriodic", "ReportRegular", "RetentionYes", "StatementNo"): fields(CStr(key)) = "Yes": Next
   fields("PromotionRecommendation") = "Significant Problems"
   If kind = "CHIEFEVAL" Then
+   'Block 20: a CHIEFEVAL's result is edited as ReadinessDetail and prints beside MM/YY.
+   fields("ReadinessDetail") = "PPPB"
+   Check InStr(PDFOutputPlannedText(row, False), "PPPB") > 0, "CHIEFEVAL block 20 result not printed"
    'Renderer-only count stress, preserving the saved report and membership tables.
    Set countRows = New Collection
    For countIndex = 1 To 144: countRows.Add row: Next

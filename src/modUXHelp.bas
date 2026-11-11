@@ -72,7 +72,7 @@ Public Function UXWindowHelpTopic(ByVal formName As String) As Long
         Case "frmLibrary", "frmBulkFolders", "frmProvenance": UXWindowHelpTopic = 2
         Case "frmUXGroups", "frmMajorWorkbench", "frmUXBulk", "frmUXComparison", "frmUXSharedFields", "frmUXNewGroup", "frmUXMoveGroup", "frmUXRenameGroup", "frmUXGroupPolicy", "frmUXMembers", "frmUXGroupReport", "frmUXNewReport": UXWindowHelpTopic = 3
         Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXGroupRSCA", "frmUXSeniorHistory", "frmUXSeniorPicker", "frmUXISICs": UXWindowHelpTopic = 4
-        Case "frmMyWork", "frmUXReview", "frmReviewComments", "frmUXRouteTemplates": UXWindowHelpTopic = 5
+        Case "frmMyWork", "frmUXReview", "frmReviewComments", "frmUXRouteTemplates", "frmUXContributors": UXWindowHelpTopic = 5
         Case "frmRecovery", "frmBackup", "frmOperations", "frmUXWorkspaceImport", "frmUXSettings": UXWindowHelpTopic = 7
         Case "frmSupport": UXWindowHelpTopic = 8
         Case "frmHome", "frmSetup": UXWindowHelpTopic = 0

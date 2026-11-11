@@ -44,7 +44,7 @@ Development source (*generated*):
 | Schema version | 48 |
 | Imports accepted | Workspaces of schema 35 to 48, into a target of schema 21 to 48 |
 | Tables / enforced relationships | 83 / 169 |
-| VBA modules / forms | 120 / 73 |
+| VBA modules / forms | 120 / 74 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 125 / 122 |

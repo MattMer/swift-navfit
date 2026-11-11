@@ -106,7 +106,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =8900
+            Height =9750
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -114,12 +114,12 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =8900
+                    Height =9750
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
                     LayoutCachedWidth =2450
-                    LayoutCachedHeight =8900
+                    LayoutCachedHeight =9750
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                 End
@@ -716,6 +716,46 @@ Begin Form
                     LayoutCachedTop =7425
                     LayoutCachedWidth =12820
                     LayoutCachedHeight =7975
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =8275
+                    Width =9954
+                    Height =550
+                    FontSize =10
+                    TabIndex =16
+                    ForeColor =4205854
+                    Name ="cmdContributors"
+                    Caption ="Contributors"
+                    OnClick ="=OpenScreen(\"frmUXContributors\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =8275
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =8825
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

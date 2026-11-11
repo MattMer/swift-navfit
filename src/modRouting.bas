@@ -195,8 +195,7 @@ Public Function LoadMyWork(Optional ByVal refreshQueue As Boolean = True) As Boo
         Forms!frmMyWork!lblAssignment.Caption = "Open a saved report to assign a review."
     End If
     Forms!frmMyWork!lblProfile.Caption = "Active contributor: " & DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid) & ". Profiles are attribution, not authentication."
-    Forms!frmMyWork!lstContributors.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName": Forms!frmMyWork!lstContributors.Requery
-    Forms!frmMyWork!cboReviewer.RowSource = Forms!frmMyWork!lstContributors.RowSource: Forms!frmMyWork!cboReviewer.Requery
+    Forms!frmMyWork!cboReviewer.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName": Forms!frmMyWork!cboReviewer.Requery
     sql = "SELECT t.TaskID,UXIdentity(r.OfficialName,r.MemberName) & ' | ' & r.FormKind & ' | ' & Nz(Format(r.PeriodEnd,'yyyy-mm-dd'),'No period') AS [Member and report],p.DisplayName AS Reviewer,t.TaskState AS [Review step],t.DueDate AS [Due date],IIf(t.RevisionID=r.CurrentRevisionID,'Current','Stale') AS [Saved version],r.IsArchived FROM (ReviewTask AS t INNER JOIN Report AS r ON t.ReportID=r.ReportID) INNER JOIN UserProfile AS p ON t.AssignedTo=p.UserProfileID"
     If Not Nz(Forms!frmMyWork!chkAll, False) Then sql = sql & " WHERE t.AssignedTo=" & pid & " AND t.TaskState='Pending'"
     Forms!frmMyWork!lstTasks.RowSource = sql & " ORDER BY t.TaskID DESC": Forms!frmMyWork!lstTasks.Requery
@@ -222,23 +221,34 @@ Public Function TaskDetails() As Boolean
     Loop
     r.Close: Set r = Nothing: Forms!frmMyWork!txtHistory = text: TaskDetails = True
 End Function
+'Resources > Contributors: the people who use this workspace.
+Public Function UXContributorsLoad() As Boolean
+    If Not CurrentProject.AllForms("frmUXContributors").IsLoaded Then Exit Function
+    Forms!frmUXContributors!lstContributors.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName"
+    Forms!frmUXContributors!lstContributors.Requery
+    UXContributorsLoad = True
+End Function
 Public Function ContributorUI(ByVal action As String) As Boolean
+    Dim f As Access.Form
     On Error GoTo Failed
+    Set f = Forms!frmUXContributors
     If action = "Add" Then
-        Call AddContributor(Nz(Forms!frmMyWork!txtContributor, ""))
-        Forms!frmMyWork!txtContributor = Null
+        Call AddContributor(Nz(f!txtContributor, ""))
+        f!txtContributor = Null
     ElseIf action = "Directory" Then
         DoCmd.OpenForm "frmUXSeniorPicker", , , , , , "contributor"
         ContributorUI = True: Exit Function
     ElseIf action = "Delete" Then
-        If IsNull(Forms!frmMyWork!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
-        If MsgBox("Delete " & Forms!frmMyWork!lstContributors.Column(1) & "?" & vbCrLf & vbCrLf & "They are removed from route templates and active review routes, and review requests assigned to them are cancelled. Their past work keeps their name.", vbYesNo + vbExclamation, "Delete contributor") <> vbYes Then Exit Function
-        MsgBox DeleteContributor(CLng(Forms!frmMyWork!lstContributors)), vbInformation, "Delete contributor"
+        If IsNull(f!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
+        If MsgBox("Delete " & f!lstContributors.Column(1) & "?" & vbCrLf & vbCrLf & "They are removed from route templates and active review routes, and review requests assigned to them are cancelled. Their past work keeps their name.", vbYesNo + vbExclamation, "Delete contributor") <> vbYes Then Exit Function
+        MsgBox DeleteContributor(CLng(f!lstContributors)), vbInformation, "Delete contributor"
     Else
-        If IsNull(Forms!frmMyWork!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
-        Call SwitchContributor(Nz(Forms!frmMyWork!lstContributors, 0))
+        If IsNull(f!lstContributors) Then Err.Raise vbObjectError + 1820, "modRouting.ContributorUI", "Select a contributor in the list first."
+        Call SwitchContributor(Nz(f!lstContributors, 0))
     End If
-    Call LoadMyWork(): ContributorUI = True: Exit Function
+    Call UXContributorsLoad
+    If CurrentProject.AllForms("frmMyWork").IsLoaded Then Call LoadMyWork
+    ContributorUI = True: Exit Function
 Failed:
     MsgBox Err.Description, vbInformation, "Local contributors"
 End Function

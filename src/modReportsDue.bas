@@ -44,7 +44,7 @@ Private Sub AddItem(ByVal items As Collection, ByVal r As DAO.Recordset, ByVal b
     Else
         status = "Due " & Format$(due, "mmm yyyy")
     End If
-    items.Add Array(CLng(r!MemberID), CStr(r!FullName), Nz(r!RankRate, ""), basis, kind, due, status)
+    items.Add Array(CLng(r!MemberID), CStr(r!ListName), Nz(r!RankRate, ""), basis, kind, due, status)
 End Sub
 
 'Every due report for active members, as Array(MemberID, name, rate, basis,
@@ -54,7 +54,8 @@ Public Function ReportsDueItems(Optional ByVal asOf As Date = 0, Optional ByRef 
     Dim items As New Collection, r As DAO.Recordset, d As DAO.Recordset, worn As String, kind As String, y As Long, due As Variant, sorted As New Collection, item As Variant, i As Long, placed As Boolean
     If asOf = 0 Then asOf = Date
     missingRank = 0
-    Set r = CurrentDb.OpenRecordset("SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False ORDER BY FullName", dbOpenSnapshot)
+    'Members are listed by their official report name (PARKER, REESE), as on Recent reports.
+    Set r = CurrentDb.OpenRecordset("SELECT MemberID,IIf(Nz(ReportName,'')='',FullName,ReportName) AS ListName,RankRate FROM CommandMember WHERE IsArchived=False ORDER BY IIf(Nz(ReportName,'')='',FullName,ReportName)", dbOpenSnapshot)
     Do While Not r.EOF
         worn = ValidationWornPaygrade(Nz(r!RankRate, "")): kind = DueFormKind(worn)
         If Len(worn) = 0 Or Len(kind) = 0 Then

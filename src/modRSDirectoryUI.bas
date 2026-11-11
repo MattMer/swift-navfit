@@ -221,6 +221,7 @@ Public Function RSPickerUse() As Boolean
             Call RSPickerFillRole(member)
         End If
         DoCmd.Close acForm, "frmUXSeniorPicker", acSaveNo
+        If pickerMode = "contributor" Then Call UXContributorsLoad
         If pickerMode = "contributor" And CurrentProject.AllForms("frmMyWork").IsLoaded Then Call LoadMyWork
         RSPickerUse = True: Exit Function
 Refused:

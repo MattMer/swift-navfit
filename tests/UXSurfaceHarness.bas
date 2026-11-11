@@ -139,11 +139,14 @@ Public Function TestUXSurface() As String
     Check Forms!frmUXComparison!uxTraitGrid.Form!ReportID = id And Forms!frmUXComparison!uxTraitGrid.Form!Member.OnClick = "=UXGridOpenReport()", "Group members lack report entry point"
     Check UXCloseComparison(), "Group workspace did not close"
     stage = "my work": DoCmd.OpenForm "frmMyWork"
-    Check Forms!frmMyWork!lstWork.Visible And Not Forms!frmMyWork!lstTasks.Visible And Not Forms!frmMyWork!lstContributors.Visible, "My Work default mixes contributors and work"
+    Check Forms!frmMyWork!lstWork.Visible And Not Forms!frmMyWork!lstTasks.Visible And Not UXHasControl(Forms!frmMyWork, "lstContributors"), "My Work default mixes contributors and work"
     Check UXMyWorkMode("Assign"), "Assignment workspace unavailable"
     Forms!frmMyWork!uxAssignReport = id: Check UXChooseAssignmentReport(), "Named report selection failed"
     Check Forms!frmMyWork!txtExpectedRevision = CurrentRevision(id), "Assignment did not capture saved revision"
-    Check UXMyWorkMode("Contributors") And Forms!frmMyWork!lstContributors.Visible And Not Forms!frmMyWork!lstWork.Visible, "Contributor workspace not focused"
+    'Contributors open from Resources in their own window.
+    DoCmd.OpenForm "frmUXContributors"
+    Check Forms!frmUXContributors!lstContributors.ListCount >= 1 And Forms!frmUXContributors!txtContributor.Visible, "Contributors window unavailable"
+    DoCmd.Close acForm, "frmUXContributors", acSaveNo
     TestUXSurface = "PASS: " & count & " native surface, buffer, validation, captions and dashboard assertions": Exit Function
 Failed:
     TestUXSurface = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description

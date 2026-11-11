@@ -8,14 +8,29 @@ Option Explicit
 Public Const DEPARTURE_LEAD_DAYS As Long = 90
 
 'A roster PRD as a date: yyyy-mm-dd, mm/dd/yyyy, yyyymmdd, yyyy-mm, yyyymm,
-'mm/yyyy or mmyy. A month-only PRD means the last day of that month. Null when
-'the text cannot be read.
+'mm/yyyy, mmyy, dd-Mon-yy or dd-Mon-yyyy (NRRM's spreadsheet display, such as
+'31-Dec-30), a spreadsheet date serial (47848) or a value that is already a date.
+'A month-only PRD means the last day of that month. Null when it cannot be read.
 Public Function RosterPRDDate(ByVal text As Variant) As Variant
     Dim t As String, parts As Variant, y As Long, m As Long, d As Long
     RosterPRDDate = Null
+    If VarType(text) = vbDate Then RosterPRDDate = DateValue(text): Exit Function
     t = Trim$(Nz(text, ""))
     If Len(t) = 0 Then Exit Function
-    t = Replace(Replace(t, ".", "-"), "/", "-")
+    t = Replace(Replace(Replace(t, ".", "-"), "/", "-"), " ", "-")
+    'Spreadsheet date serial: 1 is 31 Dec 1899 in Excel's 1900 date system; 36526 is 1 Jan 2000.
+    If t Like "#####" Then
+        If Val(t) >= 36526 And Val(t) <= 109574 Then RosterPRDDate = DateSerial(1899, 12, 30) + Val(t)
+        Exit Function
+    End If
+    If t Like "#-???-##" Or t Like "##-???-##" Or t Like "#-???-####" Or t Like "##-???-####" Then
+        parts = Split(t, "-")
+        m = (InStr(1, "JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC", UCase$(parts(1)), vbBinaryCompare) + 2) / 3
+        If m < 1 Or (InStr(1, "JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC", UCase$(parts(1)), vbBinaryCompare) - 1) Mod 3 <> 0 Then Exit Function
+        d = Val(parts(0)): y = Val(parts(2)): If Len(parts(2)) = 2 Then y = 2000 + y
+        If d < 1 Or d > Day(DateSerial(y, m + 1, 0)) Then Exit Function
+        RosterPRDDate = DateSerial(y, m, d): Exit Function
+    End If
     If t Like "####-##-##" Then
         y = Val(Left$(t, 4)): m = Val(Mid$(t, 6, 2)): d = Val(Right$(t, 2))
     ElseIf t Like "##-##-####" Or t Like "#-##-####" Or t Like "##-#-####" Or t Like "#-#-####" Then

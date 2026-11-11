@@ -1,6 +1,7 @@
 # Swift NAVFIT priority backlog
 
-Updated 9 November 2026 (0.55.0, schema 48). This lists open work only. Finished
+Updated 10 November 2026 (0.55.0 released; 0.56.0-dev, schema 48). Manual check
+results from 10 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
@@ -36,9 +37,11 @@ Shipped in 0.52.0.
 - **Officer rank from MNA.** MNA lists the designator but not the rank, so a
   new officer profile without a linked report starts without one. The current
   source already fills a missing rank from the latest linked report.
-- **Real PRD format.** No real NRRM sample is in the repository. PRD is read as
-  yyyy-mm-dd, mm/dd/yyyy, yyyymmdd, yyyy-mm, yyyymm, mm/yyyy or mmyy; confirm
-  against a real export.
+- **Real PRD format (checked 10 Nov, DATA-01).** A real NRRM export shows PRD as
+  a date cell displayed dd-Mon-yy (for example 31-Dec-30); as a plain number the
+  same cell is the spreadsheet date serial (47848). `RosterPRDDate`
+  (`modRoster`) reads neither: add dd-Mon-yy and dd-Mon-yyyy, the date serial,
+  and a value that already arrives as a date.
 
 ### F03 — Reports due on the dashboard
 
@@ -67,10 +70,23 @@ R14's remaining input-data limitation is recorded under F02.
 
 | ID | Work |
 | --- | --- |
-| H01 | **Official-template PDF output: acceptance remaining.** The PDF output, summary letter, group packet and Chief comment corrections are built. Three acceptance checks remain: physical printed fit against the official forms, generation on a workstation without Acrobat, and acceptance of the six-point fallback for the official trait-34 grade-4/5 wording (6.5 point). |
+| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper (10 Nov): EVAL, FITREP, the summary letter and group packet, and the 6.5-point trait-34 grade-4/5 wording (accepted). PDF output works on a Navy-managed workstation after unblocking the file and enabling content (PRT-08). Remaining: (1) **CHIEFEVAL fixes (PRT-03 failed):** block 51 lines print too far apart, and the block 20 physical readiness result does not print next to its MM/YY date. (2) PDF creation on a workstation without Acrobat (PRT-07). (3) Recheck on the Navy workstation with a physical default printer: 0.55.0 split pages there; 0.56.0-dev (1af7fd6) lays out on Microsoft Print to PDF. |
 | H03 | **Attended NAVFIT98A print check for the narrative line meter (Matt, attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Matt prints one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
-| M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. The remaining checks are screen readers (NVDA, JAWS), focus and announcements, contrast and high contrast, and display scaling and DPI, covering startup, dialogs, report tools, grids, findings and output. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
+| M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output, and a colour contrast spot check. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
 | M01 | **Signed production distribution.** An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify a launch under normal security policy. Then produce and verify a signed `.accde`, and rehearse the signing steps (threat model section 5). Blank and Demo `.accdb` files keep being published. Access Runtime support stays out of scope. |
+
+## Screen changes from the 10 Nov review
+
+Pop-up style, list columns, the Reports filters, high contrast and scaling all
+passed. The owner asked for these changes:
+
+| ID | Work |
+| --- | --- |
+| U01 | **Taller Reports list.** Reports shows about 6 rows; make it show 10 (UI-03). |
+| U02 | **One name format: LAST, FIRST.** Overview's Reports due shows "Reese Parker" while Recent reports shows "PARKER, REESE". Use "PARKER, REESE" in both, and in the command member directory table (UI-05). |
+| U03 | **Contributors moves to Resources.** Remove the Contributors tab from My Work and open it from Resources instead (UI-06). |
+| U04 | **Comments box shows every printed line.** Block 43 (EVAL comments) printed inside its box with 18 lines near the limit, but the editor showed 17 before scrolling (PRT-06, which named block 44 by mistake). Fixed in development: each narrative box is now sized from the PDF line count and the screen line height. |
+| U05 | **Library's second dark-blue button (decision pending, UI-04).** Decide whether Import reports stays a main action. |
 
 ## Performance and storage
 

@@ -181,7 +181,6 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
         If Left$(c.Tag, 4) = "MWX:" Then c.Visible = False
     Next
     Select Case mode
-        Case "Contributors": names = Array("lstContributors", "cmdSwitch", "cmdDeleteContributor", "txtContributor", "cmdAdd", "cmdAddDirectory", "lblScope")
         Case "Notes": names = Array("lblReportNotes", "lstReportNotes", "cmdOpenReportNote", "cmdRefreshReportNotes")
         Case "Counseling": names = Array("lblCounselingScope", "chkCounselingAll", "lblCounselingAll", "lstCounseling", "cmdCounselingRecord", "cmdCounselingMember")
         Case "Departures": names = Array("lblDeparturesScope", "chkDeparturesAll", "lblDeparturesAll", "lstDepartures", "lblDepartureEntry", "txtDepartureDate", "txtDepartureReason", "cmdDepartureConfirm", "cmdDepartureDismiss", "cmdDepartureMember")
@@ -198,7 +197,7 @@ Public Function UXMyWorkMode(ByVal mode As String) As Boolean
     f!uxWorkNotesTab.FontBold = (mode = "Notes")
     If UXHasControl(f, "uxWorkCounselingTab") Then f!uxWorkCounselingTab.FontBold = (mode = "Counseling")
     If UXHasControl(f, "uxWorkDeparturesTab") Then f!uxWorkDeparturesTab.FontBold = (mode = "Departures")
-    f!uxWorkTab0.FontBold = (mode = "Assignments"): f!uxWorkTab1.FontBold = (mode = "Assign"): f!uxWorkTab2.FontBold = (mode = "Contributors")
+    f!uxWorkTab0.FontBold = (mode = "Assignments"): f!uxWorkTab1.FontBold = (mode = "Assign")
     UXResizeWorkspace f.Name
     UXMyWorkMode = True
     If mode = "Notes" Then UXMyWorkNotes

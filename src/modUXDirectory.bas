@@ -8,7 +8,8 @@ Public Function UXDirectoryLoad() As Boolean
     RepairPDFDirectoryLinks
     Set f = Forms!frmUXDirectory: term = Replace(Nz(f!txtSearch, ""), "'", "''")
     f!lstMembers.RowSourceType = "Table/Query"
-    f!lstMembers.RowSource = "SELECT MemberID,FullName AS [Member],RankRate AS [Rank/rate],IIf(MemberSSN Is Null,'Unentered','***-**-' & Right(MemberSSN,4)) AS [SSN],SourceKind AS [Source] FROM CommandMember WHERE IsArchived=False AND InStr(1,FullName,'" & term & "',1)>0 ORDER BY FullName"
+    'Official report name (PARKER, REESE) when entered; search finds either name.
+    f!lstMembers.RowSource = "SELECT MemberID,IIf(Nz(ReportName,'')='',FullName,ReportName) AS [Member],RankRate AS [Rank/rate],IIf(MemberSSN Is Null,'Unentered','***-**-' & Right(MemberSSN,4)) AS [SSN],SourceKind AS [Source] FROM CommandMember WHERE IsArchived=False AND (InStr(1,FullName,'" & term & "',1)>0 OR InStr(1,Nz(ReportName,''),'" & term & "',1)>0) ORDER BY IIf(Nz(ReportName,'')='',FullName,ReportName)"
     f!lstMembers.Requery: UXDirectoryLoad = True
 End Function
 Public Function UXDirectoryEdit(Optional ByVal createNew As Boolean = False) As Boolean

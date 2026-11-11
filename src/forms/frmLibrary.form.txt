@@ -149,7 +149,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =9850
+            Height =11250
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -157,12 +157,12 @@ Begin Form
                     BackStyle =1
                     OverlapFlags =93
                     Width =2450
-                    Height =9850
+                    Height =11250
                     BackColor =5123348
                     BorderColor =5123348
                     Name ="uxRail"
                     LayoutCachedWidth =2450
-                    LayoutCachedHeight =9850
+                    LayoutCachedHeight =11250
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                 End
@@ -339,7 +339,7 @@ Begin Form
                     Left =2850
                     Top =4200
                     Width =10450
-                    Height =2300
+                    Height =3700
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
@@ -354,7 +354,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =3250
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =5550
+                    LayoutCachedHeight =6950
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -382,7 +382,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2880
-                    Top =6590
+                    Top =7990
                     Width =4424
                     Height =350
                     FontSize =10
@@ -391,9 +391,9 @@ Begin Form
                     Caption ="0 reports shown"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =5640
+                    LayoutCachedTop =7040
                     LayoutCachedWidth =7304
-                    LayoutCachedHeight =5990
+                    LayoutCachedHeight =7390
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -401,7 +401,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =13
@@ -412,9 +412,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =4320
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -439,7 +439,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4470
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =14
@@ -450,9 +450,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4470
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =5910
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -477,7 +477,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6045
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =16
@@ -488,9 +488,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6045
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =7485
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -515,7 +515,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7635
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =17
@@ -526,9 +526,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7635
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =9075
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -553,7 +553,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9210
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =15
@@ -564,9 +564,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9210
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =10650
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -591,7 +591,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =7790
+                    Top =9190
                     Height =576
                     FontSize =10
                     TabIndex =18
@@ -602,9 +602,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =6840
+                    LayoutCachedTop =8240
                     LayoutCachedWidth =4320
-                    LayoutCachedHeight =7416
+                    LayoutCachedHeight =8816
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -630,7 +630,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10800
-                    Top =7070
+                    Top =8470
                     Height =576
                     FontSize =10
                     TabIndex =21
@@ -641,9 +641,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =10800
-                    LayoutCachedTop =6120
+                    LayoutCachedTop =7520
                     LayoutCachedWidth =12240
-                    LayoutCachedHeight =6696
+                    LayoutCachedHeight =8096
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

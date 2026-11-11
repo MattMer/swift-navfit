@@ -78,6 +78,9 @@ Public Function TestRoster() As String
     ' PRD formats NRRM and MNA exports use; a month-only PRD means month end.
     Check RosterPRDDate("2027-03") = #3/31/2027# And RosterPRDDate("202703") = #3/31/2027# And RosterPRDDate("0327") = #3/31/2027#, "Month PRD not read"
     Check RosterPRDDate("03/2027") = #3/31/2027# And RosterPRDDate("2027-03-15") = #3/15/2027# And RosterPRDDate("03/15/2027") = #3/15/2027# And RosterPRDDate("20270315") = #3/15/2027#, "Dated PRD not read"
+    'NRRM's spreadsheet export: dd-Mon-yy display, the date serial behind it, or a date value.
+    Check RosterPRDDate("31-Dec-30") = #12/31/2030# And RosterPRDDate("5-JAN-2031") = #1/5/2031# And RosterPRDDate("47848") = #12/31/2030# And RosterPRDDate(47848) = #12/31/2030# And RosterPRDDate(#12/31/2030#) = #12/31/2030#, "NRRM spreadsheet PRD not read"
+    Check IsNull(RosterPRDDate("31-Abc-30")) And IsNull(RosterPRDDate("30-Feb-30")) And IsNull(RosterPRDDate("12345")), "Unreadable NRRM PRD accepted"
     Check IsNull(RosterPRDDate("SYN")) And IsNull(RosterPRDDate("")) And IsNull(RosterPRDDate("2027-13")) And IsNull(RosterPRDDate("02/30/2027")), "Unreadable PRD accepted"
 
     soon = Format$(DateAdd("d", 45, Date), "yyyy-mm-dd"): later = Format$(DateAdd("yyyy", 2, Date), "yyyy-mm")
