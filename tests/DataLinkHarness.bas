@@ -114,6 +114,26 @@ Failed:
     TestDataFileBackup = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function
 
+'Other sessions are counted on the data file, not on this application file.
+Public Function TestDataFileSessions(ByVal expected As Long) As String
+    Dim computers As String, others As Long, notice As String
+    On Error GoTo Failed
+    checks = 0
+    Check SwiftDataIsLinked(), "Session test needs a linked copy"
+    Check DCount("*", "Report") >= 0, "Data file is not readable"
+    others = OtherWorkspaceSessions(computers)
+    Check others = expected, "Counted " & others & " other sessions (" & computers & "), expected " & expected
+    notice = ConcurrentSessionWarning(others, computers)
+    If expected = 0 Then
+        Check computers = "" And notice = "", "A lone session was warned: " & notice
+    Else
+        Check notice Like "This workspace is already open in another session*", "Warning: " & notice
+    End If
+    TestDataFileSessions = "PASS: " & checks & " session assertions; " & others & " other session(s) on the data file": Exit Function
+Failed:
+    TestDataFileSessions = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+
 'Fill in and save the open setup screen, as its Create workspace button does.
 Public Function SaveSetupValues(ByVal commandName As String, ByVal contributor As String) As Boolean
     Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor

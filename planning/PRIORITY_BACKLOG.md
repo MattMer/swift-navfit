@@ -108,8 +108,12 @@ passed. The owner asked for these changes:
 the setup screen; a build is still one file until the user chooses a data
 file. On a linked copy the backup is a copy of the data file, checked row by
 row and field by field, and it restores through the import.
-**Not ready to release:** on a linked copy the import from a previous
-version and the session-roster warning are untried, the file picker itself has only been exercised through its
+The import from a previous version works on a linked copy unchanged, and
+lands in the data file. A data file has no session list to read (Access
+opens it only while it reads or writes), so each session holds it open from
+startup and a session that starts second is warned; a VBA reset releases the
+hold until the next start, and the warning no longer names the computer.
+**Not ready to release:** the file picker itself has only been exercised through its
 functions (no attended run), and the user guide and help do not describe it.
 Step 2 writes the data file from the blank copy's own tables, so a copy that
 is already linked cannot start a second data file; that waits for the schema

@@ -5,7 +5,7 @@ Option Explicit
 ' from a separate data file, that file is the workspace: its path, size, location and
 ' table-level reads are what matter. Code that needs the file itself asks here instead
 ' of assuming CurrentProject.
-Private linkedData As DAO.Database, linkedDataPath As String
+Private linkedData As DAO.Database, linkedDataPath As String, otherSessionAtOpen As Boolean
 
 ' Full path of the file that holds the workspace tables.
 Public Function SwiftDataPath() As String
@@ -28,6 +28,39 @@ End Function
 ' an import source, an export destination or a staging file.
 Public Function SwiftIsWorkspaceFile(ByVal filePath As String) As Boolean
     SwiftIsWorkspaceFile = StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Or StrComp(filePath, SwiftDataPath(), vbTextCompare) = 0
+End Function
+
+' With a separate data file, called once at startup: finds out whether another session
+' has the data file open, then keeps it open for this session. Access opens a linked
+' file only while it reads or writes, so without this no session could see another.
+' A session that holds the file makes the next one's exclusive open fail, which is the
+' test. Returns True when another session had it open.
+Public Function SwiftDataHold() As Boolean
+    Dim probe As DAO.Database, filePath As String, failure As Long, message As String
+    If Not SwiftDataIsLinked() Then Exit Function
+    filePath = SwiftDataPath()
+    If Not linkedData Is Nothing And StrComp(linkedDataPath, filePath, vbTextCompare) = 0 Then SwiftDataHold = otherSessionAtOpen: Exit Function
+    Set linkedData = Nothing: otherSessionAtOpen = False
+    On Error Resume Next
+    Set probe = DBEngine.Workspaces(0).OpenDatabase(filePath, True)
+    failure = Err.Number: message = Err.Description
+    On Error GoTo 0
+    Select Case failure
+        Case 0
+            probe.Close
+        Case 3045, 3356, 3704
+            'In use, or already opened by a user on some machine: someone else has it.
+            otherSessionAtOpen = True
+        Case Else
+            Err.Raise failure, "modDataFile.SwiftDataHold", message
+    End Select
+    Set linkedData = DBEngine.Workspaces(0).OpenDatabase(filePath): linkedDataPath = filePath
+    SwiftDataHold = otherSessionAtOpen
+End Function
+
+' True when another session had the data file open as this one started.
+Public Function SwiftDataOtherSession() As Boolean
+    SwiftDataOtherSession = otherSessionAtOpen
 End Function
 
 ' The database that owns the tables, for table-type recordsets and Seek, which linked

@@ -61,6 +61,12 @@ End Function
 Public Function OtherWorkspaceSessions(ByRef computers As String) As Long
     Dim rows As Object, total As Long, name As String, own As String, ownSeen As Boolean
     computers = ""
+    'With a separate data file the workspace is that file, and it has no session list
+    'to read: startup records whether another session was holding it (SwiftDataHold).
+    If SwiftDataIsLinked() Then
+        If SwiftDataOtherSession() Then OtherWorkspaceSessions = 1
+        Exit Function
+    End If
     own = UCase$(Environ$("COMPUTERNAME"))
     'An exclusive open has no shared roster (ADO error 3251) and, by definition,
     'no other session. Any other probe failure reaches the caller.

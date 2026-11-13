@@ -102,6 +102,49 @@ try{
     if(-not $app.Eval('SaveSetupValues("SYNTHETIC SECOND COMMAND","Tester")')){throw 'Setup failed on the new data file'}
 }finally{Stop-Front $app;$app=$null}
 Write-Output 'PASS: the setup screen writes a new data file, links it and sets up on it'
+
+#Import from a previous version into a copy that uses a new data file: the rows land in
+#the data file and the copy stays linked.
+$front=Join-Path $folder 'import front end.accdb';$imported=Join-Path $folder 'import data.accdb'
+Copy-Item -LiteralPath $BuildPath -Destination $front
+try{
+    $app=Start-Front
+    $app.LoadFromText(5,'WorkspaceImportHarness',(Join-Path $root 'tests/WorkspaceImportHarness.bas'))
+    $app.DoCmd.RunCommand(126)
+    if(-not $app.IsCompiled){throw 'VBA did not compile after loading WorkspaceImportHarness'}
+    if(-not $app.Eval('UXUseDataFile("'+$imported+'",True)')){throw 'Could not start on a new data file before importing'}
+    foreach($name in @($app.CurrentProject.AllForms|Where-Object {$_.IsLoaded}|ForEach-Object {$_.Name})){$app.DoCmd.Close(2,$name,2)}
+    $outcome=[string]$app.Eval('TryWorkspaceImport("'+$backup+'")')
+    if($outcome -notlike 'PASS:*'){throw ('Import into a linked copy failed: '+$outcome)}
+    if(-not $app.Eval('SwiftDataIsLinked()') -or $app.Eval('DCount("*","Report")') -ne 1){throw 'Import left the copy unlinked or without the report'}
+}finally{Stop-Front $app;$app=$null}
+$db=$engine.OpenDatabase($imported,$false,$true)
+try{$rows=$db.OpenRecordset('SELECT Count(*) FROM Report',4);$landed=[int]$rows.Fields.Item(0).Value;$rows.Close()}finally{$db.Close()}
+if($landed -ne 1){throw ('Imported report is not in the data file: '+$landed)}
+Write-Output 'PASS: an import into a linked copy lands in the data file'
+
+#Two sessions on one data file: each front end is its own file, the data file is shared,
+#and the other session is counted from the data file.
+$front=Join-Path $folder 'front end.accdb';$twin=Join-Path $folder 'twin front end.accdb'
+Copy-Item -LiteralPath $front -Destination $twin
+$first=$null;$other=$null
+try{
+    $first=Start-Front
+    #Loading the harness reset VBA, which released the hold startup took on the data file.
+    [void]$first.Eval('SwiftDataHold()')
+    Invoke-Check $first 'TestDataFileSessions(0)'
+    $other=New-Object -ComObject Access.Application
+    $other.AutomationSecurity=1;$other.OpenCurrentDatabase($twin,$true)
+    if(-not $other.Eval('SwiftDataIsLinked()')){throw 'Twin front end is not linked'}
+    #The session that starts second finds the data file held, and is warned.
+    if(-not $other.Eval('SwiftDataOtherSession()')){throw 'The second session did not see the first on the data file'}
+    $notice=[string]$other.Eval('WorkspaceSafetyNotice()')
+    if($notice -notlike '*already open in another session*'){throw ('Second session was not warned: '+$notice)}
+    Write-Output 'PASS: a second session on the same data file is warned at startup'
+}finally{
+    if($null -ne $other){$other.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($other)}
+    Stop-Front $first
+}
 [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($engine)
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $buildHash){throw 'The build was changed'}
 Write-Output 'PASS: a moved data file is reported at startup and works again once chosen'

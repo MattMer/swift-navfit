@@ -195,6 +195,7 @@ Public Function DataLinkReady() As Boolean
             End If
         End If
     Loop
+    SwiftDataHold
     DataLinkReady = True
 End Function
 
