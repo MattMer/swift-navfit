@@ -169,7 +169,7 @@ Public Function PreviousMemberEvaluationBatch(ByVal reportSQL As String) As Obje
                     ElseIf CLng(first(7)) = 0 Then
                         computed(token) = UXTableITA(CLng(first(1)))
                     Else
-                        If saved Is Nothing Then Set saved = db.OpenRecordset("RevisionValue", dbOpenTable): saved.Index = "UX_RevisionValue"
+                        If saved Is Nothing Then Set saved = SwiftDataDb(db).OpenRecordset("RevisionValue", dbOpenTable): saved.Index = "UX_RevisionValue"
                         computed(token) = SavedTraitITA(saved, first(6), CLng(first(7)))
                     End If
                 End If

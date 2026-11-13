@@ -102,6 +102,50 @@ passed. The owner asked for these changes:
 | T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. |
 | T06 | **Remove pre-35 import code with the next schema change (owner decision, 10 Nov 2026).** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
 
+## S01 — Front end and data file (owner decisions, 13 Nov 2026)
+
+**Status:** step 1 in development. Today code and data share one `.accdb`, so
+every release needs a new Blank and a full import. The owner decided to split
+them: a front end (code and forms) and a data file (tables only).
+
+**Decisions:**
+- It must be seamless for the user. When the front end has no data file, or
+  the link is broken, it shows a simple file picker.
+- A new front end pointed at an existing data file upgrades the schema
+  automatically, in place, after writing and verifying a backup copy. This
+  will replace the "import into a new Blank" upgrade path and needs the
+  matching change to the historical-import and protected-state invariants in
+  [CONTRIBUTING.md](../CONTRIBUTING.md) when step 4 ships; until then they stand.
+- M11 stays on the roadmap. The data seam in step 1 is the boundary a
+  SharePoint mode would later sit behind.
+
+**Spike (13 Nov 2026):** a scratch front end with all 83 tables linked to a
+separate data file started, ran first-run setup, saved and restored drafts, and
+passed the route chain, contributors, reports due, roster, counseling and
+directory cases with no code change. The only product blockers found were two
+table-level `Seek` readers on `RevisionValue`. Not yet explored on a split
+pair: import, backup (it rejects linked tables), the session roster check, and
+performance. About 49 test files inject faults by changing table rules through
+the front end and will need to target the data file.
+
+**Steps:**
+1. **Data seam, no visible change.** `modDataFile` gives the data file's path
+   and a database object that owns the tables; the `Seek` readers, backup
+   source, file-size warning, startup safety warnings, contributor session and
+   "not this file" checks use it. With local tables it resolves to this file.
+2. **One download.** The front end creates its data file on first run from the
+   schema definition.
+3. **Link manager at startup.** Missing or broken link: a file picker with
+   Open existing and Create new; relink and remember the choice.
+4. **Automatic schema upgrade.** Same version: open. Older data file: backup,
+   numbered schema steps in one transaction, verify, stamp the version. Newer
+   data file: refuse and ask for a newer front end. Schema statements need a
+   version tag from the next schema change on.
+5. **Existing single-file workspaces.** Open existing accepts a 0.49–0.5x
+   workspace and runs the current verified import into a new data file, once.
+6. **Backup, restore, docs, release files** and an in-place upgrade test for
+   every released schema.
+
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 
 **Status:** proposed and not scheduled. Today Swift NAVFIT is single-file and

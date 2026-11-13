@@ -13,7 +13,7 @@ Public Function OpenReviewFile(ByVal filePath As String, Optional ByVal showRevi
     Dim i As Long, prefix As String, kind As String, failure As Long, message As String
     Dim prepared As String, originalHash As String, preparedHash As String
     On Error GoTo Failed
-    If StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise vbObjectError + 400, "modImportReview.OpenReviewFile", "Choose a NAVFIT source or isolated staging file."
+    If SwiftIsWorkspaceFile(filePath) Then Err.Raise vbObjectError + 400, "modImportReview.OpenReviewFile", "Choose a NAVFIT source or isolated staging file."
     Set reader = DBEngine.CreateWorkspace("SwiftReview", "admin", "", dbUseJet)
     Set candidate = reader.OpenDatabase(filePath, False, True)
     prefix = ""

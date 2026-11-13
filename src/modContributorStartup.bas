@@ -22,7 +22,7 @@ End Sub
 Public Sub BindActiveContributor(ByVal profile As Long)
  ResetActiveContributor
  TempVars.Add "SwiftContributorID", profile
- TempVars.Add "SwiftContributorPath", CurrentProject.FullName
+ TempVars.Add "SwiftContributorPath", SwiftDataPath()
  TempVars.Add "SwiftContributorWorkspace", CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), ""))
 End Sub
 
@@ -31,7 +31,7 @@ Public Function HasActiveContributor() As Boolean
  On Error GoTo Missing
  profile = CLng(TempVars("SwiftContributorID").Value)
  If profile < 1 Then Exit Function
- If StrComp(CStr(TempVars("SwiftContributorPath").Value), CurrentProject.FullName, vbTextCompare) <> 0 Then Exit Function
+ If StrComp(CStr(TempVars("SwiftContributorPath").Value), SwiftDataPath(), vbTextCompare) <> 0 Then Exit Function
  identity = CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), ""))
  If Len(identity) = 0 Or identity <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
  If Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) <> profile Then Exit Function
@@ -54,7 +54,7 @@ Public Function ContributorSessionProblem() As String
  On Error GoTo Finished
  profile = CLng(TempVars("SwiftContributorID").Value)
  If profile < 1 Then Exit Function
- If StrComp(CStr(TempVars("SwiftContributorPath").Value), CurrentProject.FullName, vbTextCompare) <> 0 Then Exit Function
+ If StrComp(CStr(TempVars("SwiftContributorPath").Value), SwiftDataPath(), vbTextCompare) <> 0 Then Exit Function
  If CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), "")) <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
  retained = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
  If retained = profile Or retained = 0 Then Exit Function

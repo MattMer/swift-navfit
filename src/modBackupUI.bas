@@ -9,7 +9,7 @@ Private Const WorkspaceLimitBytes As Double = 2147483648#
 Private Const WorkspaceWarnBytes As Double = 1610612736#
 Public Function WorkspaceFileBytes() As Double
     'FileLen reports an open file's size from before it was opened.
-    WorkspaceFileBytes = CreateObject("Scripting.FileSystemObject").GetFile(CurrentProject.FullName).Size
+    WorkspaceFileBytes = CreateObject("Scripting.FileSystemObject").GetFile(SwiftDataPath()).Size
 End Function
 Public Function WorkspaceSizeNearLimit(ByVal bytes As Double) As Boolean
     WorkspaceSizeNearLimit = (bytes >= WorkspaceWarnBytes)
@@ -115,7 +115,7 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     Next
     backup.Close: Set backup = Nothing
     RemoveBackupQueries prefix
-    source = CurrentProject.FullName
+    source = SwiftDataPath()
     evidence = "{""Status"":""PASS"",""Mode"":""Data backup"",""Source"":" & JsonString(source) & ",""Destination"":" & JsonString(destination) & _
         ",""SHA256"":""" & SourceFileHash(destination) & """,""Schema"":" & SCHEMA_VERSION & ",""AppVersion"":" & JsonString(APP_VERSION) & _
         ",""RowsVerified"":" & total & ",""CreatedAt"":""" & Format$(Now(), "yyyy-mm-dd\Thh:nn:ss") & """,""Counts"":{" & counts & "}}"

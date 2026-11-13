@@ -224,7 +224,7 @@ Public Sub UXPrepareReportRows()
     r.Close
     'ITA comes from the saved revision, not the Report columns. Seek on the
     '(RevisionID,FieldKey) index: a join scans RevisionValue as it grows.
-    Set values = db.OpenRecordset("RevisionValue", dbOpenTable): values.Index = "UX_RevisionValue"
+    Set values = SwiftDataDb(db).OpenRecordset("RevisionValue", dbOpenTable): values.Index = "UX_RevisionValue"
     For Each id In rows.Keys
         row = rows(id): total = 0: count = 0: complete = True
         If Nz(row(6), "") = "NOB" Then

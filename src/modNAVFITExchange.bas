@@ -218,7 +218,7 @@ Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As 
         source = Nz(MajorScalar("SELECT SourcePath FROM ImportReceipt WHERE ImportReceiptID=" & CLng(receipt)), "")
         external = CLng(MajorScalar("SELECT ExternalReportID FROM ImportReceipt WHERE ImportReceiptID=" & CLng(receipt)))
     End If
-    If StrComp(source, destination, vbTextCompare) = 0 Or StrComp(CurrentProject.FullName, destination, vbTextCompare) = 0 Then Err.Raise vbObjectError + 5300, "modNAVFITExchange.NAVFITExportReport", "Choose a distinct export destination."
+    If StrComp(source, destination, vbTextCompare) = 0 Or SwiftIsWorkspaceFile(destination) Then Err.Raise vbObjectError + 5300, "modNAVFITExchange.NAVFITExportReport", "Choose a distinct export destination."
     operation = BeginOperation("NAVFIT export", destination)
     pending = destination & "." & Replace(Replace(NewIdentity(), "{", ""), "}", "") & ".pending.accdb"
     manifest = destination & ".swift-baseline.accdb": pendingManifest = pending & ".baseline.accdb"

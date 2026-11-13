@@ -130,7 +130,7 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  If importing Then Exit Function
  importPath = "": importHash = "": Set workspacePreview = Nothing
  stage = "Open preview source"
- If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "Choose a different Swift NAVFIT file."
+ If SwiftIsWorkspaceFile(path) Then Err.Raise 5, "modWorkspaceImport.UXPreviewSwiftWorkspace", "Choose a different Swift NAVFIT file."
  Set reader = DBEngine.CreateWorkspace("SwiftImportPreview", "admin", "", dbUseJet)
  Set source = reader.OpenDatabase(path, False, True)
  stage = "Read source schema"
@@ -179,7 +179,7 @@ Public Function ImportSwiftWorkspaceData(ByVal path As String, ByVal hash As Str
  Dim result As String, failure As Long, message As String, source As String, cause As Object
  On Error GoTo Failed
  transactionOutcome = "Not started"
- If StrComp(path, CurrentProject.FullName, vbTextCompare) = 0 Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Cannot import this file into itself."
+ If SwiftIsWorkspaceFile(path) Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Cannot import this file into itself."
  WorkspaceImportProgress "Checking source fingerprint and destination..."
  If SourceFileHash(path) <> hash Then Err.Raise 5, "modWorkspaceImport.ImportSwiftWorkspaceData", "Source changed. Choose and preview it again."
  Call BackupReceiptCheck(path, hash)

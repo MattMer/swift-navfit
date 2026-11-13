@@ -117,7 +117,8 @@
     "src/modValidationReferences.bas",
     "src/modWorkspace.bas",
     "src/modWorkspaceImport.bas",
-    "src/modWorkspaceSafety.bas"
+    "src/modWorkspaceSafety.bas",
+    "src/modDataFile.bas"
   ],
   "generatedModules": [
     "modPDFPrintCatalogue",

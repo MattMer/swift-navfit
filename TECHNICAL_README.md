@@ -44,7 +44,7 @@ Development source (*generated*):
 | Schema version | 48 |
 | Imports accepted | Workspaces of schema 35 to 48, into a target of schema 21 to 48 |
 | Tables / enforced relationships | 83 / 169 |
-| VBA modules / forms | 120 / 74 |
+| VBA modules / forms | 121 / 74 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 125 / 122 |
@@ -619,6 +619,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 13 Nov 2026 | Internal, no change in behaviour: one module (`modDataFile`) answers where the workspace data is, and the backup source, file-size and location warnings, contributor session and table-level reads use it. First step toward a separate data file (backlog S01); the application is still a single file. The schema is defined in one file (`major-schema.json`). |
 | 13 Nov 2026 | Editor Back Page: the comments and block 44 boxes have their full height in the fixed layout, so nothing overlaps them. Tests only: the import-engine suite seeds its source from the build under test instead of old release files, and the comment line capacities are asserted for the layout printer (Microsoft Print to PDF, 600 dpi). |
 | 12 Nov 2026 | Development tooling only, no change to the application: build and test commands run their Access sessions on a hidden Windows desktop (section 10). |
 | 10 Nov 2026 | Imports accepted from schema 35 (release 0.49.0) onward; the release gate tests release schemas only. Settings & Help > About this version and a 90-day Overview reminder, both offline. |

@@ -100,7 +100,7 @@ End Function
 'its own warning rather than hidden.
 Public Function WorkspaceSafetyNotice() As String
     Dim text As String, others As Long, computers As String, path As String
-    path = CurrentProject.FullName
+    path = SwiftDataPath()
     text = WorkspaceLocationWarning(path)
     On Error GoTo FileFailed
     text = WarningJoin(text, WorkspaceFileWarning(path))
