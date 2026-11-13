@@ -619,6 +619,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 13 Nov 2026 | Editor Back Page: the comments and block 44 boxes have their full height in the fixed layout, so nothing overlaps them. Tests only: the import-engine suite seeds its source from the build under test instead of old release files, and the comment line capacities are asserted for the layout printer (Microsoft Print to PDF, 600 dpi). |
 | 12 Nov 2026 | Development tooling only, no change to the application: build and test commands run their Access sessions on a hidden Windows desktop (section 10). |
 | 10 Nov 2026 | Imports accepted from schema 35 (release 0.49.0) onward; the release gate tests release schemas only. Settings & Help > About this version and a 90-day Overview reminder, both offline. |
 | 9 Nov 2026 | Release 0.55.0; full release gate and historical schemas 1-48 verified. |

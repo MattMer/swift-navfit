@@ -135,11 +135,15 @@ Public Function TestNarrativeLineFit() As String
         Set fit = PDFFieldFit(CStr(kind), "OfficialComments", "", fitSize)
         Check fit("Status") = "Measured", kind & ": printer metrics unavailable: " & fit("Reason")
         capacity = fit("Capacity")
-        ' Line height is the font's own metric: Courier New 12 pt in a 201.5 pt box; Times New
-        ' Roman 12 pt in 225.3 pt and 71.3 pt boxes. At 10 pt they hold 18, 19 and 6 lines.
+        ' Line height is the font's metric on the layout printer, Microsoft Print to PDF at 600 dpi,
+        ' where whole device pixels make Courier New 12.84/10.56 pt a line and Times New Roman
+        ' 14.16/11.76 pt. The boxes are 201.5, 225.3 and 71.3 pt: 15, 15 and 5 lines at 12 pt and
+        ' 19, 19 and 6 at 10 pt. A 1200 dpi printer would give 15/18 and 16/19, which is why the
+        ' layout printer is fixed.
+        Check PDFLayoutPrinterName() = "Microsoft Print to PDF", kind & ": capacities are Microsoft Print to PDF's, but pages lay out on " & PDFLayoutPrinterName()
         Select Case kind
-            Case "EVAL": width = 539.5: font = "Courier New": size = 12: Check capacity = 15, kind & ": capacity " & capacity: limit = 18
-            Case "FITREP": width = 536: font = "Times New Roman": size = 12: Check capacity = 16, kind & ": capacity " & capacity: limit = 19
+            Case "EVAL": width = 539.5: font = "Courier New": size = 12: Check capacity = 15, kind & ": capacity " & capacity: limit = 19
+            Case "FITREP": width = 536: font = "Times New Roman": size = 12: Check capacity = 15, kind & ": capacity " & capacity: limit = 19
             Case Else: width = 570.344: font = "Times New Roman": size = 12: Check capacity = 5, kind & ": capacity " & capacity: limit = 6
         End Select
         Check PDFFieldFit(CStr(kind), "OfficialComments", "", 10)("Capacity") = limit, kind & ": 10 pt capacity"

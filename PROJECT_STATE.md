@@ -1,6 +1,6 @@
 # Swift NAVFIT — current project state
 
-Updated 4 November 2026. This document describes what is true **now**:
+Updated 13 November 2026. This document describes what is true **now**:
 architecture, supported behavior, decisions and open gaps. Keep it short.
 Per-feature implementation detail and verification receipts up to 0.44.0-dev
 are in [planning/PROJECT_STATE_HISTORY.md](planning/PROJECT_STATE_HISTORY.md);
@@ -35,18 +35,21 @@ import and print-ready PDF output.
 
 ## Architecture
 
-- **Source:** [src/](src/) holds 112 static VBA modules, JSON catalogues, the
-  AutoExec macro, PDF template images and the 70 forms as normalized Access text
+- **Source:** [src/](src/) holds 115 static VBA modules, JSON catalogues, the
+  AutoExec macro, PDF template images and the 74 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
-  lists the modules, forms, generated modules, fingerprinted inputs and six
-  resource stages.
+  lists the modules, forms, five generated modules (built from the
+  catalogues, not stored in `src/`), fingerprinted inputs and six resource
+  stages.
 - **Build:** [develop.ps1](scripts/develop.ps1) → [build.ps1](scripts/build.ps1)
   creates a fresh database and schema, loads modules, runs the resource stages
   (generated modules, the PDF report, startup properties), loads the forms from
   text, compiles, reopens, and verifies installed source, bindings and view
   contracts. **Forms are source:** edit the text, or change a form in Access on a
   disposable build and re-export it with `scripts/export-form-text.ps1`; see
-  [BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md). A build takes about 2 minutes.
+  [BUILD_PIPELINE.md](planning/BUILD_PIPELINE.md). A build takes about 2 minutes. `develop.ps1` and
+  `release-check.ps1` run their Access sessions on a hidden Windows desktop; see
+  [test desktop isolation](docs/Development_Workflow.md#test-desktop-isolation).
 - **Build scratch retention:** the standard development and release workflows
   prune generated scratch after 24 hours for successful runs and seven days for
   failed/flaky/unclassified runs. Pins, active workflows, Access sessions and
@@ -153,30 +156,11 @@ from the editor; a restricted-content check with dismissals, allowed phrases and
 checks that can be turned off; and screen polish (one font, labelled boxes, one
 main action per screen).
 
-Release 0.54.0 adds group directory refresh, editable source-match shading,
-report-to-report group navigation, full-NOB mark handling and mixed date/status
-counseling entry. Schema 45 adds replaceable working state, retained
-narrative/workflow checkpoints and a counselor picker button. It also
-adds startup warnings for temporary, synced or read-only files and concurrent
-sessions, a clock-safe recovery checkpoint interval, Members-grid checkpoints on
-reports under review, and import undo from report History (Operation history is a
-read-only log apart from legacy folder undo); clearing block 16 before saving
-restores the marks NOB replaced. Block 20 carries a PFA date on CHIEFEVAL only,
-entered and shown as MM/YY (stored as the first of the month). Saving a member
-profile updates that member's open draft reports. Group defaults follow the
-Front Page layout and exclude the reporting senior (from the group's senior
-record) and block 29. Previous/Next follow the Members view's sort. One lifecycle function
-(`ReportLifecycle`: Archived, Signed, Approved, In review, Draft) backs the group
-update and defaults guards, and marking a report signed or archiving it ends its open route or assignment.
-Leaving Completed reopens only reports that completion signed. Operation journal
-entries move forward only; the retention test fails on an unrecognised revision
-pointer. The final schema-45
-development build passed canonical BuildAndTest, focused feature checks, the
-schema 1–45 import matrix, a populated 0.53.0 upgrade and exact current-schema
-retention transfer. These changes are released in 0.54.0 (7 November 2026).
-Earlier intermittent native-close and audit/navigation errors passed on isolated
-rechecks and the final canonical/focused runs; they remain recorded in the shared
-handoff. The migration matrix completed successfully after its monitor timed out.
+Release 0.54.0 (7 November 2026, schema 45) added group directory refresh,
+editable source-match shading, report-to-report group navigation, replaceable
+working state with retained narrative and workflow checkpoints, startup warnings for
+temporary, synced or read-only files, import undo from report History, and a
+PFA date in block 20 on CHIEFEVAL (entered and shown as MM/YY).
 
 R15, P01 and M05 are released in 0.53.0 (schema 44). The canonical build and
 full release gate passed on the tagged 0.53.0 source.
@@ -186,22 +170,22 @@ full release gate passed on the tagged 0.53.0 source.
 | C01 | SSN protection decision | Decided: folder permissions only. |
 | C02 | Reviewed duplicate-member merge with guarded undo | Released in r127. |
 | C03 | Startup contributor selection | Released in r128. |
-| C04 | Effective-dated validation (CH-1 calendars, CH-2 from 26 May 2026, NAVADMIN 132/26 from 3 Jun 2026) | Dev. Dates without coverage produce an explicit Needs-review finding. |
-| C05–C07 | Relational RSCA accounting, canonical field catalogue, `ReportHead` authority, typed dates/choices | Dev (schema 28). |
-| C08–C10 | Audit index, unified conversations, single navigation list | Dev (schema 29). |
+| C04 | Effective-dated validation (CH-1 calendars, CH-2 from 26 May 2026, NAVADMIN 132/26 from 3 Jun 2026) | Released. Dates without coverage produce an explicit Needs-review finding. |
+| C05–C07 | Relational RSCA accounting, canonical field catalogue, `ReportHead` authority, typed dates/choices | Released (schema 28). |
+| C08–C10 | Audit index, unified conversations, single navigation list | Released (schema 29). |
 | H01 | Print-ready PDF output, packets, Chief comments and print fidelity | Dev (schema 33). **Not accepted:** physical print fit, Acrobat-absent workstation and the trait-34 grade-4/5 6-point fallback still need checking. |
-| H02 | NAVFIT98A export without validation blocking (whole summary group) | Dev (schema 31). |
+| H02 | NAVFIT98A export without validation blocking (whole summary group) | Released (schema 31). |
 | M01 | Compiled ACCDE distribution | Unsigned dev candidate only. The compiled runner covers startup, import, saves and PDF output (report PDF and group packet) under trusted automation. Normal-security launch is unresolved and there is no signing certificate. |
-| M02 | Recoverable/owned import previews (Resume/Cancel) | Dev (schema 30); follow-ups through 0.44. |
+| M02 | Recoverable/owned import previews (Resume/Cancel) | Released (schema 30); follow-ups through 0.44. |
 | M03 | Batched reads for folders, history, groups/RSCA, summary list | Dev. |
-| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Dev (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Every literal form and control name in VBA, form modules and form properties (bang references, `With` blocks, bound form variables, subforms, `Controls("…")`, probes, open/close targets, sort tags) must resolve against `src/forms`; the static `test-form-references` case in `test-source-contracts` checks this before every build. Code no longer probes for controls a named form always has. Finite computed-name families are expanded from catalogues during source and reopened native checks, with runtime assertions and mutation checks covering navigation, context/detail panels, report fields, traits, shared defaults, roster fields, RSCA rows and sort headings. New dynamic families require a contract. Broader M04 inventory remains in the backlog. |
+| M04–M06 | Primary-error diagnostics, required view contracts, `TraitDefinition` table | Released (schema 31). Page/refresh handlers capture errors before cleanup, retain failure stages and propagate failed Boolean refreshes. Surface refresh/field restoration expose native failures without changing saved or pending values; retry releases the busy state. Postcommit signoff refresh failures report Saved with the committed outcome. Every literal form and control name in VBA, form modules and form properties (bang references, `With` blocks, bound form variables, subforms, `Controls("…")`, probes, open/close targets, sort tags) must resolve against `src/forms`; the static `test-form-references` case in `test-source-contracts` checks this before every build. Code no longer probes for controls a named form always has. Finite computed-name families are expanded from catalogues during source and reopened native checks, with runtime assertions and mutation checks covering navigation, context/detail panels, report fields, traits, shared defaults, roster fields, RSCA rows and sort headings. New dynamic families require a contract. Broader M04 inventory remains in the backlog. |
 | R15 | Archived counseling view/restore; PDF reapply after Undo | Released in 0.53.0 (schema 44). Counseling preserves versions/attribution; each PDF attempt retains its own receipt and raw provenance. |
 | P01 | Flexible report search, period overlap filters and named filter sets | Released in 0.53.0 (schema 44). Contributor-scoped sets transfer by owner/group GUID; version guards reject stale updates/deletes. |
 | M07 | Accessibility (target: Section 508 / WCAG 2.0 AA) | Every input control has an accessible name: its visible label, or a 15-twip `an<Control>` name label that matches the control's visibility. Text contrast meets 4.5:1. test-accessibility guards names, contrast and button captions, with no known gaps. The attended NVDA/JAWS procedure is [docs/Accessibility_Screen_Reader_Test.md](docs/Accessibility_Screen_Reader_Test.md). Under a Windows high-contrast theme, the palette switches to system colors. No screen-reader acceptance. |
-| L01–L02 | Descriptive FK names, revision-ID alias queries | Dev (schema 32). |
-| Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Dev (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
-| Reporting seniors | Senior list shows grade, designator, title, UIC and directory link. New reporting senior starts from a member picker (or details by hand); a linked record copies name, grade, designator, UIC and SSN from the member and shows when the directory differs, with Update from directory and Unlink. The title, address and phone stay on the senior record. RSCA history per paygrade lists the entered BOL baseline and each summary group completion (and correction) posted on it, with traits added and the RSCA after; the paygrade table shows each RSCA's source | Dev (schema 36). |
-| Counseling | Midterm counseling tracker: chapter 18 schedule by paygrade (current and 2027 tables), records in member history, My Work tab, blocks 30–31 carry-over through Report tools, worksheet disposition after detachment | Dev (schema 34). Printing a pre-filled worksheet is deferred. |
+| L01–L02 | Descriptive FK names, revision-ID alias queries | Released (schema 32). |
+| Mark signed | Record a signature made outside Swift (per report, per group, or by completing a group); read-only signed reports with a reopen prompt on first edit; optional draft disposal (BUPERSINST 1610.10H Introduction ¶7a) that keeps signed versions and conversations | Released (schema 35). Final reports are kept: the workspace is the command's reporting senior binder. |
+| Reporting seniors | Senior list shows grade, designator, title, UIC and directory link. New reporting senior starts from a member picker (or details by hand); a linked record copies name, grade, designator, UIC and SSN from the member and shows when the directory differs, with Update from directory and Unlink. The title, address and phone stay on the senior record. RSCA history per paygrade lists the entered BOL baseline and each summary group completion (and correction) posted on it, with traits added and the RSCA after; the paygrade table shows each RSCA's source | Released (schema 36). |
+| Counseling | Midterm counseling tracker: chapter 18 schedule by paygrade (current and 2027 tables), records in member history, My Work tab, blocks 30–31 carry-over through Report tools, worksheet disposition after detachment | Released (schema 34). Printing a pre-filled worksheet is deferred. |
 
 Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG.md).
 
@@ -245,13 +229,6 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
 
 ## Known gaps and test caveats
 
-- `MigrateWorkspace` calls `MigrateLegacyReportNotes` and
-  `MigrateReportMessages` through `Application.Eval`. An error raised inside
-  them, such as a contributor identity that differs from its audit actor, shows
-  an unhandled VBA run-time dialog instead of returning a clean import
-  rejection. Fixed in 0.44.0-dev by calling them directly; the import runner's
-  audit-identity guard covers it.
-
 - Attended acceptance still outstanding: a NAVFIT98A print check of the narrative
   line meter (backlog H03), physical print fit, an Acrobat-absent
   workstation, normal-security launch and signing, screen reader/keyboard/DPI,
@@ -261,10 +238,8 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   - one DAO 3059 during fixed-page tests
   - one Access `0xc0000005` crash with a reused fault-test controller
   - an earlier r126 closed-object build failure.
-- The C04-era validation-window layout failure (the suite stopped at 98
-  assertions) was addressed in 0.37: the client size is now set before asserting,
-  and a real 200-twip overlap was fixed. The 0.37 receipt records 141 validation
-  assertions passing.
+- Intermittent native test failures (backlog T05) are not diagnosed; since
+  13 Nov 2026 native runs use a hidden desktop to rule out stray input.
 
 ## Superseded approaches (do not reintroduce)
 

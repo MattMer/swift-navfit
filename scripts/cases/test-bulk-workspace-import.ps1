@@ -1,8 +1,14 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$BaselinePath,[string]$DemoPath)
 $ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-if(-not $BaselinePath){$BaselinePath=Join-Path $root 'output/Swift_NAVFIT_Blank_2026-10-19-r121b.accdb'}
-if(-not $DemoPath){$DemoPath=Join-Path $root 'output/Swift_NAVFIT_Demo_2026-10-19-r121b.accdb'}
+#-BaselinePath (an earlier build with the row importer) adds its timing for comparison; it is optional.
+$baseline=[bool]$BaselinePath
 $folder=Join-Path $root ('build/tests/bulk-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
+#The source is a Demo seeded from this build, so the case needs no old output file.
+if(-not $DemoPath){
+ $DemoPath=Join-Path $folder 'current-demo.accdb'
+ & powershell.exe -NoProfile -File (Join-Path $root 'scripts/build-ux-admin-demo.ps1') -TemplatePath $BuildPath -OutputPath $DemoPath|Out-Null
+ if($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $DemoPath)){throw 'Could not seed a Demo source from the build'}
+}
 $source=Join-Path $folder "Sailor's synthetic workspace.accdb";Copy-Item -LiteralPath $DemoPath -Destination $source
 $engine=New-Object -ComObject DAO.DBEngine.120;$db=$engine.OpenDatabase($source)
 $longNote=('Long note: '+[char]0x03A9+' '+[char]0x6F22+" ' quotation `r`n")*350 -join ''
@@ -12,7 +18,7 @@ try{
  # Parent IDs deliberately sort after their children; bulk restoration must not depend on insertion order.
  $db.Execute("INSERT INTO Folder (FolderID,FolderGuid,FolderName) VALUES (8002,'"+[guid]::NewGuid().ToString('B')+"','Synthetic parent')",128)
  $db.Execute("INSERT INTO Folder (FolderID,FolderGuid,FolderName,ParentFolderID) VALUES (8001,'"+[guid]::NewGuid().ToString('B')+"','Synthetic child',8002)",128)
- $db.Execute("INSERT INTO ReviewComment (CommentID,CommentGuid,ReportID,RevisionID,ThreadID,AuthorProfileID,CommentAt,CommentBody) SELECT TOP 1 8001,'"+[guid]::NewGuid().ToString('B')+"',ReportID,RevisionID,Null,AuthorProfileID,CommentAt,CommentBody FROM ReviewComment",128)
+ $db.Execute("INSERT INTO ReviewComment (CommentID,CommentGuid,ReportID,RevisionID,ThreadID,AuthorProfileID,CommentAt,CommentBody) SELECT TOP 1 8001,'"+[guid]::NewGuid().ToString('B')+"',ReportID,RevisionID,Null,AuthorProfileID,Now(),'Synthetic thread parent' FROM ReportRevision ORDER BY RevisionID",128)
  $db.Execute("INSERT INTO ReviewComment (CommentID,CommentGuid,ReportID,RevisionID,ThreadID,AuthorProfileID,CommentAt,CommentBody) SELECT 8002,'"+[guid]::NewGuid().ToString('B')+"',ReportID,RevisionID,8001,AuthorProfileID,CommentAt,CommentBody FROM ReviewComment WHERE CommentID=8001",128)
  # Expand genuine historical revision/value rows without changing the reports' current revisions.
  for($j=1;$j -le 7;$j++){
@@ -23,7 +29,7 @@ try{
  $rows=$db.OpenRecordset('SELECT TOP 1 NoteText FROM ReportNote',4);if($rows.EOF -or $rows.Fields.Item(0).Value -cne $longNote){throw 'Long note fixture not saved'};$rows.Close()
  $rows=$db.OpenRecordset('SELECT Count(*) FROM RevisionValue',4);$valueCount=[int]$rows.Fields.Item(0).Value;$rows.Close()
 }finally{$db.Close()}
-$sourceHash=(Get-FileHash -LiteralPath $source).Hash;$buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash;$baselineHash=(Get-FileHash -LiteralPath $BaselinePath).Hash
+$sourceHash=(Get-FileHash -LiteralPath $source).Hash;$buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash;$baselineHash=if($baseline){(Get-FileHash -LiteralPath $BaselinePath).Hash}else{$null}
 $app=New-Object -ComObject Access.Application;$results=@()
 function OpenTarget([string]$template,[string]$label){
  $target=Join-Path $folder ($label+'.accdb');Copy-Item -LiteralPath $template -Destination $target
@@ -34,7 +40,8 @@ function OpenTarget([string]$template,[string]$label){
  return $target
 }
 try{
- foreach($run in @(@('row',1),@('bulk',1),@('bulk',2),@('row',2))){
+ $runs=if($baseline){@(@('row',1),@('bulk',1),@('bulk',2),@('row',2))}else{@(@('bulk',1),@('bulk',2))}
+ foreach($run in $runs){
   $kind=$run[0];$label=$kind+'-'+$run[1];$template=if($kind -eq 'row'){$BaselinePath}else{$BuildPath};$target=OpenTarget $template $label
   $clock=[Diagnostics.Stopwatch]::StartNew();$result=$app.Eval('TryWorkspaceImport("'+$source+'")');$clock.Stop()
   if($result -notlike 'PASS:*'){throw $result}
@@ -88,9 +95,9 @@ try{
  $app.CloseCurrentDatabase()
  if((Get-FileHash -LiteralPath $orphanSource).Hash -ne $orphanHash){throw 'Invalid source was modified'}
  Write-Output 'PASS: late relationship failure rolled back setup/data, removed queries, and allowed a valid retry'
- if((Get-FileHash -LiteralPath $source).Hash -ne $sourceHash -or (Get-FileHash -LiteralPath $BuildPath).Hash -ne $buildHash -or (Get-FileHash -LiteralPath $BaselinePath).Hash -ne $baselineHash){throw 'Benchmark source or release modified'}
+ if((Get-FileHash -LiteralPath $source).Hash -ne $sourceHash -or (Get-FileHash -LiteralPath $BuildPath).Hash -ne $buildHash -or ($baseline -and (Get-FileHash -LiteralPath $BaselinePath).Hash -ne $baselineHash)){throw 'Benchmark source or release modified'}
  $old=($results|Where-Object {$_.Engine -eq 'row'}|Measure-Object Seconds -Average).Average;$new=($results|Where-Object {$_.Engine -eq 'bulk'}|Measure-Object Seconds -Average).Average
- $evidence=@{Status='PASS';Source=$source;SourceSHA256=$sourceHash;BuildSHA256=$buildHash;BaselineSHA256=$baselineHash;RevisionValues=$valueCount;UISeconds=$uiSeconds;Runs=$results;RowAverageSeconds=$old;BulkAverageSeconds=$new;Speedup=$old/$new;LongUnicodeMemoVerified=$true;OutOfOrderSelfReferencesVerified=$true;TruncationFailureRollbackVerified=$true;LateRelationshipRollbackAndRetryVerified=$true;TemporaryQueriesRemoved=$true;NextAutoNumberVerified=$true;SourcesUnchanged=$true}
+ $evidence=@{Status='PASS';Source=$source;SourceSHA256=$sourceHash;BuildSHA256=$buildHash;BaselineSHA256=$baselineHash;RevisionValues=$valueCount;UISeconds=$uiSeconds;Runs=$results;RowAverageSeconds=$old;BulkAverageSeconds=$new;Speedup=$(if($old){$old/$new}else{$null});LongUnicodeMemoVerified=$true;OutOfOrderSelfReferencesVerified=$true;TruncationFailureRollbackVerified=$true;LateRelationshipRollbackAndRetryVerified=$true;TemporaryQueriesRemoved=$true;NextAutoNumberVerified=$true;SourcesUnchanged=$true}
  $evidence|ConvertTo-Json -Depth 7|Set-Content (Join-Path $folder 'verification.json')
  Write-Output ('PASS: bulk benchmark and rollback; '+$folder)
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($engine)}

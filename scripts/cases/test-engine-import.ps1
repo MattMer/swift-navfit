@@ -1,9 +1,10 @@
 param([Parameter(Mandatory=$true)][string]$BuildPath,
  [string]$BaselinePath,[string]$DemoPath,[string]$SourcePath,[switch]$SkipBaseline)
 $ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-if(-not $BaselinePath){$BaselinePath=Join-Path $root 'output/Swift_NAVFIT_Blank_2026-10-20-r123a.accdb'}
-if(-not $DemoPath){$DemoPath=Join-Path $root 'output/Swift_NAVFIT_Demo_2026-10-20-r123a.accdb'}
+#The source is a Demo seeded from this build, so the case needs no old output file.
+#-BaselinePath (an earlier build with the old VBA importer, about 15 minutes) is an optional comparison.
 $folder=Join-Path $root ('build/tests/engine-import-'+[guid]::NewGuid());[void](New-Item -ItemType Directory $folder)
+if(-not $SourcePath -and -not $DemoPath){$DemoPath=Join-Path $folder 'current-demo.accdb';& powershell.exe -NoProfile -File (Join-Path $root 'scripts/build-ux-admin-demo.ps1') -TemplatePath $BuildPath -OutputPath $DemoPath|Out-Null;if($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $DemoPath)){throw 'Could not seed a Demo source from the build'}}
 $source=Join-Path $folder 'large synthetic provenance.accdb';if($SourcePath){Copy-Item $SourcePath $source}else{Copy-Item $DemoPath $source}
 $e=New-Object -ComObject DAO.DBEngine.120;$db=$e.OpenDatabase($source)
 try{
@@ -23,7 +24,7 @@ try{
 $sourceHash=(Get-FileHash $source).Hash;$buildHash=(Get-FileHash $BuildPath).Hash
 $app=New-Object -ComObject Access.Application;$results=@()
 try{
- $kinds=if($SkipBaseline){@('engine')}else{@('engine','old-vba')}
+ $kinds=if($BaselinePath -and -not $SkipBaseline){@('engine','old-vba')}else{@('engine')}
  foreach($kind in $kinds){
   $ui=$null
   $template=if($kind -eq 'engine'){$BuildPath}else{$BaselinePath}
