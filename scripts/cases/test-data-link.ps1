@@ -147,6 +147,28 @@ try{
     Stop-Front $first
 }
 
+#An earlier single-file workspace, opened from the setup screen of a new copy, is brought
+#into a new data file beside it with the verified import. The earlier file is only read.
+$front=Join-Path $folder 'bring in front end.accdb';Copy-Item -LiteralPath $BuildPath -Destination $front
+$restoreHash=(Get-FileHash -LiteralPath $restore).Hash
+$broughtIn=Join-Path $folder 'restore target data.accdb'
+try{
+    $app=Start-Front
+    if(-not $app.Eval('IsEarlierWorkspace("'+$restore+'")')){throw 'An earlier workspace was not recognised'}
+    if($app.Eval('IsEarlierWorkspace("'+$backup+'")')){throw 'A data file was taken for an earlier workspace'}
+    if(-not $app.Eval('UXBringInWorkspace("'+$restore+'",False)')){throw 'Bringing in the earlier workspace failed'}
+    if(-not $app.Eval('SwiftDataIsLinked()') -or $app.Eval('SwiftDataPath()') -ne $broughtIn){throw ('Not linked to the new data file beside the workspace: '+$app.Eval('SwiftDataPath()'))}
+    if($app.Eval('DCount("*","Report")') -ne 1 -or $app.Eval('DLookup("CommandName","Workspace")') -ne 'SYNTHETIC DATA FILE COMMAND'){throw 'The workspace was not brought in'}
+    if(-not $app.CurrentProject.AllForms.Item('frmContributorStart').IsLoaded){throw 'Startup did not reach contributor choice on the brought-in workspace'}
+    $refused=[string]$app.Eval('DataFileProblem("'+$restore+'")')
+    if($refused -notlike 'That file is a complete Swift NAVFIT workspace*'){throw ('A complete workspace was offered as a data file: '+$refused)}
+}finally{Stop-Front $app;$app=$null}
+if((Get-FileHash -LiteralPath $restore).Hash -ne $restoreHash){throw 'The earlier workspace was changed'}
+$db=$engine.OpenDatabase($broughtIn,$false,$true)
+try{$rows=$db.OpenRecordset('SELECT Count(*) FROM Report',4);$landed=[int]$rows.Fields.Item(0).Value;$rows.Close()}finally{$db.Close()}
+if($landed -ne 1){throw 'The brought-in report is not in the new data file'}
+Write-Output 'PASS: an earlier workspace opened from the setup screen is brought into a new data file beside it, unchanged itself'
+
 #Schema upgrade (S01 step 4). A data file of the previous schema, built from its captured
 #definition, upgraded by this version has exactly the structure of this build.
 function New-SchemaFixture([int]$Schema,[string]$Path){

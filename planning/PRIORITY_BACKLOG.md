@@ -99,12 +99,12 @@ passed. The owner asked for these changes:
 
 | ID | Work |
 | --- | --- |
-| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. |
+| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. |
 | T06 | **Remove pre-35 import code with the next schema change (owner decision, 10 Nov 2026).** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
 
 ## S01 — Front end and data file (owner decisions, 13 Nov 2026)
 
-**Status (13 Nov 2026):** steps 1 to 4 are in development, as an option on
+**Status (13 Nov 2026):** steps 1 to 5 are in development, as an option on
 the setup screen; a build is still one file until the user chooses a data
 file. On a linked copy the backup is a copy of the data file, checked row by
 row and field by field, and it restores through the import.
@@ -164,8 +164,12 @@ the front end and will need to target the data file.
    The only step today (47 to 48) exists to prove that; data files only
    exist from schema 48. Steps are plain SQL: a change to a table validation
    rule set by `build.ps1` will need step support when it first happens.
-5. **Existing single-file workspaces.** Open existing accepts a 0.49–0.5x
-   workspace and runs the current verified import into a new data file, once.
+5. **Existing single-file workspaces.** Built in development: Open an existing
+   data file, given a complete workspace from 0.49.0 to 0.55.0 (schema 35
+   onward), offers to bring it in. Swift NAVFIT makes `<name> data.accdb`
+   beside it, links to it and runs the verified import; the earlier file is
+   only read. If the import fails, the copy keeps the new empty data file and
+   says so; the import can be retried from Settings & Help.
 6. **Backup, restore, docs, release files** and an in-place upgrade test for
    every released schema.
 

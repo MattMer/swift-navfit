@@ -58,7 +58,7 @@ Public Function DataFileProblem(ByVal filePath As String) As String
     r.Close: Set r = Nothing
     'A whole workspace from an earlier version holds the application too; it is imported.
     If ApplicationObjects(db) > 0 Then
-        DataFileProblem = "That file is a complete Swift NAVFIT workspace from an earlier version, not a data file. Create a new data file, then bring the workspace in with Settings & Help > Import data from a previous Swift NAVFIT version."
+        DataFileProblem = "That file is a complete Swift NAVFIT workspace from an earlier version, not a data file. Open it from the setup screen of a newly downloaded Swift NAVFIT, which brings it into a new data file."
         GoTo Done
     End If
     If version > SCHEMA_VERSION Then
@@ -245,10 +245,65 @@ Public Function UXOpenDataFile() As Boolean
     picker.Title = "Open your Swift NAVFIT data file": picker.AllowMultiSelect = False
     picker.Filters.Clear: picker.Filters.Add "Swift NAVFIT data file", "*.accdb"
     If picker.Show <> -1 Then Exit Function
-    UXOpenDataFile = UXUseDataFile(CStr(picker.SelectedItems(1)), False)
+    'A whole workspace from an earlier version is brought into a new data file instead.
+    If IsEarlierWorkspace(CStr(picker.SelectedItems(1))) Then
+        UXOpenDataFile = UXBringInWorkspace(CStr(picker.SelectedItems(1)), True)
+    Else
+        UXOpenDataFile = UXUseDataFile(CStr(picker.SelectedItems(1)), False)
+    End If
     Exit Function
 Failed:
     MsgBox Err.Description, vbExclamation, "Swift NAVFIT data file"
+End Function
+
+' True for a complete Swift NAVFIT workspace (tables with the application in one file),
+' as every release up to 0.55.0 made.
+Public Function IsEarlierWorkspace(ByVal filePath As String) As Boolean
+    Dim db As DAO.Database, t As DAO.TableDef, hasMetadata As Boolean
+    On Error GoTo Done
+    If Len(Dir$(filePath)) = 0 Or SwiftIsWorkspaceFile(filePath) Then Exit Function
+    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, False, True)
+    For Each t In db.TableDefs
+        If t.Name = "AppMetadata" And Len(t.Connect) = 0 Then hasMetadata = True
+    Next
+    IsEarlierWorkspace = hasMetadata And ApplicationObjects(db) > 0
+Done:
+    If Not db Is Nothing Then db.Close
+End Function
+
+' From the setup screen of a new copy: a complete workspace from an earlier version is
+' brought into a new data file beside it with the verified import, and Swift NAVFIT starts
+' on it. The earlier file is only read. With confirm, the user is told first.
+Public Function UXBringInWorkspace(ByVal sourcePath As String, ByVal confirm As Boolean) As Boolean
+    Dim folder As String, base As String, target As String, number As Long, screen As Variant, message As String
+    If SwiftDataIsLinked() Then Err.Raise vbObjectError + 9806, "modDataLink.UXBringInWorkspace", "This copy of Swift NAVFIT already uses a data file. Bring the earlier workspace in from a newly downloaded copy."
+    If Not IsEarlierWorkspace(sourcePath) Then Err.Raise vbObjectError + 9806, "modDataLink.UXBringInWorkspace", "That file is not a Swift NAVFIT workspace from an earlier version."
+    folder = Left$(sourcePath, InStrRev(sourcePath, "\") - 1)
+    base = Mid$(sourcePath, InStrRev(sourcePath, "\") + 1)
+    If LCase$(Right$(base, 6)) = ".accdb" Then base = Left$(base, Len(base) - 6)
+    target = folder & "\" & base & " data.accdb": number = 1
+    Do While Len(Dir$(target)) > 0
+        number = number + 1: target = folder & "\" & base & " data " & number & ".accdb"
+    Loop
+    If confirm And Application.UserControl Then
+        If MsgBox("That file is a complete workspace from an earlier version of Swift NAVFIT." & vbCrLf & vbCrLf & "Swift NAVFIT will make a new data file beside it and bring the workspace in, checking every row and field:" & vbCrLf & target & vbCrLf & vbCrLf & "The earlier file is only read, never changed.", vbOKCancel + vbInformation, "Swift NAVFIT data file") <> vbOK Then Exit Function
+    End If
+    CreateDataFile target
+    For Each screen In Array("frmSetup", "frmContributorStart")
+        If CurrentProject.AllForms(CStr(screen)).IsLoaded Then DoCmd.Close acForm, CStr(screen), acSaveNo
+    Next
+    LinkDataFile target
+    On Error GoTo ImportFailed
+    Call ImportSwiftWorkspaceData(sourcePath, SourceFileHash(sourcePath))
+    On Error GoTo 0
+    UXBringInWorkspace = SwiftAppStartup()
+    Exit Function
+ImportFailed:
+    message = Err.Description
+    On Error Resume Next
+    Call SwiftAppStartup
+    On Error GoTo 0
+    Err.Raise vbObjectError + 9807, "modDataLink.UXBringInWorkspace", "The workspace could not be brought in: " & message & " The earlier file was not changed. This copy now uses a new, empty data file (" & target & "); set it up, or try Settings & Help > Import data from a previous Swift NAVFIT version again."
 End Function
 
 Public Function UXNewDataFile() As Boolean
