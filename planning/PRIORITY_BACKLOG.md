@@ -113,11 +113,12 @@ lands in the data file. A data file has no session list to read (Access
 opens it only while it reads or writes), so each session holds it open from
 startup and a session that starts second is warned; a VBA reset releases the
 hold until the next start, and the warning no longer names the computer.
-**Not ready to release:** the file picker itself has only been exercised through its
-functions (no attended run), and the user guide and help do not describe it.
-Step 2 writes the data file from the blank copy's own tables, so a copy that
-is already linked cannot start a second data file; that waits for the schema
-to be carried as numbered steps (step 4).
+The user guide (sections 2.1 to 2.3, 17.1, 17.2, 18.1) and the Start here
+and Recovery help topics describe it. **Not ready to release:** the pickers
+and message boxes have only been exercised through their functions; the
+attended checks below are outstanding, and the owner decisions under step 6
+are open. A copy that is already linked cannot start a second data file (the
+data file is written from the blank copy's own tables); a new download can.
 
 Today code and data share one `.accdb`, so
 every release needs a new Blank and a full import. The owner decided to split
@@ -170,8 +171,25 @@ the front end and will need to target the data file.
    beside it, links to it and runs the verified import; the earlier file is
    only read. If the import fails, the copy keeps the new empty data file and
    says so; the import can be retried from Settings & Help.
-6. **Backup, restore, docs, release files** and an in-place upgrade test for
-   every released schema.
+6. **Docs, attended checks and release files.** Backup, restore, guide and
+   help are done. Remaining:
+   - **Attended checks (owner, on a dev Blank copy in an ordinary folder):**
+     (a) setup screen, Keep this workspace in a new data file: folder picker,
+     file appears, setup reopens, a report saves; (b) close, rename the data
+     file, reopen: the message names the missing file, OK opens the picker,
+     choosing the renamed file starts normally, Cancel closes; (c) a second
+     new copy, Open an existing data file on that data file: contributor
+     choice; with both open, the second is warned; (d) a third new copy,
+     Open an existing data file on a 0.55.0 workspace copy: the
+     confirmation names the new file, the workspace comes in, the 0.55.0
+     file is unchanged; (e) Settings & Help backup on a linked copy; (f) the
+     upgrade message box (needs a build with a schema change, or a data
+     file whose AppMetadata.SchemaVersion is set to 47 on a copy).
+   - **Owner decisions before a release carries it:** whether the data file
+     becomes the default (setup creates one without asking) or stays an
+     option; whether the Blank download is renamed as the application; and
+     whether the Demo ships as an application and data file pair.
+   - Release notes and README download text once those are decided.
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 
