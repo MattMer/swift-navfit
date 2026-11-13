@@ -400,6 +400,8 @@ End Function
 
 Public Function SwiftAppStartup() As Boolean
     On Error GoTo Failed
+    'With a separate data file, find it before anything reads a table.
+    If Not DataLinkReady() Then Exit Function
     If Nz(DLookup("SchemaVersion", "AppMetadata"), 0) <> SCHEMA_VERSION Then
         MsgBox "Unsupported Swift schema. Open this file with its matching application version.", vbCritical
         Application.Quit acQuitSaveNone

@@ -75,13 +75,15 @@ Failed:
     If CurrentProject.AllForms("frmBackup").IsLoaded Then Forms!frmBackup!lblStatus.Caption = Err.Description
 End Function
 
-'Writes every local table, keys and indexes included, into a new .accdb, then
+'Writes every table, keys and indexes included, into a new .accdb (with a separate
+'data file, a copy of that file), then
 'checks every row and field against this workspace with the importer's own
 'verifier. Returns the verification record, also saved beside the backup.
 Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     Dim db As DAO.Database, backup As DAO.Database, table As DAO.TableDef, q As DAO.QueryDef, names As Collection, name As Variant
     Dim prefix As String, counts As String, rows As Long, total As Long, created As Boolean, evidence As String, operation As Long
     Dim failure As Long, message As String, source As String, folder As String, receipt As Boolean, published As Boolean
+    Dim linked As Boolean, dataFile As String
     On Error GoTo Failed
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 4800, "modBackupUI.WriteWorkspaceBackup", "A backup is a new .accdb data file."
     folder = Left$(destination, InStrRev(destination, "\") - 1)
@@ -93,17 +95,29 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     End If
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4830, "modBackupUI.WriteWorkspaceBackup", "Save or discard the unsaved Members-grid cells first. A backup copies only saved values."
     Set db = CurrentDb: Set names = New Collection
+    linked = SwiftDataIsLinked(): dataFile = SwiftDataPath()
     For Each table In db.TableDefs
         If Left$(table.Name, 4) <> "MSys" And Left$(table.Name, 1) <> "~" Then
-            If Len(table.Connect) > 0 Then Err.Raise vbObjectError + 4802, "modBackupUI.WriteWorkspaceBackup", "Linked tables cannot be backed up as one file."
+            'Either every table is in this file, or every table is in the one data file.
+            If (Len(table.Connect) > 0) <> linked Then Err.Raise vbObjectError + 4802, "modBackupUI.WriteWorkspaceBackup", "Linked tables cannot be backed up as one file."
+            If linked Then
+                If StrComp(Mid$(table.Connect, InStr(1, table.Connect, "DATABASE=", vbTextCompare) + 9), dataFile, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 4802, "modBackupUI.WriteWorkspaceBackup", "Linked tables cannot be backed up as one file: they are in more than one file."
+            End If
             names.Add table.Name
         End If
     Next
-    Set backup = DBEngine.CreateDatabase(destination, dbLangGeneral, dbVersion120): created = True
-    backup.Close: Set backup = Nothing
-    For Each name In names
-        DoCmd.TransferDatabase acExport, "Microsoft Access", destination, acTable, CStr(name), CStr(name), False
-    Next
+    If linked Then
+        'The data file holds only tables, so the backup is a copy of it. The check
+        'below still compares every row and field with the open workspace.
+        DBEngine.Idle dbRefreshCache
+        CreateObject("Scripting.FileSystemObject").CopyFile dataFile, destination, False: created = True
+    Else
+        Set backup = DBEngine.CreateDatabase(destination, dbLangGeneral, dbVersion120): created = True
+        backup.Close: Set backup = Nothing
+        For Each name In names
+            DoCmd.TransferDatabase acExport, "Microsoft Access", destination, acTable, CStr(name), CStr(name), False
+        Next
+    End If
     prefix = "zSwiftBackup" & Left$(Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", ""), 20)
     Set backup = DBEngine.OpenDatabase(destination, False, True)
     For Each name In names

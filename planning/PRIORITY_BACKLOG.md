@@ -104,7 +104,18 @@ passed. The owner asked for these changes:
 
 ## S01 — Front end and data file (owner decisions, 13 Nov 2026)
 
-**Status:** step 1 in development. Today code and data share one `.accdb`, so
+**Status (13 Nov 2026):** steps 1 to 3 are in development, as an option on
+the setup screen; a build is still one file until the user chooses a data
+file. On a linked copy the backup is a copy of the data file, checked row by
+row and field by field, and it restores through the import.
+**Not ready to release:** on a linked copy the import from a previous
+version and the session-roster warning are untried, the file picker itself has only been exercised through its
+functions (no attended run), and the user guide and help do not describe it.
+Step 2 writes the data file from the blank copy's own tables, so a copy that
+is already linked cannot start a second data file; that waits for the schema
+to be carried as numbered steps (step 4).
+
+Today code and data share one `.accdb`, so
 every release needs a new Blank and a full import. The owner decided to split
 them: a front end (code and forms) and a data file (tables only).
 

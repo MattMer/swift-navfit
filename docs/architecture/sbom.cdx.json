@@ -177,7 +177,7 @@
                            "properties":  [
                                               {
                                                   "name":  "swift:uses",
-                                                  "value":  "175"
+                                                  "value":  "176"
                                               }
                                           ]
                        },
@@ -192,7 +192,7 @@
                            "properties":  [
                                               {
                                                   "name":  "swift:uses",
-                                                  "value":  "9"
+                                                  "value":  "10"
                                               }
                                           ]
                        },

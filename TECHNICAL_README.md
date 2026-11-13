@@ -44,10 +44,10 @@ Development source (*generated*):
 | Schema version | 48 |
 | Imports accepted | Workspaces of schema 35 to 48, into a target of schema 21 to 48 |
 | Tables / enforced relationships | 83 / 169 |
-| VBA modules / forms | 121 / 74 |
+| VBA modules / forms | 122 / 74 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 125 / 122 |
+| Test cases / VBA test harnesses | 126 / 123 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -619,6 +619,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 13 Nov 2026 | Development only, not in a release: the setup screen can write the blank copy's tables to a separate data file, or open an existing one, and then works through links (`modDataLink`, backlog S01). The data file holds tables only, no code. A missing or unusable data file is reported at startup with a file picker. A backup from a linked copy is a copy of the data file, verified row by row and field by field like any backup. Import and the session warning are not yet adapted to a linked copy. |
 | 13 Nov 2026 | Internal, no change in behaviour: one module (`modDataFile`) answers where the workspace data is, and the backup source, file-size and location warnings, contributor session and table-level reads use it. First step toward a separate data file (backlog S01); the application is still a single file. The schema is defined in one file (`major-schema.json`). |
 | 13 Nov 2026 | Editor Back Page: the comments and block 44 boxes have their full height in the fixed layout, so nothing overlaps them. Tests only: the import-engine suite seeds its source from the build under test instead of old release files, and the comment line capacities are asserted for the layout printer (Microsoft Print to PDF, 600 dpi). |
 | 12 Nov 2026 | Development tooling only, no change to the application: build and test commands run their Access sessions on a hidden Windows desktop (section 10). |
