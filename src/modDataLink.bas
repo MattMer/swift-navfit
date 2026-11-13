@@ -29,6 +29,14 @@ Private Function LocalWorkspaceBlank() As Boolean
     LocalWorkspaceBlank = (DCount("*", "Workspace") = 0 And DCount("*", "Report") = 0 And DCount("*", "CommandMember") = 0)
 End Function
 
+' Forms and modules in a file. A file made by DAO alone has no such containers at all.
+Private Function ApplicationObjects(ByVal db As DAO.Database) As Long
+    Dim c As DAO.Container
+    For Each c In db.Containers
+        If c.Name = "Forms" Or c.Name = "Modules" Then ApplicationObjects = ApplicationObjects + c.Documents.Count
+    Next
+End Function
+
 ' "" when the file is a Swift NAVFIT data file this version can use; otherwise why not.
 Public Function DataFileProblem(ByVal filePath As String) As String
     Dim db As DAO.Database, r As DAO.Recordset, t As DAO.TableDef, found As Object, name As Variant, version As Long
@@ -48,8 +56,17 @@ Public Function DataFileProblem(ByVal filePath As String) As String
     Set r = db.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot)
     If Not r.EOF Then version = CLng(Nz(r!SchemaVersion, 0))
     r.Close: Set r = Nothing
+    'A whole workspace from an earlier version holds the application too; it is imported.
+    If ApplicationObjects(db) > 0 Then
+        DataFileProblem = "That file is a complete Swift NAVFIT workspace from an earlier version, not a data file. Create a new data file, then bring the workspace in with Settings & Help > Import data from a previous Swift NAVFIT version."
+        GoTo Done
+    End If
+    If version > SCHEMA_VERSION Then
+        DataFileProblem = "The data file is schema " & version & ", newer than this version of Swift NAVFIT (schema " & SCHEMA_VERSION & "). Use a newer Swift NAVFIT."
+        GoTo Done
+    End If
     If version <> SCHEMA_VERSION Then
-        DataFileProblem = "The data file is schema " & version & " and this version of Swift NAVFIT uses schema " & SCHEMA_VERSION & ". Use the Swift NAVFIT version that matches the data file."
+        DataFileProblem = "The data file is schema " & version & " and this version of Swift NAVFIT uses schema " & SCHEMA_VERSION & "." & IIf(version >= UPGRADE_FLOOR, " It needs an upgrade.", " It is too old to upgrade here.")
         GoTo Done
     End If
     For Each name In DataTableNames(CurrentDb)
@@ -176,7 +193,11 @@ End Function
 ' False and startup stops quietly.
 Public Function DataLinkReady() As Boolean
     Dim problem As String, picker As Object, chosen As String
-    problem = DataLinkProblem()
+    'An older data file is upgraded first; a failed upgrade leaves it as it was.
+    If SwiftDataIsLinked() Then
+        problem = UpgradeDataFileIfNeeded(SwiftDataPath())
+        If Len(problem) = 0 Then problem = DataLinkProblem() Else problem = "The data file could not be upgraded. " & problem
+    End If
     Do While Len(problem) > 0
         If Not Application.UserControl Then Exit Function
         If MsgBox("Swift NAVFIT cannot open its data file." & vbCrLf & vbCrLf & problem & vbCrLf & vbCrLf & "Choose OK to find the data file, or Cancel to close Swift NAVFIT.", vbOKCancel + vbExclamation, "Swift NAVFIT data file") <> vbOK Then
@@ -188,7 +209,8 @@ Public Function DataLinkReady() As Boolean
         picker.Filters.Clear: picker.Filters.Add "Swift NAVFIT data file", "*.accdb"
         If picker.Show = -1 Then
             chosen = CStr(picker.SelectedItems(1))
-            problem = DataFileProblem(chosen)
+            problem = UpgradeDataFileIfNeeded(chosen)
+            If Len(problem) = 0 Then problem = DataFileProblem(chosen) Else problem = "The data file could not be upgraded. " & problem
             If Len(problem) = 0 Then
                 LinkDataFile chosen
                 problem = DataLinkProblem()
@@ -205,6 +227,8 @@ End Function
 Public Function UXUseDataFile(ByVal filePath As String, ByVal createNew As Boolean) As Boolean
     Dim problem As String, screen As Variant
     If createNew Then CreateDataFile filePath
+    problem = UpgradeDataFileIfNeeded(filePath)
+    If Len(problem) > 0 Then Err.Raise vbObjectError + 9802, "modDataLink.UXUseDataFile", "The data file could not be upgraded. " & problem
     problem = DataFileProblem(filePath)
     If Len(problem) > 0 Then Err.Raise vbObjectError + 9802, "modDataLink.UXUseDataFile", problem
     For Each screen In Array("frmSetup", "frmContributorStart")

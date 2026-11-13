@@ -119,7 +119,8 @@
     "src/modWorkspaceImport.bas",
     "src/modWorkspaceSafety.bas",
     "src/modDataFile.bas",
-    "src/modDataLink.bas"
+    "src/modDataLink.bas",
+    "src/modSchemaUpgrade.bas"
   ],
   "generatedModules": [
     "modPDFPrintCatalogue",

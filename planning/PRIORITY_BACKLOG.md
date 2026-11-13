@@ -104,7 +104,7 @@ passed. The owner asked for these changes:
 
 ## S01 — Front end and data file (owner decisions, 13 Nov 2026)
 
-**Status (13 Nov 2026):** steps 1 to 3 are in development, as an option on
+**Status (13 Nov 2026):** steps 1 to 4 are in development, as an option on
 the setup screen; a build is still one file until the user chooses a data
 file. On a linked copy the backup is a copy of the data file, checked row by
 row and field by field, and it restores through the import.
@@ -152,10 +152,18 @@ the front end and will need to target the data file.
    schema definition.
 3. **Link manager at startup.** Missing or broken link: a file picker with
    Open existing and Create new; relink and remember the choice.
-4. **Automatic schema upgrade.** Same version: open. Older data file: backup,
-   numbered schema steps in one transaction, verify, stamp the version. Newer
-   data file: refuse and ask for a newer front end. Schema statements need a
-   version tag from the next schema change on.
+4. **Automatic schema upgrade.** Built in development (`modSchemaUpgrade`).
+   Same version: open. Older data file (schema 47 onward): copy it beside
+   itself and check the copy, apply each version's step and stamp it, and put
+   the file back from the copy if a step fails (Access cannot roll back
+   table changes, so the copy is the transaction). Newer data file, one older
+   than the steps, or one open in another session: refused, unchanged. A
+   complete workspace from an earlier version is refused as a data file and
+   pointed at the import. Every schema change adds its step; `test-data-link`
+   proves the previous captured schema plus the step equals a fresh build.
+   The only step today (47 to 48) exists to prove that; data files only
+   exist from schema 48. Steps are plain SQL: a change to a table validation
+   rule set by `build.ps1` will need step support when it first happens.
 5. **Existing single-file workspaces.** Open existing accepts a 0.49–0.5x
    workspace and runs the current verified import into a new data file, once.
 6. **Backup, restore, docs, release files** and an in-place upgrade test for

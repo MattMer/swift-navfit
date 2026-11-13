@@ -58,6 +58,12 @@ Public Function SwiftDataHold() As Boolean
     SwiftDataHold = otherSessionAtOpen
 End Function
 
+' Lets go of this session's hold on the data file, for an upgrade that needs it alone.
+Public Sub SwiftDataRelease()
+    If Not linkedData Is Nothing Then linkedData.Close
+    Set linkedData = Nothing: linkedDataPath = ""
+End Sub
+
 ' True when another session had the data file open as this one started.
 Public Function SwiftDataOtherSession() As Boolean
     SwiftDataOtherSession = otherSessionAtOpen

@@ -12,18 +12,19 @@ $buildHash=(Get-FileHash -LiteralPath $BuildPath).Hash
 $engine=New-Object -ComObject DAO.DBEngine.120
 $empty=$engine.CreateDatabase($other,';LANGID=0x0409;CP=1252;COUNTRY=0',128);$empty.Close()
 
-#Tables, fields, indexes, rules and relationships as text. Access names an unnamed
-#primary key at random, so those names are left out.
-function Get-SchemaText([string]$Path){
+#Tables, fields, indexes, rules and relationships as text. Primary key names are left
+#out: a build leaves them for Access to name at random.
+function Get-SchemaText([string]$Path,[switch]$NoRows){
     $db=$engine.OpenDatabase($Path,$false,$true);$lines=New-Object Collections.Generic.List[string]
     try{
         foreach($t in ($db.TableDefs|Where-Object {$_.Name -notlike 'MSys*' -and $_.Name -notlike '~*'}|Sort-Object Name)){
-            $lines.Add('TABLE '+$t.Name+' rule=['+[string]$t.ValidationRule+'] rows='+$t.RecordCount)
+            $lines.Add('TABLE '+$t.Name+' rule=['+[string]$t.ValidationRule+']'+$(if($NoRows){''}else{' rows='+$t.RecordCount}))
             foreach($f in $t.Fields){$lines.Add($t.Name+' F '+$f.Name+' type='+$f.Type+' size='+$f.Size+' req='+$f.Required+' attr='+$f.Attributes+' zero='+$f.AllowZeroLength+' default=['+[string]$f.DefaultValue+']')}
-            foreach($i in $t.Indexes){$lines.Add($t.Name+' I '+($i.Name -replace '^Index_[0-9A-F_]+$','Index_AUTO')+' unique='+$i.Unique+' primary='+$i.Primary+' foreign='+$i.Foreign+' fields='+(@($i.Fields|ForEach-Object {$_.Name}) -join ','))}
+            foreach($i in $t.Indexes){$lines.Add($t.Name+' I '+$(if($i.Primary){'PRIMARY'}else{$i.Name})+' unique='+$i.Unique+' primary='+$i.Primary+' foreign='+$i.Foreign+' fields='+(@($i.Fields|ForEach-Object {$_.Name}) -join ','))}
         }
         foreach($r in ($db.Relations|Where-Object {$_.Table -notlike 'MSys*'})){$lines.Add('REL '+$r.Name+' '+$r.Table+'->'+$r.ForeignTable+' attr='+$r.Attributes+' '+(@($r.Fields|ForEach-Object {$_.Name+'='+$_.ForeignName}) -join ','))}
-        $code=0;foreach($kind in 'Modules','Forms','Reports','Scripts'){$code+=$db.Containers.Item($kind).Documents.Count}
+        #A file made by DAO alone, like a schema fixture, has no application containers.
+        $code=0;foreach($container in $db.Containers){if($container.Name -in 'Modules','Forms','Reports','Scripts'){$code+=$container.Documents.Count}}
     }finally{$db.Close()}
     [pscustomobject]@{Lines=@($lines|Sort-Object);CodeObjects=$code}
 }
@@ -145,6 +146,106 @@ try{
     if($null -ne $other){$other.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($other)}
     Stop-Front $first
 }
+
+#Schema upgrade (S01 step 4). A data file of the previous schema, built from its captured
+#definition, upgraded by this version has exactly the structure of this build.
+function New-SchemaFixture([int]$Schema,[string]$Path){
+    $definition=Join-Path $root ('tests/historical-schemas/schema-'+$Schema+'.sql')
+    if(-not (Test-Path -LiteralPath $definition)){throw ('No captured definition for schema '+$Schema+'; capture it with scripts/capture-schema-definition.ps1 before changing the schema')}
+    $sql=@();$zeroLengthOff=@();$rules=@{}
+    foreach($line in [IO.File]::ReadAllLines($definition,[Text.Encoding]::UTF8)){
+        if($line -match '^-- (\w+): (.*)$'){
+            if($Matches[1] -eq 'zeroLengthOff'){$zeroLengthOff+=$Matches[2]}
+            elseif($Matches[1] -eq 'validationRule'){$p=$Matches[2].Split(' ',2);$rules[$p[0]]=$p[1]}
+        }elseif($line.Trim()){$sql+=$line}
+    }
+    $db=$engine.CreateDatabase($Path,';LANGID=0x0409;CP=1252;COUNTRY=0',128)
+    try{
+        foreach($statement in $sql){$db.Execute($statement,128)}
+        foreach($t in @($db.TableDefs|Where-Object {$_.Name -notlike 'MSys*'})){foreach($f in @($t.Fields)){if($f.Type -in 10,12 -and -not $f.Required){$f.AllowZeroLength=$true}}}
+        foreach($item in $zeroLengthOff){if($item){$p=$item.Split('.');$db.TableDefs.Item($p[0]).Fields.Item($p[1]).AllowZeroLength=$false}}
+        foreach($rule in $rules.GetEnumerator()){$db.TableDefs.Item($rule.Key).ValidationRule=$rule.Value}
+        if(-not @($sql|Where-Object {$_ -like 'INSERT INTO AppMetadata*'}).Count){$db.Execute("INSERT INTO AppMetadata (MetadataID,AppVersion,SchemaVersion) VALUES (1,'captured',"+$Schema+")",128)}
+    }finally{$db.Close()}
+}
+function Invoke-Dao([string]$Path,[string[]]$Sql){$db=$engine.OpenDatabase($Path);try{foreach($statement in $Sql){$db.Execute($statement,128)}}finally{$db.Close()}}
+function Get-Schema([string]$Path){$db=$engine.OpenDatabase($Path,$false,$true);try{$r=$db.OpenRecordset('SELECT SchemaVersion FROM AppMetadata',4);[int]$r.Fields.Item(0).Value}finally{$db.Close()}}
+$current=Get-Schema $BuildPath;$previous=$current-1
+$front=Join-Path $folder 'upgrade runner.accdb';Copy-Item -LiteralPath $BuildPath -Destination $front
+$old=Join-Path $folder ('schema '+$previous+' data.accdb');New-SchemaFixture $previous $old;$oldHash=(Get-FileHash -LiteralPath $old).Hash
+$app=$null;$holder=$null
+try{
+    $app=Start-Front
+    $result=[string]$app.Eval('TryUpgrade("'+$old+'")')
+    if($result -notlike 'PASS: ?*'){throw ('Upgrade from schema '+$previous+' failed: '+$result)}
+    $copy=$result.Substring(6)
+    if((Get-Schema $old) -ne $current){throw 'The upgraded data file has the wrong schema version'}
+    if((Get-FileHash -LiteralPath $copy).Hash -ne $oldHash){throw 'The copy from before the upgrade is not the data file as it was'}
+    $upgraded=Get-SchemaText $old -NoRows;$fresh=Get-SchemaText $BuildPath -NoRows
+    $difference=@(Compare-Object $fresh.Lines $upgraded.Lines)
+    if($difference.Count){throw ('Upgraded schema '+$previous+' differs from a fresh build: '+(($difference|Select-Object -First 4|ForEach-Object {$_.SideIndicator+' '+$_.InputObject}) -join ' | '))}
+    Write-Output ('PASS: a schema '+$previous+' data file upgraded to '+$current+' matches a fresh build ('+$fresh.Lines.Count+' schema lines); the copy from before is kept beside it')
+    if([string]$app.Eval('TryUpgrade("'+$old+'")') -ne 'PASS: '){throw 'A current data file was upgraded again'}
+
+    #A step that fails after changing the file: the file is put back from the copy.
+    $broken=Join-Path $folder 'failing upgrade data.accdb';New-SchemaFixture $previous $broken
+    #A rule that refuses the new version number makes the last statement of the step fail.
+    $db=$engine.OpenDatabase($broken);try{$db.TableDefs.Item('AppMetadata').ValidationRule='[SchemaVersion]<='+$previous}finally{$db.Close()}
+    $brokenHash=(Get-FileHash -LiteralPath $broken).Hash
+    $result=[string]$app.Eval('TryUpgrade("'+$broken+'")')
+    if($result -notlike 'REJECTED:*put back as it was*'){throw ('A failed upgrade was not put back: '+$result)}
+    if((Get-FileHash -LiteralPath $broken).Hash -ne $brokenHash -or (Get-Schema $broken) -ne $previous){throw 'The data file differs after a failed upgrade'}
+    Write-Output 'PASS: an upgrade that fails part way puts the data file back exactly as it was'
+
+    #Refused without a change: newer, too old, and open in another session.
+    $newer=Join-Path $folder 'newer data.accdb';Copy-Item -LiteralPath $old -Destination $newer;Invoke-Dao $newer @('UPDATE AppMetadata SET SchemaVersion='+($current+1))
+    $result=[string]$app.Eval('TryUpgrade("'+$newer+'")');if($result -notlike 'REJECTED:*newer than this version*'){throw ('Newer data file: '+$result)}
+    $floor=[int]$app.Eval('UpgradeFloorValue()')
+    $older=Join-Path $folder 'too old data.accdb';Copy-Item -LiteralPath $copy -Destination $older;Invoke-Dao $older @('UPDATE AppMetadata SET SchemaVersion='+($floor-1))
+    $olderHash=(Get-FileHash -LiteralPath $older).Hash
+    $result=[string]$app.Eval('TryUpgrade("'+$older+'")');if($result -notlike 'REJECTED:*older than this version can upgrade*'){throw ('Too old data file: '+$result)}
+    if((Get-FileHash -LiteralPath $older).Hash -ne $olderHash){throw 'A refused data file was changed'}
+    $busy=Join-Path $folder 'busy data.accdb';Copy-Item -LiteralPath $copy -Destination $busy;$busyHash=(Get-FileHash -LiteralPath $busy).Hash
+    $holder=$engine.OpenDatabase($busy)
+    $result=[string]$app.Eval('TryUpgrade("'+$busy+'")')
+    $holder.Close();$holder=$null
+    if($result -notlike 'REJECTED:*open in another Swift NAVFIT session*'){throw ('Data file in use: '+$result)}
+    if((Get-FileHash -LiteralPath $busy).Hash -ne $busyHash -or @(Get-ChildItem -LiteralPath $folder -Filter 'busy data before schema*').Count){throw 'A data file in use was changed or copied'}
+    $problem=[string]$app.Eval('DataFileProblem("'+$restore+'")')
+    if($problem -notlike 'That file is a complete Swift NAVFIT workspace*'){throw ('A complete workspace was offered as a data file: '+$problem)}
+    Write-Output 'PASS: newer, too old, in-use data files and complete workspaces are refused and left unchanged'
+}finally{if($null -ne $holder){$holder.Close()};Stop-Front $app;$app=$null}
+
+#At startup: a front end whose data file is one schema older upgrades it before anything
+#else, keeps the user's data and keeps a copy of the file from before. The older file is
+#made from the user's data file by removing what the previous schema did not have.
+$front=Join-Path $folder 'front end.accdb'
+$fixture=Get-SchemaText $copy -NoRows
+$keep=@($fixture.Lines|Where-Object {$_ -like 'TABLE *'}|ForEach-Object {($_ -split ' ')[1]})
+$downgrade=@()
+$db=$engine.OpenDatabase($moved)
+try{
+    foreach($t in @($db.TableDefs|Where-Object {$_.Name -notlike 'MSys*' -and $_.Name -notlike '~*'}|ForEach-Object {$_.Name})){
+        if($keep -notcontains $t){
+            foreach($r in @($db.Relations|Where-Object {$_.Table -eq $t -or $_.ForeignTable -eq $t}|ForEach-Object {$_.Name})){$db.Relations.Delete($r)}
+            $downgrade+=('DROP TABLE ['+$t+']')
+        }else{
+            foreach($f in @($db.TableDefs.Item($t).Fields|ForEach-Object {$_.Name})){if(-not @($fixture.Lines|Where-Object {$_ -like ($t+' F '+$f+' *')}).Count){$downgrade+=('ALTER TABLE ['+$t+'] DROP COLUMN ['+$f+']')}}
+        }
+    }
+}finally{$db.Close()}
+Invoke-Dao $moved ($downgrade+@('UPDATE AppMetadata SET SchemaVersion='+$previous))
+$movedHash=(Get-FileHash -LiteralPath $moved).Hash
+try{
+    $app=Start-Front
+    if((Get-Schema $moved) -ne $current){throw 'Startup did not upgrade the older data file'}
+    if($app.Eval('DCount("*","Report")') -ne 1 -or $app.Eval('DLookup("CommandName","Workspace")') -ne 'SYNTHETIC DATA FILE COMMAND'){throw 'The upgrade lost the saved data'}
+    $copies=@(Get-ChildItem -LiteralPath $folder -Filter ('moved workspace data before schema '+$current+' *.accdb'))
+    if($copies.Count -ne 1 -or (Get-FileHash -LiteralPath $copies[0].FullName).Hash -ne $movedHash){throw 'No exact copy of the data file from before the upgrade'}
+    $problem=[string]$app.Eval('DataLinkProblem()');if($problem -ne ''){throw ('Data file not ready after the upgrade: '+$problem)}
+}finally{Stop-Front $app;$app=$null}
+Write-Output ('PASS: at startup a schema '+$previous+' data file ('+$downgrade.Count+' changes back) is upgraded, with the data kept and a copy beside it')
+
 [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($engine)
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $buildHash){throw 'The build was changed'}
 Write-Output 'PASS: a moved data file is reported at startup and works again once chosen'

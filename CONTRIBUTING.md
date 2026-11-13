@@ -103,7 +103,8 @@ context helper. The report-field-persistence and member-profiles suites offer an
 runs them in full.
 
 For schema changes, assess persistent-data impact explicitly and update build DDL,
-version constants, metadata, migration and relevant table inventories together.
+version constants, metadata, migration, the data-file upgrade step in
+`modSchemaUpgrade` and relevant table inventories together.
 First capture the outgoing schema with `scripts/capture-schema-definition.ps1
 -BuildPath <build of that schema>`. Otherwise the import runner stops with "no
 definition for schema N".
@@ -169,6 +170,11 @@ plans, but they never silently override the product invariants below.
     are not retested.
   - Do not claim retesting you did not perform. PROJECT_STATE.md records which
     schemas were tested when, and the r128 old-output waiver.
+  - A separate data file (backlog S01) is upgraded in place by a newer Swift
+    NAVFIT. Every schema change adds its step to `modSchemaUpgrade`, written so
+    that a data file of the previous schema plus the step has exactly the
+    structure of a fresh build; `test-data-link` checks this against the
+    captured definition of the previous schema.
 - **Report editor:**
   - Keep the fixed Front/Back geometry in NAVPERS block order with the official
     captions.
@@ -182,7 +188,10 @@ plans, but they never silently override the product invariants below.
 - **Protected state:**
   - Never modify user workspaces, earlier releases, supplied reference material
   (`FORMS_REFERENCES_TEMPLATES/`, `NAVFIT98A*`), or data/recovery resources.
-    Work on copies.
+    Work on copies. One exception, decided by the owner on 13 Nov 2026: the
+    application's own schema upgrade of a separate data file. It first copies
+    the file beside itself and checks the copy, and it puts the file back from
+    the copy if any step fails.
   - Blank builds stay blank, and Demos contain only synthetic data. Never put
     personnel data in tracked fixtures or send it to external services.
   - Retained report history is never deleted. New-policy working states may be

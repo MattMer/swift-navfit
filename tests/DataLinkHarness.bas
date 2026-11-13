@@ -139,3 +139,15 @@ Public Function SaveSetupValues(ByVal commandName As String, ByVal contributor A
     Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor
     SaveSetupValues = SaveSetup() And DCount("*", "Workspace") = 1 And CurrentProject.AllForms("frmHome").IsLoaded
 End Function
+
+'Upgrade a data file: "PASS: " and the path of the copy from before, or why not.
+Public Function TryUpgrade(ByVal filePath As String) As String
+    On Error GoTo Failed
+    TryUpgrade = "PASS: " & UpgradeDataFile(filePath): Exit Function
+Failed:
+    TryUpgrade = "REJECTED: " & Err.Number & " " & Err.Description
+End Function
+
+Public Function UpgradeFloorValue() As Long
+    UpgradeFloorValue = UPGRADE_FLOOR
+End Function
