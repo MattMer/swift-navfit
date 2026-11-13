@@ -207,7 +207,7 @@ public sealed class SwiftDesktop : IDisposable {
       uint pid;GetWindowThreadProcessId(h,out pid);
       handled.Add(h);
       string press=!vba?null:(body.Contains("Compile error")?"OK":(body.Contains("Run-time error")?"End":null));
-      if(press!=null && buttons.ContainsKey(press)){SendMessage(buttons[press],0x00F5,IntPtr.Zero,IntPtr.Zero);Note("Hidden VBA dialog in PID "+pid+", pressed "+press+": "+body);}
+      if(press!=null && buttons.ContainsKey(press)){SendMessage(buttons[press],0x00F5,IntPtr.Zero,IntPtr.Zero);Note("Hidden VBA dialog in PID "+pid+", pressed "+press+": "+body+(press=="OK"?" (if this step now hangs, that Access is waiting in the VBA debugger; end it by PID)":""));}
       else Note("Dialog waiting on the test desktop in PID "+pid+" ("+title+"): "+body);
       return true;},IntPtr.Zero);
     foreach(var h in new List<IntPtr>(seen.Keys)){if(!open.Contains(h)){seen.Remove(h);handled.Remove(h);}}

@@ -56,9 +56,11 @@ import and print-ready PDF output.
   supplied input databases are protected; development/release builds, retained
   outputs and workflow receipts remain. See
   [retention commands](docs/Development_Workflow.md#build-scratch-retention).
-- **Schema authority:** [major-schema.json](src/major-schema.json) and the base
-  builder in `build.ps1` define all DDL. Whenever the schema changes, update both
-  together, along with `SCHEMA_VERSION`, metadata and migration.
+- **Schema authority:** [major-schema.json](src/major-schema.json) defines every
+  table, index and relationship: `BaseSQL` first, then `SQL`, run in order by
+  `build.ps1`. The `Report` and `RecoveryDraft` field columns are filled in from
+  the field catalogue, and `build.ps1` still sets five table validation rules.
+  A schema change updates this file with `SCHEMA_VERSION`, metadata and migration.
 - **Report fields:** [field-definitions.json](src/field-definitions.json) is the
   versioned authority for storage type, controls, recovery keys, labels,
   validation metadata, NAVFIT/PDF bindings and fixed geometry. Other JSON field

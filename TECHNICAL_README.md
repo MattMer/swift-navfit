@@ -126,7 +126,7 @@ end and back end.
   contracts. A build takes about 2 minutes and writes a `.build.json` receipt
   that fingerprints every input.
 - **The schema has one authority.** [major-schema.json](src/major-schema.json)
-  and the base builder define all tables and relationships; every schema change
+  defines all tables and relationships; every schema change
   also bumps `SCHEMA_VERSION` and the importer's accepted range.
 - **Report fields have one authority.**
   [field-definitions.json](src/field-definitions.json) defines each field's

@@ -29,6 +29,9 @@ function Invoke-HarnessCase([string]$Name,[string]$BuildPath,[string]$Module,[st
             foreach($source in $SourceModules){$app.LoadFromText(5,$source,(Join-Path $root ('src/'+$source+'.bas')))}
             $app.LoadFromText(5,$Module,(Join-Path $root ('tests/'+$Module+'.bas')))
             $app.DoCmd.RunCommand(126)
+            #A harness that does not compile must stop here: evaluating it would leave
+            #Access in the VBA debugger, which nothing on a hidden desktop can dismiss.
+            if(-not $app.IsCompiled){throw ('VBA did not compile after loading '+$Module)}
             $result=[string]$app.Eval($Entry);Write-Output $result
             if($result -notlike 'PASS:*'){throw $result}
         }finally{
