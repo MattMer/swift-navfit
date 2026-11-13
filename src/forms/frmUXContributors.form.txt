@@ -206,7 +206,6 @@ Begin Form
                     LayoutCachedHeight =4950
                     Begin
                         Begin Label
-                            Visible = NotDefault
                             OverlapFlags =127
                             Left =400
                             Top =1950

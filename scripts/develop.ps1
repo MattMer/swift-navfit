@@ -7,6 +7,9 @@ $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'build-plan.ps1')
 . (Join-Path $PSScriptRoot 'workflow-common.ps1')
+#Native steps run on a hidden desktop (workflow-common.ps1); the rerun carries on below.
+$isolatedExit=EnterSwiftIsolation $PSCommandPath $PSBoundParameters
+if($null -ne $isolatedExit){exit $isolatedExit}
 . (Join-Path $PSScriptRoot 'build-retention.ps1')
 $plan=GetSwiftBuildPlan $root (Join-Path $PSScriptRoot 'build-manifest.json')
 if($Action -in @('Test','Compile','ExtendedTest') -and -not $BuildPath){throw '-BuildPath is required for Test, Compile or ExtendedTest'}

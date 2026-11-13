@@ -232,6 +232,47 @@ refused. The lower-level [build.ps1](../scripts/build.ps1) and focused suites
 remain available for diagnosis. A fresh build must not use a retained binary
 as its source. Preflight follows canonical version/schema sources.
 
+### Test desktop isolation
+
+Native Access runs happen on a separate, hidden Windows desktop in the same
+sign-in session, so the Access windows, pop-up forms and dialogs that tests open
+cannot take focus, keystrokes or clicks from the person using the PC. This
+targets the intermittent failures in backlog item T05 (error 3059, "Reserved
+Error", a popup dismissed by accident), which clustered while the PC was in use.
+That is a hypothesis, not a confirmed cause; T05 stays open until several
+ExtendedTest runs on a PC in use report no FLAKY entry.
+
+`develop.ps1` and `release-check.ps1` do this automatically for every action
+(Build, Test, BuildAndTest, Compile, ExtendedTest, Preflight and the release
+check). Output and the exit code return to the calling console unchanged,
+preceded by one line naming the hidden desktop and the runner PID. For a focused
+suite, run it through [isolated.ps1](../scripts/isolated.ps1); the first
+argument is a script name in `scripts/` or a path such as `cases/test-route-chain`,
+and the rest pass through. Prefer it to running a suite directly while the PC is
+in use. Scripts run directly still use the normal desktop.
+
+```powershell
+powershell.exe -NoProfile -File scripts/isolated.ps1 test-pdf-output -BuildPath "D:\path\new-blank.accdb"
+```
+
+To watch a failure, set `SWIFT_TEST_DESKTOP=visible` before the command to run
+on the normal desktop. Inside an isolated run the variable holds the desktop name.
+
+Nobody can click a dialog on the hidden desktop. After a VBA error dialog has
+been open six seconds, a watcher presses OK (compile error) or End (run-time
+error) and prints "Hidden VBA dialog in PID n, pressed End: <text>". This applies
+to every tier; ExtendedTest's own monitor still records the dialog in the receipt
+first. Any other dialog still open after one minute is reported once and left
+alone. A failed isolated run keeps its full output in a log in the TEMP folder
+and prints the path; a successful run removes the log.
+
+Caveats: an orphaned Access process on the hidden desktop has no visible window,
+so find it by PID (`tasklist` or `Get-Process MSACCESS`) and, under the
+[Access automation safety](../CONTRIBUTING.md#access-automation-safety) rules,
+end only sessions you started, asking first. Ctrl+C on the outer command does
+not stop the runner on the hidden desktop. Screen capture of windows on the
+hidden desktop has not been tested.
+
 ### Preview ownership and recovery (M02)
 
 For M02 preview changes, use the focused native runner before the final integrated

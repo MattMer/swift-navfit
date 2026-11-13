@@ -72,6 +72,13 @@ that fails is retried once on a fresh copy. Passing on the retry is reported as
 in the output and the receipt; it is never a clean pass, so investigate it.
 Failing twice fails the tier.
 
+`develop.ps1` and `release-check.ps1` run their native Access steps on a hidden
+Windows desktop, so test windows cannot take focus or input from the person
+using the PC. A VBA error dialog there is closed in every tier, not only
+`ExtendedTest`, and fails the step. Set `SWIFT_TEST_DESKTOP=visible` to run on the
+normal desktop and watch a failure. Focused suites can use `scripts/isolated.ps1`;
+see [Test desktop isolation](docs/Development_Workflow.md#test-desktop-isolation).
+
 `develop.ps1` and `release-check.ps1` print a timestamped line as each step,
 runner and suite case starts or finishes, with elapsed times, and an extended
 runner that is quiet prints "Still running" every 5 minutes. Redirect the output

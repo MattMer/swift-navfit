@@ -456,7 +456,10 @@ the native fallback. Imported provenance remains intact.
   name in the code must exist, with mutation checks proving a rename or removal
   fails).
 - **Native tests** drive Access through COM against a fresh build. Each case
-  runs on its own copy of the build, and any failure fails its suite. Core
+  runs on its own copy of the build, and any failure fails its suite. The
+  build and test commands run on a separate hidden Windows desktop in the same
+  sign-in session, so test windows cannot take input from the person using the
+  workstation; nothing is installed and no setting is changed. Core
   tests run with every build (`develop.ps1 -Action BuildAndTest`, about 5
   minutes); the extended tier runs before a release or a risky change
   (`-Action ExtendedTest`, about an hour); the release tier runs on release
@@ -616,6 +619,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 12 Nov 2026 | Development tooling only, no change to the application: build and test commands run their Access sessions on a hidden Windows desktop (section 10). |
 | 10 Nov 2026 | Imports accepted from schema 35 (release 0.49.0) onward; the release gate tests release schemas only. Settings & Help > About this version and a 90-day Overview reminder, both offline. |
 | 9 Nov 2026 | Release 0.55.0; full release gate and historical schemas 1-48 verified. |
 | 9 Nov 2026 | Screen polish, no schema change: every form control names Segoe UI (Aptos defaults and theme fonts removed); buttons use two heights, 450 or 550 twips, except 14 where the taller size would overlap; a New button is the main (dark blue) action only when the screen has no available Open and no Save; the editor's context line takes two lines beside the report buttons; visible labels for the Reports due dismiss reason, member directory and snippet search, snippet text and My Work history; Overview recent reports show ISO dates; Summary groups buttons in sentence case. |
