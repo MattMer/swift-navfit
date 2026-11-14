@@ -63,6 +63,8 @@ function NewFixture([int]$schema,$entry,[string]$path){
 }
 
 #Tables derived by the importer itself, or reference rows the build already owns.
+#Who had the source open is momentary: an import neither copies nor checks it.
+$transientTables=@('SessionPresence')
 $derivedTables=@('AppMetadata','TraitDefinition','RevisionDate','RevisionChoice','GroupCompletion','GroupCompletionReport','GroupCompletionCurrent','RSCountedReport','FieldDefaultLink','GroupLifecycle')
 function TextValue($field,[string]$table,[int]$i,$definition){
  $size=[int]$field.Size;$name=$field.Name
@@ -129,7 +131,7 @@ function PrimaryFields($table){foreach($index in @($table.Indexes)){if($index.Pr
 function SeedFixture([string]$path,[int]$schema){
  $db=$dao.OpenDatabase($path)
  try{
-  $names=@(UserTables $db|Where-Object {$_ -notin $derivedTables})
+  $names=@(UserTables $db|Where-Object {$_ -notin $derivedTables -and $_ -notin $transientTables})
   $parents=@{}
   foreach($relation in @($db.Relations)){if($relation.Fields.Count -eq 1){$f=$relation.Fields.Item(0);$parents[$relation.ForeignTable+'.'+$f.ForeignName]=@{Table=$relation.Table;Field=$f.Name}}}
   $rows=@{};$deferred=@();$done=@{};$order=@()
@@ -239,7 +241,7 @@ function SeedFixture([string]$path,[int]$schema){
    }
    $value.Close()
   }
-  $total=0;foreach($name in (UserTables $db)){if($name -ne 'AppMetadata'){$total+=[int]$db.OpenRecordset('SELECT Count(*) FROM ['+$name+']',4).Fields.Item(0).Value}}
+  $total=0;foreach($name in (UserTables $db)){if($name -ne 'AppMetadata' -and $name -notin $transientTables){$total+=[int]$db.OpenRecordset('SELECT Count(*) FROM ['+$name+']',4).Fields.Item(0).Value}}
   return $total
  }finally{$db.Close()}
 }
@@ -250,7 +252,7 @@ function CompareTransfer([string]$source,[string]$target){
  $s=$dao.OpenDatabase($source,$false,$true);$t=$dao.OpenDatabase($target,$false,$true);$checked=0
  try{
   foreach($name in (UserTables $s)){
-   if($name -eq 'AppMetadata'){continue}
+   if($name -eq 'AppMetadata' -or $name -in $transientTables){continue}
    $table=$s.TableDefs.Item($name);$keys=PrimaryFields $table
    if(-not $keys.Count){throw ('Source table has no primary key: '+$name)}
    $fieldNames=@($table.Fields|ForEach-Object {$_.Name})

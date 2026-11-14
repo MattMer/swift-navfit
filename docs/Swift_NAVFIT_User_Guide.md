@@ -107,7 +107,7 @@ Choose the file that matches your purpose:
 1. Save the application (`Swift_NAVFIT_<version>.accdb`) in an approved folder. Keep the downloaded file as a master if you want one.
 2. Open the application in desktop Access. Follow organizational Access trust policy; application VBA must be allowed to run for the buttons to work.
 3. On the first-run setup screen, read the line that says where the work will be kept. It names a new data file, `Swift NAVFIT data.accdb`, in the same folder as the application (`Swift NAVFIT data 2.accdb` and so on if the name is taken). To use another folder, choose **Change folder...** beside the line and pick it.
-4. Enter the command name and your contributor name.
+4. Enter the command name and your contributor name, and the command's **UIC** if you have it (up to 5 letters and digits; optional). New reports start with this UIC in their UIC block.
 5. Choose **Create workspace**. Swift NAVFIT makes the data file, links the application to it and opens **Overview**.
 6. Confirm the workspace context and active contributor before entering report data.
 7. Make a backup before substantial data entry or import.
@@ -121,7 +121,8 @@ Choose the file that matches your purpose:
 | Open from a temporary folder (inside a zip file or an e-mail attachment) | Exit. Save the file to an approved folder and open it from there; Windows can delete the temporary copy and your work with it. |
 | In a folder a sync service uploads (OneDrive, a SharePoint library, Dropbox) | Move the workspace to a folder that is not synced. Sync can damage an open Access file or create conflicting copies. |
 | Read-only | Nothing can be saved. Copy the file to a folder you can write to. |
-| Already open in another session | Close the other session first. Swift supports one person at a time. |
+| Already open in another session | Someone else has this data file open. Work on different reports (see "Two people on one data file" below). In a synced folder, close the other session first. |
+| Another copy of this data file is beside it | A sync service made it because the file was changed in two places at once. Swift uses only the file it opened; work saved in the other copy is not in it. Ask whoever made the copy before removing it. |
 
 The warning does not stop you continuing. A network share is not flagged; only one person should have the file open there at a time. If another session chooses a different contributor while you work, your next action says so and keeps your unsaved edits open.
 
@@ -146,6 +147,17 @@ Keep the data file where the startup-warnings table above says to keep a workspa
 
 If you moved or copied the application and its data file together into another folder, the application finds the data file beside it and starts without asking.
 
+### Two people on one data file
+
+Swift NAVFIT is made for one person at a time. Two people can work in the same workspace at once, each with their own copy of the application and the same data file, as long as they work on **different reports**. This is not fully supported; it is made as safe as it can be:
+
+- Each person keeps their own contributor; one person choosing a contributor does not change the other's.
+- **Overview** names everyone else who has used the workspace in the last 10 minutes, with their computer.
+- When you open a report someone else has open, the editor says who. If they save first, your save is refused and your entries are kept, so nothing is overwritten; reopen the report to see their change.
+- If two saves touch the same records at the same moment, Swift tries again a few times, then says that someone else was saving and keeps your entries.
+
+Put the data file in a **shared network folder** (a mapped drive or a server folder) that both people open directly. A OneDrive, SharePoint or other synced folder does not work for two people: each computer opens its own copy, the copies cannot see each other, and the sync service keeps both by saving one under a new name. If Swift finds such a copy beside the data file, the startup warnings name it.
+
 ## 2.3 Continue an older Swift workspace
 
 Do not overwrite the old file with a newly downloaded application.
@@ -153,6 +165,10 @@ Do not overwrite the old file with a newly downloaded application.
 **One action.** An earlier workspace is a complete single-file workspace from release 0.49.0 to 0.55.0. Open a newly downloaded application and choose **Open an existing data file** on the setup screen, then choose the earlier file. Swift NAVFIT recognizes it and explains that it will make a new data file beside it and bring the workspace in; the earlier file is only read and never changed. Choose **OK**. Swift NAVFIT creates `<earlier file name> data.accdb` in the same folder, links to it, runs the same verified import as **Import data from a previous Swift NAVFIT version** (every row and field checked) and opens contributor choice. If the import fails, the application keeps the new, empty data file and says so; you can try the import again from **Settings & Help**.
 
 **Two steps.** Alternatively, open a separate newly downloaded application and use **Import data from a previous Swift NAVFIT version**. On the setup screen this makes the new data file first, then imports into it. Chapter 17 describes the transfer. A populated Demo is not an upgrade destination.
+
+### Change the command name or UIC
+
+Open **Settings & Help > Command name and UIC**, change either one and choose **Save**. The command name and UIC appear at the top of each screen. New reports start with the UIC; reports already written keep theirs. Each change is recorded in **Operation history**.
 
 ## 2.4 Change the active contributor
 
@@ -184,7 +200,7 @@ Adding the same name again brings their profile back.
 | Reports | Search, filters, report creation, import, and selected-report actions. |
 | Summary groups | Membership, shared defaults, traits, group status, and closeout. |
 | My Work | Assigned reviews, current route work, the active contributor, and report conversations. |
-| Resources | Reporting seniors, contributors, the member directory, ISICs, narrative snippets, and reference tools. |
+| Resources | Grouped: **People and organizations** (command member directory, reporting seniors, ISICs, contributors), **Writing** (narrative snippets, NavyWriter examples, the Navy word list) and **Review** (route templates). |
 | Settings & Help | Help, backups, transfer from older Swift versions, operation history, and diagnostics. |
 
 The top-right **?** opens help for the current window. Use the application's navigation and return buttons to keep the report or group context correct. Leaving a report follows its normal save/recovery guards. Leaving a group closes its working view so another group can open with the correct context.
@@ -882,6 +898,8 @@ Swift has no verified equivalent of NAVFIT98A's native final print engine. Its r
 To check one report without leaving it, choose **Preview** at the top of the report. It shows that report's printed pages, unsaved edits included, in Access print preview, and creates no file. The first time, it asks you to choose a PDF output folder on **Create PDFs**, because the preview keeps a temporary page file there; the file is removed when you preview again, create PDFs or close the report.
 5. When the PDFs are created, **Findings and output information** shows the output folder's path and file names. Choose **Open first PDF** or **Open output folder**, or copy the path and paste it into File Explorer's address bar. On a workstation that blocks Access from opening files, copying the path is the way to reach them.
 
+The summary letter is always two pages (or another even number), so in a printed packet the reports start on their own sheet when printing on both sides. A long group title is cut to fit the letter's one-line filename box rather than continued on another page.
+
 The summary letter fills its lower section from these choices and from the group's reporting senior record: the ISIC address and UIC, the reporting senior's address, e-mail and phone, the submitted-on-time box, and the date it was created. When the senior record has no address or phone, the values every report in the group shares are used instead.
 
 Full dates print as two-digit year, three-letter month and day, such as 26NOV07 for 7 November 2026: the period of report, date reported, counseling date and signature dates on every report type, and the period end in block 12 of the summary letter. The CHIEFEVAL physical readiness date prints as month and year, such as 11/26.
@@ -1029,6 +1047,8 @@ Once a release is 90 days old, **Overview** shows one line above the heading say
 | Prior ITA is missing | Inspect the member link and prior evaluation records. Do not enter it in the read-only group reference cell. |
 | Import looks busy | Read the timestamped progress log. Wait for success/failure instead of launching another import. |
 | Workspace import rejected | Use a newly downloaded application with a new, empty data file; check supported source version and log. Preserve the old file. |
+| "Someone else was saving to the same records at that moment" | Another person saved at the same instant. Nothing was lost; try again (section 2.2, Two people on one data file). |
+| Save refused because the report changed | Someone else saved this report after you opened it. Your entries are kept in recovery; reopen the report to see their change, then reapply yours. |
 | Window "Swift NAVFIT cannot open its data file" at startup | The window gives the reason: the data file is missing, moved, renamed, on a drive or share that is not there, not a Swift NAVFIT data file, from a version that cannot be upgraded, or another error. Choose **Find the data file...** to pick it (or a different one), **Create a new data file...** to make an empty one in a folder you pick and go to setup, or **Close Swift NAVFIT** (section 2.2). |
 | Data file is from a newer version | Nothing was changed. Use a newer Swift NAVFIT; an older one cannot open it (section 17.1). |
 | Data file is open in another session and the upgrade is refused | Nothing was changed. Close the data file in the other session, then choose it again (section 17.1). |

@@ -105,6 +105,7 @@ Public Function CheckpointSchedule(ByVal scheduled As Date, ByVal nowValue As Da
     If scheduled = 0 Or scheduled > DateAdd("s", 30, nowValue) Then CheckpointSchedule = DateAdd("s", 30, nowValue) Else CheckpointSchedule = scheduled
 End Function
 Public Function UXLiveTimer() As Boolean
+    PresenceTouch
     If validationDirty Or validationDate <> Date Then Call UXLivePaint()
     nextCheckpoint = CheckpointSchedule(nextCheckpoint, Now())
     If Now() >= nextCheckpoint Then

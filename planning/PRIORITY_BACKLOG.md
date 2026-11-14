@@ -196,6 +196,13 @@ the front end and will need to target the data file.
      asking. A linked copy keeps its blank tables (hidden, `USysBlank` prefix)
      so it can always make a new data file.
    - Release notes and README download text at the next release.
+   - **Two people on one data file (owner request, 13 Nov 2026), done in
+     development, not supported:** per-application contributor, save lock
+     retry with a plain message, presence (`SessionPresence`, schema 49) on the
+     Overview and in the editor, sync conflict copies named at startup. A
+     synced (OneDrive/SharePoint) folder cannot be shared by two computers;
+     the guide says to use a network share. A session closed without Exit
+     stays listed for up to 10 minutes.
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 

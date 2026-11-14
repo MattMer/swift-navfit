@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.56.0-dev | 48 | Imports schema 35 onward (owner decision, 10 Nov 2026); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.56.0-dev | 49 | Imports schema 35 onward (owner decision, 10 Nov 2026); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.55.0 | 48 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.55.0), 9 Nov 2026. Full release gate passed, including schemas 1–48 and retained populated releases. The last release that imports schemas 1–34. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
 | Latest source tag | `v0.55.0` | 48 | The release commit. Earlier: `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
@@ -35,8 +35,8 @@ import and print-ready PDF output.
 
 ## Architecture
 
-- **Source:** [src/](src/) holds 118 static VBA modules, JSON catalogues, the
-  AutoExec macro, PDF template images and the 75 forms as normalized Access text
+- **Source:** [src/](src/) holds 119 static VBA modules, JSON catalogues, the
+  AutoExec macro, PDF template images and the 76 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
   lists the modules, forms, five generated modules (built from the
   catalogues, not stored in `src/`), fingerprinted inputs and six resource
@@ -198,7 +198,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 35–48** (owner decision, 10 Nov 2026).
+- **The importer accepts source schemas 35–49** (owner decision, 10 Nov 2026).
   Schema 35 is release 0.49.0, the first public release. Older workspaces are
   refused with advice to import them into a 0.55.0 Blank first; 0.55.0 still
   imports schemas 1–48. [modMigration.bas](src/modMigration.bas) hard-codes

@@ -120,7 +120,8 @@
     "src/modWorkspaceSafety.bas",
     "src/modDataFile.bas",
     "src/modDataLink.bas",
-    "src/modSchemaUpgrade.bas"
+    "src/modSchemaUpgrade.bas",
+    "src/modSessionPresence.bas"
   ],
   "generatedModules": [
     "modPDFPrintCatalogue",
@@ -251,6 +252,7 @@
     "frmUXConfirmIdentity",
     "frmUXCounselingDate",
     "frmUXCounselingEditor",
+    "frmUXCommandDetails",
     "frmUXContributors",
     "frmUXDecision",
     "frmUXDirectory",

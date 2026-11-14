@@ -23,7 +23,7 @@ Public Function WorkspaceLocationWarning(ByVal path As String) As String
 End Function
 
 Private Function SyncWarning() As String
-    SyncWarning = "This file is in a folder that a sync service such as OneDrive or SharePoint uploads. Sync can damage an open Access database or create conflicting copies. Keep the workspace in a folder that is not synced."
+    SyncWarning = "This file is in a folder that a sync service such as OneDrive or SharePoint uploads. Sync can damage an open Access database or create conflicting copies, and two people on their own computers each work in a separate copy, not the same file. Keep the workspace in a folder that is not synced; for two people, use a shared network folder."
 End Function
 
 Private Function PathUnder(ByVal path As String, ByVal folder As String) As Boolean
@@ -99,7 +99,7 @@ End Function
 
 Public Function ConcurrentSessionWarning(ByVal others As Long, ByVal computers As String) As String
     If others <= 0 Then Exit Function
-    ConcurrentSessionWarning = "This workspace is already open in " & IIf(others = 1, "another session", others & " other sessions") & IIf(Len(computers) > 0, " (" & computers & ")", "") & ". Swift NAVFIT supports one person at a time: two sessions change each other's contributor and can damage the file. Close the other session first, or exit."
+    ConcurrentSessionWarning = "This workspace is already open in " & IIf(others = 1, "another session", others & " other sessions") & IIf(Len(computers) > 0, " (" & computers & ")", "") & ". Work on different reports: a save that would overwrite someone else's is refused and your entries are kept. Two people on one data file are not fully supported; on a synced folder, close the other session first."
 End Function
 
 'All warnings for the open workspace, one per line. A failed probe is reported as
@@ -110,6 +110,7 @@ Public Function WorkspaceSafetyNotice() As String
     text = WorkspaceLocationWarning(path)
     On Error GoTo FileFailed
     text = WarningJoin(text, WorkspaceFileWarning(path))
+    text = WarningJoin(text, SyncConflictWarning(path))
     If Not CurrentDb.Updatable And InStr(text, ReadOnlyWarning()) = 0 Then text = WarningJoin(text, ReadOnlyWarning())
 SessionCheck:
     On Error GoTo SessionFailed
@@ -137,4 +138,32 @@ Public Function UXWorkspaceSafetyPaint(ByVal formName As String) As Boolean
         c.BackStyle = 1: c.BackColor = UXColor("Warning"): c.ForeColor = UXColor("WarningInk")
     End If
     UXWorkspaceSafetyPaint = True
+End Function
+
+' Copies a sync service made beside the data file when it was changed in two places
+' (OneDrive: "name-COMPUTER.accdb"; Google Drive and Dropbox: "name (1).accdb" or
+' "name (... conflicted copy ...).accdb"). Copies Swift makes itself are not counted.
+Public Function SyncConflictCopies(ByVal path As String) As String
+    Dim folder As String, base As String, found As String, name As String, rest As String
+    On Error GoTo Done
+    folder = Left$(path, InStrRev(path, "\"))
+    base = Mid$(path, InStrRev(path, "\") + 1)
+    If LCase$(Right$(base, 6)) <> ".accdb" Then Exit Function
+    base = Left$(base, Len(base) - 6)
+    name = Dir$(folder & base & "*.accdb")
+    Do While Len(name) > 0
+        rest = Mid$(name, Len(base) + 1, Len(name) - Len(base) - 6)
+        If Len(rest) > 0 And LCase$(Left$(rest, 15)) <> " before schema " Then
+            If Left$(rest, 1) = "-" Or Left$(rest, 2) = " (" Then found = found & IIf(Len(found) > 0, ", ", "") & name
+        End If
+        name = Dir$()
+    Loop
+    SyncConflictCopies = found
+Done:
+End Function
+
+Public Function SyncConflictWarning(ByVal path As String) As String
+    Dim copies As String
+    copies = SyncConflictCopies(path)
+    If Len(copies) > 0 Then SyncConflictWarning = "Another copy of this data file is beside it: " & copies & ". A sync service makes such a copy when the file was changed in two places at once. Swift NAVFIT uses only this file; work saved in the other copy is not here. Ask whoever made it before removing it."
 End Function

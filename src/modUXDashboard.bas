@@ -228,7 +228,9 @@ Public Function UXDashboardRefresh() As Boolean
     pid = ActiveContributorID()
     If UXHasControl(f, "uxContributor") Then f!uxContributor = pid
     If UXHasControl(f, "uxUpdateNote") Then
-        f!uxUpdateNote.Caption = UpdateReminderText(APP_RELEASE_DATE, Date)
+        'Who else used this workspace lately comes first; the update reminder follows.
+        PresenceTouch
+        f!uxUpdateNote.Caption = Trim$(PresenceOthersText() & "  " & UpdateReminderText(APP_RELEASE_DATE, Date))
         f!uxUpdateNote.Visible = (Len(f!uxUpdateNote.Caption) > 0)
     End If
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
@@ -242,7 +244,7 @@ Public Function UXDashboardRefresh() As Boolean
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
     f!cmdRecovery.Enabled = (recoveryCount > 0)
     f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],Format(PeriodStart,'yyyy-mm-dd') AS [Period from],Format(PeriodEnd,'yyyy-mm-dd') AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
-    f!uxContext.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT") & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
+    f!uxContext.Caption = CommandHeading() & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
     If UXHasControl(f, "uxReportsDue") Then UXDueRefresh
     UXDashboardRefresh = True
 End Function

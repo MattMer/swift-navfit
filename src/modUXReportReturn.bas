@@ -68,6 +68,7 @@ Public Function UXRestoreReportList() As Boolean
     UXRestoreReportList = True
 End Function
 Public Function UXQueueReportReturn() As Boolean
+    PresenceEditing 0
     If captured And CurrentProject.AllForms("frmLibrary").IsLoaded Then Forms!frmLibrary.TimerInterval = 1
     UXQueueReportReturn = True
 End Function

@@ -15,7 +15,7 @@ Public Const APP_VERSION As String = "0.56.0-dev"
 Public Const APP_RELEASE_DATE As String = ""
 'Where newer releases are published. Shown as text only: Swift never connects to it.
 Public Const APP_UPDATES_URL As String = "https://github.com/MattMer/swift-navfit/releases/latest"
-Public Const SCHEMA_VERSION As Long = 48
+Public Const SCHEMA_VERSION As Long = 49
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -45,9 +45,43 @@ Private Function ProfileID() As Long
     ProfileID = ActiveContributorID()
 End Function
 
-Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayName As String) As Boolean
+' A UIC as stored: trimmed, upper case, up to 5 letters and digits; "" when none.
+Public Function CommandUICText(ByVal value As String) As String
+    Dim i As Long
+    value = UCase$(Trim$(value))
+    If Len(value) > 5 Then Err.Raise vbObjectError + 105, "modSwift.CommandUICText", "A UIC has at most 5 letters and digits."
+    For i = 1 To Len(value)
+        If Not Mid$(value, i, 1) Like "[A-Z0-9]" Then Err.Raise vbObjectError + 105, "modSwift.CommandUICText", "A UIC has only letters and digits."
+    Next
+    CommandUICText = value
+End Function
+
+' The command name and UIC shown at the top of the screens.
+Public Function CommandHeading() As String
+    Dim uic As String
+    CommandHeading = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
+    uic = Nz(DLookup("CommandUIC", "Workspace"), "")
+    If Len(uic) > 0 Then CommandHeading = CommandHeading & " (" & uic & ")"
+End Function
+
+' Settings & Help > Command name and UIC: change them, with a line in operation history.
+Public Function CommandDetailsSave(ByVal commandName As String, ByVal commandUIC As String) As Boolean
+    Dim before As String, operation As Long
+    commandName = Trim$(commandName): commandUIC = CommandUICText(commandUIC)
+    If Len(commandName) = 0 Then Err.Raise vbObjectError + 103, "modSwift.CommandDetailsSave", "Enter a command name."
+    If Len(commandName) > 120 Then Err.Raise vbObjectError + 104, "modSwift.CommandDetailsSave", "The command name must be 120 characters or fewer."
+    If DCount("*", "Workspace", "WorkspaceID=1") <> 1 Then Err.Raise vbObjectError + 106, "modSwift.CommandDetailsSave", "Complete workspace setup first."
+    before = CommandHeading()
+    operation = BeginOperation("Change command details", "From " & before)
+    ExecuteParams "PARAMETERS n Text(120), u Text(5); UPDATE Workspace SET CommandName=n, CommandUIC=IIf(u='',Null,u) WHERE WorkspaceID=1", commandName, commandUIC
+    FinishOperation operation, "Completed", "From " & before & " to " & CommandHeading()
+    UXLoadContext
+    CommandDetailsSave = True
+End Function
+
+Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayName As String, Optional ByVal commandUIC As String = "") As Boolean
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, pid As Long
-    commandName = Trim$(commandName): displayName = Trim$(displayName)
+    commandName = Trim$(commandName): displayName = Trim$(displayName): commandUIC = CommandUICText(commandUIC)
     If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, "modSwift.ConfigureWorkspace", "Enter a command name and contributor name."
     If Len(commandName) > 120 Or Len(displayName) > 120 Then Err.Raise vbObjectError + 104, "modSwift.ConfigureWorkspace", "Names must be 120 characters or fewer."
     If DCount("*", "Workspace", "WorkspaceID=1") > 0 Then Call ActiveContributorID
@@ -66,7 +100,9 @@ Public Function ConfigureWorkspace(ByVal commandName As String, ByVal displayNam
         Set r = db.OpenRecordset("SELECT * FROM Workspace WHERE WorkspaceID=1", dbOpenDynaset)
         r.Edit
     End If
-    r!CommandName = commandName: r!ActiveProfileID = pid: r.Update: r.Close
+    r!CommandName = commandName: r!ActiveProfileID = pid
+    If Len(commandUIC) > 0 Then r!CommandUIC = commandUIC
+    r.Update: r.Close
     w.CommitTrans
     BindActiveContributor pid
     ConfigureWorkspace = True
@@ -446,7 +482,7 @@ Public Function LoadHome() As Boolean
     Forms!frmHome!uxContributor.RowSource = "SELECT UserProfileID,DisplayName FROM UserProfile WHERE IsRetired=False ORDER BY DisplayName"
     Forms!frmHome!uxContributor = ProfileID()
     Forms!frmHome!uxContributorStatus.Caption = ""
-    Forms!frmHome!lblCommand.Caption = Nz(DLookup("CommandName", "Workspace"), "Swift NAVFIT")
+    Forms!frmHome!lblCommand.Caption = CommandHeading()
     Forms!frmHome!lblProfile.Caption = "Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & ProfileID()), "")
     Forms!frmHome!cmdRecovery.Caption = "Recover pending edits (" & DCount("*", "RecoveryDraft", "AuthorProfileID=" & ProfileID()) & ")"
     UXDashboardRefresh
@@ -523,6 +559,11 @@ Public Function LoadEditor() As Boolean
     Call RefreshRevisions
     Call BeginEditorRecovery()
     Call UXEditorStart()
+    'Someone else editing the same report (two people on one data file).
+    PresenceEditing id
+    If id > 0 And UXHasControl(f, "uxError") Then
+        If Len(PresenceEditingText(id)) > 0 Then f!uxError.Caption = Left$(PresenceEditingText(id), 255)
+    End If
     LoadEditor = True
 End Function
 
@@ -534,7 +575,7 @@ Private Sub RefreshRevisions()
 End Sub
 
 Public Function SaveEditor() As Boolean
-    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean, committed As Boolean, stage As String, oldRevision As Long
+    Dim f As Form, id As Long, w As DAO.Workspace, trans As Boolean, committed As Boolean, stage As String, oldRevision As Long, attempt As Long
     On Error GoTo Failed
     Set f = Forms!frmEditor
     stage = "Capture and validate pending values"
@@ -542,6 +583,7 @@ Public Function SaveEditor() As Boolean
     UXFormatTypedFields
     Call GuardEditorBaseline()
     If Nz(f!txtReportID, 0) > 0 Then oldRevision = CurrentRevision(CLng(f!txtReportID))
+TryAgain:
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     stage = "Write draft revision"
     id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value, EditorPendingFields())
@@ -560,6 +602,16 @@ Public Function SaveEditor() As Boolean
     If UXHasControl(f, "uxReviewSetup") Then UXHeaderReviewState
     SaveEditor = True: Exit Function
 Failed:
+    'Another session saving the same records at the same moment: undo this attempt and
+    'try again a few times before reporting it.
+    If trans And Not committed And SwiftLockConflict(Err.Number) And attempt < 3 Then
+        On Error Resume Next
+        w.Rollback
+        On Error GoTo Failed
+        trans = False: attempt = attempt + 1
+        SwiftPause 300 * attempt
+        Resume TryAgain
+    End If
     Dim swiftPrimary As Object
     Set swiftPrimary = SwiftFailure("modSwift", "SaveEditor", stage, Err.Number, Err.Description, Err.Source, IIf(committed, "Committed", IIf(trans, "Active", "Not started")))
     Dim message As String
@@ -721,4 +773,30 @@ Public Function NativeReportMemo(ByVal receipt As Long, ByVal fieldKey As String
         If Not r!IsNullValue Then NativeReportMemo = Nz(r!RawValue.Value, "")
     End If
     r.Close
+End Function
+
+Public Function UXCommandDetailsLoad() As Boolean
+    With Forms!frmUXCommandDetails
+        !txtDetailsCommand = Nz(DLookup("CommandName", "Workspace"), "")
+        !txtDetailsUIC = Nz(DLookup("CommandUIC", "Workspace"), "")
+        !lblCommandStatus.Caption = "The command name and UIC appear at the top of each screen. New reports start with this UIC; reports already written keep theirs."
+    End With
+    UXCommandDetailsLoad = True
+End Function
+
+Public Function UXCommandDetailsSave() As Boolean
+    On Error GoTo Failed
+    With Forms!frmUXCommandDetails
+        UXCommandDetailsSave = CommandDetailsSave(Nz(!txtDetailsCommand, ""), Nz(!txtDetailsUIC, ""))
+        !txtDetailsUIC = Nz(DLookup("CommandUIC", "Workspace"), "")
+        !lblCommandStatus.Caption = "Saved: " & CommandHeading() & "."
+    End With
+    Exit Function
+Failed:
+    Forms!frmUXCommandDetails!lblCommandStatus.Caption = Err.Description
+End Function
+
+Public Function UXCommandDetailsClose() As Boolean
+    DoCmd.Close acForm, "frmUXCommandDetails", acSaveNo
+    UXCommandDetailsClose = True
 End Function

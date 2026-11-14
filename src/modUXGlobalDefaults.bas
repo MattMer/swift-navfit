@@ -21,6 +21,10 @@ Public Function UXSeedGlobalDefaults() As Boolean
         End If
     Next
     UXSeedGlobalDefaults = True
+    'A new report's UIC starts as the command's, unless a default already filled it.
+    On Error Resume Next
+    If Len(Nz(Forms!frmEditor!txtUnitUIC, "")) = 0 Then Forms!frmEditor!txtUnitUIC = DLookup("CommandUIC", "Workspace")
+    On Error GoTo 0
 End Function
 Public Function UXEffectiveDefault(ByVal groupID As Long, ByVal key As String) As Variant
     If groupID > 0 And DCount("*", "FieldDefault", UXDefaultScopeWhere(groupID) & " AND FieldKey=" & QuoteSQL(key)) = 0 Then UXEffectiveDefault = UXGroupDefaultValue(0, key) Else UXEffectiveDefault = UXGroupDefaultValue(groupID, key)

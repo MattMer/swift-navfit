@@ -142,6 +142,63 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =2000
+                    Width =10112
+                    Height =350
+                    FontSize =11
+                    ForeColor =4205854
+                    Name ="uxGroupPeople"
+                    Caption ="People and organizations"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =2000
+                    LayoutCachedWidth =12978
+                    LayoutCachedHeight =2350
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =4950
+                    Width =10112
+                    Height =350
+                    FontSize =11
+                    ForeColor =4205854
+                    Name ="uxGroupWriting"
+                    Caption ="Writing"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =4950
+                    LayoutCachedWidth =12978
+                    LayoutCachedHeight =5300
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =7250
+                    Width =10112
+                    Height =350
+                    FontSize =11
+                    ForeColor =4205854
+                    Name ="uxGroupReview"
+                    Caption ="Review"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =7250
+                    LayoutCachedWidth =12978
+                    LayoutCachedHeight =7600
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
                 Begin CommandButton
                     OverlapFlags =215
                     TextFontFamily =34
@@ -412,11 +469,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =2325
+                    Top =5350
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =11
                     ForeColor =4205854
                     Name ="cmdTool0"
                     Caption ="Narrative snippets"
@@ -424,9 +481,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2325
+                    LayoutCachedTop =5350
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =2875
+                    LayoutCachedHeight =5900
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -451,11 +508,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =3175
+                    Top =7650
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =14
                     ForeColor =4205854
                     Name ="cmdTool1"
                     Caption ="Review route templates"
@@ -463,9 +520,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =3175
+                    LayoutCachedTop =7650
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =3725
+                    LayoutCachedHeight =8200
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -491,11 +548,11 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2866
-                    Top =4025
+                    Top =7650
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =15
                     ForeColor =4205854
                     Name ="cmdTool2"
                     Caption ="Reference guidance"
@@ -503,9 +560,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =4025
+                    LayoutCachedTop =7650
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =4575
+                    LayoutCachedHeight =8200
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -531,11 +588,11 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2866
-                    Top =4025
+                    Top =3025
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =8
                     ForeColor =4205854
                     Name ="cmdSeniors"
                     Caption ="Reporting seniors and RSCA history"
@@ -543,9 +600,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =4025
+                    LayoutCachedTop =3025
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =4575
+                    LayoutCachedHeight =3575
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -661,11 +718,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =6550
+                    Top =5975
                     Width =9954
-                    Height =600
+                    Height =550
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =12
                     ForeColor =4205854
                     Name ="uxNavyWriter"
                     Caption ="NavyWriter examples catalog"
@@ -673,9 +730,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =6550
+                    LayoutCachedTop =5975
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =7150
+                    LayoutCachedHeight =6525
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -701,11 +758,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =7425
+                    Top =3650
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =9
                     ForeColor =4205854
                     Name ="cmdISICs"
                     Caption ="ISICs for summary letters"
@@ -713,9 +770,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =7425
+                    LayoutCachedTop =3650
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =7975
+                    LayoutCachedHeight =4200
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -741,11 +798,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =8275
+                    Top =4275
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =10
                     ForeColor =4205854
                     Name ="cmdContributors"
                     Caption ="Contributors"
@@ -753,9 +810,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =8275
+                    LayoutCachedTop =4275
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =8825
+                    LayoutCachedHeight =4825
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -781,11 +838,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =4875
+                    Top =2400
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =7
                     ForeColor =4205854
                     Name ="uxDirectory"
                     Caption ="Command member directory"
@@ -793,9 +850,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =4875
+                    LayoutCachedTop =2400
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =5425
+                    LayoutCachedHeight =2950
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -821,11 +878,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =5725
+                    Top =6600
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =13
                     ForeColor =4205854
                     Name ="cmdNavyWords"
                     Caption ="Save Navy word list for spell check"
@@ -833,9 +890,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =5725
+                    LayoutCachedTop =6600
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =6275
+                    LayoutCachedHeight =7150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -864,7 +921,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =13
+                    TabIndex =16
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"

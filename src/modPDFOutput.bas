@@ -575,6 +575,13 @@ Private Function PrintRowSize(ByVal parts As Variant, ByVal value As String, ByV
     Call BoxLines(value, box, CStr(parts(7)), PrintRowSize, (parts(11) = "1"), False, step, capacity, remaining, New Collection)
     If remaining <> "" Then PrintRowSize = fallback
 End Function
+' As much of the text as fits on one line of this width (points).
+Public Function PDFFitOneLine(ByVal value As String, ByVal width As Double, ByVal font As String, ByVal size As Double) As String
+    Do While Len(value) > 0 And PDFOutputTextWidth(value, font, size) > width
+        value = Left$(value, Len(value) - 1)
+    Loop
+    PDFFitOneLine = RTrim$(value)
+End Function
 Private Sub FitText(ByVal page As Object, ByVal value As String, ByVal label As String, ByVal box As Variant, ByVal font As String, ByVal size As Double, ByVal overflow As Collection, Optional ByVal align As Long = 1, Optional ByVal bold As Boolean = False, Optional ByVal spill As Object = Nothing, Optional ByVal compact As Boolean = False)
     Dim lines As Collection, positions As New Collection, i As Long, step As Double, capacity As Long, remaining As String
     If value = "" Then Exit Sub
@@ -965,7 +972,8 @@ Private Sub PlanSummary(ByVal rows As Collection)
     template = 1: index = 1
     Do
         Set page = NewPage("SUMMARY_" & template): bounds = PDFSummaryRows(template): n = UBound(bounds)
-        FitText page, CStr(job("Title")), "Summary filename / group", Array(365, 30, 201, 14), "Courier New", 9, extra
+        'The filename box holds one line: a long group title is cut to fit, never continued.
+        AddSlot page, PDFFitOneLine(CStr(job("Title")), 201, "Courier New", 9), 365, 30, 201, 14, "Courier New", 9
         values = Array(CommonField(rows, "ReportingSeniorName"), CommonField(rows, "ReportingSeniorGrade"), CommonField(rows, "ReportingSeniorSSN"), CommonField(rows, "ReportingSeniorUIC"), job("Paygrade"), CommonField(rows, "PromotionStatus"), CommonField(rows, "Designator"), SummaryFlags(rows, Array("ComponentActive", "ComponentTAR", "ComponentInactive", "ComponentATADSW"), Array("ACT", "TAR", "INACT", "AT")), CommonField(rows, "BilletSubcategory"), SummaryFlags(rows, Array("ReportRegular", "ReportConcurrent", "ReportOperationalCommander"), Array("REGULAR", "CONCURRENT", "OPS CDR")), CommonField(rows, "UnitUIC"), PrintNavyDate(CommonField(rows, "PeriodEnd")))
         boxes = Array(Array(20, 54, 159, 12), Array(185, 54, 173, 12), Array(366, 54, 91, 12), Array(462, 54, 104, 12), Array(20, 77, 157, 12), Array(186, 77, 174, 12), Array(365, 77, 91, 12), Array(463, 77, 104, 12), Array(20, 102, 157, 12), Array(186, 102, 174, 12), Array(365, 102, 91, 12), Array(463, 102, 104, 12))
         For j = 0 To UBound(values): FitText page, CStr(values(j)), "Summary header " & (j + 1), boxes(j), "Times New Roman", 9, extra: Next
@@ -989,8 +997,11 @@ Private Sub PlanSummary(ByVal rows As Collection)
         If template = 1 Then AddSlot page, " ", 503, 574, 69, 18, "Times New Roman", 7, 1, True
         If template = 1 Then PlanSummaryContact page, rows, extra
         template = 2
-    Loop While index <= rows.Count
+    'The second page is always kept, so the summary is a full sheet when printed on both sides.
+    Loop While index <= rows.Count Or printPages.Count < 2
     AddContinuations CStr(job("Title")) & " summary", extra
+    'Reports start on their own sheet: an odd page count gets a blank page.
+    If printPages.Count Mod 2 = 1 Then NewPage ""
     total = printPages.Count
     For i = 1 To total
         AddSlot printPages(i), "Page " & i & " of " & total, 519, 736, 53, 14, "Times New Roman", 8, 3, True

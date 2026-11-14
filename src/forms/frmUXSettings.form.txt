@@ -106,7 +106,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =10700
+            Height =11550
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -418,9 +418,9 @@ Begin Form
                     FontSize =10
                     TabIndex =7
                     ForeColor =4205854
-                    Name ="cmdTool0"
-                    Caption ="Contributors and My Work"
-                    OnClick ="=OpenScreen(\"frmMyWork\")"
+                    Name ="cmdCommandDetails"
+                    Caption ="Command name and UIC"
+                    OnClick ="=OpenScreen(\"frmUXCommandDetails\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
@@ -457,9 +457,9 @@ Begin Form
                     FontSize =10
                     TabIndex =8
                     ForeColor =4205854
-                    Name ="cmdTool1"
-                    Caption ="Backup and restore"
-                    OnClick ="=OpenScreen(\"frmBackup\")"
+                    Name ="cmdTool0"
+                    Caption ="Contributors and My Work"
+                    OnClick ="=OpenScreen(\"frmMyWork\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
@@ -496,9 +496,9 @@ Begin Form
                     FontSize =10
                     TabIndex =9
                     ForeColor =4205854
-                    Name ="cmdTool2"
-                    Caption ="Operation history and import undo"
-                    OnClick ="=OpenScreen(\"frmOperations\")"
+                    Name ="cmdTool1"
+                    Caption ="Backup and restore"
+                    OnClick ="=OpenScreen(\"frmBackup\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
@@ -535,9 +535,9 @@ Begin Form
                     FontSize =10
                     TabIndex =10
                     ForeColor =4205854
-                    Name ="cmdTool3"
-                    Caption ="Recover pending edits"
-                    OnClick ="=OpenScreen(\"frmRecovery\")"
+                    Name ="cmdTool2"
+                    Caption ="Operation history and import undo"
+                    OnClick ="=OpenScreen(\"frmOperations\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
@@ -574,15 +574,54 @@ Begin Form
                     FontSize =10
                     TabIndex =11
                     ForeColor =4205854
-                    Name ="cmdTool4"
-                    Caption ="Support and limitations"
-                    OnClick ="=OpenScreen(\"frmSupport\")"
+                    Name ="cmdTool3"
+                    Caption ="Recover pending edits"
+                    OnClick ="=OpenScreen(\"frmRecovery\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
                     LayoutCachedTop =5725
                     LayoutCachedWidth =12820
                     LayoutCachedHeight =6275
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =6575
+                    Width =9954
+                    Height =550
+                    FontSize =10
+                    TabIndex =12
+                    ForeColor =4205854
+                    Name ="cmdTool4"
+                    Caption ="Support and limitations"
+                    OnClick ="=OpenScreen(\"frmSupport\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =6575
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =7125
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -697,11 +736,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =6575
+                    Top =7425
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =13
                     ForeColor =8928611
                     Name ="cmdWorkspaceGuide"
                     Caption ="Workspace guide and quick start"
@@ -709,9 +748,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =6575
+                    LayoutCachedTop =7425
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =7125
+                    LayoutCachedHeight =7975
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =16443630
@@ -736,11 +775,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =7425
+                    Top =8275
                     Width =9954
                     Height =550
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =14
                     ForeColor =4205854
                     Name ="cmdImportSwift"
                     Caption ="Import data from a previous Swift NAVFIT version"
@@ -748,9 +787,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =7425
+                    LayoutCachedTop =8275
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =7975
+                    LayoutCachedHeight =8825
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -778,7 +817,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =14
+                    TabIndex =15
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"
@@ -814,7 +853,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =8250
+                    Top =9100
                     Width =9950
                     Height =600
                     FontSize =10
@@ -823,9 +862,9 @@ Begin Form
                     Caption ="Workspace file size"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =8250
+                    LayoutCachedTop =9100
                     LayoutCachedWidth =12800
-                    LayoutCachedHeight =8850
+                    LayoutCachedHeight =9700
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -835,20 +874,20 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2850
-                    Top =9400
+                    Top =10250
                     Width =9950
                     Height =1100
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtAbout"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =9400
+                    LayoutCachedTop =10250
                     LayoutCachedWidth =12800
-                    LayoutCachedHeight =10500
+                    LayoutCachedHeight =11350
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -857,7 +896,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =85
                             Left =2850
-                            Top =9050
+                            Top =9900
                             Width =4000
                             Height =350
                             FontSize =10
@@ -868,9 +907,9 @@ Begin Form
                             Name ="lblAbout"
                             Caption ="About this version"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =9050
+                            LayoutCachedTop =9900
                             LayoutCachedWidth =6850
-                            LayoutCachedHeight =9400
+                            LayoutCachedHeight =10250
                         End
                     End
                 End

@@ -8,8 +8,10 @@ Public Function ContributorStartupFailure() As String
  ContributorStartupFailure = lastStartupFailure
 End Function
 
-'Session selection is separate from retained Workspace.ActiveProfileID.
-'TempVars survive a VBA reset; path and workspace identity prevent cross-file reuse.
+'Session selection is separate from retained Workspace.ActiveProfileID, which only
+'records the last choice. Each application keeps its own contributor, so two people
+'on one data file each keep theirs. TempVars survive a VBA reset; path and workspace
+'identity prevent cross-file reuse.
 Public Sub ResetActiveContributor()
  On Error Resume Next
  TempVars.Remove "SwiftContributorID"
@@ -24,6 +26,7 @@ Public Sub BindActiveContributor(ByVal profile As Long)
  TempVars.Add "SwiftContributorID", profile
  TempVars.Add "SwiftContributorPath", SwiftDataPath()
  TempVars.Add "SwiftContributorWorkspace", CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), ""))
+ PresenceTouch True
 End Sub
 
 Public Function HasActiveContributor() As Boolean
@@ -34,7 +37,6 @@ Public Function HasActiveContributor() As Boolean
  If StrComp(CStr(TempVars("SwiftContributorPath").Value), SwiftDataPath(), vbTextCompare) <> 0 Then Exit Function
  identity = CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), ""))
  If Len(identity) = 0 Or identity <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
- If Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0) <> profile Then Exit Function
  HasActiveContributor = (DCount("*", "UserProfile", "UserProfileID=" & profile) = 1)
 Missing:
 End Function
@@ -46,20 +48,10 @@ Public Function ActiveContributorID() As Long
  ActiveContributorID = CLng(TempVars("SwiftContributorID").Value)
 End Function
 
-'Explain a lost session. When this session's own selection is intact but the
-'workspace's retained contributor changed, another session on the file chose it.
+'Why this session has no contributor. Another session's choice no longer matters: each
+'application keeps its own (two people on one data file each keep theirs).
 Public Function ContributorSessionProblem() As String
- Dim profile As Long, retained As Long
  ContributorSessionProblem = "Choose your contributor for this session before making changes."
- On Error GoTo Finished
- profile = CLng(TempVars("SwiftContributorID").Value)
- If profile < 1 Then Exit Function
- If StrComp(CStr(TempVars("SwiftContributorPath").Value), SwiftDataPath(), vbTextCompare) <> 0 Then Exit Function
- If CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), "")) <> CStr(TempVars("SwiftContributorWorkspace").Value) Then Exit Function
- retained = Nz(DLookup("ActiveProfileID", "Workspace", "WorkspaceID=1"), 0)
- If retained = profile Or retained = 0 Then Exit Function
- ContributorSessionProblem = "Another Swift NAVFIT session on this workspace chose " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & retained), "a different contributor") & ". Only one person can use the file at a time. Unsaved edits stay open here. Close the other session, then choose your contributor again from Resources > Contributors."
-Finished:
 End Function
 
 Public Function MigrateDirectoryCompatibility() As Long
@@ -150,6 +142,7 @@ Failed:
 End Function
 
 Public Function CancelContributorStartup() As Boolean
+ PresenceEnd
  ResetActiveContributor
  Application.Quit acQuitSaveAll
 End Function

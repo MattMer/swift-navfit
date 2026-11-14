@@ -2,7 +2,7 @@
 
 # DIV-3 Physical Data Model
 
-Microsoft Access (ACE) tables in schema 48, application 0.56.0-dev. Types are Access field types; "required" means the field may not be empty.
+Microsoft Access (ACE) tables in schema 49, application 0.56.0-dev. Types are Access field types; "required" means the field may not be empty.
 
 ## AppMetadata
 
@@ -1362,6 +1362,20 @@ Microsoft Access (ACE) tables in schema 48, application 0.56.0-dev. Types are Ac
 | VersionCounter | Long | yes |
 | ModifiedAt | Date/Time | yes |
 
+## SessionPresence
+
+- **Primary key:** SessionGuid
+
+| Column | Type | Required |
+| --- | --- | --- |
+| SessionGuid | Text (38) |  |
+| ProfileID | Long | yes |
+| ComputerName | Text (64) |  |
+| StartedAt | Date/Time |  |
+| LastSeen | Date/Time |  |
+| ReportID | Long |  |
+| EditingSince | Date/Time |  |
+
 ## SummaryGroup
 
 - **Primary key:** GroupID
@@ -1464,3 +1478,4 @@ Microsoft Access (ACE) tables in schema 48, application 0.56.0-dev. Types are Ac
 | WorkspaceGuid | Text (38) | yes |
 | CommandName | Text (120) | yes |
 | ActiveProfileID | Long | yes |
+| CommandUIC | Text (5) |  |

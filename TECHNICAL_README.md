@@ -41,10 +41,10 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.56.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 48 |
-| Imports accepted | Workspaces of schema 35 to 48, into a target of schema 21 to 48 |
-| Tables / enforced relationships | 83 / 169 |
-| VBA modules / forms | 123 / 75 |
+| Schema version | 49 |
+| Imports accepted | Workspaces of schema 35 to 49, into a target of schema 21 to 49 |
+| Tables / enforced relationships | 84 / 169 |
+| VBA modules / forms | 124 / 76 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 126 / 123 |
@@ -218,6 +218,7 @@ added or removed without updating this list.
 | Content-check decisions | `RestrictedDismissal`, `RestrictedException`, `RestrictedCheckOff` | Yes: dismissed findings keep the matched words from a report (which can name family members or medical terms) with the report, contributor and reason; allowed phrases are command wording; checks turned off are rule IDs only |
 | Summary groups | `SummaryGroup`, `GroupMember`, `GroupSnapshot`, `GroupSnapshotMember`, `GroupCompletion`, `GroupCompletionReport`, `GroupCompletionCurrent`, `GroupLifecycle`, `ComparisonSet`, `ComparisonMember` | Membership and accounting links to reports |
 | Review and collaboration | `ReviewTask`, `ReviewTaskEvent`, `ReviewComment`, `ReviewCommentEvent`, `ReportNote`, `ReportNoteDraft`, `ReportMessage`, `RouteTemplate`, `RouteTemplateStep`, `RouteRun`, `RouteRunStep`, `RouteRunEvent` | Free text written by contributors, which may mention members |
+| Sessions | `SessionPresence` | Who has the workspace open: contributor, computer name, start and last-seen times, and the report being edited. Rows expire; no report content |
 | Contributors and audit | `UserProfile`, `AuditActor`, `AuditEvent`, `OperationJournal` | Contributor names; operation descriptions (which can name members and show the last four SSN digits) |
 | Summary letters | `ISIC` | ISIC names, UICs and mailing addresses (organizations, not people) |
 | Saved report filters | `SavedReportFilter` | Contributor GUID, named search criteria, period bounds and group scope; search text and filter names may contain member names |
@@ -619,6 +620,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 13 Nov 2026 | Development only, schema 49: `SessionPresence` (who has the workspace open, their computer, and the report open in their editor; transient: never imported, copied but not checked by backup) and `Workspace.CommandUIC` (optional command UIC, asked at setup, editable in Settings & Help with an operation journal entry, prefills new reports). Each application keeps its own contributor; a save that meets another session's lock retries and then explains; startup warnings name sync conflict copies beside the data file. Two people on one data file are not supported but made safer; a synced folder cannot be shared. The summary letter is padded to an even page count and its filename box truncated. |
 | 13 Nov 2026 | Development only, not in a release (owner decisions): first-run setup now makes the data file by default, beside the application. A missing or unusable data file at startup opens a window offering to find it, create a new one or close; a data file of the same name beside the application is used without asking. A linked application keeps its blank tables (hidden, `USysBlank` prefix) so it can make a new data file; workspace-wide table loops (backup, import, retention) skip them. Release files: `Swift_NAVFIT_<version>.accdb` and the Demo as an application and data file pair, made by `scripts/package-release.ps1`. |
 | 13 Nov 2026 | Development only, not in a release: opening a complete workspace from an earlier version (0.49.0 to 0.55.0) on the setup screen brings it into a new data file beside it with the verified import; the earlier file is only read. |
 | 13 Nov 2026 | Development only, not in a release: a newer Swift NAVFIT upgrades an older separate data file in place. It first copies the file beside itself and checks the copy is identical, then applies each schema step, and puts the file back from the copy if a step fails. Newer data files, ones open in another session and complete workspaces from earlier versions are refused unchanged. CONTRIBUTING records this as the one exception to never modifying a user workspace. |

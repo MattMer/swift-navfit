@@ -1,0 +1,291 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    PopUp = NotDefault
+    Modal = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    Width =10800
+    ItemSuffix =4
+    Right =15300
+    Bottom =13245
+    Caption ="Command name and UIC"
+    OnActivate ="=UXVisualEvent(\"frmUXCommandDetails\",\"\")"
+    OnLoad ="=UXCommandDetailsLoad()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Segoe UI"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Segoe UI"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin Section
+            Height =3800
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =93
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =9950
+                    Height =600
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="Command name and UIC"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =3300
+                    Top =1100
+                    Width =7000
+                    Height =420
+                    FontSize =10
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtDetailsCommand"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =1100
+                    LayoutCachedWidth =10300
+                    LayoutCachedHeight =1520
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1150
+                            Width =2800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblDetailsCommand"
+                            Caption ="Command name"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1150
+                            LayoutCachedWidth =3200
+                            LayoutCachedHeight =1500
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =3300
+                    Top =1900
+                    Width =2000
+                    Height =420
+                    FontSize =10
+                    TabIndex =1
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtDetailsUIC"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =1900
+                    LayoutCachedWidth =5300
+                    LayoutCachedHeight =2320
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1950
+                            Width =2800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblDetailsUIC"
+                            Caption ="Command UIC"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1950
+                            LayoutCachedWidth =3200
+                            LayoutCachedHeight =2300
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =3300
+                    Top =2400
+                    Width =2400
+                    Height =450
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =4205854
+                    Name ="cmdSaveCommandDetails"
+                    Caption ="Save"
+                    OnClick ="=UXCommandDetailsSave()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =5700
+                    LayoutCachedHeight =2850
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5850
+                    Top =2400
+                    Width =2400
+                    Height =450
+                    FontSize =10
+                    TabIndex =3
+                    ForeColor =4205854
+                    Name ="cmdCloseCommandDetails"
+                    Caption ="Close"
+                    OnClick ="=UXCommandDetailsClose()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5850
+                    LayoutCachedTop =2400
+                    LayoutCachedWidth =8250
+                    LayoutCachedHeight =2850
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =2950
+                    Width =9950
+                    Height =650
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblCommandStatus"
+                    Caption =" "
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2950
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =3600
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+            End
+        End
+    End
+End

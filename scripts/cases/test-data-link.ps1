@@ -130,6 +130,7 @@ $front=Join-Path $defaultFolder 'Swift NAVFIT.accdb';Copy-Item -LiteralPath $Bui
 try{
     $app=Start-Front
     Invoke-Check $app 'TestSetupDefault("SYNTHETIC DEFAULT COMMAND","Tester")'
+    Invoke-Check $app 'TestCommandDetails()'
 }finally{Stop-Front $app;$app=$null}
 $together=Join-Path $folder 'moved together';[void](New-Item -ItemType Directory -Path $together)
 Move-Item -LiteralPath $front -Destination $together;Move-Item -LiteralPath (Join-Path $defaultFolder 'Swift NAVFIT data.accdb') -Destination $together
@@ -138,7 +139,7 @@ try{
     $app=Start-Front
     if($app.Eval('SwiftDataPath()') -ne (Join-Path $together 'Swift NAVFIT data.accdb')){throw ('The copy did not find its data file beside it: '+$app.Eval('SwiftDataPath()'))}
     if(-not $app.CurrentProject.AllForms.Item('frmContributorStart').IsLoaded){throw 'Startup did not reach contributor choice after the move'}
-    if($app.Eval('DLookup("CommandName","Workspace")') -ne 'SYNTHETIC DEFAULT COMMAND'){throw 'The moved data file does not hold the workspace'}
+    if($app.Eval('DLookup("CommandName","Workspace")') -ne 'SYNTHETIC RENAMED COMMAND'){throw 'The moved data file does not hold the workspace'}
 }finally{Stop-Front $app;$app=$null}
 Write-Output 'PASS: setup makes the data file beside the application by default, and the pair still opens after being moved together'
 
@@ -180,6 +181,22 @@ try{
     $notice=[string]$other.Eval('WorkspaceSafetyNotice()')
     if($notice -notlike '*already open in another session*'){throw ('Second session was not warned: '+$notice)}
     Write-Output 'PASS: a second session on the same data file is warned at startup'
+    #Presence: each session keeps its own contributor; the second sees the first, and which
+    #report it has open; when the first leaves, it is no longer listed.
+    [void]$first.Eval('SwitchContributor(DLookup("UserProfileID","UserProfile"))')
+    [void]$first.Eval('PresenceEditingFor(DLookup("ReportID","Report"))')
+    [void]$other.Eval('SwitchContributor(DLookup("UserProfileID","UserProfile"))')
+    $others=[string]$other.Eval('PresenceOthersText()')
+    if($others -notlike 'Also used in the last 10 minutes: Tester (*'){throw ('The second session does not list the first: '+$others)}
+    $editing=[string]$other.Eval('PresenceEditingText(DLookup("ReportID","Report"))')
+    if($editing -notlike 'Tester (*) also has this report open*'){throw ('The second session is not told the report is open: '+$editing)}
+    if([string]$first.Eval('PresenceEditingText(DLookup("ReportID","Report"))') -ne ''){throw 'A session was told about itself'}
+    [void]$first.Eval('PresenceEndFor()')
+    #The first session's own row goes when it leaves (sessions closed without saying so expire).
+    $session=[string]$first.Eval('PresenceSession()')
+    $count=[int]$other.Eval('DCount("*","SessionPresence","SessionGuid=''"'+'&"'+$session+'"&"''")')
+    if($count -ne 0){throw ('A session that left still has its row: '+$count)}
+    Write-Output 'PASS: two sessions keep their own contributors and see each other, and the report each has open'
 }finally{
     if($null -ne $other){$other.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($other)}
     Stop-Front $first

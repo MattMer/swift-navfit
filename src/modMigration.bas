@@ -17,9 +17,10 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     'Schema 35 (release 0.49.0, the first public release) is the oldest imported.
     'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces.
     If ver >= 1 And ver < 35 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema " & ver & ". This version imports workspaces from release 0.49.0 (schema 35) onward. Import the file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here."
-    If ver < 35 Or ver > 48 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
+    If ver < 35 Or ver > 49 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
-    If targetVersion < 21 Or targetVersion > 48 Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through 48."
+    'The target is always this version's own workspace, so its bound follows SCHEMA_VERSION.
+    If targetVersion < 21 Or targetVersion > SCHEMA_VERSION Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through " & SCHEMA_VERSION & "."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
         "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
@@ -45,7 +46,8 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     If targetVersion >= 48 Then tables = Split(Join(tables, "|") & "|RestrictedCheckOff", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
-            known = (table.name = "AppMetadata" Or (ver >= 31 And table.name = "TraitDefinition"))
+            'Who had the source open is momentary; it is known but never copied.
+            known = (table.name = "AppMetadata" Or (ver >= 31 And table.name = "TraitDefinition") Or SwiftTransientTable(table.Name))
             For Each n In tables
                 If table.Name = n Then known = True
             Next
@@ -54,7 +56,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Next
     'One inexpensive guard; TOP 1 never counts all records in a populated table.
     For Each table In t.TableDefs
-        If SwiftWorkspaceTable(table.Name) And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
+        If SwiftWorkspaceTable(table.Name) And Not SwiftTransientTable(table.Name) And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
             known = False
             If replaceSetup And targetVersion >= 30 And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
             If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) And Not known Then

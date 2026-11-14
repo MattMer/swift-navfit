@@ -121,11 +121,14 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     prefix = "zSwiftBackup" & Left$(Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", ""), 20)
     Set backup = DBEngine.OpenDatabase(destination, False, True)
     For Each name In names
+        'Who has the file open changes by the second and is not workspace data: copied, not checked.
+        If SwiftTransientTable(CStr(name)) Then GoTo NextName
         Set q = db.CreateQueryDef(prefix & name, "SELECT * FROM [" & name & "] IN " & Chr$(34) & destination & Chr$(34)): q.Close: Set q = Nothing
         rows = VerifyMigrationTable(db, backup.TableDefs(CStr(name)), prefix & name)
         If Len(counts) > 0 Then counts = counts & ","
         counts = counts & JsonString(CStr(name)) & ":" & rows
         total = total + rows
+NextName:
     Next
     backup.Close: Set backup = Nothing
     RemoveBackupQueries prefix

@@ -96,7 +96,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =8500
+            Height =9300
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -143,7 +143,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =3300
+                    Top =4100
                     Width =6900
                     Height =650
                     FontSize =10
@@ -152,9 +152,9 @@ Begin Form
                     Caption =" "
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =4100
                     LayoutCachedWidth =7300
-                    LayoutCachedHeight =3950
+                    LayoutCachedHeight =4750
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -247,15 +247,61 @@ Begin Form
                         End
                     End
                 End
+                Begin TextBox
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =3300
+                    Top =3500
+                    Width =2000
+                    Height =420
+                    FontSize =10
+                    TabIndex =2
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtCommandUIC"
+                    ControlTipText ="Up to 5 letters and digits. New reports start with this UIC; change it later in Settings && Help."
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =3500
+                    LayoutCachedWidth =5300
+                    LayoutCachedHeight =3920
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =3550
+                            Width =2800
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblCommandUIC"
+                            Caption ="Command UIC (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =3550
+                            LayoutCachedWidth =3200
+                            LayoutCachedHeight =3900
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =3300
-                    Top =4200
+                    Top =5000
                     Width =4000
                     Height =550
                     FontSize =10
-                    TabIndex =3
+                    TabIndex =4
                     ForeColor =4205854
                     Name ="cmdSetup"
                     Caption ="Create workspace"
@@ -263,47 +309,8 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =3300
-                    LayoutCachedTop =4200
-                    LayoutCachedWidth =7300
-                    LayoutCachedHeight =4750
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =5000
-                    Width =9950
-                    Height =550
-                    FontSize =10
-                    TabIndex =4
-                    ForeColor =4205854
-                    Name ="cmdImportSwift"
-                    Caption ="Import data from a previous Swift NAVFIT version"
-                    OnClick ="=UXSetupImport()"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =400
                     LayoutCachedTop =5000
-                    LayoutCachedWidth =10350
+                    LayoutCachedWidth =7300
                     LayoutCachedHeight =5550
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -329,11 +336,50 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5775
+                    Top =5800
                     Width =9950
                     Height =550
                     FontSize =10
                     TabIndex =5
+                    ForeColor =4205854
+                    Name ="cmdImportSwift"
+                    Caption ="Import data from a previous Swift NAVFIT version"
+                    OnClick ="=UXSetupImport()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5800
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =6350
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =6575
+                    Width =9950
+                    Height =550
+                    FontSize =10
+                    TabIndex =6
                     ForeColor =4205854
                     Name ="cmdOpenDataFile"
                     Caption ="Open an existing data file"
@@ -341,9 +387,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5775
+                    LayoutCachedTop =6575
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =6325
+                    LayoutCachedHeight =7125
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -368,11 +414,11 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7450
-                    Top =3300
+                    Top =4100
                     Width =2900
                     Height =450
                     FontSize =10
-                    TabIndex =2
+                    TabIndex =3
                     ForeColor =4205854
                     Name ="cmdNewDataFile"
                     Caption ="Change folder..."
@@ -380,9 +426,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7450
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =4100
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =3750
+                    LayoutCachedHeight =4550
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -410,7 +456,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =6
+                    TabIndex =7
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"
@@ -447,19 +493,19 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6550
+                    Top =7350
                     Width =9950
                     Height =550
-                    TabIndex =7
+                    TabIndex =8
                     Name ="cmdCancelSetup"
                     Caption ="Exit without setting up"
                     OnClick ="=CancelContributorStartup()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6550
+                    LayoutCachedTop =7350
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =7100
+                    LayoutCachedHeight =7900
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -472,7 +518,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =7225
+                    Top =8025
                     Width =9950
                     Height =1100
                     FontWeight =600
@@ -481,9 +527,9 @@ Begin Form
                     Name ="uxWorkspaceWarning"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7225
+                    LayoutCachedTop =8025
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =8325
+                    LayoutCachedHeight =9125
                     ThemeFontIndex =-1
                 End
             End

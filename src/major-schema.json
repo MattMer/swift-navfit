@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 48,
+  "SchemaVersion": 49,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -62,7 +62,8 @@
     "RevisionRetention",
     "RestrictedException",
     "RestrictedDismissal",
-    "RestrictedCheckOff"
+    "RestrictedCheckOff",
+    "SessionPresence"
   ],
   "BaseSQL": [
     "CREATE TABLE AppMetadata (MetadataID LONG CONSTRAINT PK_AppMetadata PRIMARY KEY, AppVersion TEXT(40), SchemaVersion LONG, CompatibilityStatus TEXT(120))",
@@ -388,7 +389,9 @@
     "CREATE TABLE RestrictedException (ExceptionID COUNTER PRIMARY KEY, Phrase TEXT(120) NOT NULL, RuleID TEXT(40), Reason TEXT(255), AddedBy LONG NOT NULL, AddedAt DATETIME NOT NULL, RemovedBy LONG, RemovedAt DATETIME)",
     "CREATE TABLE RestrictedDismissal (DismissalID COUNTER PRIMARY KEY, ReportID LONG NOT NULL, RuleID TEXT(40) NOT NULL, FieldKey TEXT(64) NOT NULL, MatchText TEXT(255) NOT NULL, Reason TEXT(255), DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
     "CREATE INDEX IX_RestrictedDismissal_Report ON RestrictedDismissal (ReportID,RuleID)",
-    "CREATE TABLE RestrictedCheckOff (GroupID TEXT(60) CONSTRAINT PK_RestrictedCheckOff PRIMARY KEY)"
+    "CREATE TABLE RestrictedCheckOff (GroupID TEXT(60) CONSTRAINT PK_RestrictedCheckOff PRIMARY KEY)",
+    "CREATE TABLE SessionPresence (SessionGuid TEXT(38) CONSTRAINT PK_SessionPresence PRIMARY KEY, ProfileID LONG NOT NULL, ComputerName TEXT(64), StartedAt DATETIME, LastSeen DATETIME, ReportID LONG, EditingSince DATETIME)",
+    "ALTER TABLE Workspace ADD COLUMN CommandUIC TEXT(5)"
   ],
   "Queries": [
     {

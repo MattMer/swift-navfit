@@ -21,6 +21,9 @@ Private Function SchemaStepSQL(ByVal toVersion As Long) As Variant
         Case 48
             'Content checks that can be turned off.
             SchemaStepSQL = Array("CREATE TABLE RestrictedCheckOff (GroupID TEXT(60) CONSTRAINT PK_RestrictedCheckOff PRIMARY KEY)")
+        Case 49
+            'Who else has this data file open, and which report each is editing; the command's UIC.
+            SchemaStepSQL = Array("ALTER TABLE Workspace ADD COLUMN CommandUIC TEXT(5)", "CREATE TABLE SessionPresence (SessionGuid TEXT(38) CONSTRAINT PK_SessionPresence PRIMARY KEY, ProfileID LONG NOT NULL, ComputerName TEXT(64), StartedAt DATETIME, LastSeen DATETIME, ReportID LONG, EditingSince DATETIME)")
         Case Else
             Err.Raise vbObjectError + 9820, "modSchemaUpgrade.SchemaStepSQL", "No schema step leads to schema " & toVersion & "."
     End Select

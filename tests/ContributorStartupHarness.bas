@@ -104,11 +104,10 @@ Public Function TestContributorStartup() As String
  Check added <> first And added <> second, "New profile not selected"
  Check ActiveContributorCaption() = "O'Brien contributor", "New name not trimmed/preserved"
  Check DCount("*", "UserProfile") = 3, "New contributor count wrong"
- stage = "stale context"
+ stage = "another session's choice"
+ 'Another session choosing a different contributor leaves this session's own in place.
  CurrentDb.Execute "UPDATE Workspace SET ActiveProfileID=" & first & " WHERE WorkspaceID=1", dbFailOnError
- Check Not HasActiveContributor(), "Changed retained ID reused session"
- Check InStr(ContributorSessionProblem(), "Another Swift NAVFIT session on this workspace chose First contributor") = 1, "Changed contributor not explained: " & ContributorSessionProblem()
- RequiresSelection "Message", report
+ Check HasActiveContributor() And ActiveContributorID() = added, "Another session's choice replaced this session's contributor"
  Call SwitchContributor(added)
  TempVars.Remove "SwiftContributorPath"
  Check Not HasActiveContributor(), "Incomplete session accepted"
@@ -152,6 +151,19 @@ Public Function TestWorkspaceSafety() As String
  Check OtherWorkspaceSessions(computers) = 0 And computers = "", "Exclusive fixture reported another session: " & computers
  Check ConcurrentSessionWarning(0, "") = "", "No other session produced a warning"
  Check InStr(ConcurrentSessionWarning(1, "PC-2"), "already open in another session (PC-2)") > 0, "One other session not named"
+ 'Copies a sync service made beside the data file are named; Swift's own copies are not.
+ Dim syncFolder As String, own As String
+ syncFolder = Environ$("TEMP") & "\SwiftSync" & Format$(Now(), "hhnnss") & "\": MkDir syncFolder
+ own = syncFolder & "Swift NAVFIT data.accdb"
+ Open own For Output As #1: Close #1
+ Check SyncConflictWarning(own) = "", "A lone data file was flagged"
+ Open syncFolder & "Swift NAVFIT data before schema 49 20261113-120000.accdb" For Output As #1: Close #1
+ Open syncFolder & "Swift NAVFIT data 2.accdb" For Output As #1: Close #1
+ Check SyncConflictWarning(own) = "", "Swift's own copies were flagged"
+ Open syncFolder & "Swift NAVFIT data-PC-2.accdb" For Output As #1: Close #1
+ Open syncFolder & "Swift NAVFIT data (1).accdb" For Output As #1: Close #1
+ Check InStr(SyncConflictWarning(own), "Swift NAVFIT data-PC-2.accdb") > 0 And InStr(SyncConflictWarning(own), "Swift NAVFIT data (1).accdb") > 0, "Sync conflict copies not named: " & SyncConflictWarning(own)
+ Kill syncFolder & "*.accdb": RmDir syncFolder
  Check InStr(ConcurrentSessionWarning(2, "PC-2, this computer"), "2 other sessions") > 0, "Session count not reported"
  stage = "notice"
  text = WorkspaceSafetyNotice()

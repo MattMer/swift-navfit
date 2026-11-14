@@ -66,7 +66,11 @@ End Function
 
 Public Function SwiftFailureText(ByVal context As Object) As String
     Set lastFailure = context
-    SwiftFailureText = SwiftRedact(context("Description")) & vbCrLf & "Diagnostic: " & context("Identity") & "; source: " & SwiftRedact(context("Source")) & "; stage: " & SwiftRedact(context("Stage")) & "; transaction: " & context("Transaction")
+    'A lock held by another session gets a plain explanation ahead of the diagnostic.
+    If context.Exists("Number") Then
+        If SwiftLockConflict(CLng(Val(context("Number")))) Then SwiftFailureText = SwiftLockMessage() & vbCrLf
+    End If
+    SwiftFailureText = SwiftFailureText & SwiftRedact(context("Description")) & vbCrLf & "Diagnostic: " & context("Identity") & "; source: " & SwiftRedact(context("Source")) & "; stage: " & SwiftRedact(context("Stage")) & "; transaction: " & context("Transaction")
     If Len(context("Cleanup")) > 0 Then SwiftFailureText = SwiftFailureText & vbCrLf & "Cleanup: " & context("Cleanup")
 End Function
 

@@ -29,10 +29,10 @@ connection. Data enters and leaves only through files the user chooses.
 | Fact | Value |
 | --- | --- |
 | Application version | 0.56.0-dev |
-| Schema version | 48 |
-| Tables / enforced relationships | 83 / 169 |
+| Schema version | 49 |
+| Tables / enforced relationships | 84 / 169 |
 | Report fields in the catalogue | 101 |
-| VBA modules / forms | 123 / 75 |
+| VBA modules / forms | 124 / 76 |
 | Validation rule packs / pack rules / expanded rules | 2 / 6 / 10 |
 <!-- end generated:facts -->
 

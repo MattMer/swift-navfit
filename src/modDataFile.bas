@@ -92,3 +92,30 @@ End Function
 Public Function SwiftWorkspaceTable(ByVal tableName As String) As Boolean
     SwiftWorkspaceTable = Left$(tableName, 4) <> "MSys" And Left$(tableName, 1) <> "~" And Left$(tableName, 4) <> "USys"
 End Function
+
+' Errors Access raises when another session holds a lock on the same records or tables.
+Public Function SwiftLockConflict(ByVal number As Long) As Boolean
+    Select Case number
+        Case 3008, 3009, 3046, 3186, 3187, 3188, 3197, 3202, 3211, 3212, 3218, 3260, 3262, 3624
+            SwiftLockConflict = True
+    End Select
+End Function
+
+Public Function SwiftLockMessage() As String
+    SwiftLockMessage = "Someone else was saving to the same records at that moment, so this change was not saved. Nothing was lost: your entries are still here. Try again in a moment."
+End Function
+
+' A short wait that keeps the screen responsive.
+Public Sub SwiftPause(ByVal milliseconds As Long)
+    Dim started As Single
+    started = Timer
+    Do While (Timer - started) * 1000 < milliseconds And Timer >= started
+        DoEvents
+    Loop
+End Sub
+
+' Tables that only describe this moment (who has the file open). They are linked like
+' any other, but an import never copies them and a backup does not check them.
+Public Function SwiftTransientTable(ByVal tableName As String) As Boolean
+    SwiftTransientTable = (tableName = "SessionPresence")
+End Function

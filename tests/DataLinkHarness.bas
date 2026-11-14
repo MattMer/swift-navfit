@@ -172,11 +172,12 @@ Public Function TestSetupDefault(ByVal commandName As String, ByVal contributor 
     Check Forms!frmSetup!uxDataFileLocation.Caption Like "Your work will be kept in a new data file, " & expected & "*", "Setup line: " & Forms!frmSetup!uxDataFileLocation.Caption
     Check Forms!frmSetup!cmdNewDataFile.Enabled, "Change folder is not available before setup"
     'A missing name is refused before any data file is made (the message box is not opened here).
-    Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor
+    Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor: Forms!frmSetup!txtCommandUIC = "n1234"
     Check UXCreateWorkspace(), "Create workspace failed"
     Check SwiftDataIsLinked() And StrComp(SwiftDataPath(), expected, vbTextCompare) = 0, "Data file is " & SwiftDataPath()
     Check DCount("*", "Workspace") = 1 And Nz(DLookup("CommandName", "Workspace"), "") = commandName, "Workspace not set up in the data file"
     Check CurrentProject.AllForms("frmHome").IsLoaded, "Overview did not open"
+    Check Nz(DLookup("CommandUIC", "Workspace"), "") = "N1234" And CommandHeading() = commandName & " (N1234)", "Setup UIC not stored: " & CommandHeading()
     TestSetupDefault = "PASS: " & checks & " default data file setup assertions": Exit Function
 Failed:
     TestSetupDefault = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
@@ -200,4 +201,45 @@ Public Function TestDataFileWindow(ByVal newPath As String) As String
     TestDataFileWindow = "PASS: " & checks & " missing data file window and new data file assertions": Exit Function
 Failed:
     TestDataFileWindow = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+
+'Presence helpers for the two-session test (PresenceEditing and PresenceEnd are subs).
+Public Function PresenceEditingFor(ByVal reportID As Long) As Boolean
+    PresenceEditing reportID
+    PresenceEditingFor = True
+End Function
+
+Public Function PresenceEndFor() As Boolean
+    PresenceEnd
+    PresenceEndFor = True
+End Function
+
+Private Function UICRefused(ByVal value As String) As Boolean
+    On Error GoTo Failed
+    Call CommandUICText(value)
+    Exit Function
+Failed:
+    UICRefused = True
+End Function
+
+'Settings & Help > Command name and UIC, and a new report starting with the command's UIC.
+Public Function TestCommandDetails() As String
+    Dim journal As Long
+    On Error GoTo Failed
+    checks = 0
+    Check UICRefused("ABC-1") And UICRefused("123456") And Not UICRefused(" ab12 "), "UIC rules"
+    journal = DCount("*", "OperationJournal")
+    Check CommandDetailsSave("SYNTHETIC RENAMED COMMAND", "r5432"), "Saving command details failed"
+    Check CommandHeading() = "SYNTHETIC RENAMED COMMAND (R5432)", "Heading: " & CommandHeading()
+    Check DCount("*", "OperationJournal") = journal + 1, "The change is not in operation history"
+    DoCmd.OpenForm "frmEditor", , , , , , "0"
+    Check Nz(Forms!frmEditor!txtUnitUIC, "") = "R5432", "A new report did not start with the command UIC: " & Nz(Forms!frmEditor!txtUnitUIC, "")
+    DoCmd.Close acForm, "frmEditor", acSaveNo
+    Check CommandDetailsSave("SYNTHETIC RENAMED COMMAND", "") And IsNull(DLookup("CommandUIC", "Workspace")), "A blank UIC was not cleared"
+    DoCmd.OpenForm "frmUXCommandDetails"
+    Check Forms!frmUXCommandDetails!txtDetailsCommand = "SYNTHETIC RENAMED COMMAND", "The window does not show the command name"
+    Check UXCommandDetailsClose(), "The window did not close"
+    TestCommandDetails = "PASS: " & checks & " command name and UIC assertions": Exit Function
+Failed:
+    TestCommandDetails = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function

@@ -54,4 +54,5 @@ Schema history from `tests/historical-schemas/` and the current build. Each rele
 | 45 | captured | 0.54.0-dev | 80 | RevisionRetention |
 | 46 | captured | 0.55.0-dev | 80 | - |
 | 47 | captured | 0.55.0-dev | 82 | RestrictedDismissal, RestrictedException |
-| 48 | current build | 0.56.0-dev | 83 | RestrictedCheckOff |
+| 48 | captured | 0.56.0-dev | 83 | RestrictedCheckOff |
+| 49 | current build | 0.56.0-dev | 84 | SessionPresence |

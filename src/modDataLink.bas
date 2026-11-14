@@ -494,8 +494,10 @@ Public Function UXCreateWorkspace() As Boolean
     On Error GoTo Failed
     commandName = Trim$(Nz(Forms!frmSetup!txtCommand, "")): displayName = Trim$(Nz(Forms!frmSetup!txtProfile, ""))
     If Len(commandName) = 0 Or Len(displayName) = 0 Then Err.Raise vbObjectError + 103, "modDataLink.UXCreateWorkspace", "Enter a command name and contributor name."
+    'A wrong UIC is refused before any data file is made.
+    Call CommandUICText(Nz(Forms!frmSetup!txtCommandUIC, ""))
     EnsureSetupDataFile
-    ConfigureWorkspace commandName, displayName
+    ConfigureWorkspace commandName, displayName, Nz(Forms!frmSetup!txtCommandUIC, "")
     DoCmd.Close acForm, "frmSetup": DoCmd.OpenForm "frmHome"
     UXCreateWorkspace = True
     Exit Function

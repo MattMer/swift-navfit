@@ -160,12 +160,12 @@ $cdx=[ordered]@{bomFormat='CycloneDX';specVersion='1.5';version=1
 $out['../sbom.cdx.json']=($cdx|ConvertTo-Json -Depth 10)
 $migration=ReadText 'src/modMigration.bas'
 $sourceRange=[regex]::Match($migration,'If ver < (\d+) Or ver > (\d+) Then');$sourceMin=$sourceRange.Groups[1].Value;$sourceMax=$sourceRange.Groups[2].Value
-$targetRange=[regex]::Match($migration,'targetVersion < (\d+) Or targetVersion > (\d+) Then')
+$targetRange=[regex]::Match($migration,'targetVersion < (\d+) Or targetVersion > (\d+|SCHEMA_VERSION) Then')
 if(-not $sourceMax -or -not $targetRange.Success){throw 'Importer schema range not found in src/modMigration.bas'}
 $readmeFacts=@('| Fact | Value |','| --- | --- |',
  ('| Application version | '+$meta.App+' (`APP_VERSION` in `src/modSwift.bas`) |'),
  ('| Schema version | '+$meta.Schema+' |'),
- ('| Imports accepted | Workspaces of schema '+$sourceMin+' to '+$sourceMax+', into a target of schema '+$targetRange.Groups[1].Value+' to '+$targetRange.Groups[2].Value+' |'),
+ ('| Imports accepted | Workspaces of schema '+$sourceMin+' to '+$sourceMax+', into a target of schema '+$targetRange.Groups[1].Value+' to '+$(if($targetRange.Groups[2].Value -eq 'SCHEMA_VERSION'){$meta.Schema}else{$targetRange.Groups[2].Value})+' |'),
  ('| Tables / enforced relationships | '+$tables.Count+' / '+$relations.Count+' |'),
  ('| VBA modules / forms | '+$modules+' / '+$forms+' |'),
  ('| Report fields in the catalogue | '+@($catalogue.fields).Count+' |'),
