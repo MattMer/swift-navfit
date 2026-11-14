@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.56.0-dev | 49 | Imports schema 35 onward (owner decision, 10 Nov 2026); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.55.0 | 48 | Blank and Demo on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.55.0), 9 Nov 2026. Full release gate passed, including schemas 1–48 and retained populated releases. The last release that imports schemas 1–34. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation; unsigned. |
-| Latest source tag | `v0.55.0` | 48 | The release commit. Earlier: `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Development source | 0.56.0 | 49 | Imports schema 35 onward (owner decision, 10 Nov 2026); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.56.0 | 49 | The application and the Demo pair on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.56.0), 13 Nov 2026. Full release gate passed (release schemas 35–48 plus 49, ExtendedTest with one test that passed on retry). First release with the separate data file. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation, two people on a real network share; unsigned. Previous: 0.55.0 (schema 48), the last release that imports schemas 1–34. |
+| Latest source tag | `v0.56.0` | 49 | The release commit. Earlier: `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
 
 ## Purpose and boundaries
 
@@ -147,6 +147,16 @@ import and print-ready PDF output.
     Settings & Help import into a new blank workspace.
 
 ## Feature status
+
+Release 0.56.0 (13 November 2026, schema 49) splits the application from the
+workspace data: setup makes a data file beside the application, a newer
+version upgrades that data file in place (after a checked copy), a missing data
+file opens a window to find it or make a new one, and an earlier single-file
+workspace comes into a new data file. Two people can work on different reports
+in one data file from a network folder, with lock-safe saves and a list of who
+else is working. Setup asks for the command UIC; Settings & Help changes the
+command name and UIC. The summary letter fills an even number of pages, and
+Resources is grouped. Releases ship as the application plus a Demo pair.
 
 Release 0.55.0 (9 November 2026, schema 48) adds EVAL block 44
 (Qualifications/Achievements) on the Back Page with NAVFIT98A and PDF import,

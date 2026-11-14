@@ -10,7 +10,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 46-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 49-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 
@@ -99,12 +99,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.55.0
+### Current release: 0.56.0
 
-Download from the [0.55.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.55.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.56.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.56.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_Blank_0.55.0.accdb:** an empty workspace. Start real work here.
-- **Swift_NAVFIT_Demo_0.55.0.accdb:** made-up members, reports, and groups for practice. Never put real data in it.
+- **Swift_NAVFIT_0.56.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
+- **Swift_NAVFIT_Demo_0.56.0.accdb** with **Swift_NAVFIT_Demo_data_0.56.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
 
 > **Not yet tested:**
 > 1. printed fit against the official forms;
@@ -116,17 +116,16 @@ Download from the [0.55.0 release page](https://github.com/MattMer/swift-navfit/
 
 ### First steps
 
-1. Download the Blank (or the Demo to practise). Keep the original and open a copy in desktop Access. Choose **Enable Content**.
+1. Download the application (or the Demo pair to practise). Keep the original and open a copy in desktop Access. Choose **Enable Content**.
 2. Set up your command and your contributor name. Swift asks you to [choose your contributor every time it opens](docs/Contributor_Startup.md).
 3. Create a summary group, add members and reports, and use **My Work** for review. The **?** at the top right of each window opens help for it.
 
 ### Upgrading from an earlier version
 
-1. Open a copy of the new Blank.
-2. Choose **Settings & Help → Import data from a previous Swift NAVFIT version** and pick your current workspace. Every value is checked before anything is saved, and your old file is not changed.
-3. Close and reopen the new workspace.
+- **From 0.56.0 or later:** open the new application and, if it does not find your data file, choose **Open an existing data file**. A newer version upgrades the data file automatically after copying it beside itself.
+- **From a single-file workspace (0.49.0 to 0.55.0):** open the new application, choose **Open an existing data file** on the setup screen and pick your workspace. Swift brings it into a new data file beside it; every value is checked, and your old file is not changed.
 
-Never copy a Blank over an existing workspace.
+Never copy a new application over an existing workspace.
 
 ### Test builds
 
@@ -136,7 +135,7 @@ Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-n
 
 - Swift NAVFIT is an independent project, not an official Navy system. It does not replace governing instructions or human review.
 - **Local approval and Mark signed are not official submission, signature, or Navy approval.**
-- Use one workspace file per command, with one person working in it at a time. Separate copies do not sync with each other.
+- Use one data file per command. Two people can work at once on different reports from a shared network folder, but this is not fully supported; a OneDrive or other synced folder does not work for two people. Separate copies do not sync with each other.
 - Validation covers the checks Swift implements, not every policy. Always run NAVFIT98A validation after export.
 - Recovery checkpoints, saved versions, backups, and upgrades do different jobs. An upgrade copies an old workspace into a new one; it does not merge two populated workspaces.
 

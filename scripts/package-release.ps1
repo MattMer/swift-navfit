@@ -58,7 +58,8 @@ try{
     }finally{$access.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($access)}
 }finally{
     if(Test-Path -LiteralPath $aside){Move-Item -LiteralPath $aside -Destination $data}
-    Remove-Item -LiteralPath $check -Recurse -Force
+    #Access can hold the moved copy for a moment after it quits.
+    for($try=1;$try -le 10;$try++){try{Remove-Item -LiteralPath $check -Recurse -Force -ErrorAction Stop;break}catch{if($try -eq 10){throw};Start-Sleep -Milliseconds 500}}
 }
 [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($engine)
 if((Get-FileHash -LiteralPath $BlankPath).Hash -ne $blankHash -or (Get-FileHash -LiteralPath $DemoPath).Hash -ne $demoHash){throw 'Packaging changed the Blank or the Demo'}

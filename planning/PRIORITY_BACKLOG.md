@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 10 November 2026 (0.55.0 released; 0.56.0-dev, schema 48). Manual check
+Updated 13 November 2026 (0.56.0, schema 49). Manual check
 results from 10 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
