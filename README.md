@@ -127,10 +127,6 @@ Download from the [0.56.0 release page](https://github.com/MattMer/swift-navfit/
 
 Never copy a new application over an existing workspace.
 
-### Test builds
-
-Releases tagged `-dev` on the [releases page](https://github.com/MattMer/swift-navfit/releases) are test builds of work in progress, not verified releases.
-
 ## Important limits
 
 - Swift NAVFIT is an independent project, not an official Navy system. It does not replace governing instructions or human review.

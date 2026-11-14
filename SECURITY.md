@@ -31,7 +31,7 @@ notes will credit you unless you ask otherwise.
 
 Only the latest release on the
 [releases page](https://github.com/MattMer/swift-navfit/releases/latest) gets
-security fixes. Releases tagged `-dev` are test builds.
+security fixes.
 
 ## Scope
 
