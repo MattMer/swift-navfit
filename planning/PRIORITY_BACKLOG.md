@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 13 November 2026 (0.56.0, schema 49). Manual check
+Updated 14 November 2026 (0.56.0 released; 0.57.0-dev, schema 49). Manual check
 results from 10 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
@@ -37,11 +37,9 @@ Shipped in 0.52.0.
 - **Officer rank from MNA.** MNA lists the designator but not the rank, so a
   new officer profile without a linked report starts without one. The current
   source already fills a missing rank from the latest linked report.
-- **Real PRD format (checked 10 Nov, DATA-01).** A real NRRM export shows PRD as
-  a date cell displayed dd-Mon-yy (for example 31-Dec-30); as a plain number the
-  same cell is the spreadsheet date serial (47848). `RosterPRDDate`
-  (`modRoster`) reads neither: add dd-Mon-yy and dd-Mon-yyyy, the date serial,
-  and a value that already arrives as a date.
+- **Real PRD format (DATA-01).** 0.56.0 reads dd-Mon-yy, dd-Mon-yyyy, the
+  spreadsheet date serial and a value that already arrives as a date.
+  Confirm with a real NRRM export.
 
 ### F03 — Reports due on the dashboard
 
@@ -70,22 +68,27 @@ R14's remaining input-data limitation is recorded under F02.
 
 | ID | Work |
 | --- | --- |
-| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper (10 Nov): EVAL, FITREP, the summary letter and group packet, and the 6.5-point trait-34 grade-4/5 wording (accepted). PDF output works on a Navy-managed workstation after unblocking the file and enabling content (PRT-08). Remaining: (1) **CHIEFEVAL fixes (PRT-03 failed):** block 51 lines print too far apart, and the block 20 physical readiness result does not print next to its MM/YY date. (2) PDF creation on a workstation without Acrobat (PRT-07). (3) Recheck on the Navy workstation with a physical default printer: 0.55.0 split pages there; 0.56.0-dev (1af7fd6) lays out on Microsoft Print to PDF. |
+| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper (10 Nov): EVAL, FITREP, the summary letter and group packet, and the 6.5-point trait-34 grade-4/5 wording (accepted). PDF output works on a Navy-managed workstation after unblocking the file and enabling content (PRT-08). Remaining: (1) **CHIEFEVAL print (PRT-03):** fixed in 0.56.0 (block 51 lines evenly spaced; block 20 prints the physical readiness result beside its MM/YY date); confirm on paper. (2) PDF creation on a workstation without Acrobat (PRT-07). (3) Recheck on the Navy workstation with a physical default printer: 0.55.0 split pages there; 0.56.0 lays out on Microsoft Print to PDF. |
 | H03 | **Attended NAVFIT98A print check for the narrative line meter (attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Print one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
 | M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output, and a colour contrast spot check. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
 | M01 | **Signed production distribution.** An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify a launch under normal security policy. Then produce and verify a signed `.accde`, and rehearse the signing steps (threat model section 5). Blank and Demo `.accdb` files keep being published. Access Runtime support stays out of scope. |
 
 ## Screen changes from the 10 Nov review
 
-Pop-up style, list columns, the Reports filters, high contrast and scaling all
-passed. These changes came out of it:
+Fixed in 0.56.0; confirm on screen:
+
+- **U01:** the Reports list shows about 10 rows (UI-03).
+- **U02:** Overview's Reports due and the command member directory show names as
+  LAST, FIRST (UI-05).
+- **U03:** Contributors opens from Resources, not My Work (UI-06).
+- **U04:** each narrative box shows every printable line; EVAL comments with 18
+  lines show without scrolling (PRT-06). The Back Page comments and block 44
+  boxes no longer overlap the controls below them.
+
+Open:
 
 | ID | Work |
 | --- | --- |
-| U01 | **Taller Reports list.** Reports shows about 6 rows; make it show 10 (UI-03). |
-| U02 | **One name format: LAST, FIRST.** Overview's Reports due shows "Reese Parker" while Recent reports shows "PARKER, REESE". Use "PARKER, REESE" in both, and in the command member directory table (UI-05). |
-| U03 | **Contributors moves to Resources.** Remove the Contributors tab from My Work and open it from Resources instead (UI-06). |
-| U04 | **Comments box shows every printed line.** Block 43 (EVAL comments) printed inside its box with 18 lines near the limit, but the editor showed 17 before scrolling (PRT-06, which named block 44 by mistake). Fixed in development: each narrative box is now sized from the PDF line count and the screen line height. |
 | U05 | **Library's second dark-blue button (decision pending, UI-04).** Decide whether Import reports stays a main action. |
 
 ## Performance and storage
@@ -99,110 +102,46 @@ passed. These changes came out of it:
 
 | ID | Work |
 | --- | --- |
-| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. |
-| T06 | **Remove pre-35 import code with the next schema change.** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
+| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. The 0.56.0 release check (14 Nov) passed with one FLAKY (`test-wizard-state`: "Cannot identify owned Access process"), so the count starts again. |
+| T06 | **Remove pre-35 import code (due: schema 49 shipped without it).** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
 
 ## S01 — Front end and data file
 
-**Status (13 Nov 2026):** steps 1 to 5 are in development, and the data
-file is the default for new workspaces. On a linked copy the backup is a copy of the data file, checked row by
-row and field by field, and it restores through the import.
-The import from a previous version works on a linked copy unchanged, and
-lands in the data file. A data file has no session list to read (Access
-opens it only while it reads or writes), so each session holds it open from
-startup and a session that starts second is warned; a VBA reset releases the
-hold until the next start, and the warning no longer names the computer.
-The user guide (sections 2.1 to 2.3, 17.1, 17.2, 18.1) and the Start here
-and Recovery help topics describe it. **Not ready to release:** the pickers
-and message boxes have only been exercised through their functions; the
-attended checks below are outstanding, and the release items under step 6
-are open. A copy that is already linked cannot start a second data file (the
-data file is written from the blank copy's own tables); a new download can.
+**Released in 0.56.0 (schema 49).** The application and the workspace data
+are separate files. Setup makes `Swift NAVFIT data.accdb` beside the
+application (Change folder picks another place); a data file of that name
+beside the application is used without asking. A newer version upgrades an
+older data file in place after a checked copy, and puts it back from the copy
+if a step fails. A missing or unusable data file opens a window with Find the
+data file, Create a new data file and Close Swift NAVFIT. Open an existing data
+file brings a complete single-file workspace from 0.49.0 to 0.55.0 into a new
+data file beside it. Backup copies the data file and checks it row by row.
+Releases ship as `Swift_NAVFIT_<version>.accdb` plus the Demo pair
+(`scripts/package-release.ps1`). Two people can work on different reports in
+one data file from a network share (not fully supported): per-application
+contributor, save lock retry, presence on the Overview and in the editor
+(`SessionPresence`), and sync conflict copies named at startup.
 
-Today code and data share one `.accdb`, so
-every release needs a new Blank and a full import. Split
-them into a front end (code and forms) and a data file (tables only).
+**Attended checks (on a fresh 0.56.0 copy in an ordinary folder):**
+1. First setup asks for the UIC and makes the data file beside the
+   application; a report saves.
+2. Rename or move the data file and reopen: the window names the missing file;
+   Find the data file, Create a new data file and Close each work.
+3. Open an existing data file on a copy of a 0.55.0 workspace: the workspace
+   comes in and the 0.55.0 file is unchanged.
+4. Settings & Help backup on the data file.
+5. The Demo pair opens when both files are saved in the same folder.
+6. Two computers on one data file in a network share: the Overview names the
+   other person, the editor notice when both open one report, and a refused
+   save keeps the entries.
+7. A data file in OneDrive with a forced conflict copy: startup names the copy.
+8. The upgrade message, at the next schema change (or on a copy whose
+   `AppMetadata.SchemaVersion` is set back to 48).
 
-**Decisions:**
-- It must be seamless for the user. When the front end has no data file, or
-  the link is broken, it shows a simple file picker.
-- A new front end pointed at an existing data file upgrades the schema
-  automatically, in place, after writing and verifying a backup copy. This
-  will replace the "import into a new Blank" upgrade path and needs the
-  matching change to the historical-import and protected-state invariants in
-  [CONTRIBUTING.md](../CONTRIBUTING.md) when step 4 ships; until then they stand.
-- M11 stays on the roadmap. The data seam in step 1 is the boundary a
-  SharePoint mode would later sit behind.
-
-**Spike (13 Nov 2026):** a scratch front end with all 83 tables linked to a
-separate data file started, ran first-run setup, saved and restored drafts, and
-passed the route chain, contributors, reports due, roster, counseling and
-directory cases with no code change. The only product blockers found were two
-table-level `Seek` readers on `RevisionValue`. Not yet explored on a split
-pair: import, backup (it rejects linked tables), the session roster check, and
-performance. About 49 test files inject faults by changing table rules through
-the front end and will need to target the data file.
-
-**Steps:**
-1. **Data seam, no visible change.** `modDataFile` gives the data file's path
-   and a database object that owns the tables; the `Seek` readers, backup
-   source, file-size warning, startup safety warnings, contributor session and
-   "not this file" checks use it. With local tables it resolves to this file.
-2. **One download.** The front end creates its data file on first run from the
-   schema definition.
-3. **Link manager at startup.** Missing or broken link: a file picker with
-   Open existing and Create new; relink and remember the choice.
-4. **Automatic schema upgrade.** Built in development (`modSchemaUpgrade`).
-   Same version: open. Older data file (schema 47 onward): copy it beside
-   itself and check the copy, apply each version's step and stamp it, and put
-   the file back from the copy if a step fails (Access cannot roll back
-   table changes, so the copy is the transaction). Newer data file, one older
-   than the steps, or one open in another session: refused, unchanged. A
-   complete workspace from an earlier version is refused as a data file and
-   pointed at the import. Every schema change adds its step; `test-data-link`
-   proves the previous captured schema plus the step equals a fresh build.
-   The only step today (47 to 48) exists to prove that; data files only
-   exist from schema 48. Steps are plain SQL: a change to a table validation
-   rule set by `build.ps1` will need step support when it first happens.
-5. **Existing single-file workspaces.** Built in development: Open an existing
-   data file, given a complete workspace from 0.49.0 to 0.55.0 (schema 35
-   onward), offers to bring it in. Swift NAVFIT makes `<name> data.accdb`
-   beside it, links to it and runs the verified import; the earlier file is
-   only read. If the import fails, the copy keeps the new empty data file and
-   says so; the import can be retried from Settings & Help.
-6. **Docs, attended checks and release files.** Backup, restore, guide and
-   help are done. Remaining:
-   - **Attended checks (owner, on a dev Blank copy in an ordinary folder):**
-     (a) setup screen, Keep this workspace in a new data file: folder picker,
-     file appears, setup reopens, a report saves; (b) close, rename the data
-     file, reopen: the message names the missing file, OK opens the picker,
-     choosing the renamed file starts normally, Cancel closes; (c) a second
-     new copy, Open an existing data file on that data file: contributor
-     choice; with both open, the second is warned; (d) a third new copy,
-     Open an existing data file on a 0.55.0 workspace copy: the
-     confirmation names the new file, the workspace comes in, the 0.55.0
-     file is unchanged; (e) Settings & Help backup on a linked copy; (f) the
-     upgrade message box (needs a build with a schema change, or a data
-     file whose AppMetadata.SchemaVersion is set to 47 on a copy).
-   - **Done in development:** the data file
-     is the default (Create workspace makes `Swift NAVFIT data.accdb` beside
-     the application; Change folder picks another); releases are named
-     `Swift_NAVFIT_<version>.accdb`; the Demo ships as a pair with
-     `Swift_NAVFIT_Demo_data_<version>.accdb` (`scripts/package-release.ps1`,
-     CONTRIBUTING release step 3).
-   - A missing or unusable data file at startup opens a window with Find the
-     data file, Create a new data file and Close Swift NAVFIT;
-     a data file of the same name beside the application is used without
-     asking. A linked copy keeps its blank tables (hidden, `USysBlank` prefix)
-     so it can always make a new data file.
-   - Release notes and README download text at the next release.
-   - **Two people on one data file, done in
-     development, not supported:** per-application contributor, save lock
-     retry with a plain message, presence (`SessionPresence`, schema 49) on the
-     Overview and in the editor, sync conflict copies named at startup. A
-     synced (OneDrive/SharePoint) folder cannot be shared by two computers;
-     the guide says to use a network share. A session closed without Exit
-     stays listed for up to 10 minutes.
+**Known limits:** a copy that is already linked cannot start a second data file
+(a new download can). A session closed without Exit stays listed for up to 10
+minutes. A change to a table validation rule set by `build.ps1` will need
+upgrade-step support when it first happens.
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 
