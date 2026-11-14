@@ -10,9 +10,9 @@ Private Type SwiftGuid
 End Type
 Private Declare PtrSafe Function CoCreateGuid Lib "ole32" (ByRef value As SwiftGuid) As Long
 Private Declare PtrSafe Function StringFromGUID2 Lib "ole32" (ByRef value As SwiftGuid, ByVal buffer As LongPtr, ByVal capacity As Long) As Long
-Public Const APP_VERSION As String = "0.56.0"
+Public Const APP_VERSION As String = "0.57.0-dev"
 'Release date (yyyy-mm-dd), set when a release is built; empty in development builds.
-Public Const APP_RELEASE_DATE As String = "2026-11-13"
+Public Const APP_RELEASE_DATE As String = ""
 'Where newer releases are published. Shown as text only: Swift never connects to it.
 Public Const APP_UPDATES_URL As String = "https://github.com/MattMer/swift-navfit/releases/latest"
 Public Const SCHEMA_VERSION As Long = 49

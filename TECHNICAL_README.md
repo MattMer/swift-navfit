@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.56.0 (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.57.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 49 |
 | Imports accepted | Workspaces of schema 35 to 49, into a target of schema 21 to 49 |
 | Tables / enforced relationships | 84 / 169 |
