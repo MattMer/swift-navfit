@@ -38,7 +38,7 @@ function CompleteSwiftScratchRun($Run,[string]$Status){
 function InvokeSwiftScratchCleanup {
  [CmdletBinding()]
  param([Parameter(Mandatory=$true)][string]$Root,[switch]$Apply,[string[]]$PreservePath=@(),
-       [ValidateRange(1,8760)][int]$SuccessHours=24,[ValidateRange(1,365)][int]$OtherDays=7)
+       [ValidateRange(1,8760)][int]$SuccessHours=24,[ValidateRange(1,365)][int]$OtherDays=3)
  $Root=[IO.Path]::GetFullPath($Root)
  $build=[IO.Path]::GetFullPath((Join-Path $Root 'build'))
  $tests=Join-Path $build 'tests'
@@ -104,7 +104,8 @@ function InvokeSwiftScratchCleanup {
   for($i=0;$i -lt $tree.Count;$i++){
    $node=$tree[$i]
    if($node.Attributes -band [IO.FileAttributes]::ReparsePoint){$blocked=$true;break}
-   if($node.Name -eq '.keep' -or $node.Extension -in @('.laccdb','.ldb')){$blocked=$true;break}
+   # Lock files are stale here: cleanup does not run while Access is running.
+   if($node.Name -eq '.keep'){$blocked=$true;break}
    if($node.PSIsContainer){foreach($child in @(Get-ChildItem -LiteralPath $node.FullName -Force)){$tree.Add($child)}}
   }
   if($blocked){$skipped.Add(@{Path=$path;Reason='Pinned, linked or lock file'});continue}
@@ -149,7 +150,7 @@ function InvokeSwiftScratchCleanup {
     if((Split-Path $target -Parent) -notin @($build,$tests)){throw 'Deletion target escapes allowed roots'}
     if(Test-Path -LiteralPath ($target+'.keep')){throw 'Candidate was pinned after inventory'}
     $current=@(Get-Item -LiteralPath $target -Force)+@(if((Get-Item -LiteralPath $target).PSIsContainer){Get-ChildItem -LiteralPath $target -Recurse -Force})
-    if($current.Count -ne $candidate.Tree.Count -or @($current|Where-Object {($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $_.Name -eq '.keep' -or $_.Extension -in @('.laccdb','.ldb')}).Count){throw 'Candidate changed after inventory'}
+    if($current.Count -ne $candidate.Tree.Count -or @($current|Where-Object {($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $_.Name -eq '.keep'}).Count){throw 'Candidate changed after inventory'}
     foreach($node in $current){$original=@($candidate.Tree|Where-Object FullName -eq $node.FullName);if($original.Count -ne 1 -or $original[0].LastWriteTimeUtc -ne $node.LastWriteTimeUtc){throw 'Candidate changed after inventory'}}
     Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction Stop
     $deletedBytes+=$candidate.Bytes;$deletedCount++

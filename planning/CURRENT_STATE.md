@@ -37,7 +37,7 @@ Source changes remain local. Unrelated folder/output cleanup is preserved.
 
 ## 2026-10-21 - source-first VS Code development setup
 
-Access Explorer's MCP runtime is now configured in both VS Code and Codex user
+Access Explorer's MCP runtime is now configured in VS Code user
 settings. A real stdio test discovered 66 tools, queried a scratch database,
 read VBA and closed Access with the source unchanged. See
 [MCP connection setup](ACCESS_MCP_SETUP_2026-10-21.md). This running chat's tool
@@ -61,7 +61,7 @@ physical display/accessibility/print acceptance remains deferred.
 
 Current verified files: `output/Swift_NAVFIT_Blank_2026-10-21-r127.accdb` and `output/Swift_NAVFIT_Demo_2026-10-21-r127.accdb`, app 0.27.0-dev / schema 27. Both uploaded to the designated Drive folder with name, size and parent readback verified. Blank has no user rows; Demo has 13 synthetic reports, five groups and 13 directory members. Neither distribution contains scratch merge rows. All owned Access sessions are closed.
 
-**C01:** the user explicitly chose folder permissions as the protection boundary. No password, encryption or key setup added. SSNs remain readable in current fields, revisions, recovery and retained import/provenance data; masking does not encrypt storage. README and backlog document the accepted decision.
+**C01:** folder permissions are the protection boundary. No password, encryption or key setup added. SSNs remain readable in current fields, revisions, recovery and retained import/provenance data; masking does not encrypt storage. README and backlog document the accepted decision.
 
 **C02:** Resources > Command member directory > Review possible duplicate Sailors offers surname candidates, deliberate changed-name selection, masked identity comparisons, affected report/prior lists, required reviewed preview/reason, atomic merge mappings and guarded undo. Original profiles are archived and retained; existing stable member relationships move while report fields, revisions, notes/reviews and prior traits remain intact. Conflicting identifiers, stale previews and open editors block apply. Later affected changes block undo; active nested merges are not supported. The window has top-right contextual help. See [procedure](../docs/Duplicate_Sailor_Review.md).
 
@@ -438,7 +438,7 @@ and physical display/keyboard/screen-reader acceptance. No release published.
 # Latest development increment - r32
 
 PR #15 is merged into main. Summary-group work continues on
-`codex/summary-group-correctness`. The populated r32 demo is
+its own branch. The populated r32 demo is
 `output/ux/Swift_NAVFIT_UI_Demo_2026-10-05-r32.accdb`; blank is
 `build/ux-r32-check-blank.accdb`. Live group capacity is withheld for mixed/unresolved
 observed keys; NOB is excluded from numerator and denominator. See

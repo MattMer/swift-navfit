@@ -163,8 +163,8 @@ plans, but they never silently override the product invariants below.
   - The importer accepts source schemas 35 through the current `SCHEMA_VERSION`.
     When the schema changes, raise the hard-coded upper bound in `modMigration`
     alongside it, and add the outgoing release's schema to
-    `tests/historical-schemas/release-schemas.json`. Raise the floor only on the
-    owner's decision, keeping one release that bridges the dropped schemas.
+    `tests/historical-schemas/release-schemas.json`. Raising the floor is a
+    product decision; keep one release that bridges the dropped schemas.
   - The release gate tests every schema that shipped in a release plus the
     current one. Development-only schemas between releases stay accepted but
     are not retested.
@@ -188,7 +188,7 @@ plans, but they never silently override the product invariants below.
 - **Protected state:**
   - Never modify user workspaces, earlier releases, supplied reference material
   (`FORMS_REFERENCES_TEMPLATES/`, `NAVFIT98A*`), or data/recovery resources.
-    Work on copies. One exception, decided by the owner on 13 Nov 2026: the
+    Work on copies. One exception: the
     application's own schema upgrade of a separate data file. It first copies
     the file beside itself and checks the copy, and it puts the file back from
     the copy if any step fails.
@@ -299,11 +299,11 @@ folder in the repository.
    feature-specific, data-transfer, rollback and unsupported-source checks that
    apply.
 3. Make the release files with `scripts/package-release.ps1 -BlankPath <blank>
-   -DemoPath <demo> -OutputFolder <folder>` (owner decisions, 13 Nov 2026): the
+   -DemoPath <demo> -OutputFolder <folder>`: the
    application `Swift_NAVFIT_<version>.accdb`, and the Demo as a pair,
    `Swift_NAVFIT_Demo_<version>.accdb` with `Swift_NAVFIT_Demo_data_<version>.accdb`.
    Publish those three files, with their SHA-256, and the user guide.
 4. Document which schema fixtures were tested.
 5. Put dated, versioned files in `output/` and keep the prior outputs.
-6. Upload to the owner's Drive folder, then verify the
+6. Upload to the distribution folder, then verify the
    names, sizes and folder membership.

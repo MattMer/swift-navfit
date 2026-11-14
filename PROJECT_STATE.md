@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.57.0-dev | 49 | Imports schema 35 onward (owner decision, 10 Nov 2026); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.57.0-dev | 49 | Imports schema 35 onward; Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.56.0 | 49 | The application and the Demo pair on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.56.0), 13 Nov 2026. Full release gate passed (release schemas 35–48 plus 49, ExtendedTest with one test that passed on retry). First release with the separate data file. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation, two people on a real network share; unsigned. Previous: 0.55.0 (schema 48), the last release that imports schemas 1–34. |
-| Latest source tag | `v0.56.0` | 49 | The release commit. Earlier: `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) remains on the owner's Drive folder. |
+| Latest source tag | `v0.56.0` | 49 | The release commit. Earlier: `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) is kept outside the repository. |
 
 ## Purpose and boundaries
 
@@ -27,7 +27,7 @@ import and print-ready PDF output.
 - One authoritative workspace file, one contributor at a time. Contributor
   profiles are attribution, not authentication (C03: every launch requires an
   explicit contributor choice).
-- **C01 decision (21 Oct):** protection relies on Windows file/folder
+- **C01:** protection relies on Windows file/folder
   permissions. No database password or encryption. SSNs remain readable in
   storage, revisions, recovery and import provenance; masking is display-only.
 - Desktop Access only. Free Access Runtime is out of scope. Tested host:
@@ -126,8 +126,8 @@ import and print-ready PDF output.
     navigation pane, reduced menus (`AllowFullMenus`, `AllowSpecialKeys`,
     `AllowBuiltInToolbars`, `AllowBreakIntoCode` off), and startup hides the
     ribbon. Right-click menus stay on for Cut/Copy/Paste. This is presentation,
-    not protection: holding Shift while opening (`AllowBypassKey` on, by
-    decision) gives full Access for development and field investigation.
+    not protection: holding Shift while opening (`AllowBypassKey` on, for
+    support) gives full Access for development and field investigation.
   - Generated control expressions (`=Fn()`), macros and `Eval` calls are runtime
     callers too, so text search alone cannot prove code unused.
 - **Navigation:**
@@ -208,7 +208,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 35–49** (owner decision, 10 Nov 2026).
+- **The importer accepts source schemas 35–49.**
   Schema 35 is release 0.49.0, the first public release. Older workspaces are
   refused with advice to import them into a 0.55.0 Blank first; 0.55.0 still
   imports schemas 1–48. [modMigration.bas](src/modMigration.bas) hard-codes

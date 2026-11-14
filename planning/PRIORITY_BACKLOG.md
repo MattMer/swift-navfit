@@ -18,7 +18,7 @@ is imported. **Still open:** NAVFIT98A's own block 44 print box and limit are
 not measured (no line meter, only Swift's PDF fit finding); confirm the printed
 fit of `BB` on paper.
 
-## Planned features (user decisions, 1 Nov 2026)
+## Planned features
 
 ### F01 — Hierarchical review chain on one shared draft
 
@@ -47,7 +47,7 @@ Shipped in 0.52.0.
 
 **Implemented in development** (0.52.0-dev, schema 39, 2 Nov 2026); see
 [PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f03-reports-due).
-Shipped in 0.52.0. The lead window stays fixed at 90 days by owner decision.
+Shipped in 0.52.0. The lead window stays fixed at 90 days.
 Remaining: Create draft makes one report at a time rather than sending several
 to directory batch creation.
 
@@ -62,7 +62,7 @@ R14's remaining input-data limitation is recorded under F02.
 - **P04, accomplishment notebook:** waits for demand.
 - **P05, "Why this value?":** low value for its cost.
 - **P07, restoring selected fields from history:** low value for its cost.
-- **CFL PRT import:** the user decided against it, 1 Nov 2026.
+- **CFL PRT import:** not planned.
 - **The rest of the review's input-package tracker [G04]:** depends on the CFL import, so it is not planned.
 - **Regular versus Concurrent on prior evaluations [G05]:** a known limitation, not planned.
 
@@ -71,14 +71,14 @@ R14's remaining input-data limitation is recorded under F02.
 | ID | Work |
 | --- | --- |
 | H01 | **Official-template PDF output: acceptance remaining.** Passed on paper (10 Nov): EVAL, FITREP, the summary letter and group packet, and the 6.5-point trait-34 grade-4/5 wording (accepted). PDF output works on a Navy-managed workstation after unblocking the file and enabling content (PRT-08). Remaining: (1) **CHIEFEVAL fixes (PRT-03 failed):** block 51 lines print too far apart, and the block 20 physical readiness result does not print next to its MM/YY date. (2) PDF creation on a workstation without Acrobat (PRT-07). (3) Recheck on the Navy workstation with a physical default printer: 0.55.0 split pages there; 0.56.0-dev (1af7fd6) lays out on Microsoft Print to PDF. |
-| H03 | **Attended NAVFIT98A print check for the narrative line meter (Matt, attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Matt prints one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
+| H03 | **Attended NAVFIT98A print check for the narrative line meter (attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Print one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
 | M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output, and a colour contrast spot check. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
 | M01 | **Signed production distribution.** An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify a launch under normal security policy. Then produce and verify a signed `.accde`, and rehearse the signing steps (threat model section 5). Blank and Demo `.accdb` files keep being published. Access Runtime support stays out of scope. |
 
 ## Screen changes from the 10 Nov review
 
 Pop-up style, list columns, the Reports filters, high contrast and scaling all
-passed. The owner asked for these changes:
+passed. These changes came out of it:
 
 | ID | Work |
 | --- | --- |
@@ -92,7 +92,7 @@ passed. The owner asked for these changes:
 
 | ID | Work |
 | --- | --- |
-| M03 | **Remaining performance (revisit later, user decision).** The editor takes about 1.1 s to open, flat with workspace size and mostly page layout. Build-time layout baking was declined for now. A 250-member group PDF packet takes about 46 s, most of it in `OutputTo`. |
+| M03 | **Remaining performance (revisit later).** The editor takes about 1.1 s to open, flat with workspace size and mostly page layout. Build-time layout baking was declined for now. A 250-member group PDF packet takes about 46 s, most of it in `OutputTo`. |
 | L03 | **Workspace size headroom, step 3: sparse revision values.** Steps 1 (size warning) and 2 (no empty-to-empty change rows) are done. This step adds the column `ReportRevision.ValueEncoding`: no value means a full copy, `1` means a missing field is empty. About 12 `src/` readers move to one accessor. A per-revision field count and snapshot hash replace the detection of missing rows, which also delivers threat-model item 6. Import copies rows unchanged, and old revisions are not converted. The measured saving is 24% on sparse reports, probably 10–20% on real ones. Test every persistence runner, schemas 1–36, mixed revisions, disposal, restore and compare. Not critical: about 10 years of headroom at 1,300 reports a year. |
 
 ## Code health
@@ -100,12 +100,12 @@ passed. The owner asked for these changes:
 | ID | Work |
 | --- | --- |
 | T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. |
-| T06 | **Remove pre-35 import code with the next schema change (owner decision, 10 Nov 2026).** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
+| T06 | **Remove pre-35 import code with the next schema change.** The importer now accepts schema 35 onward. In `modMigration`, drop the copy/check skip lines for schemas below 35, the always-true `targetVersion >= 22..34` checks, the `ver >= 26/28/31` wrappers and the pre-28 Report column branch (about 60–70 lines). Retire `test-persistence-transfer` and `test-audit-message-transfer` (built for schemas 21–33) and the 0.24.0-preview default template in `upgrade-workspace.ps1`. Keep `MigrateLegacyReportNotes` and `MigrateDirectoryCompatibility` (Demo build and startup use them), the legacy columns and the schema 1–34 definition files. Verify with the full release gate that the schema change needs anyway. |
 
-## S01 — Front end and data file (owner decisions, 13 Nov 2026)
+## S01 — Front end and data file
 
 **Status (13 Nov 2026):** steps 1 to 5 are in development, and the data
-file is the default for new workspaces (owner decision). On a linked copy the backup is a copy of the data file, checked row by
+file is the default for new workspaces. On a linked copy the backup is a copy of the data file, checked row by
 row and field by field, and it restores through the import.
 The import from a previous version works on a linked copy unchanged, and
 lands in the data file. A data file has no session list to read (Access
@@ -115,13 +115,13 @@ hold until the next start, and the warning no longer names the computer.
 The user guide (sections 2.1 to 2.3, 17.1, 17.2, 18.1) and the Start here
 and Recovery help topics describe it. **Not ready to release:** the pickers
 and message boxes have only been exercised through their functions; the
-attended checks below are outstanding, and the owner decisions under step 6
+attended checks below are outstanding, and the release items under step 6
 are open. A copy that is already linked cannot start a second data file (the
 data file is written from the blank copy's own tables); a new download can.
 
 Today code and data share one `.accdb`, so
-every release needs a new Blank and a full import. The owner decided to split
-them: a front end (code and forms) and a data file (tables only).
+every release needs a new Blank and a full import. Split
+them into a front end (code and forms) and a data file (tables only).
 
 **Decisions:**
 - It must be seamless for the user. When the front end has no data file, or
@@ -184,19 +184,19 @@ the front end and will need to target the data file.
      file is unchanged; (e) Settings & Help backup on a linked copy; (f) the
      upgrade message box (needs a build with a schema change, or a data
      file whose AppMetadata.SchemaVersion is set to 47 on a copy).
-   - **Owner decisions (13 Nov 2026), done in development:** the data file
+   - **Done in development:** the data file
      is the default (Create workspace makes `Swift NAVFIT data.accdb` beside
      the application; Change folder picks another); releases are named
      `Swift_NAVFIT_<version>.accdb`; the Demo ships as a pair with
      `Swift_NAVFIT_Demo_data_<version>.accdb` (`scripts/package-release.ps1`,
      CONTRIBUTING release step 3).
    - A missing or unusable data file at startup opens a window with Find the
-     data file, Create a new data file and Close Swift NAVFIT (owner request);
+     data file, Create a new data file and Close Swift NAVFIT;
      a data file of the same name beside the application is used without
      asking. A linked copy keeps its blank tables (hidden, `USysBlank` prefix)
      so it can always make a new data file.
    - Release notes and README download text at the next release.
-   - **Two people on one data file (owner request, 13 Nov 2026), done in
+   - **Two people on one data file, done in
      development, not supported:** per-application contributor, save lock
      retry with a plain message, presence (`SessionPresence`, schema 49) on the
      Overview and in the editor, sync conflict copies named at startup. A
@@ -259,7 +259,7 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
 | Performance | Local disk | Network latency. Batched reads and caching matter more. Define offline behavior. |
 | Security | Folder permissions on approved storage | SharePoint permissions, plus authorization of the tenant and site for PII/CUI. Decide whether SSNs are stored there at all. |
 
-**Decisions (product owner, 26 Oct 2026):**
+**Decisions:**
 
 | Topic | Decision |
 | --- | --- |
@@ -292,7 +292,7 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
   front-end compatibility.
 - **F01's review chain** gives each report one holder at a time, which reduces
   concurrent edits to the same report. Design shared-mode conflicts around it.
-- **Constraints from the 1 Nov 2026 Codex review (A01–A08), for the phase-1 spike:**
+- **Constraints from the design review (A01–A08), for the phase-1 spike:**
   - SharePoint batch requests are not all-or-nothing, so a save needs a verified
     publish step, and an ETag compare alone doesn't make a write atomic.
   - `Workspace.ActiveProfileID` is a single shared row, so contributor sessions
@@ -306,7 +306,7 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
   - Today's backup rejects linked tables, so shared mode needs its own backup
     and restore contract.
 
-**Testing strategy (product owner, 26 Oct 2026):** SharePoint has no container
+**Testing strategy:** SharePoint has no container
 image and no open-source implementation of its list protocol, so testing uses
 three layers:
 

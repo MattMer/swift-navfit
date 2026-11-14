@@ -94,12 +94,12 @@ NAVPERS forms in `FORMS_REFERENCES_TEMPLATES/` (read only) into a new
 
 ### Build scratch retention
 
-`develop.ps1` (except Preflight) and `release-check.ps1` automatically clean
-expired generated `build/source-check-<guid>` directories and generated artifacts
-directly under `build/tests` before starting checks:
+`develop.ps1` (except Preflight), `release-check.ps1` and `isolated.ps1`
+automatically clean expired generated `build/source-check-<guid>` directories and
+generated artifacts directly under `build/tests` before starting checks:
 
-- Successful managed runs: **24 hours**.
-- Failed, flaky, interrupted, standalone or older unclassified runs: **7 days**.
+- Successful managed runs, including single suites run through `isolated.ps1`: **24 hours**.
+- Failed, flaky, interrupted, standalone or older unclassified runs: **3 days**.
 - Workflow logs, release receipts, `build/dev`, release folders, `output`, source
   fixtures and reference material: **never pruned by this command**.
 
@@ -107,9 +107,10 @@ The workflow records newly created/updated scratch entries and its outcome under
 `build/retention/runs`. Unknown manually named artifacts are left alone. A `.keep`
 file inside a generated directory, or `<artifact>.keep` beside any artifact,
 exempts it. Supplied BuildPath/BlankPath/DemoPath inputs are protected automatically.
-Cleanup skips while Access or a managed workflow is active, rejects directory
-links, and skips files it cannot open exclusively. Age includes nested contents;
-recently modified evidence stays. Keep unresolved failures beyond seven days by
+Cleanup skips while Access or a managed workflow is active, so it treats leftover
+Access lock files as stale; it rejects directory links and skips files it cannot
+open exclusively. Age includes nested contents;
+recently modified evidence stays. Keep unresolved failures beyond three days by
 pinning them. Retention is local housekeeping, not a secure-erasure guarantee.
 
 Preview or apply manually (no Access needed):
@@ -136,16 +137,11 @@ Use Access's VBA editor for native breakpoints and runtime investigation. Bring
 native edits back to tracked source before rebuilding. Automatic VBA formatting
 on save is disabled to avoid unrelated source changes.
 
-### Agent tool registrations
+### Editor tooling
 
-Agent tooling is per-client. On this workstation the read-only
-`@modelcontextprotocol/server-filesystem` reader is registered in Codex as
-`swift_files` (write tools excluded by its allow-list), and Access Explorer is
-registered for VS Code and Codex. Claude Code has neither. Agent instruction
-files and settings are kept locally, not in the repository. Any agent may read source directly. Use the existing
-PowerShell build and native-check commands when their verification scope is
-required. [Reader verification](../planning/FILESYSTEM_MCP_SETUP_2026-10-21.json)
-is historical evidence.
+Editor and tool settings are kept locally, not in the repository. Read source
+directly, and use the PowerShell build and native-check commands when their
+verification scope is required.
 
 ### Access Explorer
 
@@ -153,7 +149,7 @@ Access Explorer 1.2.0 and its MCP backend are configured on this workstation.
 The runtime is under the extension's user-level managed storage, with its own
 Python 3.12 virtual environment. Access Explorer user settings select that
 interpreter and backend script. VS Code's user MCP configuration registers
-`access-explorer-local`; Codex registers `access_explorer`.
+`access-explorer-local`.
 Existing settings were backed up before registration. No machine-specific
 runtime paths are committed in this workspace's configuration.
 

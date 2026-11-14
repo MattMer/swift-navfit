@@ -1150,9 +1150,9 @@ Existing C04 and legacy feature-layout gaps above remain separate from these
 checks. No release, publication, physical/accessibility or printed acceptance is
 claimed.
 
-## Codex review fixes R01–R13
+## Review fixes R01–R13
 
-Fixed on 1 November 2026, from the Codex review of 0.51.0 (see the
+Fixed on 1 November 2026, from the design review of 0.51.0 (see the
 [backlog](PRIORITY_BACKLOG.md)):
 
 - **R01, status precedence.** The batched Reports reader no longer lets a review
@@ -1241,7 +1241,7 @@ and the chain restarts only from a send back or pull back.
 - **Authority flags.** When a lower step saves over a field a later step last
   changed in the route, the save succeeds, the editor says so, and an Override
   event is shown to the holder when the report moves.
-- **Members grid** (user decision): grid saves skip the holder check and are
+- **Members grid:** grid saves skip the holder check and are
   logged as Grid change events (route) or ReviewTaskEvent rows (assignment).
 - **Group routes** go stale only when membership or archive state changes
   (`GroupRouteStamp`; routes stored with the old stamp are compared on their
@@ -1308,7 +1308,7 @@ the PDF is not regenerated.
   with the PRD as the expected date (updated if the PRD changes). A member back on
   a complete roster has an open absence marked Returned. Nothing is archived.
   **My Work > Departures** confirms (detachment date) or dismisses (reason).
-- **Rank from roster** (Codex W05). The preview shows a roster rate/rank that
+- **Rank from roster** (W05). The preview shows a roster rate/rank that
   differs from the profile; **Update the profile rank/rate from this roster**
   changes it per row.
 - **Source checks.** `check-vba-source.ps1` now also rejects VBA keywords (Open,

@@ -138,17 +138,21 @@ $expiredDir=Join-Path $fixture ('build/tests/expired-dir-'+[guid]::NewGuid())
 $pinnedDir=Join-Path $fixture ('build/tests/pinned-dir-'+[guid]::NewGuid())
 $recentDir=Join-Path $fixture ('build/tests/recent-dir-'+[guid]::NewGuid())
 $linkedDir=Join-Path $fixture ('build/tests/linked-dir-'+[guid]::NewGuid())
-foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir)){
+# A lock file left by an Access session that has ended does not keep a copy forever.
+$staleLockDir=Join-Path $fixture ('build/tests/stale-lock-'+[guid]::NewGuid())
+foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir,$staleLockDir)){
  [void](New-Item -ItemType Directory -Path $dir)
  [IO.File]::WriteAllText((Join-Path $dir 'data.txt'),'synthetic')
  [IO.File]::SetLastWriteTimeUtc((Join-Path $dir 'data.txt'),[datetime]::UtcNow.AddDays(-20))
 }
 [IO.File]::WriteAllText((Join-Path $pinnedDir '.keep'),'keep')
 [IO.File]::SetLastWriteTimeUtc((Join-Path $pinnedDir '.keep'),[datetime]::UtcNow.AddDays(-20))
+[IO.File]::WriteAllText((Join-Path $staleLockDir 'copy.laccdb'),'stale')
+[IO.File]::SetLastWriteTimeUtc((Join-Path $staleLockDir 'copy.laccdb'),[datetime]::UtcNow.AddDays(-20))
 [IO.File]::SetLastWriteTimeUtc((Join-Path $recentDir 'data.txt'),[datetime]::UtcNow)
 $link=Join-Path $linkedDir 'junction'
 [void](New-Item -ItemType Junction -Path $link -Target (Split-Path $outside))
-foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir)){[IO.Directory]::SetLastWriteTimeUtc($dir,[datetime]::UtcNow.AddDays(-20))}
+foreach($dir in @($expiredDir,$pinnedDir,$recentDir,$linkedDir,$staleLockDir)){[IO.Directory]::SetLastWriteTimeUtc($dir,[datetime]::UtcNow.AddDays(-20))}
 # Record a successful 48-hour-old item and a failed one at the same age.
 $passed=OldFile 'passed' 48;$failed=OldFile 'failed' 48
 $records=Join-Path $fixture 'build/retention/runs'
@@ -165,6 +169,7 @@ try {
  Check (-not(Test-Path -LiteralPath $old)) 'Expired unknown scratch survived'
  Check (-not(Test-Path -LiteralPath $passed)) 'Expired successful scratch survived'
  Check (-not(Test-Path -LiteralPath $expiredDir)) 'Expired generated directory survived'
+ Check (-not(Test-Path -LiteralPath $staleLockDir)) 'A stale Access lock file kept expired scratch'
  foreach($path in @($recent,$unknown,$pinned,($pinned+'.keep'),$locked,$protected,$manual,$outside,$failed,$pinnedDir,$recentDir,$link)){Check (Test-Path -LiteralPath $path) ('Protected/recent/failed artifact removed: '+$path)}
  $lines=@(Get-Content -LiteralPath $result.Manifest|ForEach-Object {$_|ConvertFrom-Json})
  Check (@($lines|Where-Object {$_.Path -eq $old -and $_.SHA256 -match '^[A-F0-9]{64}$'}).Count -eq 1) 'Deletion lacks path/hash evidence'

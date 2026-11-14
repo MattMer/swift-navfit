@@ -3,7 +3,7 @@ param(
     [Parameter(Mandatory=$true)][string]$DemoPath,
     [Parameter(Mandatory=$true)][string]$OutputFolder
 )
-# Release files from a checked Blank and Demo (backlog S01, owner decisions 13 Nov 2026):
+# Release files from a checked Blank and Demo (backlog S01):
 #   Swift_NAVFIT_<version>.accdb            the application; setup makes its data file
 #   Swift_NAVFIT_Demo_<version>.accdb       the application, linked to the Demo data file
 #   Swift_NAVFIT_Demo_data_<version>.accdb  the Demo data (synthetic only)

@@ -3,7 +3,7 @@
 | Area | Standard or source | How Swift applies it |
 | --- | --- | --- |
 | Report policy | BUPERSINST 1610.10H (and its changes CH-1, CH-2) | Effective-dated validation rule packs cite enclosure and paragraph |
-| Report policy | NAVADMIN 132/26 | Highest-paygrade Regular periodic exemption from 3 June 2026 (user decision C04) |
+| Report policy | NAVADMIN 132/26 | Highest-paygrade Regular periodic exemption from 3 June 2026 (decision C04) |
 | Forms | NAVPERS 1616/26 (E1–E6 EVAL), 1616/27 (Chief EVAL), 1610/2 (FITREP), 05-2025 revisions | Fixed editor geometry in block order with official captions; PDF output on the fillable templates |
 | Forms | NAVPERS 1610/1 Summary Letter, Rev 09-2024 | Group summary output |
 | Interchange | NAVFIT98A database structure | Mapped import, export and return (SV-1 I1) |

@@ -4,7 +4,7 @@
 
 ## C01 decision and inventory
 
-The user explicitly declined an Access password/encryption design: “No, protection is covered by file folder permissions.” Windows file/folder controls remain the storage boundary. There is no new password, embedded secret, DPAPI dependency, network service or protection setup. SSNs remain readable inside Access; masking does not provide storage encryption. Contributor names identify attribution, not authentication.
+There is no Access password or encryption: Windows file/folder controls remain the storage boundary. There is no new password, embedded secret, DPAPI dependency, network service or protection setup. SSNs remain readable inside Access; masking does not provide storage encryption. Contributor names identify attribution, not authentication.
 
 The implementation preserves these retained locations rather than scrubbing historical data:
 

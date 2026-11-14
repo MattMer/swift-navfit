@@ -1,8 +1,7 @@
 Attribute VB_Name = "modSchemaUpgrade"
 Option Compare Database
 Option Explicit
-' Automatic schema upgrade of a separate data file (backlog S01, owner decision 13 Nov
-' 2026). A newer Swift NAVFIT pointed at an older data file copies the file beside
+' Automatic schema upgrade of a separate data file (backlog S01). A newer Swift NAVFIT pointed at an older data file copies the file beside
 ' itself, checks the copy, applies the schema steps between the two versions in order,
 ' and stamps each version as it goes. If any step fails, the data file is put back from
 ' the copy, so the user is left with the file they had.
