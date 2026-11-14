@@ -42,7 +42,7 @@ End Function
 Public Function DataFileUpgradable(ByVal filePath As String) As Boolean
     Dim version As Long
     On Error GoTo Done
-    If Len(Dir$(filePath)) = 0 Then Exit Function
+    If Not FileExists(filePath) Then Exit Function
     version = DataFileSchema(filePath)
     DataFileUpgradable = (version >= UPGRADE_FLOOR And version < SCHEMA_VERSION)
 Done:
@@ -71,7 +71,7 @@ Public Function UpgradeDataFile(ByVal filePath As String) As String
     Dim t As DAO.TableDef, f As DAO.Field, stage As String, failure As Long, message As String, changed As Boolean, copied As Boolean, fso As Object
     On Error GoTo Failed
     stage = "Check data file"
-    If Len(Dir$(filePath)) = 0 Then Err.Raise vbObjectError + 9821, "modSchemaUpgrade.UpgradeDataFile", "The data file was not found: " & filePath
+    If Not FileExists(filePath) Then Err.Raise vbObjectError + 9821, "modSchemaUpgrade.UpgradeDataFile", "The data file was not found: " & filePath
     version = DataFileSchema(filePath)
     If version = SCHEMA_VERSION Then Exit Function
     If version > SCHEMA_VERSION Then Err.Raise vbObjectError + 9822, "modSchemaUpgrade.UpgradeDataFile", "The data file is schema " & version & ", newer than this version of Swift NAVFIT (schema " & SCHEMA_VERSION & "). Use a newer Swift NAVFIT."
@@ -141,7 +141,7 @@ End Function
 Public Function UpgradeDataFileIfNeeded(ByVal filePath As String) As String
     Dim version As Long, backup As String
     On Error GoTo Failed
-    If Len(Dir$(filePath)) = 0 Then Exit Function
+    If Not FileExists(filePath) Then Exit Function
     version = DataFileSchema(filePath)
     If version = SCHEMA_VERSION Or version = 0 Then Exit Function
     backup = UpgradeDataFile(filePath)
@@ -151,4 +151,10 @@ Public Function UpgradeDataFileIfNeeded(ByVal filePath As String) As String
     Exit Function
 Failed:
     UpgradeDataFileIfNeeded = Err.Description
+End Function
+
+' True when the file exists; a missing drive or share is not an error here.
+Private Function FileExists(ByVal filePath As String) As Boolean
+    On Error Resume Next
+    FileExists = Len(Dir$(filePath)) > 0
 End Function

@@ -33,7 +33,8 @@ function Start-Front{
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($front,$true)
     $app.LoadFromText(5,'DataLinkHarness',(Join-Path $root 'tests/DataLinkHarness.bas'))
     $app.DoCmd.RunCommand(126)
-    if(-not $app.IsCompiled){throw 'VBA did not compile after loading DataLinkHarness'}
+    #A session that will not be handed back is closed here, or it would stay open on its own.
+    if(-not $app.IsCompiled){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);throw 'VBA did not compile after loading DataLinkHarness'}
     $app
 }
 function Invoke-Check($app,[string]$Expression){
@@ -41,7 +42,7 @@ function Invoke-Check($app,[string]$Expression){
     if($result -notlike 'PASS:*'){throw $result}
     Write-Output $result
 }
-function Stop-Front($app){if($null -ne $app){$app.Quit(1);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}}
+function Stop-Front($app){if($null -ne $app){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}}
 
 $app=$null
 try{
@@ -62,9 +63,13 @@ $db=$engine.OpenDatabase($data,$false,$true)
 try{$rows=$db.OpenRecordset('SELECT Count(*) FROM Report',4);$saved=[int]$rows.Fields.Item(0).Value;$rows.Close()}finally{$db.Close()}
 if($saved -ne 1){throw ('Data file holds '+$saved+' reports, expected 1')}
 $db=$engine.OpenDatabase($front,$false,$true)
-try{$local=@($db.TableDefs|Where-Object {$_.Name -notlike 'MSys*' -and $_.Name -notlike '~*' -and -not $_.Connect}).Count}finally{$db.Close()}
-if($local -ne 0){throw ('Front end still holds '+$local+' local tables')}
-Write-Output 'PASS: the saved report is in the data file and the front end holds no tables'
+try{
+    $local=@($db.TableDefs|Where-Object {$_.Name -notlike 'MSys*' -and $_.Name -notlike '~*' -and $_.Name -notlike 'USys*' -and -not $_.Connect}).Count
+    $blank=@($db.TableDefs|Where-Object {$_.Name -like 'USysBlank*' -and -not $_.Connect -and $_.RecordCount -ge 0}).Count
+}finally{$db.Close()}
+if($local -ne 0){throw ('Front end still holds '+$local+' workspace tables')}
+if($blank -ne $source.Lines.Where({$_ -like 'TABLE *'}).Count){throw ('Front end keeps '+$blank+' blank tables')}
+Write-Output 'PASS: the saved report is in the data file; the front end holds only its hidden blank tables'
 
 #Restore: the backup imports into a new blank copy through the production import.
 $restore=Join-Path $folder 'restore target.accdb';Copy-Item -LiteralPath $BuildPath -Destination $restore
@@ -90,6 +95,19 @@ try{
     if(-not $app.Eval('SwiftAppStartup()')){throw 'Startup failed after relinking'}
     if($app.Forms.Count -eq 0){throw 'Startup opened no screen after relinking'}
 }finally{Stop-Front $app;$app=$null}
+#The window offered when the data file is missing, and its Create a new data file path,
+#on a copy of that front end whose data file is gone.
+$lost=Join-Path $folder 'lost front end.accdb';Copy-Item -LiteralPath $front -Destination $lost
+$keepFront=$front;$front=$lost;$fresh=Join-Path $folder 'fresh data.accdb'
+#Link the copy to a spare data file, then delete that file.
+$gone=Join-Path $folder 'gone data.accdb';Copy-Item -LiteralPath $moved -Destination $gone
+try{$app=Start-Front;if(-not $app.Eval('LinkDataFile("'+$gone+'")')){throw 'Could not link to the spare data file'}}finally{Stop-Front $app;$app=$null}
+Start-Sleep 2;Remove-Item -LiteralPath $gone
+try{
+    $app=Start-Front
+    Invoke-Check $app ('TestDataFileWindow("'+$fresh+'")')
+}finally{Stop-Front $app;$app=$null}
+$front=$keepFront
 #From the setup screen, as a user does it: with the setup screen open, a new data file
 #is written and linked, and setup opens again on it.
 $front=Join-Path $folder 'second front end.accdb';$second=Join-Path $folder 'second data.accdb'
@@ -103,6 +121,26 @@ try{
     if(-not $app.Eval('SaveSetupValues("SYNTHETIC SECOND COMMAND","Tester")')){throw 'Setup failed on the new data file'}
 }finally{Stop-Front $app;$app=$null}
 Write-Output 'PASS: the setup screen writes a new data file, links it and sets up on it'
+
+#The default: Create workspace on the setup screen of a new copy makes the data file beside
+#the application and sets up in it. Then the two files are moved together to another folder:
+#the copy finds its data file beside it and starts without asking.
+$defaultFolder=Join-Path $folder 'default';[void](New-Item -ItemType Directory -Path $defaultFolder)
+$front=Join-Path $defaultFolder 'Swift NAVFIT.accdb';Copy-Item -LiteralPath $BuildPath -Destination $front
+try{
+    $app=Start-Front
+    Invoke-Check $app 'TestSetupDefault("SYNTHETIC DEFAULT COMMAND","Tester")'
+}finally{Stop-Front $app;$app=$null}
+$together=Join-Path $folder 'moved together';[void](New-Item -ItemType Directory -Path $together)
+Move-Item -LiteralPath $front -Destination $together;Move-Item -LiteralPath (Join-Path $defaultFolder 'Swift NAVFIT data.accdb') -Destination $together
+$front=Join-Path $together 'Swift NAVFIT.accdb'
+try{
+    $app=Start-Front
+    if($app.Eval('SwiftDataPath()') -ne (Join-Path $together 'Swift NAVFIT data.accdb')){throw ('The copy did not find its data file beside it: '+$app.Eval('SwiftDataPath()'))}
+    if(-not $app.CurrentProject.AllForms.Item('frmContributorStart').IsLoaded){throw 'Startup did not reach contributor choice after the move'}
+    if($app.Eval('DLookup("CommandName","Workspace")') -ne 'SYNTHETIC DEFAULT COMMAND'){throw 'The moved data file does not hold the workspace'}
+}finally{Stop-Front $app;$app=$null}
+Write-Output 'PASS: setup makes the data file beside the application by default, and the pair still opens after being moved together'
 
 #Import from a previous version into a copy that uses a new data file: the rows land in
 #the data file and the copy stays linked.

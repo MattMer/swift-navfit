@@ -36,7 +36,7 @@ import and print-ready PDF output.
 ## Architecture
 
 - **Source:** [src/](src/) holds 118 static VBA modules, JSON catalogues, the
-  AutoExec macro, PDF template images and the 74 forms as normalized Access text
+  AutoExec macro, PDF template images and the 75 forms as normalized Access text
   in [src/forms](src/forms). [build-manifest.json](scripts/build-manifest.json)
   lists the modules, forms, five generated modules (built from the
   catalogues, not stored in `src/`), fingerprinted inputs and six resource

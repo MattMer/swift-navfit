@@ -14,7 +14,7 @@ Begin Form
     Right =18525
     Bottom =12795
     Caption ="Set up your Swift NAVFIT workspace"
-    OnLoad ="=UXWorkspaceSafetyPaint(\"frmSetup\")"
+    OnLoad ="=UXSetupLoad()"
     OnActivate ="=UXVisualEvent(\"frmSetup\",\"\")"
     OnResize ="=UXHelpResize(\"frmSetup\",\"\")"
     FilterOnLoad =0
@@ -96,7 +96,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =7800
+            Height =8500
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -129,13 +129,32 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="One authoritative local file. Profiles identify contributors; they do not authen"
-                        "ticate users. Separate copies do not synchronize."
+                    Caption ="Profiles identify contributors; they do not authenticate users. Separate copies "
+                        "do not synchronize."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000
                     LayoutCachedWidth =13000
                     LayoutCachedHeight =1650
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =3300
+                    Width =6900
+                    Height =650
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="uxDataFileLocation"
+                    Caption =" "
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =3300
+                    LayoutCachedWidth =7300
+                    LayoutCachedHeight =3950
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -232,60 +251,21 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =3300
-                    Top =3550
+                    Top =4200
                     Width =4000
-                    Height =550
-                    FontSize =10
-                    TabIndex =2
-                    ForeColor =4205854
-                    Name ="cmdSetup"
-                    Caption ="Create workspace"
-                    OnClick ="=SaveSetup()"
-                    FontName ="Segoe UI"
-
-                    LayoutCachedLeft =3300
-                    LayoutCachedTop =3550
-                    LayoutCachedWidth =7300
-                    LayoutCachedHeight =4100
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =15985893
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    ThemeFontIndex =-1
-                    HoverColor =15985893
-                    HoverThemeColorIndex =-1
-                    PressedColor =15985893
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =4205854
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =4205854
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =4350
-                    Width =9950
                     Height =550
                     FontSize =10
                     TabIndex =3
                     ForeColor =4205854
-                    Name ="cmdImportSwift"
-                    Caption ="Import data from a previous Swift NAVFIT version"
-                    OnClick ="=UXChooseSwiftWorkspace()"
+                    Name ="cmdSetup"
+                    Caption ="Create workspace"
+                    OnClick ="=UXCreateWorkspace()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =4350
-                    LayoutCachedWidth =10350
-                    LayoutCachedHeight =4900
+                    LayoutCachedLeft =3300
+                    LayoutCachedTop =4200
+                    LayoutCachedWidth =7300
+                    LayoutCachedHeight =4750
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -310,11 +290,50 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5125
-                    Width =4900
+                    Top =5000
+                    Width =9950
                     Height =550
                     FontSize =10
                     TabIndex =4
+                    ForeColor =4205854
+                    Name ="cmdImportSwift"
+                    Caption ="Import data from a previous Swift NAVFIT version"
+                    OnClick ="=UXSetupImport()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =5000
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =5550
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =5775
+                    Width =9950
+                    Height =550
+                    FontSize =10
+                    TabIndex =5
                     ForeColor =4205854
                     Name ="cmdOpenDataFile"
                     Caption ="Open an existing data file"
@@ -322,9 +341,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5125
-                    LayoutCachedWidth =5300
-                    LayoutCachedHeight =5675
+                    LayoutCachedTop =5775
+                    LayoutCachedWidth =10350
+                    LayoutCachedHeight =6325
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -348,22 +367,22 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =5450
-                    Top =5125
-                    Width =4900
-                    Height =550
+                    Left =7450
+                    Top =3300
+                    Width =2900
+                    Height =450
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =2
                     ForeColor =4205854
                     Name ="cmdNewDataFile"
-                    Caption ="Keep this workspace in a new data file"
+                    Caption ="Change folder..."
                     OnClick ="=UXNewDataFile()"
                     FontName ="Segoe UI"
 
-                    LayoutCachedLeft =5450
-                    LayoutCachedTop =5125
+                    LayoutCachedLeft =7450
+                    LayoutCachedTop =3300
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =5675
+                    LayoutCachedHeight =3750
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -428,7 +447,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5900
+                    Top =6550
                     Width =9950
                     Height =550
                     TabIndex =7
@@ -438,9 +457,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5900
+                    LayoutCachedTop =6550
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =6450
+                    LayoutCachedHeight =7100
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -453,7 +472,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6575
+                    Top =7225
                     Width =9950
                     Height =1100
                     FontWeight =600
@@ -462,9 +481,9 @@ Begin Form
                     Name ="uxWorkspaceWarning"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6575
+                    LayoutCachedTop =7225
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =7675
+                    LayoutCachedHeight =8325
                     ThemeFontIndex =-1
                 End
             End

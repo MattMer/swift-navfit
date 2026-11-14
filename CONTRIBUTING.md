@@ -298,7 +298,12 @@ folder in the repository.
 2. Run `scripts/release-check.ps1 -BlankPath <blank> -DemoPath <demo>` plus the
    feature-specific, data-transfer, rollback and unsupported-source checks that
    apply.
-3. Document which schema fixtures were tested.
-4. Put dated, versioned files in `output/` and keep the prior outputs.
-5. Upload to the owner's Drive folder, then verify the
+3. Make the release files with `scripts/package-release.ps1 -BlankPath <blank>
+   -DemoPath <demo> -OutputFolder <folder>` (owner decisions, 13 Nov 2026): the
+   application `Swift_NAVFIT_<version>.accdb`, and the Demo as a pair,
+   `Swift_NAVFIT_Demo_<version>.accdb` with `Swift_NAVFIT_Demo_data_<version>.accdb`.
+   Publish those three files, with their SHA-256, and the user guide.
+4. Document which schema fixtures were tested.
+5. Put dated, versioned files in `output/` and keep the prior outputs.
+6. Upload to the owner's Drive folder, then verify the
    names, sizes and folder membership.

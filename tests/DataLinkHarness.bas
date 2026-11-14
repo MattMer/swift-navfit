@@ -24,13 +24,13 @@ End Function
 Private Function LinkedTables() As Long
     Dim t As DAO.TableDef
     For Each t In CurrentDb.TableDefs
-        If Left$(t.Name, 4) <> "MSys" And Left$(t.Name, 1) <> "~" And Len(t.Connect) > 0 Then LinkedTables = LinkedTables + 1
+        If SwiftWorkspaceTable(t.Name) And Len(t.Connect) > 0 Then LinkedTables = LinkedTables + 1
     Next
 End Function
 Private Function LocalTables() As Long
     Dim t As DAO.TableDef
     For Each t In CurrentDb.TableDefs
-        If Left$(t.Name, 4) <> "MSys" And Left$(t.Name, 1) <> "~" And Len(t.Connect) = 0 Then LocalTables = LocalTables + 1
+        If SwiftWorkspaceTable(t.Name) And Len(t.Connect) = 0 Then LocalTables = LocalTables + 1
     Next
 End Function
 
@@ -56,6 +56,13 @@ Failed:
 End Function
 
 'Link to the data file, then set up and save through the links.
+Private Function BlankTables() As Long
+    Dim t As DAO.TableDef
+    For Each t In CurrentDb.TableDefs
+        If Left$(t.Name, 9) = "USysBlank" Then BlankTables = BlankTables + 1
+    Next
+End Function
+
 Public Function TestDataFileLink(ByVal dataPath As String, ByVal otherPath As String) As String
     Dim tables As Long, id As Long
     On Error GoTo Failed
@@ -68,7 +75,10 @@ Public Function TestDataFileLink(ByVal dataPath As String, ByVal otherPath As St
     Check SwiftDataIsLinked() And StrComp(SwiftDataPath(), dataPath, vbTextCompare) = 0, "Data path is " & SwiftDataPath()
     Check SwiftIsWorkspaceFile(dataPath) And SwiftIsWorkspaceFile(CurrentProject.FullName), "Both files are the workspace"
     Check DataLinkProblem() = "" And DataLinkReady(), "Linked data file not ready: " & DataLinkProblem()
-    Check CreateRefused(Left$(dataPath, Len(dataPath) - 6) & "-second.accdb"), "A linked copy created a data file"
+    Check BlankTables() = tables, "The blank tables were not kept for a new data file: " & BlankTables()
+    Check CanCreateDataFile() And CreateDataFile(Left$(dataPath, Len(dataPath) - 6) & "-fresh.accdb"), "A linked copy could not make a new data file"
+    Check DataFileProblem(Left$(dataPath, Len(dataPath) - 6) & "-fresh.accdb") = "", "The new data file is not usable"
+    Check StrComp(SwiftDataPath(), dataPath, vbTextCompare) = 0, "Making a new data file changed the link"
     Check Nz(DLookup("SchemaVersion", "AppMetadata"), 0) = SCHEMA_VERSION, "Schema is not readable through the link"
     Check ConfigureWorkspace("SYNTHETIC DATA FILE COMMAND", "Tester"), "Setup failed through the link"
     id = CommitDraft(0, "EVAL", "Linked draft", "DOE, PAT", #1/1/2026#, #9/30/2026#, "", "Data file test")
@@ -150,4 +160,44 @@ End Function
 
 Public Function UpgradeFloorValue() As Long
     UpgradeFloorValue = UPGRADE_FLOOR
+End Function
+
+'Create workspace on the setup screen, as its button does, and report where the data went.
+Public Function TestSetupDefault(ByVal commandName As String, ByVal contributor As String) As String
+    Dim expected As String
+    On Error GoTo Failed
+    checks = 0
+    expected = CurrentProject.Path & "\Swift NAVFIT data.accdb"
+    Check CurrentProject.AllForms("frmSetup").IsLoaded And Not SwiftDataIsLinked(), "Setup is not open on an unlinked copy"
+    Check Forms!frmSetup!uxDataFileLocation.Caption Like "Your work will be kept in a new data file, " & expected & "*", "Setup line: " & Forms!frmSetup!uxDataFileLocation.Caption
+    Check Forms!frmSetup!cmdNewDataFile.Enabled, "Change folder is not available before setup"
+    'A missing name is refused before any data file is made (the message box is not opened here).
+    Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor
+    Check UXCreateWorkspace(), "Create workspace failed"
+    Check SwiftDataIsLinked() And StrComp(SwiftDataPath(), expected, vbTextCompare) = 0, "Data file is " & SwiftDataPath()
+    Check DCount("*", "Workspace") = 1 And Nz(DLookup("CommandName", "Workspace"), "") = commandName, "Workspace not set up in the data file"
+    Check CurrentProject.AllForms("frmHome").IsLoaded, "Overview did not open"
+    TestSetupDefault = "PASS: " & checks & " default data file setup assertions": Exit Function
+Failed:
+    TestSetupDefault = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+
+'The window shown when the data file cannot be opened, and its Create a new data file path.
+Public Function TestDataFileWindow(ByVal newPath As String) As String
+    Dim problem As String
+    On Error GoTo Failed
+    checks = 0
+    problem = DataLinkProblem()
+    Check problem Like "The data file was not found*", "Missing data file not reported: " & problem
+    DoCmd.OpenForm "frmDataFileMissing", , , , , , problem
+    Check Forms!frmDataFileMissing!lblProblem.Caption = problem, "The window does not say why"
+    Check Forms!frmDataFileMissing!cmdFindDataFile.Caption = "Find the data file..." And Forms!frmDataFileMissing!cmdCloseSwift.Caption = "Close Swift NAVFIT", "Window buttons"
+    Check Forms!frmDataFileMissing!cmdCreateDataFile.Enabled, "Create a new data file is not offered"
+    Check UXDataFileChoice("new") And Not CurrentProject.AllForms("frmDataFileMissing").IsLoaded, "The window did not close on a choice"
+    Check CreateAndUseDataFile(newPath) = "", "A new data file could not be made and used"
+    Check StrComp(SwiftDataPath(), newPath, vbTextCompare) = 0 And DataLinkProblem() = "", "Not linked to the new data file"
+    Check DCount("*", "Workspace") = 0 And DCount("*", "Report") = 0, "The new data file is not empty"
+    TestDataFileWindow = "PASS: " & checks & " missing data file window and new data file assertions": Exit Function
+Failed:
+    TestDataFileWindow = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function

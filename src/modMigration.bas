@@ -54,7 +54,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Next
     'One inexpensive guard; TOP 1 never counts all records in a populated table.
     For Each table In t.TableDefs
-        If left$(table.name, 4) <> "MSys" And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
+        If SwiftWorkspaceTable(table.Name) And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
             known = False
             If replaceSetup And targetVersion >= 30 And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
             If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) And Not known Then

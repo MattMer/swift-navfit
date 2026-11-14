@@ -104,9 +104,8 @@ passed. The owner asked for these changes:
 
 ## S01 — Front end and data file (owner decisions, 13 Nov 2026)
 
-**Status (13 Nov 2026):** steps 1 to 5 are in development, as an option on
-the setup screen; a build is still one file until the user chooses a data
-file. On a linked copy the backup is a copy of the data file, checked row by
+**Status (13 Nov 2026):** steps 1 to 5 are in development, and the data
+file is the default for new workspaces (owner decision). On a linked copy the backup is a copy of the data file, checked row by
 row and field by field, and it restores through the import.
 The import from a previous version works on a linked copy unchanged, and
 lands in the data file. A data file has no session list to read (Access
@@ -185,11 +184,18 @@ the front end and will need to target the data file.
      file is unchanged; (e) Settings & Help backup on a linked copy; (f) the
      upgrade message box (needs a build with a schema change, or a data
      file whose AppMetadata.SchemaVersion is set to 47 on a copy).
-   - **Owner decisions before a release carries it:** whether the data file
-     becomes the default (setup creates one without asking) or stays an
-     option; whether the Blank download is renamed as the application; and
-     whether the Demo ships as an application and data file pair.
-   - Release notes and README download text once those are decided.
+   - **Owner decisions (13 Nov 2026), done in development:** the data file
+     is the default (Create workspace makes `Swift NAVFIT data.accdb` beside
+     the application; Change folder picks another); releases are named
+     `Swift_NAVFIT_<version>.accdb`; the Demo ships as a pair with
+     `Swift_NAVFIT_Demo_data_<version>.accdb` (`scripts/package-release.ps1`,
+     CONTRIBUTING release step 3).
+   - A missing or unusable data file at startup opens a window with Find the
+     data file, Create a new data file and Close Swift NAVFIT (owner request);
+     a data file of the same name beside the application is used without
+     asking. A linked copy keeps its blank tables (hidden, `USysBlank` prefix)
+     so it can always make a new data file.
+   - Release notes and README download text at the next release.
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 

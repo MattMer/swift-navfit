@@ -97,7 +97,7 @@ Public Function WriteWorkspaceBackup(ByVal destination As String) As String
     Set db = CurrentDb: Set names = New Collection
     linked = SwiftDataIsLinked(): dataFile = SwiftDataPath()
     For Each table In db.TableDefs
-        If Left$(table.Name, 4) <> "MSys" And Left$(table.Name, 1) <> "~" Then
+        If SwiftWorkspaceTable(table.Name) Then
             'Either every table is in this file, or every table is in the one data file.
             If (Len(table.Connect) > 0) <> linked Then Err.Raise vbObjectError + 4802, "modBackupUI.WriteWorkspaceBackup", "Linked tables cannot be backed up as one file."
             If linked Then

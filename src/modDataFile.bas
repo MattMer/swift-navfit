@@ -86,3 +86,9 @@ Public Function SwiftDataDb(Optional ByVal db As DAO.Database) As DAO.Database
     End If
     Set SwiftDataDb = linkedData
 End Function
+
+' Workspace tables: not Access's own (MSys, ~) and not the blank set a linked copy
+' keeps to make a new data file from (USysBlank, see modDataLink).
+Public Function SwiftWorkspaceTable(ByVal tableName As String) As Boolean
+    SwiftWorkspaceTable = Left$(tableName, 4) <> "MSys" And Left$(tableName, 1) <> "~" And Left$(tableName, 4) <> "USys"
+End Function

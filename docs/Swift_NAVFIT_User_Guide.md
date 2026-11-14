@@ -45,7 +45,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 
 ## First useful session
 
-1. Open a **copy of the Demo** for practice, or a **Blank** for a new operational workspace.
+1. Open the **Demo** (its application and data file, saved together in one folder) for practice, or the **application** for a new operational workspace; setup makes its data file.
 2. Complete setup and confirm the active contributor's name.
 3. Open **Reports** and create or open a report. Work through **Front Page** and **Back Page**, then **Save draft**.
 4. Use **Report tools > Notes and replies** for communication; its other views provide review steps, validation checks, and trait calculations.
@@ -58,7 +58,7 @@ This guide follows the training-manual approach of the supplied eNavFit User Gui
 
 ## 1.1 What the application does
 
-Swift NAVFIT stores report drafts, summary groups, members, prior evaluations, reporting-senior history, local reviews, notes, revisions, and recovery checkpoints in one local Access database. Supported report types are EVAL, CHIEFEVAL, and FITREP.
+Swift NAVFIT stores report drafts, summary groups, members, prior evaluations, reporting-senior history, local reviews, notes, revisions, and recovery checkpoints in one local Access data file, which the Swift NAVFIT application opens. Supported report types are EVAL, CHIEFEVAL, and FITREP.
 
 Use one authoritative workspace file and one contributor at a time. Separate copies do not synchronize. Sending someone a copy does not create a live shared conversation or merge their edits back automatically.
 
@@ -79,7 +79,7 @@ These are operating responsibilities, not authenticated security roles. A local 
 
 Normal report drafting and review do not send data to the internet, synchronize to a service, or send telemetry. Swift requires no internet account or application-specific network protection. Optional reference links open an external site only when selected; report contents are not included in those links.
 
-Store the database in an approved protected folder. Under normal Windows inheritance, it receives that folder's permissions; explicit file permissions still apply. Device encryption, organizational handling rules, backups, and any configured folder synchronization remain relevant. Swift adds no separate authentication or encryption layer. Microsoft Access and Office operate under their own settings.
+Store the data file (and the application) in an approved protected folder. Under normal Windows inheritance, it receives that folder's permissions; explicit file permissions still apply. Device encryption, organizational handling rules, backups, and any configured folder synchronization remain relevant. Swift adds no separate authentication or encryption layer. Microsoft Access and Office operate under their own settings.
 
 **Expected result:** Everyone knows which file is authoritative, whose contributor name is active, and who owns backup and final processing responsibilities.
 
@@ -91,24 +91,28 @@ Store the database in an approved protected folder. Under normal Windows inherit
 
 Use Windows with full desktop Microsoft Access. Free Access Runtime is not supported. The application is a development candidate; consult the current release notes for platform and interoperability boundaries.
 
+A release has three files. `Swift_NAVFIT_<version>.accdb` is the application. `Swift_NAVFIT_Demo_<version>.accdb` and `Swift_NAVFIT_Demo_data_<version>.accdb` are the Demo, an application and its data file; save them in the same folder. The Demo holds made-up data only.
+
 Choose the file that matches your purpose:
 
 | File | Purpose |
 | --- | --- |
-| Blank | New command workspace or empty destination for an older Swift workspace. It is also the application you open when the workspace's data is kept in a separate data file. |
-| Data file | Holds the workspace's data only: no forms or code. Open it through Swift NAVFIT, never directly. Optional (see section 2.2). |
-| Demo | Practice using synthetic reports, groups, reviews, and reporting-senior history. |
-| Existing populated workspace | Continue real work; preserve it when upgrading. |
+| Application (`Swift_NAVFIT_<version>.accdb`) | The program you open. Its first-run setup makes your workspace's data file, so it is also the starting point for a new command workspace or an empty destination for an older Swift workspace. |
+| Demo application and Demo data file | Practice using synthetic reports, groups, reviews, and reporting-senior history. Keep the two files together in one folder. |
+| Data file | Your workspace's data, made by setup. It holds tables only: no forms or code. Open it through Swift NAVFIT, never directly. |
+| Existing populated workspace | A single-file workspace from an earlier version. Continue real work; preserve it when upgrading. |
 
 ## 2.2 Start a new workspace
 
-1. Keep the downloaded Blank as a master and make a working copy in the approved location.
-2. Open the working copy in desktop Access. Follow organizational Access trust policy; application VBA must be allowed to run for the buttons to work.
-3. Enter the command/workspace information and your contributor name in first-run setup.
-4. Open **Overview**. Confirm the workspace context and active contributor before entering report data.
-5. Make a backup before substantial data entry or import.
+1. Save the application (`Swift_NAVFIT_<version>.accdb`) in an approved folder. Keep the downloaded file as a master if you want one.
+2. Open the application in desktop Access. Follow organizational Access trust policy; application VBA must be allowed to run for the buttons to work.
+3. On the first-run setup screen, read the line that says where the work will be kept. It names a new data file, `Swift NAVFIT data.accdb`, in the same folder as the application (`Swift NAVFIT data 2.accdb` and so on if the name is taken). To use another folder, choose **Change folder...** beside the line and pick it.
+4. Enter the command name and your contributor name.
+5. Choose **Create workspace**. Swift NAVFIT makes the data file, links the application to it and opens **Overview**.
+6. Confirm the workspace context and active contributor before entering report data.
+7. Make a backup before substantial data entry or import.
 
-**Expected result:** The workspace is configured and navigation opens normally. A new Blank has no existing reports or command history.
+**Expected result:** The data file exists in the folder you saw, the workspace is configured, and **Overview** opens with no existing reports or command history. The application file stays the application, so a newer version can replace it without moving the data.
 
 **Startup warnings.** The setup and contributor screens show a yellow warning when the file is somewhere Swift cannot protect it:
 
@@ -121,37 +125,34 @@ Choose the file that matches your purpose:
 
 The warning does not stop you continuing. A network share is not flagged; only one person should have the file open there at a time. If another session chooses a different contributor while you work, your next action says so and keeps your unsaved edits open.
 
-With a separate data file (see below), the "Already open in another session" warning also appears. It does not name the other computer, and only the session that starts second is warned.
+The "Already open in another session" warning also appears for the data file. It does not name the other computer, and only the session that starts second is warned.
 
-### Keep the workspace in a separate data file
+### Other setup buttons for the data file
 
-New and optional: instead of one file that holds both the application and the command's data, you can keep the data in a second `.accdb` file that holds tables only. The downloaded copy then acts as the application, and the data file is the workspace. This lets you replace the application with a newer version without moving the data (see 17.1). A new copy still works as one file unless you choose a data file.
+Two more buttons sit on the first-run setup screen, below **Import data from a previous Swift NAVFIT version**:
 
-On the first-run setup screen of a new Blank copy, two buttons sit below **Import data from a previous Swift NAVFIT version**:
+- **Open an existing data file** opens a file picker. Choosing a data file links the application to it. Swift NAVFIT then starts on that data: first-run setup if the data file is empty, or contributor choice if it holds a workspace. If you choose a complete workspace from release 0.49.0 to 0.55.0, Swift NAVFIT brings it in (see 2.3).
+- **Import data from a previous Swift NAVFIT version** first makes the new data file, then imports into it (see 17.1).
 
-- **Open an existing data file** opens a file picker. Choosing a data file links this copy to it. Swift NAVFIT then starts on that data: first-run setup if the data file is new and empty, or contributor choice if it holds a workspace.
-- **Keep this workspace in a new data file** opens a folder picker. Swift NAVFIT writes `Swift NAVFIT data.accdb` in that folder (`Swift NAVFIT data 2.accdb` and so on if the name is taken), links to it, and shows setup again so you can enter the command and contributor names. The data file holds no forms or code.
+These buttons work only on an application that has no workspace yet. An application that already holds a workspace is never relinked, so no saved data can be lost.
 
-These buttons work only on a copy that has no workspace yet. A copy that already holds a workspace is never relinked, so no saved data can be lost.
+Keep the data file where the startup-warnings table above says to keep a workspace: in an approved folder that is not synced, not temporary, and not read-only. Only one person should have it open at a time.
 
-1. Make a working copy of the Blank in the approved location and open it in desktop Access.
-2. On the setup screen, choose **Keep this workspace in a new data file**, or **Open an existing data file** to use a data file you already have.
-3. Pick the folder or the file. For a new data file, choose a folder that meets the rules below.
-4. Complete setup with the command and contributor names, if setup is shown.
+**When the data file cannot be opened.** If Swift NAVFIT cannot open its data file at startup, a window titled "Swift NAVFIT data file" says "Swift NAVFIT cannot open its data file" and gives the reason: the file is missing, moved, renamed, on a drive or share that is not there, not a Swift NAVFIT data file, from a version that cannot be upgraded, or another error. It has three buttons:
 
-**Expected result:** The copy is linked to the data file and opens normally. Reports, groups and settings are saved in the data file.
+- **Find the data file...** opens a file picker. Choose the data file, or a different one.
+- **Create a new data file...** opens a folder picker. Swift NAVFIT makes a new, empty data file in that folder and goes to setup. The old data file, if it turns up later, is not changed.
+- **Close Swift NAVFIT** closes the application.
 
-Keep the data file where the startup-warnings table above says to keep a workspace: in an approved folder that is not synced, not temporary, and not read-only. Only one person should have it open at a time, as before.
-
-**When the data file cannot be found.** At startup, if the data file is missing, moved, renamed, not a Swift NAVFIT data file, or from another version that cannot be upgraded, a message says why. **OK** opens a file picker so you can find the data file; **Cancel** closes Swift NAVFIT. Choosing the right file relinks the copy and startup carries on.
+If you moved or copied the application and its data file together into another folder, the application finds the data file beside it and starts without asking.
 
 ## 2.3 Continue an older Swift workspace
 
-Do not overwrite the old file with a new Blank.
+Do not overwrite the old file with a newly downloaded application.
 
-**One action.** An earlier workspace is a complete single-file workspace from release 0.49.0 to 0.55.0. Open a new Blank and choose **Open an existing data file** on the setup screen, then choose the earlier file. Swift NAVFIT recognizes it and explains that it will make a new data file beside it and bring the workspace in; the earlier file is only read and never changed. Choose **OK**. Swift NAVFIT creates `<earlier file name> data.accdb` in the same folder, links to it, runs the same verified import as **Import data from a previous Swift NAVFIT version** (every row and field checked) and opens contributor choice. If the import fails, the copy keeps the new, empty data file and says so; you can try the import again from **Settings & Help**.
+**One action.** An earlier workspace is a complete single-file workspace from release 0.49.0 to 0.55.0. Open a newly downloaded application and choose **Open an existing data file** on the setup screen, then choose the earlier file. Swift NAVFIT recognizes it and explains that it will make a new data file beside it and bring the workspace in; the earlier file is only read and never changed. Choose **OK**. Swift NAVFIT creates `<earlier file name> data.accdb` in the same folder, links to it, runs the same verified import as **Import data from a previous Swift NAVFIT version** (every row and field checked) and opens contributor choice. If the import fails, the application keeps the new, empty data file and says so; you can try the import again from **Settings & Help**.
 
-**Two steps.** Alternatively, open a separate new Blank and use **Import data from a previous Swift NAVFIT version**. This keeps the workspace in the Blank itself, as a single file. Chapter 17 describes the transfer. A populated Demo is not an upgrade destination.
+**Two steps.** Alternatively, open a separate newly downloaded application and use **Import data from a previous Swift NAVFIT version**. On the setup screen this makes the new data file first, then imports into it. Chapter 17 describes the transfer. A populated Demo is not an upgrade destination.
 
 ## 2.4 Change the active contributor
 
@@ -961,7 +962,7 @@ Use report Notes and replies for discussion. Use the official Front/Back report 
 ## 17.1 Transfer an older Swift workspace
 
 1. Finish report work and close the old source workspace. Keep an intact backup.
-2. Open a separate **new Blank** release, not the Demo or another populated workspace.
+2. Open a separate newly downloaded application (`Swift_NAVFIT_<version>.accdb`), not the Demo or another populated workspace.
 3. In setup or **Settings & Help**, choose **Import data from a previous Swift NAVFIT version**.
 4. Select the old `.accdb`. Review the source version and record-count preview.
 5. Choose **Import all workspace data**. Watch the running progress log for copying and verification phases. Do not start a second import because a large transfer takes time.
@@ -970,14 +971,14 @@ Use report Notes and replies for discussion. Use the official Front/Back report 
 
 Swift copies by table, restores relationships, and verifies original source values before committing. The source is read-only; source forms/code are not installed into the new application. Initial setup details in an otherwise blank destination are replaced by the source workspace's details.
 
-This is a whole-workspace transfer into an empty destination, not a merge between populated files. Future schemas and unrecognized source tables are rejected. Workspaces from before release 0.49.0 (schema 35) are also rejected: import such a file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace. On a reported failure, read the log and retain both files; do not delete source tables to force acceptance. The r126 release was tested against retained schema 1-26 fixtures.
+This is a whole-workspace transfer into an empty destination, not a merge between populated files. Future schemas and unrecognized source tables are rejected. Workspaces from before release 0.49.0 (schema 35) are also rejected: import such a file into a Swift NAVFIT 0.55.0 application first, then import that workspace. On a reported failure, read the log and retain both files; do not delete source tables to force acceptance. The r126 release was tested against retained schema 1-26 fixtures.
 
 ### Update a workspace that uses a data file
 
-When the workspace is kept in a separate data file (section 2.2), updating means giving the new application the same data file:
+The workspace is kept in a data file (section 2.2), so updating means giving the new application the same data file:
 
-1. Download the new Blank and open it.
-2. Choose **Open an existing data file** and choose the data file. The upgrade happens then.
+1. Download the new application, `Swift_NAVFIT_<version>.accdb`, and save it in place of the old one, or beside it.
+2. Open it. If it finds the data file by itself, the upgrade happens at startup. If not, choose **Open an existing data file** and choose the data file; the upgrade happens then.
 3. Check the workspace. Once the new application works, you can delete the old application file; the data file is the workspace.
 
 When a newer Swift NAVFIT is pointed at (or starts on) an older data file, it upgrades the data file automatically. First it copies the data file beside itself, named `<data file name> before schema <N> <date-time>.accdb`, and checks that the copy is identical. Then it upgrades, and a message says which schema it went from and to and where the copy is. If anything fails part way, it puts the data file back exactly as it was from that copy and says so. Keep the copy until the upgraded file has been used and backed up.
@@ -992,7 +993,7 @@ In **Settings & Help**, choose **Backup and restore**, then **Checkpoint and wri
 
 A backup holds the data, not the application. To restore, open a new blank Swift NAVFIT workspace, choose **Restore a backup into this blank workspace** (the same as **Import data from a previous Swift NAVFIT version**), select the backup and import it. Restore only fills a blank workspace and verifies every value before committing. Whole-file copies made by earlier versions import the same way.
 
-With a separate data file, the backup is a copy of the data file, checked row by row and field by field against the open workspace, with its verification record beside it. It restores through the same import. Back up the data file, not the application file.
+The backup is a copy of the data file, checked row by row and field by field against the open workspace, with its verification record beside it. It restores through the same import. Back up the data file, not the application file.
 
 Check the restored workspace before replacing the authoritative working file, and keep older backups until then. A backup can predate later report changes; report History is the better tool when only one earlier report revision is needed.
 
@@ -1006,7 +1007,7 @@ When the warning appears, write a verified backup and plan to start a new blank 
 
 **Settings & Help > About this version** shows the version you are running, its release date and the address where new releases are published. Copy the address into a web browser to check for a newer version. Swift NAVFIT never connects to the internet itself.
 
-Once a release is 90 days old, **Overview** shows one line above the heading saying so. It is a reminder only: the version keeps working. To upgrade, download the new Blank, then use **Import data from a previous Swift NAVFIT version** in the new file (see 17.1). If the workspace is kept in a separate data file, open the new Blank and choose **Open an existing data file** instead; the data file is upgraded in place (see "Update a workspace that uses a data file" in 17.1). Keep the old file until you have checked the new one.
+Once a release is 90 days old, **Overview** shows one line above the heading saying so. It is a reminder only: the version keeps working. To upgrade, download the new application, save it in place of the old one (or beside it), open it and choose **Open an existing data file** if it does not find the data file by itself. The data file is upgraded in place (see "Update a workspace that uses a data file" in 17.1). A workspace from an earlier single-file version comes in through **Import data from a previous Swift NAVFIT version** (see 17.1). Keep the old file until you have checked the new one.
 
 ---
 
@@ -1027,12 +1028,12 @@ Once a release is 90 days old, **Overview** shows one line above the heading say
 | PSG RSCA unavailable | Check matching senior/paygrade baseline, exclusion confirmation, and complete eligible saved traits. |
 | Prior ITA is missing | Inspect the member link and prior evaluation records. Do not enter it in the read-only group reference cell. |
 | Import looks busy | Read the timestamped progress log. Wait for success/failure instead of launching another import. |
-| Workspace import rejected | Use an empty new Blank; check supported source version and log. Preserve the old file. |
-| Message at startup that the data file was not found | The data file is missing, moved, renamed, not a Swift NAVFIT data file, or from a version that cannot be upgraded. Choose **OK** and pick the data file; **Cancel** closes Swift NAVFIT (section 2.2). |
+| Workspace import rejected | Use a newly downloaded application with a new, empty data file; check supported source version and log. Preserve the old file. |
+| Window "Swift NAVFIT cannot open its data file" at startup | The window gives the reason: the data file is missing, moved, renamed, on a drive or share that is not there, not a Swift NAVFIT data file, from a version that cannot be upgraded, or another error. Choose **Find the data file...** to pick it (or a different one), **Create a new data file...** to make an empty one in a folder you pick and go to setup, or **Close Swift NAVFIT** (section 2.2). |
 | Data file is from a newer version | Nothing was changed. Use a newer Swift NAVFIT; an older one cannot open it (section 17.1). |
 | Data file is open in another session and the upgrade is refused | Nothing was changed. Close the data file in the other session, then choose it again (section 17.1). |
 | Message that the data file was upgraded | The message gives the schema before and after, and where the pre-upgrade copy is, named `<data file name> before schema <N> <date-time>.accdb`. Keep the copy until the upgraded file has been used and backed up (section 17.1). |
-| An earlier workspace was chosen as a data file | Swift NAVFIT makes a new data file beside it and imports the workspace; the earlier file is not changed. If the import fails, the copy keeps the empty data file; retry from **Settings & Help** (section 2.3). |
+| An earlier workspace was chosen as a data file | Swift NAVFIT makes a new data file beside it and imports the workspace; the earlier file is not changed. If the import fails, the application keeps the empty data file; retry from **Settings & Help** (section 2.3). |
 | "The section width is greater than the page width" when creating PDFs, or report pages split across several PDF pages | Swift lays PDF pages out on **Microsoft Print to PDF**, which is part of Windows, whatever your default printer is. If it says Microsoft Print to PDF is not available, ask IT support to turn it on (Windows features). Releases up to 0.55.0 use the Windows default printer instead: make Microsoft Print to PDF the default while you create PDFs (in **Settings > Bluetooth & devices > Printers & scanners**, turn off **Let Windows manage my default printer** first), then set your usual printer back. |
 | Cannot leave a report | Correct a failed save/checkpoint, or record/clear unfinished review decision text. Do not force-close to bypass it. |
 | Report/group seems missing | Clear search and filters; check archive status and the selected summary group. |
@@ -1056,7 +1057,7 @@ For a repeatable error, retain the file and note the version, action, report/gro
 
 ## 19.1 Guided practice in a separate Demo copy
 
-1. Open a fresh Demo copy and confirm the synthetic-data banner. Do not import real workspace data into it.
+1. Save a fresh Demo pair (its application and data file) together in one folder, open the Demo application, and confirm the synthetic-data banner. Do not import real workspace data into it.
 2. Open **DEMO - Clean reports (0 report issues)**. Inspect its members, ITA values, prior references, and reporting-senior projection.
 3. Open a member report. Switch Front/Back pages, inspect Validation checks, and try the validation popout beside the report. Observe that group reminders are separate from member-report findings.
 4. Post a new synthetic note, reply to it, and save another reply as a private unfinished draft. Switch views, then resume the draft.

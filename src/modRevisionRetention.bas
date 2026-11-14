@@ -52,7 +52,7 @@ Private Function RevisionHasReferences(ByVal revision As Long) As Boolean
     Dim t As DAO.TableDef, f As DAO.Field, db As DAO.Database
     Set db = CurrentDb
     For Each t In db.TableDefs
-        If Left$(t.Name, 4) <> "MSys" And Left$(t.Name, 1) <> "~" Then
+        If SwiftWorkspaceTable(t.Name) Then
             For Each f In t.Fields
                 If f.Type = dbLong Then
                     If RevisionReferenceField(t.Name, f.Name) Then
