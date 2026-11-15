@@ -25,7 +25,7 @@
    "name": "test-workspace-migration",
    "area": "Import and transfer",
    "tier": "release",
-   "note": "Release migration matrix and upgrade; -Cases selects focused cases. Manual persistence needs -LegacyTemplate (a schema-27 blank); audit needs -FixtureMapPath; messages need -DemoPath; directory transfer needs -SourcePath."
+   "note": "Release migration matrix and upgrade; -Cases selects focused cases. Messages need -DemoPath; directory transfer needs -SourcePath."
   },
   {
    "name": "test-workspace-read-performance",

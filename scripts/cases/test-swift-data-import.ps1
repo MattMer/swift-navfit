@@ -240,6 +240,8 @@ function SeedFixture([string]$path,[int]$schema){
     if($names -contains 'ReportHead'){$db.Execute('INSERT INTO ReportHead (ReportID,RevisionID) VALUES ('+$report.Report+','+$head+')',128)}
    }
    $value.Close()
+   #The fixture writes snapshots itself; a seeded count and checksum (schema 50) would be noise.
+   if(@($db.TableDefs.Item('ReportRevision').Fields|Where-Object {$_.Name -eq 'ValueHash'}).Count){$db.Execute('UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null',128)}
   }
   $total=0;foreach($name in (UserTables $db)){if($name -ne 'AppMetadata' -and $name -notin $transientTables){$total+=[int]$db.OpenRecordset('SELECT Count(*) FROM ['+$name+']',4).Fields.Item(0).Value}}
   return $total

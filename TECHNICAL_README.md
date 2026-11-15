@@ -42,12 +42,12 @@ Development source (*generated*):
 | --- | --- |
 | Application version | 0.57.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 50 |
-| Imports accepted | Workspaces of schema 35 to 50, into a target of schema 21 to 50 |
+| Imports accepted | Workspaces of schema 35 to 50, into a target of schema 35 to 50 |
 | Tables / enforced relationships | 84 / 169 |
 | VBA modules / forms | 124 / 76 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 126 / 124 |
+| Test cases / VBA test harnesses | 124 / 123 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use

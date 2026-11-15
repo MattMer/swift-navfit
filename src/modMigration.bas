@@ -15,24 +15,17 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Set t = CurrentDb: Set w = DBEngine.Workspaces(0)
     Set r = s.OpenRecordset("AppMetadata", dbOpenSnapshot): ver = r!SchemaVersion: r.Close
     'Schema 35 (release 0.49.0, the first public release) is the oldest imported.
-    'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces.
+    'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces. The source
+    'is at least 35 and never newer than the target, so no older-schema branches remain.
     If ver >= 1 And ver < 35 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema " & ver & ". This version imports workspaces from release 0.49.0 (schema 35) onward. Import the file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here."
     If ver < 35 Or ver > 50 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
     'The target is always this version's own workspace, so its bound follows SCHEMA_VERSION.
-    If targetVersion < 21 Or targetVersion > SCHEMA_VERSION Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through " & SCHEMA_VERSION & "."
+    If targetVersion < 35 Or targetVersion > SCHEMA_VERSION Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 35 through " & SCHEMA_VERSION & "."
     If ver > targetVersion Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Migration cannot downgrade the source schema."
     tables = Array("UserProfile", "Workspace", "Folder", "Report", "ReportRevision", "RevisionValue", "RevisionChange", "ReportEvent", "FolderMove", "OperationJournal", "ImportReceipt", "ImportRawValue", "RecoveryDraft", "NarrativeSnippet", "LibraryPreference", "FolderBatchChange", "ReviewComment", "ReviewCommentEvent", "ReviewTask", "ReviewTaskEvent", _
-        "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline")
-    If targetVersion >= 22 Then tables = Split(Join(tables, "|") & "|ReportNote|ReportNoteDraft", "|")
-    If targetVersion >= 23 Then tables = Split(Join(tables, "|") & "|CommandMember|MemberReport|PriorEvaluation|PriorEvaluationTrait", "|")
-    If targetVersion >= 26 Then tables = Split(Join(tables, "|") & "|ReportMessage", "|")
-    If targetVersion >= 27 Then tables = Split(Join(tables, "|") & "|DirectoryMerge|DirectoryMergeReport|DirectoryMergePrior", "|")
-    If targetVersion >= 28 Then tables = Split(Join(tables, "|") & "|GroupCompletion|GroupCompletionReport|GroupCompletionCurrent|RSCountedReport|ReportHead|RevisionDate|RevisionChoice|FieldDefaultLink|GroupLifecycle", "|")
-    If targetVersion >= 29 Then tables = Split(Join(tables, "|") & "|AuditActor|AuditEvent", "|")
-    If targetVersion >= 30 Then tables = Split(Join(tables, "|") & "|WizardPreview", "|")
-    If targetVersion >= 34 Then tables = Split(Join(tables, "|") & "|MemberCounseling|DirectoryMergeCounseling", "|")
-    If targetVersion >= 35 Then tables = Split(Join(tables, "|") & "|ReportSignoff|DraftDisposal", "|")
+        "SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding", "ReportingSeniorRecord", "ReportingSeniorValue", "RSCABaseline", "GroupRSCABaseline", _
+        "ReportNote", "ReportNoteDraft", "CommandMember", "MemberReport", "PriorEvaluation", "PriorEvaluationTrait", "ReportMessage", "DirectoryMerge", "DirectoryMergeReport", "DirectoryMergePrior", "GroupCompletion", "GroupCompletionReport", "GroupCompletionCurrent", "RSCountedReport", "ReportHead", "RevisionDate", "RevisionChoice", "FieldDefaultLink", "GroupLifecycle", "AuditActor", "AuditEvent", "WizardPreview", "MemberCounseling", "DirectoryMergeCounseling", "ReportSignoff", "DraftDisposal")
     If targetVersion >= 36 Then tables = Split(Join(tables, "|") & "|DirectoryMergeSenior", "|")
     If targetVersion >= 37 Then tables = Split(Join(tables, "|") & "|RouteRunEvent", "|")
     If targetVersion >= 38 Then tables = Split(Join(tables, "|") & "|RosterImport|RosterPresence|MemberDeparture", "|")
@@ -47,7 +40,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             'Who had the source open is momentary; it is known but never copied.
-            known = (table.name = "AppMetadata" Or (ver >= 31 And table.name = "TraitDefinition") Or SwiftTransientTable(table.Name))
+            known = (table.name = "AppMetadata" Or table.name = "TraitDefinition" Or SwiftTransientTable(table.Name))
             For Each n In tables
                 If table.Name = n Then known = True
             Next
@@ -58,7 +51,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     For Each table In t.TableDefs
         If SwiftWorkspaceTable(table.Name) And Not SwiftTransientTable(table.Name) And table.name <> "AppMetadata" And table.name <> "TraitDefinition" Then
             known = False
-            If replaceSetup And targetVersion >= 30 And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
+            If replaceSetup And table.Name = "WizardPreview" Then known = WizardImportStagingOnly()
             If Not (replaceSetup And (table.Name = "Workspace" Or table.Name = "UserProfile")) And Not known Then
                 Set r = t.OpenRecordset("SELECT TOP 1 * FROM [" & table.Name & "]", dbOpenSnapshot)
                 If Not r.EOF Then r.Close: Err.Raise vbObjectError + 303, "modMigration.MigrateWorkspace", "Target must be blank."
@@ -68,9 +61,8 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     Next
     'Saved query metadata must be created outside the data transaction. Otherwise
     'an action-query failure can invalidate DAO handles while rolling back DDL.
-    deferred = Array("Report|CurrentRevisionID|ReportID", "ReportRevision|ParentRevisionID|RevisionID", "Folder|ParentFolderID|FolderID", "ReviewComment|ThreadID|CommentID")
-    If ver >= 26 Then deferred = Split(Join(deferred, "~") & "~ReportMessage|ParentMessageID|MessageID~ReportNoteDraft|ParentMessageID|DraftGuid", "~")
-    If ver >= 28 Then deferred = Split(Join(deferred, "~") & "~RSCABaseline|ParentBaselineID|BaselineID~GroupCompletion|PriorCompletionID|CompletionID", "~")
+    deferred = Array("Report|CurrentRevisionID|ReportID", "ReportRevision|ParentRevisionID|RevisionID", "Folder|ParentFolderID|FolderID", "ReviewComment|ThreadID|CommentID", _
+        "ReportMessage|ParentMessageID|MessageID", "ReportNoteDraft|ParentMessageID|DraftGuid", "RSCABaseline|ParentBaselineID|BaselineID", "GroupCompletion|PriorCompletionID|CompletionID")
     'The senior's member link waits until CommandMember is copied.
     If ver >= 36 Then deferred = Split(Join(deferred, "~") & "~ReportingSeniorRecord|MemberID|SeniorID", "~")
     temporaryQuery = "zSwiftMigration" & Left$(Replace(Replace(Replace(NewIdentity(), "{", ""), "}", ""), "-", ""), 24)
@@ -84,13 +76,11 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
         End If
     Next
     w.BeginTrans: trans = True
-    If ver >= 31 Then
-        stage = "Preserve trait definitions"
-        ImportTraitDefinitions s, t
-    End If
+    stage = "Preserve trait definitions"
+    ImportTraitDefinitions s, t
     'Only the current import descriptor may occupy an otherwise blank target.
     'Its removal rolls back with the import; all source preview rows are copied.
-    If replaceSetup And targetVersion >= 30 Then t.Execute "DELETE FROM WizardPreview", dbFailOnError
+    If replaceSetup Then t.Execute "DELETE FROM WizardPreview", dbFailOnError
     If replaceSetup Then
         t.Execute "DELETE FROM Workspace", dbFailOnError
         t.Execute "DELETE FROM UserProfile", dbFailOnError
@@ -107,23 +97,6 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
         If ver < 38 And (n = "RosterImport" Or n = "RosterPresence" Or n = "MemberDeparture") Then GoTo NextTable
         If ver < 37 And n = "RouteRunEvent" Then GoTo NextTable
         If ver < 36 And n = "DirectoryMergeSenior" Then GoTo NextTable
-        If ver < 35 And (n = "ReportSignoff" Or n = "DraftDisposal") Then GoTo NextTable
-        If ver < 34 And (n = "MemberCounseling" Or n = "DirectoryMergeCounseling") Then GoTo NextTable
-        If ver < 30 And n = "WizardPreview" Then GoTo NextTable
-        If ver < 29 And (n = "AuditActor" Or n = "AuditEvent") Then GoTo NextTable
-        If ver < 28 And IsPersistenceTable(CStr(n)) Then GoTo NextTable
-        If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextTable
-        If ver < 26 And n = "ReportMessage" Then GoTo NextTable
-        If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextTable
-        If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextTable
-        If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextTable
-        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextTable
-        If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextTable
-        If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextTable
-        If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextTable
-        If ver < 5 And n = "RecoveryDraft" Then GoTo NextTable
-        If ver < 4 And (n = "ImportReceipt" Or n = "ImportRawValue") Then GoTo NextTable
-        If ver = 1 And (n = "Folder" Or n = "FolderMove") Then GoTo NextTable
         copiedRows = 0
         If showProgress Then Application.Run "WorkspaceImportProgress", "Copying " & n & "..."
         stage = "Copy " & n
@@ -138,10 +111,6 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
                 vals = vals & "[" & fieldName & "]"
             End If
         Next
-        If targetVersion >= 28 And ver < 28 And n = "Report" Then
-            names = names & ",[LegacyFormKind],[LegacyWorkflowState],[LegacyWorkflowNull]"
-            vals = vals & ",[FormKind],[WorkflowState],IIf([WorkflowState] Is Null,True,False)"
-        End If
         'Explicit source columns preserve IDs and allow newer target-only defaults.
         t.Execute "INSERT INTO [" & n & "] (" & names & ") SELECT " & vals & " FROM [" & n & "]" & sourceSQL, dbFailOnError
         copiedRows = t.RecordsAffected
@@ -151,10 +120,8 @@ NextTable:
     If showProgress Then Application.Run "WorkspaceImportProgress", "Restoring report revision and folder relationships..."
     For Each relationPair In deferred
         relationPair = Split(CStr(relationPair), "|")
-        If Not (ver < 2 And relationPair(0) = "Folder") And Not (ver < 7 And relationPair(0) = "ReviewComment") Then
-            stage = "Restore " & relationPair(0) & "." & relationPair(1)
-            t.Execute "UPDATE [" & relationPair(0) & "] AS dst INNER JOIN [" & temporaryQuery & relationPair(0) & "] AS src ON dst.[" & relationPair(2) & "]=src.[" & relationPair(2) & "] SET dst.[" & relationPair(1) & "]=src.[" & relationPair(1) & "]", dbFailOnError
-        End If
+        stage = "Restore " & relationPair(0) & "." & relationPair(1)
+        t.Execute "UPDATE [" & relationPair(0) & "] AS dst INNER JOIN [" & temporaryQuery & relationPair(0) & "] AS src ON dst.[" & relationPair(2) & "]=src.[" & relationPair(2) & "] SET dst.[" & relationPair(1) & "]=src.[" & relationPair(1) & "]", dbFailOnError
     Next
     If showProgress Then Application.Run "WorkspaceImportProgress", "Bulk copying finished in " & Format$(MigrationSeconds(copyStarted), "0.00") & " seconds. Verifying copied values..."
     verifyStarted = Timer
@@ -169,23 +136,6 @@ NextTable:
         If ver < 38 And (n = "RosterImport" Or n = "RosterPresence" Or n = "MemberDeparture") Then GoTo NextCheck
         If ver < 37 And n = "RouteRunEvent" Then GoTo NextCheck
         If ver < 36 And n = "DirectoryMergeSenior" Then GoTo NextCheck
-        If ver < 35 And (n = "ReportSignoff" Or n = "DraftDisposal") Then GoTo NextCheck
-        If ver < 34 And (n = "MemberCounseling" Or n = "DirectoryMergeCounseling") Then GoTo NextCheck
-        If ver < 30 And n = "WizardPreview" Then GoTo NextCheck
-        If ver < 29 And (n = "AuditActor" Or n = "AuditEvent") Then GoTo NextCheck
-        If ver < 28 And IsPersistenceTable(CStr(n)) Then GoTo NextCheck
-        If ver < 27 And Left$(CStr(n), 14) = "DirectoryMerge" Then GoTo NextCheck
-        If ver < 26 And n = "ReportMessage" Then GoTo NextCheck
-        If ver < 23 And (n = "CommandMember" Or n = "MemberReport" Or n = "PriorEvaluation" Or n = "PriorEvaluationTrait") Then GoTo NextCheck
-        If ver < 22 And (n = "ReportNote" Or n = "ReportNoteDraft") Then GoTo NextCheck
-        If ver < 21 And IsRSTable(CStr(n)) Then GoTo NextCheck
-        If ver < 20 And IsMajorTable(CStr(n)) Then GoTo NextCheck
-        If ver < 8 And (n = "ReviewTask" Or n = "ReviewTaskEvent") Then GoTo NextCheck
-        If ver < 7 And (n = "ReviewComment" Or n = "ReviewCommentEvent") Then GoTo NextCheck
-        If ver < 6 And (n = "OperationJournal" Or n = "NarrativeSnippet" Or n = "LibraryPreference" Or n = "FolderBatchChange") Then GoTo NextCheck
-        If ver < 5 And n = "RecoveryDraft" Then GoTo NextCheck
-        If ver < 4 And (n = "ImportReceipt" Or n = "ImportRawValue") Then GoTo NextCheck
-        If ver = 1 And (n = "Folder" Or n = "FolderMove") Then GoTo NextCheck
         stage = "Verify " & n
         checkedRows = 0
         If showProgress Then Application.Run "WorkspaceImportProgress", "Verifying all fields in " & n & "..."
@@ -195,22 +145,18 @@ NextCheck:
     Next
     If showProgress Then Application.Run "WorkspaceImportProgress", "Field verification finished in " & Format$(MigrationSeconds(verifyStarted), "0.00") & " seconds."
     If showProgress Then Application.Run "WorkspaceImportProgress", "Finalizing notes and member directory compatibility..."
-    If targetVersion >= 28 Then
-        MigrateRSAccounting
-        MigrateReportState
-    End If
+    MigrateRSAccounting
+    MigrateReportState
     'Direct calls: an error raised through Application.Eval never reaches Failed
     'and shows an unhandled run-time dialog instead of rolling back the import.
-    If targetVersion >= 22 And ver < 29 Then Call MigrateLegacyReportNotes
-    If targetVersion >= 23 And ver < 23 Then Call MigrateDirectoryCompatibility()
-    If targetVersion >= 26 Then Call MigrateReportMessages
+    Call MigrateReportMessages
     'Schema 46 adds EVAL block 44. Before audit history so its events are audited.
-    If targetVersion >= 46 And ver < 46 And ver >= 4 Then
+    If targetVersion >= 46 And ver < 46 Then
         stage = "Restore block 44"
         If showProgress Then Application.Run "WorkspaceImportProgress", "Restoring EVAL block 44 from NAVFIT98A imports..."
         restored = MigrateQualifications()
     End If
-    If targetVersion >= 29 Then MigrateAuditHistory
+    MigrateAuditHistory
     If Len(expectedHash) > 0 Then
         If showProgress Then Application.Run "WorkspaceImportProgress", "All copied fields verified. Checking source is unchanged..."
         If SourceFileHash(sourcePath) <> expectedHash Then Err.Raise vbObjectError + 310, "modMigration.MigrateWorkspace", "Source changed during transfer. No data imported."
@@ -378,24 +324,6 @@ Public Function MigrateQualifications() As Long
         reports.MoveNext
     Loop
     reports.Close
-End Function
-
-Private Function IsMajorTable(ByVal name As String) As Boolean
-    Dim key As Variant
-    For Each key In Array("SummaryGroup", "GroupMember", "GroupSnapshot", "GroupSnapshotMember", "FieldDefault", "ChangeBatch", "ChangeItem", "RouteTemplate", "RouteTemplateStep", "RouteRun", "RouteRunStep", "ComparisonSet", "ComparisonMember", "MeetingProposal", "RulePack", "RuleDefinition", "ValidationRun", "ValidationFinding")
-        If key = name Then IsMajorTable = True: Exit Function
-    Next
-End Function
-
-Private Function IsRSTable(ByVal name As String) As Boolean
-    IsRSTable = (name = "ReportingSeniorRecord" Or name = "ReportingSeniorValue" Or name = "RSCABaseline" Or name = "GroupRSCABaseline")
-End Function
-
-Private Function IsPersistenceTable(ByVal name As String) As Boolean
-    Dim key As Variant
-    For Each key In Array("GroupCompletion", "GroupCompletionReport", "GroupCompletionCurrent", "RSCountedReport", "ReportHead", "RevisionDate", "RevisionChoice", "FieldDefaultLink", "GroupLifecycle")
-        If key = name Then IsPersistenceTable = True: Exit Function
-    Next
 End Function
 
 Private Function DeferredMigrationField(ByVal tableName As String, ByVal fieldName As String) As Boolean
