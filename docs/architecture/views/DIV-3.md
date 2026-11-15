@@ -992,6 +992,8 @@ Microsoft Access (ACE) tables in schema 50, application 0.57.0-dev. Types are Ac
 | ValuesDisposed | Yes/No |  |
 | FieldDefinitionVersion | Long |  |
 | ValueEncoding | Type 2 |  |
+| ValueCount | Long |  |
+| ValueHash | Text (64) |  |
 
 ## ReportSignoff
 

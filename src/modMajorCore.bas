@@ -154,6 +154,68 @@ Public Function RevisionStoredValue(ByVal revisionID As Long, ByVal key As Strin
     End If
     r.Close
 End Function
+' Integrity record of a saved revision (threat-model item 6): the number of value rows and
+' a SHA-256 over them, in key order, with the revision's field version. It detects rows
+' added, removed or changed outside Swift. It is not a signature: anyone who can edit the
+' tables can recompute it. Revisions saved before schema 50 have none and are not checked.
+Public Function RevisionValueRows(ByVal db As DAO.Database, ByVal revisionID As Long) As Object
+    Dim r As DAO.Recordset, rows As Object
+    Set rows = CreateObject("Scripting.Dictionary")
+    Set r = db.OpenRecordset("SELECT FieldKey,ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    Do While Not r.EOF
+        If r!IsNullValue Then rows(CStr(r!FieldKey)) = Null Else rows(CStr(r!FieldKey)) = r!ValueText.Value
+        r.MoveNext
+    Loop
+    r.Close
+    Set RevisionValueRows = rows
+End Function
+Public Function RevisionValueDigest(ByVal rows As Object, ByVal fieldVersion As Long) As String
+    Dim keys() As String, key As Variant, n As Long, i As Long, j As Long, swap As String, text As String
+    If rows.Count > 0 Then
+        ReDim keys(0 To rows.Count - 1)
+        For Each key In rows.Keys: keys(n) = CStr(key): n = n + 1: Next
+        For i = 1 To n - 1
+            swap = keys(i): j = i - 1
+            Do While j >= 0
+                If StrComp(keys(j), swap, vbBinaryCompare) <= 0 Then Exit Do
+                keys(j + 1) = keys(j): j = j - 1
+            Loop
+            keys(j + 1) = swap
+        Next
+    End If
+    text = "v" & fieldVersion & ChrW$(30)
+    For i = 0 To n - 1
+        If IsNull(rows(keys(i))) Then
+            text = text & keys(i) & ChrW$(31) & "N" & ChrW$(30)
+        Else
+            text = text & keys(i) & ChrW$(31) & "V" & rows(keys(i)) & ChrW$(30)
+        End If
+    Next
+    RevisionValueDigest = SourceTextHash(text)
+End Function
+' Record the count and checksum of a revision's stored values.
+Public Sub SealRevision(ByVal db As DAO.Database, ByVal revisionID As Long)
+    Dim rows As Object, r As DAO.Recordset, version As Long
+    Set rows = RevisionValueRows(db, revisionID)
+    Set r = db.OpenRecordset("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    If Not r.EOF Then version = Nz(r!FieldDefinitionVersion, 0)
+    r.Close
+    db.Execute "UPDATE ReportRevision SET ValueCount=" & rows.Count & ",ValueHash='" & RevisionValueDigest(rows, version) & "' WHERE RevisionID=" & revisionID, dbFailOnError
+End Sub
+' Raise when a sealed revision's stored values no longer match their count and checksum.
+' rows holds the revision's value rows as read, before empty fields are filled in.
+Public Sub AssertRevisionSeal(ByVal revisionID As Long, ByVal rows As Object)
+    Dim r As DAO.Recordset, failed As Boolean
+    Set r = CurrentDb.OpenRecordset("SELECT ValueCount,ValueHash,FieldDefinitionVersion,ValuesDisposed FROM ReportRevision WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    If Not r.EOF Then
+        If Not IsNull(r!ValueHash) And Not Nz(r!ValuesDisposed, False) Then
+            failed = (Nz(r!ValueCount, -1) <> rows.Count)
+            If Not failed Then failed = (StrComp(r!ValueHash, RevisionValueDigest(rows, Nz(r!FieldDefinitionVersion, 0)), vbTextCompare) <> 0)
+        End If
+    End If
+    r.Close
+    If failed Then Err.Raise vbObjectError + 8905, "modMajorCore.AssertRevisionSeal", "Saved revision " & revisionID & " was changed outside Swift NAVFIT: its values no longer match their recorded checksum. No values were changed. Restore a backup or review persistence diagnostics."
+End Sub
 ' A sparse snapshot read as rows lists only fields with a value; add the empty ones
 ' that existed at the revision's catalogue version.
 Public Sub CompleteSparseSnapshot(ByVal values As Object, ByVal fieldVersion As Long)

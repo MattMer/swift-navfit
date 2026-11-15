@@ -24,8 +24,9 @@ Private Function SchemaStepSQL(ByVal toVersion As Long) As Variant
             'Who else has this data file open, and which report each is editing; the command's UIC.
             SchemaStepSQL = Array("ALTER TABLE Workspace ADD COLUMN CommandUIC TEXT(5)", "CREATE TABLE SessionPresence (SessionGuid TEXT(38) CONSTRAINT PK_SessionPresence PRIMARY KEY, ProfileID LONG NOT NULL, ComputerName TEXT(64), StartedAt DATETIME, LastSeen DATETIME, ReportID LONG, EditingSince DATETIME)")
         Case 50
-            'Revisions saved from schema 50 store only fields with a value (ValueEncoding 1).
-            SchemaStepSQL = Array("ALTER TABLE ReportRevision ADD COLUMN ValueEncoding BYTE")
+            'Revisions saved from schema 50 store only fields with a value (ValueEncoding 1),
+            'with a row count and checksum over those values.
+            SchemaStepSQL = Array("ALTER TABLE ReportRevision ADD COLUMN ValueEncoding BYTE", "ALTER TABLE ReportRevision ADD COLUMN ValueCount LONG", "ALTER TABLE ReportRevision ADD COLUMN ValueHash TEXT(64)")
         Case Else
             Err.Raise vbObjectError + 9820, "modSchemaUpgrade.SchemaStepSQL", "No schema step leads to schema " & toVersion & "."
     End Select

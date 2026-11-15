@@ -342,6 +342,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         End If
     Next
     snapshotRows.Close: Set snapshotRows = Nothing
+    SealRevision db, revisionID
     changeRows.Close: Set changeRows = Nothing
     'Keep the report write cursor alive through revision linking.
     'A second SQL update can contend with its uncommitted record lock.

@@ -15,7 +15,12 @@ Public Sub SnapshotFullCopy(ByVal revisionID As Long)
             End If
         End If
     Next
-    db.Execute "UPDATE ReportRevision SET ValueEncoding=Null WHERE RevisionID=" & revisionID, dbFailOnError
+    db.Execute "UPDATE ReportRevision SET ValueEncoding=Null,ValueCount=Null,ValueHash=Null WHERE RevisionID=" & revisionID, dbFailOnError
+End Sub
+' Clear a revision's count and checksum, so a fixture that edits its rows directly
+' reaches the reader's own check instead of the checksum.
+Public Sub SnapshotUnseal(ByVal revisionID As Long)
+    CurrentDb.Execute "UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null WHERE RevisionID=" & revisionID, dbFailOnError
 End Sub
 ' Every catalogue field a revision holds is present: a row, or empty in a sparse revision.
 Public Function SnapshotComplete(ByVal revisionID As Long) As Boolean

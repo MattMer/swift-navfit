@@ -362,6 +362,7 @@ Public Function MigrateQualifications() As Long
                     Set values = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
                     Do While Not revisions.EOF
                         values.AddNew: values!RevisionID = revisions!RevisionID: values!FieldKey = "Qualifications": values!ValueText = text: values!IsNullValue = False: values.Update
+                        If Not IsNull(MajorScalar("SELECT ValueHash FROM ReportRevision WHERE RevisionID=" & revisions!RevisionID)) Then SealRevision db, CLng(revisions!RevisionID)
                         If revisions!RevisionID = head Then headRestored = True
                         revisions.MoveNext
                     Loop

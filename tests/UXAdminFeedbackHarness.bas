@@ -171,7 +171,7 @@ End Function
 Private Sub MakePreBlock44(ByVal id As Long)
     'Before schema 46 no snapshot recorded block 44 and the cache column was empty.
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE FieldKey='Qualifications' AND RevisionID In (SELECT RevisionID FROM ReportRevision WHERE ReportID=" & id & ")", dbFailOnError
-    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=2 WHERE ReportID=" & id, dbFailOnError
+    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=2,ValueCount=Null,ValueHash=Null WHERE ReportID=" & id, dbFailOnError
     CurrentDb.Execute "UPDATE Report SET Qualifications=Null WHERE ReportID=" & id, dbFailOnError
 End Sub
 Private Sub CheckBlock44Backfill()

@@ -90,7 +90,7 @@ Public Sub ValidateCatalogueField(ByVal key As String, ByVal value As Variant)
 End Sub
 
 Public Sub AssertReportCache(ByVal reportID As Long)
-    Dim db As DAO.Database, r As DAO.Recordset, v As DAO.Recordset, head As Long, key As Variant, values As Object, cache As Object
+    Dim db As DAO.Database, r As DAO.Recordset, v As DAO.Recordset, head As Long, key As Variant, values As Object, cache As Object, rows As Object
     Set db = CurrentDb: head = ReportHeadRevision(reportID)
     Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenSnapshot)
     If r.EOF Then Err.Raise vbObjectError + 8901, "modReportState.AssertReportCache", "Report does not exist."
@@ -102,10 +102,13 @@ Public Sub AssertReportCache(ByVal reportID As Long)
         v.MoveNext
     Loop
     v.Close
+    Set rows = CreateObject("Scripting.Dictionary")
+    For Each key In values.Keys: rows.Add key, values(key): Next
     If RevisionIsSparse(head) Then CompleteSparseSnapshot values, Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & head), 0)
     CheckCacheValues cache, head, -1, values
     r.Close
     AssertRevisionFacts head, values
+    AssertRevisionSeal head, rows
 End Sub
 Private Function CacheRecord(ByVal rows As DAO.Recordset) As Object
     Dim result As Object, field As DAO.Field
@@ -185,13 +188,13 @@ Public Sub AssertReportCacheRows(ByVal loaded As DAO.Recordset)
 End Sub
 Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     Dim heads As Object, snapshots As Object, dates As Object, choices As Object, db As DAO.Database, r As DAO.Recordset
-    Dim key As Variant, head As Variant, values As Object, dateRows As Collection, choiceRows As Collection, filter As String, value As Variant
+    Dim key As Variant, head As Variant, values As Object, dateRows As Collection, choiceRows As Collection, filter As String, value As Variant, storedCount As Long
     Set db = CurrentDb: Set heads = CreateObject("Scripting.Dictionary"): Set snapshots = CreateObject("Scripting.Dictionary")
     Set dates = CreateObject("Scripting.Dictionary"): Set choices = CreateObject("Scripting.Dictionary")
-    Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion,v.ValueEncoding FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion,v.ValueEncoding,v.ValueCount,v.ValueHash,v.ValuesDisposed FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
     Do While Not r.EOF
         If Nz(r!RevisionID, 0) = 0 Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
-        heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0), Nz(r!ValueEncoding, 0))
+        heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0), Nz(r!ValueEncoding, 0), IIf(IsNull(r!ValueHash) Or Nz(r!ValuesDisposed, False), -1, Nz(r!ValueCount, -2)))
         snapshots.Add CStr(r!RevisionID), CreateObject("Scripting.Dictionary")
         dates.Add CStr(r!RevisionID), New Collection: choices.Add CStr(r!RevisionID), New Collection
         r.MoveNext
@@ -218,9 +221,12 @@ Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     For Each key In caches.Keys
         If Not heads.Exists(CStr(key)) Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
         head = heads(key): Set values = snapshots(CStr(head(0)))
+        'A list check compares the stored row count only; opening a report checks the checksum.
+        storedCount = values.Count
         If head(2) = 1 Then CompleteSparseSnapshot values, CLng(head(1))
         CheckCacheValues caches(key), CLng(head(0)), CLng(head(1)), values
         CheckRevisionFacts values, dates(CStr(head(0))), choices(CStr(head(0)))
+        If head(3) <> -1 And head(3) <> storedCount Then Err.Raise vbObjectError + 8905, "modReportState.CheckCacheChunk", "Saved revision " & head(0) & " was changed outside Swift NAVFIT: its values no longer match their recorded count. No values were changed. Restore a backup or review persistence diagnostics."
     Next
 End Sub
 

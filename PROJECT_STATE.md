@@ -70,7 +70,8 @@ import and print-ready PDF output.
   - Saved state lives in `ReportHead`, which owns the authoritative
     `ReportRevision`.
   - `RevisionValue` holds the snapshots; from schema 50 only fields with a value
-    (`ReportRevision.ValueEncoding` 1). `RevisionDate` and `RevisionChoice` hold
+    (`ReportRevision.ValueEncoding` 1), with a row count and checksum
+    (`ValueCount`, `ValueHash`) checked when a report opens. `RevisionDate` and `RevisionChoice` hold
     typed dates and choices that keep explicit Missing/Unknown/Conflict states.
   - The `Report` value columns are a checked projection cache. Reads and saves
     stop if the cache disagrees with the revision.

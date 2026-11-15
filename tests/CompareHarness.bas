@@ -130,7 +130,7 @@ Private Sub MakeFullCopy(ByVal revisionID As Long)
             CurrentDb.Execute "INSERT INTO RevisionValue (RevisionID,FieldKey,ValueText,IsNullValue) VALUES (" & revisionID & "," & QuoteSQL(CStr(key)) & ",Null,True)", dbFailOnError
         End If
     Next
-    CurrentDb.Execute "UPDATE ReportRevision SET ValueEncoding=Null WHERE RevisionID=" & revisionID, dbFailOnError
+    CurrentDb.Execute "UPDATE ReportRevision SET ValueEncoding=Null,ValueCount=Null,ValueHash=Null WHERE RevisionID=" & revisionID, dbFailOnError
 End Sub
 
 Private Sub FixtureCloseEditor()

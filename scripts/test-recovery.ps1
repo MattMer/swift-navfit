@@ -178,6 +178,9 @@ try {
     $result=$app.Eval('TestPersistence()')
     Write-Output $result
     if($result -notlike 'PASS:*'){throw $result}
+    $result=$app.Eval('TestRevisionSeal()')
+    Write-Output $result
+    if($result -notlike 'PASS:*'){throw $result}
 } finally {
     $app.Quit(2)
     [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)

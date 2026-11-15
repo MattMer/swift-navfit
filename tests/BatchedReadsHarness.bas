@@ -116,7 +116,8 @@ Public Function TestBatchedReads() As String
     version = CLng(DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev))
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionValueID=" & id, dbFailOnError
     CompareCache 1, vbObjectError + 8904
-    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=0 WHERE RevisionID=" & rev, dbFailOnError
+    'A revision saved before the field existed carries no count or checksum.
+    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=0,ValueCount=Null,ValueHash=Null WHERE RevisionID=" & rev, dbFailOnError
     CurrentDb.Execute "UPDATE Report SET Trait33=Null WHERE ReportID=1", dbFailOnError
     CompareCache 1, 0
     Check UXHistoryITARows(1)("1") = UXTableITA(1), "Missing saved trait was inferred"

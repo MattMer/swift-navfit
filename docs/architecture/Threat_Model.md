@@ -63,7 +63,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 
 | ID | Threat | Mitigation | Status |
 | --- | --- | --- | --- |
-| T1 | Someone with file access edits tables directly in Access, bypassing Swift's rules | Table validation rules and relationships enforce structure even outside Swift. Revisions are append-only through Swift, and folder permissions limit who can open the file. Direct edits are not cryptographically detectable. | P, C |
+| T1 | Someone with file access edits tables directly in Access, bypassing Swift's rules | Table validation rules and relationships enforce structure even outside Swift. Revisions are append-only through Swift, and folder permissions limit who can open the file. From schema 50 a per-revision row count and checksum detect direct edits to saved values; they are not cryptographic protection, since the checksum can be recomputed. | P, C |
 | T2 | A modified release file carries changed or malicious VBA | Published SHA-256 hashes; download only from the GitHub release. Planned: a signed VBA project or signed package, with the publisher trusted by group policy (section 5). | P |
 | T3 | A crafted import (NAVFIT98A, older workspace) injects bad values | Imported databases are opened read-only through DAO and their code is never run. Field names, types and sizes are checked against the NAVFIT98A schema; tables, queries and code objects outside it are rejected. Values are mapped, previewed and verified against the source before commit. A blank-target rule prevents silent merges. Malformed databases are tested by `test-external-import`. | M |
 | T4 | A crafted PDF manipulates report values | Structured import shows a preview before commit and keeps provenance. Only mapped fields are read. | M |
@@ -111,7 +111,7 @@ Status key: **M** mitigated in the product; **P** partly mitigated; **A** accept
 | 3 | *Done in 0.49.0:* the 4 `VBScript.RegExp` uses (including the SSN filter in output file names) are plain VBA. Before replacing them, a side-by-side run of old and new code on 20,000 random strings and 22 edge cases matched exactly; the harnesses keep the expected values. | I2 and future availability |
 | 4 | *Done:* every XML parser sets `ProhibitDTD` and `resolveExternals = False` before it loads. `check-vba-source.ps1` fails any `LoadXML` in a procedure that does not set both. | E3 (defense in depth) |
 | 5 | Measure workspace growth on a large synthetic binder; document compact-and-repair and archiving guidance | D3 |
-| 6 | Optional: an integrity hash over each saved revision, checked on load, to detect direct table edits | T1 |
+| 6 | *In development (schema 50):* each saved revision records its row count and a SHA-256 checksum over its values, checked when a report opens or saves; a report list checks the count. It detects direct table edits, including ones kept consistent with the report. It is not a signature: anyone who can edit the tables can recompute it. Revisions saved before schema 50 are not checked. | T1 (accidental and casual edits) |
 
 ## 5. Code-signing plan (M01)
 

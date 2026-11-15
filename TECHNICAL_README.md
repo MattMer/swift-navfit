@@ -138,6 +138,11 @@ end and back end.
   schema 50 a snapshot stores only fields with a value (`ReportRevision.ValueEncoding`
   1), and a missing field reads as empty; revisions saved earlier are full copies
   and are read as before. One accessor (`RevisionStoredValue`) reads a saved field.
+  Each schema-50 revision also records its row count and a SHA-256 checksum over
+  its values and field version (`ValueCount`, `ValueHash`). Opening or saving a
+  report checks both, and a report list checks the count, so a direct table edit
+  is detected. The checksum is not a signature: anyone who can edit the tables can
+  recompute it.
   Routine working states replace their unreferenced predecessor; narrative
   saves and workflow checkpoints are retained. Unique head identities still
   reject stale writes even when the preceding working snapshot is removed.
@@ -623,7 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
-| 14 Nov 2026 | Development only, schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`); earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
+| 14 Nov 2026 | Development only, schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`), with a row count and checksum checked when a report opens; earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
 | 13 Nov 2026 | Release 0.56.0, schema 49: the front end and separate data file from S01, the two-person safeguards, command UIC and details. |
 | 13 Nov 2026 | Schema 49: `SessionPresence` (who has the workspace open, their computer, and the report open in their editor; transient: never imported, copied but not checked by backup) and `Workspace.CommandUIC` (optional command UIC, asked at setup, editable in Settings & Help with an operation journal entry, prefills new reports). Each application keeps its own contributor; a save that meets another session's lock retries and then explains; startup warnings name sync conflict copies beside the data file. Two people on one data file are not supported but made safer; a synced folder cannot be shared. The summary letter is padded to an even page count and its filename box truncated. |
 | 13 Nov 2026 | Development only, not in a release: first-run setup now makes the data file by default, beside the application. A missing or unusable data file at startup opens a window offering to find it, create a new one or close; a data file of the same name beside the application is used without asking. A linked application keeps its blank tables (hidden, `USysBlank` prefix) so it can make a new data file; workspace-wide table loops (backup, import, retention) skip them. Release files: `Swift_NAVFIT_<version>.accdb` and the Demo as an application and data file pair, made by `scripts/package-release.ps1`. |

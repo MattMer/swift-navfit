@@ -25,6 +25,8 @@ Public Function SeedPersistenceTransfer() As String
     SetGroupWorkflow groupID, GroupStamp(groupID), "In-Work"
     SetFieldDefault "Report", id, "CounselingDate", "NOT REQ"
     rev = CurrentRevision(id)
+    'Legacy revisions carry no count or checksum.
+    If DLookup("SchemaVersion", "AppMetadata") >= 50 Then CurrentDb.Execute "UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null WHERE RevisionID=" & rev, dbFailOnError
     CurrentDb.Execute "UPDATE Report SET DateReported='LEGACY' WHERE ReportID=" & id, dbFailOnError
     CurrentDb.Execute "UPDATE RevisionValue SET ValueText='LEGACY',IsNullValue=False WHERE RevisionID=" & rev & " AND FieldKey='DateReported'", dbFailOnError
     If DLookup("SchemaVersion", "AppMetadata") >= 28 Then
@@ -33,6 +35,7 @@ Public Function SeedPersistenceTransfer() As String
     End If
     domainID = CommitDraft(0, "EVAL", "Legacy domain fixture", "Synthetic", Null, Null, "")
     rev = CurrentRevision(domainID)
+    If DLookup("SchemaVersion", "AppMetadata") >= 50 Then CurrentDb.Execute "UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null WHERE RevisionID=" & rev, dbFailOnError
     If DLookup("SchemaVersion", "AppMetadata") >= 28 Then
         CurrentDb.Execute "UPDATE Report SET LegacyFormKind='LEGACY',LegacyWorkflowNull=True WHERE ReportID=" & domainID, dbFailOnError
     End If

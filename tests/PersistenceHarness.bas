@@ -131,6 +131,8 @@ Public Function TestPersistence() As String
     Check CurrentRevision(a) = rev And DCount("*", "ReportRevision") = count, "Typed failure retained revision/head"
     Check DLookup("Title", "Report", "ReportID=" & a) = "First", "Typed failure retained cache write"
     'Synthetic legacy values: preserve exactly, derive Unknown, and expose review state.
+    'Legacy revisions carry no count or checksum.
+    CurrentDb.Execute "UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null WHERE RevisionID=" & rev, dbFailOnError
     CurrentDb.Execute "UPDATE Report SET DateReported='LEGACY' WHERE ReportID=" & a, dbFailOnError
     CurrentDb.Execute "UPDATE RevisionValue SET ValueText='LEGACY',IsNullValue=False WHERE RevisionID=" & rev & " AND FieldKey='DateReported'", dbFailOnError
     CurrentDb.Execute "DELETE FROM RevisionDate WHERE RevisionID=" & rev & " AND FieldKey='DateReported'", dbFailOnError
@@ -147,4 +149,68 @@ Public Function TestPersistence() As String
     TestPersistence = "PASS: " & n & " persistence, typed facts, constraints, rollback and legacy-preservation assertions": Exit Function
 Failed:
     TestPersistence = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
+End Function
+Private Function SealRejects(ByVal id As Long) As Boolean
+    On Error GoTo Rejected
+    AssertReportCache id
+    Exit Function
+Rejected:
+    SealRejects = (Err.Number = vbObjectError + 8905)
+End Function
+Private Function ListRejects(ByVal id As Long) As Boolean
+    Dim r As DAO.Recordset
+    On Error GoTo Rejected
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
+    AssertReportCacheRows r
+    r.Close
+    Exit Function
+Rejected:
+    ListRejects = (Err.Number = vbObjectError + 8905)
+End Function
+' Each saved revision records its row count and a checksum over its values; a direct
+' table edit that keeps the report consistent is still detected (threat-model item 6).
+Public Function TestRevisionSeal() As String
+    Dim id As Long, rev As Long, f As Object, hash As String, rows As Object
+    On Error GoTo Failed
+    ConfigureWorkspace "SYNTHETIC SEAL", "Tester"
+    id = CommitDraft(0, "EVAL", "Seal", "Synthetic", #1/1/2026#, #9/30/2026#, "notes")
+    Set f = CreateObject("Scripting.Dictionary"): f.Add "OfficialComments", "Original comment."
+    CommitSavedFields id, CurrentRevision(id), f, "Seal fixture"
+    rev = CurrentRevision(id)
+    hash = Nz(DLookup("ValueHash", "ReportRevision", "RevisionID=" & rev), "")
+    Check Len(hash) = 64, "Save recorded no checksum"
+    Check DLookup("ValueCount", "ReportRevision", "RevisionID=" & rev) = DCount("*", "RevisionValue", "RevisionID=" & rev), "Recorded count differs from stored rows"
+    Set rows = RevisionValueRows(CurrentDb, rev)
+    Check RevisionValueDigest(rows, DLookup("FieldDefinitionVersion", "ReportRevision", "RevisionID=" & rev)) = hash, "Checksum does not match stored values"
+    Check Not SealRejects(id) And Not ListRejects(id), "Unchanged revision rejected"
+    'A changed value, kept consistent with the report, is caught when the report opens.
+    CurrentDb.Execute "UPDATE RevisionValue SET ValueText='Edited comment.' WHERE RevisionID=" & rev & " AND FieldKey='OfficialComments'", dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET OfficialComments='Edited comment.' WHERE ReportID=" & id, dbFailOnError
+    Check SealRejects(id), "Direct value edit not detected"
+    Check Not ListRejects(id), "List check read more than the row count"
+    CurrentDb.Execute "UPDATE RevisionValue SET ValueText='Original comment.' WHERE RevisionID=" & rev & " AND FieldKey='OfficialComments'", dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET OfficialComments='Original comment.' WHERE ReportID=" & id, dbFailOnError
+    Check Not SealRejects(id), "Restored value still rejected"
+    'A removed row reads as an empty field; the count and checksum catch it.
+    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & rev & " AND FieldKey='OfficialComments'", dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET OfficialComments=Null WHERE ReportID=" & id, dbFailOnError
+    Check SealRejects(id) And ListRejects(id), "Removed row not detected"
+    'A changed field version changes which fields read as empty.
+    SealRevision CurrentDb, rev
+    Check Not SealRejects(id), "Resealed revision rejected"
+    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=FieldDefinitionVersion+1 WHERE RevisionID=" & rev, dbFailOnError
+    Check SealRejects(id), "Field version edit not detected"
+    CurrentDb.Execute "UPDATE ReportRevision SET FieldDefinitionVersion=FieldDefinitionVersion-1 WHERE RevisionID=" & rev, dbFailOnError
+    'Revisions without a checksum (saved before schema 50) are read as before.
+    CurrentDb.Execute "UPDATE ReportRevision SET ValueCount=Null,ValueHash=Null WHERE RevisionID=" & rev, dbFailOnError
+    CurrentDb.Execute "UPDATE RevisionValue SET ValueText='Unchecked.' WHERE RevisionID=" & rev & " AND FieldKey='Title'", dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET Title='Unchecked.' WHERE ReportID=" & id, dbFailOnError
+    Check Not SealRejects(id) And Not ListRejects(id), "Unsealed revision rejected"
+    'The next save records a checksum again.
+    f.RemoveAll: f.Add "OfficialComments", "Second comment."
+    CommitSavedFields id, CurrentRevision(id), f, "Seal fixture"
+    Check Len(Nz(DLookup("ValueHash", "ReportRevision", "RevisionID=" & CurrentRevision(id)), "")) = 64 And Not SealRejects(id), "Next save not sealed"
+    TestRevisionSeal = "PASS: " & n & " revision checksum assertions": Exit Function
+Failed:
+    TestRevisionSeal = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
 End Function
