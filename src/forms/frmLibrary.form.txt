@@ -298,6 +298,7 @@ Begin Form
                     RowSourceType ="Value List"
                     RowSource ="Active;Archived;All"
                     AfterUpdate ="=RefreshLibrary()"
+                    DefaultValue ="\"Active\""
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8925

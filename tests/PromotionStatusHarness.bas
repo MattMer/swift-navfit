@@ -38,7 +38,7 @@ Public Function TestPromotionStatus() As String
         id = SaveStatus(0, CStr(kind), "REGULAR")
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id) = "REGULAR", "Status lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
+        Check SnapshotComplete(first), "Incomplete snapshot"
         Call CommitDraft(id, CStr(kind), "Status", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id) = "REGULAR", "Omitted status changed report"
         copy = DuplicateDraft(id): Check Stored(copy) = "REGULAR", "Duplicate lost status"
@@ -89,6 +89,7 @@ Public Function TestPromotionStatus() As String
     Call ArchiveDraft(id, True): Check Rejected(id, "REGULAR"), "Archived status edit accepted"
     Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='PromotionStatus'", dbFailOnError
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=11 WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
@@ -98,6 +99,7 @@ Public Function TestPromotionStatus() As String
     DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
     Call RestoreDraft(copy, first): Check IsNull(Stored(copy)), "Legacy restore invented status"
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='PromotionStatus'", dbFailOnError
     Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

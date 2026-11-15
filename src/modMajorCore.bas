@@ -50,7 +50,7 @@ Public Function SavedFields(ByVal reportID As Long) As Object
     r.Close
     ' Revisions saved before Block 28 existed carry its native imported value as a
     ' read-only projection, so exports and later saves do not clear it.
-    If Not block28Recorded Then values("CommandEmployment") = StoredBlock28(reportID)
+    If Not block28Recorded And Not RevisionIsSparse(head) Then values("CommandEmployment") = StoredBlock28(reportID)
     Set SavedFields = values
 End Function
 Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As Variant
@@ -119,19 +119,57 @@ Public Function NumericTraitAverage(ByVal revisionID As Long) As Variant
     Next
     If count = 0 Then NumericTraitAverage = Null Else NumericTraitAverage = total / count
 End Function
+' A revision saved from schema 50 is sparse (ValueEncoding 1): only fields with a value
+' have a row, and a missing field is empty. Older revisions are full copies.
+Public Function RevisionIsSparse(ByVal revisionID As Long) As Boolean
+    RevisionIsSparse = (Nz(MajorScalar("SELECT ValueEncoding FROM ReportRevision WHERE RevisionID=" & revisionID), 0) = 1)
+End Function
+' A sparse revision holds every catalogue field that existed when it was saved, so a
+' missing one is empty; a field added to the catalogue later was not recorded.
+Public Function SparseHoldsField(ByVal revisionID As Long, ByVal key As String) As Boolean
+    Dim r As DAO.Recordset, version As Long
+    Set r = CurrentDb.OpenRecordset("SELECT ValueEncoding,FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID, dbOpenSnapshot)
+    If Not r.EOF Then
+        If Nz(r!ValueEncoding, 0) = 1 Then
+            version = CatalogueFieldVersion(key)
+            SparseHoldsField = (version >= 1 And version <= Nz(r!FieldDefinitionVersion, 0))
+        End If
+    End If
+    r.Close
+End Function
+' The one way to read a single saved field. Returns False when the snapshot does not
+' hold the field (a full copy without its row); value is Null for an empty field.
+Public Function RevisionStoredValue(ByVal revisionID As Long, ByVal key As String, ByRef value As Variant) As Boolean
+    Dim r As DAO.Recordset
+    value = Null
+    Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key), dbOpenSnapshot)
+    If r.EOF Then
+        RevisionStoredValue = SparseHoldsField(revisionID, key)
+    Else
+        If Not r!IsNullValue Then
+            If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 4008, "modMajorCore.RevisionStoredValue", "Snapshot has an inconsistent null flag."
+            value = r!ValueText.Value
+        End If
+        RevisionStoredValue = True
+    End If
+    r.Close
+End Function
+' A sparse snapshot read as rows lists only fields with a value; add the empty ones
+' that existed at the revision's catalogue version.
+Public Sub CompleteSparseSnapshot(ByVal values As Object, ByVal fieldVersion As Long)
+    Dim key As Variant, version As Long
+    For Each key In DraftFieldKeys()
+        version = CatalogueFieldVersion(CStr(key))
+        If Not values.Exists(CStr(key)) And version >= 1 And version <= fieldVersion Then values.Add CStr(key), Null
+    Next
+End Sub
 Public Function MajorRevisionHasField(ByVal revisionID As Long, ByVal key As String) As Boolean
-    MajorRevisionHasField = Not IsNull(MajorScalar("SELECT RevisionValueID FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key)))
+    Dim value As Variant
+    MajorRevisionHasField = RevisionStoredValue(revisionID, key, value)
 End Function
 Public Function MajorRevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
-    Dim ownedDB As DAO.Database
-    Set ownedDB = CurrentDb
-    Dim r As DAO.Recordset
-    Set r = ownedDB.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey=" & QuoteSQL(key), dbOpenSnapshot)
-    If r.EOF Then
-        r.Close
-        If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) < 24 Then MajorRevisionValue = Null: Exit Function
-        Err.Raise vbObjectError + 4007, "modMajorCore.MajorRevisionValue", "Snapshot field missing."
-    End If
-    If r!IsNullValue Then MajorRevisionValue = Null Else MajorRevisionValue = r!ValueText
-    r.Close
+    Dim value As Variant
+    If RevisionStoredValue(revisionID, key, value) Then MajorRevisionValue = value: Exit Function
+    If key = "CommandEmployment" And RevisionSnapshotSchema(revisionID) < 24 Then MajorRevisionValue = Null: Exit Function
+    Err.Raise vbObjectError + 4007, "modMajorCore.MajorRevisionValue", "Snapshot field missing."
 End Function

@@ -493,6 +493,8 @@ On Error GoTo Failed
    'Block 20: a CHIEFEVAL's result is edited as ReadinessDetail and prints beside MM/YY.
    fields("ReadinessDetail") = "PPPB"
    Check InStr(PDFOutputPlannedText(row, False), "PPPB") > 0, "CHIEFEVAL block 20 result not printed"
+   'It fits its box, so it is not repeated on the additional text page.
+   Check UBound(Split(PDFOutputPlannedText(row, False), "PPPB")) = 1, "CHIEFEVAL block 20 result repeated as additional text"
    'Renderer-only count stress, preserving the saved report and membership tables.
    Set countRows = New Collection
    For countIndex = 1 To 144: countRows.Add row: Next

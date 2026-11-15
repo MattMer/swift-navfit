@@ -9,7 +9,7 @@ $app=New-Object -ComObject Access.Application
 try {
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$false)
  $app.LoadFromText(5,'modUXTraitGrid',$module)
- $app.LoadFromText(5,'GridReadHarness',(Join-Path $root 'tests/GridReadHarness.bas'))
+ $app.LoadFromText(5,'GridReadHarness',(Join-Path $root 'tests/GridReadHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
  $app.DoCmd.RunCommand(126)
  $out=Join-Path $root 'build/batch4-grid-scale.csv'
  $result=$app.Eval('TestGridReads("'+$out+'")');Write-Output $result

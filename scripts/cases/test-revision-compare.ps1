@@ -11,6 +11,9 @@ try {
     $app.DoCmd.RunCommand(126)
     $result=$app.Eval('TestComparison()')
     if(-not $result.StartsWith('PASS:')){throw $result}
+    $sparse=$app.Eval('TestSparseRevisions()')
+    if(-not $sparse.StartsWith('PASS:')){throw $sparse}
+    Write-Output $sparse
     $app.CloseCurrentDatabase()
     @{Status=$result;BuildSHA256=(Get-FileHash -LiteralPath $BuildPath).Hash;TestDatabase=$scratch}|ConvertTo-Json|Set-Content (Join-Path $root 'build\tests\revision-compare-results.json')
     Write-Output $result

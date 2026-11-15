@@ -28,8 +28,8 @@ connection. Data enters and leaves only through files the user chooses.
 <!-- generated:facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.56.0 |
-| Schema version | 49 |
+| Application version | 0.57.0-dev |
+| Schema version | 50 |
 | Tables / enforced relationships | 84 / 169 |
 | Report fields in the catalogue | 101 |
 | VBA modules / forms | 124 / 76 |

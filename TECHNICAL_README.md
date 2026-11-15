@@ -41,13 +41,13 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.57.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 49 |
-| Imports accepted | Workspaces of schema 35 to 49, into a target of schema 21 to 49 |
+| Schema version | 50 |
+| Imports accepted | Workspaces of schema 35 to 50, into a target of schema 21 to 50 |
 | Tables / enforced relationships | 84 / 169 |
 | VBA modules / forms | 124 / 76 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 126 / 123 |
+| Test cases / VBA test harnesses | 126 / 124 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -133,8 +133,11 @@ end and back end.
   storage type, control, labels, limits, validation metadata, NAVFIT98A and PDF
   bindings and fixed page geometry. Other field views are generated from it.
 - **Persistence is revision-based.** Each save writes a new `ReportRevision`
-  with a full snapshot in `RevisionValue`, typed dates and choices in
-  `RevisionDate` and `RevisionChoice`, and a field-level change log.
+  with a snapshot in `RevisionValue`, typed dates and choices in
+  `RevisionDate` and `RevisionChoice`, and a field-level change log. From
+  schema 50 a snapshot stores only fields with a value (`ReportRevision.ValueEncoding`
+  1), and a missing field reads as empty; revisions saved earlier are full copies
+  and are read as before. One accessor (`RevisionStoredValue`) reads a saved field.
   Routine working states replace their unreferenced predecessor; narrative
   saves and workflow checkpoints are retained. Unique head identities still
   reject stale writes even when the preceding working snapshot is removed.
@@ -620,6 +623,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 14 Nov 2026 | Development only, schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`); earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
 | 13 Nov 2026 | Release 0.56.0, schema 49: the front end and separate data file from S01, the two-person safeguards, command UIC and details. |
 | 13 Nov 2026 | Schema 49: `SessionPresence` (who has the workspace open, their computer, and the report open in their editor; transient: never imported, copied but not checked by backup) and `Workspace.CommandUIC` (optional command UIC, asked at setup, editable in Settings & Help with an operation journal entry, prefills new reports). Each application keeps its own contributor; a save that meets another session's lock retries and then explains; startup warnings name sync conflict copies beside the data file. Two people on one data file are not supported but made safer; a synced folder cannot be shared. The summary letter is padded to an even page count and its filename box truncated. |
 | 13 Nov 2026 | Development only, not in a release: first-run setup now makes the data file by default, beside the application. A missing or unusable data file at startup opens a window offering to find it, create a new one or close; a data file of the same name beside the application is used without asking. A linked application keeps its blank tables (hidden, `USysBlank` prefix) so it can make a new data file; workspace-wide table loops (backup, import, retention) skip them. Release files: `Swift_NAVFIT_<version>.accdb` and the Demo as an application and data file pair, made by `scripts/package-release.ps1`. |

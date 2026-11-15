@@ -40,7 +40,7 @@ Public Function TestDecisionDetails() As String
     Call ConfigureWorkspace("Decision tests", "Synthetic reviewer"): keys = DecisionDetailsKeys(): limits = Array(20, 20, 3, 3, 3, 3)
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveDecision(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
+        Check SnapshotComplete(first), "Incomplete snapshot"
         For i = 0 To 5: Check Stored(id, CStr(keys(i))) = values(i), "Saved feature changed": Next
         Call CommitDraft(id, CStr(kind), "Decision", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted details wrote history"
@@ -138,6 +138,7 @@ Public Function TestDecisionDetails() As String
     Check Not Forms!frmDecisionDetails!cmdApply.Enabled, "Archived panel can apply"
     Call CancelDecisionDetails(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=16 WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
@@ -147,6 +148,7 @@ Public Function TestDecisionDetails() As String
     DoCmd.Close acForm, "frmRevisionCompare", acSaveNo: Call RestoreDraft(copy, first)
     For Each key In keys: Check IsNull(Stored(copy, CStr(key))), "Legacy restore invented details": Next
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='StatementNo'", dbFailOnError
     Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

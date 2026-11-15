@@ -110,7 +110,7 @@ Public Function TestUXSurface() As String
     stage = "save": Check UXSaveEditor(), "Valid surface draft save failed"
     Check CurrentRevision(id) <> revision, "Save did not append revision"
     Check Not EditorHasPending(), "Saved surface remains dirty"
-    Check DCount("*", "RevisionValue", "RevisionID=" & CurrentRevision(id)) = UBound(DraftFieldKeys()) + 1, "Surface save lost snapshot fields"
+    Check SnapshotComplete(CurrentRevision(id)), "Surface save lost snapshot fields"
     Check DLookup("MemberDoDID", "Report", "ReportID=" & id) = "1234567890", "Hidden member identifier lost"
     Check DLookup("ReportingSeniorDoDID", "Report", "ReportID=" & id) = "0987654321", "Hidden reporting senior identifier lost"
     Call UXSelectSection(5): Check s!txtOfficialComments.Visible And s!txtOfficialComments.Height >= 2000, "Narrative lacks spacious editor"

@@ -4,6 +4,6 @@ $scratch=Join-Path $root ('build/tests/read-rows-'+[guid]::NewGuid()+'.accdb');C
 $app=New-Object -ComObject Access.Application
 try{
  $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
- $app.LoadFromText(5,'UXReadRowsHarness',(Join-Path $root 'tests/UXReadRowsHarness.bas'));$app.DoCmd.RunCommand(126)
+ $app.LoadFromText(5,'UXReadRowsHarness',(Join-Path $root 'tests/UXReadRowsHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'));$app.DoCmd.RunCommand(126)
  $result=$app.Eval('TestUXReadRows()');Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
 }finally{$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

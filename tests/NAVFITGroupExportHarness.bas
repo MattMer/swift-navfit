@@ -201,3 +201,29 @@ Failed:
     If Not native Is Nothing Then native.Close
     TestNAVFITPastedText = "FAIL: " & Err.Number & " " & Err.Description
 End Function
+
+'An unanswered check box does not stop the export: NAVFIT98A boxes are ticked or not,
+'so it goes out unticked and the export result names it.
+Public Function TestNAVFITBlankBoxes(ByVal directory As String, ByVal template As String) As String
+    Dim copy As Long, values As Object, native As DAO.Database, r As DAO.Recordset, file As String
+    On Error GoTo Failed
+    checks = 0
+    copy = DuplicateDraft(1)
+    Set values = SavedFields(copy)
+    values("StatementYes") = Null: values("StatementNo") = Null
+    Call NAVFITCommitFields(copy, values, "Synthetic blank statement", "Blank check box test")
+    Check IsNull(SavedFields(copy)("StatementYes")), "Saving filled the blank statement box"
+    file = directory & "\blank-boxes.accdb"
+    Check NAVFITExportReport(copy, file, template) = file, "A blank check box blocked export"
+    Check InStr(NAVFITBlankBoxText(), UXFieldLabel("StatementYes")) > 0 And InStr(NAVFITBlankBoxText(), UXFieldLabel("StatementNo")) > 0, "Blank check boxes not listed in the export result"
+    Set native = DBEngine.OpenDatabase(file, False, True)
+    Set r = native.OpenRecordset("SELECT * FROM Reports WHERE ReportType Is Not Null", dbOpenSnapshot)
+    Check Not r.EOF, "Exported report missing"
+    Check NAVFITReadFields(r, 2000)("StatementYes") = "No", "Blank statement box was not exported unticked"
+    r.Close: native.Close: Set native = Nothing
+    Check IsNull(SavedFields(copy)("StatementYes")), "Export changed the saved blank box"
+    TestNAVFITBlankBoxes = "PASS: " & checks & " blank check box export assertions": Exit Function
+Failed:
+    If Not native Is Nothing Then native.Close
+    TestNAVFITBlankBoxes = "FAIL: " & Err.Number & " " & Err.Description
+End Function

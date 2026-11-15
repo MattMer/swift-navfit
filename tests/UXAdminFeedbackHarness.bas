@@ -126,6 +126,7 @@ Private Sub CheckLegacyBlock28()
     Set values = SavedFields(id)
     Check IsNull(values("CommandEmployment")), "New report export used retained native Block 28"
     Check IsNull(Block28FromRevision(revision)), "New revision invented projected Block 28 snapshot text"
+    SnapshotFullCopy revision
     db.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
     db.Execute "DELETE FROM RevisionChange WHERE RevisionID=" & revision & " AND FieldKey='CommandEmployment'", dbFailOnError
     db.Execute "UPDATE ReportRevision SET SnapshotSchema=23, FieldDefinitionVersion=Null WHERE RevisionID=" & revision, dbFailOnError

@@ -55,8 +55,13 @@ Public Function UXGroupAverage(ByVal groupID As Long) As Variant
         If Nz(members!ObservationStatus, "") <> "NOB" Then
             For Each key In TraitKeys()
                 token = Nz(members!CurrentRevisionID, 0) & ":" & key
-                If Not values.Exists(token) Then Err.Raise vbObjectError + 4007, "modUXDashboard.UXGroupAverage", "Snapshot field missing."
-                value = values(token)
+                If values.Exists(token) Then
+                    value = values(token)
+                ElseIf RevisionIsSparse(Nz(members!CurrentRevisionID, 0)) Then
+                    value = Null
+                Else
+                    Err.Raise vbObjectError + 4007, "modUXDashboard.UXGroupAverage", "Snapshot field missing."
+                End If
                 Select Case Nz(value, "")
                     Case "1.0", "2.0", "3.0", "4.0", "5.0": total = total + CDbl(value): marks = marks + 1
                 End Select

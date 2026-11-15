@@ -40,7 +40,7 @@ Public Function AssessmentFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 1
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If schema >= 11 Then r.Close: Err.Raise vbObjectError + 2203, "modAssessment.AssessmentFromRevision", "Assessment snapshot is incomplete."
+            If schema >= 11 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 2203, "modAssessment.AssessmentFromRevision", "Assessment snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
             If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2204, "modAssessment.AssessmentFromRevision", "Assessment snapshot has an inconsistent null flag."
             values(i) = r!ValueText

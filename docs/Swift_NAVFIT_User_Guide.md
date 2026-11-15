@@ -130,10 +130,10 @@ The "Already open in another session" warning also appears for the data file. It
 
 ### Other setup buttons for the data file
 
-Two more buttons sit on the first-run setup screen, below **Import data from a previous Swift NAVFIT version**:
+Two more buttons sit on the first-run setup screen, below **Restore a backup or import from a previous version**:
 
 - **Open an existing data file** opens a file picker. Choosing a data file links the application to it. Swift NAVFIT then starts on that data: first-run setup if the data file is empty, or contributor choice if it holds a workspace. If you choose a complete workspace from release 0.49.0 to 0.55.0, Swift NAVFIT brings it in (see 2.3).
-- **Import data from a previous Swift NAVFIT version** first makes the new data file, then imports into it (see 17.1).
+- **Restore a backup or import from a previous version** first makes the new data file, then imports the backup or earlier workspace into it (see 17.1 and 17.2).
 
 These buttons work only on an application that has no workspace yet. An application that already holds a workspace is never relinked, so no saved data can be lost.
 
@@ -1009,7 +1009,7 @@ Swift NAVFIT refuses, and changes nothing, in three cases: the data file is from
 
 In **Settings & Help**, choose **Backup and restore**, then **Checkpoint and write a verified backup** and pick a folder. Swift NAVFIT saves pending editor values as a recovery checkpoint and writes every table into a new backup file. It then checks every row and field against the open workspace. Access stays open. A `.verification.json` record is saved beside the backup; **Read a backup verification result** displays it. Keep dated backups in the approved backup location, and protect them, exported native files and return baselines at the same data sensitivity as the workspace.
 
-A backup holds the data, not the application. To restore, open a new blank Swift NAVFIT workspace, choose **Restore a backup into this blank workspace** (the same as **Import data from a previous Swift NAVFIT version**), select the backup and import it. Restore only fills a blank workspace and verifies every value before committing. Whole-file copies made by earlier versions import the same way.
+A backup holds the data, not the application. To restore, open a new copy of the Swift NAVFIT application and choose **Restore a backup or import from a previous version** on the setup screen. In a workspace that is already set up but still blank, use **Settings & Help > Backup and restore > Restore a backup into this blank workspace**. Select the backup and import it. Restore only fills a blank workspace and verifies every value before committing. Whole-file copies made by earlier versions import the same way.
 
 The backup is a copy of the data file, checked row by row and field by field against the open workspace, with its verification record beside it. It restores through the same import. Back up the data file, not the application file.
 

@@ -17,7 +17,7 @@ Public Function PromotionStatusFromRevision(ByVal revisionID As Long) As Variant
     value = Null
     Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='PromotionStatus'", dbOpenSnapshot)
     If r.EOF Then
-        If RevisionSnapshotSchema(revisionID) >= 12 Then r.Close: Err.Raise vbObjectError + 2302, "modPromotionStatus.PromotionStatusFromRevision", "Promotion status snapshot is incomplete."
+        If RevisionSnapshotSchema(revisionID) >= 12 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 2302, "modPromotionStatus.PromotionStatusFromRevision", "Promotion status snapshot is incomplete."
     ElseIf Not r!IsNullValue Then
         If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2303, "modPromotionStatus.PromotionStatusFromRevision", "Promotion status snapshot has an inconsistent null flag."
         value = r!ValueText

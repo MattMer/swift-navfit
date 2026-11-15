@@ -46,7 +46,7 @@ Public Function AdministrationFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 4
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If schema >= 9 Then r.Close: Err.Raise vbObjectError + 1904, "modAdministration.AdministrationFromRevision", "Administrative snapshot is incomplete."
+            If schema >= 9 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 1904, "modAdministration.AdministrationFromRevision", "Administrative snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
             If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 1905, "modAdministration.AdministrationFromRevision", "Administrative snapshot has an inconsistent null flag."
             values(i) = r!ValueText

@@ -46,7 +46,7 @@ Public Function TestAdministration() As String
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "OfficialName") = values(0) And Stored(id, "MemberName") = "Local display", "Names combined"
         Check Stored(id, "UnitUIC") = "00123", "Leading zero lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Snapshot not complete"
+        Check SnapshotComplete(first), "Snapshot not complete"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Local display", Null, Null, "Notes", "Omitted fields", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "UnitUIC") = "00123", "Omitted administration changed values"
         copy = DuplicateDraft(id)
@@ -100,6 +100,7 @@ Public Function TestAdministration() As String
     'An actual old snapshot lacks both the schema marker and administrative keys.
     first = DMin("RevisionID", "ReportRevision")
     copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('OfficialName','RankRate','Designator','UnitUIC','ShipStation')", dbFailOnError
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=Null WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
@@ -110,6 +111,7 @@ Public Function TestAdministration() As String
     Call RestoreDraft(copy, first)
     Check IsNull(Stored(copy, "UnitUIC")), "Legacy restore invented administration"
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='UnitUIC'", dbFailOnError
     Check CorruptRestoreRejected(copy, second), "Incomplete new snapshot restored"
     'Repair the test corruption so migration fixtures retain coherent current history.

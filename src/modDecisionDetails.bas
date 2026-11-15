@@ -49,7 +49,7 @@ Public Function DecisionDetailsFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 5
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 17 Then r.Close: Err.Raise vbObjectError + 2804, "modDecisionDetails.DecisionDetailsFromRevision", "Recommendation and statement details snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 17 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 2804, "modDecisionDetails.DecisionDetailsFromRevision", "Recommendation and statement details snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
             If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2805, "modDecisionDetails.DecisionDetailsFromRevision", "Recommendation and statement details snapshot has inconsistent null flag."
             values(i) = r!ValueText

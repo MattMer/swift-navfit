@@ -11,6 +11,7 @@ Private Function SavedValue(ByVal revisionID As Long, ByVal key As String, ByRef
             r.Close
             Err.Raise vbObjectError + 807, "modRevisionCompare.SavedValue", "The saved working state changed. Close and reopen comparison against the current report."
         End If
+        If SparseHoldsField(revisionID, key) Then recorded = True: SavedValue = Null: r.Close: Exit Function
         If CatalogueFieldVersion(key) > 1 Then
             If Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID), 0) >= CatalogueFieldVersion(key) Then Err.Raise vbObjectError + 800, "modRevisionCompare.SavedValue", "Revision snapshot is missing a required catalogue field: " & key
             SavedValue = Null: r.Close: Exit Function

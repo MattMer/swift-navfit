@@ -40,7 +40,7 @@ Public Function TestReportContext() As String
     Call ConfigureWorkspace("Context tests", "Synthetic reviewer"): keys = ReportContextKeys()
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveContext(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
+        Check SnapshotComplete(first), "Incomplete snapshot"
         For i = 0 To 8
             Check Stored(id, CStr(keys(i))) = values(i), "Saved context changed"
         Next
@@ -129,6 +129,7 @@ Public Function TestReportContext() As String
     Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
     For Each key In keys
+        SnapshotFullCopy first
         CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError
     Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=13 WHERE RevisionID=" & first, dbFailOnError
@@ -140,6 +141,7 @@ Public Function TestReportContext() As String
     Call RestoreDraft(copy, first)
     For Each key In keys: Check IsNull(Stored(copy, CStr(key))), "Legacy restore invented context": Next
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='DutyDescription'", dbFailOnError
     Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

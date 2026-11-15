@@ -913,6 +913,13 @@ Private Sub PlanReport(ByVal row As Object, ByVal rows As Collection)
             End If
             Select Case parts(0)
                 Case "@SeniorCity": covered("ReportingSeniorCity") = True: covered("ReportingSeniorState") = True: covered("ReportingSeniorZip") = True
+                'A CHIEFEVAL prints block 20's result from ReadinessDetail in this box (see FieldValue),
+                'so it is not repeated as additional text. An older summary that differs still is.
+                Case "ReadinessSummary"
+                    If row("Kind") = "CHIEFEVAL" And PDFOutputText(row("Fields"), "ReadinessDetail") <> "" Then
+                        covered("ReadinessDetail") = True
+                        If raw <> "" And raw <> PDFOutputText(row("Fields"), "ReadinessDetail") Then extra.Add PrintFieldLabel("ReadinessSummary") & vbCrLf & raw
+                    End If
                 Case "@SeniorAddress"
                     For Each key In Array("ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone", "ReportingSeniorDSN"): covered(CStr(key)) = True: Next
             End Select

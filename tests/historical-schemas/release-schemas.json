@@ -8,6 +8,7 @@
     { "version": "0.52.0", "schema": 41 },
     { "version": "0.53.0", "schema": 44 },
     { "version": "0.54.0", "schema": 45 },
-    { "version": "0.55.0", "schema": 48 }
+    { "version": "0.55.0", "schema": 48 },
+    { "version": "0.56.0", "schema": 49 }
   ]
 }

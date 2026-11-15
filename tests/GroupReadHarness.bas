@@ -84,6 +84,7 @@ Public Function TestGroupReads() As String
     CurrentDb.Execute "UPDATE Report SET Trait35='3.0' WHERE ReportID=" & id, dbFailOnError
     Compare g
     rev = CurrentRevision(id)
+    SnapshotFullCopy rev
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & rev & " AND FieldKey='Trait39'", dbFailOnError
     Check AverageError(g) = vbObjectError + 4007, "Missing-field fixture not rejected"
     CurrentDb.Execute "INSERT INTO RevisionValue (RevisionID,FieldKey,ValueText,IsNullValue) VALUES (" & rev & ",'Trait39','3.0',False)", dbFailOnError

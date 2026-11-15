@@ -87,6 +87,7 @@ Public Function UXExportNAVFITGroup() As Boolean
         Set findings = NAVFITLastGroupReadiness()
         !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Open the .accdb file in NAVFIT98A. All saved group members are included. Pending edits remain in Swift."
         !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
+        If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
         !cmdExportGroup.Enabled = False
     End With
     groupExportToken = "": UXExportNAVFITGroup = True: Exit Function
@@ -165,6 +166,7 @@ Public Function UXExportNAVFIT() As Boolean
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
         Set findings = NAVFITLastReportReadiness()
         !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Open All report readiness issues to inspect findings. Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group." & vbCrLf & vbCrLf & ReadinessSummary(findings)
+        If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"
     End With
     UXExportNAVFIT = True: Exit Function

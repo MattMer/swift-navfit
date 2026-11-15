@@ -102,6 +102,7 @@ Public Sub AssertReportCache(ByVal reportID As Long)
         v.MoveNext
     Loop
     v.Close
+    If RevisionIsSparse(head) Then CompleteSparseSnapshot values, Nz(MajorScalar("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & head), 0)
     CheckCacheValues cache, head, -1, values
     r.Close
     AssertRevisionFacts head, values
@@ -187,10 +188,10 @@ Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     Dim key As Variant, head As Variant, values As Object, dateRows As Collection, choiceRows As Collection, filter As String, value As Variant
     Set db = CurrentDb: Set heads = CreateObject("Scripting.Dictionary"): Set snapshots = CreateObject("Scripting.Dictionary")
     Set dates = CreateObject("Scripting.Dictionary"): Set choices = CreateObject("Scripting.Dictionary")
-    Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT h.ReportID,h.RevisionID,v.FieldDefinitionVersion,v.ValueEncoding FROM ReportHead AS h LEFT JOIN ReportRevision AS v ON h.RevisionID=v.RevisionID WHERE h.ReportID In (" & csv & ")", dbOpenSnapshot)
     Do While Not r.EOF
         If Nz(r!RevisionID, 0) = 0 Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
-        heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0))
+        heads.Add CStr(r!ReportID), Array(r!RevisionID.Value, Nz(r!FieldDefinitionVersion, 0), Nz(r!ValueEncoding, 0))
         snapshots.Add CStr(r!RevisionID), CreateObject("Scripting.Dictionary")
         dates.Add CStr(r!RevisionID), New Collection: choices.Add CStr(r!RevisionID), New Collection
         r.MoveNext
@@ -217,6 +218,7 @@ Private Sub CheckCacheChunk(ByVal caches As Object, ByVal csv As String)
     For Each key In caches.Keys
         If Not heads.Exists(CStr(key)) Then Err.Raise vbObjectError + 8900, "modReportState.CheckCacheChunk", "Report has no authoritative saved revision. Inspect persistence diagnostics."
         head = heads(key): Set values = snapshots(CStr(head(0)))
+        If head(2) = 1 Then CompleteSparseSnapshot values, CLng(head(1))
         CheckCacheValues caches(key), CLng(head(0)), CLng(head(1)), values
         CheckRevisionFacts values, dates(CStr(head(0))), choices(CStr(head(0)))
     Next

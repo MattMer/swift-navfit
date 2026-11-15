@@ -10,7 +10,7 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.57.0-dev | 49 | Imports schema 35 onward; Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Development source | 0.57.0-dev | 50 | Imports schema 35 onward; Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
 | Latest verified release | 0.56.0 | 49 | The application and the Demo pair on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.56.0), 13 Nov 2026. Full release gate passed (release schemas 35–48 plus 49, ExtendedTest with one test that passed on retry). First release with the separate data file. Untested: printed fit, screen readers, an Acrobat-free workstation, a Navy-managed workstation, two people on a real network share; unsigned. Previous: 0.55.0 (schema 48), the last release that imports schemas 1–34. |
 | Latest source tag | `v0.56.0` | 49 | The release commit. Earlier: `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) is kept outside the repository. |
 
@@ -69,7 +69,8 @@ import and print-ready PDF output.
 - **Persistence:**
   - Saved state lives in `ReportHead`, which owns the authoritative
     `ReportRevision`.
-  - `RevisionValue` holds the snapshots. `RevisionDate` and `RevisionChoice` hold
+  - `RevisionValue` holds the snapshots; from schema 50 only fields with a value
+    (`ReportRevision.ValueEncoding` 1). `RevisionDate` and `RevisionChoice` hold
     typed dates and choices that keep explicit Missing/Unknown/Conflict states.
   - The `Report` value columns are a checked projection cache. Reads and saves
     stop if the cache disagrees with the revision.
@@ -208,7 +209,7 @@ Details and completion criteria: [PRIORITY_BACKLOG.md](planning/PRIORITY_BACKLOG
   its code is never executed. Values are verified before commit, and the import
   is rejected if the target is populated, a source table is unknown, or the source
   schema is newer than the app.
-- **The importer accepts source schemas 35–49.**
+- **The importer accepts source schemas 35–50.**
   Schema 35 is release 0.49.0, the first public release. Older workspaces are
   refused with advice to import them into a 0.55.0 Blank first; 0.55.0 still
   imports schemas 1–48. [modMigration.bas](src/modMigration.bas) hard-codes

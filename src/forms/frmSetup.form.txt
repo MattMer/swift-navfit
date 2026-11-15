@@ -343,7 +343,7 @@ Begin Form
                     TabIndex =5
                     ForeColor =4205854
                     Name ="cmdImportSwift"
-                    Caption ="Import data from a previous Swift NAVFIT version"
+                    Caption ="Restore a backup or import from a previous version"
                     OnClick ="=UXSetupImport()"
                     FontName ="Segoe UI"
 

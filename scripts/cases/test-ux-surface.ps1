@@ -7,7 +7,7 @@ $app=$null
 try{
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
-    $app.LoadFromText(5,'UXSurfaceHarness',(Join-Path $root 'tests/UXSurfaceHarness.bas'))
+    $app.LoadFromText(5,'UXSurfaceHarness',(Join-Path $root 'tests/UXSurfaceHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
     $result=$app.Eval('TestUXSurface()')
     if(-not $result.StartsWith('PASS:')){throw $result}
     Write-Output $result

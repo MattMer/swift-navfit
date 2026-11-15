@@ -18,7 +18,7 @@ Invoke-SuiteCase 'narratives' {
         if(-not $result.StartsWith('PASS:')){throw $result}
         $app.CloseCurrentDatabase();$app.OpenCurrentDatabase($scratch,$true)
         $db=$app.CurrentDb()
-        $r=$db.OpenRecordset("SELECT RevisionID FROM ReportRevision AS R WHERE (SELECT Count(*) FROM RevisionValue AS V WHERE V.RevisionID=R.RevisionID AND V.FieldKey='OfficialComments')<>1",4)
+        $r=$db.OpenRecordset("SELECT RevisionID FROM ReportRevision AS R WHERE (SELECT Count(*) FROM RevisionValue AS V WHERE V.RevisionID=R.RevisionID AND V.FieldKey='OfficialComments')>IIf(R.ValueEncoding=1,1,0) Or (R.ValueEncoding Is Null And (SELECT Count(*) FROM RevisionValue AS V WHERE V.RevisionID=R.RevisionID AND V.FieldKey='OfficialComments')<>1)",4)
         if(-not $r.EOF){throw 'A saved revision is missing its unique narrative snapshot.'}
         $r.Close();$db.Close();$app.CloseCurrentDatabase()
         Write-Output $result

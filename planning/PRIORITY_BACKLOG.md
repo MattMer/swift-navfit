@@ -1,7 +1,7 @@
 # Swift NAVFIT priority backlog
 
 Updated 14 November 2026 (0.56.0 released; 0.57.0-dev, schema 49). Manual check
-results from 10 November are folded in below. This lists open work only. Finished
+results from 10 and 14 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
@@ -14,42 +14,9 @@ done, only the remainder is listed. Product invariants and release gates are in
 block 44 (Qualifications/Achievements) on the Back Page, NAVFIT98A import/export
 (`Qualifications`), PDF import (XFA `BB`), PDF output with an added page for
 overflow, and restore from retained NAVFIT98A imports when an earlier workspace
-is imported. **Still open:** NAVFIT98A's own block 44 print box and limit are
-not measured (no line meter, only Swift's PDF fit finding); confirm the printed
-fit of `BB` on paper.
-
-## Planned features
-
-### F01 — Hierarchical review chain on one shared draft
-
-**Implemented in development** (0.52.0-dev, schema 37, 2 Nov 2026); see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f01-shared-draft-review-chain).
-Shipped in 0.52.0. Remaining: route events are not linked to `AuditEvent`.
-The user guide PDF is regenerated at release.
-
-### F02 — Departure tracking and MNA roster import
-
-**NRRM and MNA implemented in development** (0.52.0-dev, schema 38, 2 Nov 2026); see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f02-roster-snapshots-and-departures).
-Shipped in 0.52.0.
-
-**Still open:**
-- **Officer rank from MNA.** MNA lists the designator but not the rank, so a
-  new officer profile without a linked report starts without one. The current
-  source already fills a missing rank from the latest linked report.
-- **Real PRD format (DATA-01).** 0.56.0 reads dd-Mon-yy, dd-Mon-yyyy, the
-  spreadsheet date serial and a value that already arrives as a date.
-  Confirm with a real NRRM export.
-
-### F03 — Reports due on the dashboard
-
-**Implemented in development** (0.52.0-dev, schema 39, 2 Nov 2026); see
-[PROJECT_STATE_HISTORY](PROJECT_STATE_HISTORY.md#f03-reports-due).
-Shipped in 0.52.0. The lead window stays fixed at 90 days.
-Remaining: Create draft makes one report at a time rather than sending several
-to directory batch creation.
-
-
+is imported. Swift's printed fit of block 44 passed on paper (14 Nov). **Still open:**
+NAVFIT98A's own block 44 print box and limit are not measured (no line meter,
+only Swift's PDF fit finding).
 
 ## Review decisions not planned
 
@@ -57,6 +24,8 @@ R01-R13 were completed earlier. R15, P01 and M05 shipped in 0.53.0 (schema 44).
 R14's remaining input-data limitation is recorded under F02.
 
 **Not taken:**
+- **Linking route events to `AuditEvent` (F01), officer rank from MNA (F02),
+  and several drafts at once from Reports due (F03):** not planned.
 - **P04, accomplishment notebook:** waits for demand.
 - **P05, "Why this value?":** low value for its cost.
 - **P07, restoring selected fields from history:** low value for its cost.
@@ -68,35 +37,31 @@ R14's remaining input-data limitation is recorded under F02.
 
 | ID | Work |
 | --- | --- |
-| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper (10 Nov): EVAL, FITREP, the summary letter and group packet, and the 6.5-point trait-34 grade-4/5 wording (accepted). PDF output works on a Navy-managed workstation after unblocking the file and enabling content (PRT-08). Remaining: (1) **CHIEFEVAL print (PRT-03):** fixed in 0.56.0 (block 51 lines evenly spaced; block 20 prints the physical readiness result beside its MM/YY date); confirm on paper. (2) PDF creation on a workstation without Acrobat (PRT-07). (3) Recheck on the Navy workstation with a physical default printer: 0.55.0 split pages there; 0.56.0 lays out on Microsoft Print to PDF. |
+| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper: EVAL, FITREP, the summary letter and group packet, the 6.5-point trait-34 grade-4/5 wording (10 Nov), the summary packet starting reports on a new sheet when printed on both sides, and the Navy workstation with a physical default printer (14 Nov). Remaining: (1) **CHIEFEVAL (PRT-03):** block 51 spacing passed; block 20's result printed in its box but was repeated on the additional text page. Fixed in development; confirm on paper. (2) PDF creation on a workstation without Acrobat (PRT-07). |
 | H03 | **Attended NAVFIT98A print check for the narrative line meter (attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Print one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
-| M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output, and a colour contrast spot check. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
+| M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Colour contrast spot check passed (14 Nov). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
 | M01 | **Signed production distribution.** An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify a launch under normal security policy. Then produce and verify a signed `.accde`, and rehearse the signing steps (threat model section 5). Blank and Demo `.accdb` files keep being published. Access Runtime support stays out of scope. |
 
-## Screen changes from the 10 Nov review
+## Screens
 
-Fixed in 0.56.0; confirm on screen:
-
-- **U01:** the Reports list shows about 10 rows (UI-03).
-- **U02:** Overview's Reports due and the command member directory show names as
-  LAST, FIRST (UI-05).
-- **U03:** Contributors opens from Resources, not My Work (UI-06).
-- **U04:** each narrative box shows every printable line; EVAL comments with 18
-  lines show without scrolling (PRT-06). The Back Page comments and block 44
-  boxes no longer overlap the controls below them.
-
-Open:
+U01–U04 passed on screen (14 Nov). The Library keeps both main actions (U05).
 
 | ID | Work |
 | --- | --- |
-| U05 | **Library's second dark-blue button (decision pending, UI-04).** Decide whether Import reports stays a main action. |
+| U06 | **Reports archive filter starts on Active.** Seen once on Archived (14 Nov); the Demo opens on Active. The filter now also has Active as its control default. Confirm, and note the route if it shows Archived again. |
 
 ## Performance and storage
 
 | ID | Work |
 | --- | --- |
 | M03 | **Remaining performance (revisit later).** The editor takes about 1.1 s to open, flat with workspace size and mostly page layout. Build-time layout baking was declined for now. A 250-member group PDF packet takes about 46 s, most of it in `OutputTo`. |
-| L03 | **Workspace size headroom, step 3: sparse revision values.** Steps 1 (size warning) and 2 (no empty-to-empty change rows) are done. This step adds the column `ReportRevision.ValueEncoding`: no value means a full copy, `1` means a missing field is empty. About 12 `src/` readers move to one accessor. A per-revision field count and snapshot hash replace the detection of missing rows, which also delivers threat-model item 6. Import copies rows unchanged, and old revisions are not converted. The measured saving is 24% on sparse reports, probably 10–20% on real ones. Test every persistence runner, schemas 1–36, mixed revisions, disposal, restore and compare. Not critical: about 10 years of headroom at 1,300 reports a year. |
+| L03 | **Workspace size headroom, step 3: sparse revision values.** In development (schema 50): `ReportRevision.ValueEncoding` 1 marks a snapshot that stores only fields with a value; a missing field reads as empty, and full copies from earlier versions read as before. Readers go through `RevisionStoredValue`. **Remaining:** a per-revision field count and snapshot hash to replace the detection of missing rows (threat-model item 6), and a measured size comparison. Import copies rows unchanged, and old revisions are not converted. The measured saving is 24% on sparse reports, probably 10–20% on real ones. Test every persistence runner, schemas 1–36, mixed revisions, disposal, restore and compare. Not critical: about 10 years of headroom at 1,300 reports a year. |
+
+## NAVFIT98A exchange
+
+| ID | Work |
+| --- | --- |
+| X01 | **Unanswered check boxes no longer stop export.** A group export stopped on block 51 ("I intend to submit a statement") left unanswered (14 Nov). In development an unanswered box exports unticked and the export result lists each one. Confirm with a group export, then continue the H03 checks, which need that export. NAVFIT98A block 28's third line passed (14 Nov). |
 
 ## Code health
 
@@ -122,7 +87,10 @@ one data file from a network share (not fully supported): per-application
 contributor, save lock retry, presence on the Overview and in the editor
 (`SessionPresence`), and sync conflict copies named at startup.
 
-**Attended checks (on a fresh 0.56.0 copy in an ordinary folder):**
+**Attended checks (on a fresh 0.56.0 copy in an ordinary folder).** Checks 1, 2, 3 and 5
+passed (14 Nov). Check 4 failed: a fresh copy's setup screen offered no restore. Setup's
+import button is now **Restore a backup or import from a previous version** (in
+development); confirm it restores a backup. Open:
 1. First setup asks for the UIC and makes the data file beside the
    application; a report saves.
 2. Rename or move the data file and reopen: the window names the missing file;

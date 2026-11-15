@@ -36,11 +36,11 @@ Public Function UXHistoryITARows(ByVal memberID As Long) As Object
             rows(id) = "NOB"
         Else
             If row(1) = 0 Then Err.Raise vbObjectError + 8900, "modUXReadRows.UXHistoryITARows", "Report has no authoritative saved revision. Inspect persistence diagnostics."
-            If traits.Exists(id) Then
-                complete = True: Set values = traits(id)
+            If traits.Exists(id) Or RevisionIsSparse(row(1)) Then
+                complete = True: If traits.Exists(id) Then Set values = traits(id) Else Set values = ReadMap()
                 For Each key In TraitKeys()
                     If Not values.Exists(CStr(key)) Then
-                        complete = False
+                        If Not RevisionIsSparse(row(1)) Then complete = False
                     Else
                         mark = values(CStr(key))
                         If Not IsNull(mark) Then
@@ -209,9 +209,9 @@ Public Sub UXPrepareReportRows()
     Dim rows As Object, stamps As Object, db As DAO.Database, r As DAO.Recordset, values As DAO.Recordset
     Dim row As Variant, id As Variant, key As Variant, value As Variant, total As Double, count As Long, complete As Boolean
     Set rows = ReadMap(): Set stamps = ReadMap(): Set db = CurrentDb
-    Set r = db.OpenRecordset("SELECT p.*,v.RevisionNumber FROM Report AS p LEFT JOIN ReportRevision AS v ON p.CurrentRevisionID=v.RevisionID", dbOpenSnapshot)
+    Set r = db.OpenRecordset("SELECT p.*,v.RevisionNumber,v.ValueEncoding FROM Report AS p LEFT JOIN ReportRevision AS v ON p.CurrentRevisionID=v.RevisionID", dbOpenSnapshot)
     Do While Not r.EOF
-        row = Array(UXIdentity(r!OfficialName, r!MemberName), "Draft", "Unavailable", "", r!RevisionNumber.Value, Nz(r!CurrentRevisionID, 0), r!ObservationStatus.Value)
+        row = Array(UXIdentity(r!OfficialName, r!MemberName), "Draft", "Unavailable", "", r!RevisionNumber.Value, Nz(r!CurrentRevisionID, 0), r!ObservationStatus.Value, Nz(r!ValueEncoding, 0))
         If Nz(r!IsArchived, False) Then
             row(1) = "Archived"
         ElseIf Nz(r!WorkflowState, "Draft") = "Approved" Then
@@ -234,7 +234,8 @@ Public Sub UXPrepareReportRows()
             For Each key In TraitKeys()
                 values.Seek "=", row(5), CStr(key)
                 If values.NoMatch Then
-                    complete = False
+                    'A sparse snapshot leaves an empty trait out.
+                    If row(7) <> 1 Then complete = False
                 ElseIf Not values!IsNullValue Then
                     value = values!ValueText.Value
                     If Not IsNull(value) Then

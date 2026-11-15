@@ -5,7 +5,7 @@ Copy-Item -LiteralPath $BuildPath -Destination $scratch
 $app=New-Object -ComObject Access.Application
 try{
     $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
-    $app.LoadFromText(5,'UXAdminFeedbackHarness',(Join-Path $root 'tests/UXAdminFeedbackHarness.bas'))
+    $app.LoadFromText(5,'UXAdminFeedbackHarness',(Join-Path $root 'tests/UXAdminFeedbackHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
     $app.DoCmd.RunCommand(126)
     $result=$app.Eval('TestUXAdminFeedback()');Write-Output $result
     if($result -notlike 'PASS:*'){throw $result}

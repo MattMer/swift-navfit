@@ -9,7 +9,7 @@ try {
     $app=New-Object -ComObject Access.Application
     $app.AutomationSecurity=1; $app.OpenCurrentDatabase($scratch,$true)
     SelectSyntheticContributor $app
-    $app.LoadFromText(5,'ReportPeopleHarness',(Join-Path $root 'tests/ReportPeopleHarness.bas'))
+    $app.LoadFromText(5,'ReportPeopleHarness',(Join-Path $root 'tests/ReportPeopleHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
     $app.DoCmd.RunCommand(126)
     $result=$app.Eval('TestReportPeople()')
     if(-not $result.StartsWith('PASS:')){throw $result}

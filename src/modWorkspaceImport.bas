@@ -117,7 +117,7 @@ Public Function UXChooseSwiftWorkspace() As Boolean
  Dim dialog As Object
  If importing Then Exit Function
  On Error GoTo Failed
- Set dialog = Application.FileDialog(3): dialog.Title = "Import previous Swift NAVFIT workspace": dialog.AllowMultiSelect = False
+ Set dialog = Application.FileDialog(3): dialog.Title = "Choose a Swift NAVFIT backup or earlier workspace": dialog.AllowMultiSelect = False
  dialog.Filters.Clear: dialog.Filters.Add "Swift NAVFIT database", "*.accdb;*.accde"
  If dialog.Show <> -1 Then Exit Function
  UXChooseSwiftWorkspace = UXPreviewSwiftWorkspace(dialog.SelectedItems(1)): Exit Function

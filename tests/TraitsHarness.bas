@@ -49,8 +49,8 @@ Public Function TestTraits() As String
         id = SaveTraits(0, CStr(kind), values)
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "Trait33") = "NOB" And IsNull(Stored(id, "Trait39")), "NOB and blank collapsed"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = SavedFields(id).Count, "Trait snapshot incomplete"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')") = 7, "Seven trait snapshot keys missing"
+        Check SnapshotComplete(first), "Trait snapshot incomplete"
+        Check DCount("*", "RevisionValue", "RevisionID=" & first & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')") = 6 And MajorRevisionHasField(first, "Trait39"), "Six filled traits stored and the blank one held as empty"
         Call CommitDraft(id, CStr(kind), "Synthetic", "Synthetic Member", Null, Null, "Notes", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1 And Stored(id, "Trait34") = "1.0", "Omitted traits changed report"
         copy = DuplicateDraft(id)
@@ -95,6 +95,7 @@ Public Function TestTraits() As String
     Call ArchiveDraft(id, False)
     'Simulate an actual schema-9 revision, preserving its other 12 snapshot fields.
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')", dbFailOnError
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=9 WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy trait comparison failed"
@@ -104,6 +105,7 @@ Public Function TestTraits() As String
     DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
     Call RestoreDraft(copy, first): Check IsNull(Stored(copy, "Trait33")), "Legacy restore invented marks"
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='Trait33'", dbFailOnError
     Check CorruptRejected(copy, second), "Incomplete new trait snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

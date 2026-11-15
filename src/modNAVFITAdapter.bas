@@ -1,6 +1,19 @@
 Attribute VB_Name = "modNAVFITAdapter"
 Option Compare Binary
 Option Explicit
+' Check boxes left unanswered in Swift, exported unticked by the last export (one line each).
+Private blankBoxes As String
+Public Sub NAVFITResetBlankBoxes()
+    blankBoxes = ""
+End Sub
+Private Function BlankBoxOwner(ByVal values As Object) As String
+    If values.Exists("OfficialName") Then BlankBoxOwner = Nz(values("OfficialName"), "")
+    If Len(BlankBoxOwner) = 0 And values.Exists("MemberName") Then BlankBoxOwner = Nz(values("MemberName"), "")
+    If Len(BlankBoxOwner) = 0 Then BlankBoxOwner = "Report"
+End Function
+Public Function NAVFITBlankBoxText() As String
+    If Len(blankBoxes) > 0 Then NAVFITBlankBoxText = "Exported unticked because they were not answered in Swift; check them in NAVFIT98A:" & blankBoxes
+End Function
 Public Function NAVFITKind(ByVal value As Variant) As String
     Select Case Nz(value, "")
         Case "Eval": NAVFITKind = "EVAL"
@@ -131,7 +144,14 @@ Public Sub NAVFITWriteFields(ByVal destination As DAO.Recordset, ByVal values As
     destination!ReportType = NAVFITType(values("FormKind"))
     For Each row In NAVFITMapRows(values("FormKind"))
         parts = Split(row, "|"): fieldKey = parts(0)
-        value = NAVFITEncode(values(fieldKey), parts(2)): Set f = destination.Fields(parts(1))
+        'NAVFIT98A check boxes are ticked or not; an unanswered one exports unticked and is listed.
+        If (parts(2) = "flag" Or parts(2) = "observation") And Nz(values(fieldKey), "") = "" Then
+            value = False
+            blankBoxes = blankBoxes & vbCrLf & "- " & BlankBoxOwner(values) & ": " & UXFieldLabel(fieldKey)
+        Else
+            value = NAVFITEncode(values(fieldKey), parts(2))
+        End If
+        Set f = destination.Fields(parts(1))
         'An untouched blank new field must not erase native-only legacy comments.
         If revisionID > 0 And fieldKey Like "Trait##Comment#" And IsNull(value) And Not IsNull(f.Value) Then
             If touched Is Nothing Then

@@ -17,7 +17,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     'Schema 35 (release 0.49.0, the first public release) is the oldest imported.
     'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces.
     If ver >= 1 And ver < 35 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema " & ver & ". This version imports workspaces from release 0.49.0 (schema 35) onward. Import the file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here."
-    If ver < 35 Or ver > 49 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
+    If ver < 35 Or ver > 50 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
     'The target is always this version's own workspace, so its bound follows SCHEMA_VERSION.
     If targetVersion < 21 Or targetVersion > SCHEMA_VERSION Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 21 through " & SCHEMA_VERSION & "."
@@ -357,7 +357,7 @@ Public Function MigrateQualifications() As Long
             raw.Close
             If Len(Trim$(text)) > 0 And applied > 0 Then
                 head = ReportHeadRevision(reports!ReportID): headRestored = False
-                Set revisions = db.OpenRecordset("SELECT RevisionID FROM ReportRevision WHERE ReportID=" & reports!ReportID & " AND RevisionID>=" & applied & " AND Not Nz(ValuesDisposed,False) AND RevisionID Not In (SELECT RevisionID FROM RevisionValue WHERE FieldKey='Qualifications') ORDER BY RevisionID", dbOpenSnapshot)
+                Set revisions = db.OpenRecordset("SELECT RevisionID FROM ReportRevision WHERE ReportID=" & reports!ReportID & " AND RevisionID>=" & applied & " AND Not Nz(ValuesDisposed,False) AND (Nz(ValueEncoding,0)=0 Or Nz(FieldDefinitionVersion,0)<3) AND RevisionID Not In (SELECT RevisionID FROM RevisionValue WHERE FieldKey='Qualifications') ORDER BY RevisionID", dbOpenSnapshot)
                 If Not revisions.EOF Then
                     Set values = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
                     Do While Not revisions.EOF

@@ -80,8 +80,9 @@ Public Function TestPersistence() As String
     Check rev = DLookup("CurrentRevisionID", "Report", "ReportID=" & a), "Head/cache pointer differs"
     Check DCount("*", "RevisionDate", "RevisionID=" & rev & " AND DateState='Missing'") = 5, "Null date facts were not retained"
     Check DCount("*", "RevisionChoice", "RevisionID=" & rev & " AND ChoiceValue='Unspecified'") = 2, "Missing choices were not represented"
-    'A first save logs only fields it fills; the snapshot still holds every field (L03).
-    Check DCount("*", "RevisionValue", "RevisionID=" & rev) = UBound(DraftFieldKeys()) + 1, "First-save snapshot is incomplete"
+    'A first save logs and stores only the fields it fills (L03); the snapshot is sparse.
+    Check RevisionIsSparse(rev), "First save is not a sparse snapshot"
+    Check DCount("*", "RevisionValue", "RevisionID=" & rev & " AND IsNullValue") = 0 And DCount("*", "RevisionValue", "RevisionID=" & rev) > 0, "First-save snapshot stored empty fields"
     Check DCount("*", "RevisionChange", "RevisionID=" & rev & " AND OldIsNull AND NewIsNull") = 0, "First save logged empty-to-empty changes"
     Check DCount("*", "RevisionChange", "RevisionID=" & rev) = DCount("*", "RevisionValue", "RevisionID=" & rev & " AND Not IsNullValue"), "First save did not log every filled field"
     Check DCount("*", "RevisionChange", "RevisionID=" & rev & " AND OldIsNull AND Not NewIsNull") > 0, "First save logged no filled fields"

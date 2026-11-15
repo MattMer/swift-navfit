@@ -52,7 +52,7 @@ Public Function ServiceDetailsFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 5
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 16 Then r.Close: Err.Raise vbObjectError + 2704, "modServiceDetails.ServiceDetailsFromRevision", "Service details snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 16 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 2704, "modServiceDetails.ServiceDetailsFromRevision", "Service details snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
             If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2705, "modServiceDetails.ServiceDetailsFromRevision", "Service details snapshot has inconsistent null flag."
             values(i) = r!ValueText

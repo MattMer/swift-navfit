@@ -92,6 +92,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     Dim stage As String, publication As String
     On Error GoTo Failed
     publication = "No report transaction; output not published": stage = "Validate group and destination"
+    NAVFITResetBlankBoxes
     Set preview = NAVFITGroupPreview(groupID, usePSG)
     If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group, saved reports or RSCA changed. Preview again."
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Export filename must end in .accdb."
@@ -207,6 +208,7 @@ Public Function NAVFITExportReport(ByVal reportID As Long, ByVal destination As 
     Dim stage As String, publication As String
     On Error GoTo Failed
     publication = "No report transaction; output not published": stage = "Validate report and destination"
+    NAVFITResetBlankBoxes
     NAVFITCheckTarget reportID, False
     Set values = SavedFields(reportID): revision = CurrentRevision(reportID)
     Set reportReadiness = ValidateLiveFields(values, reportID)

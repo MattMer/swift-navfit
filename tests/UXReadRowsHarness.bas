@@ -71,6 +71,7 @@ Public Function TestUXReadRows() As String
     CurrentDb.Execute "UPDATE RevisionValue SET ValueText='' WHERE RevisionID=" & revision & " AND FieldKey='Trait35'", dbFailOnError
     CompareReports
     Check UXReportRowCell(id, 2) = "4.00", "Partial trait semantics changed"
+    SnapshotFullCopy revision
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & revision & " AND FieldKey='Trait39'", dbFailOnError
     CompareReports
     Check UXReportRowCell(id, 2) = "Unavailable", "Missing historical field accepted"

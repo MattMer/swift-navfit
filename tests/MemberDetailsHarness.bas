@@ -39,7 +39,7 @@ Public Function TestMemberDetails() As String
     Call ConfigureWorkspace("Member tests", "Synthetic reviewer"): keys = MemberDetailsKeys()
     For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
         values = Seed(): id = SaveMember(0, CStr(kind), values): first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
+        Check SnapshotComplete(first), "Incomplete snapshot"
         Check Stored(id, "MemberSSN") = "000123456" And Stored(id, "MemberDoDID") = "0001234567", "Leading zeros lost"
         Check Stored(id, "ComponentActive") = "Yes" And Stored(id, "ComponentTAR") = "No" And IsNull(Stored(id, "ComponentATADSW")), "Component states collapsed"
         Check Stored(id, "DateReported") = "2024-02-29", "Leap date changed"
@@ -113,6 +113,7 @@ Public Function TestMemberDetails() As String
     Check Not Forms!frmMemberDetails!cmdApply.Enabled, "Archived panel can apply"
     Call CancelMemberDetails(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     For Each key In keys: CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError: Next
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=14 WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
@@ -122,6 +123,7 @@ Public Function TestMemberDetails() As String
     DoCmd.Close acForm, "frmRevisionCompare", acSaveNo: Call RestoreDraft(copy, first)
     For Each key In keys: Check IsNull(Stored(copy, CStr(key))), "Legacy restore invented details": Next
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='DateReported'", dbFailOnError
     Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

@@ -38,7 +38,7 @@ Public Function TestAssessment() As String
         id = SaveAssessment(0, CStr(kind), Array("Observed", "Promotable"))
         first = DLookup("CurrentRevisionID", "Report", "ReportID=" & id)
         Check Stored(id, "ObservationStatus") = "Observed" And Stored(id, "PromotionRecommendation") = "Promotable", "Selections lost"
-        Check DCount("*", "RevisionValue", "RevisionID=" & first) = UBound(DraftFieldKeys()) + 1, "Incomplete snapshot"
+        Check SnapshotComplete(first), "Incomplete snapshot"
         Call CommitDraft(id, CStr(kind), "Assessment", "Synthetic", Null, Null, "", "Omitted", "Narrative")
         Check DCount("*", "ReportRevision", "ReportID=" & id) = 1, "Omitted assessment changed history"
         copy = DuplicateDraft(id)
@@ -96,6 +96,7 @@ Public Function TestAssessment() As String
     Call ArchiveDraft(id, False)
     'Simulate schema 10 history, keeping its actual 19-field snapshots.
     first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
+    SnapshotFullCopy first
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('ObservationStatus','PromotionRecommendation')", dbFailOnError
     CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=10 WHERE RevisionID=" & first, dbFailOnError
     Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
@@ -106,6 +107,7 @@ Public Function TestAssessment() As String
     Call RestoreDraft(copy, first)
     Check IsNull(Stored(copy, "ObservationStatus")) And IsNull(Stored(copy, "PromotionRecommendation")), "Legacy restore invented assessment"
     second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
+    SnapshotFullCopy second
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='ObservationStatus'", dbFailOnError
     Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
     Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)

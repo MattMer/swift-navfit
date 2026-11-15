@@ -63,6 +63,7 @@ Public Function TestGridReads(ByVal output As String) As String
    ProposeMeetingField meeting, id, "AssignmentRecommendationA", "STAFF"
    Compare "Historical" & i, file
    If i = 100 Then
+    SnapshotFullCopy CurrentRevision(id)
     CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & CurrentRevision(id) & " AND FieldKey='Trait39'", dbFailOnError
     failure = LoadError(): Check failure = vbObjectError + 4007, "Missing revision field error changed: " & failure & " " & loadMessage
     Check Forms!frmUXComparison!uxTraitGrid.Form.Recordset Is Nothing, "Failed cache remained bound"

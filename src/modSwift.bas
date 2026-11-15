@@ -15,7 +15,7 @@ Public Const APP_VERSION As String = "0.57.0-dev"
 Public Const APP_RELEASE_DATE As String = ""
 'Where newer releases are published. Shown as text only: Swift never connects to it.
 Public Const APP_UPDATES_URL As String = "https://github.com/MattMer/swift-navfit/releases/latest"
-Public Const SCHEMA_VERSION As Long = 49
+Public Const SCHEMA_VERSION As Long = 50
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long
@@ -321,6 +321,8 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
     rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
     rev!FieldDefinitionVersion = FIELD_DEFINITION_VERSION
+    'Sparse snapshot (L03): only fields with a value get a row; a missing field is empty.
+    rev!ValueEncoding = 1
     rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close: Set rev = Nothing
     Set snapshotRows = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
     Set changeRows = db.OpenRecordset("RevisionChange", dbOpenDynaset, dbAppendOnly)
@@ -333,9 +335,8 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             'a synthetic Null-to-Null diff would lose its authorship marker.
             If SameFieldValue(previous(i), current(i)) And Not SameFieldValue(priorEmployment, current(i)) Then previous(i) = priorEmployment
         End If
-        Snapshot snapshotRows, revisionID, CStr(keys(i)), current(i)
-        'A first save starts from Null, so fields left empty log nothing (L03); the
-        'snapshot above still records every field.
+        If Not IsNull(current(i)) Then Snapshot snapshotRows, revisionID, CStr(keys(i)), current(i)
+        'A first save starts from Null, so fields left empty log nothing (L03).
         If IsNull(previous(i)) <> IsNull(current(i)) Or StrComp(Nz(previous(i), ""), Nz(current(i), ""), vbBinaryCompare) <> 0 Then
             AppendChange changeRows, revisionID, CStr(keys(i)), previous(i), current(i)
         End If
@@ -393,13 +394,9 @@ Failed:
 End Function
 
 Private Function RevisionValue(ByVal revisionID As Long, ByVal key As String) As Variant
-    Dim ownedDB As DAO.Database
-    Set ownedDB = CurrentDb
-    Dim r As DAO.Recordset
-    Set r = ownedDB.OpenRecordset("SELECT ValueText, IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & key & "'", dbOpenSnapshot)
-    If r.EOF Then Err.Raise vbObjectError + 114, "modSwift.RevisionValue", "Revision snapshot is incomplete."
-    If r!IsNullValue Then RevisionValue = Null Else RevisionValue = r!ValueText
-    r.Close
+    Dim value As Variant
+    If Not RevisionStoredValue(revisionID, key, value) Then Err.Raise vbObjectError + 114, "modSwift.RevisionValue", "Revision snapshot is incomplete."
+    RevisionValue = value
 End Function
 
 Public Function RestoreDraft(ByVal reportID As Long, ByVal revisionID As Long) As Long
@@ -748,6 +745,8 @@ Public Function StoredBlock28(ByVal reportID As Long) As Variant
     Set r = db.OpenRecordset("SELECT TOP 1 v.FieldKey FROM RevisionValue AS v WHERE v.FieldKey='CommandEmployment' AND v.RevisionID=(SELECT Min(RevisionID) FROM ReportRevision WHERE ReportID=" & reportID & ")", dbOpenSnapshot)
     If Not r.EOF Then r.Close: Exit Function
     r.Close
+    'A sparse first revision holds Block 28 even when it was empty.
+    If RevisionIsSparse(Nz(MajorScalar("SELECT Min(RevisionID) FROM ReportRevision WHERE ReportID=" & reportID), 0)) Then Exit Function
     receipt = MajorScalar("SELECT Max(ImportReceiptID) FROM ImportReceipt WHERE ReportID=" & reportID & " AND IsUndone=False AND AdapterVersion='navfit-full-v1/local-CStr'")
     If IsNull(receipt) Then Exit Function
     StoredBlock28 = NativeReportMemo(CLng(receipt), "Achievements")

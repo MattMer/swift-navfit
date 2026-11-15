@@ -15,7 +15,7 @@ Invoke-SuiteCase 'traits' {
  try {
   $app=New-Object -ComObject Access.Application
   $app.AutomationSecurity=1;$app.OpenCurrentDatabase($scratch,$true)
-  $app.LoadFromText(5,'TraitsHarness',(Join-Path $root 'tests/TraitsHarness.bas'))
+  $app.LoadFromText(5,'TraitsHarness',(Join-Path $root 'tests/TraitsHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
   $app.DoCmd.RunCommand(126)
   $result=$app.Eval('TestTraits()')
   if($result -notlike 'PASS:*'){throw $result}
@@ -69,7 +69,7 @@ Invoke-SuiteCase 'trait-catalogue' {
    $rejected=$false;try{$db.Execute($sql,128)}catch{$rejected=$true};if(-not $rejected){throw 'Trait identity/domain constraint failed'};$checks++
   }
   $db.Execute("DELETE FROM TraitDefinition WHERE FormKind='EVAL' AND BlockNumber=33 AND Mark='GENERAL'",128)
-  $app.LoadFromText(5,'TraitsHarness',(Join-Path $root 'tests/TraitsHarness.bas'))
+  $app.LoadFromText(5,'TraitsHarness',(Join-Path $root 'tests/TraitsHarness.bas'));$app.LoadFromText(5,'SnapshotFixtures',(Join-Path $root 'tests/SnapshotFixtures.bas'))
   $rejected=[bool]$app.Run('TraitDefinitionMissingRejected')
   if(-not $rejected){throw 'Missing required definition was silently ignored'};$checks++
   $db.Close()

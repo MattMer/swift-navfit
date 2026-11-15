@@ -186,11 +186,15 @@ End Function
 'UXTableITA for a known head revision, reading its saved traits by index seek.
 Private Function SavedTraitITA(ByVal saved As DAO.Recordset, ByVal observation As Variant, ByVal revisionID As Long) As String
     Dim key As Variant, value As Variant, total As Double, count As Long
+    Dim sparse As Boolean
     If Nz(observation, "") = "NOB" Then SavedTraitITA = "NOB": Exit Function
+    sparse = RevisionIsSparse(revisionID)
     For Each key In TraitKeys()
         saved.Seek "=", revisionID, CStr(key)
-        If saved.NoMatch Then SavedTraitITA = "Unavailable": Exit Function
-        If Not saved!IsNullValue Then
+        If saved.NoMatch Then
+            'A sparse snapshot leaves an empty trait out; a full copy without it is incomplete.
+            If Not sparse Then SavedTraitITA = "Unavailable": Exit Function
+        ElseIf Not saved!IsNullValue Then
             value = saved!ValueText.Value
             If Not IsNull(value) Then
                 If value <> "" And value <> "NOB" Then total = total + Val(value): count = count + 1

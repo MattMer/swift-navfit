@@ -63,7 +63,7 @@ Public Function ReportContextFromRevision(ByVal revisionID As Long) As Variant
     For i = 0 To 8
         Set r = CurrentDb.OpenRecordset("SELECT ValueText,IsNullValue FROM RevisionValue WHERE RevisionID=" & revisionID & " AND FieldKey='" & keys(i) & "'", dbOpenSnapshot)
         If r.EOF Then
-            If RevisionSnapshotSchema(revisionID) >= 14 Then r.Close: Err.Raise vbObjectError + 2505, "modReportContext.ReportContextFromRevision", "Report context snapshot is incomplete."
+            If RevisionSnapshotSchema(revisionID) >= 14 And Not RevisionIsSparse(revisionID) Then r.Close: Err.Raise vbObjectError + 2505, "modReportContext.ReportContextFromRevision", "Report context snapshot is incomplete."
         ElseIf Not r!IsNullValue Then
             If IsNull(r!ValueText) Then r.Close: Err.Raise vbObjectError + 2506, "modReportContext.ReportContextFromRevision", "Report context snapshot has inconsistent null flag."
             values(i) = r!ValueText

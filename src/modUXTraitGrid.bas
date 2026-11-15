@@ -1,5 +1,7 @@
 Attribute VB_Name = "modUXTraitGrid"
 Option Explicit
+' Revisions in the loaded grid saved as sparse snapshots (a missing field is empty).
+Private gridSparse As Object
 Private gridSortKey As String, gridSortDescending As Boolean
 
 Private cacheWorkspace As DAO.Workspace
@@ -145,6 +147,10 @@ Public Function UXGridLoad() As Boolean
         p.MoveNext
     Loop
     p.Close
+    Set gridSparse = CreateObject("Scripting.Dictionary")
+    Set p = db.OpenRecordset("SELECT RevisionID FROM ReportRevision WHERE ValueEncoding=1 AND RevisionID In (" & revisionSQL & ")", dbOpenSnapshot)
+    Do While Not p.EOF: gridSparse(CStr(p!RevisionID)) = True: p.MoveNext: Loop
+    p.Close
     If liveGroup = 0 Then
         Set p = db.OpenRecordset("SELECT ReportID,FieldKey,ValueText,IsNullValue FROM qryMeetingProposalRevisionIDs WHERE SetID=" & Forms!frmUXComparison!txtMeeting & " AND ProposalState='Proposed' ORDER BY ProposalID", dbOpenSnapshot)
         Do While Not p.EOF
@@ -240,8 +246,11 @@ End Function
 Private Function UXGridSavedValue(ByVal values As Object, ByVal revision As Long, ByVal key As String) As Variant
     Dim token As String
     token = revision & ":" & key
-    If Not values.exists(token) Then Err.Raise vbObjectError + 4007, "modUXTraitGrid.UXGridSavedValue", "Snapshot field missing."
-    UXGridSavedValue = values(token)
+    If values.exists(token) Then UXGridSavedValue = values(token): Exit Function
+    If Not gridSparse Is Nothing Then
+        If gridSparse.exists(CStr(revision)) Then UXGridSavedValue = Null: Exit Function
+    End If
+    Err.Raise vbObjectError + 4007, "modUXTraitGrid.UXGridSavedValue", "Snapshot field missing."
 End Function
 ' Use loaded archive/workflow/revision state for display without database reads. With
 ' authoritative=True, recheck the report and live membership or historical group stamp
