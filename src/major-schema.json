@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 50,
+  "SchemaVersion": 51,
   "Tables": [
     "TraitDefinition",
     "SummaryGroup",
@@ -63,7 +63,8 @@
     "RestrictedException",
     "RestrictedDismissal",
     "RestrictedCheckOff",
-    "SessionPresence"
+    "SessionPresence",
+    "MemberDuplicateDismissal"
   ],
   "BaseSQL": [
     "CREATE TABLE AppMetadata (MetadataID LONG CONSTRAINT PK_AppMetadata PRIMARY KEY, AppVersion TEXT(40), SchemaVersion LONG, CompatibilityStatus TEXT(120))",
@@ -394,7 +395,9 @@
     "ALTER TABLE Workspace ADD COLUMN CommandUIC TEXT(5)",
     "ALTER TABLE ReportRevision ADD COLUMN ValueEncoding BYTE",
     "ALTER TABLE ReportRevision ADD COLUMN ValueCount LONG",
-    "ALTER TABLE ReportRevision ADD COLUMN ValueHash TEXT(64)"
+    "ALTER TABLE ReportRevision ADD COLUMN ValueHash TEXT(64)",
+    "CREATE TABLE MemberDuplicateDismissal (DismissalID COUNTER CONSTRAINT PK_MemberDuplicateDismissal PRIMARY KEY, LowMemberID LONG NOT NULL, HighMemberID LONG NOT NULL, Reason TEXT(255) NOT NULL, DismissedBy LONG NOT NULL, DismissedAt DATETIME NOT NULL, UndoneBy LONG, UndoneAt DATETIME)",
+    "CREATE INDEX IX_MemberDuplicateDismissal_Pair ON MemberDuplicateDismissal (LowMemberID,HighMemberID)"
   ],
   "Queries": [
     {

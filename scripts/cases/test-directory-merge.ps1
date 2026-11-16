@@ -13,6 +13,7 @@ try{
  $app.LoadFromText(5,'DirectoryMergeHarness',(Join-Path $root 'tests/DirectoryMergeHarness.bas'));$app.DoCmd.RunCommand(126)
  $expression=if($DisplayFaultOnly){'TestMergeDisplayFailure()'}else{'TestDirectoryMerge()'}
  $result=$app.Eval($expression);Write-Output $result;if($result -notlike 'PASS:*'){throw $result}
+ if(-not $DisplayFaultOnly){$pairs=$app.Eval('TestDuplicatePairs()');Write-Output $pairs;if($pairs -notlike 'PASS:*'){throw $pairs}}
  $app.CloseCurrentDatabase()
  $app.OpenCurrentDatabase($scratch,$true);$app.DoCmd.DeleteObject(5,'DirectoryMergeHarness');$app.DoCmd.RunCommand(126);$app.CloseCurrentDatabase()
  @{Result=$result;Fixture=$scratch;SHA256=(Get-FileHash $scratch).Hash;Reopened=$true;DisplayFaultOnly=[bool]$DisplayFaultOnly}|ConvertTo-Json|Set-Content (Join-Path $root 'build/directory-merge-verification.json')

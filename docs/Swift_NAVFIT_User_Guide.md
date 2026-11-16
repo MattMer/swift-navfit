@@ -581,6 +581,24 @@ For an MNA workbook, Swift reads the date and UIC at the top and the POC at the 
 
 ![An MNA roster loaded for import: its date, UIC and POC under the rows, each row's action, and the complete-roster box.](images/roster-import.png)
 
+### Review possible duplicate Sailors
+
+The same Sailor can end up with two profiles, for example when a roster spells the name differently from a profile entered by hand. **Resources > Command member directory > Review possible duplicate Sailors** lists every pair of active profiles that may be the same person, strongest match first:
+
+| Match | Why |
+| --- | --- |
+| Likely | The same SSN or DoD ID, on the profiles, their reports or the roster |
+| Probable | The same name in report format (LAST, FIRST MI) |
+| Possible | The same surname and first initial |
+
+Profiles with different SSNs or DoD IDs are different Sailors and are never listed.
+
+1. Select a pair. Both members fill in, with the suggested survivor on the right: the profile with the SSN, or else the one with more reports and history.
+2. Choose **Preview identities and all affected links** and check them.
+3. Enter a reason (no SSNs or DoD IDs). Then choose **Apply reviewed merge**, or **Not the same Sailor** if they are different people.
+
+A merge moves the original's reports, prior evaluations, counseling and roster history to the survivor and archives the original; select it in merge history to undo it. **Not the same Sailor** stops listing the pair and records who decided and why. To list it again, tick **Show pairs marked as different Sailors**, select the pair and choose **List again**. For a Sailor whose name changed, choose the two members yourself instead of selecting a pair.
+
 ## 8.2 Create reports from members
 
 1. Open the member-based report creation workflow.

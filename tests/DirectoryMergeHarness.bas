@@ -237,3 +237,106 @@ Public Function TestDirectoryMerge() As String
 Failed:
     TestDirectoryMerge = "FAIL: " & Err.Number & ": " & Err.Description
 End Function
+'Directory-wide possible duplicates (schema 51): strength, conflicts, survivor choice,
+'saved "different Sailors" decisions and the review window.
+Public Function TestDuplicatePairs() As String
+    Dim p1 As Long, p2 As Long, p3 As Long, p4 As Long, p5 As Long, p6 As Long, p7 As Long, item As Object, dismissal As Long, f As Access.Form, row As Long
+    On Error GoTo Failed
+    p1 = SaveDirectoryMember(0, 0, "Jordan Quill", "QUILL, JORDAN", "IT1", "")
+    p2 = SaveDirectoryMember(0, 0, "Jordan Quill", "QUILL, JORDAN", "IT1", "")
+    p3 = SaveDirectoryMember(0, 0, "Jordan Quill", "QUILL, JORDAN", "IT1", "000000101")
+    p4 = SaveDirectoryMember(0, 0, "Jordan Quill", "QUILL, JORDAN", "IT1", "000000102")
+    p5 = SaveDirectoryMember(0, 0, "Jo Quill", "QUILL, JO", "IT2", "")
+    'Two profiles never share an SSN, but their reports can carry the same DoD ID.
+    p6 = SaveDirectoryMember(0, 0, "Riley Vance", "VANCE, RILEY", "YN1", "")
+    p7 = SaveDirectoryMember(0, 0, "Morgan Ashby", "ASHBY, MORGAN", "YN1", "")
+    LinkedReportDoDID p6, "Riley Vance", "1234500201"
+    LinkedReportDoDID p7, "Morgan Ashby", "1234500201"
+    Set item = FindPair(DirectoryDuplicatePairs(), p6, p7)
+    Check Not item Is Nothing, "Same DoD ID not listed"
+    Check item("Strength") = 1 And InStr(item("Why"), "Same DoD ID") > 0 And InStr(item("Why"), "201") = 0, "Same DoD ID not the strongest match, or identifier shown"
+    Set item = FindPair(DirectoryDuplicatePairs(), p1, p2)
+    Check Not item Is Nothing, "Same report name not listed"
+    Check item("Strength") = 2 And InStr(item("Why"), "QUILL, JORDAN") > 0, "Same report name strength"
+    Check FindPair(DirectoryDuplicatePairs(), p3, p4) Is Nothing, "Members with different SSNs listed as duplicates"
+    Check Not FindPair(DirectoryDuplicatePairs(), p1, p3) Is Nothing, "Profile without an SSN not paired with a namesake"
+    Set item = FindPair(DirectoryDuplicatePairs(), p1, p5)
+    Check Not item Is Nothing, "Same surname and initial not listed"
+    Check item("Strength") = 3, "Surname and initial strength"
+    Check FindPair(DirectoryDuplicatePairs(), p6, p1) Is Nothing, "Unrelated members listed"
+    Check DuplicateSurvivor(p1, p3) = p3 And DuplicateSurvivor(p3, p1) = p3, "Survivor is not the SSN holder"
+    Check DuplicateSurvivor(p1, p2) = p1, "Survivor tie is not the older profile"
+    Check RejectDismiss(p1, p2, ""), "Dismissal without a reason accepted"
+    Check RejectDismiss(p1, p2, "SSN 000-00-0101 differs"), "Dismissal reason with an identifier accepted"
+    Check RejectDismiss(p1, p1, "Same member"), "Dismissal of one member accepted"
+    dismissal = DismissDuplicatePair(p2, p1, "Different Sailors, checked with the LPO")
+    Check dismissal > 0 And DLookup("LowMemberID", "MemberDuplicateDismissal", "DismissalID=" & dismissal) = p1, "Dismissal not stored low/high"
+    Check FindPair(DirectoryDuplicatePairs(), p1, p2) Is Nothing, "Dismissed pair still listed"
+    Set item = FindPair(DirectoryDuplicatePairs(True), p1, p2)
+    Check Not item Is Nothing, "Dismissed pair not shown on request"
+    Check item("DismissalID") = dismissal, "Dismissed pair lost its dismissal"
+    Check Not FindPair(DirectoryDuplicatePairs(), p1, p3) Is Nothing, "Dismissing one pair hid another"
+    Check RejectDismiss(p1, p2, "Again"), "Second dismissal of the same pair accepted"
+    RestoreDuplicatePair dismissal
+    Check Not FindPair(DirectoryDuplicatePairs(), p1, p2) Is Nothing, "Restored pair not listed"
+    Check Not IsNull(DLookup("UndoneAt", "MemberDuplicateDismissal", "DismissalID=" & dismissal)), "Restore erased the dismissal history"
+    Check RejectRestore(dismissal), "Second restore accepted"
+    'The review window.
+    DoCmd.OpenForm "frmUXDirectoryMerge": Set f = Forms!frmUXDirectoryMerge
+    Check InStr(f!lblPairs.Caption, "Possible duplicate Sailors:") > 0, "Pair count not shown"
+    row = PairRow(f, p6, p7)
+    Check row > 0, "Same SSN pair not in the window"
+    Check f!lstPairs.Column(1, row) = "Likely" And PairRow(f, p1, p5) > row, "Window not ordered strongest first"
+    f!lstPairs = f!lstPairs.Column(0, row)
+    Check UXDirectoryMergePair(), "Selecting a pair failed"
+    Check f!cboTarget = p6 And f!cboSource = p7 And f!cmdDismiss.Enabled And Not f!cmdRestore.Enabled, "Selecting a pair did not fill both members"
+    f!txtReason = "Synthetic different Sailors"
+    Check UXDirectoryMergeDismiss(), "Window dismissal failed"
+    Check PairRow(f, p6, p7) = 0 And IsNull(f!cboSource) And IsNull(f!txtReason), "Window still lists the dismissed pair"
+    f!chkShowDismissed = True: Call UXDirectoryMergePairs
+    row = PairRow(f, p6, p7)
+    Check row > 0, "Window does not show dismissed pairs on request"
+    Check f!lstPairs.Column(1, row) = "Different", "Dismissed pair not labeled"
+    f!lstPairs = f!lstPairs.Column(0, row): Call UXDirectoryMergePair
+    Check f!cmdRestore.Enabled And Not f!cmdDismiss.Enabled, "Dismissed pair offers the wrong action"
+    Check UXDirectoryMergeRestore(), "Window restore failed"
+    f!chkShowDismissed = False: Call UXDirectoryMergePairs
+    Check PairRow(f, p6, p7) > 0, "Restored pair not back in the window"
+    DoCmd.Close acForm, "frmUXDirectoryMerge", acSaveNo
+    TestDuplicatePairs = "PASS: " & checks & " possible-duplicate list, dismissal and window checks": Exit Function
+Failed:
+    TestDuplicatePairs = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+Private Sub LinkedReportDoDID(ByVal member As Long, ByVal name As String, ByVal dodid As String)
+    Dim report As Long
+    DirectoryCreationContext member
+    report = CommitDraft(0, "EVAL", "Duplicate fixture", name, #1/1/2026#, #9/30/2026#, "", "Test", "")
+    DirectoryCreationContext 0
+    CurrentDb.Execute "UPDATE Report SET MemberDoDID='" & dodid & "' WHERE ReportID=" & report, dbFailOnError
+    Check DLookup("MemberID", "MemberReport", "ReportID=" & report) = member, "Fixture report not linked to its member"
+End Sub
+Private Function FindPair(ByVal pairs As Collection, ByVal a As Long, ByVal b As Long) As Object
+    Dim item As Object
+    For Each item In pairs
+        If (item("LowID") = a And item("HighID") = b) Or (item("LowID") = b And item("HighID") = a) Then Set FindPair = item: Exit Function
+    Next
+End Function
+Private Function PairRow(ByVal f As Access.Form, ByVal a As Long, ByVal b As Long) As Long
+    Dim i As Long, low As Long, high As Long
+    If a < b Then low = a: high = b Else low = b: high = a
+    For i = 1 To f!lstPairs.ListCount - 1
+        If Split(f!lstPairs.Column(0, i) & "--", "-")(0) = CStr(low) And Split(f!lstPairs.Column(0, i) & "--", "-")(1) = CStr(high) Then PairRow = i: Exit Function
+    Next
+End Function
+Private Function RejectDismiss(ByVal a As Long, ByVal b As Long, ByVal reason As String) As Boolean
+    On Error GoTo Rejected
+    Call DismissDuplicatePair(a, b, reason): Exit Function
+Rejected:
+    RejectDismiss = True
+End Function
+Private Function RejectRestore(ByVal id As Long) As Boolean
+    On Error GoTo Rejected
+    RestoreDuplicatePair id: Exit Function
+Rejected:
+    RejectRestore = True
+End Function

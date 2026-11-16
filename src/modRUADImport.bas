@@ -292,7 +292,7 @@ Private Function RUADSourceValues(ByVal xml As Variant) As Object
     Set RUADSourceValues = d
 End Function
 'The DoD ID recorded from an MNA roster, or "".
-Private Function RUADSourceDoDID(ByVal xml As Variant) As String
+Public Function RUADSourceDoDID(ByVal xml As Variant) As String
     Dim doc As Object, node As Object
     If InStr(1, Nz(xml, ""), "dodid=", vbTextCompare) = 0 Then Exit Function
     Set doc = CreateObject("MSXML2.DOMDocument.6.0"): doc.async = False: doc.resolveExternals = False: doc.setProperty "ProhibitDTD", True

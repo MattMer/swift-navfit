@@ -5,7 +5,7 @@ param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$Variant)
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 $dao=New-Object -ComObject DAO.DBEngine.120
 $generated='^Index_[0-9A-F]{8}_[0-9A-F]{4}_[0-9A-F]{4}$'
-$types=@{1='BIT';3='SHORT';4='LONG';7='DOUBLE';8='DATETIME';12='LONGTEXT'}
+$types=@{1='BIT';2='BYTE';3='SHORT';4='LONG';7='DOUBLE';8='DATETIME';12='LONGTEXT'}
 $db=$dao.OpenDatabase($BuildPath,$false,$true)
 try{
  $r=$db.OpenRecordset('SELECT SchemaVersion,AppVersion FROM AppMetadata',4);$schema=[int]$r.Fields.Item(0).Value;$app=[string]$r.Fields.Item(1).Value;$r.Close()

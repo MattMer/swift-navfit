@@ -199,9 +199,8 @@ Begin Form
                     Height =750
                     FontSize =10
                     Name ="lblInfo"
-                    Caption ="Review two profiles for the same Sailor. Surname matches are suggestions only. C"
-                        "onflicting identifiers block merging. The original profile stays archived; saved"
-                        " report content and history are preserved."
+                    Caption ="Pairs of profiles that may be the same Sailor, strongest match first. Select a p"
+                        "air, preview it, then merge it or mark it as different Sailors."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =300
                     LayoutCachedTop =200
@@ -216,11 +215,11 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =300
-                    Top =1400
+                    Top =3900
                     Width =6700
                     Height =430
                     FontSize =10
-                    TabIndex =1
+                    TabIndex =5
                     Name ="cboSource"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;6400"
@@ -228,16 +227,16 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =1400
+                    LayoutCachedTop =3900
                     LayoutCachedWidth =7000
-                    LayoutCachedHeight =1830
+                    LayoutCachedHeight =4330
                     ThemeFontIndex =-1
                     Begin
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =300
-                            Top =1000
+                            Top =3500
                             Width =6700
                             Height =350
                             FontSize =10
@@ -245,9 +244,9 @@ Begin Form
                             Caption ="Original member - archive after moving links"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
-                            LayoutCachedTop =1000
+                            LayoutCachedTop =3500
                             LayoutCachedWidth =7000
-                            LayoutCachedHeight =1350
+                            LayoutCachedHeight =3850
                             ThemeFontIndex =-1
                         End
                     End
@@ -259,11 +258,11 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =7500
-                    Top =1400
+                    Top =3900
                     Width =6700
                     Height =430
                     FontSize =10
-                    TabIndex =2
+                    TabIndex =6
                     Name ="cboTarget"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="0;6400"
@@ -271,16 +270,16 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =1400
+                    LayoutCachedTop =3900
                     LayoutCachedWidth =14200
-                    LayoutCachedHeight =1830
+                    LayoutCachedHeight =4330
                     ThemeFontIndex =-1
                     Begin
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =7500
-                            Top =1000
+                            Top =3500
                             Width =6700
                             Height =350
                             FontSize =10
@@ -288,6 +287,50 @@ Begin Form
                             Caption ="Surviving member - keep this profile"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =7500
+                            LayoutCachedTop =3500
+                            LayoutCachedWidth =14200
+                            LayoutCachedHeight =3850
+                            ThemeFontIndex =-1
+                        End
+                    End
+                End
+                Begin ListBox
+                    RowSourceTypeInt =1
+                    ColumnHeads = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =5
+                    Left =300
+                    Top =1400
+                    Width =13900
+                    Height =1500
+                    FontSize =10
+                    TabIndex =1
+                    Name ="lstPairs"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;1500;4300;4300;3800"
+                    OnClick ="=UXDirectoryMergePair()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =300
+                    LayoutCachedTop =1400
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =2900
+                    ThemeFontIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =300
+                            Top =1000
+                            Width =13900
+                            Height =350
+                            FontSize =10
+                            Name ="lblPairs"
+                            Caption ="Possible duplicate Sailors"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =300
                             LayoutCachedTop =1000
                             LayoutCachedWidth =14200
                             LayoutCachedHeight =1350
@@ -295,47 +338,36 @@ Begin Form
                         End
                     End
                 End
-                Begin ListBox
-                    ColumnHeads = NotDefault
+                Begin CheckBox
                     OverlapFlags =85
-                    TextFontFamily =34
-                    IMESentenceMode =3
-                    ColumnCount =3
                     Left =300
-                    Top =2300
-                    Width =13900
-                    Height =1100
-                    FontSize =10
-                    TabIndex =3
-                    Name ="lstCandidates"
-                    RowSourceType ="Table/Query"
-                    ColumnWidths ="0;10500;2500"
-                    OnDblClick ="=UXDirectoryMergeCandidate()"
-                    FontName ="Segoe UI"
-                    OnMouseDown ="[Event Procedure]"
+                    Top =3060
+                    Width =250
+                    Height =250
+                    TabIndex =2
+                    Name ="chkShowDismissed"
+                    AfterUpdate ="=UXDirectoryMergePairs()"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =2300
-                    LayoutCachedWidth =14200
-                    LayoutCachedHeight =3400
-                    ThemeFontIndex =-1
+                    LayoutCachedTop =3060
+                    LayoutCachedWidth =550
+                    LayoutCachedHeight =3310
                     Begin
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
-                            Left =300
-                            Top =1900
-                            Width =13900
+                            Left =600
+                            Top =3000
+                            Width =6500
                             Height =350
                             FontSize =10
-                            Name ="lblCandidates"
-                            Caption ="Possible surname matches - double-click to choose a survivor, or use the survivo"
-                                "r list for changed names"
+                            Name ="lblShowDismissed"
+                            Caption ="Show pairs marked as different Sailors"
                             FontName ="Segoe UI"
-                            LayoutCachedLeft =300
-                            LayoutCachedTop =1900
-                            LayoutCachedWidth =14200
-                            LayoutCachedHeight =2250
+                            LayoutCachedLeft =600
+                            LayoutCachedTop =3000
+                            LayoutCachedWidth =7100
+                            LayoutCachedHeight =3350
                             ThemeFontIndex =-1
                         End
                     End
@@ -343,21 +375,69 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
+                    Left =7500
+                    Top =2980
+                    Width =3300
+                    Height =420
+                    FontSize =10
+                    TabIndex =3
+                    Name ="cmdDismiss"
+                    Caption ="Not the same Sailor"
+                    OnClick ="=UXDirectoryMergeDismiss()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7500
+                    LayoutCachedTop =2980
+                    LayoutCachedWidth =10800
+                    LayoutCachedHeight =3400
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =10900
+                    Top =2980
+                    Width =3300
+                    Height =420
+                    FontSize =10
+                    TabIndex =4
+                    Name ="cmdRestore"
+                    Caption ="List again"
+                    OnClick ="=UXDirectoryMergeRestore()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =10900
+                    LayoutCachedTop =2980
+                    LayoutCachedWidth =14200
+                    LayoutCachedHeight =3400
+                    ThemeFontIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
                     Left =300
-                    Top =3500
+                    Top =4450
                     Width =13900
                     Height =450
                     FontSize =10
-                    TabIndex =4
+                    TabIndex =7
                     Name ="cmdPreview"
                     Caption ="Preview identities and all affected links"
                     OnClick ="=UXDirectoryMergePreview()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =3500
+                    LayoutCachedTop =4450
                     LayoutCachedWidth =14200
-                    LayoutCachedHeight =3950
+                    LayoutCachedHeight =4900
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -372,16 +452,16 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =300
-                    Top =4050
+                    Top =5000
                     Width =13900
-                    Height =3400
+                    Height =2450
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =8
                     Name ="txtPreview"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =300
-                    LayoutCachedTop =4050
+                    LayoutCachedTop =5000
                     LayoutCachedWidth =14200
                     LayoutCachedHeight =7450
                     ThemeFontIndex =-1
@@ -389,7 +469,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =300
-                            Top =4050
+                            Top =5000
                             Width =15
                             Height =15
                             FontSize =1
@@ -398,9 +478,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Merge preview"
                             LayoutCachedLeft =300
-                            LayoutCachedTop =4050
+                            LayoutCachedTop =5000
                             LayoutCachedWidth =315
-                            LayoutCachedHeight =4065
+                            LayoutCachedHeight =5015
                         End
                     End
                 End
@@ -413,7 +493,7 @@ Begin Form
                     Width =13900
                     Height =500
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =9
                     Name ="txtReason"
                     FontName ="Segoe UI"
 
@@ -432,7 +512,8 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblReason"
-                            Caption ="Why are these profiles the same Sailor? Required; do not include SSNs or DoD IDs"
+                            Caption ="Reason (required): why these are the same Sailor, or different Sailors. No SSNs "
+                                "or DoD IDs."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =7550
@@ -451,7 +532,7 @@ Begin Form
                     Width =13900
                     Height =550
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =10
                     ForeColor =16777215
                     Name ="cmdApply"
                     Caption ="Apply reviewed merge"
@@ -483,7 +564,7 @@ Begin Form
                     Width =13900
                     Height =1300
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =11
                     Name ="lstHistory"
                     RowSourceType ="Table/Query"
                     ColumnWidths ="1000;2400;2400;2400;4200"
@@ -524,7 +605,7 @@ Begin Form
                     Width =6700
                     Height =450
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =12
                     Name ="cmdUndo"
                     Caption ="Undo selected merge"
                     OnClick ="=UXDirectoryMergeUndo()"
@@ -548,7 +629,7 @@ Begin Form
                     Width =6700
                     Height =450
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =13
                     Name ="cmdClose"
                     Caption ="Back to member directory"
                     OnClick ="=UXDirectoryClose(\"frmUXDirectoryMerge\")"
@@ -574,11 +655,6 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Compare Database
-
-Private Sub lstCandidates_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If UXSortNativeHeader(Me.name, "lstCandidates", X, Y) Then Exit Sub
-
-End Sub
 
 Private Sub lstHistory_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If UXSortNativeHeader(Me.name, "lstHistory", X, Y) Then Exit Sub

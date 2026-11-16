@@ -18,7 +18,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     'Release 0.55.0 still imports schemas 1-48 and bridges older workspaces. The source
     'is at least 35 and never newer than the target, so no older-schema branches remain.
     If ver >= 1 And ver < 35 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema " & ver & ". This version imports workspaces from release 0.49.0 (schema 35) onward. Import the file into a Swift NAVFIT 0.55.0 Blank first, then import that workspace here."
-    If ver < 35 Or ver > 50 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
+    If ver < 35 Or ver > 51 Then Err.Raise vbObjectError + 301, "modMigration.MigrateWorkspace", "Unsupported source schema."
     targetVersion = DLookup("SchemaVersion", "AppMetadata")
     'The target is always this version's own workspace, so its bound follows SCHEMA_VERSION.
     If targetVersion < 35 Or targetVersion > SCHEMA_VERSION Then Err.Raise vbObjectError + 302, "modMigration.MigrateWorkspace", "Target schema must be 35 through " & SCHEMA_VERSION & "."
@@ -37,6 +37,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     If targetVersion >= 45 Then tables = Split(Join(tables, "|") & "|RevisionRetention", "|")
     If targetVersion >= 47 Then tables = Split(Join(tables, "|") & "|RestrictedException|RestrictedDismissal", "|")
     If targetVersion >= 48 Then tables = Split(Join(tables, "|") & "|RestrictedCheckOff", "|")
+    If targetVersion >= 51 Then tables = Split(Join(tables, "|") & "|MemberDuplicateDismissal", "|")
     For Each table In s.TableDefs
         If Left$(table.Name, 4) <> "MSys" Then
             'Who had the source open is momentary; it is known but never copied.
@@ -87,6 +88,7 @@ Public Function MigrateWorkspace(ByVal sourcePath As String, Optional ByVal show
     End If
     copyStarted = Timer
     For Each n In tables
+        If ver < 51 And n = "MemberDuplicateDismissal" Then GoTo NextTable
         If ver < 48 And n = "RestrictedCheckOff" Then GoTo NextTable
         If ver < 47 And (n = "RestrictedException" Or n = "RestrictedDismissal") Then GoTo NextTable
         If ver < 45 And n = "RevisionRetention" Then GoTo NextTable
@@ -126,6 +128,7 @@ NextTable:
     If showProgress Then Application.Run "WorkspaceImportProgress", "Bulk copying finished in " & Format$(MigrationSeconds(copyStarted), "0.00") & " seconds. Verifying copied values..."
     verifyStarted = Timer
     For Each n In tables
+        If ver < 51 And n = "MemberDuplicateDismissal" Then GoTo NextCheck
         If ver < 48 And n = "RestrictedCheckOff" Then GoTo NextCheck
         If ver < 47 And (n = "RestrictedException" Or n = "RestrictedDismissal") Then GoTo NextCheck
         If ver < 45 And n = "RevisionRetention" Then GoTo NextCheck

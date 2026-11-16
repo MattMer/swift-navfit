@@ -29,8 +29,8 @@ connection. Data enters and leaves only through files the user chooses.
 | Fact | Value |
 | --- | --- |
 | Application version | 0.58.0-dev |
-| Schema version | 50 |
-| Tables / enforced relationships | 84 / 169 |
+| Schema version | 51 |
+| Tables / enforced relationships | 85 / 169 |
 | Report fields in the catalogue | 101 |
 | VBA modules / forms | 124 / 76 |
 | Validation rule packs / pack rules / expanded rules | 2 / 6 / 10 |

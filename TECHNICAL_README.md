@@ -41,9 +41,9 @@ Development source (*generated*):
 | Fact | Value |
 | --- | --- |
 | Application version | 0.58.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
-| Schema version | 50 |
-| Imports accepted | Workspaces of schema 35 to 50, into a target of schema 35 to 50 |
-| Tables / enforced relationships | 84 / 169 |
+| Schema version | 51 |
+| Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
+| Tables / enforced relationships | 85 / 169 |
 | VBA modules / forms | 124 / 76 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
@@ -216,7 +216,7 @@ added or removed without updating this list.
 <!-- data-inventory -->
 | Area | Tables | Personal data |
 | --- | --- | --- |
-| Member directory and rosters | `CommandMember`, `MemberReport`, `PriorEvaluation`, `PriorEvaluationTrait`, `MemberCounseling`, `MemberDeparture`, `RosterImport`, `RosterPresence`, `ReportDueDismissal` | Yes: identity, SSN, roster data (including DoD ID and contact details), prior grades, counseling, departures |
+| Member directory and rosters | `CommandMember`, `MemberReport`, `PriorEvaluation`, `PriorEvaluationTrait`, `MemberCounseling`, `MemberDeparture`, `RosterImport`, `RosterPresence`, `ReportDueDismissal`, `MemberDuplicateDismissal` | Yes: identity, SSN, roster data (including DoD ID and contact details), prior grades, counseling, departures, and pairs marked as different Sailors with the contributor and reason |
 | Reporting seniors | `ReportingSeniorRecord`, `ReportingSeniorValue`, `RSCABaseline`, `GroupRSCABaseline`, `RSCountedReport` | Yes: senior identity, SSN, contact details (including e-mail); cumulative averages |
 | Directory merge history | `DirectoryMerge`, `DirectoryMergeReport`, `DirectoryMergePrior`, `DirectoryMergeCounseling`, `DirectoryMergeSenior`, `DirectoryMergeLink` | Links between member records before and after a merge |
 | Reports and revisions | `Report`, `ReportHead`, `ReportRevision`, `RevisionValue`, `RevisionChange`, `RevisionDate`, `RevisionChoice`, `RevisionRetention`, `ReportEvent`, `ReportSignoff`, `DraftDisposal`, `RecoveryDraft` | Yes: current report fields, retained versions, pending recovery checkpoints, sign-off and disposal records |
@@ -628,6 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 16 Nov 2026 | Development only, not in a release, schema 51: `MemberDuplicateDismissal` records pairs of directory members marked as different Sailors (the pair, reason, contributor and time; restoring keeps the row with who restored it). Review possible duplicate Sailors lists every pair of active members that may be the same Sailor, from shared SSNs or DoD IDs (profile, linked reports and the roster's DoD ID), the same report-format name, or the same surname and first initial; pairs with different identifiers are not listed. Identifiers are compared in memory and never shown. |
 | 16 Nov 2026 | Development only, not in a release: a roster row matched to an existing member starts with both roster updates ticked, so the refresh takes the roster's fields (including ones changed by hand) and its rank/rate; clearing either box on a row keeps the profile's value. A blank roster value (an empty cell, or a column the roster format lacks) never replaces a profile value, and a blank rank/rate never replaces the profile's. Display name, report name and SSN never change from a roster. |
 | 15 Nov 2026 | Release 0.57.0, schema 50: sparse revision values with a row count and checksum, the ISIC summary letter profile in NAVFIT98A group export, and the fixes from the 0.56.0 checks. |
 | 15 Nov 2026 | NAVFIT98A group export can write the chosen ISIC to the exported file's `Summary` table as a summary letter profile: the ISIC name and address, and the reporting senior's e-mail and ten-digit phone (the same data the summary letter PDF prints). Nothing else new leaves the workspace. Import code for workspaces older than schema 35 is removed. |

@@ -15,7 +15,7 @@ Public Const APP_VERSION As String = "0.58.0-dev"
 Public Const APP_RELEASE_DATE As String = ""
 'Where newer releases are published. Shown as text only: Swift never connects to it.
 Public Const APP_UPDATES_URL As String = "https://github.com/MattMer/swift-navfit/releases/latest"
-Public Const SCHEMA_VERSION As Long = 50
+Public Const SCHEMA_VERSION As Long = 51
 
 Public Function NewIdentity() As String
     Dim value As SwiftGuid, buffer As String, result As Long

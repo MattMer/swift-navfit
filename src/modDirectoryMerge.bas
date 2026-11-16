@@ -264,3 +264,163 @@ CleanupFailure:
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function
+
+'--- Possible duplicate Sailors across the whole directory -------------------------------
+'Pairs of active members that may be the same Sailor, strongest first. Strength 1: the same
+'SSN or DoD ID (on the profile, a linked report, or the roster's DoD ID). 2: the same name in
+'report format. 3: the same surname and first initial. Pairs whose SSNs or DoD IDs differ are
+'different Sailors and are never listed. Each item: LowID, HighID, Strength, Why, DismissalID
+'(0 unless the pair was dismissed; dismissed pairs are left out unless includeDismissed).
+Public Function DirectoryDuplicatePairs(Optional ByVal includeDismissed As Boolean = False) As Collection
+    Dim db As DAO.Database, r As DAO.Recordset, ssn As Object, dod As Object, buckets As Object, pairs As Object, dismissed As Object
+    Dim id As Long, key As Variant, value As Variant, name As String, surname As String, initial As String
+    Dim list As Variant, i As Long, j As Long, a As Long, b As Long, pairKey As String, item As Object, strength As Long, why As String
+    Set db = CurrentDb
+    Set ssn = CreateObject("Scripting.Dictionary"): Set dod = CreateObject("Scripting.Dictionary")
+    Set buckets = CreateObject("Scripting.Dictionary"): Set pairs = CreateObject("Scripting.Dictionary"): Set dismissed = CreateObject("Scripting.Dictionary")
+    Set r = db.OpenRecordset("SELECT MemberID,FullName,ReportName,MemberSSN,RUADData FROM CommandMember WHERE IsArchived=False ORDER BY MemberID", dbOpenSnapshot)
+    Do While Not r.EOF
+        id = r!MemberID
+        DuplicateIdentity ssn, id, Nz(r!MemberSSN, "")
+        DuplicateIdentity dod, id, RUADSourceDoDID(r!RUADData)
+        name = NavyNameFormat(Nz(r!ReportName, ""))
+        If InStr(name, ",") = 0 Then name = NavyNameFormat(Nz(r!FullName, ""))
+        If InStr(name, ",") > 0 Then
+            DuplicateBucket buckets, "2|" & name, id
+            surname = DirectorySurname(r!FullName, r!ReportName): initial = Left$(Trim$(Mid$(name, InStr(name, ",") + 1)), 1)
+            If Len(surname) > 0 And Len(initial) > 0 Then DuplicateBucket buckets, "3|" & surname & ", " & initial, id
+        End If
+        r.MoveNext
+    Loop
+    r.Close
+    Set r = db.OpenRecordset("SELECT m.MemberID,r.MemberSSN,r.MemberDoDID FROM (MemberReport AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID) INNER JOIN CommandMember AS c ON m.MemberID=c.MemberID WHERE c.IsArchived=False", dbOpenSnapshot)
+    Do While Not r.EOF
+        DuplicateIdentity ssn, CLng(r!MemberID), Nz(r!MemberSSN, ""): DuplicateIdentity dod, CLng(r!MemberID), Nz(r!MemberDoDID, "")
+        r.MoveNext
+    Loop
+    r.Close
+    For Each key In ssn.Keys
+        If Left$(key, 1) <> "#" And ssn(key).Count > 1 Then
+            For Each value In ssn(key).Keys: DuplicateBucket buckets, "1|SSN|" & key, CLng(value): Next
+        End If
+    Next
+    For Each key In dod.Keys
+        If Left$(key, 1) <> "#" And dod(key).Count > 1 Then
+            For Each value In dod(key).Keys: DuplicateBucket buckets, "1|DoD ID|" & key, CLng(value): Next
+        End If
+    Next
+    For Each key In buckets.Keys
+        list = buckets(key).Keys
+        'A very common name would list every combination; leave those to the surname search.
+        If UBound(list) >= 1 And UBound(list) < 60 Then
+            strength = CLng(Left$(key, 1))
+            Select Case strength
+                Case 1: why = "Same " & Split(key, "|")(1)
+                Case 2: why = "Same name (" & Mid$(key, 3) & ")"
+                Case Else: why = "Same surname and first initial (" & Mid$(key, 3) & ")"
+            End Select
+            For i = 0 To UBound(list) - 1
+                For j = i + 1 To UBound(list)
+                    a = CLng(list(i)): b = CLng(list(j))
+                    If a > b Then a = CLng(list(j)): b = CLng(list(i))
+                    pairKey = a & "|" & b
+                    If Not pairs.Exists(pairKey) Then
+                        Set item = CreateObject("Scripting.Dictionary")
+                        item("LowID") = a: item("HighID") = b: item("Strength") = strength: item("Why") = why: item("DismissalID") = 0&
+                        pairs.Add pairKey, item
+                    ElseIf strength < pairs(pairKey)("Strength") Then
+                        pairs(pairKey)("Strength") = strength: pairs(pairKey)("Why") = why
+                    ElseIf strength = 1 And pairs(pairKey)("Strength") = 1 And InStr(pairs(pairKey)("Why"), why) = 0 Then
+                        pairs(pairKey)("Why") = pairs(pairKey)("Why") & "; " & why
+                    End If
+                Next
+            Next
+        End If
+    Next
+    Set r = db.OpenRecordset("SELECT DismissalID,LowMemberID,HighMemberID FROM MemberDuplicateDismissal WHERE UndoneAt Is Null", dbOpenSnapshot)
+    Do While Not r.EOF
+        dismissed(r!LowMemberID & "|" & r!HighMemberID) = CLng(r!DismissalID): r.MoveNext
+    Loop
+    r.Close
+    Set DirectoryDuplicatePairs = New Collection
+    For strength = 1 To 3
+        For Each key In pairs.Keys
+            Set item = pairs(key)
+            If item("Strength") = strength And Not DuplicateConflict(ssn, item("LowID"), item("HighID")) And Not DuplicateConflict(dod, item("LowID"), item("HighID")) Then
+                If dismissed.Exists(key) Then item("DismissalID") = dismissed(key)
+                If item("DismissalID") = 0 Or includeDismissed Then DirectoryDuplicatePairs.Add item
+            End If
+        Next
+    Next
+End Function
+'index(identifier) holds the members that carry it; index("#" & id) holds that member's identifiers.
+Private Sub DuplicateIdentity(ByVal index As Object, ByVal id As Long, ByVal value As String)
+    value = Replace(Replace(Trim$(value), "-", ""), " ", "")
+    If Len(value) = 0 Then Exit Sub
+    If Not index.Exists(value) Then index.Add value, CreateObject("Scripting.Dictionary")
+    index(value)(CStr(id)) = True
+    If Not index.Exists("#" & id) Then index.Add "#" & id, CreateObject("Scripting.Dictionary")
+    index("#" & id)(value) = True
+End Sub
+Private Sub DuplicateBucket(ByVal buckets As Object, ByVal key As String, ByVal id As Long)
+    If Not buckets.Exists(key) Then buckets.Add key, CreateObject("Scripting.Dictionary")
+    buckets(key)(CStr(id)) = True
+End Sub
+'True when both members carry an identifier of this kind and share none of them.
+Private Function DuplicateConflict(ByVal index As Object, ByVal a As Long, ByVal b As Long) As Boolean
+    Dim value As Variant
+    If Not index.Exists("#" & a) Or Not index.Exists("#" & b) Then Exit Function
+    For Each value In index("#" & a).Keys
+        If index("#" & b).Exists(value) Then Exit Function
+    Next
+    DuplicateConflict = True
+End Function
+'The member to keep when merging a pair: the one with an SSN when only one has it, else the
+'one with more linked reports, prior evaluations and counseling, else the older profile.
+Public Function DuplicateSurvivor(ByVal a As Long, ByVal b As Long) As Long
+    Dim hasA As Boolean, hasB As Boolean, linksA As Long, linksB As Long
+    hasA = Len(Trim$(Nz(DLookup("MemberSSN", "CommandMember", "MemberID=" & a), ""))) > 0
+    hasB = Len(Trim$(Nz(DLookup("MemberSSN", "CommandMember", "MemberID=" & b), ""))) > 0
+    If hasA <> hasB Then
+        If hasA Then DuplicateSurvivor = a Else DuplicateSurvivor = b
+        Exit Function
+    End If
+    linksA = DuplicateLinks(a): linksB = DuplicateLinks(b)
+    If linksA > linksB Then
+        DuplicateSurvivor = a
+    ElseIf linksB > linksA Then
+        DuplicateSurvivor = b
+    ElseIf a < b Then
+        DuplicateSurvivor = a
+    Else
+        DuplicateSurvivor = b
+    End If
+End Function
+Private Function DuplicateLinks(ByVal id As Long) As Long
+    DuplicateLinks = DCount("*", "MemberReport", "MemberID=" & id) + DCount("*", "PriorEvaluation", "MemberID=" & id) + DCount("*", "MemberCounseling", "MemberID=" & id)
+End Function
+'Record that two members are different Sailors, so the pair is no longer listed.
+Public Function DismissDuplicatePair(ByVal a As Long, ByVal b As Long, ByVal reason As String) As Long
+    Dim r As DAO.Recordset, op As Long, low As Long, high As Long
+    reason = Trim$(reason)
+    If a <= 0 Or b <= 0 Or a = b Then Err.Raise vbObjectError + 9120, "DismissDuplicatePair", "Select a pair of members."
+    If Len(reason) = 0 Or Len(reason) > 255 Then Err.Raise vbObjectError + 9121, "DismissDuplicatePair", "Enter a reason of 1 to 255 characters, such as how you know these are different Sailors. Do not enter identifiers."
+    If LongestDigitRun(Replace(Replace(Replace(reason, "-", ""), " ", ""), ".", "")) >= 9 Then Err.Raise vbObjectError + 9121, "DismissDuplicatePair", "Keep SSNs and DoD IDs out of the reason."
+    If a < b Then low = a: high = b Else low = b: high = a
+    If DCount("*", "CommandMember", "MemberID IN (" & low & "," & high & ")") <> 2 Then Err.Raise vbObjectError + 9120, "DismissDuplicatePair", "Both members must exist."
+    If DCount("*", "MemberDuplicateDismissal", "LowMemberID=" & low & " AND HighMemberID=" & high & " AND UndoneAt Is Null") > 0 Then Err.Raise vbObjectError + 9122, "DismissDuplicatePair", "This pair is already marked as different Sailors."
+    op = BeginOperation("Not a duplicate", "Member IDs " & low & " and " & high)
+    Set r = CurrentDb.OpenRecordset("MemberDuplicateDismissal", dbOpenDynaset, dbAppendOnly)
+    r.AddNew: r!LowMemberID = low: r!HighMemberID = high: r!Reason = reason: r!DismissedBy = MajorAuthor(): r!DismissedAt = Now()
+    r.Update: r.Bookmark = r.LastModified: DismissDuplicatePair = r!DismissalID: r.Close
+    FinishOperation op, "Completed", "Pair marked as different Sailors; neither profile changed."
+End Function
+'List the pair again. The dismissal stays in history with who restored it and when.
+Public Sub RestoreDuplicatePair(ByVal dismissalID As Long)
+    Dim db As DAO.Database, op As Long
+    Set db = CurrentDb
+    op = BeginOperation("Restore possible duplicate", "Dismissal " & dismissalID)
+    db.Execute "UPDATE MemberDuplicateDismissal SET UndoneAt=Now(),UndoneBy=" & MajorAuthor() & " WHERE DismissalID=" & dismissalID & " AND UndoneAt Is Null", dbFailOnError
+    If db.RecordsAffected = 0 Then FinishOperation op, "Failed", "Already restored.": Err.Raise vbObjectError + 9123, "RestoreDuplicatePair", "That pair is already listed again."
+    FinishOperation op, "Completed", "Pair listed again as a possible duplicate."
+End Sub
