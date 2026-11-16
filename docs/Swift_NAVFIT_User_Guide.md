@@ -571,7 +571,7 @@ A member profile also holds **Date reported** (block 9), the date the member rep
 
 - Tick **This is the complete roster for its UICs** when the file is the full roster. Swift then compares it with the last complete roster for the same UICs, and anyone missing from the newer one is flagged as departing. Leave it clear for a partial or filtered export; then nobody is flagged as missing.
 - A member whose PRD is within 90 days is also flagged as departing, with the PRD as the expected date.
-- When the roster shows a different rate or rank, the preview says so. Tick **Update the profile rank/rate from this roster** on that row to change the profile; otherwise it stays as it is.
+- A matched member's profile takes the roster's values: **Use incoming RUAD values for manually changed roster fields** and **Update the profile rank/rate from this roster** start ticked for every row matched to an existing member. The preview shows each change. To keep a profile's own values for a row, select it and clear either box; the display name, report name and SSN never change. A roster never clears a value: when its cell is blank, or its format has no such column (an MNA workbook has no phone, for example), the profile keeps what it has, and the preview marks it **kept; the roster has no value**.
 
 Swift never archives or deletes anyone because of a roster. **My Work > Departures** lists the flagged members. Select one and choose **Confirm departure** with the detachment date, or **Dismiss (still aboard)** with a reason. A member who reappears on a later complete roster is marked returned automatically. Every import is kept as a dated snapshot.
 

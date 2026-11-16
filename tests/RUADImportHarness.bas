@@ -32,7 +32,7 @@ End Function
 Public Function TestRUADImport(ByVal sample As String) As String
     Dim i As Long, vacant As Long, selected As Long, count As Long, id As Long, initial As Long, version As Long, second As Long
     Dim row As Object, data As Object, values As Object, doc As Object, db As DAO.Database, r As DAO.Recordset, key As Variant, text As String, summary As String, path As String, failure As String, testSSN As String, stamp As String, f As Access.Form
-    Dim owner As Long, reviewer As Long, failed As String
+    Dim owner As Long, reviewer As Long, failed As String, prd As String
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC RUAD TEST", "Roster tester": Set db = CurrentDb
     initial = DCount("*", "CommandMember")
@@ -76,6 +76,14 @@ Public Function TestRUADImport(ByVal sample As String) As String
     Check RUADApply() = 1, "Explicit conflict override"
     Set values = RUADDecode(DLookup("RUADData", "CommandMember", "MemberID=" & id))
     Check values("PHONE") = "Incoming contact", "Override applied"
+    ' A blank roster value never clears a profile value, even with both boxes ticked.
+    prd = Nz(values("PRD"), ""): If Len(prd) = 0 Then prd = "2027-06": values("PRD") = prd: Check SaveDirectoryMember(id, DLookup("VersionCounter", "CommandMember", "MemberID=" & id), CStr(data("NAME")), "Manual report name", "IT2", testSSN, "Manual", values) = id, "Profile PRD for blank check"
+    data("PHONE") = "": data("PRD") = ""
+    RUADChoose 1, "Refresh existing", id, True, True: summary = RUADPreview()
+    Check InStr(row("Detail"), "Incoming contact [kept; the roster has no value]") > 0, "Blank roster value preview"
+    Check RUADApply() = 1, "Refresh with blank roster values"
+    Check RUADDecode(DLookup("RUADData", "CommandMember", "MemberID=" & id))("PHONE") = "Incoming contact", "Blank roster value kept the profile value"
+    Check RUADDecode(DLookup("RUADData", "CommandMember", "MemberID=" & id))("PRD") = prd, "Blank roster PRD kept the profile PRD"
     ' A preview applies only for the contributor who reviewed it.
     RUADChoose 1, "Refresh existing", id: summary = RUADPreview()
     owner = ActiveContributorID(): reviewer = AddContributor("Second roster tester")
@@ -114,10 +122,30 @@ Public Function TestRUADImport(ByVal sample As String) As String
     Check Not UXRUADImportSelection(), "Refresh requests explicit identity"
     f!cboMatch = id
     Check UXRUADImportSelection(), "Explicit match accepted"
+    Check f!chkReplaceManual And f!chkUpdateRank And RUADRow(1)("ReplaceManual") And RUADRow(1)("UpdateRank"), "A row made a refresh starts with roster fields and rank/rate ticked"
     Check UXRUADImportPreview() And f!cmdApply.Enabled, "Reviewed preview enables apply"
     Check InStr(f!txtDetails, "Before:") > 0 And InStr(f!txtDetails, "After:") > 0, "UI displays full values"
     f!chkReplaceManual = True: UXRUADImportSelection
     Check Not f!cmdApply.Enabled, "Changed selection invalidates UI preview"
+    ' Match roster rows to members ticks both roster updates; a cleared box stays cleared.
+    RUADLoad sample: UXRUADImportRows
+    Check UXRUADImportNew(), "Match roster rows to members"
+    count = 0
+    For i = 1 To RUADCount()
+        Set row = RUADRow(i)
+        If row("Action") = "Refresh existing" Then
+            count = count + 1
+            Check row("ReplaceManual") And row("UpdateRank"), "Matched row " & i & " defaults to roster fields and rank/rate"
+            If count = 1 Then second = i
+        End If
+    Next
+    Check count > 0, "Rows matched to existing members"
+    f!lstRows = second: UXRUADImportSelect
+    Check f!chkReplaceManual And f!chkUpdateRank And f!chkUpdateRank.Enabled, "Matched row shows both boxes ticked"
+    f!chkUpdateRank = False: Check UXRUADImportSelection(), "Clear rank/rate update"
+    Check Not RUADRow(second)("UpdateRank") And RUADRow(second)("ReplaceManual"), "Cleared rank/rate box stays cleared on an existing refresh"
+    f!chkReplaceManual = False: Check UXRUADImportSelection(), "Clear roster field update"
+    Check Not RUADRow(second)("ReplaceManual") And Not f!chkUpdateRank, "Cleared roster field box stays cleared"
     For i = 1 To RUADCount()
         Set row = RUADRow(i)
         If row("Vacant") Then

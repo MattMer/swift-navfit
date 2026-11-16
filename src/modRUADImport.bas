@@ -314,7 +314,7 @@ Private Function RUADSourceXML(ByVal data As Object, ByVal dodid As String) As S
 End Function
 Public Function RUADPreview() As String
     Dim row As Object, incoming As Object, values As Object, baseline As Object, db As DAO.Database, r As DAO.Recordset, ids As Object, names As Object
-    Dim key As Variant, name As String, rank As String, reportName As String, details As String, keep As Boolean, selected As Long, vacant As Long, conflicts As Long, summary As String
+    Dim key As Variant, name As String, rank As String, reportName As String, details As String, keep As Boolean, blank As Boolean, selected As Long, vacant As Long, conflicts As Long, summary As String
     prepared = False: Set db = CurrentDb: Set ids = CreateObject("Scripting.Dictionary"): Set names = CreateObject("Scripting.Dictionary"): names.CompareMode = vbTextCompare
     If rows Is Nothing Then Err.Raise vbObjectError + 7070, "modRUADImport.RUADPreview", "Choose a CSV first."
     For Each row In rows
@@ -353,21 +353,24 @@ Public Function RUADPreview() As String
                 r.Close: Set r = Nothing
             End If
             For Each key In RUADKeys()
-                keep = False
+                keep = False: blank = False
                 If row("Action") = "Refresh existing" Then
                     If key = "NAME" Then
                         keep = True
+                    ElseIf Len(Trim$(CStr(incoming(key)))) = 0 And Len(Trim$(Nz(values(key), ""))) > 0 Then
+                        'A roster with no value (a blank cell, or a column its format lacks) never clears one.
+                        keep = True: blank = True
                     ElseIf baseline.Exists(key) Then
                         keep = Not SameFieldValue(values(key), baseline(key)) And Not SameFieldValue(values(key), incoming(key))
                     Else
                         keep = Len(Nz(values(key), "")) > 0 And Not SameFieldValue(values(key), incoming(key))
                     End If
-                    If keep And key <> "NAME" Then conflicts = conflicts + 1: keep = Not row("ReplaceManual")
+                    If keep And key <> "NAME" And Not blank Then conflicts = conflicts + 1: keep = Not row("ReplaceManual")
                 End If
                 details = details & CStr(key) & vbCrLf & "  Before: " & Nz(values(key), "(unentered)") & vbCrLf & "  Incoming: " & incoming(key) & vbCrLf
                 If Not keep Then values(key) = incoming(key)
                 If key = "NAME" Then values(key) = row("Name")
-                details = details & "  After: " & Nz(values(key), "(unentered)") & IIf(keep, " [preserved]", "") & vbCrLf
+                details = details & "  After: " & Nz(values(key), "(unentered)") & IIf(blank, " [kept; the roster has no value]", IIf(keep, " [preserved]", "")) & vbCrLf
             Next
             If row.Exists("Values") Then row.Remove "Values"
             row.Add "Values", values: row("SourceXML") = RUADSourceXML(incoming, CStr(row("DoDID"))): row("Detail") = details

@@ -60,6 +60,8 @@ Public Function UXRUADImportSelection() As Boolean
         f!lblStatus.Caption = "Choose the existing member to match this row before previewing.": Exit Function
     End If
     If Nz(f!cboAction, "Skip") = "Skip" And Nz(f!cboMatch, 0) > 0 Then f!cboAction = "Refresh existing"
+    'A row that becomes a refresh starts with both roster updates ticked.
+    If Nz(f!cboAction, "Skip") = "Refresh existing" And RUADRow(selected)("Action") <> "Refresh existing" Then f!chkReplaceManual = True: f!chkUpdateRank = True
     RUADChoose selected, Nz(f!cboAction, "Skip"), Nz(f!cboMatch, 0), Nz(f!chkReplaceManual, False), Nz(f!chkUpdateRank, False)
     Call UXRUADImportRows: f!lstRows = selected: UXRUADImportSelect
     f!lblStatus.Caption = "Selection changed. Preview again before Apply.": UXRUADImportSelection = True: Exit Function
@@ -68,7 +70,8 @@ Failed:
 End Function
 ' Match every undecided row: refresh the one existing member it names, create a
 ' profile when no member has that name, and leave a name shared by several members
-' for an explicit choice.
+' for an explicit choice. A refresh takes the roster's fields and rank/rate unless
+' the row's boxes are cleared.
 Public Function UXRUADImportNew() As Boolean
     Dim i As Long, row As Object, data As Object, count As Long, matched As Long, undecided As Long
     On Error GoTo Failed
@@ -78,7 +81,7 @@ Public Function UXRUADImportNew() As Boolean
         Set row = RUADRow(i): Set data = row("Data")
         If Not row("Vacant") And row("Action") = "Skip" Then
             If row("Suggested") > 0 Then
-                RUADChoose i, "Refresh existing", CLng(row("Suggested")): matched = matched + 1
+                RUADChoose i, "Refresh existing", CLng(row("Suggested")), True, True: matched = matched + 1
             ElseIf DCount("*", "CommandMember", "FullName=" & QuoteSQL(CStr(data("NAME")))) = 0 Then
                 RUADChoose i, "Create new", 0: count = count + 1
             Else
@@ -87,7 +90,7 @@ Public Function UXRUADImportNew() As Boolean
         End If
     Next
     UXRUADImportRows
-    Forms!frmUXRUADImport!lblStatus.Caption = matched & " rows matched to existing members, " & count & " new profiles selected" & IIf(undecided > 0, ", " & undecided & " rows share a name with several members and need a choice", "") & ". Check the matches, then Preview before Apply."
+    Forms!frmUXRUADImport!lblStatus.Caption = matched & " rows matched to existing members, " & count & " new profiles selected" & IIf(undecided > 0, ", " & undecided & " rows share a name with several members and need a choice", "") & ". Matched profiles take the roster's fields and rank/rate; clear a row's boxes to keep its profile values. Check the matches, then Preview before Apply."
     UXRUADImportNew = True: Exit Function
 Failed:
     Forms!frmUXRUADImport!lblStatus.Caption = Err.Description
