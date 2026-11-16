@@ -69,6 +69,8 @@ Add PDF (Save 'pdf-packet-not-stream.pdf' (Pdf (Base '<< /XFA [(template) 4 0 R 
 Add PDF (Save 'pdf-unterminated-string.pdf' (Pdf (Base '<< /XFA [(template 4 0 R (datasets) 5 0 R] >>'))) '*'
 Add PDF (Save 'pdf-huge-number.pdf' (Pdf (Base '<< /XFA [(template) 99999999999999999999 0 R (datasets) 5 0 R] >>'))) '*'
 Add PDF (Save 'pdf-no-xfa.pdf' (Pdf (Base '<< /Fields [] >>'))) 'No supported XFA'
+#A flattened copy (Print to PDF, scan) has no /AcroForm at all.
+Add PDF (Save 'pdf-flattened.pdf' (Pdf @((Bytes '<< /Type /Catalog /Pages 2 0 R >>'),(Bytes '<< /Type /Pages /Count 0 /Kids [] >>')))) 'saved through Print to PDF'
 $big=New-Object byte[] 30000001;$hp=Bytes '%PDF-1.7';[Array]::Copy($hp,$big,$hp.Length)
 Add PDF (Save 'pdf-oversize.pdf' $big) '30 MB'
 

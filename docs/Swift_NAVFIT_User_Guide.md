@@ -942,7 +942,7 @@ The export screen is dedicated to creating a summary-group NAVFIT database. It d
 
 ## 16.1 Import a supported structured PDF
 
-Extraction runs locally inside Swift NAVFIT. Acrobat, Reader, Python, external utilities and an internet connection are not required. Only the supported May 2025 fillable NAVPERS EVAL, CHIEFEVAL and FITREP templates are accepted. Flattened or scanned PDFs require manual entry. Use the extraction check to test a selected file. Password-required files, extraction-prohibited files, and unsupported encryption are rejected; the supplied CHIEFEVAL form opens without a password and permits extraction.
+Extraction runs locally inside Swift NAVFIT. Acrobat, Reader, Python, external utilities and an internet connection are not required. Only the supported May 2025 fillable NAVPERS EVAL, CHIEFEVAL and FITREP templates are accepted. Flattened or scanned PDFs require manual entry. Saving a filled form through **Print to PDF** (from a web browser or Windows) flattens it, so Swift reports that the PDF has no fillable form data; fill in the template in Adobe Acrobat or Reader and use **File > Save** instead. Use the extraction check to test a selected file. Password-required files, extraction-prohibited files, and unsupported encryption are rejected; the supplied CHIEFEVAL form opens without a password and permits extraction.
 
 1. Open **Reports > Import reports** and choose the structured PDF workflow.
 2. Choose the PDF and run **Check PDF extraction on this computer** if needed.

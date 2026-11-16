@@ -18,4 +18,14 @@ for kind in ('EVAL','CHIEFEVAL','FITREP'):
    dataset=ET.fromstring(xfa[idx].read_bytes());field=next(r['source'] for r in mapping[kind] if r['target']=='CounselingDate')
    dataset.find('.//'+field).text=status
    xfa[idx]=pdf.make_stream(ET.tostring(dataset,encoding='utf-8'));pdf.save(target,encryption=True if pdf.is_encrypted else None)
-print('PASS: six synthetic counseling status PDFs created')
+#The same forms with every date in the forms' printed style, YYMMMDD.
+for kind in ('EVAL','CHIEFEVAL','FITREP'):
+ target=OUT/(kind.lower()+'-YYMMMDD.pdf')
+ if target.exists():raise FileExistsError(target)
+ with pikepdf.open(SOURCE/(kind.lower()+'-expanded.pdf')) as pdf:
+  xfa=pdf.Root['/AcroForm']['/XFA'];idx=next(i+1 for i in range(0,len(xfa),2) if str(xfa[i])=='datasets')
+  dataset=ET.fromstring(xfa[idx].read_bytes())
+  for r in mapping[kind]:
+   if r['conversion'] in ('date','date-text'):dataset.find('.//'+r['source']).text='26SEP30' if r['target']=='PeriodEnd' else '26jan01'
+  xfa[idx]=pdf.make_stream(ET.tostring(dataset,encoding='utf-8'));pdf.save(target,encryption=True if pdf.is_encrypted else None)
+print('PASS: six synthetic counseling status PDFs and three YYMMMDD date PDFs created')

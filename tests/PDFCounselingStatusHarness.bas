@@ -15,7 +15,15 @@ Public Function TestPDFCounselingStatuses(ByVal directory As String) As String
             n = n + 1
         Next
     Next
-    TestPDFCounselingStatuses = "PASS: " & n & " PDF counseling status extraction/save assertions": Exit Function
+    'Dates in the forms' printed style (YYMMMDD), upper or lower case.
+    For Each kind In Array("EVAL", "CHIEFEVAL", "FITREP")
+        Set preview = PreviewStructuredPDF(directory & "\" & LCase$(kind) & "-YYMMMDD.pdf")
+        Set fields = PDFMappedValues("20", "SSN")
+        If CDate(fields("PeriodEnd")) <> DateSerial(2026, 9, 30) Or CDate(fields("PeriodStart")) <> DateSerial(2026, 1, 1) Then Err.Raise vbObjectError + 4753, , kind & " YYMMMDD period dates changed"
+        If fields("CounselingDate") <> "2026-01-01" Then Err.Raise vbObjectError + 4754, , kind & " YYMMMDD counseling date changed"
+        n = n + 1
+    Next
+    TestPDFCounselingStatuses = "PASS: " & n & " PDF counseling status and YYMMMDD date extraction/save assertions": Exit Function
 Failed:
     TestPDFCounselingStatuses = "FAIL after " & n & ": " & Err.Number & " / " & Err.Description
 End Function

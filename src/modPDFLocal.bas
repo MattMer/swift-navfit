@@ -553,6 +553,8 @@ Public Function PDFLocalPackets(ByVal path As String) As Object
     Set trailer = CrossReferences(CLng(offset)): InitializeSecurity trailer
     Set root = Resolve(Field(trailer, "/Root"))
     If Named(Field(root, "/Type")) <> "/Catalog" Then InvalidPDF "Invalid PDF document catalog."
+    'Print to PDF (in a browser or Windows) and scanning drop the form entirely.
+    If Not root.Exists("/AcroForm") Then InvalidPDF "This PDF has no fillable form data. It was probably saved through Print to PDF, which flattens the form, or scanned. Fill in the official template in Adobe Acrobat or Reader and use File > Save, or enter the report by hand."
     Set form = Resolve(Field(root, "/AcroForm"))
     If Not form.Exists("/XFA") Then InvalidPDF "No supported XFA form data. Flattened/scanned PDFs require manual entry."
     Set xfa = Resolve(form("/XFA"))

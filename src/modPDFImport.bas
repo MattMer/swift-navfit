@@ -55,7 +55,7 @@ Failed:
     Err.Raise failure, "PreviewStructuredPDF", message
 End Function
 Private Function PDFDate(ByVal value As Variant, ByVal century As String) As Variant
-    Dim text As String
+    Dim text As String, month As Long
     If IsNull(value) Then PDFDate = Null: Exit Function
     text = Trim$(CStr(value))
     If text = "" Then PDFDate = Null: Exit Function
@@ -63,6 +63,10 @@ Private Function PDFDate(ByVal value As Variant, ByVal century As String) As Var
         text = "20" & Left$(text, 2) & "-" & Mid$(text, 3, 2) & "-" & Right$(text, 2)
     ElseIf Len(text) = 8 Then
         text = Left$(text, 4) & "-" & Mid$(text, 5, 2) & "-" & Right$(text, 2)
+    ElseIf Len(text) = 7 And text Like "##[A-Za-z][A-Za-z][A-Za-z]##" Then
+        'The forms' printed style, YYMMMDD: 25MAY15 is 15 May 2025.
+        month = InStr(1, "JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC", UCase$(Mid$(text, 3, 3)))
+        If month Mod 3 = 1 Then text = "20" & Left$(text, 2) & "-" & Format$((month + 2) \ 3, "00") & "-" & Right$(text, 2)
     End If
     If Not IsValidIsoDate(text) Then Err.Raise vbObjectError + 4711, "modPDFImport.PDFDate", "PDF date needs manual review: " & text
     PDFDate = DateSerial(CLng(Left$(text, 4)), CLng(Mid$(text, 6, 2)), CLng(Right$(text, 2)))

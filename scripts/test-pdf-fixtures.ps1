@@ -2,7 +2,7 @@
 # fixture set into a new folder from the blank NAVPERS forms in
 # FORMS_REFERENCES_TEMPLATES (read only) and returns the folder. Sets:
 # synthetic (synthetic-eval/-chiefeval/-fitrep.pdf), expanded (<kind>-expanded
-# and -merge.pdf), counseling (<kind>-NOT-REQ/-NOT-PERF.pdf, built on expanded).
+# and -merge.pdf), counseling (<kind>-NOT-REQ/-NOT-PERF.pdf and <kind>-YYMMMDD.pdf, built on expanded).
 # Needs the development .venv with pikepdf; see docs/Development_Workflow.md.
 function NewSwiftPdfFixtures([ValidateSet('synthetic','expanded','counseling')][string]$Set,[string]$Directory){
     $root=Split-Path $PSScriptRoot -Parent
