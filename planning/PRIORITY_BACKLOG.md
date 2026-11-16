@@ -1,7 +1,7 @@
 # Swift NAVFIT priority backlog
 
-Updated 14 November 2026 (0.56.0 released; 0.57.0-dev, schema 49). Manual check
-results from 10 and 14 November are folded in below. This lists open work only. Finished
+Updated 15 November 2026 (0.56.0 released; 0.57.0-dev, schema 50). Manual check
+results from 10, 14 and 15 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and Git history. Where part of an item is
@@ -37,18 +37,13 @@ R14's remaining input-data limitation is recorded under F02.
 
 | ID | Work |
 | --- | --- |
-| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper: EVAL, FITREP, the summary letter and group packet, the 6.5-point trait-34 grade-4/5 wording (10 Nov), the summary packet starting reports on a new sheet when printed on both sides, and the Navy workstation with a physical default printer (14 Nov). Remaining: (1) **CHIEFEVAL (PRT-03):** block 51 spacing passed; block 20's result printed in its box but was repeated on the additional text page. Fixed in development; confirm on paper. (2) PDF creation on a workstation without Acrobat (PRT-07). |
-| H03 | **Attended NAVFIT98A print check for the narrative line meter (attended).** The editor's line meter (a72eed8) reproduces NAVFIT98A 2.2.0.332's print wrap from its code, but no NAVFIT98A print has confirmed it. Print one EVAL and one CHIEFEVAL from NAVFIT98A to PDF. Comments, block 28, block 29 and one CPO performance comment are each filled past their limits (Swift's export, default comments pitch). Check three places where NAVFIT98A's warnings and print boxes disagree: the CPO comments box holds 7 lines but NAVFIT98A warns past 6; block 28's third line is slightly clipped (2.9 lines); a CPO performance comment's second line is slightly clipped (1.98 lines). Confirm that wrapping matches the meter. Decide whether the 12-point `CommentsPitch` layout (EVAL 21 lines, FITREP 18) needs modelling; Swift doesn't store `CommentsPitch` today. Adjust `NAVFITFieldFit` (`modPDFOutput`) and its reference cases from the result. |
+| H01 | **Official-template PDF output: acceptance remaining.** Passed on paper: EVAL, FITREP, the summary letter and group packet, the 6.5-point trait-34 grade-4/5 wording (10 Nov), the summary packet starting reports on a new sheet when printed on both sides, the Navy workstation with a physical default printer (14 Nov), and CHIEFEVAL with block 20 printed once (PRT-03, 15 Nov). Remaining: PDF creation on a workstation without Acrobat (PRT-07). |
 | M07 | **Accessibility acceptance.** Keyboard order is confirmed complete. Target the DoD Section 508 minimum (36 CFR 1194 / WCAG 2.0 AA) with a conformance report. Passed 10 Nov: Windows high contrast on all forms, menus and pop-ups (A11Y-06), and display scaling at 125% and 150% (A11Y-07). Colour contrast spot check passed (14 Nov). Remaining: screen readers (NVDA, JAWS) with focus and announcements across startup, dialogs, report tools, grids, findings and output. Automated geometry and label checks don't establish accessibility. This waits until the user can take part. |
 | M01 | **Signed production distribution.** An unsigned `.accdb` opens on target workstations; signing is wanted for polish. Obtain a DoD PKI code-signing certificate through the command ISSM, sign the VBA project and verify a launch under normal security policy. Then produce and verify a signed `.accde`, and rehearse the signing steps (threat model section 5). Blank and Demo `.accdb` files keep being published. Access Runtime support stays out of scope. |
 
 ## Screens
 
-U01–U04 passed on screen (14 Nov). The Library keeps both main actions (U05).
-
-| ID | Work |
-| --- | --- |
-| U06 | **Reports archive filter starts on Active.** Seen once on Archived (14 Nov); the Demo opens on Active. The filter now also has Active as its control default. Confirm, and note the route if it shows Archived again. |
+U01–U04 passed on screen (14 Nov), and the Reports archive filter starting on Active (U06, 15 Nov). The Library keeps both main actions (U05).
 
 ## Performance and storage
 
@@ -59,9 +54,11 @@ U01–U04 passed on screen (14 Nov). The Library keeps both main actions (U05).
 
 ## NAVFIT98A exchange
 
+Unanswered check boxes export unticked (X01) and the NAVFIT98A narrative print check (H03) passed (15 Nov).
+
 | ID | Work |
 | --- | --- |
-| X01 | **Unanswered check boxes no longer stop export.** A group export stopped on block 51 ("I intend to submit a statement") left unanswered (14 Nov). In development an unanswered box exports unticked and the export result lists each one. Confirm with a group export, then continue the H03 checks, which need that export. NAVFIT98A block 28's third line passed (14 Nov). |
+| X02 | **ISIC in the NAVFIT98A file (in development).** NAVFIT98A keeps summary letter details as named profiles (Select Profile on its Summary Letter Information window), and a group export carried none. The group export window now has an optional ISIC list, starting on the group's ISIC. The chosen ISIC is written as a profile named for it, with the ISIC address, the reporting senior's e-mail and ten-digit phone; Submitted on time is left for NAVFIT98A. An e-mail over 50 characters or a phone that is not ten digits is left out and named in the export window. The group remembers the ISIC. **Remaining:** confirm in NAVFIT98A that the profile appears and prints on the summary letter. |
 
 ## Code health
 
@@ -88,9 +85,8 @@ contributor, save lock retry, presence on the Overview and in the editor
 (`SessionPresence`), and sync conflict copies named at startup.
 
 **Attended checks (on a fresh 0.56.0 copy in an ordinary folder).** Checks 1, 2, 3 and 5
-passed (14 Nov). Check 4 failed: a fresh copy's setup screen offered no restore. Setup's
-import button is now **Restore a backup or import from a previous version** (in
-development); confirm it restores a backup. Open:
+passed (14 Nov). Check 4 (setup's **Restore a backup or import from a previous version**)
+and check 8 passed (15 Nov). Open: 6 and 7.
 1. First setup asks for the UIC and makes the data file beside the
    application; a report saves.
 2. Rename or move the data file and reopen: the window names the missing file;

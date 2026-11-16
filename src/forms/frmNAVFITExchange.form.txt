@@ -9,7 +9,7 @@ Begin Form
     DefaultView =0
     ScrollBars =0
     Width =13400
-    ItemSuffix =45
+    ItemSuffix =47
     Right =19725
     Bottom =13245
     OnUnload ="=UXCloseNAVFITExport()"
@@ -146,7 +146,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =5800
+            Height =6400
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -797,7 +797,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =3800
+                    Top =4400
                     Width =12600
                     Height =1000
                     FontSize =10
@@ -808,9 +808,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3800
+                    LayoutCachedTop =4400
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4800
+                    LayoutCachedHeight =5400
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -819,7 +819,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =3800
+                            Top =4400
                             Width =15
                             Height =15
                             FontSize =1
@@ -828,9 +828,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Exchange status"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =3800
+                            LayoutCachedTop =4400
                             LayoutCachedWidth =415
-                            LayoutCachedHeight =3815
+                            LayoutCachedHeight =4415
                         End
                     End
                 End
@@ -877,7 +877,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5100
+                    Top =5700
                     Width =12600
                     Height =450
                     FontSize =10
@@ -889,9 +889,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5100
+                    LayoutCachedTop =5700
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =5550
+                    LayoutCachedHeight =6150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -911,6 +911,59 @@ Begin Form
                     WebImagePaddingTop =2
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =3500
+                    Top =2900
+                    Width =7300
+                    Height =450
+                    FontSize =10
+                    TabIndex =28
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="cboISIC"
+                    RowSourceType ="Table/Query"
+                    RowSource =""
+                    ColumnWidths ="0;7300"
+                    AfterUpdate ="=UXPreviewNAVFITGroup()"
+                    FontName ="Segoe UI"
+                    ControlTipText ="Optional. The NAVFIT98A file gets a summary letter profile with this ISIC's addr"
+                        "ess."
+
+                    LayoutCachedLeft =3500
+                    LayoutCachedTop =2900
+                    LayoutCachedWidth =10800
+                    LayoutCachedHeight =3350
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2950
+                            Width =2900
+                            Height =350
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblISIC"
+                            Caption ="ISIC (optional)"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2950
+                            LayoutCachedWidth =3300
+                            LayoutCachedHeight =3300
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
@@ -1035,7 +1088,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =3000
+                    Top =3600
                     Width =12600
                     Height =550
                     FontSize =10
@@ -1047,9 +1100,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3000
+                    LayoutCachedTop =3600
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =3550
+                    LayoutCachedHeight =4150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

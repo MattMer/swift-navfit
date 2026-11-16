@@ -44,8 +44,8 @@ End Function
 Public Function NAVFITLastReportReadiness() As Collection
     Set NAVFITLastReportReadiness = reportReadiness
 End Function
-Public Function NAVFITGroupPreview(ByVal groupID As Long, Optional ByVal usePSG As Boolean = False) As Object
-    Dim result As Object, members As DAO.Recordset, values As Object, id As Long, code As Variant, counts(0 To 5) As Long, psg As Object, text As String, token As String, title As String
+Public Function NAVFITGroupPreview(ByVal groupID As Long, Optional ByVal usePSG As Boolean = False, Optional ByVal isicID As Long = 0) As Object
+    Dim profile As Object, result As Object, members As DAO.Recordset, values As Object, id As Long, code As Variant, counts(0 To 5) As Long, psg As Object, text As String, token As String, title As String
     Dim readiness As Collection, unclassified As Long, writePSG As Boolean
     If DCount("*", "SummaryGroup", "GroupID=" & groupID) = 0 Then Err.Raise vbObjectError + 5350, "modNAVFITExchange.NAVFITGroupPreview", "Choose an existing summary group."
     title = CStr(MajorScalar("SELECT Title FROM SummaryGroup WHERE GroupID=" & groupID))
@@ -76,25 +76,31 @@ Public Function NAVFITGroupPreview(ByVal groupID As Long, Optional ByVal usePSG 
         If usePSG Then text = text & "PSG RSCA unavailable: " & psg("Reason") & ". No substitute average will be written." & vbCrLf
         text = text & "Preserve each imported report's native RSCA; new drafts have no native RSCA. PSG RSCA is not inserted." & vbCrLf
     End If
+    Set profile = NAVFITISICProfile(groupID, isicID)
+    If isicID > 0 Then
+        text = text & "Add the summary letter profile " & profile("ProfileName") & ": the ISIC address and the reporting senior's e-mail and phone. Submitted on time is answered in NAVFIT98A." & vbCrLf
+        If Len(profile("Note")) > 0 Then text = text & profile("Note") & vbCrLf
+    End If
     text = text & "One native folder; all saved members included. Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Review findings in All summary-group validation issues. Group-return reconciliation is not yet supported; keep this frozen baseline."
-    token = GroupStamp(groupID) & "|" & CStr(usePSG) & "|" & NAVFITDisplay(psg("Value")) & "|" & psg("Reason") & "|" & CStr(psg("Estimated")) & "|" & CStr(psg("Partial"))
+    token = GroupStamp(groupID) & "|" & CStr(usePSG) & "|" & NAVFITDisplay(psg("Value")) & "|" & psg("Reason") & "|" & CStr(psg("Estimated")) & "|" & CStr(psg("Partial")) & "|" & isicID & "|" & profile("Version")
     Set readiness = ValidateLiveGroup(groupID, , , False)
     Set groupReadiness = readiness
     text = text & vbCrLf & vbCrLf & ReadinessSummary(readiness)
     result.Add "Readiness", readiness
+    result.Add "ISICProfile", profile
     result.Add "Token", token: result.Add "Text", text: result.Add "Title", title: result.Add "PSG", psg("Value"): result.Add "WritePSG", writePSG
     For id = 0 To 5: result.Add "Count" & id, counts(id): Next
     Set NAVFITGroupPreview = result
 End Function
-Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As String, ByVal blankTemplate As String, ByVal expectedToken As String, Optional ByVal usePSG As Boolean = False) As String
+Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As String, ByVal blankTemplate As String, ByVal expectedToken As String, Optional ByVal usePSG As Boolean = False, Optional ByVal isicID As Long = 0) As String
     Dim preview As Object, native As DAO.Database, source As DAO.Database, baseline As DAO.Database, members As DAO.Recordset, report As DAO.Recordset, meta As DAO.Recordset, fields As DAO.Recordset, f As DAO.Field, values As Object, key As Variant, value As Variant
     Dim pending As String, manifest As String, pendingManifest As String, staging As String, operation As Long, id As Long, external As Long, receipt As Variant, names As String, selection As String, newID As Long, century As Long, index As Long, countFields As Variant, failure As Long, message As String
     Dim stage As String, publication As String
     On Error GoTo Failed
     publication = "No report transaction; output not published": stage = "Validate group and destination"
     NAVFITResetBlankBoxes
-    Set preview = NAVFITGroupPreview(groupID, usePSG)
-    If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group, saved reports or RSCA changed. Preview again."
+    Set preview = NAVFITGroupPreview(groupID, usePSG, isicID)
+    If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group, saved reports, RSCA or ISIC changed. Preview again."
     If LCase$(Right$(destination, 6)) <> ".accdb" Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Export filename must end in .accdb."
     manifest = destination & ".swift-baseline.accdb"
     If Len(Dir$(destination)) > 0 Or Len(Dir$(manifest)) > 0 Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Choose a new export filename; existing files are not overwritten."
@@ -146,6 +152,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
     Loop
     members.Close: Set members = Nothing
     VerifyNativeGroupSummary native, preview
+    If isicID > 0 Then stage = "Write summary letter profile": NAVFITWriteISICProfile native, preview("ISICProfile")
     native.Close: Set native = Nothing
     stage = "Freeze group baseline"
     FileCopy pending, pendingManifest: Set baseline = DBEngine.OpenDatabase(pendingManifest)
@@ -172,7 +179,7 @@ Public Function NAVFITExportGroup(ByVal groupID As Long, ByVal destination As St
         members.MoveNext
     Loop
     members.Close: Set members = Nothing: meta.Close: Set meta = Nothing: fields.Close: Set fields = Nothing: baseline.Close: Set baseline = Nothing
-    Set preview = NAVFITGroupPreview(groupID, usePSG)
+    Set preview = NAVFITGroupPreview(groupID, usePSG, isicID)
     If expectedToken <> preview("Token") Then Err.Raise vbObjectError + 5351, "modNAVFITExchange.NAVFITExportGroup", "Group changed during export. Pending files have not been published."
     FinishOperation operation, "Prepared", "Pending group export: " & pending & "; baseline: " & pendingManifest
     stage = "Publish native group and baseline": publication = "No report transaction; publication started, inspect output and baseline"
@@ -194,6 +201,66 @@ Failed:
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function
+'NAVFIT98A keeps summary letter details as named profiles in its Summary table: the
+'ISIC address block, the reporting senior's e-mail and phone (ten digits) and the
+'submitted-on-time answer. A group export can add the chosen ISIC as a profile named
+'for it, filled the way the Swift summary letter fills it. On time is answered when
+'printing in NAVFIT98A, so it is left unanswered.
+Public Function NAVFITISICProfile(ByVal groupID As Long, ByVal isicID As Long) As Object
+    Dim result As Object, common As Object, details As Object, members As DAO.Recordset, values As Object, key As Variant, value As String, digits As String, i As Long, r As DAO.Recordset
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "ProfileName", "": result.Add "ISICAddress", "": result.Add "EMail", "": result.Add "Phone", "": result.Add "Note", "": result.Add "Version", ""
+    Set NAVFITISICProfile = result
+    If isicID <= 0 Then Exit Function
+    Set r = CurrentDb.OpenRecordset("SELECT Title,VersionCounter FROM ISIC WHERE IsArchived=False AND ISICID=" & isicID, dbOpenSnapshot)
+    If r.EOF Then r.Close: Err.Raise vbObjectError + 5350, "modNAVFITExchange.NAVFITISICProfile", "Choose an ISIC from the list, or leave it empty."
+    result("ProfileName") = Left$(Trim$(r!Title), 50): result("Version") = CStr(r!VersionCounter): r.Close
+    'Senior details missing from the group's reporting senior record come from the
+    'values every member shares, as on the summary letter.
+    Set common = CreateObject("Scripting.Dictionary")
+    Set members = CurrentDb.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & groupID & " ORDER BY ReportID", dbOpenSnapshot)
+    Do While Not members.EOF
+        Set values = SavedFields(members!ReportID)
+        For Each key In Array("ReportingSeniorAddress1", "ReportingSeniorAddress2", "ReportingSeniorCity", "ReportingSeniorState", "ReportingSeniorZip", "ReportingSeniorPhone")
+            value = ""
+            If values.Exists(CStr(key)) Then value = Nz(values(CStr(key)), "")
+            If Not common.Exists(CStr(key)) Then
+                common.Add CStr(key), value
+            ElseIf common(CStr(key)) <> value Then
+                common(CStr(key)) = "MIXED"
+            End If
+        Next
+        members.MoveNext
+    Loop
+    members.Close
+    Set details = SummaryLetterDetails(groupID, isicID, "", common)
+    result("ISICAddress") = details("ISICAddress")
+    If Len(details("Email")) <= 50 Then
+        result("EMail") = details("Email")
+    Else
+        result("Note") = "The reporting senior's e-mail is longer than NAVFIT98A's 50 characters; enter it in NAVFIT98A."
+    End If
+    For i = 1 To Len(details("Phone"))
+        If Mid$(details("Phone"), i, 1) Like "#" Then digits = digits & Mid$(details("Phone"), i, 1)
+    Next
+    If Len(digits) = 10 Then
+        result("Phone") = digits
+    ElseIf Len(details("Phone")) > 0 Then
+        result("Note") = Trim$(result("Note") & " NAVFIT98A takes a ten-digit phone number; enter the reporting senior's phone in NAVFIT98A.")
+    End If
+End Function
+'Adds the profile, or replaces one of the same name.
+Private Sub NAVFITWriteISICProfile(ByVal native As DAO.Database, ByVal profile As Object)
+    Dim r As DAO.Recordset
+    If Len(profile("ProfileName")) = 0 Then Exit Sub
+    Set r = native.OpenRecordset("SELECT * FROM Summary WHERE ProfileName=" & QuoteSQL(profile("ProfileName")), dbOpenDynaset)
+    If r.EOF Then r.AddNew Else r.Edit
+    r!ProfileName = profile("ProfileName"): r!OnTimeYes = False: r!OnTimeNo = False
+    r!ISICAddress = IIf(Len(profile("ISICAddress")) > 0, profile("ISICAddress"), Null)
+    r!EMail = IIf(Len(profile("EMail")) > 0, profile("EMail"), Null)
+    r!Phone = IIf(Len(profile("Phone")) > 0, profile("Phone"), Null)
+    r.Update: r.Close
+End Sub
 Private Sub NAVFITCleanupStage(ByVal path As String, ByVal context As Object)
     On Error GoTo Failed
     If Len(Dir$(path)) > 0 Then Kill path

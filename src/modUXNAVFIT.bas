@@ -64,15 +64,19 @@ Public Function UXOpenNAVFITGroupExport(Optional ByVal groupID As Long = 0) As B
     Forms!frmNAVFITExchange!cboGroup = id
     Forms!frmNAVFITExchange!lblGroup.Caption = "Summary group: " & Nz(DLookup("Title", "SummaryGroup", "GroupID=" & id), "")
     Forms!frmNAVFITExchange!chkPSG = True
+    'Optional: the ISIC goes into the NAVFIT98A file as a summary letter profile.
+    Forms!frmNAVFITExchange!cboISIC.RowSource = "SELECT ISICID,Title FROM ISIC WHERE IsArchived=False ORDER BY Title"
+    Forms!frmNAVFITExchange!cboISIC = IIf(GroupISIC(id) > 0, GroupISIC(id), Null)
     UXOpenNAVFITGroupExport = UXPreviewNAVFITGroup()
 End Function
 Public Function UXPreviewNAVFITGroup() As Boolean
     Dim preview As Object
     On Error GoTo Failed
     groupExportToken = "": Forms!frmNAVFITExchange!cmdExportGroup.Enabled = False
-    Set preview = NAVFITGroupPreview(Nz(Forms!frmNAVFITExchange!cboGroup, 0), Nz(Forms!frmNAVFITExchange!chkPSG, False))
+    Set preview = NAVFITGroupPreview(Nz(Forms!frmNAVFITExchange!cboGroup, 0), Nz(Forms!frmNAVFITExchange!chkPSG, False), Nz(Forms!frmNAVFITExchange!cboISIC, 0))
     groupExportToken = preview("Token")
     Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Findings do not block export. Choose the export directory, then Export."
+    If Len(preview("ISICProfile")("Note")) > 0 Then Forms!frmNAVFITExchange!txtStatus = Forms!frmNAVFITExchange!txtStatus & vbCrLf & preview("ISICProfile")("Note")
     Forms!frmNAVFITExchange!cmdExportGroup.Enabled = True: UXPreviewNAVFITGroup = True: Exit Function
 Failed:
     Forms!frmNAVFITExchange!txtStatus = "Group preview failed: " & Err.Description
@@ -83,9 +87,12 @@ Public Function UXExportNAVFITGroup() As Boolean
     If Not UXPreviewNAVFITGroup() Then Exit Function
     With Forms!frmNAVFITExchange
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), Nz(!cboGroup, 0), 0)
-        Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False))
+        Call NAVFITExportGroup(Nz(!cboGroup, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""), groupExportToken, Nz(!chkPSG, False), Nz(!cboISIC, 0))
+        'The group remembers its ISIC, as it does for the summary letter PDF.
+        SetGroupISIC Nz(!cboGroup, 0), Nz(!cboISIC, 0)
         Set findings = NAVFITLastGroupReadiness()
         !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Open the .accdb file in NAVFIT98A. All saved group members are included. Pending edits remain in Swift."
+        If Not IsNull(!cboISIC) Then !txtStatus = !txtStatus & vbCrLf & "Summary letter profile added: " & !cboISIC.Column(1) & ". Choose it under Select Profile on NAVFIT98A's summary letter; answer Submitted on time there."
         !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
         If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
         !cmdExportGroup.Enabled = False

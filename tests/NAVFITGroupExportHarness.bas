@@ -13,6 +13,91 @@ Private Function Rejected(ByVal groupID As Long, ByVal file As String, ByVal tem
 Failed:
     Rejected = Err.Description
 End Function
+Private Function ISICPreviewRejected(ByVal groupID As Long, ByVal isicID As Long) As String
+    On Error GoTo Failed
+    Call NAVFITGroupPreview(groupID, False, isicID)
+    ISICPreviewRejected = "ACCEPTED": Exit Function
+Failed:
+    ISICPreviewRejected = Err.Description
+End Function
+Private Function ISICExportRejected(ByVal groupID As Long, ByVal file As String, ByVal template As String, ByVal token As String, ByVal isicID As Long) As String
+    On Error GoTo Failed
+    Call NAVFITExportGroup(groupID, file, template, token, False, isicID)
+    ISICExportRejected = "ACCEPTED": Exit Function
+Failed:
+    ISICExportRejected = Err.Description
+End Function
+Private Function SummaryProfiles(ByVal file As String) As Long
+    Dim db As DAO.Database, r As DAO.Recordset
+    Set db = DBEngine.OpenDatabase(file, False, True)
+    Set r = db.OpenRecordset("SELECT Count(*) AS N FROM Summary", dbOpenSnapshot)
+    SummaryProfiles = r!N: r.Close: db.Close
+End Function
+'The optional ISIC becomes a NAVFIT98A summary letter profile: the ISIC address, the
+'reporting senior's e-mail and ten-digit phone, on-time unanswered.
+Public Function TestNAVFITISICProfile(ByVal directory As String, ByVal template As String) As String
+    Dim values As Object, senior As Object, key As Variant, copy As Long, groupID As Long, seniorID As Long, baselineID As Long, isicID As Long, kind As String, grade As String
+    Dim preview As Object, token As String, plainToken As String, file As String, native As DAO.Database, r As DAO.Recordset, address As String, blankProfiles As Long
+    On Error GoTo Failed
+    Set values = SavedFields(1): kind = values("FormKind")
+    Select Case kind
+        Case "EVAL": grade = "E5"
+        Case "CHIEFEVAL": grade = "E7"
+        Case "FITREP": grade = "O3"
+    End Select
+    copy = DuplicateDraft(1): values("ReportingSeniorPhone") = "5551234567"
+    Call NAVFITCommitFields(copy, values, "Synthetic ISIC member", "ISIC profile test")
+    groupID = CreateSummaryGroup("Synthetic ISIC group", kind, grade): AddGroupMember groupID, copy, grade
+    Set senior = RSSeniorValues(0)
+    For Each key In RSSeniorKeys(): senior(CStr(key)) = values(CStr(key)): Next
+    senior("ReportingSeniorEmail") = "RS.SYNTHETIC@EXAMPLE.MIL"
+    seniorID = RSSaveSenior(0, "Synthetic ISIC senior", senior)
+    baselineID = RSAddBaseline(seniorID, grade, DateSerial(2026, 1, 1), 4#, 7, 28#, "Synthetic ISIC history")
+    RSSetGroupBaseline groupID, seniorID, baselineID, True
+    address = "COMMANDER, SYNTHETIC GROUP TWO" & vbCrLf & "123 EXAMPLE STREET" & vbCrLf & "NORFOLK, VA 23511-0001"
+    isicID = ISICSave(0, 0, "Synthetic ISIC", "N12345", address)
+    blankProfiles = SummaryProfiles(template)
+    'No ISIC: the file keeps the template's profiles only.
+    Set preview = NAVFITGroupPreview(groupID): plainToken = preview("Token")
+    file = directory & "\isic-none.accdb"
+    Check NAVFITExportGroup(groupID, file, template, plainToken) = file, "Export without ISIC failed"
+    Check SummaryProfiles(file) = blankProfiles, "Export without ISIC added a profile"
+    'With an ISIC: one profile, as NAVFIT98A saves it.
+    Set preview = NAVFITGroupPreview(groupID, False, isicID): token = preview("Token")
+    Check token <> plainToken, "ISIC choice is not part of the preview token"
+    Check InStr(preview("Text"), "Synthetic ISIC") > 0, "Preview does not name the profile"
+    Check InStr(ISICExportRejected(groupID, directory & "\isic-mismatch.accdb", template, plainToken, isicID), "Preview again") > 0, "Export with an ISIC accepted a preview without it"
+    file = directory & "\isic-profile.accdb"
+    Check NAVFITExportGroup(groupID, file, template, token, False, isicID) = file, "Export with ISIC failed"
+    Set native = DBEngine.OpenDatabase(file, False, True): ValidateNAVFITDatabase native: ValidateNAVFITSourceSchema native, ""
+    Set r = native.OpenRecordset("SELECT * FROM Summary WHERE ProfileName='Synthetic ISIC'", dbOpenSnapshot)
+    Check Not r.EOF, "Profile missing"
+    Check r!ISICAddress = address, "ISIC address differs"
+    Check r!EMail = "RS.SYNTHETIC@EXAMPLE.MIL", "E-mail differs"
+    Check r!Phone = "5551234567", "Phone differs"
+    Check Not r!OnTimeYes And Not r!OnTimeNo, "On time was answered"
+    r.Close: native.Close
+    Check SummaryProfiles(file) = blankProfiles + 1, "Profile count differs"
+    'A changed ISIC needs a new preview.
+    ISICSave isicID, CLng(DLookup("VersionCounter", "ISIC", "ISICID=" & isicID)), "Synthetic ISIC", "N12345", address & vbCrLf & "ATTN: N1"
+    Check InStr(ISICExportRejected(groupID, directory & "\isic-stale.accdb", template, token, isicID), "Preview again") > 0, "Stale ISIC exported"
+    'A phone NAVFIT98A cannot hold is left out, with a note.
+    values("ReportingSeniorPhone") = "555-1234": Call NAVFITCommitFields(copy, values, "Synthetic ISIC member", "Short phone")
+    senior("ReportingSeniorPhone") = "555-1234": Call RSSaveSenior(seniorID, "Synthetic ISIC senior", senior, CLng(DLookup("VersionCounter", "ReportingSeniorRecord", "SeniorID=" & seniorID)))
+    Set preview = NAVFITGroupPreview(groupID, False, isicID)
+    Check preview("ISICProfile")("Phone") = "" And InStr(preview("ISICProfile")("Note"), "ten-digit") > 0, "Short phone not reported"
+    file = directory & "\isic-short-phone.accdb"
+    Check NAVFITExportGroup(groupID, file, template, preview("Token"), False, isicID) = file, "Export with short phone failed"
+    Set native = DBEngine.OpenDatabase(file, False, True)
+    Set r = native.OpenRecordset("SELECT * FROM Summary WHERE ProfileName='Synthetic ISIC'", dbOpenSnapshot)
+    Check IsNull(r!Phone), "Short phone written": r.Close: native.Close
+    'A deleted ISIC cannot be chosen.
+    ISICDelete isicID
+    Check InStr(ISICPreviewRejected(groupID, isicID), "Choose an ISIC") > 0, "Deleted ISIC accepted"
+    TestNAVFITISICProfile = "PASS: " & checks & " ISIC profile assertions": Exit Function
+Failed:
+    TestNAVFITISICProfile = "FAIL: " & Err.Number & " " & Err.Description
+End Function
 Private Function MemberRejected(ByVal groupID As Long, ByVal reportID As Long) As String
     On Error GoTo Failed
     AddGroupMember groupID, reportID, "WRONG"
