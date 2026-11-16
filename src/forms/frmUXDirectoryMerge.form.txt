@@ -312,6 +312,7 @@ Begin Form
                     ColumnWidths ="0;1500;4300;4300;3800"
                     OnClick ="=UXDirectoryMergePair()"
                     FontName ="Segoe UI"
+                    OnMouseDown ="[Event Procedure]"
 
                     LayoutCachedLeft =300
                     LayoutCachedTop =1400
@@ -655,6 +656,11 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Compare Database
+
+Private Sub lstPairs_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If UXSortNativeHeader(Me.name, "lstPairs", X, Y) Then Exit Sub
+
+End Sub
 
 Private Sub lstHistory_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If UXSortNativeHeader(Me.name, "lstHistory", X, Y) Then Exit Sub

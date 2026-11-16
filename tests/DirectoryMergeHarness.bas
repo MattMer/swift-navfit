@@ -308,11 +308,14 @@ Failed:
     TestDuplicatePairs = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function
 Private Sub LinkedReportDoDID(ByVal member As Long, ByVal name As String, ByVal dodid As String)
-    Dim report As Long
+    Dim report As Long, changes As Object
     DirectoryCreationContext member
     report = CommitDraft(0, "EVAL", "Duplicate fixture", name, #1/1/2026#, #9/30/2026#, "", "Test", "")
     DirectoryCreationContext 0
-    CurrentDb.Execute "UPDATE Report SET MemberDoDID='" & dodid & "' WHERE ReportID=" & report, dbFailOnError
+    'Saved as a revision, so the fixture workspace stays valid for the release import check.
+    Set changes = CreateObject("Scripting.Dictionary"): changes.Add "MemberDoDID", dodid
+    Call CommitSavedFields(report, CurrentRevision(report), changes, "Duplicate fixture DoD ID")
+    Check DLookup("MemberDoDID", "Report", "ReportID=" & report) = dodid, "Fixture DoD ID not saved"
     Check DLookup("MemberID", "MemberReport", "ReportID=" & report) = member, "Fixture report not linked to its member"
 End Sub
 Private Function FindPair(ByVal pairs As Collection, ByVal a As Long, ByVal b As Long) As Object

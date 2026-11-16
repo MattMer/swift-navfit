@@ -38,13 +38,13 @@ The 49-page user guide covers setup, drafting, notes, validation, summary groups
 
 ### Work across a command and its summary groups
 
-- **Command member directory:** reuse member details, filter by paygrade or rank/rate, and create reports one at a time or in batches. [Review and merge duplicate Sailors](docs/Duplicate_Sailor_Review.md) with history kept and a guarded undo.
+- **Command member directory:** reuse member details, filter by paygrade or rank/rate, and create reports one at a time or in batches. Swift lists [possible duplicate Sailors](docs/Duplicate_Sailor_Review.md) across the directory, strongest match first, to merge with history kept and a guarded undo, or to mark as different Sailors.
 - **Prior evaluations:** keep each member's earlier evaluations alongside the current report for reference.
 - **Shared fields and defaults:** apply group or command defaults, see exactly which reports change, and confirm each replacement.
 - **Rack and stack:** edit every member's trait marks and recommendations in one table, compare ITA with prior reports, and stage proposed changes for review before applying them.
 - **Reporting seniors and RSCA:** start a senior from the member directory, see each paygrade's RSCA history with every summary group posted to it, keep exact totals apart from estimates, and choose a group's baseline deliberately.
 - **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
-- **Rosters and departures:** import the command's NRRM or MNA roster. Members missing from a newer complete roster, or near their PRD, are flagged as departing for you to confirm.
+- **Rosters and departures:** import the command's NRRM or MNA roster. Matched profiles take the roster's values, and a blank roster cell never clears one. Members missing from a newer complete roster, or near their PRD, are flagged as departing for you to confirm.
 - **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
 - **People from the directory:** fill the rater, senior rater and counselor from the member directory, add contributors from it, and remove contributors who leave.
 
@@ -99,12 +99,12 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.57.0
+### Current release: 0.58.0
 
-Download from the [0.57.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.57.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.58.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.58.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_0.57.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
-- **Swift_NAVFIT_Demo_0.57.0.accdb** with **Swift_NAVFIT_Demo_data_0.57.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
+- **Swift_NAVFIT_0.58.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
+- **Swift_NAVFIT_Demo_0.58.0.accdb** with **Swift_NAVFIT_Demo_data_0.58.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
 
 > **Not yet tested:**
 > 1. screen readers (NVDA and JAWS);

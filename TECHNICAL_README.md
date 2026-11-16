@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.57.0, schema 50 (15 November 2026), tag `v0.57.0` |
+| Latest release | 0.58.0, schema 51 (16 November 2026), tag `v0.58.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.58.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.58.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 51 |
 | Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
 | Tables / enforced relationships | 85 / 169 |
@@ -628,8 +628,9 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
-| 16 Nov 2026 | Development only, not in a release, schema 51: `MemberDuplicateDismissal` records pairs of directory members marked as different Sailors (the pair, reason, contributor and time; restoring keeps the row with who restored it). Review possible duplicate Sailors lists every pair of active members that may be the same Sailor, from shared SSNs or DoD IDs (profile, linked reports and the roster's DoD ID), the same report-format name, or the same surname and first initial; pairs with different identifiers are not listed. Identifiers are compared in memory and never shown. |
-| 16 Nov 2026 | Development only, not in a release: a roster row matched to an existing member starts with both roster updates ticked, so the refresh takes the roster's fields (including ones changed by hand) and its rank/rate; clearing either box on a row keeps the profile's value. A blank roster value (an empty cell, or a column the roster format lacks) never replaces a profile value, and a blank rank/rate never replaces the profile's. Display name, report name and SSN never change from a roster. |
+| 16 Nov 2026 | Release 0.58.0, schema 51: the directory-wide duplicate Sailor list, roster refresh defaults, PDF import of YYMMMDD dates and flattened-PDF guidance, and shorter form notices. |
+| 16 Nov 2026 | Schema 51: `MemberDuplicateDismissal` records pairs of directory members marked as different Sailors (the pair, reason, contributor and time; restoring keeps the row with who restored it). Review possible duplicate Sailors lists every pair of active members that may be the same Sailor, from shared SSNs or DoD IDs (profile, linked reports and the roster's DoD ID), the same report-format name, or the same surname and first initial; pairs with different identifiers are not listed. Identifiers are compared in memory and never shown. |
+| 16 Nov 2026 | A roster row matched to an existing member starts with both roster updates ticked, so the refresh takes the roster's fields (including ones changed by hand) and its rank/rate; clearing either box on a row keeps the profile's value. A blank roster value (an empty cell, or a column the roster format lacks) never replaces a profile value, and a blank rank/rate never replaces the profile's. Display name, report name and SSN never change from a roster. |
 | 15 Nov 2026 | Release 0.57.0, schema 50: sparse revision values with a row count and checksum, the ISIC summary letter profile in NAVFIT98A group export, and the fixes from the 0.56.0 checks. |
 | 15 Nov 2026 | NAVFIT98A group export can write the chosen ISIC to the exported file's `Summary` table as a summary letter profile: the ISIC name and address, and the reporting senior's e-mail and ten-digit phone (the same data the summary letter PDF prints). Nothing else new leaves the workspace. Import code for workspaces older than schema 35 is removed. |
 | 14 Nov 2026 | Schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`), with a row count and checksum checked when a report opens; earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
