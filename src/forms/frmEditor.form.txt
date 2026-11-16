@@ -433,7 +433,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblNotes"
-                    Caption ="Draft notes (free text, no official narrative-fit guarantee)"
+                    Caption ="Draft notes (free text)"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =10
                     LayoutCachedTop =10
@@ -7837,9 +7837,8 @@ Begin Form
                     Height =900
                     FontSize =10
                     Name ="uxReviewCommentGuide"
-                    Caption ="Comments and replies: read feedback from all contributors, write a new comment, "
-                        "or reply to a selected conversation. Review steps manages the separate approval "
-                        "route. Use Report notes for working notes and unfinished note drafts."
+                    Caption ="Read comments and reply. Approvals are under Review steps; working notes are und"
+                        "er Report notes."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =4850

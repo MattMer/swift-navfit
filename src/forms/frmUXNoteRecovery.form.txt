@@ -192,8 +192,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Select a note checkpoint to resume it alongside its report. Archived reports mus"
-                        "t be recovered before posting."
+                    Caption ="Select a note checkpoint to resume it. Recover an archived report before posting"
+                        "."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =4400

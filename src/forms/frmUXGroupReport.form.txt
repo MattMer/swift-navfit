@@ -517,8 +517,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Uses the group report type and starting defaults. Create saves the draft and add"
-                        "s it to this group. Dates can remain unentered while drafting."
+                    Caption ="Create saves a draft in this group with the group's report type and defaults."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =6450

@@ -224,9 +224,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Review outcomes apply to a saved revision. Drafts remain editable; later saves m"
-                        "ake older reviews stale. Accepted is an internal review outcome, not official ap"
-                        "proval or export readiness."
+                    Caption ="Reviews apply to a saved revision; a later save makes them stale. Accepted is a "
+                        "local outcome, not official approval."
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
@@ -1628,7 +1627,7 @@ Begin Form
                             Height =550
                             FontSize =10
                             Name ="lblReportNotes"
-                            Caption ="Conversations across this workspace - independent of review tasks"
+                            Caption ="Conversations on all reports"
                             FontName ="Segoe UI"
                             Tag ="MWX:body"
                             LayoutCachedLeft =2850

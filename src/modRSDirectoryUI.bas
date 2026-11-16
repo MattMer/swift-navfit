@@ -140,7 +140,7 @@ Public Function RSLoadPicker() As Boolean
         f!cmdManual.Visible = False
     ElseIf pickerMode = "contributor" Then
         f.Caption = "Add a contributor from the directory": f!lblHeading.Caption = f.Caption
-        f!lblIntro.Caption = "Choose the command member to add as a contributor. Their rank/rate and report name become the contributor name. To add someone who is not in the directory, type their name on My Work instead."
+        f!lblIntro.Caption = "Choose the command member to add as a contributor. To add someone not in the directory, type their name on My Work."
         f!cmdManual.Visible = False
     ElseIf Left$(pickerMode, 5) = "role:" Then
         f.Caption = "Fill " & RSPickerRoleName() & " from the directory": f!lblHeading.Caption = f.Caption

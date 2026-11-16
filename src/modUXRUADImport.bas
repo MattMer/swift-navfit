@@ -17,7 +17,7 @@ Public Function UXRUADImportChoose() As Boolean
     count = RUADLoad(CStr(dialog.SelectedItems(1)))
     f!txtPath = CStr(dialog.SelectedItems(1))
     f!chkCompleteRoster = False: RUADSetComplete False
-    f!lblStatus.Caption = Trim$(RUADSourceSummary() & " Choose actions for " & count & " rows, or Match roster rows to members. Vacant billets are skipped. Names and DoD IDs suggest matches; they do not establish identity.")
+    f!lblStatus.Caption = Trim$(RUADSourceSummary() & " Choose actions for " & count & " rows, or Match roster rows to members. Vacant billets are skipped.")
     Call UXRUADImportRows: UXRUADImportChoose = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description

@@ -50,8 +50,8 @@ Public Function UXLoadNativeGroups() As Boolean
         Set item = choices(key)
         f!lstGroups.AddItem key & ";" & UXListCell(item("Title")) & ";" & UXListCell(item("Kind")) & ";" & UXListCell(item("Paygrade")) & ";" & item("Count")
     Next
-    f!lblStatus.Caption = ReviewUpgradeMessage() & "Choose groups, then Preview. A ? paygrade means the source rank/rate is missing: select those groups and assign a compatible paygrade below. Empty folders contain no reports to import."
-    If choices.Count = 0 Then f!lblStatus.Caption = "This database contains no populated report groups. Empty folders have no reports to import."
+    f!lblStatus.Caption = ReviewUpgradeMessage() & "Choose groups, then Preview. A ? paygrade means the rank/rate is missing: select those groups and assign one below."
+    If choices.Count = 0 Then f!lblStatus.Caption = "This database has no groups with reports."
     UXLoadNativeGroups = True: Exit Function
 Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
@@ -77,7 +77,7 @@ Public Function UXAssignNativeGroupGrade() As Boolean
     For i = 0 To Forms!frmUXNativeGroups!lstGroups.ListCount - 1
         Forms!frmUXNativeGroups!lstGroups.Selected(i) = targets.Exists(CStr(Forms!frmUXNativeGroups!lstGroups.Column(0, i)))
     Next
-    Forms!frmUXNativeGroups!lblStatus.Caption = "Local group paygrade assigned. Source files and report rank/rate values are unchanged. Preview the complete selected roster before applying."
+    Forms!frmUXNativeGroups!lblStatus.Caption = "Paygrade assigned; source files are unchanged. Preview before applying."
     UXAssignNativeGroupGrade = True: Exit Function
 Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
@@ -134,7 +134,7 @@ Public Function UXApplyNativeGroups() As Boolean
     Set selectedPreview = Nothing: previewOwner = 0: previewHash = ""
     Forms!frmUXNativeGroups!cmdPreview.SetFocus: Forms!frmUXNativeGroups!cmdApply.Enabled = False
     Set selectedPreview = Nothing
-    Forms!frmUXNativeGroups!lblStatus.Caption = "Results: " & result.Count & " groups imported with all their selected reports. Open Summary groups to inspect members and validation."
+    Forms!frmUXNativeGroups!lblStatus.Caption = "Results: " & result.Count & " groups imported. Open Summary groups to check them."
     UXApplyNativeGroups = True: Exit Function
 Failed:
     message = Err.Description

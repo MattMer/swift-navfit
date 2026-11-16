@@ -131,9 +131,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply transfers pending values and checkpoints them. Save draft in the editor co"
-                        "mmits them. Cancel discards panel edits. Storage limits do not establish reporti"
-                        "ng authority or Navy compliance."
+                    Caption ="Apply moves your changes to the editor; Save draft there keeps them. Cancel disc"
+                        "ards them."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

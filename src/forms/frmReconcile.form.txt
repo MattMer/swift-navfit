@@ -145,8 +145,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Two-way narrative comparison only. Accept replaces this one saved field. Other f"
-                        "ields stay unchanged. Close the editor before accepting."
+                    Caption ="Accept replaces only this saved narrative; other fields are unchanged. Close the"
+                        " editor first."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1600

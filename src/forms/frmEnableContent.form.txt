@@ -107,12 +107,10 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInstructions"
-                    Caption ="Access has turned off this app's code, so Swift cannot start yet. Choose Enable"
-                        " Content in the yellow security bar, then close and reopen this file. If the bar"
-                        " is red or has no Enable Content button, the file was blocked as a download: clo"
-                        "se Access, right-click the file, choose Properties, select Unblock, then open it"
-                        " again. If it is still blocked, ask your IT administrator to trust the folder wh"
-                        "ere you keep Swift NAVFIT."
+                    Caption ="Swift cannot start until Access enables its code. Choose Enable Content in the y"
+                        "ellow bar, then close and reopen this file. No Enable Content button? Close Acce"
+                        "ss, right-click the file, choose Properties > Unblock, and reopen it. Still bloc"
+                        "ked? Ask IT to trust the folder that holds Swift NAVFIT."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =500
                     LayoutCachedTop =1400
@@ -131,7 +129,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblExplanation"
-                    Caption ="Your reports are unchanged. Application features require enabled content."
+                    Caption ="Your reports are unchanged."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =500
                     LayoutCachedTop =3300

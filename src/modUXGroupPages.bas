@@ -148,7 +148,7 @@ Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     If UXGridPendingCount() > 0 Then Err.Raise vbObjectError + 4814, "modUXGroupPages.UXGroupAddReport", "Retry or discard pending cells before adding a report."
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
         If UXGroupBulkPending() Then
-            Forms!frmUXBulk!uxStatus.Caption = "Apply the previewed defaults or close this tool before adding a report. New reports use saved starting defaults."
+            Forms!frmUXBulk!uxStatus.Caption = "Apply the previewed defaults or close this tool before adding a report."
             Forms!frmUXBulk.SetFocus: Exit Function
         End If
     End If

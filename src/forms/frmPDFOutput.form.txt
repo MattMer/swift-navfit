@@ -468,8 +468,7 @@ Begin Form
                             Height =300
                             FontSize =10
                             Name ="lblReports"
-                            Caption ="Report order: last name, first name, middle initial. Select a row to view inform"
-                                "ational findings."
+                            Caption ="Sorted by name. Select a row to see its findings."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =2450

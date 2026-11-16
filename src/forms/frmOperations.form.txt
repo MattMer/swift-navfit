@@ -148,9 +148,9 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Started entries may represent interrupted work. Inspect receipts before retrying"
-                        ". To undo an import, open the report's History and restore the state before the "
-                        "import, or archive a draft the import created."
+                    Caption ="A Started entry may be interrupted work: check its receipt before retrying. To u"
+                        "ndo an import, restore the report from its History, or archive the draft the imp"
+                        "ort created."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -737,7 +737,7 @@ Begin Form
                             Name ="lblAudit"
                             FontName ="Segoe UI"
                             ThemeFontIndex =-1
-                            Caption ="Report activity - domain evidence and operation correlation"
+                            Caption ="Report activity"
                             LayoutCachedLeft =400
                             LayoutCachedTop =12500
                             LayoutCachedWidth =13000

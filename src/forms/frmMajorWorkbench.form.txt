@@ -212,8 +212,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="lblInfo"
                     Caption ="Select reports, then create a group, preview a field change, route a saved revis"
-                        "ion or propose a meeting change. Profiles record attribution; they do not authen"
-                        "ticate reviewers."
+                        "ion or propose a meeting change."
                     FontName ="Segoe UI"
                     Tag ="WBX:Hidden"
                     LayoutCachedLeft =2866
@@ -2542,8 +2541,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Ready. Select a detail row to review its complete values before applying changes"
-                        "."
+                    Caption ="Ready. Select a detail row to see its full values."
                     FontName ="Segoe UI"
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
                     LayoutCachedLeft =2880

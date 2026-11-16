@@ -148,8 +148,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Members link by SSN or a unique matching name without a conflicting SSN. Ambiguo"
-                        "us names require confirmation. Profile edits do not rewrite reports."
+                    Caption ="Reports link to members by SSN or a unique name. Editing a profile does not chan"
+                        "ge reports."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

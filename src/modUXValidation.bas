@@ -152,14 +152,14 @@ Public Function UXLoadValidation() As Boolean
     id = CLng(Mid$(Nz(f.OpenArgs, "R:0"), 3))
     If Left$(Nz(f.OpenArgs, "R:0"), 2) = "G:" Then
         Set result = ValidateLiveGroup(id)
-        f!lblBasis.Caption = "All group members: saved values, plus the open member's pending values. Read-only checks; no approval or saved validation run. Verify completeness and exceptions."
+        f!lblBasis.Caption = "All group members' saved values, plus the open member's pending values. Checks only; nothing is changed."
     Else
         If CurrentProject.AllForms("frmEditor").IsLoaded Then
             If Nz(Forms!frmEditor!txtReportID, 0) = id Then Set result = ValidateLiveFields(EditorPendingFields(), id)
         End If
         If result Is Nothing And id > 0 Then Set result = ValidateLiveFields(SavedFields(id), id)
         If result Is Nothing Then Set result = New Collection
-        f!lblBasis.Caption = "Current report values, including pending edits when open. Incomplete drafts and policy findings can be saved. Application entry checks remain separate."
+        f!lblBasis.Caption = "Current report values, including pending edits. A draft with findings can still be saved."
     End If
     selection = ""
     If Not issues Is Nothing And Nz(f!lstIssues, 0) > 0 Then
@@ -182,7 +182,7 @@ Public Function UXLoadValidation() As Boolean
         If selected > 0 Then f!lstIssues = selected Else f!lstIssues = Null
         UXValidationSelection
     End If
-    f!lblCount.Caption = i & " findings from implemented checks. Coverage is limited; zero findings does not establish Navy readiness." & IIf(RestrictedChecksOffCount() > 0, " Content checks: " & RestrictedChecksOffCount() & " of " & RestrictedCheckCount() & " turned off.", "")
+    f!lblCount.Caption = i & " findings. Checks are limited; zero findings does not mean Navy-ready." & IIf(RestrictedChecksOffCount() > 0, " Content checks: " & RestrictedChecksOffCount() & " of " & RestrictedCheckCount() & " turned off.", "")
     f!cmdPrevious.Enabled = pageIndex > 0: f!cmdNext.Enabled = i > (pageIndex + 1) * 50
     f!cmdNext.ControlTipText = "Page " & (pageIndex + 1) & "; 50 findings per page. Full finding and citation appear below."
     UXLoadValidation = True: Exit Function
@@ -277,10 +277,10 @@ Public Function UXRestrictedListPage(ByVal page As Long) As Boolean
         Next
         .cmdPageAllowed.FontBold = (page = 0): .cmdPageChecks.FontBold = (page = 1)
         If page = 1 Then
-            .lblBasis.Caption = "Every check is on unless turned off here. A check that is off finds nothing on any report in this workspace. The pattern column is a regular-expression-style summary of the words each check looks for."
+            .lblBasis.Caption = "A check turned off here finds nothing on any report. Pattern summarizes the words each check looks for."
             Call UXChecksLoad
         Else
-            .lblBasis.Caption = "An allowed phrase is skipped by the content check on every report. A dismissed finding stays hidden on its report while its words are unchanged. Removing either brings its findings back."
+            .lblBasis.Caption = "Allowed phrases are skipped on every report. A dismissed finding stays hidden while its words are unchanged. Remove either to bring its findings back."
             Call UXRestrictedListLoad
         End If
     End With

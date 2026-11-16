@@ -131,9 +131,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending values; Save draft commits them. Cancel discards panel"
-                        " changes. Blank means unentered. Combinations, applicability and Navy policy are"
-                        " not assessed. Imports remain narrative-only."
+                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Navy policy"
+                        " is not checked."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

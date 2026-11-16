@@ -152,7 +152,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblBasis"
-                    Caption ="An allowed phrase is skipped by the content check on every report. A dismissed finding stays hidden on its report while its words are unchanged. Removing either brings its findings back."
+                    Caption ="Allowed phrases are skipped on every report. A dismissed finding stays hidden wh"
+                        "ile its words are unchanged. Remove either to bring its findings back."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

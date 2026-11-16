@@ -623,8 +623,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Choose a CSV. Nothing is imported until you review and apply a preview. Vacant a"
-                        "nd absent members are never automatically deleted or archived."
+                    Caption ="Choose a CSV. Nothing changes until you apply a preview, and no member is ever d"
+                        "eleted or archived automatically."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =6600

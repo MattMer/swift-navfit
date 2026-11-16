@@ -194,8 +194,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Checkpoints are pending edits, not committed revisions. Recover to inspect, then"
-                        " Save draft. If the saved report changed, recover as a new draft."
+                    Caption ="Checkpoints are unsaved edits. Recover one, check it, then Save draft. If the sa"
+                        "ved report has changed since, recover as a new draft."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1600

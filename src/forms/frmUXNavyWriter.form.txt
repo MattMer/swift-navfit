@@ -169,8 +169,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Short examples with source links. Edit the wording for the member's actual accom"
-                        "plishments before adding it to your snippets. Examples are not policy guidance."
+                    Caption ="Short examples with sources. Rewrite one for the member's actual work before add"
+                        "ing it to your snippets."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

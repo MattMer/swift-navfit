@@ -153,9 +153,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Choose > Preview > Apply > Results. NAVFIT narrative import creates partial draf"
-                        "ts. Structured PDF import can create a draft or merge reviewed values into an ex"
-                        "isting draft. Both retain source provenance."
+                    Caption ="Choose > Preview > Apply > Results. NAVFIT import creates partial drafts; PDF im"
+                        "port creates a draft or updates an existing one."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1800

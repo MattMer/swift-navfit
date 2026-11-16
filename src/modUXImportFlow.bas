@@ -145,7 +145,7 @@ Public Function UXApplyPDFImport() As Boolean
     pdfSignature = ""
     Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
     Forms!frmPDFImport!cmdOpenResult.Enabled = True
-    Forms!frmPDFImport!lblStatus.Caption = "Import complete. Apply is disabled; choose another source for a new import."
+    Forms!frmPDFImport!lblStatus.Caption = "Import complete. Choose another source to import again."
     UXApplyPDFImport = True: Exit Function
 Failed:
     message = Err.Description
@@ -208,9 +208,9 @@ Public Function UXApplyNarrativeImport() As Boolean
     If narrativePreview.SourceID = 0 Or narrativePreview.SourceID <> Nz(Forms!frmImportReview!lstImportReports, 0) Or narrativePreview.Member <> Nz(Forms!frmImportReview!txtImportMember, "") Then Err.Raise vbObjectError + 4902, "modUXImportFlow.UXApplyNarrativeImport", "Preview the selected source member and current display name before Apply."
     narrativePreview.Created = ImportReviewedNarrative(narrativePreview.SourceID, narrativePreview.Member, 0, 0, narrativePreview.Hash)
     narrativePreview.SourceID = 0: narrativePreview.Hash = ""
-    Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativePreview.Created) & ". Narrative-only import; source provenance retained. Open the draft to complete its official fields.", False)
+    Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativePreview.Created) & " (narrative only). Open the draft to complete its official fields.", False)
     Forms!frmImportReview!cmdOpenResult.Enabled = True
-    Forms!frmImportReview!lblImportResult.Caption = "Import complete. Apply is disabled; preview a different source report for another import."
+    Forms!frmImportReview!lblImportResult.Caption = "Import complete. Preview another source report to import again."
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary
     UXApplyNarrativeImport = True: Exit Function
 Failed:

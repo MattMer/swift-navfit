@@ -161,9 +161,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Supplied May 2025 NAVPERS templates; local extraction; no Acrobat required. Expa"
-                        "nded mapping remains partial. Blank source fields never clear existing values. F"
-                        "lattened PDFs need manual entry."
+                    Caption ="Reads May 2025 NAVPERS PDFs; Acrobat is not needed. Blank PDF fields never clear"
+                        " existing values. Flattened PDFs need manual entry."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

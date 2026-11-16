@@ -128,7 +128,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblChoice"
-                    Caption ="Your work is kept in a separate data file. Find it if it was moved or renamed, or choose a different one. Or start again with a new, empty data file."
+                    Caption ="Your work is in a separate data file. Find it, choose another one, or start a ne"
+                        "w empty data file."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =2400

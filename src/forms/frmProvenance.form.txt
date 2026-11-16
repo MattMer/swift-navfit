@@ -168,9 +168,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Read-only retained source values, including unmapped fields. A receipt captures "
-                        "all three source tables. This is evidence, not current Swift data or export read"
-                        "iness."
+                    Caption ="Read-only source values as imported, including unmapped fields. This is a record"
+                        " of the source, not the report's current data."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

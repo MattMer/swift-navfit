@@ -131,9 +131,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending entries; Save draft commits them. Incomplete entries r"
-                        "emain saveable. Dates are yyyy-mm-dd. These details are separate from local revi"
-                        "ewer profiles."
+                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Dates are y"
+                        "yyy-mm-dd."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -190,7 +189,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblRaters"
-                    Caption ="Rater and senior rater - dates do not establish signatures or approval"
+                    Caption ="Rater and senior rater (dates are not signatures)"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =10000

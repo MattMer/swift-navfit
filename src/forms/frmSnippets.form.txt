@@ -194,8 +194,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Locally curated snippets with attribution. Deliberate insertion appends to the o"
-                        "pen draft. Review for the member before saving."
+                    Caption ="Insert adds a snippet to the end of the open draft. Edit it for the member befor"
+                        "e saving."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1550

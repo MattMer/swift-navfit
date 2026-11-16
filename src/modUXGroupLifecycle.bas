@@ -142,5 +142,5 @@ Public Sub UXGroupLocks(ByVal f As Access.Form, ByVal id As Long)
     For Each name In Array("uxMode1", "uxMode3", "uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxPolicyReview", "uxAddGroupReport", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
         If UXHasControl(f, CStr(name)) Then f.Controls(name).Enabled = Not archived
     Next
-    If archived Then f!lblStatus.Caption = "Archived group: inspection only. Recover it from Summary groups to manage it. Reports retain their own status."
+    If archived Then f!lblStatus.Caption = "Archived group: read only. Recover it from Summary groups to manage it."
 End Sub

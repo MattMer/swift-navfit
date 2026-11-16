@@ -183,7 +183,7 @@ Public Function UXWorkSelection() As Boolean
         text = text & vbCrLf & UXRouteLabel(id)
     End If
     r.Close: f!txtHistory = text
-    f!uxWorkStatus.Caption = "The reviewer holding a report can edit it before deciding. Open selected work opens the report Review steps view. Shared communication is in the Report notes tab."
+    f!uxWorkStatus.Caption = "The reviewer holding a report can edit it before deciding."
     UXWorkSelection = True
 End Function
 Public Function UXWorkOpen(Optional ByVal reportOnly As Boolean = False) As Boolean

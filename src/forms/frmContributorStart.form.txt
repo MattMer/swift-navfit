@@ -147,8 +147,7 @@ Begin Form
                     Width =7800
                     Height =850
                     Name ="lblInfo"
-                    Caption ="Choose a contributor for this launch. This name records local authorship; it is "
-                        "not sign-in or proof of identity."
+                    Caption ="Choose who is working. The name labels your work; it is not a sign-in."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1050

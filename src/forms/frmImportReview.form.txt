@@ -170,8 +170,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Choose > Preview > Apply > Results. Map all supported Swift report values and re"
-                        "tain every native source column. Imported reports become separate Swift drafts."
+                    Caption ="Choose > Preview > Apply > Results. Each imported report becomes a new Swift dra"
+                        "ft."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =900

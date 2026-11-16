@@ -360,9 +360,8 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblComplete"
-                            Caption ="I reviewed the complete eligible command roster for this group. This records a l"
-                                "ocal statement; it does not waive findings. Recheck after saved-report or member"
-                                "ship changes."
+                            Caption ="I reviewed the complete eligible command roster for this group. (Recorded locall"
+                                "y; it does not clear findings.)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =850
                             LayoutCachedTop =5000

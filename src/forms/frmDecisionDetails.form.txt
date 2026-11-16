@@ -152,9 +152,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending values; Save draft commits them. For each box, Yes mea"
-                        "ns marked, No means unmarked, blank means unentered. Signatures, official accept"
-                        "ance and Navy eligibility are not assessed."
+                    Caption ="Apply holds your changes until you Save draft. Yes is marked, No is unmarked, bl"
+                        "ank is not entered. Signatures and eligibility are not checked."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

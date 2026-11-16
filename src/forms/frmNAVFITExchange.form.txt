@@ -179,9 +179,9 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Export all saved reports in this summary group. Validation findings and report s"
-                        "tatus do not block export. Pending edits are kept separately; this does not appr"
-                        "ove or submit reports."
+                    Caption ="Exports the saved version of every report in this summary group. Findings do not"
+                        " block export; pending edits are not included. This is not approval or submissio"
+                        "n."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

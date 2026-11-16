@@ -129,8 +129,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Profiles identify contributors; they do not authenticate users. Separate copies "
-                        "do not synchronize."
+                    Caption ="Profiles label who did the work; they are not sign-ins. Separate copies do not s"
+                        "ync."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

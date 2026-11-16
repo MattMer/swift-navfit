@@ -826,8 +826,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Unentered traits remain incomplete. This record does not change the current repo"
-                        "rt."
+                    Caption ="This record does not change the current report."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =9450

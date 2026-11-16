@@ -263,7 +263,7 @@ Public Function UXLoadDecision() As Boolean
     With Forms!frmUXDecision
         If Nz(.OpenArgs, "") = "Review" Then
             !lblHeading.Caption = "Use which report values?"
-            !lblBody.Caption = "Review actions use saved revisions. Save pending changes first, use the saved version while keeping pending edits, or cancel."
+            !lblBody.Caption = "Reviews use the saved version. Save your pending edits first, use the saved version and keep your edits, or cancel."
             !cmdDiscard.Caption = "Use saved version"
         ElseIf Nz(.OpenArgs, "") = "Senior" Then
             !lblHeading.Caption = "Keep reporting senior changes?"
@@ -271,7 +271,7 @@ Public Function UXLoadDecision() As Boolean
             !cmdDiscard.Caption = "Discard changes"
         Else
             !lblHeading.Caption = "Keep your report changes?"
-            !lblBody.Caption = "Saving creates a report revision. Recovery checkpoints are separate. Discard removes this editor session's pending checkpoint."
+            !lblBody.Caption = "Save keeps your changes as a new revision. Discard removes them."
             !cmdDiscard.Caption = "Discard changes"
         End If
     End With
@@ -700,7 +700,7 @@ Public Function UXSelectComparisonMember() As Boolean
     f!cmdStage.Enabled = Not locked
     For block = 33 To 39: f.Controls("cboTrait" & block).Locked = locked: Next
     f!cboPromotion.Locked = locked
-    f!uxMember.Caption = Nz(f!uxTraitGrid.Form!Member, "") & IIf(locked, " - locked; reopen in the report workspace to edit", " - proposed edits; stage and review before Apply")
+    f!uxMember.Caption = Nz(f!uxTraitGrid.Form!Member, "") & IIf(locked, " - locked; reopen in the report workspace to edit", " - proposed edits")
     Call UXComparisonAverage: UXSelectComparisonMember = True
 End Function
 ' Display the proposed trait average from the retained proposal controls.
@@ -758,7 +758,7 @@ Public Function UXApplyComparison() As Boolean
     UXComparisonPage "Preview"
     Forms!frmUXComparison!cmdBack.SetFocus
     Forms!frmUXComparison!cmdApply.Enabled = False
-    Forms!frmUXComparison!lblStatus.Caption = "Selected proposals applied atomically. This comparison is now historical; reopen the group comparison for further edits."
+    Forms!frmUXComparison!lblStatus.Caption = "Selected proposals applied. Reopen the group comparison to edit further."
     UXApplyComparison = True: Exit Function
 Failed:
     Forms!frmUXComparison!lblStatus.Caption = Err.Description & " No partial proposal batch was applied."

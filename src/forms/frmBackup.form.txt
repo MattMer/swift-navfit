@@ -127,11 +127,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Backup checkpoints pending editor values, then writes every table into a new dat"
-                        "a file and checks every row and field against this workspace. Access stays open "
-                        "and no other program runs. Existing files are never overwritten; a verification "
-                        "file is saved beside the backup. To restore, open a new blank Swift NAVFIT works"
-                        "pace and import the backup here."
+                    Caption ="Writes a new, verified copy of all your data; existing files are never overwritt"
+                        "en. To restore, open a new blank workspace and import the backup here."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -310,9 +307,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Restore accepts only a blank workspace and verifies every copied value before co"
-                        "mmit. Pending checkpoint values still require deliberate recovery after restorin"
-                        "g. Runtime and other workstations remain untested."
+                    Caption ="Restore works only into a blank workspace. Recover any pending checkpoints after"
+                        " restoring."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =8800

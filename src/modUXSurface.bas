@@ -448,7 +448,7 @@ Public Function UXSurfaceCheckAll() As Boolean
     Forms!frmEditor!uxErrorList.RowSourceType = "Value List"
     Forms!frmEditor!uxErrorList.RowSource = errors
     Forms!frmEditor!uxErrorList.Visible = Not valid
-    If Not valid Then Forms!frmEditor!uxError.Caption = "Correct these entries before saving. Select an entry to open its section. Pending values are retained."
+    If Not valid Then Forms!frmEditor!uxError.Caption = "Correct these entries before saving; your pending values are kept."
     UXResizeEditor
     UXSurfaceCheckAll = valid
 End Function

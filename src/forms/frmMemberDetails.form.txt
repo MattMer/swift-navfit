@@ -152,9 +152,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending values; Save draft commits them. Blank is unentered. I"
-                        "dentifiers, component eligibility and reported-date applicability are not Navy-v"
-                        "alidated."
+                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Identifiers"
+                        " and eligibility are not checked against Navy rules."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

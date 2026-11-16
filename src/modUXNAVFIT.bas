@@ -75,7 +75,7 @@ Public Function UXPreviewNAVFITGroup() As Boolean
     groupExportToken = "": Forms!frmNAVFITExchange!cmdExportGroup.Enabled = False
     Set preview = NAVFITGroupPreview(Nz(Forms!frmNAVFITExchange!cboGroup, 0), Nz(Forms!frmNAVFITExchange!chkPSG, False), Nz(Forms!frmNAVFITExchange!cboISIC, 0))
     groupExportToken = preview("Token")
-    Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Findings do not block export. Choose the export directory, then Export."
+    Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Findings do not block export. Choose a folder, then Export."
     If Len(preview("ISICProfile")("Note")) > 0 Then Forms!frmNAVFITExchange!txtStatus = Forms!frmNAVFITExchange!txtStatus & vbCrLf & preview("ISICProfile")("Note")
     Forms!frmNAVFITExchange!cmdExportGroup.Enabled = True: UXPreviewNAVFITGroup = True: Exit Function
 Failed:
@@ -91,7 +91,7 @@ Public Function UXExportNAVFITGroup() As Boolean
         'The group remembers its ISIC, as it does for the summary letter PDF.
         SetGroupISIC Nz(!cboGroup, 0), Nz(!cboISIC, 0)
         Set findings = NAVFITLastGroupReadiness()
-        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Open the .accdb file in NAVFIT98A. All saved group members are included. Pending edits remain in Swift."
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Open the .accdb file in NAVFIT98A. Pending edits were not included."
         If Not IsNull(!cboISIC) Then !txtStatus = !txtStatus & vbCrLf & "Summary letter profile added: " & !cboISIC.Column(1) & ". Choose it under Select Profile on NAVFIT98A's summary letter; answer Submitted on time there."
         !txtStatus = !txtStatus & vbCrLf & vbCrLf & ReadinessSummary(findings)
         If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
@@ -168,11 +168,11 @@ Public Function UXExportNAVFIT() As Boolean
     Dim findings As Collection
     On Error GoTo Failed
     With Forms!frmNAVFITExchange
-        !txtStatus = "Exporting the saved revision. Findings do not block export; pending edits are not included."
+        !txtStatus = "Exporting the saved revision; pending edits are not included."
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), 0, Nz(!cboReport, 0))
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
         Set findings = NAVFITLastReportReadiness()
-        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Findings do not block export. Export is not approval, signature or submission. Pending edits are not included. Open All report readiness issues to inspect findings. Keep the .swift-baseline.accdb file in Swift. Send only the NAVFIT .accdb file. This export contains one report; it does not certify a complete summary group." & vbCrLf & vbCrLf & ReadinessSummary(findings)
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Findings do not block export. Pending edits are not included; export is not approval or submission. Send only the NAVFIT .accdb file and keep the .swift-baseline.accdb file." & vbCrLf & vbCrLf & ReadinessSummary(findings)
         If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"
     End With
@@ -191,7 +191,7 @@ Public Function UXPreviewNAVFITReturn() As Boolean
             parts = Split(row, "|")
             !lstChoices.AddItem parts(0) & ";" & Replace(NAVFITReturnedCaption(CStr(parts(0))), ";", ",") & ";" & parts(1)
         Next
-        !txtStatus = "Preview ready. Select each field to inspect the complete baseline, current and returned values. Resolve every Conflict. Apply also accepts the displayed native-only source changes; cancel this return if those are unwanted."
+        !txtStatus = "Preview ready. Resolve every Conflict. Apply also accepts the native-only changes shown; cancel if you do not want them."
         !cmdApply.Enabled = True
     End With
     UXPreviewNAVFITReturn = True: Exit Function
@@ -272,7 +272,7 @@ Public Function UXResumeNAVFITReturn() As Boolean
             parts = Split(row, "|")
             !lstChoices.AddItem parts(0) & ";" & Replace(NAVFITReturnedCaption(CStr(parts(0))), ";", ",") & ";" & parts(1)
         Next
-        !txtStatus = "Saved choices resumed after source, baseline, contributor and target checks. Review before Apply. Nothing applied automatically."
+        !txtStatus = "Saved choices resumed. Review them before Apply; nothing has been applied."
         !cmdApply.Enabled = True
     End With
     UXResumeNAVFITReturn = True: Exit Function

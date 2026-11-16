@@ -152,9 +152,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending values; Save draft commits them. Blank remains saveabl"
-                        "e. Suggestions are reference vocabulary; applicability, eligibility and Navy rul"
-                        "es are not assessed."
+                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Suggestions"
+                        " are reference terms; Navy rules are not checked."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

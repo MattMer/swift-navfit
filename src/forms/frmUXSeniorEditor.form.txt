@@ -2242,8 +2242,8 @@ Begin Form
                     BackColor =15332066
                     ForeColor =4482335
                     Name ="lblStatus"
-                    Caption ="Changes to this record do not automatically change saved reports. Exact trait su"
-                        "m avoids rounded-RSCA estimates."
+                    Caption ="Changes here do not change saved reports. Enter the exact trait sum to avoid a r"
+                        "ounded RSCA."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
                     LayoutCachedTop =7900

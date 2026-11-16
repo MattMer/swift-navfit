@@ -2116,8 +2116,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="All 35 RUAD columns are available. NAME is maintained above; RUAD grade and repo"
-                        "rt rank/rate are separate. Profile edits do not rewrite reports."
+                    Caption ="Editing a profile does not change reports."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =6850

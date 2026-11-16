@@ -131,9 +131,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply checkpoints pending entries; Save draft commits them. These parts remain s"
-                        "eparate from full-name entries. No automatic splitting or replacement occurs. Bl"
-                        "ank remains saveable."
+                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Name parts "
+                        "are kept apart from the full name; nothing is split automatically."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

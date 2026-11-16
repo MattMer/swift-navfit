@@ -1026,8 +1026,7 @@ Begin Form
                             Height =500
                             FontSize =10
                             Name ="lblAssignments"
-                            Caption ="Assigned reviews - use saved revisions; only the assigned reviewer can accept or"
-                                " return."
+                            Caption ="Assigned reviews (only the assigned reviewer can accept or return)"
                             FontName ="Segoe UI"
                             Tag ="ASSIGNMENT"
                             LayoutCachedLeft =200
@@ -1109,7 +1108,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblAssignmentNote"
-                            Caption ="Decision note - required when returning; separate from shared report notes"
+                            Caption ="Decision note (required to return)"
                             FontName ="Segoe UI"
                             Tag ="ASSIGNMENT"
                             LayoutCachedLeft =200

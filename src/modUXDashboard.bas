@@ -125,7 +125,7 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     If UXHasControl(f, "uxValidation") Then f!uxValidation.Visible = True
     Select Case mode
         Case "Members": f!lblStatus.Caption = "Open a member report or edit its saved values in the member comparison."
-        Case "Review": f!lblStatus.Caption = "Select a member to review its saved revision. Open the report to see its full content."
+        Case "Review": f!lblStatus.Caption = "Select a member to review its saved revision."
         Case "History": f!lblStatus.Caption = "Inspect saved batch values and preview undo before applying it."
     End Select
     If mode = "Review" Then
@@ -136,12 +136,12 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
         If mode = "Review" And UXHasControl(f, "uxFocusedReview") Then f!uxFocusedReview.Visible = True
     ElseIf mode = "Comparison" Then
         f!uxComparison.Visible = True
-        f!lblStatus.Caption = "Compare saved trait marks and stage proposed edits. A comparison baseline is captured automatically."
+        f!lblStatus.Caption = "Compare saved trait marks and stage proposed edits."
     ElseIf mode = "Defaults" Then
         f!cboScope = "Group"
         GroupPosition "uxDefaultsEditor", 2850, 3000, 10450, 550
         f!uxBulk.Visible = True
-        f!lblStatus.Caption = "Defaults are suggestions. Edit shared report blocks to preview and apply changes to members."
+        f!lblStatus.Caption = "Edit shared report blocks, then preview and apply them to members."
     ElseIf mode = "History" Then
         GroupPosition "cboBatch", 2850, 3000, 10450, 450
         GroupPosition "cmdShowBatch", 2850, 3600, 3200, 450
@@ -262,7 +262,7 @@ Public Function UXDueRefresh() As Boolean
     f!uxReportsDue.RowSourceType = "Value List": f!uxReportsDue.RowSource = rows
     f!uxDueHeading.Caption = "Reports due (" & count & ")"
     f!cmdDueDepartures.Caption = "Departures (" & PendingDepartureCount() & ")"
-    note = "Periodic reports due within " & DUE_LEAD_DAYS & " days, or up to " & DUE_OVERDUE_DAYS & " days overdue, and detachment reports for departures. A report clears once a matching draft exists."
+    note = "Periodic reports due within " & DUE_LEAD_DAYS & " days, or up to " & DUE_OVERDUE_DAYS & " days overdue, plus detachment reports. A report clears once its draft exists."
     If missing > 0 Then note = missing & IIf(missing = 1, " active member has", " active members have") & " no rank/rate, so no due date can be worked out. " & note
     f!uxDueNote.Caption = note
     UXDueRefresh = True

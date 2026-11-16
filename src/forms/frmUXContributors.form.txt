@@ -172,7 +172,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
-                    Caption ="Contributors are the people who use this workspace. They are for attribution, not sign-in: switch to yourself before you work. Deleting someone removes them from review routes; their past work keeps their name."
+                    Caption ="Contributors label who did the work; they are not sign-ins. Switch to yourself b"
+                        "efore you work. Deleting someone keeps their name on past work."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

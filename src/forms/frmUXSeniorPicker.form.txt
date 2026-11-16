@@ -173,7 +173,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
-                    Caption ="Choose a command member to fill the senior's name, grade, designator, UIC and SSN. You add the title. Nothing is saved until you save the record."
+                    Caption ="Choose a command member to fill the senior's name, grade, designator, UIC and SS"
+                        "N. Add the title yourself."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

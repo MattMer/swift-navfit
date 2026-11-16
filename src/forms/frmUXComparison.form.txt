@@ -499,7 +499,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxMember"
-                    Caption ="Select a member above to edit proposed marks in this comparison window."
+                    Caption ="Select a member above to edit proposed marks."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
                     LayoutCachedTop =5450
@@ -1114,8 +1114,7 @@ Begin Form
                     BackColor =13627647
                     ForeColor =18298
                     Name ="lblStatus"
-                    Caption ="Saved-value baseline captured automatically. Comments are not shown. Pending edi"
-                        "ts are proposals until applied; stale groups and locked reports reject changes."
+                    Caption ="Saved values are the baseline. Pending edits are proposals until applied."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
                     LayoutCachedTop =11650

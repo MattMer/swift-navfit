@@ -111,8 +111,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Choose a report type. Its official block captions and trait guidance will be use"
-                        "d in the editor."
+                    Caption ="Choose a report type. The editor uses its official captions."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

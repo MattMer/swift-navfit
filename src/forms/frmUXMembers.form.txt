@@ -147,9 +147,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Choose the explicit roster. Verify paygrade and eligibility; profile attribution"
-                        " is local. Unavailable/archived existing members require separate deliberate rem"
-                        "oval."
+                    Caption ="Choose the group's members and check paygrade and eligibility. Archived members "
+                        "are removed separately."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000
