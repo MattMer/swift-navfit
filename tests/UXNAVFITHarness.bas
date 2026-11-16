@@ -50,8 +50,10 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Check Not Forms!frmNAVFITExchange!txtReturned.Visible And Not Forms!frmNAVFITExchange!txtBaseline.Visible, "Export exposes returned-file workflow"
     Check Not Forms!frmNAVFITExchange!cmdResumeReturn.Visible And Not Forms!frmNAVFITExchange!cmdCancelReturn.Visible, "Export exposes saved-return actions"
     Check Not Forms!frmNAVFITExchange!txtExportPath.Locked And Forms!frmNAVFITExchange!txtExportPath.TabStop And Forms!frmNAVFITExchange!txtExportPath.AfterUpdate = "=UXPreviewNAVFITGroup()", "Export directory cannot be entered by keyboard with a refreshed preview"
+    Check Forms!frmNAVFITExchange!cboISIC.TabStop And Forms!frmNAVFITExchange!cboISIC.AfterUpdate = "=UXPreviewNAVFITGroup()", "ISIC choice cannot be made by keyboard with a refreshed preview"
+    Check Forms!frmNAVFITExchange!cmdtxtExportPath.TabIndex < Forms!frmNAVFITExchange!cboISIC.TabIndex And Forms!frmNAVFITExchange!cboISIC.TabIndex < Forms!frmNAVFITExchange!cmdExportGroup.TabIndex, "ISIC is out of keyboard order between the export folder and Export"
     For Each c In Forms!frmNAVFITExchange.Controls
-        If c.Visible Then Check InStr("|lblHeading|lblScope|lblGroup|lbltxtExportPath|txtExportPath|cmdtxtExportPath|cmdExportGroup|txtStatus|antxtStatus|cmdBack|cmdWindowHelp|", "|" & c.Name & "|") > 0, "Export exposes an unrelated control: " & c.Name
+        If c.Visible Then Check InStr("|lblHeading|lblScope|lblGroup|lbltxtExportPath|txtExportPath|cmdtxtExportPath|lblISIC|cboISIC|cmdExportGroup|txtStatus|antxtStatus|cmdBack|cmdWindowHelp|", "|" & c.Name & "|") > 0, "Export exposes an unrelated control: " & c.Name
     Next
     file = source & ".ui-export.accdb"
     Call NAVFITExportReport(id, file, template)

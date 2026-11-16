@@ -32,7 +32,7 @@ section 5.2, no longer match the build.
 | Operated by | The command that adopts it, on its own workstations and storage |
 | Classification | Unclassified. Processes personally identifiable information (CUI, category PRVCY). |
 | License | Apache License 2.0 |
-| Latest release | 0.56.0, schema 49 (13 November 2026), tag `v0.56.0` |
+| Latest release | 0.57.0, schema 50 (15 November 2026), tag `v0.57.0` |
 | Security problems | Report privately as described in [SECURITY.md](SECURITY.md) |
 
 Development source (*generated*):
@@ -40,7 +40,7 @@ Development source (*generated*):
 <!-- generated:readme-facts -->
 | Fact | Value |
 | --- | --- |
-| Application version | 0.57.0-dev (`APP_VERSION` in `src/modSwift.bas`) |
+| Application version | 0.57.0 (`APP_VERSION` in `src/modSwift.bas`) |
 | Schema version | 50 |
 | Imports accepted | Workspaces of schema 35 to 50, into a target of schema 35 to 50 |
 | Tables / enforced relationships | 84 / 169 |
@@ -628,7 +628,9 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
-| 14 Nov 2026 | Development only, schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`), with a row count and checksum checked when a report opens; earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
+| 15 Nov 2026 | Release 0.57.0, schema 50: sparse revision values with a row count and checksum, the ISIC summary letter profile in NAVFIT98A group export, and the fixes from the 0.56.0 checks. |
+| 15 Nov 2026 | NAVFIT98A group export can write the chosen ISIC to the exported file's `Summary` table as a summary letter profile: the ISIC name and address, and the reporting senior's e-mail and ten-digit phone (the same data the summary letter PDF prints). Nothing else new leaves the workspace. Import code for workspaces older than schema 35 is removed. |
+| 14 Nov 2026 | Schema 50: revisions store only fields with a value (`ReportRevision.ValueEncoding`), with a row count and checksum checked when a report opens; earlier revisions are unchanged and read as before. A data file upgrades in place. CHIEFEVAL block 20 is no longer repeated as additional text; NAVFIT98A export writes an unanswered check box unticked and lists it; setup offers Restore a backup or import from a previous version. |
 | 13 Nov 2026 | Release 0.56.0, schema 49: the front end and separate data file from S01, the two-person safeguards, command UIC and details. |
 | 13 Nov 2026 | Schema 49: `SessionPresence` (who has the workspace open, their computer, and the report open in their editor; transient: never imported, copied but not checked by backup) and `Workspace.CommandUIC` (optional command UIC, asked at setup, editable in Settings & Help with an operation journal entry, prefills new reports). Each application keeps its own contributor; a save that meets another session's lock retries and then explains; startup warnings name sync conflict copies beside the data file. Two people on one data file are not supported but made safer; a synced folder cannot be shared. The summary letter is padded to an even page count and its filename box truncated. |
 | 13 Nov 2026 | Development only, not in a release: first-run setup now makes the data file by default, beside the application. A missing or unusable data file at startup opens a window offering to find it, create a new one or close; a data file of the same name beside the application is used without asking. A linked application keeps its blank tables (hidden, `USysBlank` prefix) so it can make a new data file; workspace-wide table loops (backup, import, retention) skip them. Release files: `Swift_NAVFIT_<version>.accdb` and the Demo as an application and data file pair, made by `scripts/package-release.ps1`. |

@@ -408,7 +408,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =5
+                    TabIndex =6
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtReturned"
@@ -448,7 +448,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =6
+                    TabIndex =7
                     ForeColor =2500257
                     Name ="cmdtxtReturned"
                     Caption ="Choose..."
@@ -487,7 +487,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =7
+                    TabIndex =8
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtBaseline"
@@ -527,7 +527,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =8
+                    TabIndex =9
                     ForeColor =4205854
                     Name ="cmdtxtBaseline"
                     Caption ="Choose..."
@@ -565,7 +565,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =9
+                    TabIndex =10
                     ForeColor =16777215
                     Name ="cmdExport"
                     Caption ="Export saved report to NAVFIT"
@@ -603,7 +603,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =10
+                    TabIndex =11
                     ForeColor =4205854
                     Name ="cmdPreview"
                     Caption ="Preview returned file against export baseline"
@@ -643,7 +643,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =12
                     ForeColor =4205854
                     BorderColor =13285543
                     Name ="lstChoices"
@@ -685,7 +685,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =13
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtDetail"
@@ -721,7 +721,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =14
                     ForeColor =4205854
                     Name ="cmdKeep"
                     Caption ="Keep current Swift value"
@@ -759,7 +759,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =15
                     ForeColor =4205854
                     Name ="cmdAccept"
                     Caption ="Accept returned value"
@@ -801,7 +801,7 @@ Begin Form
                     Width =12600
                     Height =1000
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="txtStatus"
@@ -843,7 +843,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =17
                     ForeColor =8746084
                     Name ="cmdApply"
                     Caption ="Apply resolved return"
@@ -881,7 +881,7 @@ Begin Form
                     Width =12600
                     Height =450
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =18
                     ForeColor =4205854
                     Name ="cmdBack"
                     Caption ="Close"
@@ -923,7 +923,7 @@ Begin Form
                     Width =7300
                     Height =450
                     FontSize =10
-                    TabIndex =28
+                    TabIndex =5
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="cboISIC"
@@ -976,7 +976,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =18
+                    TabIndex =19
                     BorderColor =13285543
                     ForeColor =4205854
                     ColumnInfo ="\"\";\"\";\"\";\"\";\"10\";\"0\""
@@ -1022,7 +1022,7 @@ Begin Form
                     OverlapFlags =255
                     Width =500
                     Height =350
-                    TabIndex =19
+                    TabIndex =20
                     Name ="chkPSG"
                     AfterUpdate ="=UXNAVFITInputChanged()"
                     DefaultValue ="False"
@@ -1053,7 +1053,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =20
+                    TabIndex =21
                     ForeColor =4205854
                     Name ="cmdPreviewGroup"
                     Caption ="Preview saved group members and counts"
@@ -1092,7 +1092,7 @@ Begin Form
                     Width =12600
                     Height =550
                     FontSize =10
-                    TabIndex =21
+                    TabIndex =22
                     ForeColor =8746084
                     Name ="cmdExportGroup"
                     Caption ="Export summary group to NAVFIT98A"
@@ -1131,7 +1131,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =22
+                    TabIndex =23
                     ForeColor =2500257
                     Name ="cmdResumeReturn"
                     Caption ="Resume saved return preview"
@@ -1169,7 +1169,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =23
+                    TabIndex =24
                     ForeColor =2500257
                     Name ="cmdCancelReturn"
                     Caption ="Cancel saved return preview"
@@ -1207,7 +1207,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =24
+                    TabIndex =25
                     ForeColor =4205854
                     Name ="cmdReportReadiness"
                     Caption ="All report readiness issues"
@@ -1245,7 +1245,7 @@ Begin Form
                     Width =500
                     Height =350
                     FontSize =10
-                    TabIndex =25
+                    TabIndex =26
                     ForeColor =4205854
                     Name ="cmdGroupReadiness"
                     Caption ="All group readiness issues"
@@ -1282,7 +1282,7 @@ Begin Form
                     Width =500
                     Height =450
                     FontWeight =700
-                    TabIndex =26
+                    TabIndex =27
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"
@@ -1379,7 +1379,7 @@ Begin Form
                     IMESentenceMode =3
                     Width =500
                     Height =350
-                    TabIndex =27
+                    TabIndex =28
                     Name ="uxSortActivateOriginal"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1

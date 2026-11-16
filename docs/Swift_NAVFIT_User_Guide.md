@@ -1,8 +1,8 @@
 # Swift NAVFIT User Guide
 
-Version 2.0 | 13 November 2026
+Version 2.1 | 15 November 2026
 
-For Swift NAVFIT 0.56.0 | schema 49
+For Swift NAVFIT 0.57.0 | schema 50
 
 ## Draft. Coordinate. Review. Preserve.
 
@@ -926,6 +926,7 @@ Imported native provenance is retained. Unsupported or unknown encodings still n
 1. Select the summary group in **Summary groups**, or open its Members page.
 2. Choose **Export selected group to NAVFIT98A** or **Export group to NAVFIT98A**.
 3. Confirm the displayed group and choose an export directory. Swift supplies its internal native template automatically.
+   Optionally choose an **ISIC**; the list starts on the group's ISIC. The exported file then carries a NAVFIT98A summary letter profile named for the ISIC, with its address and the reporting senior's e-mail and phone. In NAVFIT98A, choose it under **Select Profile** on the summary letter and answer **Submitted on time?** there. An e-mail longer than 50 characters or a phone that is not ten digits is left out, and the export window says so. The group remembers the ISIC.
 4. Choose **Export summary group to NAVFIT98A**. All saved group members are included. Validation findings, incomplete content and report status do not prevent export. Pending edits remain separate; save them first if they belong in the export.
 5. Open the native output in NAVFIT98A, validate it, and use its appropriate report/folder/summary printing actions.
 
@@ -1128,6 +1129,6 @@ The reference eNavFit manual is used as an organizational model, not reproduced 
 
 ## 20.3 Maintenance
 
-Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covered application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. Version 1.8, 7 November 2026, covers application 0.54.0, schema 45, including startup safety warnings, the report lifecycle, ISIC and date fixes on PDF output, and opening PDF output without shell objects. Version 1.9, 9 November 2026, covered application 0.55.0, schema 48, including EVAL block 44, PDF comments at 12 or 10 point, fit hints, the EP and EP+MP spread, drafts and a summary group from Reports due, the print preview and content checks. Version 2.0, 13 November 2026, covers application 0.56.0, schema 49, including the separate data file, automatic data file upgrades, two people on one data file, and the command UIC. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
+Guide version 1.0 was prepared on 20 October 2026 for r126. Version 1.3, 26 October 2026, covered application 0.49.0. Version 1.4, 31 October 2026, covered application 0.50.0. Version 1.5, 1 November 2026, covered application 0.51.0. Version 1.6, 3 November 2026, covered application 0.52.0, schema 41. Version 1.7, 4 November 2026, covered application 0.53.0, schema 44, including named report filters, counseling restore, PDF reapply and summary-letter details. Version 1.8, 7 November 2026, covers application 0.54.0, schema 45, including startup safety warnings, the report lifecycle, ISIC and date fixes on PDF output, and opening PDF output without shell objects. Version 1.9, 9 November 2026, covered application 0.55.0, schema 48, including EVAL block 44, PDF comments at 12 or 10 point, fit hints, the EP and EP+MP spread, drafts and a summary group from Reports due, the print preview and content checks. Version 2.0, 13 November 2026, covered application 0.56.0, schema 49, including the separate data file, automatic data file upgrades, two people on one data file, and the command UIC. Version 2.1, 15 November 2026, covers application 0.57.0, schema 50, including the ISIC summary letter profile in NAVFIT98A group export. The editable Markdown and reproducible PDF renderer (`scripts/build_user_guide.py`) accompany the PDF in the repository. Update procedures when controls or behavior change, then regenerate and visually inspect the PDF.
 
 Start with this guide for current user procedures. Older feature guides retain historical service and verification detail and may describe superseded windows or review/comment behavior. The repository's current-state notes identify the latest delivered artifacts and remaining work.

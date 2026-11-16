@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 15 November 2026 (0.56.0 released; 0.57.0-dev, schema 50). Manual check
+Updated 15 November 2026 (0.57.0, schema 50). Manual check
 results from 10, 14 and 15 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
@@ -50,22 +50,16 @@ U01–U04 passed on screen (14 Nov), and the Reports archive filter starting on 
 | ID | Work |
 | --- | --- |
 | M03 | **Remaining performance (revisit later).** The editor takes about 1.1 s to open, flat with workspace size and mostly page layout. Build-time layout baking was declined for now. A 250-member group PDF packet takes about 46 s, most of it in `OutputTo`. |
-| L03 | **Workspace size headroom, step 3: sparse revision values.** Done in development (schema 50): `ReportRevision.ValueEncoding` 1 marks a snapshot that stores only fields with a value; a missing field reads as empty, and full copies from earlier versions read as before. Readers go through `RevisionStoredValue`. Each revision records its row count and a SHA-256 checksum (`ValueCount`, `ValueHash`), checked when a report opens or saves; a report list checks the count (threat-model item 6). Import copies rows unchanged, and old revisions are not converted. **Measured (14 Nov):** the synthetic Demo (13 reports, 32 revisions, 35 of 101 fields filled per revision) was copied as stored and with every revision turned back into a full copy, each scaled to 992 revisions and compacted. Each added revision takes 4.7 KB instead of 10.7 KB (56% less revision storage), about 90 bytes per empty field. A fuller report with about 65 fields filled saves about 3 KB per revision. Dates, choices and the change log are unchanged, so the whole-file saving is smaller. **Remaining:** release in 0.57.0. Test every persistence runner, schemas 1–36, mixed revisions, disposal, restore and compare. Not critical: about 10 years of headroom at 1,300 reports a year. |
 
 ## NAVFIT98A exchange
 
-Unanswered check boxes export unticked (X01) and the NAVFIT98A narrative print check (H03) passed (15 Nov).
-
-| ID | Work |
-| --- | --- |
-| X02 | **ISIC in the NAVFIT98A file (in development).** NAVFIT98A keeps summary letter details as named profiles (Select Profile on its Summary Letter Information window), and a group export carried none. The group export window now has an optional ISIC list, starting on the group's ISIC. The chosen ISIC is written as a profile named for it, with the ISIC address, the reporting senior's e-mail and ten-digit phone; Submitted on time is left for NAVFIT98A. An e-mail over 50 characters or a phone that is not ten digits is left out and named in the export window. The group remembers the ISIC. **Remaining:** confirm in NAVFIT98A that the profile appears and prints on the summary letter. |
+Unanswered check boxes export unticked (X01), the NAVFIT98A narrative print check (H03) and the ISIC summary letter profile in group export (X02) passed (15 Nov) and shipped in 0.57.0. No open items.
 
 ## Code health
 
 | ID | Work |
 | --- | --- |
 | T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. The 0.56.0 release check (14 Nov) passed with one FLAKY (`test-wizard-state`: "Cannot identify owned Access process"), so the count starts again. |
-| T06 | **Pre-35 import code removed (in development).** The importer accepts schema 35 onward, so `modMigration.MigrateWorkspace` no longer carries skip lines, wrappers or table checks for older schemas, or the pre-28 Report column branch (72 lines). `test-persistence-transfer`, `test-audit-message-transfer` and their seed harness are retired, and `upgrade-workspace.ps1` needs an explicit template. `MigrateLegacyReportNotes`, `MigrateDirectoryCompatibility`, the legacy columns and the schema 1–34 definition files stay. Ships in 0.57.0. |
 
 ## S01 — Front end and data file
 

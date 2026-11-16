@@ -99,18 +99,19 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.56.0
+### Current release: 0.57.0
 
-Download from the [0.56.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.56.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.57.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.57.0), which lists each file's SHA-256 hash so you can confirm your download.
 
-- **Swift_NAVFIT_0.56.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
-- **Swift_NAVFIT_Demo_0.56.0.accdb** with **Swift_NAVFIT_Demo_data_0.56.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
+- **Swift_NAVFIT_0.57.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
+- **Swift_NAVFIT_Demo_0.57.0.accdb** with **Swift_NAVFIT_Demo_data_0.57.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
 
 > **Not yet tested:**
-> 1. printed fit against the official forms;
-> 2. screen readers (NVDA and JAWS);
-> 3. a computer without Adobe Acrobat;
-> 4. a Navy-managed workstation under its normal Office settings.
+> 1. screen readers (NVDA and JAWS);
+> 2. a computer without Adobe Acrobat;
+> 3. two people on one data file from a network share.
+>
+> Printed fit has been checked on paper for the EVAL, FITREP, CHIEFEVAL and summary letter, and on a Navy-managed workstation.
 >
 > The files are not digitally signed yet, so Access asks you to **Enable Content**.
 
