@@ -103,6 +103,9 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 Download from the [0.58.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.58.0), which lists each file's SHA-256 hash so you can confirm your download.
 
+**Recommended:** download the zip, or email the zip to your Navy email, then save everything in it to one folder on the workstation where you will use it.
+
+- **Swift_NAVFIT_0.58.0.zip:** everything below plus the user guide in one download.
 - **Swift_NAVFIT_0.58.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
 - **Swift_NAVFIT_Demo_0.58.0.accdb** with **Swift_NAVFIT_Demo_data_0.58.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
 

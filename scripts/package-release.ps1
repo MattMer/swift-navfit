@@ -7,6 +7,7 @@ param(
 #   Swift_NAVFIT_<version>.accdb            the application; setup makes its data file
 #   Swift_NAVFIT_Demo_<version>.accdb       the application, linked to the Demo data file
 #   Swift_NAVFIT_Demo_data_<version>.accdb  the Demo data (synthetic only)
+#   Swift_NAVFIT_<version>.zip              all three plus the user guide (package-release-zip.ps1)
 # The Demo data comes in through the production import, every row and field checked.
 # The Demo application finds its data file beside it, so the pair opens wherever the
 # two are saved together; this script checks that by opening a moved copy.
@@ -64,4 +65,6 @@ try{
 [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($engine)
 if((Get-FileHash -LiteralPath $BlankPath).Hash -ne $blankHash -or (Get-FileHash -LiteralPath $DemoPath).Hash -ne $demoHash){throw 'Packaging changed the Blank or the Demo'}
 foreach($name in 'App','Demo','Data'){$file=Join-Path $OutputFolder $names[$name];Write-Output ($names[$name]+'  '+(Get-Item -LiteralPath $file).Length+' bytes  SHA256 '+(Get-FileHash -LiteralPath $file).Hash)}
+& powershell.exe -NoProfile -File (Join-Path $PSScriptRoot 'package-release-zip.ps1') -OutputFolder $OutputFolder -Version $version
+if($LASTEXITCODE -ne 0){throw 'The release zip failed'}
 Write-Output ('PASS: release files for '+$version+' in '+$OutputFolder+'; the Demo pair opens on its own data file after a move')

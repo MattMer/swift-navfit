@@ -300,8 +300,11 @@ folder in the repository.
 3. Make the release files with `scripts/package-release.ps1 -BlankPath <blank>
    -DemoPath <demo> -OutputFolder <folder>`: the
    application `Swift_NAVFIT_<version>.accdb`, and the Demo as a pair,
-   `Swift_NAVFIT_Demo_<version>.accdb` with `Swift_NAVFIT_Demo_data_<version>.accdb`.
-   Publish those three files, with their SHA-256, and the user guide.
+   `Swift_NAVFIT_Demo_<version>.accdb` with `Swift_NAVFIT_Demo_data_<version>.accdb`,
+   and `Swift_NAVFIT_<version>.zip` holding those three and the user guide.
+   Publish the three files, the zip and the user guide, with their SHA-256.
+   The release notes and README recommend downloading the zip, or emailing it
+   to a Navy email account.
 4. Document which schema fixtures were tested.
 5. Put dated, versioned files in `output/` and keep the prior outputs.
 6. Upload to the distribution folder, then verify the
