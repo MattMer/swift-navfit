@@ -141,7 +141,7 @@ Never copy a new application over an existing workspace.
 - [User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) and the [online edition](docs/Swift_NAVFIT_User_Guide.md)
 - [Choosing your contributor at startup](docs/Contributor_Startup.md)
 - [Reviewing duplicate Sailors](docs/Duplicate_Sailor_Review.md)
-- [Accessibility](docs/Swift_NAVFIT_User_Guide.md#34-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
+- [Accessibility](docs/Swift_NAVFIT_User_Guide.md#36-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
 - Found a problem? [Open an issue](https://github.com/MattMer/swift-navfit/issues/new/choose) using made-up data only. Report security problems privately as described in [SECURITY.md](SECURITY.md).
 
 **Reviewing Swift for your command?** The [security and system description](TECHNICAL_README.md) is written for ISSMs, privacy officers and application approvers. It covers what Swift is, the registration and approval questions, every kind of personal data it holds and where, its security controls and residual risks, accessibility, testing, the release process and known limitations, and links the DoDAF, DevSecOps, SBOM and threat-model documents.

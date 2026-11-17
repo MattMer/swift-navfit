@@ -1,6 +1,6 @@
 # Review duplicate Sailors
 
-Merging since r127 (schema 27); the directory-wide list since 0.58.0 (schema 51). The user guide (section 8.1) has the short version.
+Merging since r127 (schema 27); the directory-wide list since 0.58.0 (schema 51). The user guide (section 5.4) has the short version.
 
 1. Close report, member-profile and prior-evaluation editors after saving or deliberately retaining their pending work.
 2. Open **Resources > Command member directory > Review possible duplicate Sailors**. The list at the top shows every pair of active profiles that may be the same Sailor, strongest match first: **Likely** (the same SSN or DoD ID on their reports or the roster), **Probable** (the same name in report format) or **Possible** (the same surname and first initial). Profiles with different SSNs or DoD IDs are never listed.
