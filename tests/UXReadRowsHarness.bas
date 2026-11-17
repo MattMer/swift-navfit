@@ -117,10 +117,14 @@ Public Function TestUXReadRows() As String
         SaveLibraryView CStr(preset): RefreshLibrary
         Check f!lstReports.ListCount = 3, "Preset omitted report"
         Check f!lstReports.ColumnCount = 10 And f!lstReports.Column(4, 0) = "Rate", "Preset column shape"
+        Check ListColumnsFit(f!lstReports), "Preset columns overflow the list"
         For rows = 1 To 2
             Check SameFieldValue(f!lstReports.Column(7, rows), UXTableITA(CLng(f!lstReports.Column(0, rows)))), "Displayed ITA mismatch"
         Next
     Next
+    'A wider list (as after the window grows) still fits every column on refresh.
+    f!lstReports.Width = f!lstReports.Width + 4000: RefreshLibrary
+    Check ListColumnsFit(f!lstReports), "Widened list columns overflow"
     f!uxStatusFilter = "Local approval": RefreshLibrary
     Check f!lstReports.ListCount = 2 And f!lstReports.Column(0, 1) = id, "Cached status filter differs"
     f!uxStatusFilter = "All": f!lstReports = other: RefreshLibrary
@@ -149,4 +153,10 @@ Public Function TestUXReadRows() As String
     TestUXReadRows = "PASS: " & checks & " batch report equivalence, historical traits, review state, filters and sorting checks": Exit Function
 Failed:
     TestUXReadRows = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
+End Function
+Private Function ListColumnsFit(ByVal c As Access.Control) As Boolean
+    Dim parts As Variant, i As Long, total As Long
+    parts = Split(c.ColumnWidths, ";")
+    For i = 0 To UBound(parts): total = total + Val(parts(i)): Next
+    ListColumnsFit = (UBound(parts) = c.ColumnCount - 1) And total <= c.Width - 280 And total >= c.Width - 320
 End Function
