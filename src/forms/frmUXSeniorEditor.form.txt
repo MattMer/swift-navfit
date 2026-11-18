@@ -658,7 +658,7 @@ Begin Form
                     TextFontFamily =34
                     Left =2850
                     Top =6600
-                    Width =5000
+                    Width =3300
                     Height =450
                     FontSize =10
                     TabIndex =51
@@ -670,7 +670,7 @@ Begin Form
 
                     LayoutCachedLeft =2850
                     LayoutCachedTop =6600
-                    LayoutCachedWidth =7850
+                    LayoutCachedWidth =6150
                     LayoutCachedHeight =7050
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -2364,7 +2364,7 @@ Begin Form
                     TextFontFamily =34
                     Left =2850
                     Top =6600
-                    Width =5000
+                    Width =3300
                     Height =450
                     FontSize =10
                     TabIndex =43
@@ -2377,7 +2377,7 @@ Begin Form
 
                     LayoutCachedLeft =2850
                     LayoutCachedTop =6600
-                    LayoutCachedWidth =7850
+                    LayoutCachedWidth =6150
                     LayoutCachedHeight =7050
                     ForeThemeColorIndex =-1
                     Gradient =0
@@ -2402,9 +2402,9 @@ Begin Form
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
-                    Left =8100
+                    Left =6350
                     Top =6600
-                    Width =5200
+                    Width =3300
                     Height =450
                     FontSize =10
                     TabIndex =44
@@ -2415,7 +2415,48 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="SR:3"
 
-                    LayoutCachedLeft =8100
+                    LayoutCachedLeft =6350
+                    LayoutCachedTop =6600
+                    LayoutCachedWidth =9650
+                    LayoutCachedHeight =7050
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9850
+                    Top =6600
+                    Width =3450
+                    Height =450
+                    FontSize =10
+                    TabIndex =52
+                    ForeColor =4205854
+                    Name ="cmdExportRSHistory"
+                    Caption ="Export RSCA history"
+                    OnClick ="=RSExportHistoryUI()"
+                    FontName ="Segoe UI"
+                    Tag ="SR:3"
+                    ControlTipText ="Save a workbook of this senior's baselines, counted reports and RSCA calculation"
+
+                    LayoutCachedLeft =9850
                     LayoutCachedTop =6600
                     LayoutCachedWidth =13300
                     LayoutCachedHeight =7050

@@ -44,7 +44,7 @@ Development source (*generated*):
 | Schema version | 51 |
 | Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
 | Tables / enforced relationships | 85 / 169 |
-| VBA modules / forms | 124 / 76 |
+| VBA modules / forms | 125 / 76 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 124 / 123 |
@@ -628,6 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 18 Nov 2026 | Development only, not in a release: summary groups show the Current RSCA (the reporting senior's RSCA before the group) beside the PSG RSCA with the change; Export RSCA history (modRSHistoryExport) writes a reporting senior's baselines, counted reports, open-group reports and RSCA calculation to an .xlsx workbook through a temporary database and TransferSpreadsheet. The Reports list fits its columns to the list width on first load. |
 | 16 Nov 2026 | Release 0.58.0, schema 51: the directory-wide duplicate Sailor list, roster refresh defaults, PDF import of YYMMMDD dates and flattened-PDF guidance, and shorter form notices. |
 | 16 Nov 2026 | Schema 51: `MemberDuplicateDismissal` records pairs of directory members marked as different Sailors (the pair, reason, contributor and time; restoring keeps the row with who restored it). Review possible duplicate Sailors lists every pair of active members that may be the same Sailor, from shared SSNs or DoD IDs (profile, linked reports and the roster's DoD ID), the same report-format name, or the same surname and first initial; pairs with different identifiers are not listed. Identifiers are compared in memory and never shown. |
 | 16 Nov 2026 | A roster row matched to an existing member starts with both roster updates ticked, so the refresh takes the roster's fields (including ones changed by hand) and its rank/rate; clearing either box on a row keeps the profile's value. A blank roster value (an empty cell, or a column the roster format lacks) never replaces a profile value, and a blank rank/rate never replaces the profile's. Display name, report name and SSN never change from a roster. |

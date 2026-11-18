@@ -117,7 +117,7 @@ Public Function UXFocusedGroupMode(ByVal mode As String) As Boolean
     f.ScrollBars = 0: f.Section(acDetail).Height = 8600
     f!uxGroupTitle.Caption = Nz(DLookup("Title", "SummaryGroup", "GroupID=" & id), "Summary group")
     average = UXGroupAverage(id): Set psg = RSGroupPSG(id)
-    f!uxGroupMeta.Caption = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & id), "") & " | " & Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & id), "") & " | " & DCount("*", "GroupMember", "GroupID=" & id) & " members | Trait average: " & IIf(IsNull(average), "Unavailable", Format$(Nz(average, 0), "0.00")) & " | PSG RSCA: " & IIf(IsNull(psg("Value")), "Unavailable", Format$(Nz(psg("Value"), 0), "0.00") & IIf(psg("Estimated"), " (estimate)", ""))
+    f!uxGroupMeta.Caption = Nz(DLookup("FormKind", "SummaryGroup", "GroupID=" & id), "") & " | " & Nz(DLookup("Paygrade", "SummaryGroup", "GroupID=" & id), "") & " | " & DCount("*", "GroupMember", "GroupID=" & id) & " members | Trait average: " & IIf(IsNull(average), "Unavailable", Format$(Nz(average, 0), "0.00")) & " | " & UXRSCADeltaText(psg)
     For Each c In f.Controls
         If Left$(c.Tag, 4) = "WBX:" Then c.Visible = False
     Next

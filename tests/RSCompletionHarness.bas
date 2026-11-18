@@ -35,6 +35,13 @@ Private Function RejectSenior(ByVal id As Long, ByVal senior As Long) As Boolean
 Rejected:
  RejectSenior = True
 End Function
+Private Function RejectExport(ByVal senior As Long, ByVal path As String) As Boolean
+ On Error GoTo Rejected
+ RSExportHistory senior, path
+ Exit Function
+Rejected:
+ RejectExport = True
+End Function
 Private Sub Counts(ByVal senior As Long, ByVal count As Long, ByVal total As Double)
  Dim id As Long
  id = RSLatestBaseline(senior, "E6")
@@ -57,6 +64,9 @@ Public Function TestRSCompletion() As String
  Check GroupWorkflow(g) = "Initialized" And DCount("*", "RSCABaseline") = 1, "Failed completion was not atomic"
  RSSetGroupBaseline g, sid, b, True
  Set p = RSGroupPSG(g): Check Abs(p("Value") - 448# / 107) < 0.00001, "Initial projection incorrect"
+ 'The current RSCA (before this group) shows beside the PSG RSCA with the change.
+ Check Abs(p("Current") - 4.2) < 0.00001 And UXRSCADeltaText(p) = "Current RSCA: 4.20 | PSG RSCA: 4.19 (-0.01)", "Current RSCA delta wrong: " & UXRSCADeltaText(p)
+ Check UXRSCADelta(0.004) = "0.00" And UXRSCADelta(-0.004) = "0.00" And UXRSCADelta(0.05) = "+0.05" And UXRSCADelta(-0.25) = "-0.25", "RSCA delta sign wrong"
  rev = CurrentRevision(a)
  SetGroupWorkflow g, GroupStamp(g), "Completed": Counts sid, 107, 448
  Check GroupWorkflow(g) = "Completed" And CurrentRevision(a) = rev, "Completion changed report revision"
@@ -74,6 +84,7 @@ Public Function TestRSCompletion() As String
  Set p = RSGroupPSG(g): Check Abs(p("Value") - 448# / 107) < 0.00001, "Completed group counted twice in projection"
  h = CreateSummaryGroup("Second", "EVAL", "E6"): AddGroupMember h, c, "E6": RSSetGroupBaseline h, sid, b, True
  Set p = RSGroupPSG(h): Check Abs(p("Value") - 476# / 114) < 0.00001, "Projection omitted earlier completed group"
+ Check Abs(p("Current") - 448# / 107) < 0.00001 And InStr(UXRSCADeltaText(p), "Current RSCA: 4.19 | PSG RSCA: 4.18 (-0.01)") = 1, "Current RSCA omitted the completed group"
  SetGroupWorkflow h, GroupStamp(h), "Completed": Counts sid, 114, 476
  SetGroupWorkflow g, GroupStamp(g), "In-Work": Counts sid, 114, 476
  Set f = CreateObject("Scripting.Dictionary")
@@ -89,6 +100,48 @@ Public Function TestRSCompletion() As String
  Check InStr(trail, "Group completed: First") > 0 And InStr(trail, "Group completed: Second") > 0 And InStr(trail, "Group re-completed (correction): First") > 0 And InStr(trail, "Earlier:") = 0, "RSCA history did not name the posting groups"
  Check summary = "E6 BOL baseline 2025-12-31: RSCA 4.20 (100 traits); now 4.11 (114 traits) after 3 group completions.", "RSCA history summary wrong: " & summary
  Check RSBaselineSource(RSLatestBaseline(sid, "E6")) = "BOL 2025-12-31 + 3 groups", "Paygrade table source wrong"
+ 'The RSCA history export: the BOL baseline, each counted report (a correction replaces
+ 'the group's first posting), reports in open groups (listed, not counted), then the calculation.
+ Dim d As Long, o As Long, rows As Collection, v As Variant, found As Long, path As String, x As DAO.Database, xr As DAO.Recordset, t As DAO.TableDef, sheet As String, readRows As Long
+ d = Member(senior, "Member D"): o = CreateSummaryGroup("Open", "EVAL", "E6"): AddGroupMember o, d, "E6": RSSetGroupBaseline o, sid, b, True
+ Set rows = RSHistoryExportRows(sid)
+ Check rows(1)(1) = "Reporting senior" And rows(1)(4) = "Synthetic senior", "Export heading row wrong"
+ For Each v In rows
+  If Nz(v(0), "") = "E6" Then
+   Select Case v(1)
+    Case "BOL baseline": Check v(2) = #12/31/2025# And v(7) = 100 And v(8) = 420 And v(9) = 4.2, "Export baseline row wrong": found = found + 1
+    Case "Counted report"
+     If v(4) = "Member A" Then Check v(3) = "First" And v(6) = 3 And v(7) = 7 And v(8) = 21, "Export corrected report wrong": found = found + 1
+     If v(4) = "Member B" Then Check v(3) = "Second" And v(6) = 4 And v(7) = 7 And v(8) = 28, "Export counted report wrong": found = found + 1
+     Check v(4) <> "Member D", "Open group report was counted"
+    Case "Not counted: group not completed": Check v(4) = "Member D" And v(3) = "Open" And v(6) = 4 And v(7) = 7, "Export open report wrong": found = found + 1
+    Case "RSCA calculation": Check v(7) = 114 And v(8) = 469 And v(9) = 4.11 And InStr(v(10), "(420.00 baseline + 49.00 counted reports) / (100 + 14 traits)") = 1 And InStr(v(10), "differs") = 0, "Export calculation wrong: " & v(10): found = found + 1
+    Case "RSCA if open groups complete": Check v(7) = 121 And v(8) = 497 And v(9) = 4.11, "Export projection wrong": found = found + 1
+   End Select
+  End If
+ Next
+ Check found = 6, "Export rows missing: " & found
+ path = CurrentProject.Path & "\rs-history-" & Format$(Now, "hhnnss") & ".xlsx"
+ Check RSExportHistory(sid, path) = rows.Count, "Export row count wrong"
+ Set x = DBEngine.OpenDatabase(path, False, True, "Excel 12.0 Xml;HDR=YES;IMEX=1;")
+ For Each t In x.TableDefs
+  If Len(sheet) = 0 And Right$(Replace(t.Name, "'", ""), 1) = "$" Then sheet = Replace(t.Name, "'", "")
+ Next
+ Set xr = x.OpenRecordset("SELECT * FROM [" & sheet & "]", dbOpenSnapshot)
+ Check xr.Fields(1).Name = "Entry" And xr.Fields(6).Name = "ITA" And xr.Fields(9).Name = "RSCA", "Workbook headings wrong"
+ found = 0
+ Do While Not xr.EOF
+  readRows = readRows + 1
+  If Nz(xr.Fields(1).Value, "") = "RSCA calculation" And Nz(xr.Fields(0).Value, "") = "E6" Then
+   If Val(Nz(xr.Fields(9).Value, 0)) = 4.11 And Val(Nz(xr.Fields(7).Value, 0)) = 114 Then found = found + 1
+  End If
+  xr.MoveNext
+ Loop
+ xr.Close: x.Close
+ Check readRows = rows.Count And found = 1, "Workbook rows differ: " & readRows & " of " & rows.Count
+ Check RejectExport(sid, path), "Export replaced an existing workbook"
+ Kill path
+ Check RejectExport(sid, Left$(path, Len(path) - 5) & ".csv"), "Export wrote a non-workbook file"
  'The editor shows the same trail as a list and opens the selected group.
  DoCmd.OpenForm "frmUXSeniorEditor", , , , , , CStr(sid)
  RSSelectSeniorPage 3: Check RSViewTableHistory(), "RSCA history view failed"
@@ -96,6 +149,7 @@ Public Function TestRSCompletion() As String
   Check !lstBaselines.Visible And !cboHistoryGrade = "E6" And !lstBaselines.ListCount = 5, "RSCA history list did not show the trail"
   Check !lstBaselines.Column(2, 1) = "BOL baseline (entered)" And !lstBaselines.Column(2, 2) = "Group completed: First" And !lstBaselines.Column(4, 2) = "7" And !lstBaselines.Column(6, 4) = "4.11", "RSCA history rows wrong"
   Check InStr(!uxRSCATable.Form!srcE6.Caption, "+ 3 groups") > 0, "Paygrade table source column missing"
+  Check !cmdExportRSHistory.Visible And !cmdExportRSHistory.OnClick = "=RSExportHistoryUI()", "RSCA history export button missing"
   !lstBaselines = CStr(h)
  End With
  Check RSHistoryOpenGroup() And CurrentProject.AllForms("frmUXComparison").IsLoaded And Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded, "Open selected group failed"

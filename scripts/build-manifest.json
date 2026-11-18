@@ -48,6 +48,7 @@
     "src/modRSCompletion.bas",
     "src/modRSDirectory.bas",
     "src/modRSDirectoryUI.bas",
+    "src/modRSHistoryExport.bas",
     "src/modRUADImport.bas",
     "src/modRUADProfiles.bas",
     "src/modRecovery.bas",

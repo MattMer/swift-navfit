@@ -50,6 +50,26 @@ Public Function UXGroupCalculationText(ByVal groupID As Long, Optional ByVal loa
     baseline.Close
 
 End Function
+' "Current RSCA 4.20 | PSG RSCA 4.19 (-0.01)": the senior's RSCA before this group,
+' the RSCA after it, and the change the group makes.
+Public Function UXRSCADeltaText(ByVal psg As Object) As String
+    Dim text As String
+    text = "Current RSCA: " & IIf(IsNull(psg("Current")), "Unavailable", Format$(Nz(psg("Current"), 0), "0.00")) & " | PSG RSCA: "
+    If IsNull(psg("Value")) Then
+        text = text & "Unavailable"
+    Else
+        text = text & Format$(psg("Value"), "0.00")
+        If Not IsNull(psg("Current")) Then text = text & " (" & UXRSCADelta(psg("Value") - psg("Current")) & ")"
+        If psg("Estimated") Then text = text & " (estimate)"
+    End If
+    UXRSCADeltaText = text
+End Function
+' Signed to two places; a change that rounds to zero shows as 0.00.
+Public Function UXRSCADelta(ByVal delta As Double) As String
+    UXRSCADelta = Format$(delta, "0.00")
+    If UXRSCADelta = "-0.00" Then UXRSCADelta = "0.00"
+    If delta > 0 And UXRSCADelta <> "0.00" Then UXRSCADelta = "+" & UXRSCADelta
+End Function
 Public Function UXEditorCalculationDetails() As Boolean
  UXEditorCalculationDetails = UXToolsChoose("Calculations")
 End Function

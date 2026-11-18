@@ -238,7 +238,7 @@ End Function
 Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.Recordset = Nothing) As Object
     Dim baselineID As Long, result As Object, r As DAO.Recordset, members As DAO.Recordset, senior As Object, values As Object, key As Variant, count As Long, total As Double, previousCount As Long, previousSum As Double, memberCount As Long
     On Error GoTo AccountingUnavailable
-    Set result = CreateObject("Scripting.Dictionary"): result.Add "Value", Null: result.Add "Reason", "Choose a reporting senior and historical baseline.": result.Add "Estimated", False: result.Add "Partial", False
+    Set result = CreateObject("Scripting.Dictionary"): result.Add "Value", Null: result.Add "Reason", "Choose a reporting senior and historical baseline.": result.Add "Estimated", False: result.Add "Partial", False: result.Add "Current", Null
     baselineID = Nz(DLookup("BaselineID", "GroupRSCABaseline", "GroupID=" & groupID), 0)
     baselineID = RSCalculationBaseline(groupID, baselineID)
     Set r = CurrentDb.OpenRecordset("SELECT b.*,g.ExcludesGroup,g.SeniorID AS SelectedSeniorID FROM GroupRSCABaseline AS g, RSCABaseline AS b WHERE b.BaselineID=" & baselineID & " AND g.GroupID=" & groupID, dbOpenSnapshot)
@@ -260,6 +260,8 @@ Public Function RSGroupPSG(ByVal groupID As Long, Optional ByVal loaded As DAO.R
     r.Close
     RSExcludePostedGroup groupID, baselineID, previousSum, previousCount
     result.Add "HistoricalSum", previousSum: result.Add "HistoricalCount", previousCount
+    'The senior's RSCA before this group, so the group's effect shows as a delta.
+    If previousCount > 0 Then result("Current") = previousSum / previousCount
     If loaded Is Nothing Then Set members = RSGroupRows(groupID) Else Set members = loaded.Clone
     If Not (members.BOF And members.EOF) Then members.MoveFirst
     Do While Not members.EOF

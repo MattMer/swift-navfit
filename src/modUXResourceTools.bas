@@ -33,11 +33,11 @@ Public Function UXGroupSeniorCaption(ByVal id As Long, Optional ByVal preparedPS
  End If
  If title = "" Then title = "Not selected"
  If preparedPSG Is Nothing Then Set psg = RSGroupPSG(id) Else Set psg = preparedPSG
- UXGroupSeniorCaption = "Reporting senior: " & title & " | PSG RSCA: "
+ UXGroupSeniorCaption = "Reporting senior: " & title & " | " & UXRSCADeltaText(psg)
  If IsNull(psg("Value")) Then
-  UXGroupSeniorCaption = UXGroupSeniorCaption & "Unavailable: " & psg("Reason")
+  UXGroupSeniorCaption = UXGroupSeniorCaption & ": " & psg("Reason")
  Else
-  UXGroupSeniorCaption = UXGroupSeniorCaption & Format$(psg("Value"), "0.00") & IIf(psg("Estimated"), " (estimate)", "") & IIf(psg("Partial"), " (partial traits)", "")
+  UXGroupSeniorCaption = UXGroupSeniorCaption & IIf(psg("Partial"), " (partial traits)", "")
  End If
  'Promotion recommendation spread beside the PSG RSCA (saved values, like the PSG).
  UXGroupSeniorCaption = UXGroupSeniorCaption & " | " & GroupPromotionSpread(id)

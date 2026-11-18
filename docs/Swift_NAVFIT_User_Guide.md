@@ -502,6 +502,7 @@ Members without a rank/rate are not scheduled. Enter it in the member directory.
 - The address, phone and e-mail print on the summary letter. The e-mail is not on the report forms.
 - If the senior's directory profile changes (after a promotion, for example), the **Reporting senior details** page says so. Choose **Update from directory**, then save. **Change member** links a different member; **Unlink** removes the link and keeps the typed values.
 - Changing a senior record does not change saved reports. To copy the details into a group's reports, use **Apply reporting senior details to reports** (10.4).
+- **Export RSCA history** saves an Excel workbook of the senior's record, to take to the next command. For each paygrade it lists the BOL baseline and its date, every report counted through a completed summary group (name, rank/rate and ITA), reports in groups not yet completed (listed but not counted), and the RSCA calculation at the bottom. It holds names and ITAs, so store it as personnel information.
 - **View RSCA history** shows, for one paygrade, the BOL value you entered and each summary group completed since. Entries before the latest BOL value are marked **Earlier**. Select a group and choose **Open selected group** to go to it.
 - An RSCA from BOL is rounded, so the total Swift NAVFIT works out from it is an estimate. Keep the **As of** date so others know how current it is.
 
@@ -845,9 +846,10 @@ A color is a reminder, not advice. Marks still need to be accurate.
 | --- | --- |
 | ITA | One report's graded traits. |
 | Group average | All saved, graded traits in the group. |
+| Current RSCA | The reporting senior's past traits for this paygrade, before this group. |
 | PSG RSCA | The reporting senior's past traits for this paygrade plus this group's. |
 
-They use different counts, so they can differ.
+They use different counts, so they can differ. The group shows the current RSCA beside the PSG RSCA with the change this group makes, for example **Current RSCA: 4.20 | PSG RSCA: 4.19 (-0.01)**.
 
 Next to the PSG RSCA, the group shows promotion recommendations against the limits in BUPERSINST 1610.10H table 1-2, for example **EP 1 of 2 | EP+MP 3 of 5 (8 observed)**. **Over limit** means the group is past one of them. O-1 and O-2 groups, other than LDO, show that none are allowed. Only saved marks count.
 
@@ -1289,7 +1291,7 @@ Note the version, what you did, the report or group, and the full message. Use *
 | NOB | Not observed. Left out of averages. |
 | Prior evaluation | A member's earlier report, entered for comparison. |
 | PRD | Projected rotation date: when a member is expected to leave. |
-| PSG RSCA | The reporting senior's projected RSCA once this summary group is added. |
+| PSG RSCA | The reporting senior's projected RSCA once this summary group is added. The **Current RSCA** is the same figure before the group. |
 | Recovery checkpoint | Unsaved work kept aside so it is not lost. Not a saved revision. |
 | Reporting senior | The officer who signs the report. |
 | Revision | A saved version of a report. |

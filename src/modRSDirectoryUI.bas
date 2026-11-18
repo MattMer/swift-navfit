@@ -378,9 +378,9 @@ Public Function RSShowGroupCalculation() As Boolean
     Set result = RSGroupPSG(CLng(Forms!frmUXGroupRSCA!txtGroupID), loaded)
     With Forms!frmUXGroupRSCA
         If IsNull(result("Value")) Then
-            !lblCalculation.Caption = "PSG RSCA: unavailable"
+            !lblCalculation.Caption = UXRSCADeltaText(result)
         Else
-            !lblCalculation.Caption = "PSG RSCA (saved group): " & Format$(result("Value"), "0.00") & IIf(result("Estimated"), " - estimate", "")
+            !lblCalculation.Caption = UXRSCADeltaText(result) & " - saved group"
         End If
         !txtCalculationContext = UXGroupCalculationText(CLng(!txtGroupID), loaded)
         !lblStatus.Caption = result("Reason") & IIf(result("Partial"), ". Some traits are blank/NOB; only graded numeric traits are included.", "") & IIf(result("Estimated"), ". Enter the exact historical trait sum to calculate from exact totals.", "")
