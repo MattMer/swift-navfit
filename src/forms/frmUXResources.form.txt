@@ -953,6 +953,65 @@ Begin Form
                     WebImagePaddingRight =1
                     WebImagePaddingBottom =1
                 End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =8450
+                    Width =10112
+                    Height =350
+                    FontSize =11
+                    ForeColor =4205854
+                    Name ="uxGroupReference"
+                    Caption ="Reference"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =8450
+                    LayoutCachedWidth =12978
+                    LayoutCachedHeight =8800
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =2866
+                    Top =8850
+                    Width =9954
+                    Height =550
+                    FontSize =10
+                    TabIndex =17
+                    ForeColor =4205854
+                    Name ="cmdEvalman"
+                    Caption ="EVALMAN (BUPERSINST 1610.10H)"
+                    OnClick ="=UXOpenEvalman()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2866
+                    LayoutCachedTop =8850
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =9400
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
             End
         End
     End

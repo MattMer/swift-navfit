@@ -27,6 +27,7 @@ Invoke-SuiteCase 'narratives' {
     }
 }
 Invoke-HarnessCase 'narrative-layout' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeLayout()'
+Invoke-HarnessCase 'evalman' $BuildPath 'EvalmanHarness' 'TestEvalman()'
 Invoke-HarnessCase 'narrative-line-fit' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeLineFit()'
 Invoke-SuiteCase 'navfit-line-fit' {
     # Reference measurer: NAVFIT98A 2.2.0.332 prints each narrative with

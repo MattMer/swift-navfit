@@ -1,0 +1,523 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    PopUp = NotDefault
+    RecordSelectors = NotDefault
+    AutoCenter = NotDefault
+    NavigationButtons = NotDefault
+    CloseButton = NotDefault
+    DividingLines = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    Width =15000
+    ItemSuffix =6
+    Left =5235
+    Top =1530
+    Right =24960
+    Bottom =14775
+    Caption ="EVALMAN"
+    OnActivate ="=UXVisualEvent(\"frmUXEvalman\",\"\")"
+    OnLoad ="=UXLoadEvalman()"
+    FilterOnLoad =0
+    AllowLayoutView =0
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Label
+            BackStyle =0
+            TextFontFamily =0
+            FontSize =11
+            BorderColor =8355711
+            ForeColor =6710886
+            FontName ="Segoe UI"
+            GridlineColor =10921638
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =0
+            BorderTint =50.0
+            ForeThemeColorIndex =0
+            ForeTint =60.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin CommandButton
+            TextFontFamily =0
+            FontSize =11
+            FontWeight =400
+            ForeColor =4210752
+            FontName ="Segoe UI"
+            GridlineColor =10921638
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+            UseTheme =1
+            Shape =1
+            Gradient =12
+            BackColor =14790982
+            BackThemeColorIndex =4
+            BackTint =60.0
+            BorderLineStyle =0
+            BorderColor =14790982
+            BorderThemeColorIndex =4
+            BorderTint =60.0
+            ThemeFontIndex =1
+            HoverColor =15453059
+            HoverThemeColorIndex =4
+            HoverTint =40.0
+            PressedColor =6440976
+            PressedThemeColorIndex =4
+            PressedShade =75.0
+            HoverForeColor =4210752
+            HoverForeThemeColorIndex =0
+            HoverForeTint =75.0
+            PressedForeColor =4210752
+            PressedForeThemeColorIndex =0
+            PressedForeTint =75.0
+        End
+        Begin TextBox
+            AddColon = NotDefault
+            FELineBreak = NotDefault
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            BorderColor =10921638
+            ForeColor =4210752
+            FontName ="Segoe UI"
+            AsianLineBreak =1
+            GridlineColor =10921638
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ThemeFontIndex =1
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin ListBox
+            TextFontFamily =0
+            BorderLineStyle =0
+            LabelX =-1800
+            FontSize =11
+            ForeColor =4210752
+            BorderColor =10921638
+            FontName ="Segoe UI"
+            GridlineColor =10921638
+            AllowValueListEdits =1
+            InheritValueList =1
+            ThemeFontIndex =1
+            BackThemeColorIndex =1
+            BorderThemeColorIndex =1
+            BorderShade =65.0
+            ForeThemeColorIndex =0
+            ForeTint =75.0
+            GridlineThemeColorIndex =1
+            GridlineShade =65.0
+        End
+        Begin Section
+            Height =9700
+            BackColor =16513012
+            Name ="Detail"
+            Begin
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =250
+                    Width =14200
+                    Height =600
+                    FontSize =22
+                    ForeColor =4205854
+                    Name ="lblHeading"
+                    Caption ="EVALMAN"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =250
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =850
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =400
+                    Top =880
+                    Width =14200
+                    Height =300
+                    FontSize =10
+                    ForeColor =4205854
+                    Name ="lblSource"
+                    Caption ="BUPERSINST 1610.10H"
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =880
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =1180
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin TextBox
+                    ControlTipText ="Type a word, a block number such as block 26, or a phrase in quotes, then press Enter or Find."
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =400
+                    Top =1600
+                    Width =5600
+                    Height =400
+                    FontSize =10
+                    TabIndex =0
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtSearch"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =6000
+                    LayoutCachedHeight =2000
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =1270
+                            Width =5600
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lbltxtSearch"
+                            Caption ="Search: words or a \"phrase\" in quotes"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =1270
+                            LayoutCachedWidth =6000
+                            LayoutCachedHeight =1570
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =6150
+                    Top =1600
+                    Width =1300
+                    Height =400
+                    FontSize =10
+                    TabIndex =1
+                    ForeColor =4205854
+                    Name ="cmdSearch"
+                    Caption ="Find"
+                    OnClick ="=UXEvalmanSearch()"
+                    Default = NotDefault
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =6150
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =7450
+                    LayoutCachedHeight =2000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =7600
+                    Top =1600
+                    Width =1700
+                    Height =400
+                    FontSize =10
+                    TabIndex =2
+                    ForeColor =4205854
+                    Name ="cmdContents"
+                    Caption ="Contents"
+                    OnClick ="=UXEvalmanShowContents()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =7600
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =9300
+                    LayoutCachedHeight =2000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9450
+                    Top =1600
+                    Width =1900
+                    Height =400
+                    FontSize =10
+                    TabIndex =3
+                    ForeColor =4205854
+                    Name ="cmdPrev"
+                    Caption ="Previous match"
+                    OnClick ="=UXEvalmanPrevious()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9450
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =11350
+                    LayoutCachedHeight =2000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =11500
+                    Top =1600
+                    Width =1700
+                    Height =400
+                    FontSize =10
+                    TabIndex =4
+                    ForeColor =4205854
+                    Name ="cmdNext"
+                    Caption ="Next match"
+                    OnClick ="=UXEvalmanNext()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =11500
+                    LayoutCachedTop =1600
+                    LayoutCachedWidth =13200
+                    LayoutCachedHeight =2000
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin Label
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =13300
+                    Top =1650
+                    Width =1300
+                    Height =300
+                    FontSize =9
+                    ForeColor =4205854
+                    Name ="lblMatch"
+                    Caption =""
+                    FontName ="Segoe UI"
+                    LayoutCachedLeft =13300
+                    LayoutCachedTop =1650
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =1950
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                End
+                Begin ListBox
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    ColumnCount =2
+                    Left =400
+                    Top =2550
+                    Width =4800
+                    Height =6150
+                    FontSize =10
+                    TabIndex =5
+                    ForeColor =4205854
+                    BorderColor =13285543
+                    Name ="lstNav"
+                    RowSourceType ="Value List"
+                    ColumnWidths ="0;4500"
+                    AfterUpdate ="=UXEvalmanSelect()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =400
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =5200
+                    LayoutCachedHeight =8700
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =400
+                            Top =2220
+                            Width =4800
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblNav"
+                            Caption ="Contents"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =400
+                            LayoutCachedTop =2220
+                            LayoutCachedWidth =5200
+                            LayoutCachedHeight =2520
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    ScrollBars =2
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =5400
+                    Top =2550
+                    Width =9200
+                    Height =6150
+                    FontSize =10
+                    TabIndex =6
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="txtReader"
+                    FontName ="Consolas"
+
+                    LayoutCachedLeft =5400
+                    LayoutCachedTop =2550
+                    LayoutCachedWidth =14600
+                    LayoutCachedHeight =8700
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =5400
+                            Top =2220
+                            Width =9200
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="lblReader"
+                            Caption ="Choose a section"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =5400
+                            LayoutCachedTop =2220
+                            LayoutCachedWidth =14600
+                            LayoutCachedHeight =2520
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =5400
+                    Top =8950
+                    Width =2600
+                    Height =450
+                    FontSize =10
+                    TabIndex =7
+                    ForeColor =4205854
+                    Name ="cmdClose"
+                    Caption ="Close"
+                    OnClick ="=UXCloseScreen(\"frmUXEvalman\")"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =5400
+                    LayoutCachedTop =8950
+                    LayoutCachedWidth =8000
+                    LayoutCachedHeight =9400
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+            End
+        End
+    End
+End

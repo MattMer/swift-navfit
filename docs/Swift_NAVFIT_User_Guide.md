@@ -727,6 +727,8 @@ Text past the PDF's room prints on an added **additional text** page. Hover over
 
 **NavyWriter examples.** **Resources > NavyWriter examples catalog** opens examples from an outside site when you choose them.
 
+**EVALMAN.** **Resources > EVALMAN (BUPERSINST 1610.10H)** holds the whole instruction as text, through CH-4 (22 Oct 2026), offline: the change transmittals, the basic instruction, both enclosures, all 19 chapters with every block, and the exhibits and tables. Choose a section under **Contents**, or type words or a "phrase in quotes" and choose **Find**. Results list each section with its number of matches; **Next match** and **Previous match** step through them, highlighted. The text was taken from the official PDF and checked against it; the PDF remains the authoritative copy.
+
 **Spelling.** Choose **Check spelling**, or press **F7** in any narrative block. It uses Microsoft Office's spelling checker on this computer and sends nothing anywhere. Words in all capitals are checked too. If Office's proofing tools are not installed, Swift NAVFIT says so.
 
 **Add the Navy word list (once per computer).** Office flags many Navy terms such as ITCS, LCDR, RSCA and watchbill. Swift NAVFIT includes about 800 of them:
