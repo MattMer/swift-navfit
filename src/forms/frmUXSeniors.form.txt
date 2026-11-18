@@ -127,7 +127,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =8000
+            Height =8200
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -430,30 +430,11 @@ Begin Form
                     ForeThemeColorIndex =-1
                 End
                 Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2866
-                    Top =1800
-                    Width =9954
-                    Height =600
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblInfo"
-                    Caption ="Senior details and RSCA baselines by paygrade."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =1800
-                    LayoutCachedWidth =12820
-                    LayoutCachedHeight =2400
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin Label
                     FontUnderline = NotDefault
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -464,9 +445,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",0)"
                     Tag ="SORT:lstSeniors:0"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -475,7 +456,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -486,9 +467,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",1)"
                     Tag ="SORT:lstSeniors:1"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -497,7 +478,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -508,9 +489,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",2)"
                     Tag ="SORT:lstSeniors:2"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -519,7 +500,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -530,9 +511,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",3)"
                     Tag ="SORT:lstSeniors:3"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -541,7 +522,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -552,9 +533,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",4)"
                     Tag ="SORT:lstSeniors:4"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -563,7 +544,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -574,9 +555,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",5)"
                     Tag ="SORT:lstSeniors:5"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -585,7 +566,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2866
-                    Top =2400
+                    Top =1860
                     Width =800
                     Height =300
                     FontSize =9
@@ -596,9 +577,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXSeniors\",\"lstSeniors\",6)"
                     Tag ="SORT:lstSeniors:6"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2400
+                    LayoutCachedTop =1860
                     LayoutCachedWidth =3666
-                    LayoutCachedHeight =2700
+                    LayoutCachedHeight =2160
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -608,7 +589,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =7
                     Left =2866
-                    Top =2700
+                    Top =2160
                     Width =9954
                     Height =3200
                     FontSize =10
@@ -622,9 +603,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =2160
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =5900
+                    LayoutCachedHeight =5360
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -633,7 +614,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2866
-                            Top =2700
+                            Top =2160
                             Width =15
                             Height =15
                             FontSize =1
@@ -642,9 +623,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Reporting seniors"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =2700
+                            LayoutCachedTop =2160
                             LayoutCachedWidth =2881
-                            LayoutCachedHeight =2715
+                            LayoutCachedHeight =2175
                         End
                     End
                 End
@@ -652,7 +633,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =6300
+                    Top =5760
                     Width =4740
                     Height =550
                     FontSize =10
@@ -664,9 +645,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =6300
+                    LayoutCachedTop =5760
                     LayoutCachedWidth =7606
-                    LayoutCachedHeight =6850
+                    LayoutCachedHeight =6310
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -691,7 +672,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8080
-                    Top =6300
+                    Top =5760
                     Width =4740
                     Height =550
                     FontSize =10
@@ -703,9 +684,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8080
-                    LayoutCachedTop =6300
+                    LayoutCachedTop =5760
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =6850
+                    LayoutCachedHeight =6310
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -730,7 +711,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =7150
+                    Top =6610
                     Width =9954
                     Height =500
                     FontSize =10
@@ -738,9 +719,9 @@ Begin Form
                     Name ="lblStatus"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =7150
+                    LayoutCachedTop =6610
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =7650
+                    LayoutCachedHeight =7110
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

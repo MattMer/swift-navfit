@@ -160,7 +160,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =23290
+            Height =23250
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -200,27 +200,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    Visible = NotDefault
-                    OverlapFlags =93
-                    TextFontFamily =34
-                    Left =2866
-                    Top =950
-                    Width =9954
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblInfo"
-                    Caption ="Select reports, then choose an action."
-                    FontName ="Segoe UI"
-                    Tag ="WBX:Hidden"
-                    LayoutCachedLeft =2866
-                    LayoutCachedTop =950
-                    LayoutCachedWidth =12820
-                    LayoutCachedHeight =1600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin ListBox
                     ColumnHeads = NotDefault
                     OverlapFlags =247
@@ -229,7 +208,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =4
                     Left =2850
-                    Top =3000
+                    Top =2960
                     Width =10450
                     Height =2900
                     FontSize =10
@@ -245,9 +224,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3000
+                    LayoutCachedTop =2960
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =5900
+                    LayoutCachedHeight =5860
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -256,7 +235,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2850
-                            Top =3000
+                            Top =2960
                             Width =15
                             Height =15
                             FontSize =1
@@ -265,9 +244,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Reports"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =3000
+                            LayoutCachedTop =2960
                             LayoutCachedWidth =2865
-                            LayoutCachedHeight =3015
+                            LayoutCachedHeight =2975
                         End
                     End
                 End
@@ -276,7 +255,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =4288
-                    Top =4150
+                    Top =4110
                     Width =4898
                     Height =450
                     FontSize =10
@@ -288,9 +267,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =4288
-                    LayoutCachedTop =4150
+                    LayoutCachedTop =4110
                     LayoutCachedWidth =9186
-                    LayoutCachedHeight =4600
+                    LayoutCachedHeight =4560
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -301,7 +280,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2866
-                            Top =4100
+                            Top =4060
                             Width =1422
                             Height =500
                             FontSize =10
@@ -311,9 +290,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =4100
+                            LayoutCachedTop =4060
                             LayoutCachedWidth =4288
-                            LayoutCachedHeight =4600
+                            LayoutCachedHeight =4560
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -326,7 +305,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =9344
-                    Top =4150
+                    Top =4110
                     Width =1501
                     Height =450
                     FontSize =10
@@ -340,9 +319,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =9344
-                    LayoutCachedTop =4150
+                    LayoutCachedTop =4110
                     LayoutCachedWidth =10845
-                    LayoutCachedHeight =4600
+                    LayoutCachedHeight =4560
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -351,7 +330,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =9344
-                            Top =4150
+                            Top =4110
                             Width =15
                             Height =15
                             FontSize =1
@@ -360,9 +339,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Report type"
                             LayoutCachedLeft =9344
-                            LayoutCachedTop =4150
+                            LayoutCachedTop =4110
                             LayoutCachedWidth =9359
-                            LayoutCachedHeight =4165
+                            LayoutCachedHeight =4125
                         End
                     End
                 End
@@ -373,7 +352,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =11003
-                    Top =4150
+                    Top =4110
                     Width =1817
                     Height =450
                     FontSize =10
@@ -387,9 +366,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =11003
-                    LayoutCachedTop =4150
+                    LayoutCachedTop =4110
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =4600
+                    LayoutCachedHeight =4560
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -398,7 +377,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =11003
-                            Top =4150
+                            Top =4110
                             Width =15
                             Height =15
                             FontSize =1
@@ -407,9 +386,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Paygrade"
                             LayoutCachedLeft =11003
-                            LayoutCachedTop =4150
+                            LayoutCachedTop =4110
                             LayoutCachedWidth =11018
-                            LayoutCachedHeight =4165
+                            LayoutCachedHeight =4125
                         End
                     End
                 End
@@ -420,7 +399,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =4288
-                    Top =4750
+                    Top =4710
                     Width =8374
                     Height =450
                     FontSize =10
@@ -434,9 +413,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =4288
-                    LayoutCachedTop =4750
+                    LayoutCachedTop =4710
                     LayoutCachedWidth =12662
-                    LayoutCachedHeight =5200
+                    LayoutCachedHeight =5160
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -447,7 +426,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2866
-                            Top =4800
+                            Top =4760
                             Width =1422
                             Height =350
                             FontSize =10
@@ -457,9 +436,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =4800
+                            LayoutCachedTop =4760
                             LayoutCachedWidth =4288
-                            LayoutCachedHeight =5150
+                            LayoutCachedHeight =5110
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -473,7 +452,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =6768
-                    Top =18840
+                    Top =18800
                     Width =3160
                     Height =350
                     FontSize =10
@@ -487,9 +466,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =6768
-                    LayoutCachedTop =18840
+                    LayoutCachedTop =18800
                     LayoutCachedWidth =9928
-                    LayoutCachedHeight =19190
+                    LayoutCachedHeight =19150
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -500,7 +479,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2866
-                            Top =5400
+                            Top =5360
                             Width =1422
                             Height =350
                             FontSize =10
@@ -510,9 +489,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =5400
+                            LayoutCachedTop =5360
                             LayoutCachedWidth =4288
-                            LayoutCachedHeight =5750
+                            LayoutCachedHeight =5710
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -526,7 +505,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =2880
-                    Top =19680
+                    Top =19640
                     Width =3160
                     Height =350
                     FontSize =10
@@ -540,9 +519,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =19680
+                    LayoutCachedTop =19640
                     LayoutCachedWidth =6040
-                    LayoutCachedHeight =20030
+                    LayoutCachedHeight =19990
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -553,7 +532,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2880
-                            Top =12000
+                            Top =11960
                             Width =1422
                             Height =350
                             FontSize =10
@@ -563,9 +542,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =12000
+                            LayoutCachedTop =11960
                             LayoutCachedWidth =4302
-                            LayoutCachedHeight =12350
+                            LayoutCachedHeight =12310
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -579,7 +558,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =7920
-                    Top =12120
+                    Top =12080
                     Width =3160
                     Height =350
                     FontSize =10
@@ -593,9 +572,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =7920
-                    LayoutCachedTop =12120
+                    LayoutCachedTop =12080
                     LayoutCachedWidth =11080
-                    LayoutCachedHeight =12470
+                    LayoutCachedHeight =12430
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -606,7 +585,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =10512
-                            Top =10680
+                            Top =10640
                             Width =1422
                             Height =350
                             FontSize =10
@@ -616,9 +595,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =10512
-                            LayoutCachedTop =10680
+                            LayoutCachedTop =10640
                             LayoutCachedWidth =11934
-                            LayoutCachedHeight =11030
+                            LayoutCachedHeight =10990
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -632,7 +611,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =6768
-                    Top =18360
+                    Top =18320
                     Width =3160
                     Height =350
                     FontSize =10
@@ -646,9 +625,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =6768
-                    LayoutCachedTop =18360
+                    LayoutCachedTop =18320
                     LayoutCachedWidth =9928
-                    LayoutCachedHeight =18710
+                    LayoutCachedHeight =18670
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -659,7 +638,7 @@ Begin Form
                             OverlapFlags =87
                             TextFontFamily =34
                             Left =11088
-                            Top =12120
+                            Top =12080
                             Width =1422
                             Height =350
                             FontSize =10
@@ -669,9 +648,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =11088
-                            LayoutCachedTop =12120
+                            LayoutCachedTop =12080
                             LayoutCachedWidth =12510
-                            LayoutCachedHeight =12470
+                            LayoutCachedHeight =12430
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -685,7 +664,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =9242
-                    Top =19320
+                    Top =19280
                     Width =3160
                     Height =350
                     FontSize =10
@@ -699,9 +678,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =9242
-                    LayoutCachedTop =19320
+                    LayoutCachedTop =19280
                     LayoutCachedWidth =12402
-                    LayoutCachedHeight =19670
+                    LayoutCachedHeight =19630
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -712,7 +691,7 @@ Begin Form
                             OverlapFlags =215
                             TextFontFamily =34
                             Left =2880
-                            Top =12240
+                            Top =12200
                             Width =1422
                             Height =350
                             FontSize =10
@@ -722,9 +701,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =12240
+                            LayoutCachedTop =12200
                             LayoutCachedWidth =4302
-                            LayoutCachedHeight =12590
+                            LayoutCachedHeight =12550
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -738,7 +717,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =4320
-                    Top =13320
+                    Top =13280
                     Width =8374
                     Height =450
                     FontSize =10
@@ -752,9 +731,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =4320
-                    LayoutCachedTop =13320
+                    LayoutCachedTop =13280
                     LayoutCachedWidth =12694
-                    LayoutCachedHeight =13770
+                    LayoutCachedHeight =13730
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -765,7 +744,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =2880
-                            Top =13440
+                            Top =13400
                             Width =1422
                             Height =350
                             FontSize =10
@@ -775,9 +754,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =13440
+                            LayoutCachedTop =13400
                             LayoutCachedWidth =4302
-                            LayoutCachedHeight =13790
+                            LayoutCachedHeight =13750
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -791,7 +770,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =6330
-                    Top =12600
+                    Top =12560
                     Width =3160
                     Height =350
                     FontSize =10
@@ -805,9 +784,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =6330
-                    LayoutCachedTop =12600
+                    LayoutCachedTop =12560
                     LayoutCachedWidth =9490
-                    LayoutCachedHeight =12950
+                    LayoutCachedHeight =12910
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -818,7 +797,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2880
-                            Top =14740
+                            Top =14700
                             Width =1422
                             Height =350
                             FontSize =10
@@ -828,9 +807,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =14740
+                            LayoutCachedTop =14700
                             LayoutCachedWidth =4302
-                            LayoutCachedHeight =15090
+                            LayoutCachedHeight =15050
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -845,7 +824,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =4320
-                    Top =15360
+                    Top =15320
                     Width =3160
                     Height =350
                     FontSize =10
@@ -859,9 +838,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =4320
-                    LayoutCachedTop =15360
+                    LayoutCachedTop =15320
                     LayoutCachedWidth =7480
-                    LayoutCachedHeight =15710
+                    LayoutCachedHeight =15670
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -872,7 +851,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =2880
-                            Top =15340
+                            Top =15300
                             Width =1264
                             Height =350
                             FontSize =10
@@ -882,9 +861,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =15340
+                            LayoutCachedTop =15300
                             LayoutCachedWidth =4144
-                            LayoutCachedHeight =15690
+                            LayoutCachedHeight =15650
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -898,7 +877,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2880
-                    Top =12600
+                    Top =12560
                     Width =3160
                     Height =350
                     FontSize =10
@@ -913,9 +892,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =12600
+                    LayoutCachedTop =12560
                     LayoutCachedWidth =6040
-                    LayoutCachedHeight =12950
+                    LayoutCachedHeight =12910
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -925,7 +904,7 @@ Begin Form
                             Visible = NotDefault
                             OverlapFlags =93
                             Left =2880
-                            Top =12600
+                            Top =12560
                             Width =15
                             Height =15
                             FontSize =1
@@ -934,9 +913,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Default scope"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =12600
+                            LayoutCachedTop =12560
                             LayoutCachedWidth =2895
-                            LayoutCachedHeight =12615
+                            LayoutCachedHeight =12575
                         End
                     End
                 End
@@ -947,7 +926,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =4320
-                    Top =15840
+                    Top =15800
                     Width =3160
                     Height =350
                     FontSize =10
@@ -959,9 +938,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =4320
-                    LayoutCachedTop =15840
+                    LayoutCachedTop =15800
                     LayoutCachedWidth =7480
-                    LayoutCachedHeight =16190
+                    LayoutCachedHeight =16150
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -972,7 +951,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =2880
-                            Top =15940
+                            Top =15900
                             Width =1264
                             Height =350
                             FontSize =10
@@ -982,9 +961,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =15940
+                            LayoutCachedTop =15900
                             LayoutCachedWidth =4144
-                            LayoutCachedHeight =16290
+                            LayoutCachedHeight =16250
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -994,7 +973,7 @@ Begin Form
                     Visible = NotDefault
                     OverlapFlags =255
                     Left =9242
-                    Top =19320
+                    Top =19280
                     Width =3160
                     Height =350
                     TabIndex =48
@@ -1003,16 +982,16 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =9242
-                    LayoutCachedTop =19320
+                    LayoutCachedTop =19280
                     LayoutCachedWidth =12402
-                    LayoutCachedHeight =19670
+                    LayoutCachedHeight =19630
                     Begin
                         Begin Label
                             Visible = NotDefault
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =11965
-                            Top =15940
+                            Top =15900
                             Width =711
                             Height =350
                             FontSize =10
@@ -1022,9 +1001,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =11965
-                            LayoutCachedTop =15940
+                            LayoutCachedTop =15900
                             LayoutCachedWidth =12676
-                            LayoutCachedHeight =16290
+                            LayoutCachedHeight =16250
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -1036,7 +1015,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =4288
-                    Top =5350
+                    Top =5310
                     Width =8374
                     Height =550
                     FontSize =10
@@ -1048,9 +1027,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =4288
-                    LayoutCachedTop =5350
+                    LayoutCachedTop =5310
                     LayoutCachedWidth =12662
-                    LayoutCachedHeight =5900
+                    LayoutCachedHeight =5860
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -1061,7 +1040,7 @@ Begin Form
                             OverlapFlags =93
                             TextFontFamily =34
                             Left =2866
-                            Top =18080
+                            Top =18040
                             Width =1264
                             Height =650
                             FontSize =10
@@ -1071,9 +1050,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =18080
+                            LayoutCachedTop =18040
                             LayoutCachedWidth =4130
-                            LayoutCachedHeight =18730
+                            LayoutCachedHeight =18690
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -1084,7 +1063,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2866
-                    Top =18930
+                    Top =18890
                     Width =3160
                     Height =450
                     FontSize =10
@@ -1094,9 +1073,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="WBX:Hidden"
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =18930
+                    LayoutCachedTop =18890
                     LayoutCachedWidth =6026
-                    LayoutCachedHeight =19380
+                    LayoutCachedHeight =19340
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -1108,7 +1087,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =10080
-                    Top =18360
+                    Top =18320
                     Width =3160
                     Height =350
                     FontSize =10
@@ -1122,9 +1101,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =10080
-                    LayoutCachedTop =18360
+                    LayoutCachedTop =18320
                     LayoutCachedWidth =13240
-                    LayoutCachedHeight =18710
+                    LayoutCachedHeight =18670
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -1134,7 +1113,7 @@ Begin Form
                             Visible = NotDefault
                             OverlapFlags =93
                             Left =10080
-                            Top =18360
+                            Top =18320
                             Width =15
                             Height =15
                             FontSize =1
@@ -1143,9 +1122,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Reviewer"
                             LayoutCachedLeft =10080
-                            LayoutCachedTop =18360
+                            LayoutCachedTop =18320
                             LayoutCachedWidth =10095
-                            LayoutCachedHeight =18375
+                            LayoutCachedHeight =18335
                         End
                     End
                 End
@@ -1154,7 +1133,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6330
-                    Top =12960
+                    Top =12920
                     Width =3160
                     Height =350
                     FontSize =10
@@ -1167,9 +1146,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =6330
-                    LayoutCachedTop =12960
+                    LayoutCachedTop =12920
                     LayoutCachedWidth =9490
-                    LayoutCachedHeight =13310
+                    LayoutCachedHeight =13270
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1196,7 +1175,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9645
-                    Top =12960
+                    Top =12920
                     Width =3160
                     Height =350
                     FontSize =10
@@ -1209,9 +1188,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =9645
-                    LayoutCachedTop =12960
+                    LayoutCachedTop =12920
                     LayoutCachedWidth =12805
-                    LayoutCachedHeight =13310
+                    LayoutCachedHeight =13270
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1266,7 +1245,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2880
-                    Top =12960
+                    Top =12920
                     Width =3160
                     Height =350
                     FontSize =10
@@ -1278,9 +1257,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =12960
+                    LayoutCachedTop =12920
                     LayoutCachedWidth =6040
-                    LayoutCachedHeight =13310
+                    LayoutCachedHeight =13270
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -1290,7 +1269,7 @@ Begin Form
                             Visible = NotDefault
                             OverlapFlags =93
                             Left =2880
-                            Top =12960
+                            Top =12920
                             Width =15
                             Height =15
                             FontSize =1
@@ -1299,9 +1278,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Reviewer names"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =12960
+                            LayoutCachedTop =12920
                             LayoutCachedWidth =2895
-                            LayoutCachedHeight =12975
+                            LayoutCachedHeight =12935
                         End
                     End
                 End
@@ -1311,7 +1290,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =10450
-                    Top =19530
+                    Top =19490
                     Width =2212
                     Height =450
                     FontSize =10
@@ -1323,9 +1302,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =10450
-                    LayoutCachedTop =19530
+                    LayoutCachedTop =19490
                     LayoutCachedWidth =12662
-                    LayoutCachedHeight =19980
+                    LayoutCachedHeight =19940
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -1336,7 +1315,7 @@ Begin Form
                             OverlapFlags =247
                             TextFontFamily =34
                             Left =8633
-                            Top =19530
+                            Top =19490
                             Width =1580
                             Height =450
                             FontSize =10
@@ -1346,9 +1325,9 @@ Begin Form
                             FontName ="Segoe UI"
                             Tag ="WBX:Hidden"
                             LayoutCachedLeft =8633
-                            LayoutCachedTop =19530
+                            LayoutCachedTop =19490
                             LayoutCachedWidth =10213
-                            LayoutCachedHeight =19980
+                            LayoutCachedHeight =19940
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -1359,7 +1338,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =9480
+                    Top =9440
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1372,9 +1351,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =9480
+                    LayoutCachedTop =9440
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =9930
+                    LayoutCachedHeight =9890
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1401,7 +1380,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7920
-                    Top =10560
+                    Top =10520
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1414,9 +1393,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =7920
-                    LayoutCachedTop =10560
+                    LayoutCachedTop =10520
                     LayoutCachedWidth =10290
-                    LayoutCachedHeight =11010
+                    LayoutCachedHeight =10970
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1443,7 +1422,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8064
-                    Top =11160
+                    Top =11120
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1456,9 +1435,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =8064
-                    LayoutCachedTop =11160
+                    LayoutCachedTop =11120
                     LayoutCachedWidth =10434
-                    LayoutCachedHeight =11610
+                    LayoutCachedHeight =11570
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1485,7 +1464,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10515
-                    Top =20040
+                    Top =20000
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1498,9 +1477,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =10515
-                    LayoutCachedTop =20040
+                    LayoutCachedTop =20000
                     LayoutCachedWidth =12885
-                    LayoutCachedHeight =20490
+                    LayoutCachedHeight =20450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1526,7 +1505,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =20040
+                    Top =20000
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1539,9 +1518,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =20040
+                    LayoutCachedTop =20000
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =20490
+                    LayoutCachedHeight =20450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1567,7 +1546,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =10560
+                    Top =10520
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1580,9 +1559,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =10560
+                    LayoutCachedTop =10520
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =11010
+                    LayoutCachedHeight =10970
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1609,7 +1588,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8064
-                    Top =11640
+                    Top =11600
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1622,9 +1601,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =8064
-                    LayoutCachedTop =11640
+                    LayoutCachedTop =11600
                     LayoutCachedWidth =10434
-                    LayoutCachedHeight =12090
+                    LayoutCachedHeight =12050
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1651,7 +1630,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5472
-                    Top =10560
+                    Top =10520
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1664,9 +1643,9 @@ Begin Form
                     Tag ="WBX:History"
 
                     LayoutCachedLeft =5472
-                    LayoutCachedTop =10560
+                    LayoutCachedTop =10520
                     LayoutCachedWidth =7842
-                    LayoutCachedHeight =11010
+                    LayoutCachedHeight =10970
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1693,7 +1672,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =11040
+                    Top =11000
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1706,9 +1685,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =11040
+                    LayoutCachedTop =11000
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =11490
+                    LayoutCachedHeight =11450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1735,7 +1714,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5475
-                    Top =11040
+                    Top =11000
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1748,9 +1727,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =5475
-                    LayoutCachedTop =11040
+                    LayoutCachedTop =11000
                     LayoutCachedWidth =7845
-                    LayoutCachedHeight =11490
+                    LayoutCachedHeight =11450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1777,7 +1756,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =11520
+                    Top =11480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1790,9 +1769,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =11520
+                    LayoutCachedTop =11480
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =11970
+                    LayoutCachedHeight =11930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1819,7 +1798,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5475
-                    Top =11520
+                    Top =11480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1832,9 +1811,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =5475
-                    LayoutCachedTop =11520
+                    LayoutCachedTop =11480
                     LayoutCachedWidth =7845
-                    LayoutCachedHeight =11970
+                    LayoutCachedHeight =11930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1861,7 +1840,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10512
-                    Top =11640
+                    Top =11600
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1874,9 +1853,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =10512
-                    LayoutCachedTop =11640
+                    LayoutCachedTop =11600
                     LayoutCachedWidth =12882
-                    LayoutCachedHeight =12090
+                    LayoutCachedHeight =12050
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1903,7 +1882,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10512
-                    Top =11040
+                    Top =11000
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1916,9 +1895,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =10512
-                    LayoutCachedTop =11040
+                    LayoutCachedTop =11000
                     LayoutCachedWidth =12882
-                    LayoutCachedHeight =11490
+                    LayoutCachedHeight =11450
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -1945,7 +1924,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5328
-                    Top =9480
+                    Top =9440
                     Width =2370
                     Height =450
                     FontSize =10
@@ -1958,9 +1937,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =5328
-                    LayoutCachedTop =9480
+                    LayoutCachedTop =9440
                     LayoutCachedWidth =7698
-                    LayoutCachedHeight =9930
+                    LayoutCachedHeight =9890
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -1987,7 +1966,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5475
-                    Top =12120
+                    Top =12080
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2000,9 +1979,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =5475
-                    LayoutCachedTop =12120
+                    LayoutCachedTop =12080
                     LayoutCachedWidth =7845
-                    LayoutCachedHeight =12570
+                    LayoutCachedHeight =12530
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2029,7 +2008,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =20520
+                    Top =20480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2042,9 +2021,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =20520
+                    LayoutCachedTop =20480
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =20970
+                    LayoutCachedHeight =20930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2070,7 +2049,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5475
-                    Top =20520
+                    Top =20480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2083,9 +2062,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =5475
-                    LayoutCachedTop =20520
+                    LayoutCachedTop =20480
                     LayoutCachedWidth =7845
-                    LayoutCachedHeight =20970
+                    LayoutCachedHeight =20930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2111,7 +2090,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7920
-                    Top =20520
+                    Top =20480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2124,9 +2103,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =7920
-                    LayoutCachedTop =20520
+                    LayoutCachedTop =20480
                     LayoutCachedWidth =10290
-                    LayoutCachedHeight =20970
+                    LayoutCachedHeight =20930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2152,7 +2131,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10515
-                    Top =20520
+                    Top =20480
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2165,9 +2144,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =10515
-                    LayoutCachedTop =20520
+                    LayoutCachedTop =20480
                     LayoutCachedWidth =12885
-                    LayoutCachedHeight =20970
+                    LayoutCachedHeight =20930
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2193,7 +2172,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7920
-                    Top =21000
+                    Top =20960
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2206,9 +2185,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =7920
-                    LayoutCachedTop =21000
+                    LayoutCachedTop =20960
                     LayoutCachedWidth =10290
-                    LayoutCachedHeight =21450
+                    LayoutCachedHeight =21410
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2235,7 +2214,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10515
-                    Top =12480
+                    Top =12440
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2248,9 +2227,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =10515
-                    LayoutCachedTop =12480
+                    LayoutCachedTop =12440
                     LayoutCachedWidth =12885
-                    LayoutCachedHeight =12930
+                    LayoutCachedHeight =12890
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2277,7 +2256,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =4320
-                    Top =18240
+                    Top =18200
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2290,9 +2269,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =4320
-                    LayoutCachedTop =18240
+                    LayoutCachedTop =18200
                     LayoutCachedWidth =6690
-                    LayoutCachedHeight =18690
+                    LayoutCachedHeight =18650
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2319,7 +2298,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10515
-                    Top =21000
+                    Top =20960
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2332,9 +2311,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =10515
-                    LayoutCachedTop =21000
+                    LayoutCachedTop =20960
                     LayoutCachedWidth =12885
-                    LayoutCachedHeight =21450
+                    LayoutCachedHeight =21410
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2360,7 +2339,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =21000
+                    Top =20960
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2373,9 +2352,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =21000
+                    LayoutCachedTop =20960
                     LayoutCachedWidth =5250
-                    LayoutCachedHeight =21450
+                    LayoutCachedHeight =21410
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2401,7 +2380,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =5475
-                    Top =21000
+                    Top =20960
                     Width =2370
                     Height =450
                     FontSize =10
@@ -2414,9 +2393,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =5475
-                    LayoutCachedTop =21000
+                    LayoutCachedTop =20960
                     LayoutCachedWidth =7845
-                    LayoutCachedHeight =21450
+                    LayoutCachedHeight =21410
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2444,7 +2423,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =6
                     Left =2880
-                    Top =14390
+                    Top =14350
                     Width =9954
                     Height =750
                     FontSize =10
@@ -2459,9 +2438,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14390
+                    LayoutCachedTop =14350
                     LayoutCachedWidth =12834
-                    LayoutCachedHeight =15140
+                    LayoutCachedHeight =15100
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -2470,7 +2449,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2880
-                            Top =14390
+                            Top =14350
                             Width =15
                             Height =15
                             FontSize =1
@@ -2479,9 +2458,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Details"
                             LayoutCachedLeft =2880
-                            LayoutCachedTop =14390
+                            LayoutCachedTop =14350
                             LayoutCachedWidth =2895
-                            LayoutCachedHeight =14405
+                            LayoutCachedHeight =14365
                         End
                     End
                 End
@@ -2492,7 +2471,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =2866
-                    Top =16580
+                    Top =16540
                     Width =9954
                     Height =1600
                     FontSize =10
@@ -2504,9 +2483,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =16580
+                    LayoutCachedTop =16540
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =18180
+                    LayoutCachedHeight =18140
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -2515,7 +2494,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2866
-                            Top =16580
+                            Top =16540
                             Width =15
                             Height =15
                             FontSize =1
@@ -2524,9 +2503,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Detail"
                             LayoutCachedLeft =2866
-                            LayoutCachedTop =16580
+                            LayoutCachedTop =16540
                             LayoutCachedWidth =2881
-                            LayoutCachedHeight =16595
+                            LayoutCachedHeight =16555
                         End
                     End
                 End
@@ -2534,7 +2513,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =8300
+                    Top =8260
                     Width =10450
                     Height =280
                     FontSize =10
@@ -2544,9 +2523,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =8300
+                    LayoutCachedTop =8260
                     LayoutCachedWidth =13330
-                    LayoutCachedHeight =8580
+                    LayoutCachedHeight =8540
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -2555,7 +2534,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2866
-                    Top =21700
+                    Top =21660
                     Width =9954
                     Height =450
                     FontSize =10
@@ -2568,9 +2547,9 @@ Begin Form
                     Tag ="WBX:Hidden"
 
                     LayoutCachedLeft =2866
-                    LayoutCachedTop =21700
+                    LayoutCachedTop =21660
                     LayoutCachedWidth =12820
-                    LayoutCachedHeight =22150
+                    LayoutCachedHeight =22110
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2887,7 +2866,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
-                    Top =2075
+                    Top =2035
                     Width =1900
                     Height =550
                     FontSize =10
@@ -2899,9 +2878,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2075
+                    LayoutCachedTop =2035
                     LayoutCachedWidth =4750
-                    LayoutCachedHeight =2625
+                    LayoutCachedHeight =2585
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2928,7 +2907,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =4950
-                    Top =2075
+                    Top =2035
                     Width =1900
                     Height =550
                     FontSize =10
@@ -2940,9 +2919,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4950
-                    LayoutCachedTop =2075
+                    LayoutCachedTop =2035
                     LayoutCachedWidth =6850
-                    LayoutCachedHeight =2625
+                    LayoutCachedHeight =2585
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -2969,7 +2948,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =7050
-                    Top =2075
+                    Top =2035
                     Width =1900
                     Height =550
                     FontSize =10
@@ -2981,9 +2960,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7050
-                    LayoutCachedTop =2075
+                    LayoutCachedTop =2035
                     LayoutCachedWidth =8950
-                    LayoutCachedHeight =2625
+                    LayoutCachedHeight =2585
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3010,7 +2989,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =9150
-                    Top =2075
+                    Top =2035
                     Width =1900
                     Height =550
                     FontSize =10
@@ -3022,9 +3001,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9150
-                    LayoutCachedTop =2075
+                    LayoutCachedTop =2035
                     LayoutCachedWidth =11050
-                    LayoutCachedHeight =2625
+                    LayoutCachedHeight =2585
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3051,7 +3030,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =11250
-                    Top =2075
+                    Top =2035
                     Width =1900
                     Height =550
                     FontSize =10
@@ -3063,9 +3042,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11250
-                    LayoutCachedTop =2075
+                    LayoutCachedTop =2035
                     LayoutCachedWidth =13150
-                    LayoutCachedHeight =2625
+                    LayoutCachedHeight =2585
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3091,7 +3070,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =6330
-                    Top =6215
+                    Top =6175
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3104,9 +3083,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =6330
-                    LayoutCachedTop =6215
+                    LayoutCachedTop =6175
                     LayoutCachedWidth =9630
-                    LayoutCachedHeight =6765
+                    LayoutCachedHeight =6725
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3132,7 +3111,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =6935
+                    Top =6895
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3145,9 +3124,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =6935
+                    LayoutCachedTop =6895
                     LayoutCachedWidth =6180
-                    LayoutCachedHeight =7485
+                    LayoutCachedHeight =7445
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3173,7 +3152,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2880
-                    Top =6215
+                    Top =6175
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3186,9 +3165,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =6215
+                    LayoutCachedTop =6175
                     LayoutCachedWidth =6180
-                    LayoutCachedHeight =6765
+                    LayoutCachedHeight =6725
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3214,7 +3193,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
-                    Top =2975
+                    Top =2935
                     Width =10450
                     Height =550
                     FontSize =10
@@ -3227,9 +3206,9 @@ Begin Form
                     Tag ="WBX:Comparison"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2975
+                    LayoutCachedTop =2935
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =3525
+                    LayoutCachedHeight =3485
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3255,7 +3234,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =9930
-                    Top =6215
+                    Top =6175
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3268,9 +3247,9 @@ Begin Form
                     Tag ="WBX:Members"
 
                     LayoutCachedLeft =9930
-                    LayoutCachedTop =6215
+                    LayoutCachedTop =6175
                     LayoutCachedWidth =13230
-                    LayoutCachedHeight =6765
+                    LayoutCachedHeight =6725
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3371,7 +3350,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6330
-                    Top =6935
+                    Top =6895
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3384,9 +3363,9 @@ Begin Form
                     Tag ="WBX:Members:Review"
 
                     LayoutCachedLeft =6330
-                    LayoutCachedTop =6935
+                    LayoutCachedTop =6895
                     LayoutCachedWidth =9630
-                    LayoutCachedHeight =7485
+                    LayoutCachedHeight =7445
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3465,7 +3444,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
-                    Top =3000
+                    Top =2960
                     Width =10450
                     Height =550
                     FontSize =10
@@ -3478,9 +3457,9 @@ Begin Form
                     Tag ="WBX:Defaults"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3000
+                    LayoutCachedTop =2960
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =3550
+                    LayoutCachedHeight =3510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3506,7 +3485,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2880
-                    Top =6215
+                    Top =6175
                     Width =10360
                     Height =550
                     FontSize =10
@@ -3519,9 +3498,9 @@ Begin Form
                     Tag ="WBX:Review"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =6215
+                    LayoutCachedTop =6175
                     LayoutCachedWidth =13240
-                    LayoutCachedHeight =6765
+                    LayoutCachedHeight =6725
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3547,7 +3526,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9930
-                    Top =6935
+                    Top =6895
                     Width =3300
                     Height =550
                     FontSize =10
@@ -3560,9 +3539,9 @@ Begin Form
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
 
                     LayoutCachedLeft =9930
-                    LayoutCachedTop =6935
+                    LayoutCachedTop =6895
                     LayoutCachedWidth =13230
-                    LayoutCachedHeight =7485
+                    LayoutCachedHeight =7445
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3588,7 +3567,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2880
-                    Top =7680
+                    Top =7640
                     Width =5000
                     Height =450
                     FontSize =10
@@ -3600,9 +3579,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =7680
+                    LayoutCachedTop =7640
                     LayoutCachedWidth =7880
-                    LayoutCachedHeight =8130
+                    LayoutCachedHeight =8090
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3628,7 +3607,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =8205
-                    Top =7680
+                    Top =7640
                     Width =5000
                     Height =450
                     FontSize =10
@@ -3640,9 +3619,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =8205
-                    LayoutCachedTop =7680
+                    LayoutCachedTop =7640
                     LayoutCachedWidth =13205
-                    LayoutCachedHeight =8130
+                    LayoutCachedHeight =8090
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3693,7 +3672,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2850
-                    Top =2050
+                    Top =2010
                     Width =1900
                     Height =450
                     FontSize =10
@@ -3705,9 +3684,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2050
+                    LayoutCachedTop =2010
                     LayoutCachedWidth =4750
-                    LayoutCachedHeight =2500
+                    LayoutCachedHeight =2460
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3733,7 +3712,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =4900
-                    Top =2050
+                    Top =2010
                     Width =4050
                     Height =450
                     FontSize =10
@@ -3745,9 +3724,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4900
-                    LayoutCachedTop =2050
+                    LayoutCachedTop =2010
                     LayoutCachedWidth =8950
-                    LayoutCachedHeight =2500
+                    LayoutCachedHeight =2460
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3773,7 +3752,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =9100
-                    Top =2050
+                    Top =2010
                     Width =1950
                     Height =450
                     FontSize =10
@@ -3785,9 +3764,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9100
-                    LayoutCachedTop =2050
+                    LayoutCachedTop =2010
                     LayoutCachedWidth =11050
-                    LayoutCachedHeight =2500
+                    LayoutCachedHeight =2460
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3813,7 +3792,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =11200
-                    Top =2050
+                    Top =2010
                     Width =2100
                     Height =450
                     FontSize =10
@@ -3825,9 +3804,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11200
-                    LayoutCachedTop =2050
+                    LayoutCachedTop =2010
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =2500
+                    LayoutCachedHeight =2460
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3893,7 +3872,7 @@ Begin Form
                     OverlapFlags =247
                     TextFontFamily =34
                     Left =2850
-                    Top =18330
+                    Top =18290
                     Width =10450
                     Height =300
                     FontSize =10
@@ -3903,9 +3882,9 @@ Begin Form
                     FontName ="Segoe UI"
                     Tag ="GroupFooter"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =18330
+                    LayoutCachedTop =18290
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =18630
+                    LayoutCachedHeight =18590
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -3913,7 +3892,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2850
-                    Top =18670
+                    Top =18630
                     Width =3300
                     Height =450
                     FontSize =10
@@ -3926,9 +3905,9 @@ Begin Form
                     Tag ="GroupFooter"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =18670
+                    LayoutCachedTop =18630
                     LayoutCachedWidth =6150
-                    LayoutCachedHeight =19120
+                    LayoutCachedHeight =19080
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -3954,7 +3933,7 @@ Begin Form
                     OverlapFlags =247
                     TextFontFamily =34
                     Left =6350
-                    Top =18670
+                    Top =18630
                     Width =3300
                     Height =450
                     FontSize =10
@@ -3967,9 +3946,9 @@ Begin Form
                     Tag ="GroupFooter"
 
                     LayoutCachedLeft =6350
-                    LayoutCachedTop =18670
+                    LayoutCachedTop =18630
                     LayoutCachedWidth =9650
-                    LayoutCachedHeight =19120
+                    LayoutCachedHeight =19080
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -4035,7 +4014,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4046,9 +4025,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",0)"
                     Tag ="SORT:lstDetails:0"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4057,7 +4036,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4068,9 +4047,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",1)"
                     Tag ="SORT:lstDetails:1"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4079,7 +4058,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4090,9 +4069,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",2)"
                     Tag ="SORT:lstDetails:2"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4101,7 +4080,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4112,9 +4091,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",3)"
                     Tag ="SORT:lstDetails:3"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4123,7 +4102,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4134,9 +4113,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",4)"
                     Tag ="SORT:lstDetails:4"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4145,7 +4124,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2880
-                    Top =14040
+                    Top =14000
                     Width =800
                     Height =300
                     FontSize =9
@@ -4156,9 +4135,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmMajorWorkbench\",\"lstDetails\",5)"
                     Tag ="SORT:lstDetails:5"
                     LayoutCachedLeft =2880
-                    LayoutCachedTop =14040
+                    LayoutCachedTop =14000
                     LayoutCachedWidth =3680
-                    LayoutCachedHeight =14340
+                    LayoutCachedHeight =14300
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -4181,7 +4160,7 @@ Begin Form
                     OverlapFlags =247
                     TextFontFamily =34
                     Left =9850
-                    Top =18670
+                    Top =18630
                     Width =3450
                     Height =450
                     FontSize =10
@@ -4193,9 +4172,9 @@ Begin Form
                     Tag ="GroupFooter"
 
                     LayoutCachedLeft =9850
-                    LayoutCachedTop =18670
+                    LayoutCachedTop =18630
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =19120
+                    LayoutCachedHeight =19080
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2
@@ -4207,7 +4186,7 @@ Begin Form
                     OverlapFlags =247
                     TextFontFamily =34
                     Left =2850
-                    Top =8990
+                    Top =8950
                     Width =6200
                     Height =450
                     FontSize =10
@@ -4219,9 +4198,9 @@ Begin Form
                     Tag ="GroupFooter"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =8990
+                    LayoutCachedTop =8950
                     LayoutCachedWidth =9050
-                    LayoutCachedHeight =9440
+                    LayoutCachedHeight =9400
                     ThemeFontIndex =-1
                     WebImagePaddingLeft =2
                     WebImagePaddingTop =2

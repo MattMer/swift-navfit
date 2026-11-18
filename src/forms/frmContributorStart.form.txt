@@ -119,7 +119,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =7500
+            Height =7140
             Name ="Detail"
             Begin
                 Begin Label
@@ -145,14 +145,14 @@ Begin Form
                     Left =400
                     Top =1050
                     Width =7800
-                    Height =850
+                    Height =390
                     Name ="lblInfo"
                     Caption ="Who is working? This labels your work; it is not a sign-in."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1050
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =1900
+                    LayoutCachedHeight =1440
                     ThemeFontIndex =-1
                 End
                 Begin ComboBox
@@ -162,7 +162,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =400
-                    Top =2450
+                    Top =1990
                     Width =7800
                     Height =450
                     Name ="cboContributor"
@@ -171,25 +171,25 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2450
+                    LayoutCachedTop =1990
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =2900
+                    LayoutCachedHeight =2440
                     ThemeFontIndex =-1
                     Begin
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =2050
+                            Top =1590
                             Width =7800
                             Height =350
                             Name ="lblExisting"
                             Caption ="Existing contributor"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =2050
+                            LayoutCachedTop =1590
                             LayoutCachedWidth =8200
-                            LayoutCachedHeight =2400
+                            LayoutCachedHeight =1940
                             ThemeFontIndex =-1
                         End
                     End
@@ -199,7 +199,7 @@ Begin Form
                     TextFontFamily =34
                     FontSize =10
                     Left =400
-                    Top =3075
+                    Top =2615
                     Width =7800
                     Height =550
                     TabIndex =1
@@ -210,9 +210,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3075
+                    LayoutCachedTop =2615
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =3625
+                    LayoutCachedHeight =3165
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -238,7 +238,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =4300
+                    Top =3840
                     Width =5100
                     Height =450
                     TabIndex =2
@@ -246,25 +246,25 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =4300
+                    LayoutCachedTop =3840
                     LayoutCachedWidth =5500
-                    LayoutCachedHeight =4750
+                    LayoutCachedHeight =4290
                     ThemeFontIndex =-1
                     Begin
                         Begin Label
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =3900
+                            Top =3440
                             Width =7800
                             Height =350
                             Name ="lblNew"
                             Caption ="Or add your name as a new contributor"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =3900
+                            LayoutCachedTop =3440
                             LayoutCachedWidth =8200
-                            LayoutCachedHeight =4250
+                            LayoutCachedHeight =3790
                             ThemeFontIndex =-1
                         End
                     End
@@ -274,7 +274,7 @@ Begin Form
                     TextFontFamily =34
                     FontSize =10
                     Left =5700
-                    Top =4300
+                    Top =3840
                     Width =2500
                     Height =450
                     TabIndex =3
@@ -285,9 +285,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5700
-                    LayoutCachedTop =4300
+                    LayoutCachedTop =3840
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =4750
+                    LayoutCachedHeight =4290
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -312,15 +312,15 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5050
+                    Top =4590
                     Width =7800
                     Height =650
                     Name ="lblStatus"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5050
+                    LayoutCachedTop =4590
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =5700
+                    LayoutCachedHeight =5240
                     ThemeFontIndex =-1
                 End
                 Begin CommandButton
@@ -328,7 +328,7 @@ Begin Form
                     TextFontFamily =34
                     FontSize =10
                     Left =400
-                    Top =5775
+                    Top =5315
                     Width =7800
                     Height =450
                     TabIndex =4
@@ -339,9 +339,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5775
+                    LayoutCachedTop =5315
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =6225
+                    LayoutCachedHeight =5765
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -368,7 +368,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =6300
+                    Top =5840
                     Width =7800
                     Height =1100
                     FontWeight =600
@@ -377,9 +377,9 @@ Begin Form
                     Name ="uxWorkspaceWarning"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =6300
+                    LayoutCachedTop =5840
                     LayoutCachedWidth =8200
-                    LayoutCachedHeight =7400
+                    LayoutCachedHeight =6940
                     ThemeFontIndex =-1
                 End
             End

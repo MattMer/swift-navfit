@@ -107,7 +107,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =10500
+            Height =10700
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -143,43 +143,25 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
+                Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
                     Top =1800
                     Width =10584
-                    Height =750
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblScope"
-                    Caption ="NAVFIT import creates drafts. PDF import creates or updates one."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =2850
-                    LayoutCachedTop =1800
-                    LayoutCachedWidth =13434
-                    LayoutCachedHeight =2550
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
-                Begin CommandButton
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =2850
-                    Top =2875
-                    Width =10584
                     Height =550
                     FontSize =10
                     ForeColor =4205854
                     Name ="cmdNAVFIT"
+                    ControlTipText ="Creates drafts from a NAVFIT database."
                     Caption ="Choose NAVFIT database"
                     OnClick ="=UXChooseNativeGroups()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2875
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =3425
+                    LayoutCachedHeight =2350
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -204,21 +186,22 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =3725
+                    Top =2650
                     Width =10584
                     Height =550
                     FontSize =10
                     TabIndex =1
                     ForeColor =4205854
                     Name ="cmdPDF"
+                    ControlTipText ="Creates a draft, or updates an existing one."
                     Caption ="Choose PDF"
                     OnClick ="=OpenScreen(\"frmPDFImport\")"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3725
+                    LayoutCachedTop =2650
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =4275
+                    LayoutCachedHeight =3200
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -243,7 +226,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =5375
+                    Top =4300
                     Width =2940
                     Height =550
                     FontSize =10
@@ -255,9 +238,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =5375
+                    LayoutCachedTop =4300
                     LayoutCachedWidth =5790
-                    LayoutCachedHeight =5925
+                    LayoutCachedHeight =4850
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

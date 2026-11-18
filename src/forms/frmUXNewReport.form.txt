@@ -78,7 +78,7 @@ Begin Form
             PressedForeTint =75.0
         End
         Begin Section
-            Height =3500
+            Height =2500
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -101,30 +101,11 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =1000
-                    Width =9600
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblInfo"
-                    Caption ="Choose a report type."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =1000
-                    LayoutCachedWidth =10000
-                    LayoutCachedHeight =1650
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =2000
+                    Top =1000
                     Width =3000
                     Height =550
                     FontSize =10
@@ -135,9 +116,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1000
                     LayoutCachedWidth =3400
-                    LayoutCachedHeight =2550
+                    LayoutCachedHeight =1550
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -162,7 +143,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =3750
-                    Top =2000
+                    Top =1000
                     Width =3000
                     Height =550
                     FontSize =10
@@ -174,9 +155,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =3750
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1000
                     LayoutCachedWidth =6750
-                    LayoutCachedHeight =2550
+                    LayoutCachedHeight =1550
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -201,7 +182,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7100
-                    Top =2000
+                    Top =1000
                     Width =3000
                     Height =550
                     FontSize =10
@@ -213,9 +194,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7100
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1000
                     LayoutCachedWidth =10100
-                    LayoutCachedHeight =2550
+                    LayoutCachedHeight =1550
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -240,7 +221,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =2800
+                    Top =1800
                     Width =9600
                     Height =450
                     FontSize =10
@@ -252,9 +233,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2800
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =10000
-                    LayoutCachedHeight =3250
+                    LayoutCachedHeight =2250
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

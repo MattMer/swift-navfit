@@ -74,7 +74,7 @@ Begin Form
             PressedForeTint =75.0
         End
         Begin Section
-            Height =4500
+            Height =3530
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -103,7 +103,7 @@ Begin Form
                     Left =500
                     Top =1400
                     Width =11500
-                    Height =1600
+                    Height =630
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInstructions"
@@ -114,7 +114,7 @@ Begin Form
                     LayoutCachedLeft =500
                     LayoutCachedTop =1400
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =3000
+                    LayoutCachedHeight =2030
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -122,7 +122,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =500
-                    Top =3300
+                    Top =2330
                     Width =11500
                     Height =700
                     FontSize =10
@@ -131,9 +131,9 @@ Begin Form
                     Caption ="Your reports are unchanged."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =500
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =2330
                     LayoutCachedWidth =12000
-                    LayoutCachedHeight =4000
+                    LayoutCachedHeight =3030
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

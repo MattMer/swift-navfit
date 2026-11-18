@@ -146,7 +146,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =6400
+            Height =6360
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -175,7 +175,7 @@ Begin Form
                     Left =400
                     Top =1000
                     Width =12600
-                    Height =650
+                    Height =360
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
@@ -185,7 +185,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =1650
+                    LayoutCachedHeight =1360
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -316,7 +316,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =3500
-                    Top =2300
+                    Top =2260
                     Width =7300
                     Height =450
                     FontSize =10
@@ -330,9 +330,9 @@ Begin Form
                         "atically when exporting."
 
                     LayoutCachedLeft =3500
-                    LayoutCachedTop =2300
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =2750
+                    LayoutCachedHeight =2710
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -342,7 +342,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =2350
+                            Top =2310
                             Width =2900
                             Height =350
                             FontSize =10
@@ -351,9 +351,9 @@ Begin Form
                             Caption ="Export directory"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =2350
+                            LayoutCachedTop =2310
                             LayoutCachedWidth =3300
-                            LayoutCachedHeight =2700
+                            LayoutCachedHeight =2660
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -363,7 +363,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =11100
-                    Top =2300
+                    Top =2260
                     Width =1900
                     Height =450
                     FontSize =10
@@ -375,9 +375,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =11100
-                    LayoutCachedTop =2300
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =2750
+                    LayoutCachedHeight =2710
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -796,7 +796,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =4400
+                    Top =4360
                     Width =12600
                     Height =1000
                     FontSize =10
@@ -807,9 +807,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =4400
+                    LayoutCachedTop =4360
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =5400
+                    LayoutCachedHeight =5360
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -818,7 +818,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =4400
+                            Top =4360
                             Width =15
                             Height =15
                             FontSize =1
@@ -827,9 +827,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Exchange status"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =4400
+                            LayoutCachedTop =4360
                             LayoutCachedWidth =415
-                            LayoutCachedHeight =4415
+                            LayoutCachedHeight =4375
                         End
                     End
                 End
@@ -876,7 +876,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =5700
+                    Top =5660
                     Width =12600
                     Height =450
                     FontSize =10
@@ -888,9 +888,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5700
+                    LayoutCachedTop =5660
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6150
+                    LayoutCachedHeight =6110
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -918,7 +918,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =3500
-                    Top =2900
+                    Top =2860
                     Width =7300
                     Height =450
                     FontSize =10
@@ -935,9 +935,9 @@ Begin Form
                         "ess."
 
                     LayoutCachedLeft =3500
-                    LayoutCachedTop =2900
+                    LayoutCachedTop =2860
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =3350
+                    LayoutCachedHeight =3310
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -947,7 +947,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =2950
+                            Top =2910
                             Width =2900
                             Height =350
                             FontSize =10
@@ -956,9 +956,9 @@ Begin Form
                             Caption ="ISIC (optional)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =2950
+                            LayoutCachedTop =2910
                             LayoutCachedWidth =3300
-                            LayoutCachedHeight =3300
+                            LayoutCachedHeight =3260
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -1087,7 +1087,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =3600
+                    Top =3560
                     Width =12600
                     Height =550
                     FontSize =10
@@ -1099,9 +1099,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3600
+                    LayoutCachedTop =3560
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4150
+                    LayoutCachedHeight =4110
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

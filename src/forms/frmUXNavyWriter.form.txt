@@ -136,7 +136,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =11200
+            Height =10500
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -159,31 +159,12 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =950
-                    Width =12600
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblScope"
-                    Caption ="Examples with sources. Rewrite one for the member before adding it."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =950
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =1600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =2000
+                    Top =1300
                     Width =6300
                     Height =450
                     FontSize =10
@@ -193,9 +174,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1300
                     LayoutCachedWidth =6700
-                    LayoutCachedHeight =2450
+                    LayoutCachedHeight =1750
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -205,7 +186,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =1650
+                            Top =950
                             Width =6300
                             Height =300
                             FontSize =10
@@ -214,9 +195,9 @@ Begin Form
                             Caption ="Search narrative sources"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =1650
+                            LayoutCachedTop =950
                             LayoutCachedWidth =6700
-                            LayoutCachedHeight =1950
+                            LayoutCachedHeight =1250
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -229,7 +210,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =7200
-                    Top =2000
+                    Top =1300
                     Width =2700
                     Height =450
                     FontSize =10
@@ -243,9 +224,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7200
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1300
                     LayoutCachedWidth =9900
-                    LayoutCachedHeight =2450
+                    LayoutCachedHeight =1750
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -255,7 +236,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =7200
-                            Top =1650
+                            Top =950
                             Width =2700
                             Height =300
                             FontSize =10
@@ -264,9 +245,9 @@ Begin Form
                             Caption ="Rate / rating"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =7200
-                            LayoutCachedTop =1650
+                            LayoutCachedTop =950
                             LayoutCachedWidth =9900
-                            LayoutCachedHeight =1950
+                            LayoutCachedHeight =1250
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -276,7 +257,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =10300
-                    Top =2000
+                    Top =1300
                     Width =2700
                     Height =450
                     FontSize =10
@@ -288,9 +269,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =10300
-                    LayoutCachedTop =2000
+                    LayoutCachedTop =1300
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =2450
+                    LayoutCachedHeight =1750
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -317,7 +298,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =4
                     Left =400
-                    Top =2850
+                    Top =2150
                     Width =12600
                     Height =1850
                     FontSize =10
@@ -331,9 +312,9 @@ Begin Form
                     OnClick ="=UXSelectNavyWriter()"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2850
+                    LayoutCachedTop =2150
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4700
+                    LayoutCachedHeight =4000
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -342,7 +323,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =2850
+                            Top =2150
                             Width =15
                             Height =15
                             FontSize =1
@@ -351,9 +332,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Catalog"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =2850
+                            LayoutCachedTop =2150
                             LayoutCachedWidth =415
-                            LayoutCachedHeight =2865
+                            LayoutCachedHeight =2165
                         End
                     End
                 End
@@ -363,7 +344,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =5350
+                    Top =4650
                     Width =12600
                     Height =2200
                     FontSize =10
@@ -374,9 +355,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5350
+                    LayoutCachedTop =4650
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =7550
+                    LayoutCachedHeight =6850
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -386,7 +367,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =4900
+                            Top =4200
                             Width =12600
                             Height =350
                             FontSize =10
@@ -395,9 +376,9 @@ Begin Form
                             Caption ="Preview and adapt the example"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =4900
+                            LayoutCachedTop =4200
                             LayoutCachedWidth =13000
-                            LayoutCachedHeight =5250
+                            LayoutCachedHeight =4550
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -409,7 +390,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =7800
+                    Top =7100
                     Width =12600
                     Height =450
                     FontSize =10
@@ -420,9 +401,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7800
+                    LayoutCachedTop =7100
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8250
+                    LayoutCachedHeight =7550
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -431,7 +412,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =7800
+                            Top =7100
                             Width =15
                             Height =15
                             FontSize =1
@@ -440,9 +421,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Source"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =7800
+                            LayoutCachedTop =7100
                             LayoutCachedWidth =415
-                            LayoutCachedHeight =7815
+                            LayoutCachedHeight =7115
                         End
                     End
                 End
@@ -450,7 +431,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =8525
+                    Top =7825
                     Width =3900
                     Height =550
                     FontSize =10
@@ -462,9 +443,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =8525
+                    LayoutCachedTop =7825
                     LayoutCachedWidth =4300
-                    LayoutCachedHeight =9075
+                    LayoutCachedHeight =8375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -489,21 +470,22 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =4750
-                    Top =8525
+                    Top =7825
                     Width =8250
                     Height =550
                     FontSize =10
                     TabIndex =7
                     ForeColor =16777215
                     Name ="cmdImport"
+                    ControlTipText ="Rewrite the example for the member before adding it."
                     Caption ="Add reviewed example to narrative snippets"
                     OnClick ="=UXImportNavyWriter()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =4750
-                    LayoutCachedTop =8525
+                    LayoutCachedTop =7825
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =9075
+                    LayoutCachedHeight =8375
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -528,7 +510,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =9300
+                    Top =8600
                     Width =12600
                     Height =650
                     FontSize =10
@@ -536,9 +518,9 @@ Begin Form
                     Name ="lblStatus"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =9300
+                    LayoutCachedTop =8600
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =9950
+                    LayoutCachedHeight =9250
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -546,7 +528,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =10175
+                    Top =9475
                     Width =12600
                     Height =550
                     FontSize =10
@@ -558,9 +540,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =10175
+                    LayoutCachedTop =9475
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =10725
+                    LayoutCachedHeight =10025
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -626,7 +608,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =400
-                    Top =2500
+                    Top =1800
                     Width =800
                     Height =300
                     FontSize =9
@@ -637,9 +619,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXNavyWriter\",\"lstCatalog\",0)"
                     Tag ="SORT:lstCatalog:0"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2500
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =1200
-                    LayoutCachedHeight =2800
+                    LayoutCachedHeight =2100
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -648,7 +630,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =400
-                    Top =2500
+                    Top =1800
                     Width =800
                     Height =300
                     FontSize =9
@@ -659,9 +641,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXNavyWriter\",\"lstCatalog\",1)"
                     Tag ="SORT:lstCatalog:1"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2500
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =1200
-                    LayoutCachedHeight =2800
+                    LayoutCachedHeight =2100
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -670,7 +652,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =400
-                    Top =2500
+                    Top =1800
                     Width =800
                     Height =300
                     FontSize =9
@@ -681,9 +663,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXNavyWriter\",\"lstCatalog\",2)"
                     Tag ="SORT:lstCatalog:2"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2500
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =1200
-                    LayoutCachedHeight =2800
+                    LayoutCachedHeight =2100
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -692,7 +674,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =400
-                    Top =2500
+                    Top =1800
                     Width =800
                     Height =300
                     FontSize =9
@@ -703,9 +685,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmUXNavyWriter\",\"lstCatalog\",3)"
                     Tag ="SORT:lstCatalog:3"
                     LayoutCachedLeft =400
-                    LayoutCachedTop =2500
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =1200
-                    LayoutCachedHeight =2800
+                    LayoutCachedHeight =2100
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

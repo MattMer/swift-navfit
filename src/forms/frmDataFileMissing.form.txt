@@ -76,7 +76,7 @@ Begin Form
             PressedForeTint =75.0
         End
         Begin Section
-            Height =4300
+            Height =3960
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -124,7 +124,7 @@ Begin Form
                     Left =400
                     Top =2400
                     Width =9950
-                    Height =700
+                    Height =360
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblChoice"
@@ -133,7 +133,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =2400
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =3100
+                    LayoutCachedHeight =2760
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -141,7 +141,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =3300
+                    Top =2960
                     Width =3200
                     Height =550
                     FontSize =10
@@ -153,9 +153,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =2960
                     LayoutCachedWidth =3600
-                    LayoutCachedHeight =3850
+                    LayoutCachedHeight =3510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -180,7 +180,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =3750
-                    Top =3300
+                    Top =2960
                     Width =3200
                     Height =550
                     FontSize =10
@@ -192,9 +192,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =3750
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =2960
                     LayoutCachedWidth =6950
-                    LayoutCachedHeight =3850
+                    LayoutCachedHeight =3510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -219,7 +219,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7100
-                    Top =3300
+                    Top =2960
                     Width =3250
                     Height =550
                     FontSize =10
@@ -231,9 +231,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7100
-                    LayoutCachedTop =3300
+                    LayoutCachedTop =2960
                     LayoutCachedWidth =10350
-                    LayoutCachedHeight =3850
+                    LayoutCachedHeight =3510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

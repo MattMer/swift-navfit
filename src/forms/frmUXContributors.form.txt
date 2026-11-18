@@ -139,7 +139,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =7200
+            Height =6760
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -168,7 +168,7 @@ Begin Form
                     Left =400
                     Top =950
                     Width =10400
-                    Height =800
+                    Height =360
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
@@ -178,7 +178,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =1750
+                    LayoutCachedHeight =1310
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -187,7 +187,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =2
                     Left =400
-                    Top =1950
+                    Top =1510
                     Width =6800
                     Height =3000
                     ColumnOrder =0
@@ -202,14 +202,14 @@ Begin Form
                     ControlTipText ="Double-click a contributor, or select one and choose Switch contributor."
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =1950
+                    LayoutCachedTop =1510
                     LayoutCachedWidth =7200
-                    LayoutCachedHeight =4950
+                    LayoutCachedHeight =4510
                     Begin
                         Begin Label
                             OverlapFlags =127
                             Left =400
-                            Top =1950
+                            Top =1510
                             Width =15
                             Height =15
                             FontSize =1
@@ -218,9 +218,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Contributors"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =1950
+                            LayoutCachedTop =1510
                             LayoutCachedWidth =415
-                            LayoutCachedHeight =1965
+                            LayoutCachedHeight =1525
                         End
                     End
                 End
@@ -228,7 +228,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =7500
-                    Top =1950
+                    Top =1510
                     Width =3300
                     Height =450
                     FontSize =10
@@ -240,9 +240,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =1950
+                    LayoutCachedTop =1510
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =2400
+                    LayoutCachedHeight =1960
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -268,7 +268,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =7500
-                    Top =2500
+                    Top =2060
                     Width =3300
                     Height =450
                     FontSize =10
@@ -280,9 +280,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =2500
+                    LayoutCachedTop =2060
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =2950
+                    LayoutCachedHeight =2510
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -308,7 +308,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =7500
-                    Top =3050
+                    Top =2610
                     Width =3300
                     Height =450
                     FontSize =10
@@ -320,9 +320,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =3050
+                    LayoutCachedTop =2610
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =3500
+                    LayoutCachedHeight =3060
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -349,7 +349,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =400
-                    Top =5550
+                    Top =5110
                     Width =6800
                     Height =450
                     FontSize =10
@@ -360,9 +360,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =5550
+                    LayoutCachedTop =5110
                     LayoutCachedWidth =7200
-                    LayoutCachedHeight =6000
+                    LayoutCachedHeight =5560
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -371,7 +371,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =400
-                            Top =5150
+                            Top =4710
                             Width =6800
                             Height =350
                             FontSize =10
@@ -380,9 +380,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="New contributor name"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =5150
+                            LayoutCachedTop =4710
                             LayoutCachedWidth =7200
-                            LayoutCachedHeight =5500
+                            LayoutCachedHeight =5060
                         End
                     End
                 End
@@ -390,7 +390,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =7500
-                    Top =5550
+                    Top =5110
                     Width =3300
                     Height =450
                     FontSize =10
@@ -402,9 +402,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =5550
+                    LayoutCachedTop =5110
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =6000
+                    LayoutCachedHeight =5560
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -430,7 +430,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7500
-                    Top =6450
+                    Top =6010
                     Width =3300
                     Height =450
                     FontSize =10
@@ -442,9 +442,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7500
-                    LayoutCachedTop =6450
+                    LayoutCachedTop =6010
                     LayoutCachedWidth =10800
-                    LayoutCachedHeight =6900
+                    LayoutCachedHeight =6460
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

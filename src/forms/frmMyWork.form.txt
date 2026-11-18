@@ -220,7 +220,7 @@ Begin Form
                     Left =2850
                     Top =5000
                     Width =10450
-                    Height =1600
+                    Height =360
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
@@ -230,7 +230,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =5000
                     LayoutCachedWidth =13300
-                    LayoutCachedHeight =6600
+                    LayoutCachedHeight =5360
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

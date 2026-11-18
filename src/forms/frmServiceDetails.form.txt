@@ -119,7 +119,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =9000
+            Height =8100
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -142,31 +142,12 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin Label
-                    OverlapFlags =85
-                    TextFontFamily =34
-                    Left =400
-                    Top =950
-                    Width =12600
-                    Height =650
-                    FontSize =10
-                    ForeColor =4205854
-                    Name ="lblScope"
-                    Caption ="Apply, then Save draft to keep."
-                    FontName ="Segoe UI"
-                    LayoutCachedLeft =400
-                    LayoutCachedTop =950
-                    LayoutCachedWidth =13000
-                    LayoutCachedHeight =1600
-                    ThemeFontIndex =-1
-                    ForeThemeColorIndex =-1
-                End
                 Begin TextBox
                     OverlapFlags =85
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =1850
+                    Top =950
                     Width =7500
                     Height =450
                     FontSize =10
@@ -179,9 +160,9 @@ Begin Form
                         "s text is also supported."
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =1850
+                    LayoutCachedTop =950
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =2300
+                    LayoutCachedHeight =1400
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -191,7 +172,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =1900
+                            Top =1000
                             Width =5000
                             Height =400
                             FontSize =10
@@ -200,9 +181,9 @@ Begin Form
                             Caption ="Counseling date (yyyy-mm-dd)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =1900
+                            LayoutCachedTop =1000
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =2300
+                            LayoutCachedHeight =1400
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -213,7 +194,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =2700
+                    Top =1800
                     Width =7500
                     Height =450
                     FontSize =10
@@ -224,9 +205,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =1800
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =3150
+                    LayoutCachedHeight =2250
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -236,7 +217,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =2750
+                            Top =1850
                             Width =5000
                             Height =400
                             FontSize =10
@@ -245,9 +226,9 @@ Begin Form
                             Caption ="Counselor name (20)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =2750
+                            LayoutCachedTop =1850
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =3150
+                            LayoutCachedHeight =2250
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -258,7 +239,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =3550
+                    Top =2650
                     Width =7500
                     Height =450
                     FontSize =10
@@ -269,9 +250,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =3550
+                    LayoutCachedTop =2650
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4000
+                    LayoutCachedHeight =3100
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -281,7 +262,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =3600
+                            Top =2700
                             Width =5000
                             Height =400
                             FontSize =10
@@ -290,9 +271,9 @@ Begin Form
                             Caption ="Readiness summary (4)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =3600
+                            LayoutCachedTop =2700
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =4000
+                            LayoutCachedHeight =3100
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -304,7 +285,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =4400
+                    Top =3500
                     Width =7500
                     Height =450
                     FontSize =10
@@ -318,9 +299,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =4400
+                    LayoutCachedTop =3500
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =4850
+                    LayoutCachedHeight =3950
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -330,7 +311,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =4450
+                            Top =3550
                             Width =5000
                             Height =400
                             FontSize =10
@@ -339,9 +320,9 @@ Begin Form
                             Caption ="Readiness detail (15)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =4450
+                            LayoutCachedTop =3550
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =4850
+                            LayoutCachedHeight =3950
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -352,7 +333,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =5250
+                    Top =4350
                     Width =7500
                     Height =450
                     FontSize =10
@@ -365,9 +346,9 @@ Begin Form
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =5250
+                    LayoutCachedTop =4350
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =5700
+                    LayoutCachedHeight =4800
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
                     ThemeFontIndex =-1
@@ -377,7 +358,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =5300
+                            Top =4400
                             Width =5000
                             Height =400
                             FontSize =10
@@ -386,9 +367,9 @@ Begin Form
                             Caption ="Readiness date (yyyy-mm-dd)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =5300
+                            LayoutCachedTop =4400
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =5700
+                            LayoutCachedHeight =4800
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -400,7 +381,7 @@ Begin Form
                     TextFontFamily =34
                     IMESentenceMode =3
                     Left =5500
-                    Top =6100
+                    Top =5200
                     Width =7500
                     Height =450
                     FontSize =10
@@ -417,9 +398,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =5500
-                    LayoutCachedTop =6100
+                    LayoutCachedTop =5200
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =6550
+                    LayoutCachedHeight =5650
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -429,7 +410,7 @@ Begin Form
                             OverlapFlags =85
                             TextFontFamily =34
                             Left =400
-                            Top =6150
+                            Top =5250
                             Width =5000
                             Height =400
                             FontSize =10
@@ -438,9 +419,9 @@ Begin Form
                             Caption ="Billet subcategory (10)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
-                            LayoutCachedTop =6150
+                            LayoutCachedTop =5250
                             LayoutCachedWidth =5400
-                            LayoutCachedHeight =6550
+                            LayoutCachedHeight =5650
                             ThemeFontIndex =-1
                             ForeThemeColorIndex =-1
                         End
@@ -450,21 +431,22 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =400
-                    Top =7500
+                    Top =6600
                     Width =5800
                     Height =550
                     FontSize =10
                     TabIndex =6
                     ForeColor =16777215
                     Name ="cmdApply"
+                    ControlTipText ="Holds your changes until you Save draft."
                     Caption ="Apply pending values and return"
                     OnClick ="=ApplyServiceDetails()"
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =400
-                    LayoutCachedTop =7500
+                    LayoutCachedTop =6600
                     LayoutCachedWidth =6200
-                    LayoutCachedHeight =8050
+                    LayoutCachedHeight =7150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =9394980
@@ -489,7 +471,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =7000
-                    Top =7500
+                    Top =6600
                     Width =6000
                     Height =550
                     FontSize =10
@@ -501,9 +483,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =7000
-                    LayoutCachedTop =7500
+                    LayoutCachedTop =6600
                     LayoutCachedWidth =13000
-                    LayoutCachedHeight =8050
+                    LayoutCachedHeight =7150
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893

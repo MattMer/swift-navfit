@@ -148,7 +148,7 @@ Begin Form
             GridlineShade =65.0
         End
         Begin Section
-            Height =10500
+            Height =10700
             BackColor =16513012
             Name ="Detail"
             Begin
@@ -190,7 +190,7 @@ Begin Form
                     Left =2850
                     Top =1600
                     Width =10584
-                    Height =800
+                    Height =360
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
@@ -199,7 +199,7 @@ Begin Form
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1600
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =2400
+                    LayoutCachedHeight =1960
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -209,7 +209,7 @@ Begin Form
                     IMESentenceMode =3
                     ColumnCount =4
                     Left =2850
-                    Top =3050
+                    Top =2610
                     Width =10584
                     Height =3050
                     FontSize =10
@@ -221,9 +221,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =3050
+                    LayoutCachedTop =2610
                     LayoutCachedWidth =13434
-                    LayoutCachedHeight =6100
+                    LayoutCachedHeight =5660
                     ThemeFontIndex =-1
                     BackThemeColorIndex =-1
                     BorderThemeColorIndex =-1
@@ -232,7 +232,7 @@ Begin Form
                         Begin Label
                             OverlapFlags =93
                             Left =2850
-                            Top =3050
+                            Top =2610
                             Width =15
                             Height =15
                             FontSize =1
@@ -241,9 +241,9 @@ Begin Form
                             ThemeFontIndex =-1
                             Caption ="Recovery checkpoints"
                             LayoutCachedLeft =2850
-                            LayoutCachedTop =3050
+                            LayoutCachedTop =2610
                             LayoutCachedWidth =2865
-                            LayoutCachedHeight =3065
+                            LayoutCachedHeight =2625
                         End
                     End
                 End
@@ -251,7 +251,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =6525
+                    Top =6085
                     Width =3024
                     Height =550
                     FontSize =10
@@ -263,9 +263,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =6525
+                    LayoutCachedTop =6085
                     LayoutCachedWidth =5874
-                    LayoutCachedHeight =7075
+                    LayoutCachedHeight =6635
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -290,7 +290,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =6126
-                    Top =6525
+                    Top =6085
                     Width =3024
                     Height =550
                     FontSize =10
@@ -302,9 +302,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =6126
-                    LayoutCachedTop =6525
+                    LayoutCachedTop =6085
                     LayoutCachedWidth =9150
-                    LayoutCachedHeight =7075
+                    LayoutCachedHeight =6635
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -329,7 +329,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =9402
-                    Top =6525
+                    Top =6085
                     Width =3024
                     Height =550
                     FontSize =10
@@ -341,9 +341,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =9402
-                    LayoutCachedTop =6525
+                    LayoutCachedTop =6085
                     LayoutCachedWidth =12426
-                    LayoutCachedHeight =7075
+                    LayoutCachedHeight =6635
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15263996
@@ -368,7 +368,7 @@ Begin Form
                     OverlapFlags =85
                     TextFontFamily =34
                     Left =2850
-                    Top =7375
+                    Top =6935
                     Width =2520
                     Height =550
                     FontSize =10
@@ -380,9 +380,9 @@ Begin Form
                     FontName ="Segoe UI"
 
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =7375
+                    LayoutCachedTop =6935
                     LayoutCachedWidth =5370
-                    LayoutCachedHeight =7925
+                    LayoutCachedHeight =7485
                     ForeThemeColorIndex =-1
                     Gradient =0
                     BackColor =15985893
@@ -804,7 +804,7 @@ Begin Form
                     OverlapFlags =93
                     TextFontFamily =34
                     Left =2850
-                    Top =2700
+                    Top =2260
                     Width =800
                     Height =300
                     FontSize =9
@@ -815,9 +815,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmRecovery\",\"lstRecoveries\",0)"
                     Tag ="SORT:lstRecoveries:0"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =3650
-                    LayoutCachedHeight =3000
+                    LayoutCachedHeight =2560
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -826,7 +826,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
-                    Top =2700
+                    Top =2260
                     Width =800
                     Height =300
                     FontSize =9
@@ -837,9 +837,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmRecovery\",\"lstRecoveries\",1)"
                     Tag ="SORT:lstRecoveries:1"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =3650
-                    LayoutCachedHeight =3000
+                    LayoutCachedHeight =2560
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -848,7 +848,7 @@ Begin Form
                     OverlapFlags =223
                     TextFontFamily =34
                     Left =2850
-                    Top =2700
+                    Top =2260
                     Width =800
                     Height =300
                     FontSize =9
@@ -859,9 +859,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmRecovery\",\"lstRecoveries\",2)"
                     Tag ="SORT:lstRecoveries:2"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =3650
-                    LayoutCachedHeight =3000
+                    LayoutCachedHeight =2560
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
@@ -870,7 +870,7 @@ Begin Form
                     OverlapFlags =215
                     TextFontFamily =34
                     Left =2850
-                    Top =2700
+                    Top =2260
                     Width =800
                     Height =300
                     FontSize =9
@@ -881,9 +881,9 @@ Begin Form
                     OnClick ="=UXSortList(\"frmRecovery\",\"lstRecoveries\",3)"
                     Tag ="SORT:lstRecoveries:3"
                     LayoutCachedLeft =2850
-                    LayoutCachedTop =2700
+                    LayoutCachedTop =2260
                     LayoutCachedWidth =3650
-                    LayoutCachedHeight =3000
+                    LayoutCachedHeight =2560
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
