@@ -277,7 +277,7 @@ Begin Form
                     Height =600
                     FontSize =10
                     Name ="lblNoteIntro"
-                    Caption ="Messages about this report from everyone who works on it, oldest first."
+                    Caption ="Messages about this report, oldest first."
                     FontName ="Segoe UI"
                     Tag ="VIEW:Notes"
                     LayoutCachedLeft =200
@@ -948,8 +948,7 @@ Begin Form
                             Height =500
                             FontSize =10
                             Name ="lblCalculations"
-                            Caption ="Trait calculations - pending editor values, saved values, and summary-group basi"
-                                "s"
+                            Caption ="Trait calculations"
                             FontName ="Segoe UI"
                             Tag ="VIEW:Calculations"
                             LayoutCachedLeft =200

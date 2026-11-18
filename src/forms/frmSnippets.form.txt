@@ -194,8 +194,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Insert adds a snippet to the end of the open draft. Edit it for the member befor"
-                        "e saving."
+                    Caption ="Inserts at the end of the draft. Tailor it before saving."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1550

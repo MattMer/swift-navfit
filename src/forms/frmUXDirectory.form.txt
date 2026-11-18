@@ -148,8 +148,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Reports link to members by SSN or a unique name. Editing a profile does not chan"
-                        "ge reports."
+                    Caption ="Editing a profile does not change reports."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -416,7 +415,7 @@ Begin Form
                     TabIndex =6
                     ForeColor =4205854
                     Name ="cmdHistory"
-                    Caption ="Written reports and prior evaluations for selected member"
+                    Caption ="Member history"
                     OnClick ="=UXDirectoryHistory()"
                     FontName ="Segoe UI"
 

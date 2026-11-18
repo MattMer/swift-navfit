@@ -460,7 +460,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Choose a group to manage members, shared report blocks, review and comparison."
+                    Caption ="Choose a group to work on."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2880
                     LayoutCachedTop =1920

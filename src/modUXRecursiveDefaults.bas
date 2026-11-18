@@ -141,7 +141,7 @@ Finished:
  DoCmd.Hourglass False
  Exit Function
 Restore:
- Forms!frmUXBulk!uxStatus.Caption = "Not saved - cancelled. Previous field value restored; no report revisions changed."
+ Forms!frmUXBulk!uxStatus.Caption = "Cancelled. Nothing changed."
  c.Value = confirmedValues(key)
  Forms!frmUXBulk!uxBlocks.Form.Controls("value" & key) = c.Value
  GoTo Finished
@@ -261,7 +261,7 @@ Failed:
  SwiftClose r, scopeFailure, "r"
  'Advisory only: never raise into the confirmation that called us after a commit.
  On Error Resume Next
- Forms!frmUXBulk!uxScope.Caption = "Scope unavailable. Exact affected reports and approvals are checked before confirmation."
+ Forms!frmUXBulk!uxScope.Caption = "Scope unavailable. It is checked before you confirm."
  Forms!frmUXBulk!uxScope.ControlTipText = Left$(SwiftFailureText(scopeFailure), 255)
  If Err.Number <> 0 Then SwiftCleanupError scopeFailure, "show scope feedback", Err.Number
  On Error GoTo 0

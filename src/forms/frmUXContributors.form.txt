@@ -172,8 +172,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
-                    Caption ="Contributors label who did the work; they are not sign-ins. Switch to yourself b"
-                        "efore you work. Deleting someone keeps their name on past work."
+                    Caption ="Contributors label work; they are not sign-ins. Deleting someone keeps their nam"
+                        "e on past work."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

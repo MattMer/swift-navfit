@@ -381,7 +381,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Choose the counseling century, then select groups and Preview."
+                    Caption ="Choose the century, select groups, then Preview."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =10800

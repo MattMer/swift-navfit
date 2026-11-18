@@ -199,8 +199,8 @@ Begin Form
                     Height =750
                     FontSize =10
                     Name ="lblInfo"
-                    Caption ="Pairs of profiles that may be the same Sailor, strongest match first. Select a p"
-                        "air, preview it, then merge it or mark it as different Sailors."
+                    Caption ="Possible duplicates, strongest first. Select a pair to merge it or mark it diffe"
+                        "rent."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =300
                     LayoutCachedTop =200
@@ -431,7 +431,7 @@ Begin Form
                     FontSize =10
                     TabIndex =7
                     Name ="cmdPreview"
-                    Caption ="Preview identities and all affected links"
+                    Caption ="Preview merge"
                     OnClick ="=UXDirectoryMergePreview()"
                     FontName ="Segoe UI"
 
@@ -513,8 +513,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblReason"
-                            Caption ="Reason (required): why these are the same Sailor, or different Sailors. No SSNs "
-                                "or DoD IDs."
+                            Caption ="Reason (required; no SSNs or DoD IDs)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =7550
@@ -587,8 +586,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblHistory"
-                            Caption ="Merge history - undo restores original links only if no later changes affect the"
-                                " members"
+                            Caption ="Merge history"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =9200

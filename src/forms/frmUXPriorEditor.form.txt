@@ -826,7 +826,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="This record does not change the current report."
+                    Caption ="Does not change the current report."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =9450

@@ -107,10 +107,9 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInstructions"
-                    Caption ="Swift cannot start until Access enables its code. Choose Enable Content in the y"
-                        "ellow bar, then close and reopen this file. No Enable Content button? Close Acce"
-                        "ss, right-click the file, choose Properties > Unblock, and reopen it. Still bloc"
-                        "ked? Ask IT to trust the folder that holds Swift NAVFIT."
+                    Caption ="Choose Enable Content in the yellow bar, then reopen this file. No bar? Close Ac"
+                        "cess, right-click the file > Properties > Unblock. Still blocked? Ask IT to trus"
+                        "t this folder."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =500
                     LayoutCachedTop =1400

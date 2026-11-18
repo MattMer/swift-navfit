@@ -129,8 +129,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Profiles label who did the work; they are not sign-ins. Separate copies do not s"
-                        "ync."
+                    Caption ="Profiles label work; they are not sign-ins."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

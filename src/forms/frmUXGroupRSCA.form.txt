@@ -593,7 +593,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblExcludes"
-                            Caption ="These reports have not yet been included in the selected BOL totals."
+                            Caption ="The selected BOL totals do not include these reports"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =3222
                             LayoutCachedTop =4250

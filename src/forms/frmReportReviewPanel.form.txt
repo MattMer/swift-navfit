@@ -1026,7 +1026,7 @@ Begin Form
                             Height =500
                             FontSize =10
                             Name ="lblAssignments"
-                            Caption ="Assigned reviews (only the assigned reviewer can accept or return)"
+                            Caption ="Assigned reviews"
                             FontName ="Segoe UI"
                             Tag ="ASSIGNMENT"
                             LayoutCachedLeft =200

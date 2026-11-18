@@ -277,8 +277,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblBasis"
-                            Caption ="Officer category basis: confirm Active or Reserve from personnel records; block "
-                                "5 alone does not establish this."
+                            Caption ="Officer category: confirm Active or Reserve from personnel records."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2000
@@ -324,8 +323,8 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblNote"
-                            Caption ="Review basis and UIC authority. Dual-hatted grouping requires the applicable fla"
-                                "g-officer/SNDL authority; this app does not certify it."
+                            Caption ="Dual-hatted grouping needs flag-officer/SNDL authority. Swift does not certify i"
+                                "t."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =3200
@@ -360,8 +359,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblComplete"
-                            Caption ="I reviewed the complete eligible command roster for this group. (Recorded locall"
-                                "y; it does not clear findings.)"
+                            Caption ="I reviewed the complete eligible roster for this group"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =850
                             LayoutCachedTop =5000

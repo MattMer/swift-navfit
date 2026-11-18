@@ -547,8 +547,8 @@ Public Function LoadEditor() As Boolean
         f!cmdRestore.Enabled = Not r!IsArchived
         r.Close: f!cboKind.Enabled = False
         Select Case NAVFITImportScope(id)
-            Case "Full report": f!lblImportOrigin.Caption = "Full NAVFIT report import: supported official fields mapped; native-only values retained in provenance."
-            Case "Narrative only": f!lblImportOrigin.Caption = "Imported narrative only. Other official fields remain unmapped; source values retained locally."
+            Case "Full report": f!lblImportOrigin.Caption = "Imported from NAVFIT."
+            Case "Narrative only": f!lblImportOrigin.Caption = "Imported narrative only."
         End Select
     End If
     If id = 0 Then UXSeedGlobalDefaults
@@ -779,7 +779,7 @@ Public Function UXCommandDetailsLoad() As Boolean
     With Forms!frmUXCommandDetails
         !txtDetailsCommand = Nz(DLookup("CommandName", "Workspace"), "")
         !txtDetailsUIC = Nz(DLookup("CommandUIC", "Workspace"), "")
-        !lblCommandStatus.Caption = "The command name and UIC appear at the top of each screen. New reports start with this UIC; reports already written keep theirs."
+        !lblCommandStatus.Caption = "New reports start with this UIC; existing reports keep theirs."
     End With
     UXCommandDetailsLoad = True
 End Function

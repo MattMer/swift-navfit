@@ -224,8 +224,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Reviews apply to a saved revision; a later save makes them stale. Accepted is a "
-                        "local outcome, not official approval."
+                    Caption ="Reviews cover a saved version. Accepted is local, not official approval."
                     FontName ="Segoe UI"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
@@ -618,7 +617,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblNotes"
-                            Caption ="Assignment instructions or outcome notes (return requires a reason)"
+                            Caption ="Notes (a return needs a reason)"
                             FontName ="Segoe UI"
                             Tag ="MWX:body"
                             LayoutCachedLeft =2850
@@ -2454,7 +2453,7 @@ Begin Form
                     Name ="lblDepartureEntry"
                     FontName ="Segoe UI"
                     ThemeFontIndex =-1
-                    Caption ="Detachment date (for Confirm) and reason (required to Dismiss)"
+                    Caption ="Detachment date (Confirm) or reason (Dismiss)"
                     Tag ="MWX:body"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =6350

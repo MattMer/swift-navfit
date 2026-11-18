@@ -683,7 +683,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblNew"
-                    Caption ="Create a new reusable route (reviewers run in the order added)"
+                    Caption ="New route (reviewers run in the order added)"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =4150
@@ -1062,7 +1062,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Select a template to inspect its ordered steps, or create a new one."
+                    Caption ="Select a template, or create one."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =8100

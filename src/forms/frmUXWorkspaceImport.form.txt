@@ -324,7 +324,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblProgress"
-                            Caption ="Import activity - progress appears here after you start"
+                            Caption ="Import activity"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =350
                             LayoutCachedTop =4350

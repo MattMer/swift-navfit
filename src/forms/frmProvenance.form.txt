@@ -168,8 +168,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Read-only source values as imported, including unmapped fields. This is a record"
-                        " of the source, not the report's current data."
+                    Caption ="Source values as imported. Read only."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

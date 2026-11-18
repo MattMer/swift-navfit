@@ -147,8 +147,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Choose the group's members and check paygrade and eligibility. Archived members "
-                        "are removed separately."
+                    Caption ="Choose the group's members and check paygrade and eligibility."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000

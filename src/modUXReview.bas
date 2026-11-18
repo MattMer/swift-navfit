@@ -119,7 +119,7 @@ Public Function UXReviewStatus() As Boolean
     f!cboRun.Requery
     f!cboTemplate.Requery
     f!lblStatus.Caption = message
-    f!lblUnavailable.Caption = "Local approval is not an official signature or submission. Greyed-out actions need the reviewer holding the report, the route's requester or the final reviewer; archived reports must be recovered first."
+    f!lblUnavailable.Caption = "Local approval is not an official signature. Greyed-out actions belong to the current reviewer or requester."
     UXApplyVisual f
     UXReviewStatus = True
 End Function

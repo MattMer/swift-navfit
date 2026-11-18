@@ -80,7 +80,7 @@ Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boole
     If Not createNew Then
         If IsNull(Forms!frmUXMemberHistory!lstHistory) Then Exit Function
         priorID = CLng(Forms!frmUXMemberHistory!lstHistory)
-        If priorID < 0 Then Forms!frmUXMemberHistory!lblStatus.Caption = "Saved Swift reports are maintained in Reports. Only manually recorded prior evaluations are edited here.": Exit Function
+        If priorID < 0 Then Forms!frmUXMemberHistory!lblStatus.Caption = "Edit Swift reports in Reports. Only prior evaluations are edited here.": Exit Function
     End If
     DoCmd.OpenForm "frmUXPriorEditor": Set f = Forms!frmUXPriorEditor
     f!cboKind = "EVAL": f!cboObservation = "Observed": f!txtRank = MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & historyMember)

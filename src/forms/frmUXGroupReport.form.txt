@@ -199,7 +199,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblMember"
-                            Caption ="Choose an existing command member, or enter a new member below"
+                            Caption ="Choose a command member, or enter a new one below"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2500
@@ -517,7 +517,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Create saves a draft in this group with the group's report type and defaults."
+                    Caption ="Creates a draft with the group's report type and defaults."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =6450

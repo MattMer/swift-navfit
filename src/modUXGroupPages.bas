@@ -70,7 +70,7 @@ Public Function UXGroupNavigate(ByVal screen As String, ByVal page As Long) As B
     End If
     If CurrentProject.AllForms("frmUXBulk").IsLoaded Then
         If UXGroupBulkPending() Then
-            Forms!frmUXBulk!uxStatus.Caption = "Apply your previewed changes or close this tool to discard them before changing group pages."
+            Forms!frmUXBulk!uxStatus.Caption = "Apply or discard the preview first."
             Forms!frmUXBulk.SetFocus: Exit Function
         End If
         DoCmd.Close acForm, "frmUXBulk", acSaveNo

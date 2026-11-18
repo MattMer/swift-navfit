@@ -179,9 +179,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Exports the saved version of every report in this summary group. Findings do not"
-                        " block export; pending edits are not included. This is not approval or submissio"
-                        "n."
+                    Caption ="Exports each report's saved version; pending edits are left out. Not approval or"
+                        " submission."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000
@@ -606,7 +605,7 @@ Begin Form
                     TabIndex =11
                     ForeColor =4205854
                     Name ="cmdPreview"
-                    Caption ="Preview returned file against export baseline"
+                    Caption ="Preview returned file"
                     OnClick ="=UXPreviewNAVFITReturn()"
                     FontName ="Segoe UI"
 

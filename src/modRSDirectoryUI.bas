@@ -88,7 +88,7 @@ Public Function RSShowLink() As Boolean
     Dim f As Access.Form, member As Variant, text As String, differs As String
     Set f = Forms!frmUXSeniorEditor: member = PendingMember()
     If IsNull(member) Then
-        f!lblDirectoryLink.Caption = "Not linked to a command member. Link one to fill name, grade, designator, UIC and SSN from the member directory."
+        f!lblDirectoryLink.Caption = "Not linked to a command member."
         f!cmdLinkMember.Caption = "Link to member"
     Else
         text = Nz(MajorScalar("SELECT IIf(Len(Nz(ReportName,""""))=0,FullName,ReportName) & IIf(Len(Nz(RankRate,""""))=0,'',' (' & RankRate & ')') FROM CommandMember WHERE MemberID=" & member), "a missing member")
@@ -107,7 +107,7 @@ Public Function RSApplyMemberLink(ByVal memberID As Long) As Boolean
         If Not IsNull(values(CStr(key))) Then f.Controls("rs" & key) = values(CStr(key))
     Next
     RSShowLink
-    f!lblStatus.Caption = "Directory details copied. Check the title, then save record details. Saved reports remain unchanged."
+    f!lblStatus.Caption = "Details copied. Check the title, then save."
     RSApplyMemberLink = True
 End Function
 Public Function RSLinkMember() As Boolean
@@ -122,7 +122,7 @@ Public Function RSLinkUpdate() As Boolean
 End Function
 Public Function RSUnlinkMember() As Boolean
     Forms!frmUXSeniorEditor!txtMemberID = Null: RSShowLink
-    Forms!frmUXSeniorEditor!lblStatus.Caption = "Directory link removed. Typed values stay. Save record details to keep this change."
+    Forms!frmUXSeniorEditor!lblStatus.Caption = "Link removed; typed values stay. Save to keep."
     RSUnlinkMember = True
 End Function
 'Member picker. Designator and UIC come from each member's RUAD profile.
@@ -140,11 +140,11 @@ Public Function RSLoadPicker() As Boolean
         f!cmdManual.Visible = False
     ElseIf pickerMode = "contributor" Then
         f.Caption = "Add a contributor from the directory": f!lblHeading.Caption = f.Caption
-        f!lblIntro.Caption = "Choose the command member to add as a contributor. To add someone not in the directory, type their name on My Work."
+        f!lblIntro.Caption = "Choose the command member to add as a contributor."
         f!cmdManual.Visible = False
     ElseIf Left$(pickerMode, 5) = "role:" Then
         f.Caption = "Fill " & RSPickerRoleName() & " from the directory": f!lblHeading.Caption = f.Caption
-        f!lblIntro.Caption = "Choose the command member. The field is filled the way the report form expects; you can still edit it before saving."
+        f!lblIntro.Caption = "Choose the command member. You can edit the field before saving."
         'Filling a field has no status to show: drop the empty Status column.
         f!lstMembers.ColumnWidths = "0;4300;1500;1300;1500;0"
         f!cmdManual.Visible = False
@@ -307,7 +307,7 @@ Public Function RSAddBaselineUI() As Boolean
     asOf = DateSerial(CInt(Left$(dateEntry, 4)), CInt(Mid$(dateEntry, 6, 2)), CInt(Right$(dateEntry, 2)))
     If Format$(asOf, "yyyy-mm-dd") <> dateEntry Then Err.Raise vbObjectError + 4822, "modRSDirectoryUI.RSAddBaselineUI", "Enter a valid as-of date."
     id = RSAddBaseline(f!txtSeniorID, Nz(f!cboPaygrade, ""), asOf, average, CLng(count), total, Nz(f!txtSource, ""))
-    Call RSReloadBaselines: f!lblStatus.Caption = "Historical baseline saved. Counts are graded traits, not reports. Exact trait sum avoids rounded-RSCA estimates."
+    Call RSReloadBaselines: f!lblStatus.Caption = "Baseline saved."
     f!txtRSCA = Null: f!txtTraitCount = Null: f!txtTraitSum = Null: f!txtSource = Null: f!txtAsOf = Null
     RSAddBaselineUI = True: Exit Function
 Failed:

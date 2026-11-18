@@ -131,8 +131,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Dates are y"
-                        "yyy-mm-dd."
+                    Caption ="Apply, then Save draft to keep. Dates are yyyy-mm-dd."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -151,7 +150,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIdentifiers"
-                    Caption ="Reporting senior identifiers - digits only; leading zeros retained"
+                    Caption ="Reporting senior identifiers (digits only)"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1650

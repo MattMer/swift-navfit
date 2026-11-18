@@ -173,8 +173,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblIntro"
-                    Caption ="The summary letter prints the address exactly as entered, with the UIC, so inclu"
-                        "de the command name. Choose a group's ISIC on its Create PDFs screen."
+                    Caption ="The summary letter prints this address as entered, so include the command name."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

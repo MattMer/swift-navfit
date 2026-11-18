@@ -395,8 +395,7 @@ Begin Form
                             BorderColor =16777215
                             ForeColor =16777215
                             Name ="lblDispose"
-                            Caption ="Dispose of drafts now (superseded draft versions, recovery and unposted note dra"
-                                "fts)"
+                            Caption ="Delete superseded drafts, recovery and unposted notes now"
                             FontName ="Segoe UI"
                             LeftPadding =0
                             TopPadding =0

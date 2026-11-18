@@ -406,6 +406,6 @@ Public Function UXWorkspacePreviewStart() As Boolean
  Forms!frmUXWorkspaceImport.Modal = False
  Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
  Forms!frmUXWorkspaceImport!cmdClose.Enabled = True
- Forms!frmUXWorkspaceImport!lblStatus.Caption = "Choose a source or resume the saved preview. Closing retains it; Cancel removes only this contributor's saved preview."
+ Forms!frmUXWorkspaceImport!lblStatus.Caption = "Choose a source, or resume the saved preview."
  UXWorkspacePreviewStart = True
 End Function

@@ -1114,7 +1114,7 @@ Begin Form
                     BackColor =13627647
                     ForeColor =18298
                     Name ="lblStatus"
-                    Caption ="Saved values are the baseline. Pending edits are proposals until applied."
+                    Caption ="Pending edits are proposals until applied."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
                     LayoutCachedTop =11650

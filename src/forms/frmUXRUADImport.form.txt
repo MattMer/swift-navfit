@@ -183,7 +183,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblSteps"
-                    Caption ="Choose roster > Review matches and full values > Preview > Apply > Results"
+                    Caption ="Choose > Review > Preview > Apply > Results"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =900
@@ -337,7 +337,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblCompleteRoster"
-                            Caption ="This is the complete roster for its UICs (members missing from it are flagged as departing)"
+                            Caption ="Complete roster: flag missing members as departing"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =6180
                             LayoutCachedTop =1950
@@ -520,8 +520,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblReplace"
-                            Caption ="Use incoming RUAD values for manually changed roster fields (core identity field"
-                                "s stay unchanged)"
+                            Caption ="Replace manually changed roster fields"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =6480
                             LayoutCachedTop =3390
@@ -623,8 +622,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Choose a CSV. Nothing changes until you apply a preview, and no member is ever d"
-                        "eleted or archived automatically."
+                    Caption ="Choose a roster. Nothing changes until you apply, and no one is deleted."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =6600

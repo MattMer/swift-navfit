@@ -26,7 +26,7 @@ Public Function UXEditorPrintPreview() As Boolean
     End If
     If folder = "" Then
         'The page cache holds report data, so it needs the protected PDF output folder.
-        If PDFOutputOpenReport() Then Forms!frmPDFOutput!lblStatus.Caption = "Choose a PDF output folder once. Preview keeps its temporary page file there; then use Preview in the report again."
+        If PDFOutputOpenReport() Then Forms!frmPDFOutput!lblStatus.Caption = "Choose an output folder, then Preview again."
         Exit Function
     End If
     If CurrentProject.AllForms("frmPDFOutput").IsLoaded Then DoCmd.Close acForm, "frmPDFOutput", acSaveNo
@@ -73,7 +73,7 @@ Public Function PDFOutputRefreshPreview() As Boolean
         !lstReports.RowSource = text
         !lblScope.Caption = current("Title") & " | " & current("Reports").Count & " reports | Alphabetical by last name"
         !txtFindings = "Captured " & Format$(current("Captured"), "yyyy-mm-dd h:nn:ss AM/PM") & ". Current-draft mode reads pending values without saving or discarding them. Pending group cells take precedence for the same field; both buffers remain unchanged." & vbCrLf & "Findings, missing values and report status never prevent PDF generation. " & PDF_OVERFLOW_HELP & vbCrLf & "Signatures, unrecorded qualifications/ranking/RSCA and submission acceptance remain blank. A computed PSG RSCA is not substituted for an official report RSCA. Choose a protected export folder; PDFs may contain identifiers."
-        !lblStatus.Caption = "Preview captured. All listed reports will be included. Choose the output format, then create PDFs."
+        !lblStatus.Caption = "Preview captured. Choose the format, then create PDFs."
         !cmdGenerate.Enabled = True: !cmdOpenFolder.Enabled = False: !cmdOpenPDF.Enabled = False
     End With
     PDFOutputRefreshPreview = True: Exit Function
@@ -159,7 +159,7 @@ Public Function PDFOutputOpenResult(ByVal folderOnly As Boolean) As Boolean
     Application.FollowHyperlink path
     PDFOutputOpenResult = True: Exit Function
 Failed:
-    Forms!frmPDFOutput!lblStatus.Caption = "Couldn't open it from here. Copy the folder path from Findings and output information and paste it into File Explorer."
+    Forms!frmPDFOutput!lblStatus.Caption = "Couldn't open the folder. Copy its path from the findings into File Explorer."
 End Function
 'The output folder and files, in a box the user can select and copy from.
 Public Function PDFOutputResultText(ByVal folder As String, ByVal files As Collection) As String

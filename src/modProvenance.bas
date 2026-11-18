@@ -47,7 +47,7 @@ Public Function LoadProvenanceFields() As Boolean
     Forms!frmProvenance!lstFields.RowSource = sql
     Forms!frmProvenance!lstFields.Requery
     Forms!frmProvenance!txtValue = Null
-    Forms!frmProvenance!lblValue.Caption = "Select a retained field. Source row is a capture ordinal, not the NAVFIT report ID."
+    Forms!frmProvenance!lblValue.Caption = "Select a field."
     Forms!frmProvenance!lblCount.Caption = Forms!frmProvenance!lstFields.ListCount & " retained fields shown"
     LoadProvenanceFields = True
 End Function

@@ -152,8 +152,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply holds your changes until you Save draft; Cancel discards them. Suggestions"
-                        " are reference terms; Navy rules are not checked."
+                    Caption ="Apply, then Save draft to keep."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

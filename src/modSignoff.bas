@@ -168,7 +168,7 @@ Public Function UXSignedEditGuard() As Boolean
     Call ReopenSignedReport(id, reason)
     Forms!frmEditor!cmdSave.Enabled = True: Forms!frmEditor!cboKind.Locked = False
     Call UXHeaderReviewState
-    Forms!frmEditor!uxLocked.Caption = "Reopened for correction. Mark the corrected report signed again when it is re-signed."
+    Forms!frmEditor!uxLocked.Caption = "Reopened. Mark it signed again once re-signed."
     Exit Function
 Failed:
     Forms!frmEditor!uxError.Caption = "Could not reopen: " & Err.Description
@@ -193,7 +193,7 @@ Public Function UXSignoffOpen(Optional ByVal reportID As Long = 0) As Boolean
     DoCmd.OpenForm "frmUXSignoff": Set f = Forms!frmUXSignoff
     f!lblReport.Caption = UXMemberLabel(reportID) & " | " & Nz(MajorScalar("SELECT FormKind FROM Report WHERE ReportID=" & reportID), "") & " | saved revision " & Nz(MajorScalar("SELECT RevisionNumber FROM ReportRevision WHERE RevisionID=" & signoffRevision), "")
     f!txtSignedOn = Date: f!chkDispose = False
-    f!lblStatus.Caption = "Records that this saved version was signed outside Swift. It is not an official signature or submission. The report becomes read only; editing a field later asks whether to reopen it."
+    f!lblStatus.Caption = "Records that this version was signed outside Swift; not an official signature. The report becomes read only."
     Dim holderWhere As String
     If ReviewHolder(reportID, holderWhere) > 0 Then f!lblStatus.Caption = "This report is under review (" & holderWhere & "). Marking it signed ends that review. " & f!lblStatus.Caption
     UXSignoffOpen = True: Exit Function

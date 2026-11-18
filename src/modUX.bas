@@ -263,11 +263,11 @@ Public Function UXLoadDecision() As Boolean
     With Forms!frmUXDecision
         If Nz(.OpenArgs, "") = "Review" Then
             !lblHeading.Caption = "Use which report values?"
-            !lblBody.Caption = "Reviews use the saved version. Save your pending edits first, use the saved version and keep your edits, or cancel."
+            !lblBody.Caption = "Reviews use the saved version. Save first, or review the saved version and keep your edits."
             !cmdDiscard.Caption = "Use saved version"
         ElseIf Nz(.OpenArgs, "") = "Senior" Then
             !lblHeading.Caption = "Keep reporting senior changes?"
-            !lblBody.Caption = "Save pending record details and any completed RSCA baseline, discard changes, or keep editing."
+            !lblBody.Caption = "Save, discard, or keep editing."
             !cmdDiscard.Caption = "Discard changes"
         Else
             !lblHeading.Caption = "Keep your report changes?"
@@ -656,7 +656,7 @@ Public Function UXOpenComparison() As Boolean
     Set f = Forms!frmMajorWorkbench
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then
         Forms!frmUXComparison.SetFocus
-        f!lblStatus.Caption = "A comparison is already open. Finish or close it before opening another group comparison."
+        f!lblStatus.Caption = "Close the open comparison first."
         Exit Function
     End If
     If Nz(f!uxMode, "Members") = "Comparison" Then

@@ -147,7 +147,7 @@ Begin Form
                     Width =7800
                     Height =850
                     Name ="lblInfo"
-                    Caption ="Choose who is working. The name labels your work; it is not a sign-in."
+                    Caption ="Who is working? This labels your work; it is not a sign-in."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1050

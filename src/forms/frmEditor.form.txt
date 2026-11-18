@@ -809,7 +809,7 @@ Begin Form
                     BackColor =13627647
                     ForeColor =18298
                     Name ="lblRecovery"
-                    Caption ="Pending edits checkpoint automatically every 30 seconds."
+                    Caption ="Edits checkpoint every 30 seconds."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =5250
                     LayoutCachedTop =8350
@@ -7837,8 +7837,7 @@ Begin Form
                     Height =900
                     FontSize =10
                     Name ="uxReviewCommentGuide"
-                    Caption ="Read comments and reply. Approvals are under Review steps; working notes are und"
-                        "er Report notes."
+                    Caption ="Read and reply. Approvals are under Review steps."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =4850

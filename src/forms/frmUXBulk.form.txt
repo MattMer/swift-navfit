@@ -1624,7 +1624,7 @@ Begin Form
                     FontSize =9
                     ForeColor =4205854
                     Name ="uxScope"
-                    Caption ="Scope is checked before editing and again before confirmation."
+                    Caption ="Scope is checked again before you confirm."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =2500

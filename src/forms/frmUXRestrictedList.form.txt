@@ -152,8 +152,8 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblBasis"
-                    Caption ="Allowed phrases are skipped on every report. A dismissed finding stays hidden wh"
-                        "ile its words are unchanged. Remove either to bring its findings back."
+                    Caption ="Allowed phrases are skipped. A dismissed finding stays hidden until its words ch"
+                        "ange."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -351,7 +351,7 @@ Begin Form
                             FontSize =9
                             ForeColor =4205854
                             Name ="lblChecks"
-                            Caption ="Checks (double-click or Turn on/off to change one)"
+                            Caption ="Checks (double-click to turn on or off)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =400
                             LayoutCachedTop =2200

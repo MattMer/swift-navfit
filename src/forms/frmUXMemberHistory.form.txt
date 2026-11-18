@@ -167,7 +167,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Recorded prior evaluations, saved Swift reports and counseling sessions."
+                    Caption ="Prior evaluations, Swift reports and counseling."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =435
                     LayoutCachedTop =1680

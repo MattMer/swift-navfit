@@ -145,7 +145,7 @@ Public Function UXISICSave() As Boolean
     id = ISICSave(isicID, isicVersion, Nz(f!txtISICName, ""), Nz(f!txtISICUIC, ""), Nz(f!txtISICAddress, ""))
     Call UXISICLoad
     f!lstISICs = id: Call UXISICSelect
-    f!lblStatus.Caption = "Saved. Choose this ISIC for a group's summary letter when creating its PDFs."
+    f!lblStatus.Caption = "Saved."
     UXISICSave = True: Exit Function
 Failed:
     message = Err.Description

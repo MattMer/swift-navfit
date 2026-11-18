@@ -145,8 +145,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Accept replaces only this saved narrative; other fields are unchanged. Close the"
-                        " editor first."
+                    Caption ="Accept replaces only this narrative. Close the editor first."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1600

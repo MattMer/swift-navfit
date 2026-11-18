@@ -211,8 +211,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Select reports, then create a group, preview a field change, route a saved revis"
-                        "ion or propose a meeting change."
+                    Caption ="Select reports, then choose an action."
                     FontName ="Segoe UI"
                     Tag ="WBX:Hidden"
                     LayoutCachedLeft =2866
@@ -2541,7 +2540,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Ready. Select a detail row to see its full values."
+                    Caption ="Select a row to see its full values."
                     FontName ="Segoe UI"
                     Tag ="WBX:Members:Defaults:Review:Comparison:History"
                     LayoutCachedLeft =2880

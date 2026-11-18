@@ -127,8 +127,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Writes a new, verified copy of all your data; existing files are never overwritt"
-                        "en. To restore, open a new blank workspace and import the backup here."
+                    Caption ="Saves a verified copy of all your data. Existing files are never overwritten."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950
@@ -307,8 +306,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Restore works only into a blank workspace. Recover any pending checkpoints after"
-                        " restoring."
+                    Caption ="Restore works only into a blank workspace."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =8800

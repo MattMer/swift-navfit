@@ -439,8 +439,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Reporting senior details and RSCA baselines by paygrade. Saved reports change on"
-                        "ly when you apply details to them."
+                    Caption ="Senior details and RSCA baselines by paygrade."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2866
                     LayoutCachedTop =1800

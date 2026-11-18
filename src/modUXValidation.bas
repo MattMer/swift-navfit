@@ -64,7 +64,7 @@ End Function
 Public Function UXEditorChanged() As Boolean
     validationDirty = True: recoveryDirty = True
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
-        Forms!frmEditor!lblRecovery.Caption = "Recovery: latest edits are not checkpointed yet. Save draft or keep this editor open."
+        Forms!frmEditor!lblRecovery.Caption = "Latest edits not checkpointed yet."
         If Forms!frmEditor!cmdSave.Enabled Then
             Forms!frmEditor!uxLocked.Caption = "Next: Save draft; review uses saved values."
             Dim action As Variant
@@ -152,14 +152,14 @@ Public Function UXLoadValidation() As Boolean
     id = CLng(Mid$(Nz(f.OpenArgs, "R:0"), 3))
     If Left$(Nz(f.OpenArgs, "R:0"), 2) = "G:" Then
         Set result = ValidateLiveGroup(id)
-        f!lblBasis.Caption = "All group members' saved values, plus the open member's pending values. Checks only; nothing is changed."
+        f!lblBasis.Caption = "Saved values, plus the open member's pending edits."
     Else
         If CurrentProject.AllForms("frmEditor").IsLoaded Then
             If Nz(Forms!frmEditor!txtReportID, 0) = id Then Set result = ValidateLiveFields(EditorPendingFields(), id)
         End If
         If result Is Nothing And id > 0 Then Set result = ValidateLiveFields(SavedFields(id), id)
         If result Is Nothing Then Set result = New Collection
-        f!lblBasis.Caption = "Current report values, including pending edits. A draft with findings can still be saved."
+        f!lblBasis.Caption = "Includes pending edits. Drafts with findings can still be saved."
     End If
     selection = ""
     If Not issues Is Nothing And Nz(f!lstIssues, 0) > 0 Then
@@ -277,10 +277,10 @@ Public Function UXRestrictedListPage(ByVal page As Long) As Boolean
         Next
         .cmdPageAllowed.FontBold = (page = 0): .cmdPageChecks.FontBold = (page = 1)
         If page = 1 Then
-            .lblBasis.Caption = "A check turned off here finds nothing on any report. Pattern summarizes the words each check looks for."
+            .lblBasis.Caption = "A check turned off finds nothing on any report."
             Call UXChecksLoad
         Else
-            .lblBasis.Caption = "Allowed phrases are skipped on every report. A dismissed finding stays hidden while its words are unchanged. Remove either to bring its findings back."
+            .lblBasis.Caption = "Allowed phrases are skipped. A dismissed finding stays hidden until its words change."
             Call UXRestrictedListLoad
         End If
     End With

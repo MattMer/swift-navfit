@@ -99,7 +99,7 @@ Public Function UXMessageRefresh() As Boolean
  f!cmdNew.Enabled = editable: f!cmdReply.Enabled = editable And Not IsNull(f!lstMessages): f!cmdPost.Enabled = editable
  f!cmdKeepDraft.Enabled = editable: f!cmdDiscardDraft.Enabled = editable: f!cmdResume.Enabled = editable
  f!lblCompose.Caption = "New message as " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & MajorAuthor()), "the current contributor")
- f!lblNoteStatus.Caption = "Messages stay with this report, independent of review or approval, and can continue after it is signed."
+ f!lblNoteStatus.Caption = "Messages stay with this report, even after signing."
  If id = 0 Then f!lblNoteStatus.Caption = "Save this report once before posting notes."
  Call UXMessageRead: UXMessageRefresh = True
 End Function
@@ -301,7 +301,7 @@ Public Function UXToolsApplyCounseling() As Boolean
  Call UXSurfaceSetValue("CounselingDate", s("CounselingDate"))
  Call UXSurfaceSetValue("CounselorName", IIf(Nz(s("CounselorName"), "") = "", Null, s("CounselorName")))
  UXToolsValidation
- UXToolsForm()!lblValidation.Caption = "Blocks 30-31 now show the recorded counseling as unsaved edits. Save the report to keep them."
+ UXToolsForm()!lblValidation.Caption = "Blocks 30-31 updated. Save the report to keep them."
  UXToolsApplyCounseling = True: Exit Function
 Failed:
  UXToolsForm()!lblValidation.Caption = "Recorded counseling was not applied: " & Err.Description

@@ -153,8 +153,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Choose > Preview > Apply > Results. NAVFIT import creates partial drafts; PDF im"
-                        "port creates a draft or updates an existing one."
+                    Caption ="NAVFIT import creates drafts. PDF import creates or updates one."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =1800
@@ -173,7 +172,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="cmdNAVFIT"
-                    Caption ="Choose NAVFIT database - groups and reports"
+                    Caption ="Choose NAVFIT database"
                     OnClick ="=UXChooseNativeGroups()"
                     FontName ="Segoe UI"
 
@@ -212,7 +211,7 @@ Begin Form
                     TabIndex =1
                     ForeColor =4205854
                     Name ="cmdPDF"
-                    Caption ="Choose structured PDF - supported field mappings"
+                    Caption ="Choose PDF"
                     OnClick ="=OpenScreen(\"frmPDFImport\")"
                     FontName ="Segoe UI"
 

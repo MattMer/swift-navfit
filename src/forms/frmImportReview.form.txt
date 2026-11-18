@@ -170,8 +170,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Choose > Preview > Apply > Results. Each imported report becomes a new Swift dra"
-                        "ft."
+                    Caption ="Each imported report becomes a new draft."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =900
@@ -805,8 +804,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblReconcile"
-                    Caption ="Existing report reconciliation: compare separately before accepting an incoming "
-                        "narrative"
+                    Caption ="Compare with the existing report before accepting a narrative"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =8100

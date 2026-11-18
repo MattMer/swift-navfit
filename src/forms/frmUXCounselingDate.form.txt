@@ -261,7 +261,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblStatus"
-                    Caption ="Choose a date; type NOT REQ or NOT PERF directly in block 30."
+                    Caption ="Choose a date, or type NOT REQ or NOT PERF in block 30."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =200
                     LayoutCachedTop =2800

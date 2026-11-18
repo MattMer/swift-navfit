@@ -131,8 +131,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblScope"
-                    Caption ="Apply moves your changes to the editor; Save draft there keeps them. Cancel disc"
-                        "ards them."
+                    Caption ="Apply, then Save draft to keep."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =950

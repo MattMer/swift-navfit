@@ -161,8 +161,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="lblInfo"
-                    Caption ="Reads May 2025 NAVPERS PDFs; Acrobat is not needed. Blank PDF fields never clear"
-                        " existing values. Flattened PDFs need manual entry."
+                    Caption ="Reads May 2025 NAVPERS PDFs. Blank fields never clear values."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =1000
@@ -286,7 +285,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="lblLegacy"
-                            Caption ="Legacy compatibility: allow DoDID mapping for older source files"
+                            Caption ="Map DoD ID from older files"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =850
                             LayoutCachedTop =3500

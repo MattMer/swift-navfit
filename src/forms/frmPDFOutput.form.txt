@@ -468,7 +468,7 @@ Begin Form
                             Height =300
                             FontSize =10
                             Name ="lblReports"
-                            Caption ="Sorted by name. Select a row to see its findings."
+                            Caption ="Select a row to see its findings."
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =2450
@@ -545,7 +545,7 @@ Begin Form
                     FontSize =10
                     TabIndex =9
                     Name ="cmdPagePreview"
-                    Caption ="Preview printed pages (close preview to return)"
+                    Caption ="Preview printed pages"
                     OnClick ="=PDFOutputPagePreview()"
                     FontName ="Segoe UI"
 
