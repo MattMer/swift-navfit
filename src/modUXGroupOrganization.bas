@@ -103,7 +103,7 @@ Public Function UXPreviewMoveGroup() As Boolean
     On Error GoTo Failed
     id = Forms!frmUXMoveGroup!reportID: destination = Nz(Forms!frmUXMoveGroup!cboGroup, 0)
     CheckMove id, destination
-    Forms!frmUXMoveGroup!txtPreview = "BEFORE: " & UXTableGroups(id) & vbCrLf & "AFTER: " & IIf(destination = 0, "Ungrouped", Nz(DLookup("Title", "SummaryGroup", "GroupID=" & destination), "")) & vbCrLf & "The report leaves its other groups. Report field values remain unchanged. Affected roster reviews become stale."
+    Forms!frmUXMoveGroup!txtPreview = "BEFORE: " & UXTableGroups(id) & vbCrLf & "AFTER: " & IIf(destination = 0, "Ungrouped", Nz(DLookup("Title", "SummaryGroup", "GroupID=" & destination), "")) & vbCrLf & "The report leaves its other groups."
     If destination > 0 Then
         csv = CStr(id): Set db = CurrentDb
         Set r = db.OpenRecordset("SELECT ReportID FROM GroupMember WHERE GroupID=" & destination & " AND ReportID<>" & id, dbOpenSnapshot)

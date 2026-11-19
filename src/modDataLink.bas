@@ -10,6 +10,8 @@ Private setupFolder As String, dataFileChoice As String
 ' A linked copy keeps its blank tables under this prefix, hidden like Access's own, so it
 ' can always make a new, empty data file.
 Private Const BLANK_PREFIX As String = "USysBlank"
+' The form a data file shows when it is opened by mistake.
+Private Const DATA_NOTICE_FORM As String = "frmDataFileNotice"
 
 ' Every workspace table in this file, local or linked.
 Private Function DataTableNames(ByVal db As DAO.Database) As Collection
@@ -53,13 +55,53 @@ Private Function LocalWorkspaceBlank() As Boolean
     LocalWorkspaceBlank = (DCount("*", "Workspace") = 0 And DCount("*", "Report") = 0 And DCount("*", "CommandMember") = 0)
 End Function
 
-' Forms and modules in a file. A file made by DAO alone has no such containers at all.
+' Forms and modules in a file, apart from a data file's own notice. A file made by DAO
+' alone has no such containers at all.
 Private Function ApplicationObjects(ByVal db As DAO.Database) As Long
-    Dim c As DAO.Container
+    Dim c As DAO.Container, d As DAO.Document
     For Each c In db.Containers
-        If c.Name = "Forms" Or c.Name = "Modules" Then ApplicationObjects = ApplicationObjects + c.Documents.Count
+        If c.Name = "Forms" Or c.Name = "Modules" Then
+            For Each d In c.Documents
+                If Not (c.Name = "Forms" And d.Name = DATA_NOTICE_FORM) Then ApplicationObjects = ApplicationObjects + 1
+            Next
+        End If
     Next
 End Function
+
+' A data file opened by mistake shows a short notice pointing to the application file.
+' The form has no code, so it opens even where Access blocks macros.
+Private Sub AddDataFileNotice(ByVal filePath As String)
+    Dim db As DAO.Database
+    DoCmd.TransferDatabase acExport, "Microsoft Access", filePath, acForm, DATA_NOTICE_FORM, DATA_NOTICE_FORM, False
+    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath)
+    SetStartupProperty db, "StartupForm", dbText, DATA_NOTICE_FORM
+    SetStartupProperty db, "StartupShowDBWindow", dbBoolean, False
+    db.Close
+End Sub
+Private Sub SetStartupProperty(ByVal db As DAO.Database, ByVal name As String, ByVal kind As Long, ByVal value As Variant)
+    Dim p As DAO.Property
+    For Each p In db.Properties
+        If p.Name = name Then p.Value = value: Exit Sub
+    Next
+    db.Properties.Append db.CreateProperty(name, kind, value)
+End Sub
+' True when the data file already has its notice form.
+Public Function DataFileHasNotice(ByVal filePath As String) As Boolean
+    Dim db As DAO.Database, d As DAO.Document
+    On Error GoTo Done
+    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, False, True)
+    For Each d In db.Containers("Forms").Documents
+        If d.Name = DATA_NOTICE_FORM Then DataFileHasNotice = True
+    Next
+Done:
+    If Not db Is Nothing Then db.Close
+End Function
+' Data files made before the notice existed get it the next time they are used. It is
+' only a convenience, so a file that cannot take it (read only, in use) is left as it is.
+Public Sub EnsureDataFileNotice(ByVal filePath As String)
+    On Error Resume Next
+    If Not DataFileHasNotice(filePath) Then AddDataFileNotice filePath
+End Sub
 
 ' "" when the file is a Swift NAVFIT data file this version can use; otherwise why not.
 Public Function DataFileProblem(ByVal filePath As String) As String
@@ -161,6 +203,8 @@ Public Function CreateDataFile(ByVal destination As String) As Boolean
     Next
     If WorkspaceRelations(target) <> relations Then Err.Raise vbObjectError + 9804, "modDataLink.CreateDataFile", "The new data file's relationships differ from this version's."
     target.Close: Set target = Nothing
+    stage = "Write notice"
+    AddDataFileNotice destination
     CreateDataFile = True
     Exit Function
 Failed:
@@ -326,6 +370,7 @@ Private Function UseDataFileFound(ByVal filePath As String, Optional ByVal alrea
     If Len(problem) > 0 Then UseDataFileFound = "The data file could not be upgraded. " & problem: Exit Function
     problem = DataFileProblem(filePath)
     If Len(problem) > 0 Then UseDataFileFound = problem: Exit Function
+    EnsureDataFileNotice filePath
     If Not alreadyLinked Then LinkDataFile filePath
     UseDataFileFound = DataLinkProblem()
     Exit Function

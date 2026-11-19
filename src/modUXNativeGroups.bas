@@ -77,7 +77,7 @@ Public Function UXAssignNativeGroupGrade() As Boolean
     For i = 0 To Forms!frmUXNativeGroups!lstGroups.ListCount - 1
         Forms!frmUXNativeGroups!lstGroups.Selected(i) = targets.Exists(CStr(Forms!frmUXNativeGroups!lstGroups.Column(0, i)))
     Next
-    Forms!frmUXNativeGroups!lblStatus.Caption = "Paygrade assigned; source files are unchanged. Preview before applying."
+    Forms!frmUXNativeGroups!lblStatus.Caption = "Paygrade assigned. Preview before applying."
     UXAssignNativeGroupGrade = True: Exit Function
 Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
@@ -113,7 +113,7 @@ Public Function UXPreviewNativeGroups() As Boolean
         Next
     Next
     Set selectedPreview = picks
-    Forms!frmUXNativeGroups!txtPreview = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance. Native-only values and summary/folder columns are retained in report provenance. Import does not establish roster completeness or Navy compliance. No existing draft is overwritten."
+    Forms!frmUXNativeGroups!txtPreview = text
     Forms!frmUXNativeGroups!lblStatus.Caption = "Preview ready. Apply creates selected groups and reports together."
     UXEnable Forms!frmUXNativeGroups!cmdApply, True
     UXPreviewNativeGroups = True: Exit Function

@@ -34,7 +34,6 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  Set f = Forms!frmEditor
  If height = 0 Then height = f.InsideHeight
  If height < 7000 Then height = 7000
- body = height - 5000
  width = f.InsideWidth
  If viewportWidth > 0 Then width = viewportWidth
  viewingWidth = width - (250 + ReportLeft) - 400
@@ -80,6 +79,10 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  End If
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
+ 'The report page takes the height left after the rows above it and the action rows
+ 'below it (1370 to the end of the detail section), so the editor itself never scrolls.
+ body = height - IIf(f!uxErrorList.Visible, 4620, 4060) - 1370
+ If body < 1500 Then body = 1500
  Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), viewingWidth, body
  f!uxFieldSurface.Visible = (sheet < 8)
  Dim footer As Long

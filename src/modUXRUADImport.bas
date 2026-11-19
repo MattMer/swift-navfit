@@ -115,7 +115,7 @@ Public Function UXRUADImportApply() As Boolean
     On Error GoTo Failed
     UXEnable Forms!frmUXRUADImport!cmdApply, False
     count = RUADApply()
-    Forms!frmUXRUADImport!lblStatus.Caption = "Results: " & count & " profiles applied. Reports, SSNs, links and prior evaluations preserved. " & PendingDepartureCount() & " departures are waiting to be confirmed in My Work > Departures."
+    Forms!frmUXRUADImport!lblStatus.Caption = "Results: " & count & " profiles applied. " & PendingDepartureCount() & " departures are waiting to be confirmed in My Work > Departures."
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad
     UXRUADImportApply = True: Exit Function
 Failed:

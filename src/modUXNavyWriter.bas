@@ -54,7 +54,7 @@ Public Function UXImportNavyWriter() As Boolean
     Loop
     r.Close
     id = SaveSnippet(0, title, body, attribution, "ALL")
-    Forms!frmUXNavyWriter!lblStatus.Caption = "Added to your narrative snippets. Source attribution retained."
+    Forms!frmUXNavyWriter!lblStatus.Caption = "Added to your narrative snippets."
     UXImportNavyWriter = True: Exit Function
 Failed:
     Forms!frmUXNavyWriter!lblStatus.Caption = Err.Description

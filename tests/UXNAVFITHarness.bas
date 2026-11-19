@@ -88,13 +88,13 @@ Public Function TestUXNAVFIT(ByVal source As String, ByVal template As String) A
     Forms!frmNAVFITExchange!txtExportPath = source & ".incomplete-ui-report.accdb"
     If Not UXExportNAVFIT() Then Err.Raise vbObjectError + 5600, "UXNAVFITHarness", "Issue-bearing UI report blocked: " & Forms!frmNAVFITExchange!txtStatus
     Check True, "Issue-bearing UI report exported"
-    Check InStr(Forms!frmNAVFITExchange!txtStatus, "Findings do not block export") > 0, "Informational export notice missing"
+    Check InStr(Forms!frmNAVFITExchange!txtStatus, "Export complete") > 0, "Export result missing"
     Check InStr(Forms!frmNAVFITExchange!txtExportPath, "UNSPECIFIED.accdb") > 0, "Missing end date blocked safe naming"
     Forms!frmNAVFITExchange!txtExportPath = source & ".ui-group.accdb"
     Forms!frmNAVFITExchange!chkPSG = True
     Check UXPreviewNAVFITGroup(), "Group UI preview failed"
     Check Forms!frmNAVFITExchange!cmdExportGroup.Enabled, "Reviewed group export unavailable"
-    Check InStr(Forms!frmNAVFITExchange!txtStatus, "1 saved reports") > 0 And InStr(Forms!frmNAVFITExchange!txtStatus, "Findings do not block export") > 0, "Saved-group scope and nonblocking notice missing"
+    Check InStr(Forms!frmNAVFITExchange!txtStatus, "1 saved reports") > 0, "Saved-group scope missing"
     Check UXNAVFITInputChanged() And Not Forms!frmNAVFITExchange!cmdExportGroup.Enabled, "Group preview not invalidated"
     Check UXExportNAVFITGroup(), "Group export did not refresh its preview automatically"
     Check Len(Dir$(Forms!frmNAVFITExchange!txtExportPath & ".swift-baseline.accdb")) > 0, "Group baseline absent at the actual generated export path"

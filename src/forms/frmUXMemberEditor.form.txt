@@ -554,7 +554,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad0"
                     FontName ="Segoe UI"
-                    ControlTipText ="CUI - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="CUI"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =3940
@@ -600,7 +600,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad1"
                     FontName ="Segoe UI"
-                    ControlTipText ="RUIC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RUIC"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =3940
@@ -646,7 +646,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad2"
                     FontName ="Segoe UI"
-                    ControlTipText ="RESERVE UNIT - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RESERVE UNIT"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =3940
@@ -692,7 +692,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad3"
                     FontName ="Segoe UI"
-                    ControlTipText ="RESERVE ACTIVITY AND LOC - retained as RUAD text; identifiers keep leading zeroe"
+                    ControlTipText ="RESERVE ACTIVITY AND LOC"
                         "s"
 
                     LayoutCachedLeft =400
@@ -739,7 +739,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad4"
                     FontName ="Segoe UI"
-                    ControlTipText ="ST - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="ST"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =4990
@@ -785,7 +785,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad5"
                     FontName ="Segoe UI"
-                    ControlTipText ="UIC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="UIC"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =4990
@@ -831,7 +831,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad6"
                     FontName ="Segoe UI"
-                    ControlTipText ="NRC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="NRC"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =6040
@@ -877,7 +877,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad7"
                     FontName ="Segoe UI"
-                    ControlTipText ="NRA - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="NRA"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =6040
@@ -923,7 +923,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad8"
                     FontName ="Segoe UI"
-                    ControlTipText ="RPC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RPC"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =6040
@@ -969,7 +969,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad9"
                     FontName ="Segoe UI"
-                    ControlTipText ="RATE/RANK - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RATE/RANK"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =3940
@@ -1015,7 +1015,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad11"
                     FontName ="Segoe UI"
-                    ControlTipText ="RFAS Asgmt - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RFAS Asgmt"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =3940
@@ -1061,7 +1061,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad12"
                     FontName ="Segoe UI"
-                    ControlTipText ="E/O - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="E/O"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =3940
@@ -1107,7 +1107,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad13"
                     FontName ="Segoe UI"
-                    ControlTipText ="SELRES TYPE - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="SELRES TYPE"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =3940
@@ -1153,7 +1153,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad14"
                     FontName ="Segoe UI"
-                    ControlTipText ="BIN - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="BIN"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =3940
@@ -1199,7 +1199,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad15"
                     FontName ="Segoe UI"
-                    ControlTipText ="RFAS - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RFAS"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =3940
@@ -1245,7 +1245,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad16"
                     FontName ="Segoe UI"
-                    ControlTipText ="REQ DESG/REQ RTING - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="REQ DESG/REQ RTING"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =4990
@@ -1291,7 +1291,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad17"
                     FontName ="Segoe UI"
-                    ControlTipText ="PNOBC/PNEC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="PNOBC/PNEC"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =4990
@@ -1337,7 +1337,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad18"
                     FontName ="Segoe UI"
-                    ControlTipText ="DESG - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="DESG"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =4990
@@ -1383,7 +1383,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad19"
                     FontName ="Segoe UI"
-                    ControlTipText ="NOBC/NEC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="NOBC/NEC"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =4990
@@ -1429,7 +1429,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad20"
                     FontName ="Segoe UI"
-                    ControlTipText ="AUIC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="AUIC"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =4990
@@ -1475,7 +1475,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad21"
                     FontName ="Segoe UI"
-                    ControlTipText ="TRUIC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="TRUIC"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =6040
@@ -1521,7 +1521,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad22"
                     FontName ="Segoe UI"
-                    ControlTipText ="UMUIC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="UMUIC"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =6040
@@ -1567,7 +1567,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad23"
                     FontName ="Segoe UI"
-                    ControlTipText ="MOB ACTIVITY - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="MOB ACTIVITY"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =3940
@@ -1613,7 +1613,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad24"
                     FontName ="Segoe UI"
-                    ControlTipText ="MOB BILLET - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="MOB BILLET"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =3940
@@ -1660,7 +1660,7 @@ Begin Form
                     Name ="ruad25"
                     Format ="Short Date"
                     FontName ="Segoe UI"
-                    ControlTipText ="PRD - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="PRD"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =6040
@@ -1706,7 +1706,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad26"
                     FontName ="Segoe UI"
-                    ControlTipText ="IMS - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="IMS"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =3940
@@ -1752,7 +1752,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad27"
                     FontName ="Segoe UI"
-                    ControlTipText ="MAS (A) - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="MAS (A)"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =4990
@@ -1798,7 +1798,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad28"
                     FontName ="Segoe UI"
-                    ControlTipText ="MAS (M) - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="MAS (M)"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =4990
@@ -1844,7 +1844,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad29"
                     FontName ="Segoe UI"
-                    ControlTipText ="MAS (T) - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="MAS (T)"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =4990
@@ -1890,7 +1890,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad30"
                     FontName ="Segoe UI"
-                    ControlTipText ="ABSC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="ABSC"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =6040
@@ -1936,7 +1936,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad31"
                     FontName ="Segoe UI"
-                    ControlTipText ="RBSC - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="RBSC"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =6040
@@ -1982,7 +1982,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad32"
                     FontName ="Segoe UI"
-                    ControlTipText ="ADDRESS - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="ADDRESS"
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =3940
@@ -2028,7 +2028,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad33"
                     FontName ="Segoe UI"
-                    ControlTipText ="PHONE - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="PHONE"
 
                     LayoutCachedLeft =4250
                     LayoutCachedTop =3940
@@ -2074,7 +2074,7 @@ Begin Form
                     ForeColor =4205854
                     Name ="ruad34"
                     FontName ="Segoe UI"
-                    ControlTipText ="NROWS Email - retained as RUAD text; identifiers keep leading zeroes"
+                    ControlTipText ="NROWS Email"
 
                     LayoutCachedLeft =8100
                     LayoutCachedTop =3940

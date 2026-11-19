@@ -75,7 +75,7 @@ Public Function UXPreviewNAVFITGroup() As Boolean
     groupExportToken = "": UXEnable Forms!frmNAVFITExchange!cmdExportGroup, False
     Set preview = NAVFITGroupPreview(Nz(Forms!frmNAVFITExchange!cboGroup, 0), Nz(Forms!frmNAVFITExchange!chkPSG, False), Nz(Forms!frmNAVFITExchange!cboISIC, 0))
     groupExportToken = preview("Token")
-    Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Findings do not block export. Choose a folder, then Export."
+    Forms!frmNAVFITExchange!txtStatus = DCount("*", "GroupMember", "GroupID=" & Nz(Forms!frmNAVFITExchange!cboGroup, 0)) & " saved reports will be exported. Choose a folder, then Export."
     If Len(preview("ISICProfile")("Note")) > 0 Then Forms!frmNAVFITExchange!txtStatus = Forms!frmNAVFITExchange!txtStatus & vbCrLf & preview("ISICProfile")("Note")
     UXEnable Forms!frmNAVFITExchange!cmdExportGroup, True: UXPreviewNAVFITGroup = True: Exit Function
 Failed:
@@ -133,7 +133,7 @@ Public Function UXApplyFullNAVFIT() As Boolean
     nativePreview.Created = ImportReviewedReport(nativePreview.SourceID, nativePreview.Hash, nativePreview.Century, nativePreview.Member): nativePreview.SourceID = 0: nativePreview.Hash = ""
     With Forms!frmImportReview
         !cmdPreview.SetFocus: UXEnable !cmdImport, False: UXEnable !cmdOpenResult, True
-        !uxState.Caption = "4. Results - created " & UXMemberLabel(nativePreview.Created) & ". Native source values retained."
+        !uxState.Caption = "4. Results - created " & UXMemberLabel(nativePreview.Created) & "."
     End With
     UXApplyFullNAVFIT = True: Exit Function
 Failed:
@@ -172,7 +172,7 @@ Public Function UXExportNAVFIT() As Boolean
         !txtExportPath = UXExportDestination(Nz(!txtExportPath, ""), 0, Nz(!cboReport, 0))
         Call NAVFITExportReport(Nz(!cboReport, 0), Nz(!txtExportPath, ""), Nz(!txtTemplate, ""))
         Set findings = NAVFITLastReportReadiness()
-        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Findings do not block export. Pending edits are not included; export is not approval or submission. Send only the NAVFIT .accdb file and keep the .swift-baseline.accdb file." & vbCrLf & vbCrLf & ReadinessSummary(findings)
+        !txtStatus = "Export complete: " & !txtExportPath & vbCrLf & "Send only the NAVFIT .accdb file and keep the .swift-baseline.accdb file." & vbCrLf & vbCrLf & ReadinessSummary(findings)
         If Len(NAVFITBlankBoxText()) > 0 Then !txtStatus = !txtStatus & vbCrLf & vbCrLf & NAVFITBlankBoxText()
         !txtBaseline = !txtExportPath & ".swift-baseline.accdb"
     End With
@@ -229,7 +229,7 @@ Public Function UXApplyNAVFITReturn() As Boolean
     On Error GoTo Failed
     id = NAVFITApplyReturned(outcome)
     UXEnable Forms!frmNAVFITExchange!cmdApply, False
-    Forms!frmNAVFITExchange!txtStatus = "Return applied to " & UXMemberLabel(id) & ". Provenance and normal revision history retained."
+    Forms!frmNAVFITExchange!txtStatus = "Return applied to " & UXMemberLabel(id) & "."
     UXApplyNAVFITReturn = True: Exit Function
 Failed:
     message = Err.Description

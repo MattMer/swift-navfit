@@ -264,7 +264,7 @@ Public Function RSSeniorDirty() As Boolean
     Next
 End Function
 Public Function RSPendingLabel() As Boolean
-    Forms!frmUXSeniorEditor!lblStatus.Caption = "Unsaved record changes. Saved reports remain unchanged.": RSPendingLabel = True
+    Forms!frmUXSeniorEditor!lblStatus.Caption = "Unsaved record changes.": RSPendingLabel = True
 End Function
 Public Function RSSaveSeniorUI() As Boolean
     Dim f As Access.Form, values As Object, id As Long
@@ -274,7 +274,7 @@ Public Function RSSaveSeniorUI() As Boolean
     f!txtSeniorID = id: f!txtVersion = MajorScalar("SELECT VersionCounter FROM ReportingSeniorRecord WHERE SeniorID=" & id)
     Set seniorInitial = values: seniorInitialTitle = Nz(f!txtTitle, ""): seniorInitialMember = PendingMember()
     RSShowLink
-    f!lblStatus.Caption = "Record saved. Saved report values remain unchanged."
+    f!lblStatus.Caption = "Record saved."
     If CurrentProject.AllForms("frmUXSeniors").IsLoaded Then RSLoadDirectory
     RSSaveSeniorUI = True: Exit Function
 Failed:

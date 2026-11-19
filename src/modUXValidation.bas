@@ -45,7 +45,7 @@ Public Function UXLivePaint() As Boolean
         End Select
     Next
     Forms!frmEditor!uxDirty.Caption = IIf(EditorHasPending(), "Unsaved changes", "No pending changes") & " | " & (result.count - information) & " issues"
-    Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review, " & information & " information. Pending values; no saved revision created."
+    Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review, " & information & " information."
     If EditorHasPending() Then recoveryDirty = True
     validationDirty = False: validationDate = Date
     UXLivePaint = True

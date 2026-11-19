@@ -44,7 +44,7 @@ Development source (*generated*):
 | Schema version | 51 |
 | Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
 | Tables / enforced relationships | 85 / 169 |
-| VBA modules / forms | 128 / 77 |
+| VBA modules / forms | 128 / 78 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
 | Test cases / VBA test harnesses | 120 / 120 |
@@ -628,6 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 19 Nov 2026 | Development only, not in a release: a data file holds a code-free notice form, frmDataFileNotice, set as its StartupForm with the navigation pane hidden, so a data file opened by mistake points to the application. CreateDataFile adds it (AddDataFileNotice); existing data files get it when used (EnsureDataFileNotice, best effort). ApplicationObjects ignores the notice, so a data file is not taken for an earlier whole workspace. The report editor's page area is sized to the window (UXFixedResize), so the editor itself no longer scrolls. |
 | 19 Nov 2026 | Development only, not in a release: EVALMAN links. modEvalmanLinks maps each report field to its paragraph 1-2 block section by title (EvalmanSectionForField) and a finding to the paragraph its rule cites, else its field (EvalmanSectionForFinding); UXOpenEvalmanSection opens the reader there. The editor opens it with F1 from a field (frmUXEditorFields KeyDown) or the EVALMAN button (cmdEvalman, last field used), and Validation issues with its EVALMAN button. Member history lists prior and Swift reports together by date with continuity rows (MemberContinuityRows): a possible gap between any periods, and an overlap only between Swift Regular reports; identical periods count once. |
 | 18 Nov 2026 | Development only, not in a release: Summary groups has an Ending year filter (uxYearFilter). UXGroupList keeps a group when any member report's PeriodEnd falls in the year, or, with no members, when its effective default PeriodEnd does (GroupDefaultEndYear), through HAVING so counts and closeout dates are unchanged; a selection the filter hides is cleared. |
 | 18 Nov 2026 | Development only, not in a release: the EVALMAN reader (frmUXEvalman, modUXEvalman) shows BUPERSINST 1610.10H through CH-4 as text with contents, search and match navigation, from Resources. scripts/extract-evalman.py builds src/evalman.json from the official PDF with pdftotext and the reviewed corrections and transcriptions in src/evalman-corrections.json; scripts/generate-evalman-module.py generates modEvalmanText.bas. |

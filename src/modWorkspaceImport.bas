@@ -162,7 +162,7 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  token = WizardPreviewSave("WorkspaceImport", path, importHash, "", "", 0, 0, choices)
  Set workspacePreview = WizardPreviewLoad("WorkspaceImport")
  stage = "Show preview"
- Forms!frmUXWorkspaceImport!txtPreview = text & vbCrLf & "All workspace data is copied, including revisions, reviews, members, defaults, recovery, history and import provenance. Source code/forms are not imported. Use a new blank app; this does not merge independent workspaces. Initial setup contributor details in an otherwise blank app will be replaced by the source workspace."
+ Forms!frmUXWorkspaceImport!txtPreview = text & vbCrLf & "Use a new blank app; this does not merge independent workspaces. Contributor details entered at setup in this app will be replaced."
  UXEnable Forms!frmUXWorkspaceImport!cmdApply, True
  UXPreviewSwiftWorkspace = True: Exit Function
 Failed:
@@ -365,7 +365,7 @@ Failed:
  End Select
  WorkspaceImportProgress status, True
  On Error Resume Next
- Forms!frmUXWorkspaceImport!lblStatus.Caption = status & " Source data is unchanged."
+ Forms!frmUXWorkspaceImport!lblStatus.Caption = status
  If Err.Number <> 0 Then SwiftCleanupError failure, "show import failure", Err.Number
  On Error GoTo 0
  FinishImportDisplay displayFailure, outcome

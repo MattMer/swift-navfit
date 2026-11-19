@@ -732,7 +732,7 @@ Public Function UXStageComparison() As Boolean
     If Not SameFieldValue(before, value) Then ProposeMeetingField f!txtMeeting, id, "PromotionRecommendation", value: count = count + 1
     w.CommitTrans: started = False
 Call UXGridLoad: UXRefreshComparisonPreview
-    f!lblStatus.Caption = count & " proposals staged. Saved reports are unchanged. Select one proposal per field below, then Apply."
+    f!lblStatus.Caption = count & " proposals staged. Select one proposal per field below, then Apply."
     If UXHasControl(f, "uxPreviewPage") And count > 0 Then UXComparisonPage "Preview"
     UXStageComparison = True: Exit Function
 Failed:

@@ -24,9 +24,12 @@ function Get-SchemaText([string]$Path,[switch]$NoRows){
         }
         foreach($r in ($db.Relations|Where-Object {$_.Table -notlike 'MSys*'})){$lines.Add('REL '+$r.Name+' '+$r.Table+'->'+$r.ForeignTable+' attr='+$r.Attributes+' '+(@($r.Fields|ForEach-Object {$_.Name+'='+$_.ForeignName}) -join ','))}
         #A file made by DAO alone, like a schema fixture, has no application containers.
-        $code=0;foreach($container in $db.Containers){if($container.Name -in 'Modules','Forms','Reports','Scripts'){$code+=$container.Documents.Count}}
+        #A data file holds only its notice form, which opens at startup.
+        $code=0;$notice=$false
+        foreach($container in $db.Containers){if($container.Name -in 'Modules','Forms','Reports','Scripts'){foreach($d in $container.Documents){if($container.Name -eq 'Forms' -and $d.Name -eq 'frmDataFileNotice'){$notice=$true}else{$code++}}}}
+        $startup='';try{$startup=[string]$db.Properties.Item('StartupForm').Value}catch{}
     }finally{$db.Close()}
-    [pscustomobject]@{Lines=@($lines|Sort-Object);CodeObjects=$code}
+    [pscustomobject]@{Lines=@($lines|Sort-Object);CodeObjects=$code;Notice=$notice;StartupForm=$startup}
 }
 function Start-Front{
     $app=New-Object -ComObject Access.Application
@@ -52,8 +55,9 @@ try{
     $source=Get-SchemaText $BuildPath;$created=Get-SchemaText $data
     $difference=@(Compare-Object $source.Lines $created.Lines)
     if($difference.Count){throw ('Data file schema differs from the build: '+(($difference|Select-Object -First 3|ForEach-Object {$_.SideIndicator+' '+$_.InputObject}) -join ' | '))}
-    if($created.CodeObjects -ne 0){throw ('Data file holds '+$created.CodeObjects+' code objects')}
-    Write-Output ('PASS: data file matches the build: '+$source.Lines.Count+' schema lines, no modules, forms, reports or macros')
+    if($created.CodeObjects -ne 0){throw ('Data file holds '+$created.CodeObjects+' code objects besides its notice')}
+    if(-not $created.Notice -or $created.StartupForm -ne 'frmDataFileNotice'){throw 'Data file does not open on its notice'}
+    Write-Output ('PASS: data file matches the build: '+$source.Lines.Count+' schema lines; only the notice form, which opens at startup')
     Invoke-Check $app ('TestDataFileLink("'+$data+'","'+$other+'")')
     Invoke-Check $app ('TestDataFileBackup("'+$backup+'")')
 }finally{Stop-Front $app;$app=$null}

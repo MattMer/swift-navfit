@@ -105,6 +105,6 @@ Public Function AuditDetails() As Boolean
     Dim r As DAO.Recordset, id As Long
     id = Nz(Forms!frmOperations!lstAudit, 0)
     Set r = CurrentDb.OpenRecordset("SELECT * FROM AuditEvent WHERE AuditID=" & id, dbOpenSnapshot)
-    If Not r.EOF Then Forms!frmOperations!txtOutcome = r!EventKind & vbCrLf & "Event " & r!AuditGuid & vbCrLf & "Correlation " & r!CorrelationGuid & vbCrLf & Nz(r!EventDetail, "See linked domain history.") & vbCrLf & IIf(r!IsHistorical, "Historical envelope; original evidence retained. Unrecorded context remains unknown.", "Recorded with the domain change.")
+    If Not r.EOF Then Forms!frmOperations!txtOutcome = r!EventKind & vbCrLf & "Event " & r!AuditGuid & vbCrLf & "Correlation " & r!CorrelationGuid & vbCrLf & Nz(r!EventDetail, "See linked domain history.") 
     r.Close: AuditDetails = True
 End Function

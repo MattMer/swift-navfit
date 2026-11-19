@@ -75,7 +75,7 @@ Public Sub UXNarrativeLayout(ByVal c As Access.Control, ByVal kind As String, By
         If available > 0 And .Width > available Then .Width = available
         .Height = UXNarrativeHeight(kind, key)
         .ScrollBars = 2: .EnterKeyBehavior = True
-        .ControlTipText = "Plain text in the PDF's font, size and width: it wraps here as it prints. Swift's PDF uses 12 pt, or 10 pt when 12 pt would not fit. Overflow is retained."
+        .ControlTipText = "Plain text in the PDF's font, size and width: it wraps here as it prints."
     End With
 End Sub
 ' Room left in Swift's PDF: lines, and about how many characters, before the text drops

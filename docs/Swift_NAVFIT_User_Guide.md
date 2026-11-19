@@ -179,7 +179,7 @@ A release has three files:
 | `Swift_NAVFIT_Demo_<version>.accdb` | The **Demo** application, for practice. |
 | `Swift_NAVFIT_Demo_data_<version>.accdb` | The Demo's data file, with made-up data. Keep it in the same folder as the Demo application. |
 
-Your workspace's **data file** holds tables only. Always open it through the application, never directly.
+Your workspace's **data file** holds your data, not the program. Always open it through the application, never directly. If you open the data file by mistake, it shows a short notice telling you to open the application file instead.
 
 ## 2.2 Create a new workspace
 

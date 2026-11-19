@@ -1,7 +1,6 @@
 Attribute VB_Name = "modPDFOutputUI"
 Option Explicit
 Private previewGroup As Long, previewReport As Long
-Private Const PDF_OVERFLOW_HELP As String = "Overflow continues on additional pages. An asterisk marks a single-line field whose full value is on an additional page."
 
 Public Function PDFOutputOpenReport() As Boolean
     On Error GoTo Failed
@@ -72,7 +71,7 @@ Public Function PDFOutputRefreshPreview() As Boolean
     With Forms!frmPDFOutput
         !lstReports.RowSource = text
         !lblScope.Caption = current("Title") & " | " & current("Reports").Count & " reports | Alphabetical by last name"
-        !txtFindings = "Captured " & Format$(current("Captured"), "yyyy-mm-dd h:nn:ss AM/PM") & ". Current-draft mode reads pending values without saving or discarding them. Pending group cells take precedence for the same field; both buffers remain unchanged." & vbCrLf & "Findings, missing values and report status never prevent PDF generation. " & PDF_OVERFLOW_HELP & vbCrLf & "Signatures, unrecorded qualifications/ranking/RSCA and submission acceptance remain blank. A computed PSG RSCA is not substituted for an official report RSCA. Choose a protected export folder; PDFs may contain identifiers."
+        !txtFindings = "Captured " & Format$(current("Captured"), "yyyy-mm-dd h:nn:ss AM/PM") & "."
         !lblStatus.Caption = "Preview captured. Choose the format, then create PDFs."
         UXEnable !cmdGenerate, True: UXEnable !cmdOpenFolder, False: UXEnable !cmdOpenPDF, False
     End With
@@ -86,7 +85,7 @@ Public Function PDFOutputSelectRow() As Boolean
     Set current = PDFOutputJob()
     For Each row In current("Reports")
         If row("ID") = Nz(Forms!frmPDFOutput!lstReports, -1) Then
-            Forms!frmPDFOutput!txtFindings = row("Caption") & " | " & row("Source") & vbCrLf & "Validation findings are informational; PDFs can be generated with these issues. " & PDF_OVERFLOW_HELP & vbCrLf & row("Findings")
+            Forms!frmPDFOutput!txtFindings = row("Caption") & " | " & row("Source") & vbCrLf & row("Findings")
             Exit For
         End If
     Next

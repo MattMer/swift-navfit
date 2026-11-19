@@ -130,7 +130,7 @@ Public Function UXDirectoryMergePreview() As Boolean
     reviewedOwner = 0: a = Nz(f!cboSource, 0): b = Nz(f!cboTarget, 0)
     reviewedStamp = PreviewDirectoryMerge(a, b)
     reviewedOwner = ActiveContributorID()
-    f!txtPreview = MergeMemberSummary(a, "ORIGINAL - will be archived") & vbCrLf & MergeMemberSummary(b, "SURVIVOR - keeps profile") & vbCrLf & "All original report and prior links move to the survivor. Profiles are retained; profile fields are not combined. Report values, revisions, notes, review history and prior traits stay unchanged. Provisional/unconfirmed link states stay unchanged. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
+    f!txtPreview = MergeMemberSummary(a, "ORIGINAL - will be archived") & vbCrLf & MergeMemberSummary(b, "SURVIVOR - keeps profile") & vbCrLf & "All original report and prior links move to the survivor. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
     UXEnable f!cmdApply, True: UXDirectoryMergePreview = True: Exit Function
 Failed:
     reviewedStamp = "": f!txtPreview = Err.Description
@@ -160,7 +160,7 @@ Public Function UXDirectoryMergeUndo() As Boolean
     Set f = Forms!frmUXDirectoryMerge
     If Nz(f!lstHistory, 0) = 0 Then Err.Raise 5, "modUXDirectoryMerge.UXDirectoryMergeUndo", "Select a merge in the history list."
     UndoDirectoryMerge CLng(f!lstHistory): UXDirectoryMergeLoad
-    f!txtPreview = "Undo completed. Original links and profile availability restored; merge history retained."
+    f!txtPreview = "Undo completed."
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad
     UXDirectoryMergeUndo = True: Exit Function
 Failed:

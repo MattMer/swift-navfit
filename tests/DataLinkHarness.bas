@@ -48,6 +48,7 @@ Public Function TestDataFileCreate(ByVal dataPath As String) As String
     Check CreateRefused(Left$(dataPath, Len(dataPath) - 6) & ".txt"), "A data file must be an .accdb"
     Check CreateDataFile(dataPath), "Data file was not created"
     Check Len(Dir$(dataPath)) > 0 And DataFileProblem(dataPath) = "", "New data file is not usable: " & DataFileProblem(dataPath)
+    Check DataFileHasNotice(dataPath) And Not IsEarlierWorkspace(dataPath), "New data file has no notice, or its notice made it look like a whole workspace"
     Check CreateRefused(dataPath), "An existing file was overwritten"
     Check LocalTables() = tables And LinkedTables() = 0, "Creating a data file changed this file"
     TestDataFileCreate = "PASS: " & checks & " data file creation assertions; " & tables & " tables": Exit Function
@@ -107,9 +108,20 @@ Failed:
     TestDataFileMoved = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function
 
+' A copy holding only the tables, like a data file made before the notice existed.
+Private Function CopyTablesOnly(ByVal source As String, ByVal target As String) As Boolean
+    Dim src As DAO.Database, dst As DAO.Database, t As DAO.TableDef
+    Set src = DBEngine.Workspaces(0).OpenDatabase(source, False, True)
+    Set dst = DBEngine.CreateDatabase(target, dbLangGeneral, dbVersion120)
+    For Each t In src.TableDefs
+        If Left$(t.Name, 4) <> "MSys" And Len(t.Connect) = 0 Then dst.Execute "SELECT * INTO [" & t.Name & "] FROM [" & t.Name & "] IN '" & source & "'", dbFailOnError
+    Next
+    dst.Close: src.Close
+    CopyTablesOnly = True
+End Function
 'A verified backup written while the tables are in a separate data file.
 Public Function TestDataFileBackup(ByVal destination As String) As String
-    Dim evidence As String
+    Dim evidence As String, older As String
     On Error GoTo Failed
     checks = 0
     Check SwiftDataIsLinked(), "Backup test needs a linked copy"
@@ -118,6 +130,12 @@ Public Function TestDataFileBackup(ByVal destination As String) As String
     Check InStr(1, evidence, Replace(SwiftDataPath(), "\", "\\"), vbTextCompare) > 0, "Backup source is not the data file: " & Left$(evidence, 200)
     Check Len(Dir$(destination)) > 0 And Len(Dir$(destination & ".verification.json")) > 0, "Backup files missing"
     Check DataFileProblem(destination) = "", "Backup is not a usable data file: " & DataFileProblem(destination)
+    Check DataFileHasNotice(destination), "Backup lost the data file notice"
+    'A data file made before the notice existed (tables only) gets it when used.
+    older = Left$(destination, Len(destination) - 6) & "-tables only.accdb"
+    Check CopyTablesOnly(destination, older) And Not DataFileHasNotice(older), "Tables-only copy failed"
+    EnsureDataFileNotice older
+    Check DataFileHasNotice(older) And Not IsEarlierWorkspace(older), "Notice was not added, or the file looked like a whole workspace"
     Check DCount("*", "Report") = 1 And SwiftDataIsLinked(), "Backup changed the workspace"
     TestDataFileBackup = "PASS: " & checks & " linked backup assertions": Exit Function
 Failed:
