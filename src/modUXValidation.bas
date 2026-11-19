@@ -183,29 +183,29 @@ Public Function UXLoadValidation() As Boolean
         UXValidationSelection
     End If
     f!lblCount.Caption = i & " findings. Checks are limited; zero findings does not mean Navy-ready." & IIf(RestrictedChecksOffCount() > 0, " Content checks: " & RestrictedChecksOffCount() & " of " & RestrictedCheckCount() & " turned off.", "")
-    f!cmdPrevious.Enabled = pageIndex > 0: f!cmdNext.Enabled = i > (pageIndex + 1) * 50
+    UXEnable f!cmdPrevious, pageIndex > 0: UXEnable f!cmdNext, i > (pageIndex + 1) * 50
     f!cmdNext.ControlTipText = "Page " & (pageIndex + 1) & "; 50 findings per page. Full finding and citation appear below."
     UXLoadValidation = True: Exit Function
 Failed:
     f!lblCount.Caption = "Validation failed: " & Err.Description
-    f!cmdOpen.Enabled = False
+    UXEnable f!cmdOpen, False
 End Function
 ' Show the selected finding and its policy citation; enable its field-navigation action.
 Public Function UXValidationSelection() As Boolean
     
     Dim item As Object
     With Forms!frmUXValidation
-        .cmdOpen.Enabled = False: .txtEvidence = "No findings from implemented checks."
-        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then .cmdEvalman.Enabled = False
-        If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") Then .cmdDismissFinding.Enabled = False: .cmdAllowPhrase.Enabled = False
+        UXEnable .cmdOpen, False: .txtEvidence = "No findings from implemented checks."
+        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then UXEnable .cmdEvalman, False
+        If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") Then UXEnable .cmdDismissFinding, False: UXEnable .cmdAllowPhrase, False
         If issues Is Nothing Or Nz(.lstIssues, 0) = 0 Then Exit Function
         Set item = issues(CLng(.lstIssues))
         .txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
-        .cmdOpen.Enabled = True
-        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then .cmdEvalman.Enabled = (EvalmanSectionForFinding(CStr(item("Code")), CStr(item("Key"))) >= 0)
+        UXEnable .cmdOpen, True
+        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then UXEnable .cmdEvalman, (EvalmanSectionForFinding(CStr(item("Code")), CStr(item("Key"))) >= 0)
         'Content findings can be dismissed for this report or their words allowed.
         If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") And item.Exists("Match") Then
-            .cmdDismissFinding.Enabled = (item("ReportID") > 0): .cmdAllowPhrase.Enabled = True
+            UXEnable .cmdDismissFinding, (item("ReportID") > 0): UXEnable .cmdAllowPhrase, True
         End If
     End With
     UXValidationSelection = True
@@ -259,7 +259,7 @@ Public Function UXRestrictedListLoad() As Boolean
     With Forms!frmUXRestrictedList
         !lstItems.RowSourceType = "Value List": !lstItems.RowSource = "0;Type;Phrase or words;Rule, who and why" & IIf(Len(rows) > 0, ";" & rows, "")
         !lblCount.Caption = count & IIf(count = 1, " entry", " entries") & ". Select one to remove an allowed phrase or restore a dismissed finding."
-        !cmdRemoveItem.Enabled = False
+        UXEnable !cmdRemoveItem, False
     End With
     UXRestrictedListLoad = True
 End Function
@@ -303,7 +303,7 @@ Public Function UXChecksLoad() As Boolean
 End Function
 Public Function UXChecksSelect() As Boolean
     With Forms!frmUXRestrictedList
-        .cmdToggleCheck.Enabled = (Nz(!lstChecks, "") <> "")
+        UXEnable .cmdToggleCheck, (Nz(!lstChecks, "") <> "")
         If Nz(!lstChecks, "") = "" Then .txtCheckDetail = "Select a check to see its full pattern, why it exists and its source." Else .txtCheckDetail = RestrictedCheckDetail(CStr(!lstChecks))
     End With
     UXChecksSelect = True
@@ -330,7 +330,7 @@ End Function
 Public Function UXRestrictedListSelect() As Boolean
     Dim key As String
     key = Nz(Forms!frmUXRestrictedList!lstItems, "")
-    Forms!frmUXRestrictedList!cmdRemoveItem.Enabled = (Left$(key, 2) = "E:" Or Left$(key, 2) = "D:")
+    UXEnable Forms!frmUXRestrictedList!cmdRemoveItem, (Left$(key, 2) = "E:" Or Left$(key, 2) = "D:")
     UXRestrictedListSelect = True
 End Function
 Public Function UXRestrictedListAdd() As Boolean

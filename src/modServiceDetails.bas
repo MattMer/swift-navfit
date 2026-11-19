@@ -68,7 +68,7 @@ Public Function OpenServiceDetails() As Boolean
     For Each key In ServiceDetailsKeys()
         Forms!frmServiceDetails.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmServiceDetails!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmServiceDetails!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmServiceDetails.SetFocus: OpenServiceDetails = True
 End Function
 Public Function ApplyServiceDetails() As Boolean

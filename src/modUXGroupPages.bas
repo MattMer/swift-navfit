@@ -113,8 +113,8 @@ Public Function UXGroupTabState(ByVal screen As String, ByVal page As Long, Opti
     Next
     If UXHasControl(f, "uxAddGroupReport") Then f!uxAddGroupReport.Visible = (Nz(f!uxGroupContext, 0) > 0)
     f!uxRefreshDirectory.Visible = (Nz(f!uxGroupContext, 0) > 0)
-    f!uxRefreshDirectory.Enabled = False
-    If Nz(f!uxGroupContext, 0) > 0 Then f!uxRefreshDirectory.Enabled = Not Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & f!uxGroupContext), True)
+    UXEnable f!uxRefreshDirectory, False
+    If Nz(f!uxGroupContext, 0) > 0 Then UXEnable f!uxRefreshDirectory, Not Nz(MajorScalar("SELECT IsArchived FROM SummaryGroup WHERE GroupID=" & f!uxGroupContext), True)
     If UXHasControl(f, "uxCurrentExport") Then
         f!uxCurrentExport.Visible = (Nz(f!uxGroupContext, 0) > 0)
         f!uxCurrentSenior.Visible = f!uxCurrentExport.Visible: f!uxSeniorCaption.Visible = f!uxCurrentExport.Visible

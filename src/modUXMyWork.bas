@@ -160,8 +160,8 @@ End Function
 Public Function UXWorkSelection() As Boolean
     Dim f As Access.Form, kind As String, id As Long, r As DAO.Recordset, pid As Long, canDecide As Boolean, text As String
     Set f = Forms!frmMyWork: pid = MajorAuthor()
-    f!cmdAccept.Enabled = False: f!cmdReturn.Enabled = False: f!cmdCancel.Enabled = False
-    f!cmdDraft.Enabled = Not IsNull(f!lstWork): f!cmdOpenWork.Enabled = Not IsNull(f!lstWork)
+    UXEnable f!cmdAccept, False: UXEnable f!cmdReturn, False: UXEnable f!cmdCancel, False
+    UXEnable f!cmdDraft, Not IsNull(f!lstWork): UXEnable f!cmdOpenWork, Not IsNull(f!lstWork)
     f!txtHistory = Null
     If IsNull(f!lstWork) Then
         If f!lstWork.ListCount <= 1 Then f!uxWorkStatus.Caption = "No work items in this view." Else f!uxWorkStatus.Caption = (f!lstWork.ListCount - 1) & " work items. Select a row to see its next action."
@@ -174,8 +174,8 @@ Public Function UXWorkSelection() As Boolean
     If kind = "Assignment" Then
         f!lstTasks = id
         canDecide = r!TaskState = "Pending" And r!AssignedTo = pid And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & r!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & r!ReportID), "") = "Draft"
-        f!cmdAccept.Enabled = canDecide: f!cmdReturn.Enabled = canDecide
-        f!cmdCancel.Enabled = r!TaskState = "Pending" And r!RequestedBy = pid
+        UXEnable f!cmdAccept, canDecide: UXEnable f!cmdReturn, canDecide
+        UXEnable f!cmdCancel, r!TaskState = "Pending" And r!RequestedBy = pid
         text = text & vbCrLf & "Requested by " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & r!RequestedBy), "") & vbCrLf & Nz(r!Instructions, "")
     ElseIf kind = "Comment" Then
         text = text & vbCrLf & "Related unresolved threads are included for authors and active reviewers; comments are not assigned tasks." & vbCrLf & Nz(r!CommentBody, "")

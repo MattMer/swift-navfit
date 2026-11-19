@@ -48,14 +48,14 @@ Public Function UXHeaderReviewState() As Boolean
     Dim f As Access.Form, id As Long, run As Long, editable As Boolean, current As Boolean, author As Long, state As String, r As DAO.Recordset, reason As String, primary As String, nextAction As String, action As Variant, routeState As String
     On Error GoTo Failed
     Set f = Forms!frmEditor: id = Nz(f!txtReportID, 0): author = MajorAuthor()
-    f!uxReviewAccept.Enabled = False: f!uxReviewReturn.Enabled = False: f!uxReviewApproval.Enabled = False
-    f!uxReviewSetup.Enabled = id > 0
+    UXEnable f!uxReviewAccept, False: UXEnable f!uxReviewReturn, False: UXEnable f!uxReviewApproval, False
+    UXEnable f!uxReviewSetup, id > 0
     reason = "Save this new report before reviewing a saved revision."
     If id > 0 Then
         editable = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True)
         state = Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "Draft")
         If state = "Approved" Then
-            f!uxReviewApproval.Caption = "Reopen approval": f!uxReviewApproval.Enabled = editable
+            f!uxReviewApproval.Caption = "Reopen approval": UXEnable f!uxReviewApproval, editable
         Else
             f!uxReviewApproval.Caption = "Local approval"
         End If
@@ -67,11 +67,11 @@ Public Function UXHeaderReviewState() As Boolean
             If Not current And (r!RunState = "Pending" Or r!RunState = "Accepted") Then
                 reason = "The group's membership changed: open Review setup and restart the route. Only its requester can restart it."
             ElseIf r!RunState = "Pending" Then
-                f!uxReviewAccept.Enabled = editable And current And RouteHolder(run) = author
-                f!uxReviewReturn.Enabled = f!uxReviewAccept.Enabled And r!CurrentStep > 0
+                UXEnable f!uxReviewAccept, editable And current And RouteHolder(run) = author
+                UXEnable f!uxReviewReturn, f!uxReviewAccept.Enabled And r!CurrentStep > 0
                 reason = "With " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & RouteHolder(run)), "Unknown contributor") & ". Decisions apply to saved values."
             ElseIf r!RunState = "Accepted" And state <> "Approved" Then
-                f!uxReviewApproval.Enabled = editable And current And Nz(r!ApprovedBy, 0) = author
+                UXEnable f!uxReviewApproval, editable And current And Nz(r!ApprovedBy, 0) = author
                 reason = "All steps accepted. Local approval requires the final reviewer and a decision note."
             End If
         End If
@@ -80,7 +80,7 @@ Public Function UXHeaderReviewState() As Boolean
         If state = "Signed" Then reason = "Marked signed outside Swift: the first edit asks whether to reopen it for correction."
         If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then reason = "Recover this archived report before reviewing or reopening approval."
     End If
-    If UXHasControl(f, "uxMarkSigned") Then f!uxMarkSigned.Enabled = id > 0 And (state = "Draft" Or state = "Approved") And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Not EditorHasPending()
+    If UXHasControl(f, "uxMarkSigned") Then UXEnable f!uxMarkSigned, id > 0 And (state = "Draft" Or state = "Approved") And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Not EditorHasPending()
     If id > 0 And Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then
         nextAction = "Archived report. Recover it from Reports to continue."
     ElseIf state = "Signed" Then

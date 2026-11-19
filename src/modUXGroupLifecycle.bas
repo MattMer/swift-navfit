@@ -116,8 +116,8 @@ End Function
 Public Function UXGroupSelection() As Boolean
     Dim f As Access.Form, id As Long, archived As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0)
-    If UXHasControl(f, "uxExportSelected") Then f!uxExportSelected.Enabled = (id > 0)
-    If UXHasControl(f, "uxPDFSelected") Then f!uxPDFSelected.Enabled = (id > 0)
+    If UXHasControl(f, "uxExportSelected") Then UXEnable f!uxExportSelected, (id > 0)
+    If UXHasControl(f, "uxPDFSelected") Then UXEnable f!uxPDFSelected, (id > 0)
     If UXHasControl(f, "uxGroupState") Then
         If id > 0 Then f!uxGroupState = GroupWorkflow(id): f!uxStateStamp = GroupStamp(id) Else f!uxGroupState = Null: f!uxStateStamp = ""
     End If
@@ -127,8 +127,8 @@ Public Function UXGroupSelection() As Boolean
         If Screen.ActiveControl.Name = "uxArchive" Or Screen.ActiveControl.Name = "uxRecover" Or Screen.ActiveControl.Name = "uxRename" Or Screen.ActiveControl.Name = "cmdOpen" Then f!uxArchiveFilter.SetFocus
     End If
     On Error GoTo 0
-    f!cmdOpen.Enabled = (id > 0): f!uxRename.Enabled = (id > 0 And Not archived)
-    f!uxArchive.Enabled = (id > 0 And Not archived): f!uxRecover.Enabled = (id > 0 And archived)
+    UXEnable f!cmdOpen, (id > 0): UXEnable f!uxRename, (id > 0 And Not archived)
+    UXEnable f!uxArchive, (id > 0 And Not archived): UXEnable f!uxRecover, (id > 0 And archived)
     f!uxLifecycleStatus.Caption = IIf(id = 0, "Choose a group. Archived groups keep members, defaults and history.", IIf(archived, "Archived group: inspect or recover. Member reports are not archived.", "Archiving hides this group; member reports remain available."))
     f!uxLifecycleStatus.ControlTipText = "Group status is independent of member review and official submission."
     f!uxLifecycleStatus.Caption = f!uxLifecycleStatus.Caption & " Group status is separate from member review and official submission."
@@ -187,7 +187,7 @@ Public Sub UXGroupLocks(ByVal f As Access.Form, ByVal id As Long)
     Dim name As Variant, archived As Boolean
     archived = Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & id), True)
     For Each name In Array("uxMode1", "uxMode3", "uxMembers", "uxBulk", "uxRSCA", "uxComparison", "uxPolicyReview", "uxAddGroupReport", "uxDefaultsEditor", "cmdStartRoute", "cmdCreateRoute", "cmdAcceptStep", "cmdReturnStep", "cmdCancelRoute", "cmdApproveRoute", "cmdReopenApproval", "cmdApplyBatch", "cmdPreviewUndo")
-        If UXHasControl(f, CStr(name)) Then f.Controls(name).Enabled = Not archived
+        If UXHasControl(f, CStr(name)) Then UXEnable f.Controls(name), Not archived
     Next
     If archived Then f!lblStatus.Caption = "Archived group: read only. Recover it from Summary groups to manage it."
 End Sub

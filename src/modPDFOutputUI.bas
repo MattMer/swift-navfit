@@ -52,11 +52,11 @@ End Sub
 Public Function PDFOutputLoad() As Boolean
     With Forms!frmPDFOutput
         !cboSource = "Current drafts": !cboFormat = IIf(previewGroup > 0, "Combined packet", "Individual PDFs")
-        !chkSummary = (previewGroup > 0): !chkSummary.Enabled = (previewGroup > 0)
+        !chkSummary = (previewGroup > 0): UXEnable !chkSummary, (previewGroup > 0)
         !cboISIC.RowSource = "SELECT ISICID,Title FROM ISIC WHERE IsArchived=False ORDER BY Title"
         !cboISIC = IIf(GroupISIC(previewGroup) > 0, GroupISIC(previewGroup), Null): !cboOnTime = Null
-        !cboISIC.Enabled = (previewGroup > 0): !cboOnTime.Enabled = (previewGroup > 0)
-        !txtFolder = PDFOutputFolderPreference(): !cmdOpenFolder.Enabled = False: !cmdOpenPDF.Enabled = False
+        UXEnable !cboISIC, (previewGroup > 0): UXEnable !cboOnTime, (previewGroup > 0)
+        !txtFolder = PDFOutputFolderPreference(): UXEnable !cmdOpenFolder, False: UXEnable !cmdOpenPDF, False
     End With
     PDFOutputLoad = PDFOutputRefreshPreview()
 End Function
@@ -74,7 +74,7 @@ Public Function PDFOutputRefreshPreview() As Boolean
         !lblScope.Caption = current("Title") & " | " & current("Reports").Count & " reports | Alphabetical by last name"
         !txtFindings = "Captured " & Format$(current("Captured"), "yyyy-mm-dd h:nn:ss AM/PM") & ". Current-draft mode reads pending values without saving or discarding them. Pending group cells take precedence for the same field; both buffers remain unchanged." & vbCrLf & "Findings, missing values and report status never prevent PDF generation. " & PDF_OVERFLOW_HELP & vbCrLf & "Signatures, unrecorded qualifications/ranking/RSCA and submission acceptance remain blank. A computed PSG RSCA is not substituted for an official report RSCA. Choose a protected export folder; PDFs may contain identifiers."
         !lblStatus.Caption = "Preview captured. Choose the format, then create PDFs."
-        !cmdGenerate.Enabled = True: !cmdOpenFolder.Enabled = False: !cmdOpenPDF.Enabled = False
+        UXEnable !cmdGenerate, True: UXEnable !cmdOpenFolder, False: UXEnable !cmdOpenPDF, False
     End With
     PDFOutputRefreshPreview = True: Exit Function
 Failed:
@@ -130,7 +130,7 @@ Public Function PDFOutputCreate() As Boolean
     Set current = PDFOutputJob()
     For Each row In current("Reports"): selected(CStr(row("ID"))) = True: Next
     f!txtFindings.SetFocus
-    f!cmdGenerate.Enabled = False: f!cmdRefresh.Enabled = False: f!cmdClose.Enabled = False
+    UXEnable f!cmdGenerate, False: UXEnable f!cmdRefresh, False: UXEnable f!cmdClose, False
     f!lblStatus.Caption = "Creating print-ready PDFs from the captured preview...": f.Repaint
     PDFOutputLetterChoices
     folder = PDFOutputGenerate(Nz(f!txtFolder, ""), selected, Nz(f!cboFormat, ""), Nz(f!chkSummary, False))
@@ -138,14 +138,14 @@ Public Function PDFOutputCreate() As Boolean
     If previewGroup > 0 Then SetGroupISIC previewGroup, Nz(f!cboISIC, 0)
     f!lblStatus.Caption = "Completed: " & folder
     f!txtFindings = PDFOutputResultText(folder, PDFOutputJob()("Files"))
-    f!cmdOpenFolder.Enabled = True: f!cmdOpenPDF.Enabled = True
-    f!cmdGenerate.Enabled = True: f!cmdRefresh.Enabled = True: f!cmdClose.Enabled = True
+    UXEnable f!cmdOpenFolder, True: UXEnable f!cmdOpenPDF, True
+    UXEnable f!cmdGenerate, True: UXEnable f!cmdRefresh, True: UXEnable f!cmdClose, True
     PDFOutputCreate = True: Exit Function
 Failed:
     failure = Err.Number: message = Err.Description
     If Not f Is Nothing Then
         f!lblStatus.Caption = "PDF generation failed: " & failure & " " & message
-        f!cmdGenerate.Enabled = True: f!cmdRefresh.Enabled = True: f!cmdClose.Enabled = True
+        UXEnable f!cmdGenerate, True: UXEnable f!cmdRefresh, True: UXEnable f!cmdClose, True
     End If
 End Function
 Public Function PDFOutputOpenResult(ByVal folderOnly As Boolean) As Boolean

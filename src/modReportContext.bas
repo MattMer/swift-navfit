@@ -81,7 +81,7 @@ Public Function OpenReportContext(ByVal panel As String) As Boolean
     For Each key In keys
         Forms(screen).Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms(screen)!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms(screen)!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms(screen).SetFocus: OpenReportContext = True
 End Function
 Public Function ApplyReportContext(ByVal panel As String) As Boolean

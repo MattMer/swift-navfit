@@ -88,7 +88,7 @@ Public Function UXLoadMoveGroup() As Boolean
     Call UXAssertView("frmUXMoveGroup")
     moveToken = "": moveOwner = 0
     With Forms!frmUXMoveGroup
-        !cmdApply.Enabled = False: !txtPreview = Null
+        UXEnable !cmdApply, False: !txtPreview = Null
         !reportID = Val(Nz(.OpenArgs, "0"))
         !cboGroup.RowSource = "SELECT 0 AS ID,'Ungrouped' AS Label FROM AppMetadata UNION ALL SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Label"
         !cboGroup = 0
@@ -99,7 +99,7 @@ End Function
 Public Function UXPreviewMoveGroup() As Boolean
     Dim id As Long, destination As Long, csv As String, db As DAO.Database, r As DAO.Recordset
     Call UXAssertView("frmUXMoveGroup")
-    moveToken = "": moveOwner = 0: Forms!frmUXMoveGroup!cmdApply.Enabled = False
+    moveToken = "": moveOwner = 0: UXEnable Forms!frmUXMoveGroup!cmdApply, False
     On Error GoTo Failed
     id = Forms!frmUXMoveGroup!reportID: destination = Nz(Forms!frmUXMoveGroup!cboGroup, 0)
     CheckMove id, destination
@@ -111,7 +111,7 @@ Public Function UXPreviewMoveGroup() As Boolean
         r.Close
         Forms!frmUXMoveGroup!txtPreview = Forms!frmUXMoveGroup!txtPreview & vbCrLf & GroupImpactText(destination, , csv)
     End If
-    moveOwner = ActiveContributorID(): moveToken = MoveStamp(id, destination): Forms!frmUXMoveGroup!cmdApply.Enabled = True: UXPreviewMoveGroup = True: Exit Function
+    moveOwner = ActiveContributorID(): moveToken = MoveStamp(id, destination): UXEnable Forms!frmUXMoveGroup!cmdApply, True: UXPreviewMoveGroup = True: Exit Function
 Failed:
     moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = Err.Description
 End Function
@@ -124,12 +124,12 @@ Public Function UXApplyMoveGroup() As Boolean
     MoveReportGroup CLng(Forms!frmUXMoveGroup!reportID), CLng(Nz(Forms!frmUXMoveGroup!cboGroup, 0)), moveToken
     committed = True
     moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = "Moved successfully. Saved report values unchanged."
-    Forms!frmUXMoveGroup!cmdApply.Enabled = False
+    UXEnable Forms!frmUXMoveGroup!cmdApply, False
     RefreshLibrary
     UXApplyMoveGroup = True: Exit Function
 Failed:
     message = Err.Description: moveToken = "": moveOwner = 0
-    Forms!frmUXMoveGroup!cmdApply.Enabled = False
+    UXEnable Forms!frmUXMoveGroup!cmdApply, False
     If committed Then message = "Move completed; the display update failed. Reopen Reports to inspect the saved membership. " & message
     Forms!frmUXMoveGroup!lblStatus.Caption = message
 End Function

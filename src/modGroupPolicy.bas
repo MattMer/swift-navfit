@@ -147,7 +147,7 @@ Public Function UXLoadGroupPolicy() As Boolean
         !cboUIC.RowSource = IIf(kind = "FITREP", "Officer normal;Officer dual-hatted", "Unconfirmed;Combined enlisted UICs;Separate enlisted UICs")
         !cboUIC = GroupPolicyValue(id, "UICMode"): If Len(Nz(!cboUIC, "")) = 0 Then !cboUIC = IIf(kind = "FITREP", "Officer normal", "Unconfirmed")
         !cboBasis = GroupPolicyValue(id, "OfficerBasis"): If Len(Nz(!cboBasis, "")) = 0 Then !cboBasis = "Unconfirmed"
-        !cboBasis.Enabled = (kind = "FITREP"): !txtNote = GroupPolicyValue(id, "Note"): !chkComplete = False
+        UXEnable !cboBasis, (kind = "FITREP"): !txtNote = GroupPolicyValue(id, "Note"): !chkComplete = False
         !txtEvidence = GroupReviewLabel(id) & vbCrLf & ValidationPolicyReference(IIf(kind = "FITREP", "GROUP-OFFICER", "GROUP-ENLISTED")) & vbCrLf & ValidationPolicyReference("GROUP-CATEGORY")
     End With
     UXLoadGroupPolicy = True

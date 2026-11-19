@@ -400,7 +400,7 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
             End If
         Next
         f!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
-        f!cmdSave.Enabled = Not locked: f!cboKind.Locked = locked
+        UXEnable f!cmdSave, Not locked: f!cboKind.Locked = locked
         If locked Then f!uxLocked.Caption = "Read only. Recover archived reports or reopen local approval to edit." Else f!uxLocked.Caption = ""
         If Not UXSurfaceSection(section, locked) Then Exit Function
         UXResizeEditor
@@ -417,8 +417,8 @@ Public Function UXSelectSection(ByVal section As Long, Optional ByVal page As Lo
     Next
     f!uxSection.Caption = Replace(UXSectionName(section), "&", "&&")
     f!uxPage.Caption = "Page " & (page + 1) & " of " & (maxPage + 1)
-    f!uxPrevious.Enabled = (page > 0): f!uxNext.Enabled = (page < maxPage)
-    f!cmdSave.Enabled = Not locked
+    UXEnable f!uxPrevious, (page > 0): UXEnable f!uxNext, (page < maxPage)
+    UXEnable f!cmdSave, Not locked
     f!cboKind.Locked = locked
     If locked Then f!uxLocked.Caption = "Read only. Reopen local approval or recover the archived report to edit." Else f!uxLocked.Caption = ""
     UXRefreshEditor
@@ -696,7 +696,7 @@ Public Function UXSelectComparisonMember() As Boolean
     For block = 33 To 39: f.Controls("cboTrait" & block) = MajorRevisionValue(f!uxTraitGrid.Form!RevisionID, "Trait" & block): Next
     f!cboPromotion = MajorRevisionValue(f!uxTraitGrid.Form!RevisionID, "PromotionRecommendation")
     locked = Nz(MajorScalar("SELECT IsArchived FROM Report WHERE ReportID=" & id), True) Or Nz(MajorScalar("SELECT WorkflowState FROM Report WHERE ReportID=" & id), "") <> "Draft"
-    f!cmdStage.Enabled = Not locked
+    UXEnable f!cmdStage, Not locked
     For block = 33 To 39: f.Controls("cboTrait" & block).Locked = locked: Next
     f!cboPromotion.Locked = locked
     f!uxMember.Caption = Nz(f!uxTraitGrid.Form!Member, "") & IIf(locked, " - locked; reopen in the report workspace to edit", " - proposed edits")
@@ -752,11 +752,11 @@ Public Function UXApplyComparison() As Boolean
         csv = csv & Forms!frmUXComparison!lstProposals.ItemData(item)
     Next
     ApplyMeetingProposals csv
-    Forms!frmUXComparison!cmdStage.Enabled = False
+    UXEnable Forms!frmUXComparison!cmdStage, False
     Call UXGridLoad: Call UXRefreshComparisonPreview(True)
     UXComparisonPage "Preview"
     Forms!frmUXComparison!cmdBack.SetFocus
-    Forms!frmUXComparison!cmdApply.Enabled = False
+    UXEnable Forms!frmUXComparison!cmdApply, False
     Forms!frmUXComparison!lblStatus.Caption = "Selected proposals applied. Reopen the group comparison to edit further."
     UXApplyComparison = True: Exit Function
 Failed:

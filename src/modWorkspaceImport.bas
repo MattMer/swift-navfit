@@ -163,7 +163,7 @@ Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  Set workspacePreview = WizardPreviewLoad("WorkspaceImport")
  stage = "Show preview"
  Forms!frmUXWorkspaceImport!txtPreview = text & vbCrLf & "All workspace data is copied, including revisions, reviews, members, defaults, recovery, history and import provenance. Source code/forms are not imported. Use a new blank app; this does not merge independent workspaces. Initial setup contributor details in an otherwise blank app will be replaced by the source workspace."
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = True
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, True
  UXPreviewSwiftWorkspace = True: Exit Function
 Failed:
  Set failure = CaptureWorkspaceImportFailure("UXPreviewSwiftWorkspace", stage, Err.Number, Err.Description, Err.Source, "Not started")
@@ -252,7 +252,7 @@ Private Sub LockImportDisplay()
  Set enabledBefore = CreateObject("Scripting.Dictionary")
  For Each c In f.Controls
   If c.ControlType = acCommandButton Then
-   enabledBefore.Add c.Name, c.Enabled: c.Enabled = False
+   enabledBefore.Add c.Name, c.Enabled: UXEnable c, False
   End If
  Next
 End Sub
@@ -282,7 +282,7 @@ Private Sub FinishImportDisplay(ByRef failure As Object, ByVal outcome As String
  If Not enabledBefore Is Nothing Then
   For Each name In enabledBefore.Keys
    On Error Resume Next
-   Forms!frmUXWorkspaceImport.Controls(CStr(name)).Enabled = enabledBefore(name)
+   UXEnable Forms!frmUXWorkspaceImport.Controls(CStr(name)), enabledBefore(name)
    If Err.Number <> 0 Then RecordImportDisplayError failure, "restore import action " & CStr(name), Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
    On Error GoTo 0
   Next
@@ -301,7 +301,7 @@ Private Sub FinishImportDisplay(ByRef failure As Object, ByVal outcome As String
  If Err.Number <> 0 Then RecordImportDisplayError failure, "clear import status bar", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
  On Error GoTo 0
  On Error Resume Next
- Forms!frmUXWorkspaceImport!cmdClose.Enabled = True
+ UXEnable Forms!frmUXWorkspaceImport!cmdClose, True
  If Err.Number <> 0 Then RecordImportDisplayError failure, "enable import close", Err.Number, Err.Description, Err.Source, outcome, "FinishImportDisplay"
  On Error GoTo 0
  On Error Resume Next
@@ -337,7 +337,7 @@ Public Function UXApplySwiftWorkspace() As Boolean
  Forms!frmUXWorkspaceImport!lblStatus.Caption = result & ". Close and reopen this app to load the imported workspace."
  importPath = "": importHash = "": Set workspacePreview = Nothing: UXApplySwiftWorkspace = True
  FinishImportDisplay displayFailure, outcome
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, False
  Exit Function
 Failed:
  'Capture before any progress painting, control access or cleanup can replace Err.
@@ -370,7 +370,7 @@ Failed:
  On Error GoTo 0
  FinishImportDisplay displayFailure, outcome
  On Error Resume Next
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = (safeRetry And importPath <> "")
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, (safeRetry And importPath <> "")
  If Err.Number <> 0 Then SwiftCleanupError failure, "restore import retry", Err.Number
  On Error GoTo 0
  Call SwiftFailureText(failure)
@@ -393,19 +393,19 @@ Public Function UXCancelSwiftWorkspacePreview() As Boolean
  UXCancelSwiftWorkspacePreview = WizardPreviewCancel("WorkspaceImport", token)
  On Error GoTo 0
  importPath = "": importHash = "": Set workspacePreview = Nothing
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, False
  Forms!frmUXWorkspaceImport!lblStatus.Caption = "Saved preview cancelled. No source or workspace data changed."
  Exit Function
 Failed:
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, False
  Forms!frmUXWorkspaceImport!lblStatus.Caption = "Cancel unavailable: " & Err.Description & " Saved choices are retained. Resume before cancelling."
 End Function
 Public Function UXWorkspacePreviewStart() As Boolean
  If importing Then Exit Function
  importPath = "": importHash = "": Set workspacePreview = Nothing
  Forms!frmUXWorkspaceImport.Modal = False
- Forms!frmUXWorkspaceImport!cmdApply.Enabled = False
- Forms!frmUXWorkspaceImport!cmdClose.Enabled = True
+ UXEnable Forms!frmUXWorkspaceImport!cmdApply, False
+ UXEnable Forms!frmUXWorkspaceImport!cmdClose, True
  Forms!frmUXWorkspaceImport!lblStatus.Caption = "Choose a source, or resume the saved preview."
  UXWorkspacePreviewStart = True
 End Function

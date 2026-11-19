@@ -82,7 +82,7 @@ Public Function OpenReportPeople() As Boolean
     For Each key In ReportPeopleKeys()
         Forms!frmReportPeople.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmReportPeople!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmReportPeople!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmReportPeople.SetFocus: OpenReportPeople = True
 End Function
 Public Function ApplyReportPeople() As Boolean

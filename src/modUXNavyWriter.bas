@@ -9,7 +9,7 @@ Public Function UXLoadNavyWriter() As Boolean
         f!cboRate = "ALL"
     End If
     term = Nz(Forms!frmUXNavyWriter!txtSearch, "")
-    f!lstCatalog = Null: f!txtBody = "": f!txtSource = "": f!cmdImport.Enabled = False: f!cmdSource.Enabled = False
+    f!lstCatalog = Null: f!txtBody = "": f!txtSource = "": UXEnable f!cmdImport, False: UXEnable f!cmdSource, False
     Forms!frmUXNavyWriter!lstCatalog.RowSourceType = "Value List": Forms!frmUXNavyWriter!lstCatalog.RowSource = ""
     For i = 0 To NavyWriterCount() - 1
         title = NavyWriterValue(i, 0): body = NavyWriterValue(i, 1)
@@ -31,8 +31,8 @@ Public Function UXSelectNavyWriter() As Boolean
     Forms!frmUXNavyWriter!txtBody = NavyWriterValue(i, 1)
     Forms!frmUXNavyWriter!txtSource = NavyWriterValue(i, 2)
     Forms!frmUXNavyWriter!txtBody.Locked = (NavyWriterValue(i, 4) <> "Excerpt")
-    Forms!frmUXNavyWriter!cmdImport.Enabled = (NavyWriterValue(i, 4) = "Excerpt")
-    Forms!frmUXNavyWriter!cmdSource.Enabled = True
+    UXEnable Forms!frmUXNavyWriter!cmdImport, (NavyWriterValue(i, 4) = "Excerpt")
+    UXEnable Forms!frmUXNavyWriter!cmdSource, True
     Forms!frmUXNavyWriter!lblStatus.Caption = NavyWriterValue(i, 4) & " / Rate: " & Replace(NavyWriterValue(i, 3), "GENERAL", "General") & ". Adapt only to verified accomplishments; this is not policy."
     UXSelectNavyWriter = True
 End Function

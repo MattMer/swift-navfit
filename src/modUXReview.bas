@@ -34,11 +34,11 @@ Public Function UXReviewStatus() As Boolean
     Set f = UXReviewForm(): id = Nz(f!txtReportID, 0): run = Nz(f!cboRun, 0): author = MajorAuthor()
     editable = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Draft"
     'With an active route, Start replaces it with the selected template.
-    f!cmdStart.Enabled = editable
+    UXEnable f!cmdStart, editable
     If DCount("*", "RouteRun", "ReportID=" & id & " AND RunState In ('Pending','Accepted')") > 0 Then f!cmdStart.Caption = "Replace current route with this template" Else f!cmdStart.Caption = "Start review of current saved revision"
-    If Nz(f!txtGroupID, 0) > 0 Then f!cmdStart.Enabled = f!cmdStart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & f!txtGroupID), True)
-    f!cmdAccept.Enabled = False: f!cmdReturn.Enabled = False: f!cmdPullBack.Enabled = False: f!cmdRestart.Enabled = False: f!cmdApprove.Enabled = False: f!cmdCancel.Enabled = False
-    f!cmdReopen.Enabled = Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Approved"
+    If Nz(f!txtGroupID, 0) > 0 Then UXEnable f!cmdStart, f!cmdStart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & f!txtGroupID), True)
+    UXEnable f!cmdAccept, False: UXEnable f!cmdReturn, False: UXEnable f!cmdPullBack, False: UXEnable f!cmdRestart, False: UXEnable f!cmdApprove, False: UXEnable f!cmdCancel, False
+    UXEnable f!cmdReopen, Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & id), "") = "Approved"
     f!lstSteps.RowSource = "": f!txtStep = ""
     message = "Choose a route template and Start review. The reviewer holding the report can edit it, then forward it or send it back."
     If Not editable Then message = "Editing is locked. Reopen local approval with a reason, or recover the archived report first."
@@ -55,8 +55,8 @@ Public Function UXReviewStatus() As Boolean
         If (state = "Pending" Or state = "Accepted") And current Then message = message & RouteFlags(run)
         If Not current And (state = "Pending" Or state = "Accepted") Then
             message = message & "Needs restart: the group's membership changed. The requester can restart using the same template; all earlier decisions stay in history."
-            f!cmdRestart.Enabled = editable And r!RequestedBy = author
-            If Nz(r!GroupID, 0) > 0 Then f!cmdRestart.Enabled = f!cmdRestart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & r!GroupID), True)
+            UXEnable f!cmdRestart, editable And r!RequestedBy = author
+            If Nz(r!GroupID, 0) > 0 Then UXEnable f!cmdRestart, f!cmdRestart.Enabled And Not Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & r!GroupID), True)
         ElseIf state = "Pending" Then
             If r!CurrentStep = 0 Then
                 message = message & "Back with the requester, " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & assignee), "Unknown contributor") & ". "
@@ -64,17 +64,17 @@ Public Function UXReviewStatus() As Boolean
                 message = message & "Step " & r!CurrentStep & " of " & DCount("*", "RouteRunStep", "RunID=" & run) & ": with " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & assignee), "Unknown reviewer") & ". "
             End If
             If assignee = author Then message = message & "You hold this report: edit it if needed, then Forward, or Send back with a note (to the step selected below, or the previous step)." Else message = message & "Only the contributor holding it can edit or forward it."
-            f!cmdAccept.Enabled = current And editable And assignee = author
-            f!cmdReturn.Enabled = f!cmdAccept.Enabled And r!CurrentStep > 0
+            UXEnable f!cmdAccept, current And editable And assignee = author
+            UXEnable f!cmdReturn, f!cmdAccept.Enabled And r!CurrentStep > 0
         ElseIf state = "Accepted" And current Then
             message = message & "Every step has forwarded. The final reviewer can record Local approval, or Send back with a note."
-            f!cmdApprove.Enabled = editable And Nz(r!ApprovedBy, 0) = author
-            f!cmdReturn.Enabled = f!cmdApprove.Enabled
+            UXEnable f!cmdApprove, editable And Nz(r!ApprovedBy, 0) = author
+            UXEnable f!cmdReturn, f!cmdApprove.Enabled
         Else
             message = message & "This route is history. Start another review if needed; local approval must be reopened before editing."
         End If
-        f!cmdCancel.Enabled = state = "Pending" And r!RequestedBy = author
-        f!cmdPullBack.Enabled = current And editable And RoutePullBackStep(run, author) >= 0
+        UXEnable f!cmdCancel, state = "Pending" And r!RequestedBy = author
+        UXEnable f!cmdPullBack, current And editable And RoutePullBackStep(run, author) >= 0
         r.Close
     End If
     If Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True) Then

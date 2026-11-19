@@ -8,7 +8,7 @@ End Function
 Public Function UXRUADImportChoose() As Boolean
     Dim dialog As Object, f As Access.Form, count As Long
     On Error GoTo Failed
-    Set f = Forms!frmUXRUADImport: f!cmdApply.Enabled = False
+    Set f = Forms!frmUXRUADImport: UXEnable f!cmdApply, False
     Set dialog = Application.FileDialog(3)
     dialog.Title = "Choose the command roster (NRRM RUAD CSV or MNA workbook)": dialog.AllowMultiSelect = False
     dialog.Filters.Clear: dialog.Filters.Add "NRRM RUAD CSV or MNA workbook", "*.csv;*.xlsx"
@@ -43,17 +43,17 @@ Public Function UXRUADImportSelect() As Boolean
     If IsNull(f!lstRows) Then Exit Function
     loading = True: Set row = RUADRow(CLng(f!lstRows)): Set data = row("Data")
     f!cboAction = row("Action"): f!cboMatch = IIf(row("MemberID") = 0, Null, row("MemberID")): f!chkReplaceManual = row("ReplaceManual")
-    f!chkUpdateRank = row("UpdateRank"): f!chkUpdateRank.Enabled = (row("Action") = "Refresh existing")
+    f!chkUpdateRank = row("UpdateRank"): UXEnable f!chkUpdateRank, (row("Action") = "Refresh existing")
     f!cboMatch.RowSource = "SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False ORDER BY IIf(FullName=" & QuoteSQL(CStr(data("NAME"))) & ",0,1),FullName,MemberID"
     f!cboMatch.Requery
-    f!txtDetails = row("Detail"): f!cboAction.Enabled = Not row("Vacant"): f!cboMatch.Enabled = Not row("Vacant"): f!chkReplaceManual.Enabled = Not row("Vacant")
+    f!txtDetails = row("Detail"): UXEnable f!cboAction, Not row("Vacant"): UXEnable f!cboMatch, Not row("Vacant"): UXEnable f!chkReplaceManual, Not row("Vacant")
     loading = False: UXRUADImportSelect = True
 End Function
 Public Function UXRUADImportSelection() As Boolean
     Dim f As Access.Form, selected As Long
     If loading Then Exit Function
     On Error GoTo Failed
-    Set f = Forms!frmUXRUADImport: f!cmdApply.Enabled = False
+    Set f = Forms!frmUXRUADImport: UXEnable f!cmdApply, False
     If IsNull(f!lstRows) Then Exit Function
     selected = CLng(f!lstRows)
     If Nz(f!cboAction, "Skip") = "Refresh existing" And Nz(f!cboMatch, 0) = 0 Then
@@ -75,7 +75,7 @@ End Function
 Public Function UXRUADImportNew() As Boolean
     Dim i As Long, row As Object, data As Object, count As Long, matched As Long, undecided As Long
     On Error GoTo Failed
-    Forms!frmUXRUADImport!cmdApply.Enabled = False
+    UXEnable Forms!frmUXRUADImport!cmdApply, False
     Call RUADSuggest
     For i = 1 To RUADCount()
         Set row = RUADRow(i): Set data = row("Data")
@@ -97,15 +97,15 @@ Failed:
 End Function
 Public Function UXRUADImportPreview() As Boolean
     On Error GoTo Failed
-    Forms!frmUXRUADImport!cmdApply.Enabled = False
+    UXEnable Forms!frmUXRUADImport!cmdApply, False
     Forms!frmUXRUADImport!lblStatus.Caption = RUADPreview()
     If Not IsNull(Forms!frmUXRUADImport!lstRows) Then UXRUADImportSelect
-    Forms!frmUXRUADImport!cmdApply.Enabled = True: UXRUADImportPreview = True: Exit Function
+    UXEnable Forms!frmUXRUADImport!cmdApply, True: UXRUADImportPreview = True: Exit Function
 Failed:
     Forms!frmUXRUADImport!lblStatus.Caption = Err.Description
 End Function
 Public Function UXRUADImportScope() As Boolean
-    Forms!frmUXRUADImport!cmdApply.Enabled = False
+    UXEnable Forms!frmUXRUADImport!cmdApply, False
     RUADSetComplete Nz(Forms!frmUXRUADImport!chkCompleteRoster, False)
     Forms!frmUXRUADImport!lblStatus.Caption = IIf(RUADComplete(), "Complete roster: members missing from it will be flagged as departing. ", "") & "Preview again before Apply."
     UXRUADImportScope = True
@@ -113,7 +113,7 @@ End Function
 Public Function UXRUADImportApply() As Boolean
     Dim count As Long
     On Error GoTo Failed
-    Forms!frmUXRUADImport!cmdApply.Enabled = False
+    UXEnable Forms!frmUXRUADImport!cmdApply, False
     count = RUADApply()
     Forms!frmUXRUADImport!lblStatus.Caption = "Results: " & count & " profiles applied. Reports, SSNs, links and prior evaluations preserved. " & PendingDepartureCount() & " departures are waiting to be confirmed in My Work > Departures."
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad

@@ -542,9 +542,9 @@ Public Function LoadEditor() As Boolean
         f!cboPromotionStatus = r!PromotionStatus
         f!cboObservationStatus = r!ObservationStatus: f!cboPromotionRecommendation = r!PromotionRecommendation
         f!lblSaved.Caption = "Saved current report at " & r!ModifiedAt
-        f!cmdSave.Enabled = Not r!IsArchived
-        f!cmdRestore.Enabled = Not r!IsArchived
-        r.Close: f!cboKind.Enabled = False
+        UXEnable f!cmdSave, Not r!IsArchived
+        UXEnable f!cmdRestore, Not r!IsArchived
+        r.Close: UXEnable f!cboKind, False
         Select Case NAVFITImportScope(id)
             Case "Full report": f!lblImportOrigin.Caption = "Imported from NAVFIT."
             Case "Narrative only": f!lblImportOrigin.Caption = "Imported narrative only."
@@ -590,7 +590,7 @@ TryAgain:
     stage = "Commit save"
     w.CommitTrans: trans = False: committed = True
     stage = "Refresh saved report display"
-    f!txtReportID = id: f!cboKind.Enabled = False: f!lblSaved.Caption = "Saved current report at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
+    f!txtReportID = id: UXEnable f!cboKind, False: f!lblSaved.Caption = "Saved current report at " & Format$(Now(), "h:nn:ss AM/PM") & " - local draft"
     RefreshRevisions
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then LoadLibrary
     Call ResetEditorBaseline()

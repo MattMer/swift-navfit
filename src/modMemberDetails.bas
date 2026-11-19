@@ -89,7 +89,7 @@ Public Function OpenMemberDetails() As Boolean
     For Each key In MemberDetailsKeys()
         Forms!frmMemberDetails.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmMemberDetails!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmMemberDetails!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmMemberDetails.SetFocus: OpenMemberDetails = True
 End Function
 Public Function ApplyMemberDetails() As Boolean

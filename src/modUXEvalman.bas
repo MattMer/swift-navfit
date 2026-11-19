@@ -91,7 +91,7 @@ Public Function UXEvalmanShowContents() As Boolean
         !lstNav.RowSource = Mid$(rows, 2)
         !lblNav.Caption = "Contents"
         !lblMatch.Caption = ""
-        !cmdPrev.Enabled = False: !cmdNext.Enabled = False
+        UXEnable !cmdPrev, False: UXEnable !cmdNext, False
     End With
     listMode = "Contents"
     UXEvalmanShowContents = True
@@ -121,7 +121,7 @@ Public Function UXEvalmanSearch() As Boolean
         f!lblNav.Caption = hits.Count & " matches in " & counts.Count & " sections" & IIf(counts.Count > MAX_ROWS, " (first " & MAX_ROWS & " listed)", "")
         GoToHit 1
     End If
-    f!cmdPrev.Enabled = hits.Count > 1: f!cmdNext.Enabled = hits.Count > 1
+    UXEnable f!cmdPrev, hits.Count > 1: UXEnable f!cmdNext, hits.Count > 1
     UXEvalmanSearch = True
 End Function
 

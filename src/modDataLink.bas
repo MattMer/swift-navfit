@@ -263,7 +263,7 @@ End Function
 Public Function UXDataFileMissingLoad() As Boolean
     With Forms!frmDataFileMissing
         !lblProblem.Caption = Nz(.OpenArgs, "")
-        !cmdCreateDataFile.Enabled = CanCreateDataFile()
+        UXEnable !cmdCreateDataFile, CanCreateDataFile()
     End With
     UXDataFileMissingLoad = True
 End Function
@@ -456,7 +456,7 @@ Public Function UXSetupDataPaint() As Boolean
     On Error GoTo Done
     If Not CurrentProject.AllForms("frmSetup").IsLoaded Then Exit Function
     Forms!frmSetup!uxDataFileLocation.Caption = UXSetupDataText()
-    Forms!frmSetup!cmdNewDataFile.Enabled = Not SwiftDataIsLinked()
+    UXEnable Forms!frmSetup!cmdNewDataFile, Not SwiftDataIsLinked()
     UXSetupDataPaint = True
 Done:
 End Function

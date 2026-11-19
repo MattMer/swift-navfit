@@ -286,7 +286,7 @@ Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) A
     If loading Or saving Or cacheRows Is Nothing Then Exit Function
     If Not CurrentProject.AllForms("frmUXComparison").IsLoaded Then Exit Function
     Set f = Forms!frmUXComparison!uxTraitGrid.Form
-    Forms!frmUXComparison!uxOpenGroupReport.Enabled = Not f.Recordset.EOF
+    UXEnable Forms!frmUXComparison!uxOpenGroupReport, Not f.Recordset.EOF
     If f.Recordset.EOF Then Exit Function
     f!PriorITA.ControlTipText = Nz(f!PriorPeriod, "") & " - " & Nz(f!PriorSource, "")
     f!PriorPromotion.ControlTipText = f!PriorITA.ControlTipText

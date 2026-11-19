@@ -66,51 +66,12 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
  contrastOn = UXHighContrast(): contrastKnown = True
  UXVisualSet f.Section(acDetail), "BackColor", UXColor("Canvas")
  If contrastOn Then UXVisualSections f
- Select Case f.Name
-  Case "frmLibrary", "frmEditor": active = 1
-  Case "frmUXGroups", "frmMajorWorkbench", "frmUXComparison", "frmUXBulk", "frmUXGroupRSCA", "frmUXNewGroup", "frmUXGroupReport": active = 2
-  Case "frmMyWork", "frmUXReview", "frmReviewComments": active = 3
-  Case "frmUXResources", "frmUXSeniors", "frmUXSeniorEditor", "frmUXDirectory", "frmUXNavyWriter", "frmSnippets": active = 4
-  Case "frmUXSettings", "frmBackup", "frmRecovery", "frmOperations": active = 5
- End Select
+ active = UXActiveNav(f.Name)
  For Each c In f.Controls
   key = LCase$(c.Name)
   Select Case c.ControlType
    Case acCommandButton
-    UXVisualSet c, "UseTheme", True: UXVisualSet c, "BorderColor", UXColor("Border")
-    role = "Neutral": tone = "Ink"
-    If key Like "uxnav#" Then
-     UXVisualSet c, "FontBold", (Val(Right$(key, 1)) = active)
-     role = "Rail": tone = "White"
-     If c.FontBold Then role = "Active"
-    ElseIf key = "cmdwindowhelp" Or InStr(key, "help") > 0 Or key = "cmdworkspaceguide" Then
-     role = "Help": tone = "HelpInk"
-    ElseIf c.FontBold And (InStr(key, "tab") > 0 Or InStr(key, "page") > 0 Or key Like "uxsection#") Then
-     role = "Active": tone = "White"
-    ElseIf key Like "*archive*" Or key Like "*discard*" Or key Like "*delete*" Or key Like "*return*" Then
-     role = "Error": tone = "ErrorInk"
-    ElseIf key = "uxmarksigned" Or key = "uxmarksignedmember" Or key = "uxmarkgroupsigned" Then
-     role = "Primary": tone = "White": UXVisualSet c, "BackStyle", 1
-    ElseIf c.FontBold Or key = "cmdsave" Or key = "cmdapply" Or key = "cmdcreate" Or key = "cmdimport" Or key = "cmdexport" Or key = "cmdopen" Then
-     role = "Primary": tone = "White"
-    ElseIf key = "cmdnew" Then
-     'One main action per screen: New leads only where there is no available Open, or no Save.
-     If Not UXHasControl(f, "cmdSave") Then
-      role = "Primary": tone = "White"
-      If UXHasControl(f, "cmdOpen") Then
-       If f!cmdOpen.Enabled Then role = "Neutral": tone = "Ink"
-      End If
-     End If
-    End If
-    If key = "uxdirty" Then
-     role = UXStatusRole(c.Caption, key)
-     If Len(role) = 0 Then role = "Neutral"
-     tone = IIf(role = "Neutral", "Ink", role & "Ink")
-    End If
-    If Not c.Enabled Then role = "Neutral": tone = "Muted"
-    UXVisualSet c, "BackColor", UXColor(role): UXVisualSet c, "ForeColor", UXColor(tone)
-    UXVisualSet c, "HoverColor", UXColor(role): UXVisualSet c, "PressedColor", UXColor(role)
-    UXVisualSet c, "HoverForeColor", UXColor(tone): UXVisualSet c, "PressedForeColor", UXColor(tone)
+    UXButtonPaint f, c, active
    Case acLabel
     UXVisualSet c, "ForeColor", UXColor("Ink")
     If key = "uxbrand" Or key = "uxnavcaption" Then UXVisualSet c, "ForeColor", UXColor("White")
@@ -157,6 +118,95 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
  UXApplyVisual = True
 Finished:
  painting = False
+End Function
+
+' The main-navigation button that is current on each form (0 = none).
+Private Function UXActiveNav(ByVal formName As String) As Long
+ Select Case formName
+  Case "frmLibrary", "frmEditor": UXActiveNav = 1
+  Case "frmUXGroups", "frmMajorWorkbench", "frmUXComparison", "frmUXBulk", "frmUXGroupRSCA", "frmUXNewGroup", "frmUXGroupReport": UXActiveNav = 2
+  Case "frmMyWork", "frmUXReview", "frmReviewComments": UXActiveNav = 3
+  Case "frmUXResources", "frmUXSeniors", "frmUXSeniorEditor", "frmUXDirectory", "frmUXNavyWriter", "frmSnippets": UXActiveNav = 4
+  Case "frmUXSettings", "frmBackup", "frmRecovery", "frmOperations": UXActiveNav = 5
+ End Select
+End Function
+' A button's color role and text tone. An unavailable button is always Neutral with
+' muted text, so the colors follow Enabled whenever the button is repainted.
+Private Sub UXButtonRole(ByVal f As Access.Form, ByVal c As Access.Control, ByVal active As Long, ByRef role As String, ByRef tone As String)
+ Dim key As String
+ key = LCase$(c.Name)
+ role = "Neutral": tone = "Ink"
+ If key Like "uxnav#" Then
+  role = "Rail": tone = "White"
+  If Val(Right$(key, 1)) = active Then role = "Active"
+ ElseIf key = "cmdwindowhelp" Or InStr(key, "help") > 0 Or key = "cmdworkspaceguide" Then
+  role = "Help": tone = "HelpInk"
+ ElseIf c.FontBold And (InStr(key, "tab") > 0 Or InStr(key, "page") > 0 Or key Like "uxsection#") Then
+  role = "Active": tone = "White"
+ ElseIf key Like "*archive*" Or key Like "*discard*" Or key Like "*delete*" Or key Like "*return*" Then
+  role = "Error": tone = "ErrorInk"
+ ElseIf key = "uxmarksigned" Or key = "uxmarksignedmember" Or key = "uxmarkgroupsigned" Then
+  role = "Primary": tone = "White"
+ ElseIf c.FontBold Or key = "cmdsave" Or key = "cmdapply" Or key = "cmdcreate" Or key = "cmdimport" Or key = "cmdexport" Or key = "cmdopen" Then
+  role = "Primary": tone = "White"
+ ElseIf key = "cmdnew" Then
+  'One main action per screen: New leads only where there is no available Open, or no Save.
+  If Not UXHasControl(f, "cmdSave") Then
+   role = "Primary": tone = "White"
+   If UXHasControl(f, "cmdOpen") Then
+    If f!cmdOpen.Enabled Then role = "Neutral": tone = "Ink"
+   End If
+  End If
+ End If
+ If key = "uxdirty" Then
+  role = UXStatusRole(c.Caption, key)
+  If Len(role) = 0 Then role = "Neutral"
+  tone = IIf(role = "Neutral", "Ink", role & "Ink")
+ End If
+ If Not c.Enabled Then role = "Neutral": tone = "Muted"
+End Sub
+Private Sub UXButtonPaint(ByVal f As Access.Form, ByVal c As Access.Control, ByVal active As Long)
+ Dim role As String, tone As String, key As String
+ key = LCase$(c.Name)
+ UXVisualSet c, "UseTheme", True: UXVisualSet c, "BorderColor", UXColor("Border")
+ If key Like "uxnav#" Then UXVisualSet c, "FontBold", (Val(Right$(key, 1)) = active)
+ If key = "uxmarksigned" Or key = "uxmarksignedmember" Or key = "uxmarkgroupsigned" Then UXVisualSet c, "BackStyle", 1
+ UXButtonRole f, c, active, role, tone
+ UXVisualSet c, "BackColor", UXColor(role): UXVisualSet c, "ForeColor", UXColor(tone)
+ UXVisualSet c, "HoverColor", UXColor(role): UXVisualSet c, "PressedColor", UXColor(role)
+ UXVisualSet c, "HoverForeColor", UXColor(tone): UXVisualSet c, "PressedForeColor", UXColor(tone)
+End Sub
+' The form a control is on, through tab pages and option groups.
+Private Function UXOwningForm(ByVal c As Object) As Access.Form
+ Dim p As Object
+ Set p = c.Parent
+ Do Until TypeOf p Is Access.Form
+  Set p = p.Parent
+ Loop
+ Set UXOwningForm = p
+End Function
+' Set Enabled through this, never directly: a button is repainted at once, so an
+' available button never keeps the unavailable colors, or the reverse. New takes
+' its role from Open, so Open's change repaints it too.
+Public Sub UXEnable(ByVal c As Access.Control, ByVal value As Variant)
+ Dim f As Access.Form
+ c.Enabled = value
+ If c.ControlType <> acCommandButton Then Exit Sub
+ On Error GoTo Finished
+ Set f = UXOwningForm(c)
+ UXButtonPaint f, c, UXActiveNav(f.Name)
+ If LCase$(c.Name) = "cmdopen" And UXHasControl(f, "cmdNew") Then UXButtonPaint f, f!cmdNew, UXActiveNav(f.Name)
+Finished:
+End Sub
+' Buttons whose colors do not match their current state, for tests: "" when all match.
+Public Function UXStaleButtons(ByVal f As Access.Form) As String
+ Dim c As Access.Control, role As String, tone As String
+ For Each c In f.Controls
+  If c.ControlType = acCommandButton Then
+   UXButtonRole f, c, UXActiveNav(f.Name), role, tone
+   If c.BackColor <> UXColor(role) Or c.ForeColor <> UXColor(tone) Then UXStaleButtons = UXStaleButtons & IIf(Len(UXStaleButtons) > 0, ", ", "") & c.Name
+  End If
+ Next
 End Function
 
 Public Function UXVisualRailBack(ByVal formName As String) As Boolean

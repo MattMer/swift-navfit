@@ -668,8 +668,8 @@ Public Function UXSurfaceSection(ByVal section As Long, ByVal locked As Boolean)
     End If
     If section = 5 Then
         f!uxNarrativeCount.Top = top: f!uxNarrativeCount.Width = usableWidth: f!uxNarrativeCount.Height = 650: f!uxNarrativeCount.Visible = True
-        f!cmdSnippets.Width = 3000: f!cmdSnippets.Top = top + 700: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked
-        f!cmdSpelling.Left = f!cmdSnippets.Left + 3200: f!cmdSpelling.Width = 2400: f!cmdSpelling.Top = top + 700: f!cmdSpelling.Visible = True: f!cmdSpelling.Enabled = Not locked
+        f!cmdSnippets.Width = 3000: f!cmdSnippets.Top = top + 700: f!cmdSnippets.Visible = True: UXEnable f!cmdSnippets, Not locked
+        f!cmdSpelling.Left = f!cmdSnippets.Left + 3200: f!cmdSpelling.Width = 2400: f!cmdSpelling.Top = top + 700: f!cmdSpelling.Visible = True: UXEnable f!cmdSpelling, Not locked
         top = top + 1300
     End If
     f.Section(acDetail).Height = top + 200

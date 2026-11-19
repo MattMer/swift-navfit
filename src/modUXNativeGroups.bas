@@ -83,7 +83,7 @@ Failed:
     Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
 End Function
 Public Function UXNativeGroupSelectionChanged() As Boolean
-    Set selectedPreview = Nothing: previewHash = "": previewOwner = 0: Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    Set selectedPreview = Nothing: previewHash = "": previewOwner = 0: UXEnable Forms!frmUXNativeGroups!cmdApply, False
     UXNativeGroupSelectionChanged = True
 End Function
 Public Function UXPreviewNativeGroups() As Boolean
@@ -115,11 +115,11 @@ Public Function UXPreviewNativeGroups() As Boolean
     Set selectedPreview = picks
     Forms!frmUXNativeGroups!txtPreview = text & vbCrLf & "Native dates use their calendar date; original timestamps are retained in provenance. Native-only values and summary/folder columns are retained in report provenance. Import does not establish roster completeness or Navy compliance. No existing draft is overwritten."
     Forms!frmUXNativeGroups!lblStatus.Caption = "Preview ready. Apply creates selected groups and reports together."
-    Forms!frmUXNativeGroups!cmdApply.Enabled = True
+    UXEnable Forms!frmUXNativeGroups!cmdApply, True
     UXPreviewNativeGroups = True: Exit Function
 Failed:
     previewOwner = 0: Set selectedPreview = Nothing: previewHash = ""
-    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description: Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description: UXEnable Forms!frmUXNativeGroups!cmdApply, False
 End Function
 Public Function UXApplyNativeGroups() As Boolean
     Dim result As Collection, picks As Collection, outcome As String, message As String
@@ -132,14 +132,14 @@ Public Function UXApplyNativeGroups() As Boolean
     If SelectionKey(picks) <> SelectionKey(selectedPreview) Then Err.Raise 5, "modUXNativeGroups.UXApplyNativeGroups", "Selection changed. Preview again."
     Set result = ImportNAVFITGroups(picks, previewHash, previewCentury, gradeOverrides, outcome)
     Set selectedPreview = Nothing: previewOwner = 0: previewHash = ""
-    Forms!frmUXNativeGroups!cmdPreview.SetFocus: Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    Forms!frmUXNativeGroups!cmdPreview.SetFocus: UXEnable Forms!frmUXNativeGroups!cmdApply, False
     Set selectedPreview = Nothing
     Forms!frmUXNativeGroups!lblStatus.Caption = "Results: " & result.Count & " groups imported. Open Summary groups to check them."
     UXApplyNativeGroups = True: Exit Function
 Failed:
     message = Err.Description
     Set selectedPreview = Nothing: previewOwner = 0: previewHash = ""
-    Forms!frmUXNativeGroups!cmdApply.Enabled = False
+    UXEnable Forms!frmUXNativeGroups!cmdApply, False
     Select Case outcome
         Case "Committed": message = "Import committed; the display update failed. Do not import again. Reopen Summary groups to inspect the saved results. " & message
         Case "Rolled back": message = "Import rolled back; no selected-group batch was committed. Preview again before retrying. " & message

@@ -42,7 +42,7 @@ Public Function UXDirectoryMergePairs() As Boolean
     If dismissed > 0 Then label = label & "; marked different: " & dismissed
     If pairs.Count > MAX_ROWS Then label = label & " (first " & MAX_ROWS & " shown)"
     f!lblPairs.Caption = label
-    f!cmdDismiss.Enabled = False: f!cmdRestore.Enabled = False
+    UXEnable f!cmdDismiss, False: UXEnable f!cmdRestore, False
     UXDirectoryMergePairs = True
 End Function
 Private Function MergePairName(ByVal id As Long) As String
@@ -65,7 +65,7 @@ Public Function UXDirectoryMergePair() As Boolean
     survivor = DuplicateSurvivor(low, high)
     f!cboTarget = survivor: f!cboSource = IIf(survivor = low, high, low)
     UXDirectoryMergeChanged
-    f!cmdDismiss.Enabled = (dismissal = 0): f!cmdRestore.Enabled = (dismissal > 0)
+    UXEnable f!cmdDismiss, (dismissal = 0): UXEnable f!cmdRestore, (dismissal > 0)
     If dismissal > 0 Then f!txtPreview = "This pair is marked as different Sailors. Choose List again to show it as a possible duplicate."
     UXDirectoryMergePair = True
 End Function
@@ -99,9 +99,9 @@ Failed:
 End Function
 Public Function UXDirectoryMergeChanged() As Boolean
     Dim f As Access.Form
-    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": reviewedOwner = 0: f!cmdApply.Enabled = False
+    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": reviewedOwner = 0: UXEnable f!cmdApply, False
     f!txtPreview = "Select a pair above, or choose any two members (for a changed name), then preview."
-    f!cmdDismiss.Enabled = (Nz(f!cboSource, 0) > 0 And Nz(f!cboTarget, 0) > 0 And Nz(f!cboSource, 0) <> Nz(f!cboTarget, 0))
+    UXEnable f!cmdDismiss, (Nz(f!cboSource, 0) > 0 And Nz(f!cboTarget, 0) > 0 And Nz(f!cboSource, 0) <> Nz(f!cboTarget, 0))
     UXDirectoryMergeChanged = True
 End Function
 Private Function MergeMemberSummary(ByVal id As Long, ByVal heading As String) As String
@@ -126,12 +126,12 @@ Public Function UXDirectoryMergePreview() As Boolean
     Dim f As Access.Form, a As Long, b As Long
     Call UXAssertView("frmUXDirectoryMerge")
     On Error GoTo Failed
-    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": f!cmdApply.Enabled = False
+    Set f = Forms!frmUXDirectoryMerge: reviewedStamp = "": UXEnable f!cmdApply, False
     reviewedOwner = 0: a = Nz(f!cboSource, 0): b = Nz(f!cboTarget, 0)
     reviewedStamp = PreviewDirectoryMerge(a, b)
     reviewedOwner = ActiveContributorID()
     f!txtPreview = MergeMemberSummary(a, "ORIGINAL - will be archived") & vbCrLf & MergeMemberSummary(b, "SURVIVOR - keeps profile") & vbCrLf & "All original report and prior links move to the survivor. Profiles are retained; profile fields are not combined. Report values, revisions, notes, review history and prior traits stay unchanged. Provisional/unconfirmed link states stay unchanged. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
-    f!cmdApply.Enabled = True: UXDirectoryMergePreview = True: Exit Function
+    UXEnable f!cmdApply, True: UXDirectoryMergePreview = True: Exit Function
 Failed:
     reviewedStamp = "": f!txtPreview = Err.Description
 End Function
@@ -150,7 +150,7 @@ Public Function UXDirectoryMergeApply() As Boolean
     UXDirectoryMergeApply = True: Exit Function
 Failed:
     message = Err.Description: reviewedStamp = "": reviewedOwner = 0
-    f!cmdApply.Enabled = False
+    UXEnable f!cmdApply, False
     If id > 0 Then message = "Merge " & id & " committed; the display update failed. Reopen the directory and inspect merge history before making further changes. " & message
     f!txtPreview = message
 End Function

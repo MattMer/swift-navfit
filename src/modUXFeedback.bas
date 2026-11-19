@@ -204,7 +204,7 @@ Public Function UXEditorSiblingState() As Boolean
     For i = 1 To ids.Count: If ids(i) = Nz(f!txtReportID, 0) Then position = i
     Next
     f!uxPreviousReport.Visible = (position > 0): f!uxNextReport.Visible = (position > 0)
-    f!uxPreviousReport.Enabled = (position > 1): f!uxNextReport.Enabled = (position > 0 And position < ids.Count)
+    UXEnable f!uxPreviousReport, (position > 1): UXEnable f!uxNextReport, (position > 0 And position < ids.Count)
     f!uxPreviousReport.ControlTipText = "Previous report in this summary group, in the order the group's Members view showed."
     f!uxNextReport.ControlTipText = "Next report in this summary group, in the order the group's Members view showed."
     UXEditorSiblingState = True

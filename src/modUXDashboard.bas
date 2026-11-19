@@ -244,10 +244,10 @@ Public Function UXDashboardRefresh() As Boolean
     recoveryCount = DCount("*", "RecoveryDraft", "AuthorProfileID=" & pid)
     If UXHasControl(f, "uxNoteRecovery") Then
         f!uxNoteRecovery.Caption = "Unposted notes (" & DCount("*", "ReportNoteDraft", "AuthorProfileID=" & pid) & ")"
-        f!uxNoteRecovery.Enabled = DCount("*", "ReportNoteDraft", "AuthorProfileID=" & pid) > 0
+        UXEnable f!uxNoteRecovery, DCount("*", "ReportNoteDraft", "AuthorProfileID=" & pid) > 0
     End If
     f!uxRecoveryStatus.Caption = IIf(recoveryCount > 0, recoveryCount & " recovery checkpoint(s) available. Review before continuing that report.", "No recovery checkpoints. Save draft creates a saved revision.")
-    f!cmdRecovery.Enabled = (recoveryCount > 0)
+    UXEnable f!cmdRecovery, (recoveryCount > 0)
     f!uxRecentReports.RowSource = "SELECT TOP 5 ReportID,UXIdentity(OfficialName,MemberName) AS Member,FormKind AS [Report type],Format(PeriodStart,'yyyy-mm-dd') AS [Period from],Format(PeriodEnd,'yyyy-mm-dd') AS [Period to],UXReportState(ReportID) AS [Local status] FROM Report WHERE IsArchived=False ORDER BY ModifiedAt DESC,ReportID DESC"
     f!uxContext.Caption = CommandHeading() & " | Contributor: " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & pid), "")
     If UXHasControl(f, "uxReportsDue") Then UXDueRefresh

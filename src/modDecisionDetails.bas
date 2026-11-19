@@ -65,7 +65,7 @@ Public Function OpenDecisionDetails() As Boolean
     For Each key In DecisionDetailsKeys()
         Forms!frmDecisionDetails.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmDecisionDetails!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmDecisionDetails!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmDecisionDetails.SetFocus: OpenDecisionDetails = True
 End Function
 Public Function ApplyDecisionDetails() As Boolean

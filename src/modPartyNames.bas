@@ -67,7 +67,7 @@ Public Function OpenPartyNames() As Boolean
     For Each key In PartyNamesKeys()
         Forms!frmPartyNames.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmPartyNames!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmPartyNames!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmPartyNames.SetFocus: OpenPartyNames = True
 End Function
 Public Function ApplyPartyNames() As Boolean

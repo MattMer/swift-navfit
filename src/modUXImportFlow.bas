@@ -29,7 +29,7 @@ Private Sub ImportState(ByVal formName As String, ByVal step As String, ByVal me
     Set f = Forms(formName)
     If Not ready Then f!cmdPreview.SetFocus
     f!uxState.Caption = step & " - " & message
-    f!cmdImport.Enabled = ready
+    UXEnable f!cmdImport, ready
 End Sub
 Public Function UXOpenImportChooser() As Boolean
     If Not UXLeaveEditor() Then Exit Function
@@ -39,7 +39,7 @@ End Function
 Public Function UXPDFStart() As Boolean
     Call PDFClearPreview(False)
     pdfSignature = "": pdfCreated = 0
-    Forms!frmPDFImport!cmdImport.Enabled = False: Forms!frmPDFImport!cmdOpenResult.Enabled = False
+    UXEnable Forms!frmPDFImport!cmdImport, False: UXEnable Forms!frmPDFImport!cmdOpenResult, False
     Forms!frmPDFImport!uxState.Caption = "1. Choose - select a supported structured PDF."
     Forms!frmPDFImport!cboTarget.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') AS Description FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY MemberName"
     Forms!frmPDFImport!lblStatus.Caption = PDFExtractionStatus()
@@ -49,7 +49,7 @@ Public Function UXChoosePDFFile(ByVal path As String) As Boolean
     Dim result As Object
     On Error GoTo Failed
     pdfSignature = "": pdfCreated = 0
-    Forms!frmPDFImport!cmdOpenResult.Enabled = False
+    UXEnable Forms!frmPDFImport!cmdOpenResult, False
     Set result = PreviewStructuredPDF(path)
     Forms!frmPDFImport!txtPreview = "Source: " & path & vbCrLf & "Report type: " & result("FormKind") & vbCrLf & "Choose the identifier interpretation, then Preview mapping. Two-digit years use 20xx."
     Call ImportState("frmPDFImport", "2. Preview", "Review mapping before applying. No draft created.", False)
@@ -60,7 +60,7 @@ End Function
 Public Function UXPDFMappingChanged() As Boolean
     pdfSignature = "": pdfCreated = 0
     Call ImportState("frmPDFImport", "2. Preview", "Mapping choices changed. Preview again before Apply.", False)
-    Forms!frmPDFImport!cmdOpenResult.Enabled = False
+    UXEnable Forms!frmPDFImport!cmdOpenResult, False
     UXPDFMappingChanged = True
 End Function
 Public Function UXPDFLegacyChanged() As Boolean
@@ -79,7 +79,7 @@ Public Function UXPreviewPDFImport() As Boolean
     On Error GoTo Failed
     pdfSignature = "": pdfCreated = 0
     Forms!frmPDFImport!cmdPreview.SetFocus
-    Forms!frmPDFImport!cmdOpenResult.Enabled = False
+    UXEnable Forms!frmPDFImport!cmdOpenResult, False
     If Nz(Forms!frmPDFImport!cboIdentifier, "") = "DoDID" And Not Nz(Forms!frmPDFImport!chkLegacy, False) Then Err.Raise vbObjectError + 4903, "modUXImportFlow.UXPreviewPDFImport", "Enable legacy compatibility explicitly before mapping DoDID."
     Set incoming = PDFMappedValues("20", Nz(Forms!frmPDFImport!cboIdentifier, ""))
     kind = PDFImportKind()
@@ -114,7 +114,7 @@ End Function
 Public Function UXResumePDFImport() As Boolean
     Dim saved As Object
     On Error GoTo Failed
-    pdfSignature = "": Forms!frmPDFImport!cmdImport.Enabled = False
+    pdfSignature = "": UXEnable Forms!frmPDFImport!cmdImport, False
     Set saved = PDFResumePreview()
     With Forms!frmPDFImport
         !chkLegacy = (saved("Choices")("Identifier") = "DoDID")
@@ -144,7 +144,7 @@ Public Function UXApplyPDFImport() As Boolean
     pdfCreated = ImportPDFPreview("20", Nz(Forms!frmPDFImport!cboIdentifier, ""), Nz(Forms!frmPDFImport!cboTarget, 0), Nz(Forms!frmPDFImport!cboMergeMode, "Fill empty fields"), outcome)
     pdfSignature = ""
     Call ImportState("frmPDFImport", "4. Results", "Imported into " & UXMemberLabel(pdfCreated) & ". Source XML retained. Open the report to review mapped and remaining blocks.", False)
-    Forms!frmPDFImport!cmdOpenResult.Enabled = True
+    UXEnable Forms!frmPDFImport!cmdOpenResult, True
     Forms!frmPDFImport!lblStatus.Caption = "Import complete. Choose another source to import again."
     UXApplyPDFImport = True: Exit Function
 Failed:
@@ -173,7 +173,7 @@ End Function
 Public Function UXNarrativeInputChanged() As Boolean
     narrativePreview.SourceID = 0: narrativePreview.Hash = "": narrativePreview.Created = 0
     If CurrentProject.AllForms("frmImportReview").IsLoaded Then
-        Forms!frmImportReview!cmdOpenResult.Enabled = False
+        UXEnable Forms!frmImportReview!cmdOpenResult, False
         Call ImportState("frmImportReview", "2. Preview", "Select a source member and preview narrative mapping. No import performed.", False)
     End If
     UXNarrativeInputChanged = True
@@ -183,7 +183,7 @@ Public Function UXPreviewNarrativeImport() As Boolean
     On Error GoTo Failed
     narrativePreview.SourceID = 0: narrativePreview.Created = 0
     Forms!frmImportReview!cmdPreview.SetFocus
-    Forms!frmImportReview!cmdOpenResult.Enabled = False
+    UXEnable Forms!frmImportReview!cmdOpenResult, False
     id = Nz(Forms!frmImportReview!lstImportReports, 0)
     Set values = NarrativeImportValues(id)
     narrativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
@@ -209,7 +209,7 @@ Public Function UXApplyNarrativeImport() As Boolean
     narrativePreview.Created = ImportReviewedNarrative(narrativePreview.SourceID, narrativePreview.Member, 0, 0, narrativePreview.Hash)
     narrativePreview.SourceID = 0: narrativePreview.Hash = ""
     Call ImportState("frmImportReview", "4. Results", "Created " & UXMemberLabel(narrativePreview.Created) & " (narrative only). Open the draft to complete its official fields.", False)
-    Forms!frmImportReview!cmdOpenResult.Enabled = True
+    UXEnable Forms!frmImportReview!cmdOpenResult, True
     Forms!frmImportReview!lblImportResult.Caption = "Import complete. Preview another source report to import again."
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary
     UXApplyNarrativeImport = True: Exit Function

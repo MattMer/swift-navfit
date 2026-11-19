@@ -55,7 +55,7 @@ Public Function OpenReportingSenior() As Boolean
     For Each key In ReportingSeniorKeys()
         Forms!frmReportingSenior.Controls("txt" & key) = Forms!frmEditor.Controls("txt" & key).Value
     Next
-    Forms!frmReportingSenior!cmdApply.Enabled = Forms!frmEditor!cmdSave.Enabled
+    UXEnable Forms!frmReportingSenior!cmdApply, Forms!frmEditor!cmdSave.Enabled
     Forms!frmReportingSenior.SetFocus: OpenReportingSenior = True
 End Function
 Public Function ApplyReportingSenior() As Boolean

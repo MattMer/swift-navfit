@@ -57,6 +57,7 @@ foreach($file in $Path){
   # Managed (Navy) workstations flag macros that launch programs through shell objects.
   # Open files with Application.FollowHyperlink instead.
   if($inSrc -and ($line -replace "'.*$",'') -match '(?i)Shell\.Application|WScript\.Shell|(?:^|[\s=(:])Shell\s*\(|ShellExecute'){Report 'ERROR' $file ($n+1) 'Shell launch (Shell.Application, WScript.Shell, Shell or ShellExecute); managed workstations flag it as a macro threat. Use Application.FollowHyperlink.';$errors++}
+  if($inSrc -and $name -ne 'modUXVisual' -and ($line -replace "'.*$",'') -match '(?:^|:|\bThen\s|\bElse\s)\s*[!.A-Za-z_][\w!.()"]*\.Enabled\s*='){Report 'ERROR' $file ($n+1) 'Set Enabled with UXEnable control, value so a button repaints in its available or unavailable colors.';$errors++}
   if($line.Length -gt 1023){Report 'ERROR' $file ($n+1) ("Line is $($line.Length) characters; VBA allows 1023.");$errors++}
   if($line.TrimEnd() -match '\s_$'){$run++;if($run -eq 25){Report 'ERROR' $file ($n+1) 'More than 24 line continuations in one statement.';$errors++}}else{$run=0}
   $m=$procedure.Match($line)

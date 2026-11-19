@@ -96,8 +96,8 @@ Public Function UXMessageRefresh() As Boolean
  f!lstDrafts.Requery
  editable = id > 0 And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & id), True)
  f!txtMessage.Locked = Not editable
- f!cmdNew.Enabled = editable: f!cmdReply.Enabled = editable And Not IsNull(f!lstMessages): f!cmdPost.Enabled = editable
- f!cmdKeepDraft.Enabled = editable: f!cmdDiscardDraft.Enabled = editable: f!cmdResume.Enabled = editable
+ UXEnable f!cmdNew, editable: UXEnable f!cmdReply, editable And Not IsNull(f!lstMessages): UXEnable f!cmdPost, editable
+ UXEnable f!cmdKeepDraft, editable: UXEnable f!cmdDiscardDraft, editable: UXEnable f!cmdResume, editable
  f!lblCompose.Caption = "New message as " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & MajorAuthor()), "the current contributor")
  f!lblNoteStatus.Caption = "Messages stay with this report, even after signing."
  If id = 0 Then f!lblNoteStatus.Caption = "Save this report once before posting notes."
@@ -183,7 +183,7 @@ Public Function UXToolsValidation() As Boolean
  Next
  f!lblValidation.Caption = i & " findings - includes pending report edits. Save remains available for incomplete drafts."
  f!txtEvidence = "No findings from implemented checks."
- If UXHasControl(f, "cmdApplyCounseling") Then f!cmdApplyCounseling.Enabled = False
+ If UXHasControl(f, "cmdApplyCounseling") Then UXEnable f!cmdApplyCounseling, False
  If i > 0 Then f!lstFindings = 0 + f!lstFindings.ItemData(0): UXToolsFinding
  UXToolsValidation = True
 End Function
@@ -198,7 +198,7 @@ Public Function UXToolsFinding() As Boolean
  If IsNull(UXToolsForm()!lstFindings) Then Exit Function
  Set item = findings(CLng(UXToolsForm()!lstFindings))
  UXToolsForm()!txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
- If UXHasControl(UXToolsForm(), "cmdApplyCounseling") Then UXToolsForm()!cmdApplyCounseling.Enabled = (item("Code") = "COUNSEL-RECORD")
+ If UXHasControl(UXToolsForm(), "cmdApplyCounseling") Then UXEnable UXToolsForm()!cmdApplyCounseling, (item("Code") = "COUNSEL-RECORD")
  UXToolsFinding = True
 End Function
 Public Function UXToolsFindingOpen() As Boolean
@@ -253,12 +253,12 @@ End Function
 Public Function UXReportAssignmentSelect() As Boolean
  Dim f As Access.Form, rows As DAO.Recordset, id As Long, allowed As Boolean, pid As Long
  Set f = UXReviewForm(): id = Nz(f!lstAssignments, 0): pid = MajorAuthor()
- f!cmdAssignmentAccept.Enabled = False: f!cmdAssignmentReturn.Enabled = False: f!cmdAssignmentCancel.Enabled = False: f!txtAssignmentHistory = "No assignment selected. Assign a saved revision from My Work."
+ UXEnable f!cmdAssignmentAccept, False: UXEnable f!cmdAssignmentReturn, False: UXEnable f!cmdAssignmentCancel, False: f!txtAssignmentHistory = "No assignment selected. Assign a saved revision from My Work."
  Set rows = CurrentDb.OpenRecordset("SELECT * FROM ReviewTask WHERE TaskID=" & id & " AND ReportID=" & Nz(Forms!frmEditor!txtReportID, 0), dbOpenSnapshot)
  If Not rows.EOF Then
   allowed = rows!TaskState = "Pending" And rows!AssignedTo = pid And Not Nz(DLookup("IsArchived", "Report", "ReportID=" & rows!ReportID), True) And Nz(DLookup("WorkflowState", "Report", "ReportID=" & rows!ReportID), "") = "Draft"
-  f!cmdAssignmentAccept.Enabled = allowed: f!cmdAssignmentReturn.Enabled = allowed
-  f!cmdAssignmentCancel.Enabled = rows!TaskState = "Pending" And rows!RequestedBy = pid
+  UXEnable f!cmdAssignmentAccept, allowed: UXEnable f!cmdAssignmentReturn, allowed
+  UXEnable f!cmdAssignmentCancel, rows!TaskState = "Pending" And rows!RequestedBy = pid
   f!txtAssignmentHistory = rows!TaskState & IIf(rows!TaskState = "Pending", " / the reviewer can edit the report before deciding", "") & vbCrLf & Nz(rows!Instructions, "") & vbCrLf & "Requested by " & Nz(DLookup("DisplayName", "UserProfile", "UserProfileID=" & rows!RequestedBy), "")
  End If
  rows.Close: UXReportAssignmentSelect = True

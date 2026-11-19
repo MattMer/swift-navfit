@@ -141,7 +141,7 @@ End Function
 Public Function UXDirectoryBatchOpen() As Boolean
     ClearDirectoryReportPreview
     DoCmd.OpenForm "frmUXDirectoryBatch"
-    Forms!frmUXDirectoryBatch!cmdApply.Enabled = False: Forms!frmUXDirectoryBatch!txtStamp = Null
+    UXEnable Forms!frmUXDirectoryBatch!cmdApply, False: Forms!frmUXDirectoryBatch!txtStamp = Null
     UXMemberRankChoices Forms!frmUXDirectoryBatch
     UXDirectoryRankFilter
     Forms!frmUXDirectoryBatch!cboGroup.RowSource = "SELECT GroupID,Title FROM SummaryGroup WHERE IsArchived=False ORDER BY Title"
@@ -176,7 +176,7 @@ Public Function UXDirectoryRankFilter() As Boolean
     ClearDirectoryReportPreview
     With Forms!frmUXDirectoryBatch
         !lstMembers.RowSource = "SELECT MemberID,FullName,RankRate FROM CommandMember WHERE IsArchived=False" & UXMemberRankWhere(Nz(!cboRankFilter, "All ranks/rates")) & " ORDER BY FullName"
-        !lstMembers.Requery: !cmdApply.Enabled = False: !txtStamp = Null: !txtPreview = Null
+        !lstMembers.Requery: UXEnable !cmdApply, False: !txtStamp = Null: !txtPreview = Null
     End With
     UXDirectoryRankFilter = True
 End Function
@@ -192,11 +192,11 @@ Public Function UXDirectoryBatchPreview() As Boolean
     Dim f As Access.Form
     ClearDirectoryReportPreview
     On Error GoTo Failed
-    Set f = Forms!frmUXDirectoryBatch: f!cmdApply.Enabled = False: f!txtStamp = Null
+    Set f = Forms!frmUXDirectoryBatch: UXEnable f!cmdApply, False: f!txtStamp = Null
     If IsNull(f!cboGroup) Or Not IsDate(f!txtFrom) Or Not IsDate(f!txtTo) Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchPreview", "Choose the group and both report dates."
     f!txtPreview = PreviewDirectoryReports(CLng(f!cboGroup), UXDirectoryBatchSelection(), CDate(f!txtFrom), CDate(f!txtTo))
     f!txtStamp = CStr(f!cboGroup) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
-    f!cmdApply.Enabled = True: UXDirectoryBatchPreview = True: Exit Function
+    UXEnable f!cmdApply, True: UXDirectoryBatchPreview = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
 End Function
@@ -207,11 +207,11 @@ Public Function UXDirectoryBatchApply() As Boolean
     Set f = Forms!frmUXDirectoryBatch
     stamp = CStr(Nz(f!cboGroup, 0)) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
     If stamp <> Nz(f!txtStamp, "") Then Err.Raise vbObjectError + 6992, "modUXDirectory.UXDirectoryBatchApply", "Selection or dates changed. Preview again."
-    count = ApplyDirectoryReports(outcome): f!cmdApply.Enabled = False: f!txtStamp = Null
+    count = ApplyDirectoryReports(outcome): UXEnable f!cmdApply, False: f!txtStamp = Null
     f!lblStatus.Caption = "Created " & count & " new drafts. Open the summary group to edit them.": UXDirectoryBatchApply = True: Exit Function
 Failed:
     message = Err.Description: ClearDirectoryReportPreview
-    f!cmdApply.Enabled = False: f!txtStamp = Null
+    UXEnable f!cmdApply, False: f!txtStamp = Null
     Select Case outcome
         Case "Committed": message = "Batch committed; the display update failed. Do not create it again. Reopen the summary group to inspect the saved drafts. " & message
         Case "Rolled back": message = "Batch rolled back. Preview again before retrying. " & message
@@ -234,13 +234,13 @@ End Function
 Public Function UXHistoryIdentityPreview() As Boolean
     Dim f As Access.Form, id As Long, memberID As Long
     On Error GoTo Failed
-    Set f = Forms!frmUXConfirmIdentity: f!cmdApply.Enabled = False
+    Set f = Forms!frmUXConfirmIdentity: UXEnable f!cmdApply, False
     If IsNull(f!cboMember) Then Err.Raise vbObjectError + 6993, "modUXDirectory.UXHistoryIdentityPreview", "Choose an active directory member."
     id = CLng(f!txtReport): memberID = CLng(f!cboMember)
     If Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & memberID), True) Then Err.Raise vbObjectError + 6993, "modUXDirectory.UXHistoryIdentityPreview", "Choose an active directory member."
     f!txtMember = memberID: f!txtVersion = MajorScalar("SELECT VersionCounter FROM CommandMember WHERE MemberID=" & memberID)
     f!txtPreview = "Saved report: " & UXIdentity(MajorScalar("SELECT OfficialName FROM Report WHERE ReportID=" & id), MajorScalar("SELECT MemberName FROM Report WHERE ReportID=" & id)) & vbCrLf & "Current identity state: " & MajorScalar("SELECT MatchState FROM MemberReport WHERE ReportID=" & id) & vbCrLf & "Confirm directory member: " & MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & memberID) & " / " & Nz(MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & memberID), "") & vbCrLf & "Report names, SSNs and saved revisions stay unchanged. Confirm only after checking that this is the same person."
-    f!lblStatus.Caption = "": f!cmdApply.Enabled = True: UXHistoryIdentityPreview = True: Exit Function
+    f!lblStatus.Caption = "": UXEnable f!cmdApply, True: UXHistoryIdentityPreview = True: Exit Function
 Failed:
     f!lblStatus.Caption = Err.Description
 End Function
@@ -270,7 +270,7 @@ Public Function UXHistoryCounselingLoad() As Boolean
     Loop
     r.Close
     f!lstCounseling.RowSource = rows
-    f!cmdCounselingEdit.Enabled = Not Nz(f!chkArchivedCounseling, False)
+    UXEnable f!cmdCounselingEdit, Not Nz(f!chkArchivedCounseling, False)
     f!cmdCounselingArchive.Caption = IIf(Nz(f!chkArchivedCounseling, False), "Restore selected counseling", "Archive selected counseling")
     Set s = CounselingMemberStatus(historyMember)
     f!lblCounselingStatus.Caption = "Counseling: " & s("Status") & IIf(IsNull(s("DueMonth")), "", " (" & Format$(Nz(s("DueMonth"), Date), "mmmm yyyy") & ")") & IIf(s("Note") = "", "", ". " & s("Note"))
@@ -303,7 +303,7 @@ End Function
 Public Function UXCounselingOutcome() As Boolean
     Dim f As Access.Form, completed As Boolean
     Set f = Forms!frmUXCounselingEditor: completed = (Nz(f!cboOutcome, "") = COUNSELING_COMPLETED)
-    f!txtCounselor.Enabled = completed: f!cboReason.Enabled = Not completed
+    UXEnable f!txtCounselor, completed: UXEnable f!cboReason, Not completed
     f!lblStatus.Caption = IIf(completed, "The counselor is typed into block 31 of the next Regular report; the member signs the worksheet itself.", "NOT PERF goes in block 30 and this reason in block 31 of the next Regular report.")
     UXCounselingOutcome = True
 End Function

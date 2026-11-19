@@ -166,7 +166,7 @@ Public Function UXSignedEditGuard() As Boolean
     If decision <> vbYes Then UXSignedEditGuard = False: Exit Function
     On Error GoTo Failed
     Call ReopenSignedReport(id, reason)
-    Forms!frmEditor!cmdSave.Enabled = True: Forms!frmEditor!cboKind.Locked = False
+    UXEnable Forms!frmEditor!cmdSave, True: Forms!frmEditor!cboKind.Locked = False
     Call UXHeaderReviewState
     Forms!frmEditor!uxLocked.Caption = "Reopened. Mark it signed again once re-signed."
     Exit Function
@@ -232,7 +232,7 @@ Failed:
 End Function
 Private Sub UXSignoffDisposalFailed(ByVal f As Access.Form, ByVal failed As Long, ByVal message As String)
     f!lblStatus.Caption = "Marked signed. Disposing of drafts failed for " & failed & IIf(failed = 1, " report", " reports") & ", so nothing was disposed there: " & message & " Use Dispose of drafts to try again."
-    f!cmdCancel.SetFocus: f!cmdSave.Enabled = False: f!chkDispose.Enabled = False
+    f!cmdCancel.SetFocus: UXEnable f!cmdSave, False: UXEnable f!chkDispose, False
 End Sub
 Private Function UXSignoffSaveGroup(ByVal signedOn As Date, ByVal dispose As Boolean) As Boolean
     Dim r As DAO.Recordset, before As String, marked As Long, id As Variant, ids As New Collection
@@ -283,7 +283,7 @@ Private Sub UXSignoffRefresh(ByVal reportID As Long)
     If CurrentProject.AllForms("frmEditor").IsLoaded Then
         If Nz(Forms!frmEditor!txtReportID, 0) = reportID Then
             'Fields stay open when signed (the first edit asks), so only the actions change.
-            Forms!frmEditor!cmdSave.Enabled = Not ReportIsSigned(reportID): Forms!frmEditor!cboKind.Locked = ReportIsSigned(reportID)
+            UXEnable Forms!frmEditor!cmdSave, Not ReportIsSigned(reportID): Forms!frmEditor!cboKind.Locked = ReportIsSigned(reportID)
             If Not UXHeaderReviewState() Then
                 Set failure = SwiftLastFailureContext()
                 failure("Transaction") = "Committed"

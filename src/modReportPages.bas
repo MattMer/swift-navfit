@@ -159,8 +159,8 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
   If c.Name Like "uxSection#" Then c.Visible = False
   If Left$(c.Tag, 6) = "LOCAL:" Then c.Visible = (CLng(Mid$(c.Tag, 7)) = sheet)
  Next
- f!cmdSave.Enabled = Not locked And Not signed: f!cboKind.Locked = locked Or signed
- If UXHasControl(f, "cmdDisposeDrafts") Then f!cmdDisposeDrafts.Enabled = signed
+ UXEnable f!cmdSave, Not locked And Not signed: f!cboKind.Locked = locked Or signed
+ If UXHasControl(f, "cmdDisposeDrafts") Then UXEnable f!cmdDisposeDrafts, signed
  f!uxLocked.Caption = IIf(locked, "Read only. Reopen local approval or recover the report to edit.", IIf(signed, SignedReportCaption(id), ""))
  Select Case sheet
   Case 0: f!uxSection.Caption = "Front Page"
@@ -255,7 +255,7 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
      .Caption = CatalogueTraitDescription(kind, CLng(Mid$(key, 6)), Nz(Forms!frmEditor.Controls("cbo" & key), "")): .Visible = True
     End With
    End If
-   If key = "OfficialComments" Then f!uxNarrativeCount.Visible = True: f!cmdSnippets.Visible = True: f!cmdSnippets.Enabled = Not locked: f!cmdSpelling.Visible = True: f!cmdSpelling.Enabled = Not locked
+   If key = "OfficialComments" Then f!uxNarrativeCount.Visible = True: f!cmdSnippets.Visible = True: UXEnable f!cmdSnippets, Not locked: f!cmdSpelling.Visible = True: UXEnable f!cmdSpelling, Not locked
    UXSurfaceValidate key
    bottom = y + CLng(parts(4)) + IIf(key = "OfficialComments", 1450, 650)
    If f.Section(acDetail).Height < bottom Then f.Section(acDetail).Height = bottom
@@ -299,8 +299,8 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
    If key = "OfficialComments" Then
     UXNarrativeLayout c, kind, 0
     Place f, "uxNarrativeCount", c.Left, c.Top + c.Height + 260, 11400, 400
-    Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: f!cmdSnippets.Enabled = Not locked
-    Place f, "cmdSpelling", 3500, c.Top + c.Height + 700, 2400, 400: f!cmdSpelling.Enabled = Not locked
+    Place f, "cmdSnippets", 180, c.Top + c.Height + 700, 3200, 400: UXEnable f!cmdSnippets, Not locked
+    Place f, "cmdSpelling", 3500, c.Top + c.Height + 700, 2400, 400: UXEnable f!cmdSpelling, Not locked
    End If
    Place f, "err" & key, CLng(parts(1)), y + IIf(trait, 390, IIf(UXFieldFlag(key), 430, CLng(parts(4)) + 240)), CLng(parts(3)), 190
    f.Controls("err" & key).FontSize = 8
@@ -315,19 +315,19 @@ Private Sub UXRenderFixedSheet(ByVal page As Long, ByVal locked As Boolean)
   Set c = f!txtCounselingDate: c.Width = f!labelCounselingDate.Width
   Place f, "uxCounselingCalendar", c.Left + c.Width - 1150, c.Top, 1150, c.Height
   c.Width = c.Width - 1250
-  f!uxCounselingCalendar.Enabled = Not locked
+  UXEnable f!uxCounselingCalendar, Not locked
  End If
  If f!txtReadinessDate.Visible Then
   'Pages shown again keep their geometry: start from the caption width each time.
   Set c = f!txtReadinessDate: c.Width = f!labelReadinessDate.Width
   Place f, "uxReadinessCalendar", c.Left + c.Width - 800, c.Top, 800, c.Height
   c.Width = c.Width - 860
-  f!uxReadinessCalendar.Enabled = Not locked
+  UXEnable f!uxReadinessCalendar, Not locked
  End If
  If f!txtCounselorName.Visible Then
   Set c = f!labelCounselorName
   Place f, "uxCounselorPicker", c.Left, c.Top - 40, c.Width, 280
-  f!uxCounselorPicker.FontSize = 8: f!uxCounselorPicker.Enabled = Not locked
+  f!uxCounselorPicker.FontSize = 8: UXEnable f!uxCounselorPicker, Not locked
   c.Visible = False
  End If
  UXFixedGroupBoxes f

@@ -107,6 +107,13 @@ Public Function TestUXValidation() As String
         If InStr(Forms!frmUXValidation!txtEvidence, "Excerpt:") > 0 Then Exit For
     Next
     Check InStr(Forms!frmUXValidation!txtEvidence, "Excerpt:") > 0, "Native policy issue source missing"
+    'Selecting and clearing a finding repaint the buttons they make available or unavailable.
+    Check UXStaleButtons(Forms!frmUXValidation) = "", "Buttons not repainted after selection: " & UXStaleButtons(Forms!frmUXValidation)
+    selected = Forms!frmUXValidation!lstIssues
+    Forms!frmUXValidation!lstIssues = Null: UXValidationSelection
+    Check Not Forms!frmUXValidation!cmdOpen.Enabled And UXStaleButtons(Forms!frmUXValidation) = "", "Buttons not repainted after clearing: " & UXStaleButtons(Forms!frmUXValidation)
+    Forms!frmUXValidation!lstIssues = selected: UXValidationSelection
+    Check Forms!frmUXValidation!cmdOpen.Enabled And UXStaleButtons(Forms!frmUXValidation) = "", "Buttons not repainted after reselection"
     selected = Forms!frmUXValidation!lstIssues
     UXLoadValidation
     Check Forms!frmUXValidation!lstIssues = selected, "Refresh reset selection"
@@ -129,7 +136,7 @@ Public Function TestUXValidation() As String
     Forms!frmEditor!txtMemberSSN = "123"
     Set result = ValidateLiveGroup(groupID): Check HasCode(result, "APP-DIGITS"), "Group omitted pending member value"
     DoCmd.OpenForm "frmUXValidation", , , , , , "G:" & groupID
-    Check Forms!frmUXValidation!lstIssues.ListCount > 0 And InStr(Forms!frmUXValidation!lblBasis.Caption, "All group members") > 0, "Group issue view failed"
+    Check Forms!frmUXValidation!lstIssues.ListCount > 0 And Forms!frmUXValidation!lblBasis.Caption = "Saved values, plus the open member's pending edits.", "Group issue view failed: " & Forms!frmUXValidation!lblBasis.Caption
     'On initial open this automation host can report a zero client width.
     'Use the native documented sizing properties; do not treat it as a render.
     Set f = Forms!frmUXValidation
@@ -154,6 +161,7 @@ Public Function TestUXValidation() As String
     DoCmd.OpenForm "frmUXValidation", , , , , , "G:" & groupID
     Check Forms!frmUXValidation!cmdNext.Enabled, "More than 50 findings lost"
     Check UXValidationPage(1) And Forms!frmUXValidation!lstIssues > 50, "Next findings page failed"
+    Check Forms!frmUXValidation!cmdPrevious.Enabled And UXStaleButtons(Forms!frmUXValidation) = "", "Paging buttons not repainted: " & UXStaleButtons(Forms!frmUXValidation)
     Check UXValidationPage(-1) And Forms!frmUXValidation!lstIssues <= 50, "Previous findings page failed"
     stage = "close validation": UXValidationClose
     stage = "close editor": UXLeaveEditor "Discard"
