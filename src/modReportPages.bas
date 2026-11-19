@@ -65,7 +65,14 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2350, 2850, 400: Next
  names = Array("uxFrontPage", "uxBackPage", "uxPageReview", "uxPageHistory")
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2850, 2850, 400: Next
- Place f, "uxSection", 250, 3280, 11800, 410
+ 'The Front Page heading shares its row with the reporting senior picker, so the
+ 'picker is in view without scrolling; other pages give the heading the full row.
+ Place f, "uxSection", 250, 3280, IIf(sheet = 0, 3000, 11800), 410
+ If sheet = 0 Then
+  Place f, "uxSeniorRecord", 3400, 3280, 5600, 400
+  Place f, "uxUseSenior", 9200, 3280, 2850, 400
+ End If
+ If f!uxSeniorRecord.Visible <> (sheet = 0) Then f!uxSeniorRecord.Visible = (sheet = 0): f!uxUseSenior.Visible = (sheet = 0)
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500
  Place f, "uxFieldSurface", 250, IIf(f!uxErrorList.Visible, 4620, 4060), viewingWidth, body
@@ -95,11 +102,7 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
   If UXHasControl(f, "cmdDisposeDrafts") Then Place f, "cmdDisposeDrafts", 6250, 4150, 3300, 450
   Place f, "lstRevisions", 250, 4750, 11800, body - 700
  End If
- If sheet = 0 Then
-  Place f, "uxSeniorRecord", 250, footer + 1250, 7600, 400
-  Place f, "uxUseSenior", 8100, footer + 1250, 3900, 400
- End If
- f.Section(acDetail).Height = footer + IIf(sheet = 0, 1850, 1250)
+ f.Section(acDetail).Height = footer + 1250
  f!uxRail.Height = f.Section(acDetail).Height
  arranging = False: UXFixedResize = True: Exit Function
 Failed:
