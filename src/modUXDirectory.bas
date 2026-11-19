@@ -56,24 +56,51 @@ Public Function UXDirectoryHistory() As Boolean
 End Function
 Public Function UXHistoryLoad() As Boolean
     Dim f As Access.Form, r As DAO.Recordset, id As Long, priorITAs As Object, swiftITAs As Object, historyText As String
+    Dim keys() As String, texts() As String, n As Long, gaps As Collection, item As Variant, i As Long
     Set f = Forms!frmUXMemberHistory
     f!lblMember.Caption = Nz(MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & historyMember), "")
     f!lstHistory.RowSourceType = "Value List": f!lstHistory.RowSource = ""
     Set priorITAs = PriorEvaluationITARows(historyMember): Set swiftITAs = UXHistoryITARows(historyMember)
-    Set r = CurrentDb.OpenRecordset("SELECT PriorID,FormKind,PeriodStart,PeriodEnd,PromotionRecommendation FROM PriorEvaluation WHERE MemberID=" & historyMember & " AND IsArchived=False ORDER BY PeriodEnd DESC", dbOpenSnapshot)
+    'Prior and Swift reports are listed together, newest ending first, with continuity
+    'rows (id 0) where they fall.
+    Set r = CurrentDb.OpenRecordset("SELECT PriorID,FormKind,PeriodStart,PeriodEnd,PromotionRecommendation FROM PriorEvaluation WHERE MemberID=" & historyMember & " AND IsArchived=False", dbOpenSnapshot)
     Do While Not r.EOF
-        If historyText <> "" Then historyText = historyText & ";"
-        id = r!PriorID: historyText = historyText & CStr(id) & ";Manual prior;" & r!FormKind & ";" & Format$(r!PeriodStart, "yyyy-mm-dd") & " to " & Format$(r!PeriodEnd, "yyyy-mm-dd") & ";" & priorITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
+        id = r!PriorID
+        HistoryAdd keys, texts, n, Format$(r!PeriodEnd, "yyyy-mm-dd") & "|" & Format$(r!PeriodStart, "yyyy-mm-dd"), CStr(id) & ";Manual prior;" & r!FormKind & ";" & Format$(r!PeriodStart, "yyyy-mm-dd") & " to " & Format$(r!PeriodEnd, "yyyy-mm-dd") & ";" & priorITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, "")
+        r.MoveNext
     Loop: r.Close
-    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.FormKind,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,m.MatchState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & historyMember & " ORDER BY r.PeriodEnd DESC", dbOpenSnapshot)
+    Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.FormKind,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,m.MatchState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & historyMember, dbOpenSnapshot)
     Do While Not r.EOF
-        If historyText <> "" Then historyText = historyText & ";"
-        id = r!ReportID: historyText = historyText & CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, ""): r.MoveNext
+        id = r!ReportID
+        HistoryAdd keys, texts, n, Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & "|" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd"), CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, "")
+        r.MoveNext
     Loop: r.Close
+    Set gaps = MemberContinuityRows(historyMember)
+    For Each item In gaps
+        If item(0) = "Gap" Then
+            HistoryAdd keys, texts, n, Format$(item(2), "yyyy-mm-dd") & "|" & Format$(item(1), "yyyy-mm-dd"), "0;Possible gap;;" & Format$(item(1), "yyyy-mm-dd") & " to " & Format$(item(2), "yyyy-mm-dd") & ";;" & item(3) & " day" & IIf(item(3) = 1, "", "s")
+        Else
+            HistoryAdd keys, texts, n, Format$(item(2), "yyyy-mm-dd") & "|" & Format$(item(1), "yyyy-mm-dd"), "0;Overlap;;" & Format$(item(1), "yyyy-mm-dd") & " to " & Format$(item(2), "yyyy-mm-dd") & ";;Regular reports overlap"
+        End If
+    Next
+    For i = 0 To n - 1
+        historyText = historyText & IIf(i > 0, ";", "") & texts(i)
+    Next
     f!lstHistory.RowSource = historyText
+    f!lblStatus.Caption = MemberContinuitySummary(gaps)
     UXHistoryCounselingLoad
     UXHistoryLoad = True
 End Function
+'Insert a history row so the list stays newest ending first; rows without dates go last.
+Private Sub HistoryAdd(keys() As String, texts() As String, n As Long, ByVal key As String, ByVal text As String)
+    Dim i As Long
+    ReDim Preserve keys(0 To n): ReDim Preserve texts(0 To n)
+    For i = n To 1 Step -1
+        If keys(i - 1) >= key Then Exit For
+        keys(i) = keys(i - 1): texts(i) = texts(i - 1)
+    Next
+    keys(i) = key: texts(i) = text: n = n + 1
+End Sub
 Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boolean
     Dim f As Access.Form, r As DAO.Recordset
     priorID = 0: priorVersion = 0
@@ -81,6 +108,7 @@ Public Function UXPriorOpen(Optional ByVal createNew As Boolean = True) As Boole
         If IsNull(Forms!frmUXMemberHistory!lstHistory) Then Exit Function
         priorID = CLng(Forms!frmUXMemberHistory!lstHistory)
         If priorID < 0 Then Forms!frmUXMemberHistory!lblStatus.Caption = "Edit Swift reports in Reports. Only prior evaluations are edited here.": Exit Function
+        If priorID = 0 Then Forms!frmUXMemberHistory!lblStatus.Caption = "Choose a prior evaluation to edit.": Exit Function
     End If
     DoCmd.OpenForm "frmUXPriorEditor": Set f = Forms!frmUXPriorEditor
     f!cboKind = "EVAL": f!cboObservation = "Observed": f!txtRank = MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & historyMember)

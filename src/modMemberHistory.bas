@@ -87,6 +87,61 @@ Public Function PriorEvaluationITA(ByVal priorID As Long) As String
     If filled < 7 Then PriorEvaluationITA = "Incomplete": Exit Function
     If count = 0 Then PriorEvaluationITA = "NOB" Else PriorEvaluationITA = Format$(total / count, "0.00")
 End Function
+' Continuity across a member's whole record: prior evaluations and confirmed, active
+' Swift reports that may be Regular, in date order. Prior evaluations do not record
+' Regular or Concurrent, so a gap is only possible; an overlap is flagged only between
+' two Swift Regular reports. Identical periods count once (the same report recorded twice,
+' or alternative drafts). Rows are Array(kind, from, to, days), kind "Gap" or "Overlap".
+Public Function MemberContinuityRows(ByVal memberID As Long) As Collection
+    Dim rows As New Collection, r As DAO.Recordset, n As Long, i As Long, j As Long, found As Boolean
+    Dim starts() As Date, ends() As Date, regular() As Boolean, s As Date, e As Date, b As Boolean, latest As Date
+    Set MemberContinuityRows = rows
+    Set r = CurrentDb.OpenRecordset("SELECT PeriodStart,PeriodEnd,False AS IsRegular FROM PriorEvaluation WHERE MemberID=" & memberID & " AND IsArchived=False AND PeriodStart Is Not Null AND PeriodEnd Is Not Null " & _
+        "UNION ALL SELECT r.PeriodStart,r.PeriodEnd,IIf(r.ReportRegular='Yes',True,False) FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & memberID & " AND m.MatchState='Confirmed' AND r.IsArchived=False AND r.PeriodStart Is Not Null AND r.PeriodEnd Is Not Null " & _
+        "AND (r.ReportRegular='Yes' OR (Nz(r.ReportConcurrent,'')<>'Yes' AND Nz(r.ReportOperationalCommander,'')<>'Yes'))", dbOpenSnapshot)
+    Do While Not r.EOF
+        s = r!PeriodStart: e = r!PeriodEnd: b = CBool(r!IsRegular): found = False
+        For i = 0 To n - 1
+            If starts(i) = s And ends(i) = e Then regular(i) = regular(i) Or b: found = True: Exit For
+        Next
+        If Not found Then
+            ReDim Preserve starts(0 To n): ReDim Preserve ends(0 To n): ReDim Preserve regular(0 To n)
+            'Insert in order of start, then end.
+            For i = n To 1 Step -1
+                If starts(i - 1) < s Or (starts(i - 1) = s And ends(i - 1) <= e) Then Exit For
+                starts(i) = starts(i - 1): ends(i) = ends(i - 1): regular(i) = regular(i - 1)
+            Next
+            starts(i) = s: ends(i) = e: regular(i) = b: n = n + 1
+        End If
+        r.MoveNext
+    Loop
+    r.Close
+    If n < 2 Then Exit Function
+    latest = ends(0)
+    For i = 1 To n - 1
+        If starts(i) > latest + 1 Then rows.Add Array("Gap", latest + 1, starts(i) - 1, CLng(starts(i) - latest - 1))
+        If ends(i) > latest Then latest = ends(i)
+    Next
+    For i = 0 To n - 2
+        For j = i + 1 To n - 1
+            If regular(i) And regular(j) And starts(j) <= ends(i) Then rows.Add Array("Overlap", starts(j), IIf(ends(j) < ends(i), ends(j), ends(i)), 0)
+        Next
+    Next
+End Function
+Public Function MemberContinuitySummary(ByVal rows As Collection) As String
+    Dim item As Variant, gaps As Long, overlaps As Long, text As String
+    For Each item In rows
+        If item(0) = "Gap" Then
+            gaps = gaps + 1
+        Else
+            overlaps = overlaps + 1
+        End If
+    Next
+    If gaps + overlaps = 0 Then MemberContinuitySummary = "Continuity: no gaps found.": Exit Function
+    If gaps > 0 Then text = gaps & " possible gap" & IIf(gaps > 1, "s", "")
+    If overlaps > 0 Then text = text & IIf(Len(text) > 0, ", ", "") & overlaps & " overlap" & IIf(overlaps > 1, "s", "") & " between Regular reports"
+    MemberContinuitySummary = "Continuity: " & text & "." & IIf(gaps > 0, " Prior reports do not record Regular or Concurrent; verify on BOL Continuity.", "")
+End Function
 Public Function PreviousMemberEvaluation(ByVal reportID As Long) As Object
     Dim result As Object, member As Variant, start As Variant, r As DAO.Recordset, sql As String, source As String, recordID As Long, ending As Date, priorITA As String
     Set result = CreateObject("Scripting.Dictionary"): result.Add "ITA", "Unavailable": result.Add "Promotion", "Unavailable": result.Add "Period", "": result.Add "Source", "No earlier evaluation recorded"

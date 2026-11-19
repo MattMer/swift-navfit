@@ -414,7 +414,7 @@ Begin Form
                     TextFontFamily =34
                     Left =400
                     Top =8825
-                    Width =6000
+                    Width =4300
                     Height =550
                     FontSize =10
                     TabIndex =2
@@ -426,7 +426,47 @@ Begin Form
 
                     LayoutCachedLeft =400
                     LayoutCachedTop =8825
-                    LayoutCachedWidth =6400
+                    LayoutCachedWidth =4700
+                    LayoutCachedHeight =9375
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =9394980
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =9394980
+                    HoverThemeColorIndex =-1
+                    PressedColor =9394980
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =16777215
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =16777215
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =4900
+                    Top =8825
+                    Width =1700
+                    Height =550
+                    FontSize =10
+                    TabIndex =11
+                    ForeColor =16777215
+                    Name ="cmdEvalman"
+                    ControlTipText ="Open the EVALMAN paragraph for this finding."
+                    Caption ="EVALMAN"
+                    OnClick ="=UXValidationEvalman()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =4900
+                    LayoutCachedTop =8825
+                    LayoutCachedWidth =6600
                     LayoutCachedHeight =9375
                     ForeThemeColorIndex =-1
                     Gradient =0

@@ -183,6 +183,20 @@ Public Function UXNarrativeStatus() As Boolean
     UXNarrativeStatus = True
 End Function
 
+' F1 or the EVALMAN button: EVALMAN at the block of the field with focus (F1) or the
+' field last used on the page (the button), otherwise at paragraph 1-2.
+Public Function UXEditorEvalman(Optional ByVal fromKey As Boolean = False) As Boolean
+    Dim c As Access.Control, key As String, section As Long
+    On Error Resume Next
+    If fromKey Then Set c = Screen.ActiveControl Else Set c = Forms!frmEditor!uxFieldSurface.Form.ActiveControl
+    If Not c Is Nothing Then
+        If c.Parent.Name = "frmUXEditorFields" And Left$(c.Tag, 5) = "SURF:" Then key = Mid$(c.Tag, 6)
+    End If
+    On Error GoTo 0
+    section = EvalmanSectionForField(key)
+    If section < 0 Then section = EvalmanBlocksSection()
+    UXEditorEvalman = UXOpenEvalmanSection(section)
+End Function
 ' Office spelling (local proofing tools only) for one narrative block: the field with focus
 ' for F7, otherwise the block last used before the button, otherwise the comments. A signed
 ' report asks to reopen first, as typing does. Corrections go through UXSpellApply.

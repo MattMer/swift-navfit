@@ -196,11 +196,13 @@ Public Function UXValidationSelection() As Boolean
     Dim item As Object
     With Forms!frmUXValidation
         .cmdOpen.Enabled = False: .txtEvidence = "No findings from implemented checks."
+        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then .cmdEvalman.Enabled = False
         If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") Then .cmdDismissFinding.Enabled = False: .cmdAllowPhrase.Enabled = False
         If issues Is Nothing Or Nz(.lstIssues, 0) = 0 Then Exit Function
         Set item = issues(CLng(.lstIssues))
         .txtEvidence = item("Severity") & ": " & item("Message") & vbCrLf & vbCrLf & item("Reference")
         .cmdOpen.Enabled = True
+        If UXHasControl(Forms!frmUXValidation, "cmdEvalman") Then .cmdEvalman.Enabled = (EvalmanSectionForFinding(CStr(item("Code")), CStr(item("Key"))) >= 0)
         'Content findings can be dismissed for this report or their words allowed.
         If UXHasControl(Forms!frmUXValidation, "cmdDismissFinding") And item.Exists("Match") Then
             .cmdDismissFinding.Enabled = (item("ReportID") > 0): .cmdAllowPhrase.Enabled = True
@@ -367,6 +369,13 @@ End Sub
 Public Function UXValidationPage(ByVal offset As Long) As Boolean
     pageIndex = pageIndex + offset: If pageIndex < 0 Then pageIndex = 0
     UXValidationPage = UXLoadValidation()
+End Function
+' Open EVALMAN at the paragraph the selected finding cites, or its field's block.
+Public Function UXValidationEvalman() As Boolean
+    Dim item As Object
+    If issues Is Nothing Or Nz(Forms!frmUXValidation!lstIssues, 0) = 0 Then Exit Function
+    Set item = issues(CLng(Forms!frmUXValidation!lstIssues))
+    UXValidationEvalman = UXOpenEvalmanSection(EvalmanSectionForFinding(CStr(item("Code")), CStr(item("Key"))))
 End Function
 ' Navigate to the finding's report section and focus its field without losing another
 ' report's pending edits; failed navigation leaves the finding available.

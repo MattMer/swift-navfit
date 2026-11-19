@@ -86,6 +86,53 @@ Public Function TestUXDirectory() As String
     Check UXDirectorySave(), "Second save from the open editor failed (stale version)"
     Check DLookup("OfficialName", "Report", "ReportID=" & draft) = "PARK, RILEY J", "Second profile change not applied"
     UXDirectoryClose "frmUXMemberEditor": UXDirectoryClose "frmUXDirectory"
+    ' Continuity: every period in date order across report types; a gap is only possible,
+    ' an overlap only counts between Swift Regular reports, and a repeated period counts once.
+    Dim c As Long, marks As Object, rows As Collection, s1 As Long, s2 As Long, s3 As Long, conc As Long, i As Long, gapRow As Long
+    stage = "continuity fixture"
+    c = SaveDirectoryMember(0, 0, "Alex Rowe", "ROWE, ALEX", "IT1", "000000008")
+    Set marks = CreateObject("Scripting.Dictionary")
+    For b = 33 To 39: marks.Add "Trait" & b, "4.0": Next
+    Call SavePriorEvaluation(0, 0, c, "EVAL", "IT1", #11/16/2023#, #11/15/2024#, "Promotable", "Observed", marks, "Synthetic prior")
+    s1 = CommitDraft(0, "EVAL", "Continuity one", "Alex Rowe", #1/1/2025#, #11/15/2025#, "", "Test", "")
+    s2 = CommitDraft(0, "CHIEFEVAL", "Continuity two", "Alex Rowe", #11/16/2025#, #11/15/2026#, "", "Test", "")
+    For Each linked In Array(s1, s2)
+        LinkReportDirectoryMember CLng(linked), c, CurrentRevision(CLng(linked)), CLng(DLookup("VersionCounter", "CommandMember", "MemberID=" & c)), "Synthetic link"
+    Next
+    CurrentDb.Execute "UPDATE Report SET ReportRegular='Yes' WHERE ReportID IN (" & s1 & "," & s2 & ")", dbFailOnError
+    'The same report also recorded as a prior, and an overlapping prior (possibly Concurrent).
+    Call SavePriorEvaluation(0, 0, c, "CHIEFEVAL", "ITC", #11/16/2025#, #11/15/2026#, "Promotable", "Observed", marks, "Synthetic copy")
+    Call SavePriorEvaluation(0, 0, c, "EVAL", "IT1", #6/1/2025#, #12/31/2025#, "Promotable", "Observed", marks, "Synthetic overlap")
+    Set rows = MemberContinuityRows(c)
+    Check rows.Count = 1, "Continuity rows: expected one gap, got " & rows.Count
+    Check rows(1)(0) = "Gap" And rows(1)(1) = #11/16/2024# And rows(1)(2) = #12/31/2024# And rows(1)(3) = 46, "Gap dates wrong"
+    Check MemberContinuitySummary(rows) = "Continuity: 1 possible gap. Prior reports do not record Regular or Concurrent; verify on BOL Continuity.", "Gap summary wrong: " & MemberContinuitySummary(rows)
+    stage = "continuity overlap"
+    s3 = CommitDraft(0, "CHIEFEVAL", "Continuity three", "Alex Rowe", #10/1/2026#, #9/30/2027#, "", "Test", "")
+    conc = CommitDraft(0, "CHIEFEVAL", "Concurrent only", "Alex Rowe", #1/1/2029#, #6/30/2029#, "", "Test", "")
+    For Each linked In Array(s3, conc)
+        LinkReportDirectoryMember CLng(linked), c, CurrentRevision(CLng(linked)), CLng(DLookup("VersionCounter", "CommandMember", "MemberID=" & c)), "Synthetic link"
+    Next
+    CurrentDb.Execute "UPDATE Report SET ReportRegular='Yes' WHERE ReportID=" & s3, dbFailOnError
+    CurrentDb.Execute "UPDATE Report SET ReportRegular='No',ReportConcurrent='Yes' WHERE ReportID=" & conc, dbFailOnError
+    Set rows = MemberContinuityRows(c)
+    Check rows.Count = 2, "Expected a gap and an overlap; Concurrent report must not add a gap. Got " & rows.Count
+    Check rows(2)(0) = "Overlap" And rows(2)(1) = #10/1/2026# And rows(2)(2) = #11/15/2026#, "Overlap dates wrong"
+    Check InStr(MemberContinuitySummary(rows), "1 possible gap, 1 overlap between Regular reports.") > 0, "Overlap summary wrong: " & MemberContinuitySummary(rows)
+    stage = "continuity history list"
+    Check UXDirectoryHistoryFor(c), "History did not open for continuity"
+    Set f = Forms!frmUXMemberHistory
+    gapRow = -1
+    For i = 0 To f!lstHistory.ListCount - 1
+        If f!lstHistory.Column(1, i) = "Possible gap" Then gapRow = i
+    Next
+    Check gapRow > 0 And gapRow < f!lstHistory.ListCount - 1, "Gap row missing or out of place"
+    Check f!lstHistory.Column(0, gapRow) = "0" And f!lstHistory.Column(3, gapRow) = "2024-11-16 to 2024-12-31" And f!lstHistory.Column(5, gapRow) = "46 days", "Gap row content wrong"
+    Check f!lstHistory.Column(3, gapRow + 1) = "2023-11-16 to 2024-11-15" And f!lstHistory.Column(3, gapRow - 1) = "2025-01-01 to 2025-11-15", "Gap row not between its reports"
+    Check f!lblStatus.Caption = MemberContinuitySummary(rows), "Continuity summary not shown"
+    f!lstHistory = 0
+    Check Not UXPriorOpen(False) And Not CurrentProject.AllForms("frmUXPriorEditor").IsLoaded And f!lblStatus.Caption = "Choose a prior evaluation to edit.", "A continuity row opened the prior editor"
+    UXDirectoryClose "frmUXMemberHistory"
     TestUXDirectory = "PASS: " & n & " native directory/history UI assertions": Exit Function
 Failed:
     TestUXDirectory = "FAIL at " & stage & " after " & n & ": " & Err.Number & " " & Err.Description

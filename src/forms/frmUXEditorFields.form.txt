@@ -7187,7 +7187,9 @@ Attribute VB_Exposed = False
 Option Compare Database
 
 ' F7 runs Swift's spell check so corrections reach the pending buffer and recovery.
+' F1 opens EVALMAN at the block of the field with focus, in place of Access help.
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
     If KeyCode = vbKeyF7 And Shift = 0 Then KeyCode = 0: UXSpellCheck True
+    If KeyCode = vbKeyF1 And Shift = 0 Then KeyCode = 0: UXEditorEvalman True
 
 End Sub

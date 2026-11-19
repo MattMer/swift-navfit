@@ -62,11 +62,36 @@ Public Function TestEvalman() As String
     Check Left$(f!lblReader.Caption, 20) = "3-9. Special Reports" And InStr(f!txtReader, "Special reports are considered") > 0, "Section text not shown"
     f!txtSearch = Null: Check UXEvalmanSearch() And f!lblNav.Caption = "Contents", "Clearing the search did not show contents"
     DoCmd.Close acForm, "frmUXEvalman", acSaveNo
+    ' Links: every report block opens its instructions; findings open their paragraph.
+    Dim key As Variant, kinds As Variant
+    For Each key In Array("OfficialName", "RankRate", "Designator", "MemberSSN", "ComponentActive", "UnitUIC", "ShipStation", "PromotionStatus", "DateReported", "OccasionPeriodic", "OccasionSpecial", _
+        "PeriodStart", "PeriodEnd", "ObservationStatus", "ReportRegular", "ReportConcurrent", "ReadinessSummary", "ReadinessDetail", "BilletSubcategory", "ReportingSeniorName", "ReportingSeniorGrade", _
+        "ReportingSeniorDesignator", "ReportingSeniorTitle", "ReportingSeniorUIC", "ReportingSeniorSSN", "CommandEmployment", "PrimaryDuty", "DutyDescription", "CounselingDate", "CounselorName", _
+        "Trait33", "Trait39", "Trait35Comment2", "OfficialComments", "AssignmentRecommendationA", "PromotionRecommendation", "RaterName", "ReportingSeniorAddress1", "ReportingSeniorDSN", _
+        "Qualifications", "StatementYes", "RetentionNo", "SeniorRaterName")
+        i = EvalmanSectionForField(CStr(key))
+        Check i >= 0 And i < FindTitle("1-3. "), "No paragraph 1-2 section for " & key
+    Next
+    Check EvalmanHeader(EvalmanSectionForField("ReadinessSummary"), 1) = "Block 20: Physical Readiness", "Block 20 link wrong"
+    Check Left$(EvalmanHeader(EvalmanSectionForField("PromotionRecommendation"), 1), 14) = "EVAL Block 45:", "Promotion link wrong"
+    Check EvalmanSectionForField("Title") = -1 And EvalmanSectionForField("") = -1, "Local field linked to EVALMAN"
+    Check EvalmanSectionForFinding("VR-CONTINUITY", "PeriodStart") = FindTitle("3-2. Continuity"), "Continuity finding link wrong"
+    Check EvalmanSectionForFinding("VR-PERIODIC", "PeriodEnd") = FindTitle("3-4. Periodic"), "Periodic finding link wrong"
+    Check EvalmanSectionForFinding("NV-PFA", "ReadinessSummary") = EvalmanSectionForField("ReadinessSummary"), "Field fallback wrong"
+    Check EvalmanBlocksSection() = FindTitle("1-2. Instructions for Specific Blocks"), "Paragraph 1-2 missing"
+    i = FindTitle("3-2. Continuity")
+    Check UXOpenEvalmanSection(i) And UXEvalmanShown() = i And Forms!frmUXEvalman!lstNav = CStr(i), "Section did not open"
+    Check Forms!frmUXEvalman!lblNav.Caption = "Contents" And Forms!frmUXEvalman!txtReader.SelStart = 0, "Section not shown from the top"
+    Forms!frmUXEvalman!txtSearch = "periodic": Call UXEvalmanSearch
+    i = EvalmanSectionForField("PeriodStart")
+    Check UXOpenEvalmanSection(i) And UXEvalmanShown() = i And Forms!frmUXEvalman!lblNav.Caption = "Contents" And IsNull(Forms!frmUXEvalman!txtSearch), "Open reader did not leave its search for the section"
+    Check Not UXOpenEvalmanSection(-1), "Missing section opened"
+    DoCmd.Close acForm, "frmUXEvalman", acSaveNo
     ' Resources opens it.
     DoCmd.OpenForm "frmUXResources"
     Check Forms!frmUXResources!cmdEvalman.Visible And Forms!frmUXResources!cmdEvalman.OnClick = "=UXOpenEvalman()", "Resources link missing"
     DoCmd.Close acForm, "frmUXResources", acSaveNo
-    TestEvalman = "PASS: " & n & " EVALMAN text, search and reader checks": Exit Function
+    TestEvalman = "PASS: " & n & " EVALMAN text, search, reader and link checks": Exit Function
 Failed:
     TestEvalman = "FAIL after " & n & ": " & Err.Number & " " & Err.Description
     On Error Resume Next

@@ -7788,6 +7788,47 @@ Begin Form
                     Overlaps =1
                 End
                 Begin CommandButton
+                    OverlapFlags =247
+                    TextFontFamily =34
+                    Left =2850
+                    Top =2850
+                    Width =2200
+                    Height =400
+                    FontSize =10
+                    TabIndex =178
+                    ForeColor =4205854
+                    Name ="cmdEvalman"
+                    ControlTipText ="F1 opens EVALMAN."
+                    Caption ="EVALMAN"
+                    OnClick ="=UXEditorEvalman()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =2850
+                    LayoutCachedTop =2850
+                    LayoutCachedWidth =5050
+                    LayoutCachedHeight =3250
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
+                    Overlaps =1
+                End
+                Begin CommandButton
                     OverlapFlags =93
                     Left =14200
                     Top =150

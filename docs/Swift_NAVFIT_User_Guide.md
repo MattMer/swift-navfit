@@ -339,6 +339,7 @@ Swift NAVFIT is built to meet Section 508 (WCAG 2.0 Level AA) for desktop softwa
 | Arrow keys | Move through a list. |
 | Esc | Undo typing in the current field. |
 | F7 | Check spelling in a narrative block. |
+| F1 | Open EVALMAN at the block you are in. |
 
 **Screen readers.** Each field announces its label: the official block caption on report pages. Fields without a visible label still announce a name, such as "Trait 33" or "E5 RSCA". Status and save messages are text, so a screen reader can read them.
 
@@ -466,6 +467,8 @@ Prior evaluations let Swift NAVFIT show each member's previous ITA and promotion
 5. Choose **Save prior evaluation**.
 
 If a prior value is wrong, fix the prior evaluation here. Do not change the new report's marks to make up for it.
+
+**Continuity.** The history lists the member's reports by date. A break between one report's end and the next one's start shows as a **Possible gap** row, and the line below the list counts them. Prior evaluations do not record Regular or Concurrent, so check each gap against the member's Continuity page in BOL. Regular reports written in Swift that overlap show as **Overlap**.
 
 ## 5.6 Track midterm counseling
 
@@ -730,6 +733,8 @@ Text past the PDF's room prints on an added **additional text** page. Hover over
 **NavyWriter examples.** **Resources > NavyWriter examples catalog** opens examples from an outside site when you choose them.
 
 **EVALMAN.** **Resources > EVALMAN (BUPERSINST 1610.10H)** holds the whole instruction as text, through CH-4 (22 Oct 2026), offline: the change transmittals, the basic instruction, both enclosures, all 19 chapters with every block, and the exhibits and tables. Choose a section under **Contents**, or type words or a "phrase in quotes" and choose **Find**. Results list each section with its number of matches; **Next match** and **Previous match** step through them, highlighted. The text was taken from the official PDF and checked against it; the PDF remains the authoritative copy.
+
+In a report, press **F1** in a field, or choose **EVALMAN** beside the page heading, to open the instructions for that block. In **Validation issues**, select a finding and choose **EVALMAN** to open the paragraph it cites.
 
 **Spelling.** Choose **Check spelling**, or press **F7** in any narrative block. It uses Microsoft Office's spelling checker on this computer and sends nothing anywhere. Words in all capitals are checked too. If Office's proofing tools are not installed, Swift NAVFIT says so.
 

@@ -88,6 +88,15 @@ Public Function TestUXSurface() As String
     Call UXSelectSection(2)
     Check f!txtOfficialName = "SURFACE TESTER", "Leaving section lost active text"
     Check s!txtOfficialName.Top - s!labelOfficialName.Top <= 350, "Caption gap is not compact"
+    'F1 opens EVALMAN at the focused field's block; the button uses the field last used.
+    stage = "evalman": Call UXSelectSection(0)
+    f!uxFieldSurface.SetFocus: s!txtOfficialName.SetFocus
+    Check UXEditorEvalman(True) And UXEvalmanShown() = EvalmanSectionForField("OfficialName"), "F1 did not open the field's block"
+    DoCmd.Close acForm, "frmUXEvalman", acSaveNo
+    Check f!cmdEvalman.Caption = "EVALMAN" And f!cmdEvalman.ControlTipText = "F1 opens EVALMAN.", "EVALMAN button missing"
+    f!cmdEvalman.SetFocus
+    Check UXEditorEvalman() And UXEvalmanShown() = EvalmanSectionForField("OfficialName"), "Button did not use the last field"
+    DoCmd.Close acForm, "frmUXEvalman", acSaveNo
     Check InStr(s!labelReadinessDate.Caption, ChrW(226)) = 0, "Readiness caption contains corrupted punctuation"
     Call UXSelectSection(4)
     Check s!cboTrait33.Width = 1000 And s!cboTrait34.Top - s!cboTrait33.Top <= 700, "Trait rows still waste space"

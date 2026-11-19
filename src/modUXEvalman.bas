@@ -176,6 +176,22 @@ Public Function UXEvalmanPrevious() As Boolean
     GoToHit hitIndex - 1: UXEvalmanPrevious = True
 End Function
 
+' Open the reader at the top of one section (a finding's paragraph or a field's block),
+' with the contents listed and that section selected.
+Public Function UXOpenEvalmanSection(ByVal section As Long) As Boolean
+    If section < 0 Or section >= EvalmanCount() Then Exit Function
+    DoCmd.OpenForm "frmUXEvalman"
+    With Forms!frmUXEvalman
+        If listMode <> "Contents" Or Len(Nz(!txtSearch, "")) > 0 Then !txtSearch = Null: UXEvalmanShowContents
+        !lstNav = CStr(section)
+        ShowSection section
+        !txtReader.SetFocus
+        !txtReader.SelStart = 0: !txtReader.SelLength = 0
+        !lblMatch.Caption = ""
+    End With
+    UXOpenEvalmanSection = True
+End Function
+
 ' The section a reader is showing, for tests and links from other windows.
 Public Function UXEvalmanShown() As Long
     UXEvalmanShown = shown

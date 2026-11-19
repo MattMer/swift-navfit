@@ -15,6 +15,7 @@
     "src/modDecisionDetails.bas",
     "src/modDirectoryBatch.bas",
     "src/modDirectoryMerge.bas",
+    "src/modEvalmanLinks.bas",
     "src/modEvalmanText.bas",
     "src/modFileHash.bas",
     "src/modGroupPolicy.bas",
