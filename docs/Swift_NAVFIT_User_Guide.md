@@ -652,6 +652,8 @@ Defaults fill blocks that are the same for everyone in the group: blocks 5 to 21
 | Status | Local tracking: Initialized, In-Work, Ready for Signature, Completed (15.4). |
 | Closeout date | The reports' ending date. **Mixed** means different dates; **Incomplete** means some are missing. |
 
+**Ending year** shows the groups whose reports end in that calendar year. A group with mixed ending dates shows under each of its years. An empty group shows under the year of its default ending date.
+
 Archiving a group hides it but keeps its reports. To find it again, change the archive filter and choose **Recover summary group**.
 
 ---

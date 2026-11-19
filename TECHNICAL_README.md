@@ -628,6 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 18 Nov 2026 | Development only, not in a release: Summary groups has an Ending year filter (uxYearFilter). UXGroupList keeps a group when any member report's PeriodEnd falls in the year, or, with no members, when its effective default PeriodEnd does (GroupDefaultEndYear), through HAVING so counts and closeout dates are unchanged; a selection the filter hides is cleared. |
 | 18 Nov 2026 | Development only, not in a release: the EVALMAN reader (frmUXEvalman, modUXEvalman) shows BUPERSINST 1610.10H through CH-4 as text with contents, search and match navigation, from Resources. scripts/extract-evalman.py builds src/evalman.json from the official PDF with pdftotext and the reviewed corrections and transcriptions in src/evalman-corrections.json; scripts/generate-evalman-module.py generates modEvalmanText.bas. |
 | 18 Nov 2026 | Development only, not in a release: summary groups show the Current RSCA (the reporting senior's RSCA before the group) beside the PSG RSCA with the change; Export RSCA history (modRSHistoryExport) writes a reporting senior's baselines, counted reports, open-group reports and RSCA calculation to an .xlsx workbook through a temporary database and TransferSpreadsheet. The Reports list fits its columns to the list width on first load. |
 | 16 Nov 2026 | Release 0.58.0, schema 51: the directory-wide duplicate Sailor list, roster refresh defaults, PDF import of YYMMMDD dates and flattened-PDF guidance, and shorter form notices. |

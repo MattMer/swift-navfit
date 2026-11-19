@@ -32,11 +32,18 @@ Failed:
     SwiftRaise swiftPrimary
 End Sub
 Public Function UXGroupList() As Boolean
-    Dim f As Access.Form, id As Long, filter As String, where As String
+    Dim f As Access.Form, id As Long, filter As String, where As String, having As String, endYear As Long, i As Long, listed As Boolean
     Set f = Forms!frmUXGroups: id = Nz(f!lstGroups, 0): filter = Nz(f!uxArchiveFilter, "Active")
     If filter = "Active" Then where = "WHERE g.IsArchived=False "
     If filter = "Archived" Then where = "WHERE g.IsArchived=True "
-    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title AS [Group],g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(IIf(Len(Nz(l.WorkflowState,''))=0,'Initialized',l.WorkflowState)) AS [Group status],GroupCloseout(g.GroupID,Count(r.ReportID),Count(r.PeriodEnd),Min(r.PeriodEnd),Max(r.PeriodEnd)) AS [Closeout date] FROM ((SummaryGroup AS g LEFT JOIN GroupLifecycle AS l ON g.GroupID=l.GroupID) LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID) LEFT JOIN Report AS r ON m.ReportID=r.ReportID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived ORDER BY g.Title"
+    'Ending year is inclusive: a group shows when any report in it ends that year,
+    'or, with no reports, when its default ending date does.
+    If UXHasControl(f, "uxYearFilter") Then
+        GroupYearChoices f
+        If IsNumeric(Nz(f!uxYearFilter, "")) Then endYear = CLng(f!uxYearFilter)
+    End If
+    If endYear > 0 Then having = "HAVING Sum(IIf(Year(r.PeriodEnd)=" & endYear & ",1,0))>0 OR (Count(m.ReportID)=0 AND GroupDefaultEndYear(g.GroupID)=" & endYear & ") "
+    f!lstGroups.RowSource = "SELECT g.GroupID,g.Title AS [Group],g.FormKind AS [Report type],g.Paygrade,Count(m.ReportID) AS Reports,IIf(g.IsArchived,'Archived','Active') AS [Archive state],First(IIf(Len(Nz(l.WorkflowState,''))=0,'Initialized',l.WorkflowState)) AS [Group status],GroupCloseout(g.GroupID,Count(r.ReportID),Count(r.PeriodEnd),Min(r.PeriodEnd),Max(r.PeriodEnd)) AS [Closeout date] FROM ((SummaryGroup AS g LEFT JOIN GroupLifecycle AS l ON g.GroupID=l.GroupID) LEFT JOIN GroupMember AS m ON g.GroupID=m.GroupID) LEFT JOIN Report AS r ON m.ReportID=r.ReportID " & where & "GROUP BY g.GroupID,g.Title,g.FormKind,g.Paygrade,g.IsArchived " & having & "ORDER BY g.Title"
     If id > 0 Then
         If DCount("*", "SummaryGroup", "GroupID=" & id) = 0 Then
             id = 0
@@ -46,6 +53,12 @@ Public Function UXGroupList() As Boolean
             id = 0
         End If
     End If
+    If id > 0 And endYear > 0 Then
+        For i = 0 To f!lstGroups.ListCount - 1
+            If CStr(Nz(f!lstGroups.Column(0, i), "")) = CStr(id) Then listed = True: Exit For
+        Next
+        If Not listed Then id = 0
+    End If
     On Error Resume Next
     f!lstGroups = id
     On Error GoTo 0
@@ -53,6 +66,40 @@ Public Function UXGroupList() As Boolean
     f!lstGroups.ColumnCount = 8: f!lstGroups.ColumnWidths = "0;3200;1400;1200;1100;1600;2200;2000"
     UXResizeWorkspace f.Name: UXGroupList = True
 End Function
+Public Function GroupDefaultEndYear(ByVal groupID As Long) As Long
+    Dim value As Variant
+    value = UXEffectiveDefault(groupID, "PeriodEnd")
+    If IsDate(value) Then GroupDefaultEndYear = Year(CDate(value))
+End Function
+'Year choices come from the reports in groups and the defaults of empty groups,
+'newest first. A chosen year stays listed even when no group matches it now.
+Private Sub GroupYearChoices(ByVal f As Access.Form)
+    Dim years As Object, r As DAO.Recordset, chosen As String, choices As String, y As Long, k As Variant, newest As Long
+    Set years = CreateObject("Scripting.Dictionary"): chosen = Nz(f!uxYearFilter, "All years")
+    Set r = CurrentDb.OpenRecordset("SELECT DISTINCT Year(r.PeriodEnd) AS EndYear FROM GroupMember AS m INNER JOIN Report AS r ON m.ReportID=r.ReportID WHERE r.PeriodEnd IS NOT NULL", dbOpenSnapshot)
+    Do While Not r.EOF
+        years(CLng(r!EndYear)) = True: r.MoveNext
+    Loop
+    r.Close
+    Set r = CurrentDb.OpenRecordset("SELECT GroupID FROM SummaryGroup WHERE GroupID NOT IN (SELECT GroupID FROM GroupMember)", dbOpenSnapshot)
+    Do While Not r.EOF
+        y = GroupDefaultEndYear(r!GroupID)
+        If y > 0 Then years(y) = True
+        r.MoveNext
+    Loop
+    r.Close
+    If IsNumeric(chosen) Then years(CLng(chosen)) = True Else chosen = "All years"
+    Do While years.Count > 0
+        newest = 0
+        For Each k In years.Keys
+            If k > newest Then newest = k
+        Next
+        choices = choices & ";" & newest: years.Remove newest
+    Loop
+    choices = """All years""" & choices
+    If f!uxYearFilter.RowSource <> choices Then f!uxYearFilter.RowSource = choices
+    f!uxYearFilter = chosen
+End Sub
 Public Function GroupCloseout(ByVal groupID As Long, ByVal members As Long, ByVal dated As Long, ByVal firstDate As Variant, ByVal lastDate As Variant) As Variant
  Dim value As Variant
  If members = 0 Then

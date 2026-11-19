@@ -739,6 +739,58 @@ Begin Form
                         End
                     End
                 End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    RowSourceTypeInt =1
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    IMESentenceMode =3
+                    Left =10600
+                    Top =2300
+                    Width =2700
+                    Height =400
+                    FontSize =10
+                    TabIndex =11
+                    BorderColor =13285543
+                    ForeColor =4205854
+                    Name ="uxYearFilter"
+                    RowSourceType ="Value List"
+                    RowSource ="\"All years\""
+                    AfterUpdate ="=UXGroupList()"
+                    DefaultValue ="\"All years\""
+                    FontName ="Segoe UI"
+                    ControlTipText ="Show groups with a report ending in this calendar year"
+
+                    LayoutCachedLeft =10600
+                    LayoutCachedTop =2300
+                    LayoutCachedWidth =13300
+                    LayoutCachedHeight =2700
+                    ThemeFontIndex =-1
+                    BackThemeColorIndex =-1
+                    BorderThemeColorIndex =-1
+                    ForeThemeColorIndex =-1
+                    Begin
+                        Begin Label
+                            OverlapFlags =85
+                            TextFontFamily =34
+                            Left =8900
+                            Top =2350
+                            Width =1600
+                            Height =300
+                            FontSize =10
+                            ForeColor =4205854
+                            Name ="uxYearLabel"
+                            Caption ="Ending year"
+                            FontName ="Segoe UI"
+                            LayoutCachedLeft =8900
+                            LayoutCachedTop =2350
+                            LayoutCachedWidth =10500
+                            LayoutCachedHeight =2650
+                            ThemeFontIndex =-1
+                            ForeThemeColorIndex =-1
+                        End
+                    End
+                End
                 Begin CommandButton
                     OverlapFlags =85
                     TextFontFamily =34
@@ -747,7 +799,7 @@ Begin Form
                     Width =3450
                     Height =550
                     FontSize =10
-                    TabIndex =11
+                    TabIndex =12
                     ForeColor =4205854
                     Name ="uxRename"
                     Caption ="Rename summary group"
@@ -786,7 +838,7 @@ Begin Form
                     Width =3300
                     Height =550
                     FontSize =10
-                    TabIndex =12
+                    TabIndex =13
                     ForeColor =2500257
                     Name ="uxArchive"
                     Caption ="Archive summary group"
@@ -825,7 +877,7 @@ Begin Form
                     Width =3300
                     Height =550
                     FontSize =10
-                    TabIndex =13
+                    TabIndex =14
                     ForeColor =4205854
                     Name ="uxRecover"
                     Caption ="Recover summary group"
@@ -883,7 +935,7 @@ Begin Form
                     Width =3450
                     Height =550
                     FontSize =10
-                    TabIndex =14
+                    TabIndex =15
                     ForeColor =4205854
                     Name ="uxEditDefaults"
                     Caption ="Edit selected group defaults"
@@ -922,7 +974,7 @@ Begin Form
                     Width =100
                     Height =100
                     FontSize =10
-                    TabIndex =16
+                    TabIndex =17
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxStateStamp"
@@ -946,7 +998,7 @@ Begin Form
                     Width =3300
                     Height =500
                     FontSize =10
-                    TabIndex =17
+                    TabIndex =18
                     BorderColor =13285543
                     ForeColor =4205854
                     Name ="uxGroupState"
@@ -992,7 +1044,7 @@ Begin Form
                     Width =3300
                     Height =550
                     FontSize =10
-                    TabIndex =18
+                    TabIndex =19
                     ForeColor =4205854
                     Name ="uxSaveState"
                     Caption ="Set group status"
@@ -1031,7 +1083,7 @@ Begin Form
                     Width =3300
                     Height =550
                     FontSize =10
-                    TabIndex =15
+                    TabIndex =16
                     ForeColor =4205854
                     Name ="uxGlobalDefaults"
                     Caption ="Edit global defaults"
@@ -1070,7 +1122,7 @@ Begin Form
                     Width =5100
                     Height =550
                     FontSize =10
-                    TabIndex =19
+                    TabIndex =20
                     ForeColor =4205854
                     Name ="uxExportSelected"
                     Caption ="Export selected group to NAVFIT98A"
@@ -1109,7 +1161,7 @@ Begin Form
                     Width =5050
                     Height =550
                     FontSize =10
-                    TabIndex =20
+                    TabIndex =21
                     ForeColor =4205854
                     Name ="uxPDFSelected"
                     Caption ="Preview / create selected group PDFs"
@@ -1147,7 +1199,7 @@ Begin Form
                     Width =500
                     Height =400
                     FontWeight =700
-                    TabIndex =21
+                    TabIndex =22
                     ForeColor =8928611
                     Name ="cmdWindowHelp"
                     FontName ="Segoe UI"

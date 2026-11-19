@@ -87,8 +87,15 @@ Private Function RejectMeeting(ByVal proposal As Long) As Boolean
 Failed:
     RejectMeeting = True
 End Function
+Private Function GroupRow(ByVal f As Access.Form, ByVal id As Long) As Long
+    Dim i As Long
+    For i = 1 To f!lstGroups.ListCount - 1
+        If CStr(Nz(f!lstGroups.Column(0, i), "")) = CStr(id) Then GroupRow = i: Exit Function
+    Next
+End Function
 Public Function TestUXGroupLifecycle() As String
     Dim g As Long, id As Long, rev As Long, stamp As String, snap As Long, meeting As Long, version As Long, proposal As Long, f As Access.Form, stage As String
+    Dim early As Long, late As Long, mixed As Long, blankGroup As Long
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC LIFECYCLE", "Tester"
     id = CommitDraft(0, "EVAL", "Test report", "Test member", #1/1/2026#, #9/30/2026#, "", "Test", "")
@@ -147,6 +154,25 @@ Public Function TestUXGroupLifecycle() As String
     Check CurrentRevision(id) = rev And DCount("*", "GroupMember", "GroupID=" & g) = 1, "Recovery changed reports/members"
     Check Rejected(g, GroupStamp(g), "Recover"), "Repeated recovery accepted"
     Check DCount("*", "OperationJournal", "OperationKind IN ('Rename summary group','Archive summary group','Recover summary group')") = 3, "Lifecycle audit missing"
+    stage = "ending year"
+    early = CommitDraft(0, "EVAL", "Year report A", "Year member A", #1/1/2025#, #12/31/2025#, "", "Test", "")
+    late = CommitDraft(0, "EVAL", "Year report B", "Year member B", #1/2/2026#, #1/1/2027#, "", "Test", "")
+    mixed = CreateSummaryGroup("Year mixed group", "EVAL", "E5"): AddGroupMember mixed, early, "E5": AddGroupMember mixed, late, "E5"
+    blankGroup = CreateSummaryGroup("Year empty group", "EVAL", "E5"): SetFieldDefault "Group", blankGroup, "PeriodEnd", "2024-06-30"
+    f!uxYearFilter = "All years": Check UXGroupList(), "Year list refresh failed"
+    Check f!uxYearFilter.RowSource = """All years"";2027;2026;2025;2024", "Year choices wrong: " & f!uxYearFilter.RowSource
+    Check GroupRow(f, g) > 0 And GroupRow(f, mixed) > 0 And GroupRow(f, blankGroup) > 0, "All years hid a group"
+    f!lstGroups = g: f!uxYearFilter = "2025": Check UXGroupList(), "2025 filter failed"
+    Check GroupRow(f, g) = 0 And GroupRow(f, mixed) > 0 And GroupRow(f, blankGroup) = 0, "2025 should show only the mixed group"
+    Check Nz(f!lstGroups, 0) = 0, "Hidden group remains selected"
+    Check CLng(f!lstGroups.Column(4, GroupRow(f, mixed))) = 2 And f!lstGroups.Column(7, GroupRow(f, mixed)) = "Mixed", "Year filter changed the count or closeout"
+    f!uxYearFilter = "2027": UXGroupList
+    Check GroupRow(f, g) = 0 And GroupRow(f, mixed) > 0 And GroupRow(f, blankGroup) = 0, "2027 should show only the mixed group"
+    f!lstGroups = g: f!uxYearFilter = "2026": UXGroupList
+    Check GroupRow(f, g) > 0 And GroupRow(f, mixed) = 0 And GroupRow(f, blankGroup) = 0 And Nz(f!lstGroups, 0) = g, "2026 should show and keep only the dated group"
+    f!uxYearFilter = "2024": UXGroupList
+    Check GroupRow(f, g) = 0 And GroupRow(f, mixed) = 0 And GroupRow(f, blankGroup) > 0, "2024 should show only the empty group by its default"
+    f!uxYearFilter = "All years": UXGroupList
     stage = "stale rename buffer"
     DoCmd.OpenForm "frmUXRenameGroup", , , , , , CStr(g)
     Forms!frmUXRenameGroup!txtName = "Pending name"
