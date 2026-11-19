@@ -6,6 +6,8 @@
 
 [User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) | [Read the guide online](docs/Swift_NAVFIT_User_Guide.md) | [Download the latest release](https://github.com/MattMer/swift-navfit/releases/latest)
 
+To try what is in progress before the next release, download a [pre-release](https://github.com/MattMer/swift-navfit/releases). Pre-releases are for trying out new features; use the latest release for real work.
+
 Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EVALs, CHIEFEVALs, and FITREPs. It keeps report drafting, summary groups, member history, review, revision tracking, and recovery together in one workspace file on your computer.
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
