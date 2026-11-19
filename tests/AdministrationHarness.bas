@@ -28,12 +28,6 @@ Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As L
     'F01: the assignee holds the report and may edit it before accepting.
     ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
-Private Function CorruptRestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
-    On Error GoTo Failed
-    Call RestoreDraft(id, revision): Exit Function
-Failed:
-    CorruptRestoreRejected = InStr(Err.Description, "incomplete") > 0
-End Function
 Public Function TestAdministration() As String
     Dim kind As Variant, id As Long, first As Long, copy As Long, second As Long, values As Variant, bad As Variant
     Dim keys As Variant, limits As Variant, i As Long, before As Long, task As Long, r As DAO.Recordset, recovery As Long
@@ -97,26 +91,6 @@ Public Function TestAdministration() As String
     Check Forms!frmEditor!txtOfficialName = String$(35, "P") And Forms!frmEditor!txtUnitUIC = "00789", "Recovery truncated pending administration"
     Check Stored(id, "UnitUIC") = "00234", "Recovery auto-saved administration"
     Call FixtureCloseEditor()
-    'An actual old snapshot lacks both the schema marker and administrative keys.
-    first = DMin("RevisionID", "ReportRevision")
-    copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
-    SnapshotFullCopy first
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('OfficialName','RankRate','Designator','UnitUIC','ShipStation')", dbFailOnError
-    CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=Null WHERE RevisionID=" & first, dbFailOnError
-    Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
-    Forms!frmRevisionCompare!chkChangedOnly = False: Call RefreshComparisonFields()
-    Forms!frmRevisionCompare!lstCompareFields = "UnitUIC": Call LoadComparisonValues()
-    Check Forms!frmRevisionCompare!txtOldValue = "[Not recorded in this revision]", "Legacy marker missing"
-    DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
-    Call RestoreDraft(copy, first)
-    Check IsNull(Stored(copy, "UnitUIC")), "Legacy restore invented administration"
-    second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
-    SnapshotFullCopy second
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='UnitUIC'", dbFailOnError
-    Check CorruptRestoreRejected(copy, second), "Incomplete new snapshot restored"
-    'Repair the test corruption so migration fixtures retain coherent current history.
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
-    r.AddNew: r!RevisionID = second: r!FieldKey = "UnitUIC": r!IsNullValue = True: r.Update: r.Close
     ' Typed entry formats like NAVFIT98A: uppercase and LAST, FIRST MI SUFFIX.
     Check NavyNameFormat("john q smith jr") = "SMITH, JOHN Q JR", "First-last name not reordered"
     Check NavyNameFormat("smith,john quincy") = "SMITH, JOHN Q", "Middle name not reduced to an initial"

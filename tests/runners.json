@@ -30,8 +30,7 @@
   {
    "name": "test-workspace-read-performance",
    "area": "Workspace and settings",
-   "tier": "extended",
-   "note": "The test-batched-reads case (baseline/candidate read equivalence and timings) also runs when -BaselinePath names an earlier build. Other cases run with -BuildPath."
+   "tier": "extended"
   },
   {
    "name": "test-import-engine",
@@ -99,7 +98,7 @@
     "-Tier",
     "extended"
    ],
-   "note": "Core: workflows. Extended adds major/UI, work queues and wizard state; test-major LegacyPath behavior is unchanged."
+   "note": "Core: workflows. Extended adds major/UI, work queues and wizard state."
   },
   {
    "name": "test-narratives",
@@ -153,8 +152,7 @@
   {
    "name": "test-field-defaults",
    "area": "Workflow and validation",
-   "tier": "extended",
-   "note": "Immediate-defaults verification needs -BlankPath -DemoPath, otherwise SKIP. Historical receipt assertions remain unchanged."
+   "tier": "extended"
   },
   {
    "name": "test-report-field-tools",

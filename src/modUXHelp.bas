@@ -74,7 +74,7 @@ End Function
 Public Function UXWindowHelpTopic(ByVal formName As String) As Long
     Select Case formName
         Case "frmEditor", "frmReportingSenior", "frmMemberDetails", "frmServiceDetails", "frmDecisionDetails", "frmReportPeople", "frmPartyNames", "frmRevisionCompare", "frmUXSignoff": UXWindowHelpTopic = 1
-        Case "frmLibrary", "frmBulkFolders", "frmProvenance": UXWindowHelpTopic = 2
+        Case "frmLibrary", "frmProvenance": UXWindowHelpTopic = 2
         Case "frmUXGroups", "frmMajorWorkbench", "frmUXBulk", "frmUXComparison", "frmUXSharedFields", "frmUXNewGroup", "frmUXMoveGroup", "frmUXRenameGroup", "frmUXGroupPolicy", "frmUXMembers", "frmUXGroupReport", "frmUXNewReport": UXWindowHelpTopic = 3
         Case "frmUXSeniors", "frmUXSeniorEditor", "frmUXGroupRSCA", "frmUXSeniorHistory", "frmUXSeniorPicker", "frmUXISICs": UXWindowHelpTopic = 4
         Case "frmMyWork", "frmUXReview", "frmReviewComments", "frmUXRouteTemplates", "frmUXContributors": UXWindowHelpTopic = 5

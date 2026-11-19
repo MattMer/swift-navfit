@@ -57,24 +57,6 @@ Failed:
  On Error Resume Next
  locked.CancelUpdate: locked.Close: lockDB.Close: locks.Close
 End Function
-Public Function TestExistingTraitEvents() As String
- Dim id As Long, groupID As Long, rows As Access.Form, mark As String, r As DAO.Recordset
- On Error GoTo Failed
- id = Nz(DMin("ReportID", "GroupMember"), 0)
- If id = 0 Then Err.Raise vbObjectError + 7910, , "No grouped report in supplied workspace"
- groupID = DLookup("GroupID", "GroupMember", "ReportID=" & id)
- DoCmd.OpenForm "frmMajorWorkbench": Forms!frmMajorWorkbench!cboGroup = groupID
- UXWorkbenchMode "Members": UXOpenComparison
- Set rows = Forms!frmUXComparison!uxTraitGrid.Form
- Set r = rows.RecordsetClone: r.FindFirst "ReportID=" & id: rows.Bookmark = r.Bookmark: r.Close
- mark = IIf(Nz(rows!Trait37, "") = "1.0", "2.0", "1.0")
- rows!Trait37.SetFocus: rows!Trait37.Text = mark: rows!Trait38.SetFocus
- If Not AwaitTraitSave(id, "Trait37", mark) Then Err.Raise vbObjectError + 7912, , Forms!frmUXComparison!lblStatus.Caption
- If DLookup("Trait37", "Report", "ReportID=" & id) <> mark Then Err.Raise vbObjectError + 7911, , Forms!frmUXComparison!lblStatus.Caption
- TestExistingTraitEvents = "PASS: existing user-created report native event saved": Exit Function
-Failed:
- TestExistingTraitEvents = "FAIL: " & Err.Number & " " & Err.Description
-End Function
 
 Private Sub TraceEvent(ByVal message As String)
  Dim n As Integer

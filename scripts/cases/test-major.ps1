@@ -1,9 +1,9 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$OlderPath,[switch]$ChiefComments)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[switch]$ChiefComments)
 $ErrorActionPreference='Stop'
 $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/major-'+[guid]::NewGuid());[void](New-Item -ItemType Directory -Path $folder)
 $hashes=@{};$results=@();$app=$null;$primary=$null;$cleanup=@()
-foreach($path in @($BuildPath,$LegacyPath,$OlderPath)|Where-Object {$_}){$hashes[[IO.Path]::GetFullPath($path)]=(Get-FileHash -LiteralPath $path).Hash}
+foreach($path in @($BuildPath)){$hashes[[IO.Path]::GetFullPath($path)]=(Get-FileHash -LiteralPath $path).Hash}
 $schema=Get-Content (Join-Path $root 'src/major-schema.json') -Raw|ConvertFrom-Json
 $currentSchema=[int]$schema.SchemaVersion
 $version=[regex]::Match((Get-Content (Join-Path $root 'src/modSwift.bas') -Raw),'APP_VERSION As String = "([^"]+)"').Groups[1].Value
@@ -43,7 +43,7 @@ function AssertMajorSchema {
  $db=$script:app.CurrentDb()
  try{
   $meta=$db.OpenRecordset('SELECT SchemaVersion FROM AppMetadata',4)
-  if($meta.Fields.Item(0).Value -ne $currentSchema){throw 'Use a current-schema blank for the target; legacy templates belong in -LegacyPath/-OlderPath'}
+  if($meta.Fields.Item(0).Value -ne $currentSchema){throw 'Use a current-schema blank'}
   $meta.Close()
   $checked=0
   foreach($sql in $schema.SQL){
@@ -102,10 +102,10 @@ try{
  CheckMajorResult 'TestMajor()'
  CheckMajorResult 'TestMajorRevisionAliases(True)'
  CheckMajorResult 'TestMajorAliasViews()'
- #Imports must end with the current build's relationships; an older source's set differs.
+ #Imports must end with the current build's relationships.
  $db=$app.CurrentDb();$currentRelations=RelationSignatures $db;$db.Close()
  CloseMajorSession
- $templates=@($candidate)+@($LegacyPath,$OlderPath|Where-Object {$_})
+ $templates=@($candidate)
  $index=0
  foreach($template in $templates){
   $index++;$source=Join-Path $folder ('source-'+$index+'.accdb');Copy-Item -LiteralPath $template -Destination $source

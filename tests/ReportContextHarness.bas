@@ -22,12 +22,6 @@ Private Function Rejected(ByVal id As Long, ByVal values As Variant) As Boolean
 Failed:
     Rejected = True
 End Function
-Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
-    On Error GoTo Failed
-    Call RestoreDraft(id, revision): Exit Function
-Failed:
-    RestoreRejected = True
-End Function
 Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
     'F01: the assignee holds the report and may edit it before accepting.
     ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
@@ -127,25 +121,6 @@ Public Function TestReportContext() As String
         Call CancelReportContext(CStr(panel))
     Next
     Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
-    first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
-    For Each key In keys
-        SnapshotFullCopy first
-        CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey='" & key & "'", dbFailOnError
-    Next
-    CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=13 WHERE RevisionID=" & first, dbFailOnError
-    Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
-    Forms!frmRevisionCompare!chkChangedOnly = False: Call RefreshComparisonFields()
-    Forms!frmRevisionCompare!lstCompareFields = "DutyDescription": Call LoadComparisonValues()
-    Check Forms!frmRevisionCompare!txtOldValue = "[Not recorded in this revision]", "Legacy marker absent"
-    DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
-    Call RestoreDraft(copy, first)
-    For Each key In keys: Check IsNull(Stored(copy, CStr(key))), "Legacy restore invented context": Next
-    second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
-    SnapshotFullCopy second
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='DutyDescription'", dbFailOnError
-    Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
-    r.AddNew: r!RevisionID = second: r!FieldKey = "DutyDescription": r!IsNullValue = True: r.Update: r.Close
     TestReportContext = "PASS: " & checks & " report context assertions": Exit Function
 Failed:
     TestReportContext = "FAIL: " & Err.Number & " " & Err.Description

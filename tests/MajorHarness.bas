@@ -132,8 +132,6 @@ Failed:
     TestMajor = "FAIL after " & count & " assertions: " & Err.Number & ": " & Err.Description
 End Function
 
-'Use the installed version's importer: <=32 retains DN text as provenance;
-'>=33 maps the same native values into the new independent authored fields.
 Public Function SeedChiefTransfer(ByVal nativePath As String, ByVal exported As String, ByVal template As String) As String
     Dim db As DAO.Database, rows As DAO.Recordset, external As Long, id As Long
     On Error GoTo Failed
@@ -164,12 +162,7 @@ Public Function VerifyChiefTransfer(ByVal sourceSchema As Long, ByVal nativePath
         For entry = 1 To 3
             key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
             expected(key) = rows.Fields(column).Value
-            If sourceSchema < 33 Then
-                Check IsNull(fields(key)), "Migration fabricated an authored legacy comment"
-                Check RevisionFieldStatus(revision, revision, key) = "Not recorded", "Older comment snapshot was treated as corruption or invented history"
-            Else
-                Check SameFieldValue(fields(key), expected(key)), "Migration lost an authored comment"
-            End If
+            Check SameFieldValue(fields(key), expected(key)), "Migration lost an authored comment"
         Next
     Next
     rows.Close: db.Close
@@ -200,9 +193,8 @@ Public Function VerifyChiefTransfer(ByVal sourceSchema As Long, ByVal nativePath
     Next
     NAVFITClearReturned
     returned = exported & ".returned.accdb": FileCopy exported, returned
-    Set db = DBEngine.OpenDatabase(returned): db.Execute "UPDATE Reports SET LEADDN1='SYNTHETIC LEGACY RETURN' WHERE ReportType Is Not Null", dbFailOnError: db.Close
+    Set db = DBEngine.OpenDatabase(returned): db.Execute "UPDATE Reports SET LEADDN1='SYNTHETIC RETURN' WHERE ReportType Is Not Null", dbFailOnError: db.Close
     Set preview = NAVFITPreviewReturned(returned, exported & ".swift-baseline.accdb")
-    If sourceSchema < 33 Then Check NAVFITReturnedDecision("Trait33Comment1") = "Conflict", "Legacy unknown/current blank did not require a return decision"
     NAVFITResolveReturned "Trait33Comment1", "Accept returned"
     Check NAVFITApplyReturned() = id, "Accepted comment return failed"
     Set changes = CreateObject("Scripting.Dictionary"): changes("Title") = "Synthetic unrelated title change"
@@ -212,7 +204,7 @@ Public Function VerifyChiefTransfer(ByVal sourceSchema As Long, ByVal nativePath
     For block = 33 To 39
         For entry = 1 To 3
             key = "Trait" & block & "Comment" & entry: column = prefixes(block - 33) & "DN" & entry
-            If key = "Trait33Comment1" Then expected(key) = "SYNTHETIC LEGACY RETURN"
+            If key = "Trait33Comment1" Then expected(key) = "SYNTHETIC RETURN"
             Check SameFieldValue(rows.Fields(column).Value, expected(key)), "Unrelated save erased retained comment: " & key
         Next
     Next

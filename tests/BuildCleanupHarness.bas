@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  checks = checks + 1
 End Sub
 Public Function TestBuildCleanup() As String
- Dim folder As Long, child As Long, id As Long, revision As Long, before As Long, moves As Long, group As Long, f As Access.Form, hasLegacy As Boolean, item As AccessObject, other As Long, operation As Long, selection As String, stamp As String, failure As Long
+ Dim folder As Long, child As Long, id As Long, revision As Long, before As Long, moves As Long, other As Long, operation As Long, selection As String, stamp As String, failure As Long
  On Error GoTo Failed
  ConfigureWorkspace "SYNTHETIC BUILD CLEANUP", "Build tester"
  folder = CreateFolder("Preserved organizational folder")
@@ -17,38 +17,6 @@ Public Function TestBuildCleanup() As String
  moves = DCount("*", "FolderMove")
  Check MoveFolder(child, 0), "Folder hierarchy service lost"
  Check FolderPath(child) = "Child folder", "Folder path wrong"
- group = CreateSummaryGroup("Summary group with overlapping ID", "EVAL", "E5")
- DoCmd.OpenForm "frmLibrary": Forms!frmLibrary!lstReports = id
- Forms!frmLibrary!lstFolders = group
- before = DCount("*", "Folder")
- Check AddFolderUI(), "Legacy add-folder adapter failed"
- Check Screen.ActiveForm.Name = "frmLibrary", "Retired folder callback did not return to Reports"
- Check Not UXHasControl(Forms!frmLibrary, "cmdBulkFolders"), "Reports still offers retired Folder tools"
- Check PreviewFolderBatchUI() And ApplyFolderBatchUI() And Screen.ActiveForm.Name = "frmLibrary", "Retired folder actions did not return safely to Reports"
- Check DCount("*", "Folder") = before And DCount("*", "FolderMove") = moves, "Group ID was misinterpreted as a folder mutation"
- Check CurrentRevision(id) = revision, "Folder adapter changed report revision"
- Check OpenScreen("frmLibrary"), "Return to Reports failed"
- Check Screen.ActiveForm.Name = "frmLibrary", "Reports did not receive focus"
- Check MoveFolderUI(), "Legacy move-folder adapter failed"
- Check DCount("*", "FolderMove") = moves, "Orphan callback moved a folder"
- Check OpenScreen("frmHelp"), "Legacy help alias failed"
- Check Screen.ActiveForm.Name = "frmUXHelp", "Legacy help opened wrong form"
- CloseHelp
- Check OpenScreen("frmLibrary"), "Reports return failed"
- Forms!frmLibrary!lstReports = id
- Check MoveReportUI(), "Legacy report-move callback failed"
- Check CurrentProject.AllForms("frmUXMoveGroup").IsLoaded, "Report move did not use group preview"
- DoCmd.Close acForm, "frmUXMoveGroup", acSaveNo
- For Each item In CurrentProject.AllForms
-  If item.Name = "frmHelp" Or item.Name = "frmUXReview" Or item.Name = "frmReviewComments" Or item.Name = "frmChecklist" Or item.Name = "frmUXNoteComposer" Or item.Name = "frmBulkFolders" Then hasLegacy = True
- Next
- Check Not hasLegacy, "Retired standalone form still installed"
- DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
- Forms!frmEditor!txtOfficialName = "LEGACY, SAVED"
- Check OpenScreen("frmLibrary"), "Legacy main-menu entry did not leave report safely"
- Check Not CurrentProject.AllForms("frmEditor").IsLoaded, "Legacy route left old editor open"
- Check DLookup("OfficialName", "Report", "ReportID=" & id) = "LEGACY, SAVED", "Legacy route lost pending report values"
- Check DCount("*", "FolderMove") = moves, "Navigation changed folder history"
  other = CommitDraft(0, "EVAL", "Batch fixture", "SYNTHETIC SECOND", Null, Null, "")
  selection = CStr(id) & "," & CStr(other): stamp = FolderBatchStamp(selection)
  before = DCount("*", "FolderMove")
@@ -75,7 +43,7 @@ Public Function TestBuildCleanup() As String
  DoCmd.OpenForm "frmOperations": Forms!frmOperations!lstOperations = operation: OperationDetails
  Check InStr(Forms!frmOperations!txtOutcome, "Started or interrupted") > 0, "Interrupted operation not explained"
  DoCmd.Close acForm, "frmOperations", acSaveNo
- TestBuildCleanup = "PASS: " & checks & " build cleanup, folder-history and guarded legacy-route checks": Exit Function
+ TestBuildCleanup = "PASS: " & checks & " build cleanup and folder-history checks": Exit Function
 Failed:
  TestBuildCleanup = "FAIL after " & checks & ": " & Err.Number & " " & Err.Description
 End Function

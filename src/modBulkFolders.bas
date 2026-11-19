@@ -122,19 +122,9 @@ Failed:
     On Error GoTo 0
     SwiftRaise swiftPrimary
 End Function
-Public Function LoadBulkFolders() As Boolean
-    'Retired UI callbacks preserve safe navigation without changing folder data.
-    LoadBulkFolders = UXNavigate("frmLibrary")
-End Function
 Public Function BulkFolderPath(ByVal folderID As Long) As String
     If displayFolders Is Nothing Then Set displayFolders = FolderPathSnapshot()
     BulkFolderPath = FolderPathFromSnapshot(folderID, displayFolders)
-End Function
-Public Function PreviewFolderBatchUI() As Boolean
-    PreviewFolderBatchUI = UXNavigate("frmLibrary")
-End Function
-Public Function ApplyFolderBatchUI() As Boolean
-    ApplyFolderBatchUI = UXNavigate("frmLibrary")
 End Function
 Public Function UndoFolderBatchUI() As Boolean
     On Error GoTo Failed

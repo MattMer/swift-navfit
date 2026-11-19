@@ -142,9 +142,6 @@ Public Function TestNavigation() As String
   Check OpenScreen(CStr(target)), "Compatibility tool route failed"
   Check Forms!frmEditor!txtTitle = "Pending alias value" And CurrentRevision(report) = rev, "Tool route saved/lost pending edits"
  Next
- Check OpenScreen("frmHelp"), "Help alias failed"
- Check Forms!frmEditor!txtTitle = "Pending alias value", "Help changed report buffer"
- DoCmd.Close acForm, "frmUXHelp", acSaveNo
  Forms!frmEditor!txtStart = "Invalid pending date"
  Check UXNavigate("frmLibrary"), "Checkpointed invalid draft could not navigate"
  Check Not CurrentProject.AllForms("frmEditor").IsLoaded And CurrentRevision(report) = rev, "Invalid navigation committed a revision or kept editor open"

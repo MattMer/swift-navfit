@@ -86,12 +86,3 @@ Private Function DemoReportIssues(ByVal title As String) As Long
  Loop
  r.Close
 End Function
-Public Function DemoValidationSummary() As String
- Dim title As Variant, groupID As Long, findings As Collection, text As String
- For Each title In Array("DEMO - Clean reports (0 report issues)", "DEMO - Practice corrections (3 report issues)")
-  groupID = DLookup("GroupID", "SummaryGroup", "Title=" & QuoteSQL(CStr(title)))
-  Set findings = ValidateLiveGroup(groupID)
-  text = text & title & ": " & DemoReportIssues(CStr(title)) & " member issues; " & findings.Count & " total findings" & vbCrLf
- Next
- DemoValidationSummary = text
-End Function

@@ -47,7 +47,7 @@ Development source (*generated*):
 | VBA modules / forms | 127 / 77 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 124 / 124 |
+| Test cases / VBA test harnesses | 120 / 120 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use

@@ -275,7 +275,7 @@ For M02 preview changes, use the focused native runner before the final integrat
 build, then repeat against the unchanged final artifact:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\verified-schema29-blank.accdb" -PDFPath "D:\path\synthetic-filled-eval.pdf"
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -PDFPath "D:\path\synthetic-filled-eval.pdf"
 ```
 
 `-InstallSource` installs changed services on an existing schema-30-or-newer
@@ -288,9 +288,7 @@ hashes. The classic VBE error dialog has no UI Automation Invoke pattern; a boun
 supervisor recognizes only the literal synthetic error on the owned PID/start time
 and sends one End shortcut. No arbitrary dialogs, user sessions, C#/Win32 helper,
 new framework or persistent background service is used. Missing/unexpected UI
-must not be counted as unhandled-error coverage. The optional legacy proof uses
-an actual schema-29 source and the production Settings import; it does not imply
-that all historical schemas were retested. Inspect Resume/Cancel placement and
+must not be counted as unhandled-error coverage. Inspect Resume/Cancel placement and
 binding on all three wizard forms. Saved staging lives inside the protected
 workspace; Cancel targets only the current contributor's preview, not source files.
 The optional `-PDFPath` is a supported synthetic filled EVAL input (such as an
@@ -322,27 +320,6 @@ the full wizard run while retaining real VBA reset, restart and migration checks
 Use it when another attended Access session is open; its receipt explicitly records
 the skipped unhandled-error proof. The default still requires the supervised error.
 
-### Batched read verification (M03)
-
-The batched-read case runs when `-BaselinePath` names a build from before the change. Use [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for native output,
-guard and performance proof before the final fresh build, then repeat without
-`-InstallSource` against the exact final artifact:
-
-```powershell
-powershell.exe -NoProfile -File scripts/test-workspace-read-performance.ps1 -BuildPath "D:\path\candidate-blank.accdb" -BaselinePath "D:\path\verified-before-change-blank.accdb" -Size 500 -Trials 5
-```
-
-It owns sequential disposable copies, seeds synthetic data, copies it through the
-production read-only-source importer, compares complete cell values/order, and
-measures medians with `Stopwatch`. Guard/fault tests run on a separate disposable
-copy after measurements. CSV timings survive a later assertion failure; only a
-fully passing run gets `verification.json`. Both supplied artifacts remain hashed
-and unchanged. `-InstallSource` is only for focused development on disposable
-copies; it cannot establish a fresh integrated artifact. Optional `-DataSourcePath`
-reuses an unchanged synthetic benchmark fixture through production import, avoiding
-repeated seeding; its command marker/row counts and source hash are checked. Do
-not use a populated operational workspace as benchmark data.
-
 Run [test-workspace-read-performance.ps1](../scripts/test-workspace-read-performance.ps1) for Reports
 prepared-row equivalence, sorting/filtering and null/NOB/missing-field cases,
 [test-work-review.ps1](../scripts/test-work-review.ps1) `-Tier extended` for My Work behavior, and
@@ -372,7 +349,7 @@ Use the existing major-workflow runner before the integrated build, then repeat
 against the exact final blank without `-InstallSource`:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\schema31-blank.accdb" -OlderPath "D:\path\schema30-blank.accdb"
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended
 powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
@@ -461,19 +438,15 @@ runner supports named parameters through built-in CLIXML for the array-valued
 | `test-summary-groups` | extended: test-group-correctness, test-group-exit, test-live-members, test-native-group-discovery, test-ux-group-lifecycle, test-ux-group-reads, test-ux-member-grid, test-ux-native-groups | `-TaskOrders -InstallSource -GroupListBenchmark -BaselinePath -Groups -Members -Trials -DataSourcePath -AdversarialPreviews` |
 | `test-reporting-senior-accounting` | extended: test-reporting-senior, test-rs-directory, test-rs-completion | none |
 | `test-report-field-persistence` | extended: test-administration, test-assessment, test-decision-details, test-service-details | `-PersistenceOnly` (decision details only; registry supplies it) |
-| `test-field-defaults` | extended: test-recursive-defaults, verify-ux-immediate-defaults | `-BlankPath -DemoPath -Candidate -VerifiedAssertions -VerifiedSuites` (immediate-defaults verification only) |
+| `test-field-defaults` | extended: test-recursive-defaults | none |
 | `test-report-validation` | extended: test-rules, test-readiness, test-ux-validation, verify-validation-policy | `-InstallSource -InstructionPath -InstructionTextPath` |
-| `test-work-review` | core: test-ux-workflows. extended: core plus test-major, test-major-ui, test-ux-my-work, test-ux-work-inclusion, test-ux-work-refresh, test-wizard-state | `-ChiefComments -InstallSource -LegacyPath -OlderPath -PDFPath -CrossWorkflowOnly -ApplyFaultsOnly -SkipUnhandledFailure` |
+| `test-work-review` | core: test-ux-workflows. extended: core plus test-major, test-major-ui, test-ux-my-work, test-ux-work-inclusion, test-ux-work-refresh, test-wizard-state | `-ChiefComments -InstallSource -PDFPath -CrossWorkflowOnly -ApplyFaultsOnly -SkipUnhandledFailure` |
 
 Without the required optional inputs, suites print
 `SKIP: test-ux-group-directory-data needs -SourcePath -CandidatePath`,
-`SKIP: verify-ux-immediate-defaults needs -BlankPath -DemoPath`, or
 `SKIP: verify-validation-policy needs -InstructionPath`. Policy text uses the
 case's existing default unless `-InstructionTextPath` is supplied. Benchmark
-and legacy branches keep their original input handling. With `-LegacyPath` or
-`-OlderPath`, test-major requires imported relationships to match the current
-build's definitions. The immediate-defaults
-case retains its historical table/version assertions and receipt behavior.
+branches keep their original input handling.
 
 Directory release mode retains the original sequence: merge; history, batch,
 UX directory and report navigation; extended artifact verification; extended
@@ -561,7 +534,7 @@ source installation against the exact final blank:
 
 ```powershell
 powershell.exe -NoProfile -File scripts/cases/test-diagnostics-contracts.ps1 -BuildPath "D:\path\blank.accdb" -VerifyViews
-powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb" -LegacyPath "D:\path\verified-schema30-blank.accdb"
+powershell.exe -NoProfile -File scripts/test-traits.ps1 -BuildPath "D:\path\blank.accdb"
 ```
 
 The diagnostics runner owns disposable copies and tests original/cleanup error
@@ -579,9 +552,8 @@ native-property checker so no unhandled modal dialog is expected.
 The catalogue runner compares every trait/mark/title/description/source field,
 checks uniqueness/domains and missing-definition failure, and uses production
 migration to test populated transfer, retained catalogue versions, malformed
-source-column rejection and atomic conflict rejection. Optional `-LegacyPath` must be a real schema-30 blank; its
-copy receives synthetic data. Both originals remain hash-checked and unchanged.
-This does not claim all historical fixtures were retested. Run affected native
+source-column rejection and atomic conflict rejection. The supplied build remains
+hash-checked and unchanged. Run affected native
 save/recovery, trait, group, migration and navigation suites as well.
 
 Schema 31 includes seeded `TraitDefinition` reference data. Blank verification
@@ -761,7 +733,7 @@ copy; production upgrade remains fresh-build plus Settings & Help import.
 Retain the related focused gates:
 
 ```powershell
-powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -LegacyPath "D:\path\schema32-blank.accdb" -OlderPath "D:\path\schema31-blank.accdb" -ChiefComments
+powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -Tier extended -ChiefComments
 powershell.exe -NoProfile -File scripts/test-work-review.ps1 -BuildPath "D:\path\blank.accdb" -ChiefComments
 powershell.exe -NoProfile -File scripts/test-pdf-reading.ps1 -BuildPath "D:\path\blank.accdb" -FixturePath "D:\path\synthetic-xfa-fixtures"
 ```
@@ -918,7 +890,7 @@ aggregate failures with `Complete-SuiteRun`. Missing manual inputs print
 | `test-navfit-exchange` / extended | Extended: test-navfit-adapter, test-navfit-group-export, test-ux-navfit. Manual: verify-navfit-field-coverage. | `-InstallSource`; `-VerifyFieldCoverage` enables the manual case, optional `-OutputPath` selects its evidence output. |
 | `test-navfit-native-return` / manual | Manual: test-navfit-native-return, verify-navfit-native-roundtrip. | Return needs `-WorkspacePath -ReturnedPath -ReportID`, optional `-Marker -AlreadyApplied`. Comparison needs `-BeforePath -AfterPath -EvidencePath`. No BuildPath. Supply a disposable workspace: the unchanged return case edits it; suite hashes the returned file or comparison source. |
 | `test-pdf-reading` / extended | Extended: test-pdf-expanded, test-pdf-counseling-status. Manual: test-local-pdf. | `-FixturePath` is the expanded fixture directory (generated when absent); `-LocalFixturePath` is the local PDF file, passed to that case as FixturePath; `-InstallReader` goes only to local PDF. |
-| `test-pdf-output` / extended | Extended: test-pdf-output, test-o3-cells. Opt-in helper: test-pdf-target-computer. | `-InstallSource -ReusePresentation -MetricsOnly -ChiefProofOnly -ChiefFieldsOnly -ChiefCasesOnly` go to PDF output. `-TargetComputer` adds the target check; `-TargetComputerOnly` runs only it. `-FixtureDirectory -ReportPath` go only to the target check. |
+| `test-pdf-output` / extended | Extended: test-pdf-output. Opt-in helper: test-pdf-target-computer. | `-InstallSource -ReusePresentation -MetricsOnly -ChiefProofOnly -ChiefFieldsOnly -ChiefCasesOnly` go to PDF output. `-TargetComputer` adds the target check; `-TargetComputerOnly` runs only it. `-FixtureDirectory -ReportPath` go only to the target check. |
 | `test-workspace-migration` / release | Release: test-swift-data-import, test-workspace-upgrade, test-report-message-import, test-directory-merge-transfer. | `-Cases <case names>` selects cases (default all; pass one name with powershell.exe -File). Matrix: `-Schemas -CurrentSchemaPath -CurrentFixturesOnly -SkipKeptReleases -FixturePath`. Upgrade: `-Schema20Path -SourceWorkspacePath` (alias Schema21Path). Messages need `-DemoPath`; directory transfer needs `-SourcePath`. BuildPath is forwarded as TemplatePath/BlankPath where required. |
 | `test-import-engine` / extended | Default `-Tier extended`: test-bulk-workspace-import, test-engine-import. `-Tier release`: test-engine-verification only. | `-BaselinePath -DemoPath` go to bulk/engine import; `-SourcePath -SkipBaseline` to engine import; `-SourcePath -InstallSource -CommitFaults` to verification. Existing defaults and the CommitFaults source requirement remain. |
 | `test-external-import` / extended | Extended: test-import-commit, test-import-review, test-import-rank, test-pdf-import, test-navfit-upgrade, test-ux-import-flow, test-malformed-imports. Manual: test-ruad-import. | `-SourcePath` goes to review; `-SkipPDF` to UX import; RUAD needs `-SamplePath`. |
@@ -952,8 +924,6 @@ Extended-only suites run all build-only cases: `test-workspace-resources`
 (optional `-DisplayFaultOnly`), `test-workspace-presentation` (optional
 `-UseWorkingSource`), `test-workspace-read-performance`,
 `test-report-field-tools` and `test-report-navigation`.
-Read-performance runs the batched-read case only with `-BaselinePath`; it forwards
-`-InstallSource`, `-Size` (500), `-Trials` (5), and `-DataSourcePath` there.
 Each missing prerequisite prints SKIP, not a case PASS. Focused manual commands
 may use `scripts/cases/<case>.ps1`; `test-contributor-context.ps1` remains a
 shared library in scripts/.

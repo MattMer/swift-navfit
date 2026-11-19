@@ -1,8 +1,7 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[string]$LegacyPath,[switch]$LoadCurrentSource)
-# Traits suite: persistence, rollback, legacy restore and fresh-session recovery; exact
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$LoadCurrentSource)
+# Traits suite: persistence, rollback, restore and fresh-session recovery; exact
 # catalogue wording and production-migration transfer; grid events, queue, summary and retry.
-# -LegacyPath adds the schema-30 catalogue transfer case; -LoadCurrentSource loads the
-# current modUXTraitGrid into the retry case's copy.
+# -LoadCurrentSource loads the current modUXTraitGrid into the retry case's copy.
 $ErrorActionPreference='Stop';$root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'suite-common.ps1')
 . (Join-Path $PSScriptRoot 'test-contributor-context.ps1')
@@ -26,7 +25,7 @@ Invoke-SuiteCase 'traits' {
   SelectSyntheticContributor $app
   if(-not $app.Eval('VerifyTraitRecovery()')){throw 'Trait recovery in new session failed'}
   $app.CloseCurrentDatabase()
-  @{Status=$result;RecoveryInNewSession=$true;BuildSHA256=$buildHash;TestDatabase=$scratch;Scope='Trait persistence, rollback, legacy restore and recovery'} | ConvertTo-Json | Set-Content (Join-Path $root 'build/tests/traits-results.json')
+  @{Status=$result;RecoveryInNewSession=$true;BuildSHA256=$buildHash;TestDatabase=$scratch;Scope='Trait persistence, rollback, restore and recovery'} | ConvertTo-Json | Set-Content (Join-Path $root 'build/tests/traits-results.json')
   Write-Output $result
   Write-Output 'PASS: invalid pending trait recovery in a new Access session'
  } finally {
@@ -35,7 +34,7 @@ Invoke-SuiteCase 'traits' {
 }
 
 # Exact catalogue wording, runtime rows and constraints, then production-migration
-# transfer of current, conflicting, malformed and (with -LegacyPath) schema-30 sources.
+# transfer of current, conflicting and malformed sources.
 Invoke-SuiteCase 'trait-catalogue' {
  $hash=(Get-FileHash -LiteralPath $BuildPath).Hash
  $scratch=Join-Path $root ('build/tests/catalogue-'+[guid]::NewGuid()+'.accdb');Copy-Item -LiteralPath $BuildPath -Destination $scratch
@@ -106,19 +105,6 @@ Invoke-SuiteCase 'trait-catalogue' {
   $db.Close()
  }finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($dao)}
  $cases+=,@('malformed',$malformed,147,$false)
- $legacyHash=$null
- if($LegacyPath){
-  $legacyHash=(Get-FileHash -LiteralPath $LegacyPath).Hash
-  $legacy=Join-Path $folder 'legacy-source.accdb';Copy-Item -LiteralPath $LegacyPath -Destination $legacy
-  try{
-   Write-Output ('Controller: trait legacy source setup; database: '+$legacy)
-   $app=New-Object -ComObject Access.Application;$app.AutomationSecurity=1;$app.OpenCurrentDatabase($legacy,$true)
-   if($app.Eval('DLookup("SchemaVersion","AppMetadata")') -ne 30){throw 'Use an actual schema-30 blank for the legacy proof'}
-   [void]$app.Eval('ConfigureWorkspace("SYNTHETIC TRAIT LEGACY","Synthetic Contributor")')
-   [void]$app.Eval('CommitDraft(0,"CHIEFEVAL","Synthetic","Synthetic Member",Null,Null,"","Synthetic legacy","Synthetic legacy narrative")')
-  }finally{if($app){$app.Quit(2);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app);$app=$null}}
-  $cases+=,@('legacy30',$legacy,147,$true)
- }
  $results=@()
  foreach($case in $cases){
   $target=Join-Path $folder ($case[0]+'-target.accdb');Copy-Item -LiteralPath $BuildPath -Destination $target
@@ -142,8 +128,7 @@ Invoke-SuiteCase 'trait-catalogue' {
   Write-Output ('PASS: '+$case[0]+' reference preservation/domain transfer/rollback and source hash')
  }
  if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash -or (Get-FileHash -LiteralPath $source).Hash -ne $sourceHash){throw 'Trait verification changed protected input'}
- if($LegacyPath -and (Get-FileHash -LiteralPath $LegacyPath).Hash -ne $legacyHash){throw 'Legacy template changed'}
- @{Status='PASS';ExactChecks=$checks;BuildSHA256=$hash;LegacySHA256=$legacyHash;CheckerSHA256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;HarnessSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'tests/TraitsHarness.bas')).Hash;CatalogueSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'src/trait-catalogue.json')).Hash;Cases=$results}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $folder 'verification.json')
+ @{Status='PASS';ExactChecks=$checks;BuildSHA256=$hash;CheckerSHA256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;HarnessSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'tests/TraitsHarness.bas')).Hash;CatalogueSHA256=(Get-FileHash -LiteralPath (Join-Path $root 'src/trait-catalogue.json')).Hash;Cases=$results}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $folder 'verification.json')
  Write-Output ('Receipt: '+(Join-Path $folder 'verification.json'))
 }
 

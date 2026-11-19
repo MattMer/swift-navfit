@@ -6,7 +6,7 @@ Private Sub Check(ByVal ok As Boolean, ByVal message As String)
  n = n + 1
 End Sub
 Public Function TestContextHelp() As String
- Dim id As Long, before As Long, f As Access.Form, name As Variant, x As Long, y As Long, w As Long, item As AccessObject, hasLegacy As Boolean
+ Dim id As Long, before As Long, f As Access.Form, name As Variant, x As Long, y As Long, w As Long
  On Error GoTo Failed
  ConfigureWorkspace "SYNTHETIC CONTEXT HELP", "Tester"
  id = CommitDraft(0, "EVAL", "Help test", "SYNTHETIC, MEMBER", #1/1/2026#, #9/30/2026#, "")
@@ -24,13 +24,6 @@ Public Function TestContextHelp() As String
  Check UXWindowHelpLayout("frmEditor"), "Editor help placement failed"
  Check f!cmdWindowHelp.Top = 150 And f!cmdWindowHelp.Left + f!cmdWindowHelp.Width <= f.InsideWidth, "Help not at top right"
  Check f!uxFieldSurface.Left = x And f!uxFieldSurface.Top = y And f!uxFieldSurface.Width = w, "Help moved report fields"
- Check ShowHelp("Saving") And Forms!frmUXHelp!lstTopics = 1, "Legacy save help did not consolidate"
- Check ShowHelp("Folders") And Forms!frmUXHelp!lstTopics = 2, "Legacy folder help did not consolidate"
- Check OpenScreen("frmHelp"), "Bare legacy route failed"
- For Each item In CurrentProject.AllForms
-  If item.Name = "frmHelp" Then hasLegacy = True
- Next
- Check Not hasLegacy And Screen.ActiveForm.Name = "frmUXHelp", "Legacy help window retained or wrong guide opened"
  CloseHelp
  Check EditorHasPending(), "Closing help discarded edits"
  Check UXLeaveEditor("Discard"), "Test cleanup failed"

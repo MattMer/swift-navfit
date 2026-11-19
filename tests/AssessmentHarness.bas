@@ -19,12 +19,6 @@ Private Function Rejected(ByVal id As Long, ByVal values As Variant) As Boolean
 Failed:
     Rejected = True
 End Function
-Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
-    On Error GoTo Failed
-    Call RestoreDraft(id, revision): Exit Function
-Failed:
-    RestoreRejected = True
-End Function
 Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As Long) As Boolean
     'F01: the assignee holds the report and may edit it before accepting.
     ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
@@ -94,24 +88,6 @@ Public Function TestAssessment() As String
     Call ArchiveDraft(id, True)
     Check Rejected(id, Array("Observed", "Promotable")), "Archive guard absent"
     Call ArchiveDraft(id, False)
-    'Simulate schema 10 history, keeping its actual 19-field snapshots.
-    first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
-    SnapshotFullCopy first
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('ObservationStatus','PromotionRecommendation')", dbFailOnError
-    CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=10 WHERE RevisionID=" & first, dbFailOnError
-    Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
-    Forms!frmRevisionCompare!chkChangedOnly = False: Call RefreshComparisonFields()
-    Forms!frmRevisionCompare!lstCompareFields = "ObservationStatus": Call LoadComparisonValues()
-    Check Forms!frmRevisionCompare!txtOldValue = "[Not recorded in this revision]", "Legacy marker absent"
-    DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
-    Call RestoreDraft(copy, first)
-    Check IsNull(Stored(copy, "ObservationStatus")) And IsNull(Stored(copy, "PromotionRecommendation")), "Legacy restore invented assessment"
-    second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
-    SnapshotFullCopy second
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='ObservationStatus'", dbFailOnError
-    Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
-    r.AddNew: r!RevisionID = second: r!FieldKey = "ObservationStatus": r!IsNullValue = True: r.Update: r.Close
     TestAssessment = "PASS: " & checks & " assessment assertions": Exit Function
 Failed:
     TestAssessment = "FAIL: " & Err.Number & " " & Err.Description

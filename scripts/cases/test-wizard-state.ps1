@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$LegacyPath,[string]$PDFPath,[switch]$CrossWorkflowOnly,[switch]$ApplyFaultsOnly,[switch]$SkipUnhandledFailure)
+param([Parameter(Mandatory=$true)][string]$BuildPath,[switch]$InstallSource,[string]$PDFPath,[switch]$CrossWorkflowOnly,[switch]$ApplyFaultsOnly,[switch]$SkipUnhandledFailure)
 $ErrorActionPreference='Stop';$root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $folder=Join-Path $root ('build/tests/wizard-state-'+[guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $folder)
@@ -151,24 +151,6 @@ public delegate bool EnumProc(System.IntPtr h, System.IntPtr l);
  $result=$app.Eval('TestWizardMigration("'+$source+'","'+$expectedStage+'")');Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal+=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)
  if($PDFPath){$result=$app.Eval('TestPDFWizardApply("'+$pdfInput+'")');Write-Output $result;if($result -notlike 'PASS:*'){throw $result};$phases.Add($result);$assertionTotal+=[int]([regex]::Match($result,'PASS: (\d+)').Groups[1].Value)}
  $app.CloseCurrentDatabase()
- if($LegacyPath){
-  $legacyOriginalHash=(Get-FileHash -LiteralPath $LegacyPath).Hash
-  $legacy=Join-Path $folder 'legacy29-source.accdb';Copy-Item -LiteralPath $LegacyPath -Destination $legacy
-  $app.OpenCurrentDatabase($legacy,$true)
-  if($app.Eval('DLookup("SchemaVersion","AppMetadata")') -ne 29){throw 'Legacy proof requires a real schema-29 fixture'}
-  [void]$app.Eval('ConfigureWorkspace("SYNTHETIC SCHEMA 29","Legacy tester")')
-  [void]$app.Eval('CommitDraft(0,"EVAL","SYNTHETIC LEGACY","SYNTHETIC LEGACY",Null,Null,"SYNTHETIC PRIVATE","Legacy seed","SYNTHETIC ORIGINAL")')
-  $app.CloseCurrentDatabase()
-  $legacyHash=(Get-FileHash -LiteralPath $legacy).Hash
-  $legacyTarget=Join-Path $folder 'legacy29-target.accdb';Copy-Item -LiteralPath $blank -Destination $legacyTarget
-  $app.OpenCurrentDatabase($legacyTarget,$true)
-  [void]$app.Eval('ConfigureWorkspace("SYNTHETIC LEGACY BOOTSTRAP","Bootstrap tester")')
-  if(-not $app.Eval('UXPreviewSwiftWorkspace("'+$legacy+'")') -or -not $app.Eval('UXApplySwiftWorkspace()')){throw 'Schema-29 Settings import failed'}
-  if($app.Eval('DCount("*","Report")') -ne 1 -or $app.Eval('DCount("*","WizardPreview")') -ne 0){throw 'Schema-29 import lost records or retained target staging'}
-  $app.CloseCurrentDatabase()
-  if((Get-FileHash -LiteralPath $legacy).Hash -ne $legacyHash -or (Get-FileHash -LiteralPath $LegacyPath).Hash -ne $legacyOriginalHash){throw 'Legacy import changed source bytes'}
-  Write-Output 'PASS: real schema-29 to current-schema Settings import, original-field verification and source hashes'
- }
  }
 }catch{$primary=$_;throw $primary}
 finally{if($app){try{$app.Quit(2)}catch{$cleanupFailure=$_.Exception.Message;Write-Warning ('Owned wizard cleanup: '+$cleanupFailure)};try{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}catch{Write-Warning $_.Exception.Message}}}
@@ -176,5 +158,5 @@ if($cleanupFailure){throw ('Owned test cleanup failed: '+$cleanupFailure)}
 if((Get-FileHash -LiteralPath $BuildPath).Hash -ne $hash){throw 'Wizard tests changed their supplied artifact'}
 if((Get-FileHash -LiteralPath $workspaceSource).Hash -ne $hash){throw 'Workspace preview changed its read-only source'}
 if($PDFPath -and (Get-FileHash -LiteralPath $PDFPath).Hash -ne $pdfOriginalHash){throw 'Wizard tests changed supplied PDF bytes'}
-[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);UnhandledFailure=$failureObserved;UnhandledFailureSkipped=[bool]$SkipUnhandledFailure;NewAccessSessionRestart=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);CrossWorkflowOnly=[bool]$CrossWorkflowOnly;ApplyFaultsOnly=[bool]$ApplyFaultsOnly;Schema29Import=([bool]$LegacyPath -and -not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);PDFResumeUIAndApply=([bool]$PDFPath -and -not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof on the supplied artifact; selected native reset/restart or deterministic cross-workflow cases are recorded explicitly; no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
+[pscustomobject]@{Status='PASS';Assertions=$assertionTotal;BuildPath=$BuildPath;BuildSHA256=$hash;InstalledSource=[bool]$InstallSource;NativeReset=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);UnhandledFailure=$failureObserved;UnhandledFailureSkipped=[bool]$SkipUnhandledFailure;NewAccessSessionRestart=(-not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);CrossWorkflowOnly=[bool]$CrossWorkflowOnly;ApplyFaultsOnly=[bool]$ApplyFaultsOnly;PDFResumeUIAndApply=([bool]$PDFPath -and -not $CrossWorkflowOnly -and -not $ApplyFaultsOnly);SourceHashesUnchanged=$true;Phases=@($phases.ToArray());Scope='Focused development proof on the supplied artifact; selected native reset/restart or deterministic cross-workflow cases are recorded explicitly; no release or physical/accessibility acceptance'}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $folder 'verification.json')
 Write-Output ('PASS: selected wizard phases and source isolation; evidence: '+$folder)

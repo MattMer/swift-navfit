@@ -120,7 +120,7 @@ try {
     [void]$app.Eval('SmokeEditorEntries()')
     Assert ($app.Eval('SaveEditor()')) 'Editor save action succeeds'
     Assert ($app.Eval('Left(Forms!frmEditor!lblSaved.Caption,6)="Saved "')) 'Editor displays save confirmation'
-    [void]$app.Eval('ShowHelp("Saving")')
+    [void]$app.Eval('UXWindowHelp("frmEditor")')
     Assert ($app.Eval('Screen.ActiveForm.Name') -eq 'frmUXHelp') 'Help becomes the active form'
     Assert ($app.Eval('InStr(Forms!frmUXHelp!txtGuide,"Save draft atomically saves the current report") > 0')) 'Help contains topic-specific guidance'
     [void]$app.Eval('CloseHelp()')

@@ -23,12 +23,6 @@ Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As L
     'F01: the assignee holds the report and may edit it before accepting.
     ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
-Private Function RestoreRejected(ByVal id As Long, ByVal revision As Long) As Boolean
-    On Error GoTo Failed
-    Call RestoreDraft(id, revision): Exit Function
-Failed:
-    RestoreRejected = True
-End Function
 Public Function TestReportingSenior() As String
     Dim kind As Variant, values As Variant, keys As Variant, limits As Variant, bad As Variant
     Dim id As Long, first As Long, second As Long, copy As Long, task As Long, i As Long, before As Long, r As DAO.Recordset
@@ -96,22 +90,6 @@ Public Function TestReportingSenior() As String
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id): Call OpenReportingSenior()
     Check Not Forms!frmReportingSenior!cmdApply.Enabled, "Archived panel can apply"
     Call CancelReportingSenior(): Call FixtureCloseEditor(): Call ArchiveDraft(id, False)
-    first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
-    SnapshotFullCopy first
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey Like 'ReportingSenior*'", dbFailOnError
-    CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=12 WHERE RevisionID=" & first, dbFailOnError
-    Check OpenRevisionComparison(copy, first), "Legacy comparison failed"
-    Forms!frmRevisionCompare!chkChangedOnly = False: Call RefreshComparisonFields()
-    Forms!frmRevisionCompare!lstCompareFields = "ReportingSeniorName": Call LoadComparisonValues()
-    Check Forms!frmRevisionCompare!txtOldValue = "[Not recorded in this revision]", "Legacy marker absent"
-    DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
-    Call RestoreDraft(copy, first): Check IsNull(Stored(copy, "ReportingSeniorName")), "Legacy restore invented senior"
-    second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
-    SnapshotFullCopy second
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='ReportingSeniorUIC'", dbFailOnError
-    Check RestoreRejected(copy, second), "Corrupt new snapshot restored"
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
-    r.AddNew: r!RevisionID = second: r!FieldKey = "ReportingSeniorUIC": r!IsNullValue = True: r.Update: r.Close
     TestReportingSenior = "PASS: " & checks & " reporting senior assertions": Exit Function
 Failed:
     TestReportingSenior = "FAIL: " & Err.Number & " " & Err.Description

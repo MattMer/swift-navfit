@@ -146,29 +146,6 @@ Failed:
     Forms!frmLibrary!lblCount.Caption = Err.Description
 End Function
 
-Public Function AddFolderUI() As Boolean
-    'Orphan legacy callback: never interpret a summary-group ID as a folder ID.
-    AddFolderUI = UXNavigate("frmBulkFolders")
-End Function
-Public Function MoveReportUI() As Boolean
-    MoveReportUI = UXChooseReportGroup()
-End Function
-Public Function MoveFolderUI() As Boolean
-    MoveFolderUI = UXNavigate("frmBulkFolders")
-End Function
-
-Public Function ShowHelp(ByVal topic As String) As Boolean
-    Dim id As Long
-    Select Case topic
-        Case "Saving": id = 1
-        Case "Folders": id = 2
-        Case Else: id = 0
-    End Select
-    DoCmd.OpenForm "frmUXHelp"
-    Forms!frmUXHelp!lstTopics = id
-    ShowHelp = UXHelpSelected()
-End Function
-
 Public Function CloseHelp() As Boolean
     If CurrentProject.AllForms("frmUXHelp").IsLoaded Then DoCmd.Close acForm, "frmUXHelp", acSaveNo
     CloseHelp = True

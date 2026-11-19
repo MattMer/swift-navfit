@@ -351,12 +351,11 @@ End Function
 ' Leave contributor/report editors safely before opening the requested workspace.
 Public Function UXNavigate(ByVal target As String) As Boolean
     On Error GoTo Failed
-    If target = "frmBulkFolders" Then target = "frmLibrary"
     If Not HasActiveContributor() Then
         UXNavigate = ShowContributorStartup(): Exit Function
     End If
     If UXLegacyTool(target) <> "" Then UXNavigate = UXLegacyToolOpen(UXLegacyTool(target)): Exit Function
-    If target = "frmHelp" Or target = "frmUXHelp" Then
+    If target = "frmUXHelp" Then
         DoCmd.OpenForm "frmUXHelp"
         UXNavigate = True: Exit Function
     End If

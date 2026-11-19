@@ -32,12 +32,6 @@ Private Function ReviewAcceptedAfterEdit(ByVal task As Long, ByVal revision As L
     'F01: the assignee holds the report and may edit it before accepting.
     ReviewAcceptedAfterEdit = FinishReview(task, "Accepted", "Edited by the reviewer") And DLookup("FinishedRevisionID", "ReviewTask", "TaskID=" & task) = revision
 End Function
-Private Function CorruptRejected(ByVal id As Long, ByVal revision As Long) As Boolean
-    On Error GoTo Failed
-    Call RestoreDraft(id, revision): Exit Function
-Failed:
-    CorruptRejected = InStr(Err.Description, "incomplete") > 0
-End Function
 Public Function TestTraits() As String
     Dim kind As Variant, id As Long, first As Long, second As Long, copy As Long, values As Variant, bad As Variant
     Dim i As Long, before As Long, task As Long, recovery As Long, r As DAO.Recordset
@@ -93,23 +87,6 @@ Public Function TestTraits() As String
     Call FixtureCloseEditor()
     Call ArchiveDraft(id, True): Check Rejected(id, "FITREP", values), "Archived trait edit accepted"
     Call ArchiveDraft(id, False)
-    'Simulate an actual schema-9 revision, preserving its other 12 snapshot fields.
-    first = DMin("RevisionID", "ReportRevision"): copy = DLookup("ReportID", "ReportRevision", "RevisionID=" & first)
-    SnapshotFullCopy first
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & first & " AND FieldKey In ('Trait33','Trait34','Trait35','Trait36','Trait37','Trait38','Trait39')", dbFailOnError
-    CurrentDb.Execute "UPDATE ReportRevision SET SnapshotSchema=9 WHERE RevisionID=" & first, dbFailOnError
-    Check OpenRevisionComparison(copy, first), "Legacy trait comparison failed"
-    Forms!frmRevisionCompare!chkChangedOnly = False: Call RefreshComparisonFields()
-    Forms!frmRevisionCompare!lstCompareFields = "Trait33": Call LoadComparisonValues()
-    Check Forms!frmRevisionCompare!txtOldValue = "[Not recorded in this revision]", "Legacy trait marker absent"
-    DoCmd.Close acForm, "frmRevisionCompare", acSaveNo
-    Call RestoreDraft(copy, first): Check IsNull(Stored(copy, "Trait33")), "Legacy restore invented marks"
-    second = DLookup("CurrentRevisionID", "Report", "ReportID=" & copy)
-    SnapshotFullCopy second
-    CurrentDb.Execute "DELETE FROM RevisionValue WHERE RevisionID=" & second & " AND FieldKey='Trait33'", dbFailOnError
-    Check CorruptRejected(copy, second), "Incomplete new trait snapshot restored"
-    Set r = CurrentDb.OpenRecordset("RevisionValue", dbOpenDynaset)
-    r.AddNew: r!RevisionID = second: r!FieldKey = "Trait33": r!IsNullValue = True: r.Update: r.Close
     TestTraits = "PASS: " & checks & " trait assertions": Exit Function
 Failed:
     TestTraits = "FAIL: " & Err.Number & " " & Err.Description

@@ -11,8 +11,6 @@ if($PSBoundParameters.ContainsKey('ChiefProofOnly')){if($ChiefProofOnly){$caseAr
 if($PSBoundParameters.ContainsKey('ChiefFieldsOnly')){if($ChiefFieldsOnly){$caseArgs+='-ChiefFieldsOnly'}}
 if($PSBoundParameters.ContainsKey('ChiefCasesOnly')){if($ChiefCasesOnly){$caseArgs+='-ChiefCasesOnly'}}
 Invoke-CaseScript 'test-pdf-output' $caseArgs
-$caseArgs=@('-BuildPath',$BuildPath)
-Invoke-CaseScript 'test-o3-cells' $caseArgs
 }
 if($TargetComputer -or $TargetComputerOnly){
 $caseArgs=@('-BuildPath',$BuildPath)

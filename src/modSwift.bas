@@ -454,12 +454,11 @@ End Function
 
 Public Function OpenScreen(ByVal formName As String) As Boolean
     On Error GoTo Failed
-    If formName = "frmHelp" Then formName = "frmUXHelp"
     If Not HasActiveContributor() Then
         OpenScreen = ShowContributorStartup(): Exit Function
     End If
     If UXLegacyTool(formName) <> "" Then OpenScreen = UXLegacyToolOpen(UXLegacyTool(formName)): Exit Function
-    If UXIsWorkspace(formName) Or formName = "frmBulkFolders" Or formName = "frmUXHelp" Then OpenScreen = UXNavigate(formName): Exit Function
+    If UXIsWorkspace(formName) Or formName = "frmUXHelp" Then OpenScreen = UXNavigate(formName): Exit Function
     If formName = "frmSnippets" Then UXResetSnippetOrigin
     DoCmd.OpenForm formName
     Forms(formName).SetFocus
