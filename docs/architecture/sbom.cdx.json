@@ -6,7 +6,7 @@
                      "component":  {
                                        "type":  "application",
                                        "name":  "Swift NAVFIT",
-                                       "version":  "0.59.0-beta.1",
+                                       "version":  "0.59.0-dev",
                                        "licenses":  [
                                                         {
                                                             "license":  {
