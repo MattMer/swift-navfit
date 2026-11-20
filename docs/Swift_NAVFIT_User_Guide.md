@@ -1,8 +1,8 @@
 # Swift NAVFIT User Guide
 
-Version 3.0 | 16 November 2026
+Version 3.1 | 19 November 2026
 
-For Swift NAVFIT 0.58.0 | schema 51
+For Swift NAVFIT 0.59.0 | schema 51
 
 ## Draft, review and keep Navy performance evaluations
 
@@ -171,10 +171,11 @@ One person can do several jobs.
 - Permission to run the application's code (VBA). Your organization's Access trust settings control this.
 - A folder your command approves for personal information, that is not synced and that you can write to.
 
-A release has three files:
+A release has these files:
 
 | File | What it is |
 | --- | --- |
+| `Swift_NAVFIT_<version>.zip` | The three files below and this guide in one download. Save everything in it to one folder. |
 | `Swift_NAVFIT_<version>.accdb` | The **application**. Open it to work. The first time, it makes your data file. |
 | `Swift_NAVFIT_Demo_<version>.accdb` | The **Demo** application, for practice. |
 | `Swift_NAVFIT_Demo_data_<version>.accdb` | The Demo's data file, with made-up data. Keep it in the same folder as the Demo application. |
@@ -1385,7 +1386,7 @@ Note the version, what you did, the report or group, and the full message. Use *
 
 ## 21.1 Scope
 
-This guide describes Swift NAVFIT 0.58.0, schema 51. Older releases have different controls. Screenshots show the Demo's made-up data.
+This guide describes Swift NAVFIT 0.59.0, schema 51. Older releases have different controls. Screenshots show the Demo's made-up data.
 
 This guide is not a Navy instruction. Use BUPERSINST 1610.10H and your command's procedures for who gets a report, what it must say, signatures and submission.
 
@@ -1399,7 +1400,7 @@ Swift NAVFIT is an independent development application. Its automated tests cove
 | NAVADMIN 132/26 | E-9 and CWO5 periodic reports. |
 | eNavFit User Guide, Version 1.0, 10 December 2021 | A model for a training manual's parts. Its online roles and submission are not Swift NAVFIT features. |
 | U.S. Consumer Product Safety Commission, *Manufacturer's Guide to Developing Consumer Product Instructions*, October 2003 | Plain language, numbered steps, notices, layout and structure. |
-| Swift NAVFIT 0.58.0 source | Button captions, messages and behavior. |
+| Swift NAVFIT 0.59.0 source | Button captions, messages and behavior. |
 | [Architecture description](architecture/Swift_NAVFIT_Architecture_Description.md) | Interfaces, data and limits. |
 
 ## 21.3 Document history
@@ -1413,5 +1414,6 @@ Swift NAVFIT is an independent development application. Its automated tests cove
 | 2.1 | 15 November 2026 | 0.57.0 | ISIC summary letter profile in NAVFIT98A export. |
 | 2.2 | 16 November 2026 | 0.58.0 | Possible duplicate Sailors, roster refresh defaults, PDF import of YYMMMDD dates. |
 | 3.0 | 16 November 2026 | 0.58.0 | Reorganized by task; written for readers new to evaluations; plain-language procedures with results; Important and Note notices; glossary and index; larger type. |
+| 3.1 | 19 November 2026 | 0.59.0 | EVALMAN reader and F1 block instructions, member-history continuity, Current RSCA and the RSCA history workbook, the Ending year filter, the data file notice. |
 
 The PDF is built from this file by `scripts/build_user_guide.py`. When controls or behavior change, update the procedure, rebuild the PDF and look at it.

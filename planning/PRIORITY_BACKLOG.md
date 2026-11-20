@@ -1,6 +1,6 @@
 # Swift NAVFIT priority backlog
 
-Updated 16 November 2026 (0.58.0, schema 51). Manual check
+Updated 19 November 2026 (0.59.0, schema 51). Manual check
 results from 10, 14 and 15 November are folded in below. This lists open work only. Finished
 items have been removed; their delivery and verification are recorded in
 [PROJECT_STATE_HISTORY.md](PROJECT_STATE_HISTORY.md),
@@ -57,9 +57,7 @@ Unanswered check boxes export unticked (X01), the NAVFIT98A narrative print chec
 
 ## Code health
 
-| ID | Work |
-| --- | --- |
-| T05 | **Intermittent test failures, not yet diagnosed.** `test-import-engine` failed once with error 3059 ("Operation canceled by user") during its 16-minute old-VBA benchmark. `report-field-persistence` failed once with Jet error 3802. `test-ux-admin-feedback` failed twice in the 2 Nov extended run ("Reviewed proposal apply failed" with an empty error) and passed on three re-runs. `test-contributor-startup` reported "Blank startup omitted setup" once during the 0.51.0 release check. On 3 Nov 2026 it failed once with "Reserved Error" from `Eval` after all 61 assertions had passed, and passed on two reruns. Each passed on retry. Capture diagnostics the next time one recurs. On 12 Nov 2026 native runs moved to a hidden Windows desktop because the failures clustered while the PC was in use; this is an unconfirmed hypothesis, and T05 closes after three consecutive ExtendedTest runs on a PC in use report no FLAKY entry. Run 1 of 3, 13 Nov 2026 (source cbf8e43): PASS, 28 steps, no FLAKY. The 0.56.0 release check (14 Nov) passed with one FLAKY (`test-wizard-state`: "Cannot identify owned Access process"), so the count starts again. Run 1 of 3, 15 Nov 2026: the 0.57.0 release check (source 40e2580) passed with no FLAKY. Run 2 of 3, 16 Nov 2026: the 0.58.0 release check (source 22ad401) passed with no FLAKY. |
+No open items. T05 (intermittent native test failures) closed on 19 November 2026 after three consecutive release checks with no flaky step: 0.57.0, 0.58.0 and 0.59.0.
 
 ## S01 — Front end and data file
 

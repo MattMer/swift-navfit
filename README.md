@@ -12,7 +12,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 49-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 63-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
 
@@ -41,10 +41,10 @@ The 49-page user guide covers setup, drafting, notes, validation, summary groups
 ### Work across a command and its summary groups
 
 - **Command member directory:** reuse member details, filter by paygrade or rank/rate, and create reports one at a time or in batches. Swift lists [possible duplicate Sailors](docs/Duplicate_Sailor_Review.md) across the directory, strongest match first, to merge with history kept and a guarded undo, or to mark as different Sailors.
-- **Prior evaluations:** keep each member's earlier evaluations alongside the current report for reference.
+- **Prior evaluations:** keep each member's earlier evaluations alongside the current report for reference. Member history lists them with Swift's reports by date and marks possible gaps between reports.
 - **Shared fields and defaults:** apply group or command defaults, see exactly which reports change, and confirm each replacement.
 - **Rack and stack:** edit every member's trait marks and recommendations in one table, compare ITA with prior reports, and stage proposed changes for review before applying them.
-- **Reporting seniors and RSCA:** start a senior from the member directory, see each paygrade's RSCA history with every summary group posted to it, keep exact totals apart from estimates, and choose a group's baseline deliberately.
+- **Reporting seniors and RSCA:** start a senior from the member directory, see each paygrade's RSCA history with every summary group posted to it and export it to Excel, see a group's current RSCA beside its PSG RSCA, keep exact totals apart from estimates, and choose a group's baseline deliberately.
 - **Midterm counseling:** track who is due, record sessions, and carry blocks 30–31 into the next report.
 - **Rosters and departures:** import the command's NRRM or MNA roster. Matched profiles take the roster's values, and a blank roster cell never clears one. Members missing from a newer complete roster, or near their PRD, are flagged as departing for you to confirm.
 - **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
@@ -56,7 +56,8 @@ The 49-page user guide covers setup, drafting, notes, validation, summary groups
 
 <img src="docs/images/report-editor.png" width="640" alt="The report editor's Front Page laid out like the printed EVAL form, with the ITA and group average, review actions and save status">
 
-- **Live findings with citations:** Swift checks values as you type and links each finding to the block it concerns.
+- **Live findings with citations:** Swift checks values as you type, links each finding to the block it concerns, and opens the EVALMAN paragraph it cites.
+- **EVALMAN built in:** the whole of BUPERSINST 1610.10H, through CH-4, as searchable text. Press F1 in a report field to read that block's instructions.
 - **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.
 - **Drafts stay editable:** missing information never blocks saving a draft.
 - **Familiar report pages:** fixed Front and Back pages laid out like the official forms, all seven traits together, and help for the current window.
@@ -101,15 +102,15 @@ Optional reference links, such as NavyWriter, open a website only when you selec
 
 **You need Windows and full desktop Microsoft Access.** The free Access Runtime is not supported.
 
-### Current release: 0.58.0
+### Current release: 0.59.0
 
-Download from the [0.58.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.58.0), which lists each file's SHA-256 hash so you can confirm your download.
+Download from the [0.59.0 release page](https://github.com/MattMer/swift-navfit/releases/tag/v0.59.0), which lists each file's SHA-256 hash so you can confirm your download.
 
 **Recommended:** download the zip, or email the zip to your Navy email, then save everything in it to one folder on the workstation where you will use it.
 
-- **Swift_NAVFIT_0.58.0.zip:** everything below plus the user guide in one download.
-- **Swift_NAVFIT_0.58.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
-- **Swift_NAVFIT_Demo_0.58.0.accdb** with **Swift_NAVFIT_Demo_data_0.58.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
+- **Swift_NAVFIT_0.59.0.zip:** everything below plus the user guide in one download.
+- **Swift_NAVFIT_0.59.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
+- **Swift_NAVFIT_Demo_0.59.0.accdb** with **Swift_NAVFIT_Demo_data_0.59.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.
 
 > **Not yet tested:**
 > 1. screen readers (NVDA and JAWS);

@@ -10,9 +10,9 @@ newer verification detail belongs in commit messages, not here.
 
 | | Version | Schema | Notes |
 | --- | --- | --- | --- |
-| Development source | 0.59.0-dev | 51 | Imports schema 35 onward; possible duplicate Sailors listed across the directory, with pairs marked as different Sailors kept (schema 51); saved revisions store only fields with a value, with a row count and checksum (schema 50); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
-| Latest verified release | 0.58.0 | 51 | The application and the Demo pair on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.58.0), 16 Nov 2026. Full release gate passed (release schemas 35–50 plus 51). Untested: screen readers, an Acrobat-free workstation, two people on a real network share, a OneDrive conflict copy; unsigned. Previous: 0.57.0 (schema 50); 0.56.0 (schema 49), the first release with the separate data file; 0.55.0 (schema 48), the last release that imports schemas 1–34. |
-| Latest source tag | `v0.58.0` | 51 | The release commit. Earlier: `v0.57.0`, `v0.56.0`, `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) is kept outside the repository. |
+| Development source | 0.59.0 | 51 | Imports schema 35 onward; possible duplicate Sailors listed across the directory, with pairs marked as different Sailors kept (schema 51); saved revisions store only fields with a value, with a row count and checksum (schema 50); Settings & Help > About this version and a 90-day Overview reminder, both offline. PDFs lay out on Microsoft Print to PDF whatever the Windows default printer is (0.55.0 split pages when the default was a physical printer). Field catalogue version 3 (EVAL block 44); restricted-content check (schema 47) with checks that can be turned off (schema 48). [modSwift.bas](src/modSwift.bas) owns `APP_VERSION`/`SCHEMA_VERSION`. |
+| Latest verified release | 0.59.0 | 51 | The application and the Demo pair on the [GitHub release](https://github.com/MattMer/swift-navfit/releases/tag/v0.59.0), 19 Nov 2026. Full release gate passed (release schemas 35–50 plus 51). Untested: screen readers, an Acrobat-free workstation, two people on a real network share, a OneDrive conflict copy; unsigned. Previous: 0.58.0 (schema 51); 0.57.0 (schema 50); 0.56.0 (schema 49), the first release with the separate data file; 0.55.0 (schema 48), the last release that imports schemas 1–34. |
+| Latest source tag | `v0.59.0` | 51 | The release commit. Earlier: `v0.58.0`, `v0.57.0`, `v0.56.0`, `v0.55.0`, `v0.54.0`, `v0.53.0`, `v0.52.0`, `v0.51.0`, `v0.50.0`, `v0.49.0`, `v0.29.0-dev` (source checkpoint only). r128 (0.27.1-dev, schema 27) is kept outside the repository. |
 
 ## Purpose and boundaries
 
@@ -149,6 +149,14 @@ import and print-ready PDF output.
     Settings & Help import into a new blank workspace.
 
 ## Feature status
+
+Release 0.59.0 (19 November 2026, schema 51) builds EVALMAN in: the whole
+instruction as searchable text, opened at a block's instructions with F1 in a
+report field or from a finding. Member history marks possible gaps between a
+member's reports. Summary groups show the current RSCA beside the PSG RSCA and
+filter by ending year, and RSCA history exports to Excel. The report editor
+fits its window, buttons change appearance when they become available, notices
+are shorter, and a data file opened by mistake points to the application.
 
 Release 0.58.0 (16 November 2026, schema 51) lists possible duplicate Sailors
 across the member directory, strongest match first, and keeps pairs marked as

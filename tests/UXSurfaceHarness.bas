@@ -51,7 +51,7 @@ Public Function TestUXSurface() As String
     Check s!txtOfficialName.Visible And Not f!txtOfficialName.Visible, "Editor did not use native section surface"
     Check Not f!uxNext.Visible And Not f!uxPrevious.Visible, "Legacy field pagination still visible"
     Check UXResizeEditor(25000, 13500), "Wide viewport layout failed"
-    Check f!uxFieldSurface.Width = 21750 And f!cmdSave.Top = 13050, "Wide viewport not filled"
+    Check f!uxFieldSurface.Width = 21750 And f.Section(acDetail).Height = 13500 And f!cmdSave.Top = f!uxFieldSurface.Top + f!uxFieldSurface.Height + 490, "Wide viewport not filled exactly: detail " & f.Section(acDetail).Height
     Check FieldGeometry(s) = geometry, "Wide viewport changed the field layout"
     Check Not s!txtMemberFirstName.Visible, "Wide layout exposed redundant names"
     Check UXResizeEditor(13800, 8650), "Laptop viewport layout failed"
