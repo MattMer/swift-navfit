@@ -180,7 +180,9 @@ try{
     $other=New-Object -ComObject Access.Application
     $other.AutomationSecurity=1;$other.OpenCurrentDatabase($twin,$true)
     if(-not $other.Eval('SwiftDataIsLinked()')){throw 'Twin front end is not linked'}
-    #The session that starts second finds the data file held, and is warned.
+    #Once the first session is working (a contributor chosen), the session that starts
+    #second sees it as connected, and is warned.
+    [void]$first.Eval('SwitchContributor(DLookup("UserProfileID","UserProfile"))')
     if(-not $other.Eval('SwiftDataOtherSession()')){throw 'The second session did not see the first on the data file'}
     $notice=[string]$other.Eval('WorkspaceSafetyNotice()')
     if($notice -notlike '*already open in another session*'){throw ('Second session was not warned: '+$notice)}
@@ -191,7 +193,7 @@ try{
     [void]$first.Eval('PresenceEditingFor(DLookup("ReportID","Report"))')
     [void]$other.Eval('SwitchContributor(DLookup("UserProfileID","UserProfile"))')
     $others=[string]$other.Eval('PresenceOthersText()')
-    if($others -notlike 'Also used in the last 10 minutes: Tester (*'){throw ('The second session does not list the first: '+$others)}
+    if($others -notlike 'Also open: Tester (*'){throw ('The second session does not list the first: '+$others)}
     $editing=[string]$other.Eval('PresenceEditingText(DLookup("ReportID","Report"))')
     if($editing -notlike 'Tester (*) also has this report open*'){throw ('The second session is not told the report is open: '+$editing)}
     if([string]$first.Eval('PresenceEditingText(DLookup("ReportID","Report"))') -ne ''){throw 'A session was told about itself'}
@@ -280,7 +282,7 @@ try{
 
     #Refused without a change: newer, too old, and open in another session.
     $newer=Join-Path $folder 'newer data.accdb';Copy-Item -LiteralPath $old -Destination $newer;Invoke-Dao $newer @('UPDATE AppMetadata SET SchemaVersion='+($current+1))
-    $result=[string]$app.Eval('TryUpgrade("'+$newer+'")');if($result -notlike 'REJECTED:*newer than this version*'){throw ('Newer data file: '+$result)}
+    $result=[string]$app.Eval('TryUpgrade("'+$newer+'")');if($result -notlike 'REJECTED:*This data file was upgraded by Swift NAVFIT *Get that version from your coordinator.'){throw ('Newer data file: '+$result)}
     $floor=[int]$app.Eval('UpgradeFloorValue()')
     $older=Join-Path $folder 'too old data.accdb';Copy-Item -LiteralPath $copy -Destination $older;Invoke-Dao $older @('UPDATE AppMetadata SET SchemaVersion='+($floor-1))
     $olderHash=(Get-FileHash -LiteralPath $older).Hash
@@ -290,7 +292,7 @@ try{
     $holder=$engine.OpenDatabase($busy)
     $result=[string]$app.Eval('TryUpgrade("'+$busy+'")')
     $holder.Close();$holder=$null
-    if($result -notlike 'REJECTED:*open in another Swift NAVFIT session*'){throw ('Data file in use: '+$result)}
+    if($result -notlike 'REJECTED:*Everyone must close Swift NAVFIT before this data file is upgraded*Nothing was changed.'){throw ('Data file in use: '+$result)}
     if((Get-FileHash -LiteralPath $busy).Hash -ne $busyHash -or @(Get-ChildItem -LiteralPath $folder -Filter 'busy data before schema*').Count){throw 'A data file in use was changed or copied'}
     $problem=[string]$app.Eval('DataFileProblem("'+$restore+'")')
     if($problem -notlike 'That file is a complete Swift NAVFIT workspace*'){throw ('A complete workspace was offered as a data file: '+$problem)}

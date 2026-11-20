@@ -76,6 +76,10 @@ Public Function ResetEditorBaseline() As Boolean
 End Function
 ' Reject a save against a newer revision. One user can still change a report through
 ' another form or import while this editor holds pending values.
+' The saved revision the open editor started from; a save is refused if it has moved.
+Public Function EditorBaseRevision() As Long
+    EditorBaseRevision = baseRevision
+End Function
 Public Function GuardEditorBaseline() As Boolean
     Dim id As Long
     EnsureEditorSession
@@ -189,7 +193,7 @@ Public Function RecoverSelectedUI(Optional ByVal asNewDraft As Boolean = False) 
     RecoverSelectedUI = RestoreRecoveryDraft(Nz(Forms!frmRecovery!lstRecoveries, 0), asNewDraft)
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Recover pending edits"
+    MsgBox SwiftErrorText(), vbExclamation, "Recover pending edits"
 End Function
 ' Confirm permanent checkpoint removal, restricted to the active contributor and a closed editor.
 Public Function DeleteRecoveryUI() As Boolean

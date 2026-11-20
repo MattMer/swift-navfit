@@ -122,7 +122,7 @@ Public Function UXChooseSwiftWorkspace() As Boolean
  If dialog.Show <> -1 Then Exit Function
  UXChooseSwiftWorkspace = UXPreviewSwiftWorkspace(dialog.SelectedItems(1)): Exit Function
 Failed:
- MsgBox Err.Description, vbExclamation, "Import Swift NAVFIT data"
+ MsgBox SwiftErrorText(), vbExclamation, "Import Swift NAVFIT data"
 End Function
 Public Function UXPreviewSwiftWorkspace(ByVal path As String) As Boolean
  Dim reader As DAO.Workspace, source As DAO.Database, r As DAO.Recordset, table As DAO.TableDef, text As String, version As Long, stage As String, failure As Object

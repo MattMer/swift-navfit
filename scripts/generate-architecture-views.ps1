@@ -78,6 +78,7 @@ foreach($m in [regex]::Matches($source,'Declare PtrSafe Function (\w+) Lib "(\w+
 $com=@{};foreach($m in [regex]::Matches($source,'CreateObject\("([^"]+)"\)')){$com[$m.Groups[1].Value]=1+[int]$com[$m.Groups[1].Value]}
 $purpose=@{
  'ADODB.Stream'='UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template)'
+ 'ADODB.Connection'='Opening the shared data file with record-level locking before the linked tables reach it'
  'MSXML2.DOMDocument.6.0'='XML parsing and writing (PDF form data and exchange)'
  'Scripting.Dictionary'='In-memory keyed collections'
  'Scripting.FileSystemObject'='File and folder checks'

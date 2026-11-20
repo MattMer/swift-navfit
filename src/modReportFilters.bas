@@ -100,8 +100,10 @@ Public Function SaveReportFilter(ByVal filterID As Long, ByVal expectedVersion A
         r.AddNew: r!FilterGuid = NewIdentity(): r!OwnerProfileGuid = owner: r!VersionCounter = 1
     Else
         If r.EOF Then Err.Raise vbObjectError + 9824, "modReportFilters", "This saved filter is unavailable for the current contributor."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 9825, "modReportFilters", "The saved filter changed. Select it again before saving."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     r!FilterName = filterName
     For Each key In Array("SearchText", "PeriodFrom", "PeriodThrough", "FormKind", "ReportState", "RankFilter", "ArchiveMode", "GroupScope", "GroupGuid"): r.Fields(CStr(key)).Value = values(key): Next
@@ -176,7 +178,7 @@ Public Function UXSaveReportFilter(Optional ByVal name As String = "", Optional 
     selectedFilter = id: selectedVersion = version + 1: selectedOwner = ReportFilterOwner(): selectedName = Trim$(name)
     UXSaveReportFilter = True: Exit Function
 Failed:
-    Forms!frmLibrary!lblCount.Caption = Err.Description
+    Forms!frmLibrary!lblCount.Caption = SwiftErrorText()
 End Function
 Public Function UXDeleteReportFilter(Optional ByVal confirmed As Boolean = False) As Boolean
     Dim f As Access.Form
@@ -191,5 +193,5 @@ Public Function UXDeleteReportFilter(Optional ByVal confirmed As Boolean = False
     Call UXReportFilterChoices: f!lblCount.Caption = "Saved filter deleted; the current report filters remain."
     Exit Function
 Failed:
-    Forms!frmLibrary!lblCount.Caption = Err.Description
+    Forms!frmLibrary!lblCount.Caption = SwiftErrorText()
 End Function

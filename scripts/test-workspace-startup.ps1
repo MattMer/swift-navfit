@@ -6,6 +6,7 @@ Invoke-CaseScript 'smoke-test' @('-BuildPath',$BuildPath)
 Invoke-CaseScript 'test-contributor-startup' @('-BuildPath',$BuildPath)
 Invoke-CaseScript 'test-data-link' @('-BuildPath',$BuildPath)
 if($Tier -eq 'extended'){Invoke-CaseScript 'test-ux-startup' @('-BuildPath',$BuildPath)}
+if($Tier -eq 'extended'){Invoke-CaseScript 'test-shared-sessions' @('-BuildPath',$BuildPath)}
 if($Tier -eq 'extended'){
     if($DemoPath){Invoke-CaseScript 'test-ux-demo' @('-BuildPath',$DemoPath)}
     else{Write-Output 'SKIP: test-ux-demo needs -DemoPath'}

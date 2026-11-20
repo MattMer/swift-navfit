@@ -38,7 +38,7 @@ End Function
 ' The data file's schema version; 0 when it has none.
 Public Function DataFileSchema(ByVal filePath As String) As Long
     Dim db As DAO.Database, r As DAO.Recordset
-    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, False, True)
+    Set db = SwiftOpenDataFile(filePath, True)
     On Error GoTo Done
     Set r = db.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot)
     If Not r.EOF Then DataFileSchema = CLng(Nz(r!SchemaVersion, 0))
@@ -46,6 +46,58 @@ Public Function DataFileSchema(ByVal filePath As String) As Long
 Done:
     db.Close
 End Function
+
+' The Swift NAVFIT version that last created or upgraded the data file; "" when unknown.
+Public Function DataFileAppVersion(ByVal filePath As String) As String
+    Dim db As DAO.Database, r As DAO.Recordset
+    On Error GoTo Done
+    Set db = SwiftOpenDataFile(filePath, True)
+    Set r = db.OpenRecordset("SELECT AppVersion FROM AppMetadata", dbOpenSnapshot)
+    If Not r.EOF Then DataFileAppVersion = Nz(r!AppVersion, "")
+    r.Close
+Done:
+    If Not db Is Nothing Then db.Close
+End Function
+
+' What an older copy of Swift NAVFIT says about a data file a newer one has upgraded.
+Public Function DataFileNewerText(ByVal appVersion As String) As String
+    DataFileNewerText = "This data file was upgraded by " & IIf(Len(appVersion) > 0, "Swift NAVFIT " & appVersion, "a newer Swift NAVFIT") & ". Get that version from your coordinator."
+End Function
+
+' Who else has the data file open now, from its own list of sessions; "" when no one
+' or when the file has no such list.
+Public Function DataFileOpenNow(ByVal filePath As String) As String
+    Dim db As DAO.Database, r As DAO.Recordset, names As String, entry As String
+    On Error GoTo Done
+    Set db = SwiftOpenDataFile(filePath, True)
+    Set r = db.OpenRecordset("SELECT s.ComputerName, p.DisplayName FROM SessionPresence AS s LEFT JOIN UserProfile AS p ON s.ProfileID=p.UserProfileID WHERE s.SessionGuid<>" & QuoteSQL(PresenceSession()) & " AND s.LastSeen>=DateAdd('n'," & -CONNECTED_MINUTES & ",Now()) ORDER BY s.LastSeen DESC", dbOpenSnapshot)
+    Do While Not r.EOF
+        entry = Nz(r!DisplayName, "Someone") & " (" & Nz(r!ComputerName, "another computer") & ")"
+        If InStr(", " & names & ",", ", " & entry & ",") = 0 Then names = names & IIf(Len(names) > 0, ", ", "") & entry
+        r.MoveNext
+    Loop
+    r.Close
+    DataFileOpenNow = names
+Done:
+    If Not db Is Nothing Then db.Close
+End Function
+
+' Upgrading needs the data file to itself. When others have it open, says who.
+Private Sub UpgradeNeedsEveryoneClosed(ByVal filePath As String)
+    Dim db As DAO.Database, failure As Long, message As String, names As String
+    On Error Resume Next
+    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, True)
+    failure = Err.Number: message = Err.Description
+    On Error GoTo 0
+    If failure = 0 Then db.Close: Exit Sub
+    Select Case failure
+        Case 3006, 3008, 3009, 3045, 3050, 3051, 3260, 3356, 3704, 3734
+            names = DataFileOpenNow(filePath)
+            Err.Raise vbObjectError + 9827, "modSchemaUpgrade.UpgradeDataFile", "Everyone must close Swift NAVFIT before this data file is upgraded" & IIf(Len(names) > 0, ". Open now: " & names, "") & ". Then the first person to open this version upgrades it. Nothing was changed."
+        Case Else
+            Err.Raise failure, "modSchemaUpgrade.UpgradeDataFile", message
+    End Select
+End Sub
 
 ' True when this version can upgrade the data file in place.
 Public Function DataFileUpgradable(ByVal filePath As String) As Boolean
@@ -83,13 +135,12 @@ Public Function UpgradeDataFile(ByVal filePath As String) As String
     If Not FileExists(filePath) Then Err.Raise vbObjectError + 9821, "modSchemaUpgrade.UpgradeDataFile", "The data file was not found: " & filePath
     version = DataFileSchema(filePath)
     If version = SCHEMA_VERSION Then Exit Function
-    If version > SCHEMA_VERSION Then Err.Raise vbObjectError + 9822, "modSchemaUpgrade.UpgradeDataFile", "The data file is schema " & version & ", newer than this version of Swift NAVFIT (schema " & SCHEMA_VERSION & "). Use a newer Swift NAVFIT."
+    If version > SCHEMA_VERSION Then Err.Raise vbObjectError + 9822, "modSchemaUpgrade.UpgradeDataFile", DataFileNewerText(DataFileAppVersion(filePath))
     If version < UPGRADE_FLOOR Then Err.Raise vbObjectError + 9823, "modSchemaUpgrade.UpgradeDataFile", "The data file is schema " & version & ", older than this version can upgrade (schema " & UPGRADE_FLOOR & " onward)."
     'This session's own handle on the data file would block the exclusive open.
     SwiftDataRelease
     stage = "Check no one else has it open"
-    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, True)
-    db.Close: Set db = Nothing
+    UpgradeNeedsEveryoneClosed filePath
     stage = "Copy the data file"
     backup = Left$(filePath, Len(filePath) - 6) & " before schema " & SCHEMA_VERSION & " " & Format$(Now(), "yyyymmdd-hhnnss") & ".accdb"
     If Len(Dir$(backup)) > 0 Then Err.Raise vbObjectError + 9824, "modSchemaUpgrade.UpgradeDataFile", "A copy with this name already exists: " & backup
@@ -141,7 +192,8 @@ Failed:
         Kill backup
     End If
     On Error GoTo 0
-    If stage = "Check no one else has it open" Then message = "The data file is open in another Swift NAVFIT session. Close it there, then try again. (" & message & ")"
+    'Who must close it first is the whole answer.
+    If failure = vbObjectError + 9827 Then Err.Raise failure, "modSchemaUpgrade.UpgradeDataFile", message
     Err.Raise failure, "modSchemaUpgrade.UpgradeDataFile", stage & ": " & message
 End Function
 

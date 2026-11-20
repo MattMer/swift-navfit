@@ -118,7 +118,7 @@ Public Function SaveSnippetUI() As Boolean
     End With
     Call LoadSnippets(): SaveSnippetUI = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Save snippet"
+    MsgBox SwiftErrorText(), vbExclamation, "Save snippet"
 End Function
 Public Function InsertSnippetUI() As Boolean
     On Error GoTo Failed
@@ -126,7 +126,7 @@ Public Function InsertSnippetUI() As Boolean
     If MsgBox("Insert this snippet " & SnippetTargetText() & "? Review it for this member before saving. Existing text is retained.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
     InsertSnippetUI = InsertNarrativeSnippet(Nz(Forms!frmSnippets!txtSnippetID, 0)): Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Insert snippet"
+    MsgBox SwiftErrorText(), vbExclamation, "Insert snippet"
 End Function
 Public Function CloseSnippetsUI() As Boolean
     CloseSnippetsUI = UXReturnSnippets()

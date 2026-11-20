@@ -15,8 +15,10 @@ Public Function SaveReportNoteDraft(ByVal draftGuid As String, ByVal reportID As
         r.AddNew: r!DraftGuid = draftGuid: r!ReportID = reportID: r!AuthorProfileID = author: r!VersionCounter = 1
     Else
         If r!AuthorProfileID <> author Or r!ReportID <> reportID Then Err.Raise vbObjectError + 6950, "modReportNotes.SaveReportNoteDraft", "This note checkpoint belongs to another contributor or report."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6950, "modReportNotes.SaveReportNoteDraft", "Note checkpoint changed in another window. Recover its latest version."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     r!NoteText = body: r!CheckpointAt = Now(): r.Update: r.Bookmark = r.LastModified: SaveReportNoteDraft = r!VersionCounter: r.Close
     w.CommitTrans: Exit Function

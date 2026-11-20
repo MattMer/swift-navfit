@@ -133,6 +133,7 @@ Public Function TestWorkspaceSafety() As String
  Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\AppData\Local\Microsoft\Windows\INetCache\Content.Outlook\AB12CD\Swift.accdb"), "temporary folder") > 0, "E-mail attachment folder not flagged"
  Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\OneDrive - US Navy\Reports\Swift.accdb"), "sync service") > 0, "Commercial OneDrive folder not flagged"
  Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\Dropbox\Swift.accdb"), "sync service") > 0, "Dropbox folder not flagged"
+ Check InStr(WorkspaceLocationWarning("C:\Users\Sailor\US Navy\Admin Team - Documents\Evals\Swift NAVFIT data.accdb"), "mapped network drive") > 0, "Teams or SharePoint library folder not flagged"
  If Len(Environ$("OneDrive")) > 0 Then Check InStr(WorkspaceLocationWarning(Environ$("OneDrive") & "\Swift.accdb"), "sync service") > 0, "Configured OneDrive root not flagged"
  Check WorkspaceLocationWarning("D:\Command\Evaluations\Swift.accdb") = "", "Ordinary folder flagged"
  Check WorkspaceLocationWarning("\fileserver\share\Evaluations\Swift.accdb") = "", "Network share flagged as unsafe location"

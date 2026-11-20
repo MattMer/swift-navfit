@@ -254,21 +254,21 @@ Public Function ContributorUI(ByVal action As String) As Boolean
     If CurrentProject.AllForms("frmMyWork").IsLoaded Then Call LoadMyWork
     ContributorUI = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Local contributors"
+    MsgBox SwiftErrorText(), vbInformation, "Local contributors"
 End Function
 Public Function AssignReviewUI() As Boolean
     On Error GoTo Failed
     Call AssignReview(Nz(Forms!frmMyWork!txtReportID, 0), Nz(Forms!frmMyWork!txtExpectedRevision, 0), Nz(Forms!frmMyWork!cboReviewer, 0), Forms!frmMyWork!txtDue, Nz(Forms!frmMyWork!txtNotes, ""))
     Forms!frmMyWork!txtNotes = Null: Call LoadMyWork(): AssignReviewUI = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Assign review"
+    MsgBox SwiftErrorText(), vbInformation, "Assign review"
 End Function
 Public Function FinishReviewUI(ByVal outcome As String) As Boolean
     On Error GoTo Failed
     FinishReviewUI = FinishReview(Nz(Forms!frmMyWork!lstTasks, 0), outcome, Nz(Forms!frmMyWork!txtNotes, ""))
     Forms!frmMyWork!txtNotes = Null: Call LoadMyWork(): Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Review outcome"
+    MsgBox SwiftErrorText(), vbInformation, "Review outcome"
 End Function
 Public Function OpenReviewTaskDraft() As Boolean
  Dim id As Long, task As Long

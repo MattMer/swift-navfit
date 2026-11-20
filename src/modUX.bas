@@ -367,7 +367,7 @@ Public Function UXNavigate(ByVal target As String) As Boolean
     UXLoadContext
     UXNavigate = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Unable to open this workspace"
+    MsgBox SwiftErrorText(), vbExclamation, "Unable to open this workspace"
 End Function
 ' Initialize the report workspace at its first official section.
 Public Function UXEditorStart() As Boolean
@@ -668,7 +668,7 @@ Public Function UXOpenComparison() As Boolean
     UXGroupTabState "frmUXComparison", IIf(Nz(f!uxMode, "Members") = "Members", 0, 3)
     UXOpenComparison = True: Exit Function
 Failed:
-    Forms!frmMajorWorkbench!lblStatus.Caption = Err.Description
+    Forms!frmMajorWorkbench!lblStatus.Caption = SwiftErrorText()
 End Function
 ' Resolve live-group or historical-set context and load the editable grid plus one
 ' proposal preview; no duplicate hidden roster query is required.
@@ -760,7 +760,7 @@ Public Function UXApplyComparison() As Boolean
     Forms!frmUXComparison!lblStatus.Caption = "Selected proposals applied. Reopen the group comparison to edit further."
     UXApplyComparison = True: Exit Function
 Failed:
-    Forms!frmUXComparison!lblStatus.Caption = Err.Description & " No partial proposal batch was applied."
+    Forms!frmUXComparison!lblStatus.Caption = SwiftErrorText() & " No partial proposal batch was applied."
 End Function
 ' Resolve whether review should use saved or pending values before opening saved-revision review.
 Public Function UXEditorReview(ByVal mode As String) As Boolean

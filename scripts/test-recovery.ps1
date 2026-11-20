@@ -32,6 +32,8 @@ function CompareFiles([string]$copy,[string]$workspace,[string[]]$mayGrow=@()){
   $other=@(foreach($t in $b.TableDefs){if($t.Name -notlike 'MSys*' -and $t.Name -notlike '~*'){[string]$t.Name}})
   AssertBackup (-not (Compare-Object $names $other)) 'Backup table set differs'
   foreach($name in $names){
+   #Who is connected changes while sessions run; backups and imports leave it out.
+   if($name -eq 'SessionPresence'){continue}
    $key=@(foreach($i in $a.TableDefs.Item($name).Indexes){if($i.Primary){foreach($f in $i.Fields){[string]$f.Name}}})
    AssertBackup ($key.Count -gt 0) ('Backup table has no primary key: '+$name)
    $live=@{};$s=$b.OpenRecordset('SELECT * FROM ['+$name+']',4)

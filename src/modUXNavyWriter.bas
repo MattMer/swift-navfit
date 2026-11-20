@@ -57,7 +57,7 @@ Public Function UXImportNavyWriter() As Boolean
     Forms!frmUXNavyWriter!lblStatus.Caption = "Added to your narrative snippets."
     UXImportNavyWriter = True: Exit Function
 Failed:
-    Forms!frmUXNavyWriter!lblStatus.Caption = Err.Description
+    Forms!frmUXNavyWriter!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXOpenNavyWriterSource() As Boolean
     If IsNull(Forms!frmUXNavyWriter!lstCatalog) Then Exit Function

@@ -16,14 +16,14 @@ Public Function WorkspaceLocationWarning(ByVal path As String) As String
     If PathUnder(p, Environ$("TEMP")) Or PathUnder(p, Environ$("TMP")) Or InStr(p, "\appdata\local\temp\") > 0 Or InStr(p, "\inetcache\") > 0 Or InStr(p, "\temporary internet files\") > 0 Or InStr(p, "\content.outlook\") > 0 Then
         text = "This file is open from a temporary folder, for example from inside a zip file or an e-mail attachment. Windows can delete it, and your work with it. Exit, save the file to an approved folder and open it from there."
     End If
-    If PathUnder(p, Environ$("OneDrive")) Or PathUnder(p, Environ$("OneDriveCommercial")) Or PathUnder(p, Environ$("OneDriveConsumer")) Or InStr(p, "\onedrive\") > 0 Or InStr(p, "\onedrive - ") > 0 Or InStr(p, "\dropbox\") > 0 Or InStr(p, "\google drive\") > 0 Or InStr(p, "\my drive\") > 0 Or InStr(p, "\icloud drive\") > 0 Then
+    If PathUnder(p, Environ$("OneDrive")) Or PathUnder(p, Environ$("OneDriveCommercial")) Or PathUnder(p, Environ$("OneDriveConsumer")) Or InStr(p, "\onedrive\") > 0 Or InStr(p, "\onedrive - ") > 0 Or InStr(p, "\dropbox\") > 0 Or InStr(p, "\google drive\") > 0 Or InStr(p, "\my drive\") > 0 Or InStr(p, "\icloud drive\") > 0 Or InStr(p, " - documents\") > 0 Or InStr(p, " - shared documents\") > 0 Then
         text = WarningJoin(text, SyncWarning())
     End If
     WorkspaceLocationWarning = text
 End Function
 
 Private Function SyncWarning() As String
-    SyncWarning = "This file is in a folder that a sync service such as OneDrive or SharePoint uploads. Sync can damage an open Access database or create conflicting copies, and two people on their own computers each work in a separate copy, not the same file. Keep the workspace in a folder that is not synced; for two people, use a shared network folder."
+    SyncWarning = "This file is in a folder that a sync service such as OneDrive, SharePoint or Teams uploads. Sync can damage an open Access database or create conflicting copies, and each person on their own computer works in a separate copy, not the same file. Keep it in a folder that is not synced; for several people, keep the data file on a mapped network drive."
 End Function
 
 Private Function PathUnder(ByVal path As String, ByVal folder As String) As Boolean
@@ -61,10 +61,10 @@ End Function
 Public Function OtherWorkspaceSessions(ByRef computers As String) As Long
     Dim rows As Object, total As Long, name As String, own As String, ownSeen As Boolean
     computers = ""
-    'With a separate data file the workspace is that file, and it has no session list
-    'to read: startup records whether another session was holding it (SwiftDataHold).
+    'With a separate data file, the sessions connected now come from presence, with
+    'each person's name and computer.
     If SwiftDataIsLinked() Then
-        If SwiftDataOtherSession() Then OtherWorkspaceSessions = 1
+        OtherWorkspaceSessions = PresenceOthersNow(computers)
         Exit Function
     End If
     own = UCase$(Environ$("COMPUTERNAME"))
@@ -99,7 +99,7 @@ End Function
 
 Public Function ConcurrentSessionWarning(ByVal others As Long, ByVal computers As String) As String
     If others <= 0 Then Exit Function
-    ConcurrentSessionWarning = "This workspace is already open in " & IIf(others = 1, "another session", others & " other sessions") & IIf(Len(computers) > 0, " (" & computers & ")", "") & ". Work on different reports: a save that would overwrite someone else's is refused and your entries are kept. Two people on one data file are not fully supported; on a synced folder, close the other session first."
+    ConcurrentSessionWarning = "This workspace is already open in " & IIf(others = 1, "another session", others & " other sessions") & IIf(Len(computers) > 0, " (" & computers & ")", "") & ". If two people change the same report, the second save is refused and their entries are kept."
 End Function
 
 'All warnings for the open workspace, one per line. A failed probe is reported as
@@ -116,6 +116,10 @@ SessionCheck:
     On Error GoTo SessionFailed
     others = OtherWorkspaceSessions(computers)
     text = WarningJoin(text, ConcurrentSessionWarning(others, computers))
+    'Without its record-level hold, this session's saves can hold up others' for longer.
+    If others > 0 And SwiftDataIsLinked() Then
+        If Left$(SwiftRowLockHeld(), 4) <> "held" Then text = WarningJoin(text, "Swift NAVFIT could not open the data file for saving record by record, so saves may wait longer while others work. Close Swift NAVFIT and open it again.")
+    End If
 Finished:
     WorkspaceSafetyNotice = text
     Exit Function

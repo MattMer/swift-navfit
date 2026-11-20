@@ -322,7 +322,7 @@ Public Function ChoosePDFPreview() As Boolean
     If dialog.Show <> -1 Then Exit Function
     ChoosePDFPreview = UXChoosePDFFile(dialog.SelectedItems(1)): Exit Function
 Failed:
-    Forms!frmPDFImport!lblStatus.Caption = Err.Description
+    Forms!frmPDFImport!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function ImportPDFUI() As Boolean
     ImportPDFUI = UXApplyPDFImport()

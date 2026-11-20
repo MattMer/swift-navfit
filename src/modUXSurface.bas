@@ -1025,7 +1025,7 @@ Public Function UXCounselingCalendarUse() As Boolean
     UXCounselingCalendarUse = True: Exit Function
 Failed:
     If CurrentProject.AllForms("frmUXCounselingDate").IsLoaded Then
-        Forms!frmUXCounselingDate!lblStatus.Caption = Err.Description
+        Forms!frmUXCounselingDate!lblStatus.Caption = SwiftErrorText()
     Else
         Forms!frmEditor!uxError.Caption = "Calendar: " & Err.Description
     End If

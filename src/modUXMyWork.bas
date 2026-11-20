@@ -207,7 +207,7 @@ Public Function UXWorkOpen(Optional ByVal reportOnly As Boolean = False) As Bool
  End If
  Exit Function
 Failed:
- Forms!frmMyWork!uxWorkStatus.Caption = Err.Description
+ Forms!frmMyWork!uxWorkStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXWorkChanged() As Boolean
     If CurrentProject.AllForms("frmMyWork").IsLoaded Then Call UXLoadWorkQueue
@@ -258,7 +258,7 @@ Public Function UXMyWorkDepartureResolve(ByVal outcome As String) As Boolean
     f!lblDeparturesScope.Caption = "Departure " & IIf(outcome = "Confirm", "confirmed", "dismissed") & ". " & f!lblDeparturesScope.Caption
     UXMyWorkDepartureResolve = True: Exit Function
 Failed:
-    f!lblDeparturesScope.Caption = Err.Description
+    f!lblDeparturesScope.Caption = SwiftErrorText()
 End Function
 Public Function UXMyWorkDepartureMember() As Boolean
     Dim f As Access.Form

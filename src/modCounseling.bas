@@ -125,9 +125,11 @@ Public Function SaveCounseling(ByVal counselingID As Long, ByVal expectedVersion
         r.AddNew: r!CounselingGuid = NewIdentity(): r!CreatedBy = author: r!CreatedAt = Now(): r!VersionCounter = 1: r!IsArchived = False
     Else
         If r.EOF Then Err.Raise vbObjectError + 9506, "modCounseling.SaveCounseling", "The counseling record no longer exists."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!MemberID <> memberID Or r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 9507, "modCounseling.SaveCounseling", "The counseling record changed. Reopen it before editing."
         If r!IsArchived Then Err.Raise vbObjectError + 9508, "modCounseling.SaveCounseling", "Archived counseling records are read only."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     r!MemberID = memberID: r!CounseledOn = DateValue(counseledOn): r!Outcome = outcome
     r!CounselorName = IIf(counselor = "", Null, counselor): r!NotPerformedReason = IIf(reason = "", Null, reason)
@@ -159,10 +161,12 @@ Private Function CounselingArchiveState(ByVal counselingID As Long, ByVal expect
     On Error GoTo Failed
     Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberCounseling WHERE CounselingID=" & counselingID, dbOpenDynaset)
     If r.EOF Then Err.Raise vbObjectError + 9506, "modCounseling.ArchiveCounseling", "The counseling record no longer exists."
+    'Lock the row before checking its version, so a save another session is finishing is seen.
+    r.Edit
     If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 9507, "modCounseling.ArchiveCounseling", "The counseling record changed. Reopen it before archiving."
     If r!IsArchived = archived Then Err.Raise vbObjectError + 9508, "modCounseling.CounselingArchiveState", "The counseling record is already " & IIf(archived, "archived.", "active.")
     If Not archived And Nz(MajorScalar("SELECT IsArchived FROM CommandMember WHERE MemberID=" & r!MemberID), True) Then Err.Raise vbObjectError + 9505, "modCounseling.CounselingArchiveState", "Restore the command member before restoring counseling."
-    r.Edit: r!IsArchived = archived: r!VersionCounter = r!VersionCounter + 1: r!ModifiedBy = MajorAuthor(): r!ModifiedAt = Now(): r.Update: r.Close
+    r!IsArchived = archived: r!VersionCounter = r!VersionCounter + 1: r!ModifiedBy = MajorAuthor(): r!ModifiedAt = Now(): r.Update: r.Close
     op = BeginOperation(IIf(archived, "Archive counseling record", "Restore counseling record"), "Counseling record " & counselingID)
     FinishOperation op, "Completed", IIf(archived, "Counseling record archived; it is retained and no longer counts toward the schedule.", "Counseling record restored; it counts toward the schedule and report suggestions again.")
     w.CommitTrans: CounselingArchiveState = True: Exit Function

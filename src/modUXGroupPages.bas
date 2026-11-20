@@ -49,7 +49,7 @@ Public Function UXMemberAction(ByVal action As String) As Boolean
     If action = "Members" Then UXMemberAction = UXChooseMembers() Else UXMemberAction = UXOpenGroupPolicy()
     Exit Function
 Failed:
-    Forms!frmUXComparison!lblStatus.Caption = Err.Description
+    Forms!frmUXComparison!lblStatus.Caption = SwiftErrorText()
 End Function
 ' Route group tabs with one resolved context. Members always uses the live grid;
 ' only Review/History need the retained workbench adapter. Preserve pending guards.
@@ -164,7 +164,7 @@ Public Function UXGroupAddReport(ByVal screen As String) As Boolean
     f!txtFrom = UXEffectiveDefault(createGroup, "PeriodStart"): f!txtTo = UXEffectiveDefault(createGroup, "PeriodEnd")
     UXGroupAddReport = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Add report"
+    MsgBox SwiftErrorText(), vbExclamation, "Add report"
 End Function
 Public Function UXGroupMemberFilter() As Boolean
     Dim f As Access.Form
@@ -260,7 +260,7 @@ Failed:
     If id > 0 Then
         MsgBox "The report was saved and added to the group. Open it from the member list. " & Err.Description, vbExclamation, "Open created report"
     Else
-        f!lblStatus.Caption = Err.Description
+        f!lblStatus.Caption = SwiftErrorText()
     End If
 End Function
 ' Return to the originating group after its newly created report closes.
@@ -274,7 +274,7 @@ Public Function UXGroupCreatedReportClose() As Boolean
     End If
     createdReport = 0: createdReportGroup = 0: UXGroupCreatedReportClose = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Return to summary group"
+    MsgBox SwiftErrorText(), vbExclamation, "Return to summary group"
 End Function
 
 ' One explicit context resolver for group-page transitions; never infer context

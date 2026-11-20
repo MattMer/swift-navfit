@@ -20,7 +20,7 @@ Public Function UXRUADImportChoose() As Boolean
     f!lblStatus.Caption = Trim$(RUADSourceSummary() & " Choose actions for " & count & " rows, or Match roster rows to members. Vacant billets are skipped.")
     Call UXRUADImportRows: UXRUADImportChoose = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXRUADImportRows() As Boolean
     Dim f As Access.Form, i As Long, row As Object, data As Object, label As String, db As DAO.Database, r As DAO.Recordset
@@ -66,7 +66,7 @@ Public Function UXRUADImportSelection() As Boolean
     Call UXRUADImportRows: f!lstRows = selected: UXRUADImportSelect
     f!lblStatus.Caption = "Selection changed. Preview again before Apply.": UXRUADImportSelection = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 ' Match every undecided row: refresh the one existing member it names, create a
 ' profile when no member has that name, and leave a name shared by several members
@@ -93,7 +93,7 @@ Public Function UXRUADImportNew() As Boolean
     Forms!frmUXRUADImport!lblStatus.Caption = matched & " rows matched to existing members, " & count & " new profiles selected" & IIf(undecided > 0, ", " & undecided & " rows share a name with several members and need a choice", "") & ". Matched profiles take the roster's fields and rank/rate; clear a row's boxes to keep its profile values. Check the matches, then Preview before Apply."
     UXRUADImportNew = True: Exit Function
 Failed:
-    Forms!frmUXRUADImport!lblStatus.Caption = Err.Description
+    Forms!frmUXRUADImport!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXRUADImportPreview() As Boolean
     On Error GoTo Failed
@@ -102,7 +102,7 @@ Public Function UXRUADImportPreview() As Boolean
     If Not IsNull(Forms!frmUXRUADImport!lstRows) Then UXRUADImportSelect
     UXEnable Forms!frmUXRUADImport!cmdApply, True: UXRUADImportPreview = True: Exit Function
 Failed:
-    Forms!frmUXRUADImport!lblStatus.Caption = Err.Description
+    Forms!frmUXRUADImport!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXRUADImportScope() As Boolean
     UXEnable Forms!frmUXRUADImport!cmdApply, False
@@ -119,5 +119,5 @@ Public Function UXRUADImportApply() As Boolean
     If CurrentProject.AllForms("frmUXDirectory").IsLoaded Then UXDirectoryLoad
     UXRUADImportApply = True: Exit Function
 Failed:
-    Forms!frmUXRUADImport!lblStatus.Caption = Err.Description
+    Forms!frmUXRUADImport!lblStatus.Caption = SwiftErrorText()
 End Function

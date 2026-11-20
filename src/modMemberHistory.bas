@@ -21,9 +21,11 @@ Public Function SavePriorEvaluation(ByVal priorID As Long, ByVal expectedVersion
         r.AddNew: r!PriorGuid = NewIdentity(): r!CreatedBy = author: r!CreatedAt = Now(): r!VersionCounter = 1: r!IsArchived = False
     Else
         If r.EOF Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Prior record no longer exists."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!MemberID <> memberID Or r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Prior record changed. Reopen it before editing."
         If r!IsArchived Then Err.Raise vbObjectError + 6970, "modMemberHistory.SavePriorEvaluation", "Archived prior history is read only."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     r!MemberID = memberID: r!FormKind = kind: r!RankRate = rank: r!PeriodStart = DateValue(fromDate): r!PeriodEnd = DateValue(toDate)
     r!PromotionRecommendation = promotion: r!ObservationStatus = observation: r!SourceNote = sourceNote: r!ModifiedBy = author: r!ModifiedAt = Now()

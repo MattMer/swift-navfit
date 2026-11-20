@@ -29,7 +29,7 @@ Public Function UXChooseNativeGroups() As Boolean
     End With
     UXChooseNativeGroups = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "NAVFIT group import"
+    MsgBox SwiftErrorText(), vbExclamation, "NAVFIT group import"
 End Function
 Public Function UXChooseNativeGroupFile(ByVal path As String) As Boolean
     OpenReviewFile path, False: sourcePath = path
@@ -54,7 +54,7 @@ Public Function UXLoadNativeGroups() As Boolean
     If choices.Count = 0 Then f!lblStatus.Caption = "This database has no groups with reports."
     UXLoadNativeGroups = True: Exit Function
 Failed:
-    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
+    Forms!frmUXNativeGroups!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXAssignNativeGroupGrade() As Boolean
     Dim picks As Collection, key As Variant, item As Object, grade As String, parts As Variant, targets As Object, i As Long
@@ -80,7 +80,7 @@ Public Function UXAssignNativeGroupGrade() As Boolean
     Forms!frmUXNativeGroups!lblStatus.Caption = "Paygrade assigned. Preview before applying."
     UXAssignNativeGroupGrade = True: Exit Function
 Failed:
-    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
+    Forms!frmUXNativeGroups!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXNativeGroupSelectionChanged() As Boolean
     Set selectedPreview = Nothing: previewHash = "": previewOwner = 0: UXEnable Forms!frmUXNativeGroups!cmdApply, False
@@ -119,7 +119,7 @@ Public Function UXPreviewNativeGroups() As Boolean
     UXPreviewNativeGroups = True: Exit Function
 Failed:
     previewOwner = 0: Set selectedPreview = Nothing: previewHash = ""
-    Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description: UXEnable Forms!frmUXNativeGroups!cmdApply, False
+    Forms!frmUXNativeGroups!lblStatus.Caption = SwiftErrorText(): UXEnable Forms!frmUXNativeGroups!cmdApply, False
 End Function
 Public Function UXApplyNativeGroups() As Boolean
     Dim result As Collection, picks As Collection, outcome As String, message As String
@@ -168,5 +168,5 @@ Public Function UXSelectAllNativeGroups(ByVal selectAll As Boolean) As Boolean
  UXSelectAllNativeGroups = True
  Exit Function
 Failed:
- Forms!frmUXNativeGroups!lblStatus.Caption = Err.Description
+ Forms!frmUXNativeGroups!lblStatus.Caption = SwiftErrorText()
 End Function

@@ -1,0 +1,50 @@
+Version =21
+VersionRequired =20
+PublishOption =1
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =0
+    ScrollBars =0
+    TabularFamily =0
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridX =24
+    GridY =24
+    Width =1440
+    DatasheetFontHeight =11
+    Right =15435
+    Bottom =12765
+    TimerInterval =60000
+    DatasheetGridlinesColor =15263976
+    OnUnload ="=PresenceLeave()"
+    Caption ="Swift NAVFIT session"
+    DatasheetFontName ="Aptos"
+    OnTimer ="=PresenceKeep()"
+    FilterOnLoad =0
+    ShowPageMargins =0
+    DisplayOnSharePointSite =1
+    DatasheetAlternateBackColor =15921906
+    DatasheetGridlinesColor12 =0
+    FitToScreen =1
+    DatasheetBackThemeColorIndex =1
+    BorderThemeColorIndex =3
+    ThemeFontIndex =1
+    ForeThemeColorIndex =0
+    AlternateBackThemeColorIndex =1
+    AlternateBackShade =95.0
+    NoSaveCTIWhenDisabled =1
+    Begin
+        Begin Section
+            Height =360
+            Name ="Detail"
+            AutoHeight =1
+            AlternateBackColor =15921906
+            AlternateBackThemeColorIndex =1
+            AlternateBackShade =95.0
+            BackThemeColorIndex =1
+        End
+    End
+End

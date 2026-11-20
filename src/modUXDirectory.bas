@@ -43,7 +43,7 @@ Public Function UXDirectorySave() As Boolean
     End If
     DoCmd.Close acForm, f.Name: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXDirectoryClose(ByVal screen As String) As Boolean
     If screen = "frmUXDirectoryBatch" Then ClearDirectoryReportPreview
@@ -136,7 +136,7 @@ Public Function UXPriorSave() As Boolean
     id = SavePriorEvaluation(priorID, priorVersion, historyMember, Nz(f!cboKind, ""), Nz(f!txtRank, ""), CDate(f!txtFrom), CDate(f!txtTo), Nz(f!cboPromotion, ""), Nz(f!cboObservation, ""), traits, Nz(f!txtSource, ""))
     DoCmd.Close acForm, f.Name: UXHistoryLoad: UXPriorSave = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXDirectoryBatchOpen() As Boolean
     ClearDirectoryReportPreview
@@ -198,7 +198,7 @@ Public Function UXDirectoryBatchPreview() As Boolean
     f!txtStamp = CStr(f!cboGroup) & "|" & CStr(CDate(f!txtFrom)) & "|" & CStr(CDate(f!txtTo)) & "|" & UXDirectoryBatchSelection()
     UXEnable f!cmdApply, True: UXDirectoryBatchPreview = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXDirectoryBatchApply() As Boolean
     Dim f As Access.Form, stamp As String, count As Long, outcome As String, message As String
@@ -242,7 +242,7 @@ Public Function UXHistoryIdentityPreview() As Boolean
     f!txtPreview = "Saved report: " & UXIdentity(MajorScalar("SELECT OfficialName FROM Report WHERE ReportID=" & id), MajorScalar("SELECT MemberName FROM Report WHERE ReportID=" & id)) & vbCrLf & "Current identity state: " & MajorScalar("SELECT MatchState FROM MemberReport WHERE ReportID=" & id) & vbCrLf & "Confirm directory member: " & MajorScalar("SELECT FullName FROM CommandMember WHERE MemberID=" & memberID) & " / " & Nz(MajorScalar("SELECT RankRate FROM CommandMember WHERE MemberID=" & memberID), "") & vbCrLf & "Confirm only after checking that this is the same person."
     f!lblStatus.Caption = "": UXEnable f!cmdApply, True: UXHistoryIdentityPreview = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXHistoryApplyIdentity() As Boolean
     Dim f As Access.Form
@@ -252,7 +252,7 @@ Public Function UXHistoryApplyIdentity() As Boolean
     LinkReportDirectoryMember CLng(f!txtReport), CLng(f!txtMember), CLng(f!txtRevision), CLng(f!txtVersion), Nz(f!txtReason, "")
     DoCmd.Close acForm, f.Name: UXHistoryLoad: UXHistoryApplyIdentity = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 'Counseling list: id;date;outcome;counselor or reason;worksheet. The status line
 'shows the schedule state for the member.
@@ -317,7 +317,7 @@ Public Function UXCounselingSave() As Boolean
     UXCounselingRefresh
     UXCounselingSave = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXCounselingArchive(Optional ByVal confirmed As Boolean = False) As Boolean
     Dim id As Long, version As Variant, restoring As Boolean
@@ -333,7 +333,7 @@ Public Function UXCounselingArchive(Optional ByVal confirmed As Boolean = False)
     UXCounselingRefresh
     Exit Function
 Failed:
-    Forms!frmUXMemberHistory!lblStatus.Caption = Err.Description
+    Forms!frmUXMemberHistory!lblStatus.Caption = SwiftErrorText()
 End Function
 Private Sub UXCounselingRefresh()
     If CurrentProject.AllForms("frmUXMemberHistory").IsLoaded Then UXHistoryCounselingLoad

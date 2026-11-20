@@ -9,7 +9,7 @@ Public Function PDFOutputOpenReport() As Boolean
     If CurrentProject.AllForms("frmPDFOutput").IsLoaded Then DoCmd.Close acForm, "frmPDFOutput", acSaveNo
     DoCmd.OpenForm "frmPDFOutput": PDFOutputOpenReport = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Create PDFs"
+    MsgBox SwiftErrorText(), vbExclamation, "Create PDFs"
 End Function
 ' Print preview from the editor: this report's PDF pages, pending edits included, in
 ' Access print preview. Nothing is saved and no PDF is written; the page cache sits in
@@ -43,7 +43,7 @@ Public Function PDFOutputOpenGroup(ByVal screen As String) As Boolean
     If CurrentProject.AllForms("frmPDFOutput").IsLoaded Then DoCmd.Close acForm, "frmPDFOutput", acSaveNo
     DoCmd.OpenForm "frmPDFOutput": PDFOutputOpenGroup = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Create group PDFs"
+    MsgBox SwiftErrorText(), vbExclamation, "Create group PDFs"
 End Function
 Private Sub PDFOutputLetterChoices()
     PDFOutputSetLetter Nz(Forms!frmPDFOutput!cboISIC, 0), Nz(Forms!frmPDFOutput!cboOnTime, "")
@@ -91,7 +91,7 @@ Public Function PDFOutputSelectRow() As Boolean
     Next
     PDFOutputSelectRow = True: Exit Function
 Failed:
-    Forms!frmPDFOutput!lblStatus.Caption = Err.Description
+    Forms!frmPDFOutput!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function PDFOutputBrowseFolder() As Boolean
     Dim dialog As Object, folder As String

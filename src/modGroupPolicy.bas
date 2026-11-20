@@ -160,7 +160,7 @@ Public Function UXSaveGroupPolicy() As Boolean
     DoCmd.Close acForm, "frmUXGroupPolicy", acSaveNo
     UXSaveGroupPolicy = True: Exit Function
 Failed:
-    Forms!frmUXGroupPolicy!lblStatus.Caption = Err.Description
+    Forms!frmUXGroupPolicy!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function GroupImpactText(ByVal groupID As Long, Optional ByVal overrides As Object, Optional ByVal membersCSV As String = "@Current") As String
     Dim item As Object, findings As Collection, n As Long, db As DAO.Database, r As DAO.Recordset, ids As Object, key As Variant, trait As Variant, f As Object, observed As Long, marks As Long, total As Double
@@ -243,7 +243,7 @@ Public Function UXPreviewGroupMembers() As Boolean
     Forms!frmUXMembers!txtImpact = "BEFORE GROUP:" & vbCrLf & GroupImpactText(memberGroup) & vbCrLf & vbCrLf & "AFTER SELECTED MEMBERS:" & vbCrLf & GroupImpactText(memberGroup, , csv)
     memberPreviewToken = MemberToken(csv): UXPreviewGroupMembers = True: Exit Function
 Failed:
-    memberPreviewToken = "": Forms!frmUXMembers!lblStatus.Caption = Err.Description
+    memberPreviewToken = "": Forms!frmUXMembers!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXApplyGroupMembers() As Boolean
     On Error GoTo Failed
@@ -251,5 +251,5 @@ Public Function UXApplyGroupMembers() As Boolean
     UXApplyGroupMembers = UXSaveMembers(): If UXApplyGroupMembers Then memberPreviewToken = ""
     Exit Function
 Failed:
-    Forms!frmUXMembers!lblStatus.Caption = Err.Description
+    Forms!frmUXMembers!lblStatus.Caption = SwiftErrorText()
 End Function

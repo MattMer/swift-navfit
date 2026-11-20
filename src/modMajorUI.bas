@@ -55,7 +55,7 @@ Public Function ShowMajorDetails() As Boolean
     End If
     r.Close: f!txtDetail = text: ShowMajorDetails = True: Exit Function
 Failed:
-    Forms!frmMajorWorkbench!lblStatus.Caption = Err.Description
+    Forms!frmMajorWorkbench!lblStatus.Caption = SwiftErrorText()
 End Function
 Private Function WorkbenchReports() As String
     Dim item As Variant, f As Access.Form

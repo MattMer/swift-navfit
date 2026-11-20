@@ -60,6 +60,22 @@ Public Function FieldsSubset(ByVal values As Object, ByVal keys As Variant) As V
     FieldsSubset = result
 End Function
 Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal changes As Object, ByVal reason As String, Optional ByVal ownTransaction As Boolean = True, Optional ByVal syncDirectory As Boolean = True) As Long
+    'A guarded save another session's save is holding up is tried again; each try
+    're-checks the expected revision, so it can never overwrite that other save.
+    Dim attempt As Long
+    On Error GoTo Failed
+TryAgain:
+    attempt = attempt + 1
+    CommitSavedFields = CommitSavedFieldsOnce(reportID, expectedRevision, changes, reason, ownTransaction, syncDirectory)
+    Exit Function
+Failed:
+    If ownTransaction And SwiftLockConflict(Err.Number) And attempt < SWIFT_LOCK_TRIES Then
+        SwiftLockWait attempt
+        Resume TryAgain
+    End If
+    Err.Raise Err.Number, Err.Source, Err.Description
+End Function
+Private Function CommitSavedFieldsOnce(ByVal reportID As Long, ByVal expectedRevision As Long, ByVal changes As Object, ByVal reason As String, Optional ByVal ownTransaction As Boolean = True, Optional ByVal syncDirectory As Boolean = True) As Long
     'False is reserved for callers that already own the entire guarded batch.
     Dim db As DAO.Database, r As DAO.Recordset, values As Object, key As Variant, w As DAO.Workspace, failure As Long, message As String, stage As String
     On Error GoTo Failed
@@ -87,9 +103,9 @@ Public Function CommitSavedFields(ByVal reportID As Long, ByVal expectedRevision
         If IsNull(values(key)) Then Err.Raise vbObjectError + 4009, "modMajorCore.CommitSavedFields", "Review and explicitly fill the null draft field before applying a batch: " & key
     Next
     stage = "Normal draft commit"
-    CommitSavedFields = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
+    CommitSavedFieldsOnce = CommitDraft(reportID, values("FormKind"), Nz(values("Title"), ""), Nz(values("MemberName"), ""), values("PeriodStart"), values("PeriodEnd"), Nz(values("DraftNotes"), ""), reason, values("OfficialComments"), _
         FieldsSubset(values, AdministrationKeys()), FieldsSubset(values, TraitKeys()), FieldsSubset(values, AssessmentKeys()), values("PromotionStatus"), FieldsSubset(values, ReportingSeniorKeys()), _
-        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values, syncDirectory:=syncDirectory)
+        FieldsSubset(values, ReportContextKeys()), FieldsSubset(values, MemberDetailsKeys()), FieldsSubset(values, ServiceDetailsKeys()), FieldsSubset(values, DecisionDetailsKeys()), FieldsSubset(values, ReportPeopleKeys()), FieldsSubset(values, PartyNamesKeys()), values("CommandEmployment"), values, syncDirectory:=syncDirectory, expectedRevision:=expectedRevision)
     If ownTransaction Then w.CommitTrans
     Exit Function
 Failed:
@@ -197,10 +213,13 @@ End Function
 Public Sub SealRevision(ByVal db As DAO.Database, ByVal revisionID As Long)
     Dim rows As Object, r As DAO.Recordset, version As Long
     Set rows = RevisionValueRows(db, revisionID)
-    Set r = db.OpenRecordset("SELECT FieldDefinitionVersion FROM ReportRevision WHERE RevisionID=" & revisionID, dbOpenSnapshot)
-    If Not r.EOF Then version = Nz(r!FieldDefinitionVersion, 0)
+    'A recordset edit locks only this revision's row (shared data file).
+    Set r = db.OpenRecordset("SELECT FieldDefinitionVersion,ValueCount,ValueHash FROM ReportRevision WHERE RevisionID=" & revisionID, dbOpenDynaset)
+    If Not r.EOF Then
+        version = Nz(r!FieldDefinitionVersion, 0)
+        r.Edit: r!ValueCount = rows.Count: r!ValueHash = RevisionValueDigest(rows, version): r.Update
+    End If
     r.Close
-    db.Execute "UPDATE ReportRevision SET ValueCount=" & rows.Count & ",ValueHash='" & RevisionValueDigest(rows, version) & "' WHERE RevisionID=" & revisionID, dbFailOnError
 End Sub
 ' Raise when a sealed revision's stored values no longer match their count and checksum.
 ' rows holds the revision's value rows as read, before empty fields are filled in.

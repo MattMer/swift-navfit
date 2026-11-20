@@ -854,7 +854,7 @@ Begin Form
                     TextFontFamily =34
                     Left =2850
                     Top =9100
-                    Width =9950
+                    Width =6700
                     Height =600
                     FontSize =10
                     ForeColor =4205854
@@ -863,10 +863,49 @@ Begin Form
                     FontName ="Segoe UI"
                     LayoutCachedLeft =2850
                     LayoutCachedTop =9100
-                    LayoutCachedWidth =12800
+                    LayoutCachedWidth =9550
                     LayoutCachedHeight =9700
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
+                End
+                Begin CommandButton
+                    OverlapFlags =85
+                    TextFontFamily =34
+                    Left =9670
+                    Top =9100
+                    Width =3150
+                    Height =550
+                    FontSize =10
+                    TabIndex =17
+                    ForeColor =4205854
+                    Name ="cmdCompactData"
+                    Caption ="Compact data file"
+                    OnClick ="=UXCompactDataFile()"
+                    FontName ="Segoe UI"
+
+                    LayoutCachedLeft =9670
+                    LayoutCachedTop =9100
+                    LayoutCachedWidth =12820
+                    LayoutCachedHeight =9650
+                    ForeThemeColorIndex =-1
+                    Gradient =0
+                    BackColor =15985893
+                    BackThemeColorIndex =-1
+                    BorderColor =13285543
+                    BorderThemeColorIndex =-1
+                    ThemeFontIndex =-1
+                    HoverColor =15985893
+                    HoverThemeColorIndex =-1
+                    PressedColor =15985893
+                    PressedThemeColorIndex =-1
+                    HoverForeColor =4205854
+                    HoverForeThemeColorIndex =-1
+                    PressedForeColor =4205854
+                    PressedForeThemeColorIndex =-1
+                    WebImagePaddingLeft =2
+                    WebImagePaddingTop =2
+                    WebImagePaddingRight =1
+                    WebImagePaddingBottom =1
                 End
                 Begin TextBox
                     Locked = NotDefault

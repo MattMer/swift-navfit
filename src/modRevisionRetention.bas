@@ -16,7 +16,10 @@ End Function
 Public Sub SetRevisionRetention(ByVal revision As Long, ByVal kind As String, Optional ByVal reason As String = "")
     If kind <> "Working" And kind <> "Checkpoint" And kind <> "Narrative" And kind <> "Protected" Then Err.Raise 5, , "Unknown revision retention kind."
     If PersistenceCount("ReportRevision", "RevisionID=" & revision) <> 1 Then Err.Raise 5, , "Choose an existing report state."
-    CurrentDb.Execute "INSERT INTO RevisionRetention (RevisionID,RetentionKind,CheckpointReason) VALUES (" & revision & "," & QuoteSQL(kind) & "," & QuoteSQL(Left$(reason, 255)) & ")", dbFailOnError
+    Dim r As DAO.Recordset
+    Set r = CurrentDb.OpenRecordset("RevisionRetention", dbOpenDynaset, dbAppendOnly)
+    r.AddNew: r!RevisionID = revision: r!RetentionKind = kind: r!CheckpointReason = Left$(reason, 255): r.Update
+    r.Close
 End Sub
 
 'Caller owns the workflow transaction: seal exactly the state being handed off.
@@ -72,11 +75,11 @@ Public Sub RetireWorkingRevision(ByVal revision As Long, Optional ByVal allowUnr
     End If
     Set db = CurrentDb
     If RevisionHasReferences(revision) Then
-        db.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & revision, dbFailOnError
+        SwiftSetField db, "RevisionRetention", "RetentionKind", "Protected", "RevisionID=" & revision
         Exit Sub
     End If
     For Each table In Array("RevisionRetention", "RevisionDate", "RevisionChoice", "RevisionChange", "RevisionValue", "ReportRevision")
-        db.Execute "DELETE FROM [" & table & "] WHERE RevisionID=" & revision, dbFailOnError
+        SwiftDeleteRows db, CStr(table), "RevisionID=" & revision
     Next
 End Sub
 

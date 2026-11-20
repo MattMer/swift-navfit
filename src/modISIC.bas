@@ -22,8 +22,10 @@ Public Function ISICSave(ByVal id As Long, ByVal expectedVersion As Long, ByVal 
     Else
         Set r = CurrentDb.OpenRecordset("SELECT * FROM ISIC WHERE ISICID=" & id, dbOpenDynaset)
         If r.EOF Then r.Close: Err.Raise vbObjectError + 9905, "modISIC.ISICSave", "This ISIC no longer exists."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!VersionCounter <> expectedVersion Then r.Close: Err.Raise vbObjectError + 9906, "modISIC.ISICSave", "This ISIC changed. Choose it again before saving."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     r!Title = title: r!UIC = IIf(Len(uic) = 0, Null, uic): r!Address = IIf(Len(address) = 0, Null, address)
     r.Update: r.Bookmark = r.LastModified: ISICSave = r!ISICID: r.Close: Set r = Nothing
@@ -167,5 +169,5 @@ Public Function UXISICDelete() As Boolean
     f!lblStatus.Caption = "Deleted."
     UXISICDelete = True: Exit Function
 Failed:
-    Forms!frmUXISICs!lblStatus.Caption = Err.Description
+    Forms!frmUXISICs!lblStatus.Caption = SwiftErrorText()
 End Function

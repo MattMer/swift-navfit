@@ -8,14 +8,14 @@ Public Function ChecklistFromEditor() As Boolean
     ChecklistFromEditor = OpenDraftChecklist(Nz(Forms!frmEditor!txtReportID, 0))
     Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Saved draft checklist"
+    MsgBox SwiftErrorText(), vbInformation, "Saved draft checklist"
 End Function
 Public Function ChecklistFromLibrary() As Boolean
     On Error GoTo Failed
     ChecklistFromLibrary = OpenDraftChecklist(Nz(Forms!frmLibrary!lstReports, 0))
     Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Saved draft checklist"
+    MsgBox SwiftErrorText(), vbInformation, "Saved draft checklist"
 End Function
 Public Function ChecklistField(ByVal key As String) As String
     Select Case key

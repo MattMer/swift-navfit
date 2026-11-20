@@ -198,7 +198,7 @@ Public Function UXSignoffOpen(Optional ByVal reportID As Long = 0) As Boolean
     If ReviewHolder(reportID, holderWhere) > 0 Then f!lblStatus.Caption = "This report is under review (" & holderWhere & "). Marking it signed ends that review. " & f!lblStatus.Caption
     UXSignoffOpen = True: Exit Function
 Failed:
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = Err.Description Else MsgBox Err.Description, vbExclamation, "Mark signed"
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = SwiftErrorText() Else MsgBox SwiftErrorText(), vbExclamation, "Mark signed"
 End Function
 Public Function UXSignoffSave(Optional ByVal confirmedDisposal As Boolean = False) As Boolean
     Dim f As Access.Form, dispose As Boolean
@@ -228,7 +228,7 @@ DisposalFailed:
     UXSignoffRefresh signoffReport
     UXSignoffSave = True: Exit Function
 Failed:
-    f!lblStatus.Caption = Err.Description
+    f!lblStatus.Caption = SwiftErrorText()
 End Function
 Private Sub UXSignoffDisposalFailed(ByVal f As Access.Form, ByVal failed As Long, ByVal message As String)
     f!lblStatus.Caption = "Marked signed. Disposing of drafts failed for " & failed & IIf(failed = 1, " report", " reports") & ", so nothing was disposed there: " & message & " Use Dispose of drafts to try again."
@@ -273,7 +273,7 @@ Public Function UXDisposeDrafts(Optional ByVal reportID As Long = 0, Optional By
     UXSignoffRefresh reportID
     UXDisposeDrafts = True: Exit Function
 Failed:
-    If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = Err.Description Else MsgBox Err.Description, vbExclamation, "Dispose of drafts"
+    If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = SwiftErrorText() Else MsgBox SwiftErrorText(), vbExclamation, "Dispose of drafts"
 End Function
 'The change is already committed, so a refresh failure is reported, not raised.
 Private Sub UXSignoffRefresh(ByVal reportID As Long)
@@ -379,5 +379,5 @@ Public Function UXSignoffOpenGroup(ByVal groupID As Long, ByVal completing As Bo
     If reviewing > 0 Then f!lblStatus.Caption = f!lblStatus.Caption & " " & reviewing & " of them " & IIf(reviewing = 1, "is", "are") & " under review; signing ends those reviews."
     UXSignoffOpenGroup = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Mark signed"
+    MsgBox SwiftErrorText(), vbExclamation, "Mark signed"
 End Function

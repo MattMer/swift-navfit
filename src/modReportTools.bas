@@ -141,7 +141,7 @@ Public Function UXMessagePost() As Boolean
  f!lstMessages = id: UXMessageRefresh
  UXMessagePost = True: Exit Function
 Failed:
- f!lblNoteStatus.Caption = Err.Description
+ f!lblNoteStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXMessageKeep() As Boolean
  If Not UXToolsCheckpoint() Then Exit Function
@@ -156,7 +156,7 @@ Public Function UXMessageDiscard() As Boolean
  f!txtMessage = Null: f!txtDraftSaved = Null: f!txtDraftGuid = NewIdentity(): f!txtDraftVersion = 0: f!txtDraftParent = 0
  Call UXMessageRefresh: UXMessageDiscard = True: Exit Function
 Failed:
- f!lblNoteStatus.Caption = Err.Description
+ f!lblNoteStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXMessageResume(Optional ByVal identity As String = "") As Boolean
  Dim f As Access.Form, rows As DAO.Recordset
@@ -172,7 +172,7 @@ Public Function UXMessageResume(Optional ByVal identity As String = "") As Boole
  f!lblCompose.Caption = IIf(Nz(f!txtDraftParent, 0) > 0, "Continue your draft reply", "Continue your draft note")
  UXMessageResume = True: Exit Function
 Failed:
- f!lblNoteStatus.Caption = Err.Description
+ f!lblNoteStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXToolsValidation() As Boolean
  Dim f As Access.Form, item As Object, i As Long, values As Object
@@ -236,7 +236,7 @@ Public Function UXOpenReportTool(ByVal report As Long, ByVal view As String, Opt
  End If
  Forms!frmEditor.SetFocus: UXOpenReportTool = True: Exit Function
 Failed:
- If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = Err.Description
+ If CurrentProject.AllForms("frmEditor").IsLoaded Then Forms!frmEditor!uxError.Caption = SwiftErrorText()
 End Function
 Public Function UXReportReviewMode() As Boolean
  Dim f As Access.Form, c As Access.Control, assigned As Boolean

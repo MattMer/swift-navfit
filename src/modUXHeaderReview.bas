@@ -28,7 +28,7 @@ Public Function UXHeaderReview(ByVal action As String, Optional ByVal decisionNo
  UXHeaderReview = UXReviewAction(action)
  Exit Function
 Failed:
- Forms!frmEditor!uxError.Caption = Err.Description
+ Forms!frmEditor!uxError.Caption = SwiftErrorText()
 End Function
 Public Function UXHeaderReviewLayout(ByVal compact As Boolean, ByVal width As Long) As Boolean
     Dim f As Access.Form, names As Variant, i As Long, x As Long, span As Long

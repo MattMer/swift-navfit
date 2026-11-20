@@ -164,8 +164,10 @@ Public Function SaveDirectoryMember(ByVal memberID As Long, ByVal expectedVersio
         r.AddNew: r!MemberGuid = NewIdentity(): r!CreatedBy = author: r!CreatedAt = Now(): r!SourceKind = sourceKind: r!IsArchived = False: r!VersionCounter = 1
     Else
         If r.EOF Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Member no longer exists."
+        'Lock the row before checking its version, so a save another session is finishing is seen.
+        r.Edit
         If r!VersionCounter <> expectedVersion Then Err.Raise vbObjectError + 6960, "modCommandDirectory.SaveDirectoryMember", "Member profile changed. Reopen it before saving."
-        r.Edit: r!VersionCounter = r!VersionCounter + 1
+        r!VersionCounter = r!VersionCounter + 1
     End If
     If IsMissing(ruadValues) Then
         Set ruad = RUADDecode(r!RUADData)

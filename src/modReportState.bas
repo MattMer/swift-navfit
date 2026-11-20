@@ -241,10 +241,21 @@ Public Function CommitReportChoice(ByVal reportID As Long, ByVal expectedRevisio
 End Function
 
 Public Sub SelectReportHead(ByVal reportID As Long, ByVal revisionID As Long)
-    Dim db As DAO.Database
-    Set db = CurrentDb
-    db.Execute "DELETE FROM ReportHead WHERE ReportID=" & reportID, dbFailOnError
-    db.Execute "INSERT INTO ReportHead (ReportID,RevisionID) VALUES (" & reportID & "," & revisionID & ")", dbFailOnError
+    Dim r As DAO.Recordset
+    'One row per report, edited in place so only that row is locked (shared data file).
+    Set r = CurrentDb.OpenRecordset("SELECT * FROM ReportHead WHERE ReportID=" & reportID, dbOpenDynaset)
+    If r.EOF Then
+        r.AddNew: r!ReportID = reportID
+    Else
+        r.Edit
+        r.MoveNext
+        Do Until r.EOF
+            r.Delete: r.MoveNext
+        Loop
+        r.MoveFirst: r.Edit
+    End If
+    r!RevisionID = revisionID: r.Update
+    r.Close
 End Sub
 
 Public Function DateFactState(ByVal value As Variant, ByVal key As String) As String

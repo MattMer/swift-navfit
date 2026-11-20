@@ -27,6 +27,7 @@ Public Sub BindActiveContributor(ByVal profile As Long)
  TempVars.Add "SwiftContributorPath", SwiftDataPath()
  TempVars.Add "SwiftContributorWorkspace", CStr(Nz(DLookup("WorkspaceGuid", "Workspace", "WorkspaceID=1"), ""))
  PresenceTouch True
+ PresenceStartKeeper
 End Sub
 
 Public Function HasActiveContributor() As Boolean

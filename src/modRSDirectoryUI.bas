@@ -225,7 +225,7 @@ Public Function RSPickerUse() As Boolean
         If pickerMode = "contributor" And CurrentProject.AllForms("frmMyWork").IsLoaded Then Call LoadMyWork
         RSPickerUse = True: Exit Function
 Refused:
-        f!lblStatus.Caption = Err.Description: Exit Function
+        f!lblStatus.Caption = SwiftErrorText(): Exit Function
     End If
     If pickerMode = "link" Then
         If Not CurrentProject.AllForms("frmUXSeniorEditor").IsLoaded Then f!lblStatus.Caption = "The reporting senior record is closed. Open it again to link a member.": Exit Function
@@ -311,7 +311,7 @@ Public Function RSAddBaselineUI() As Boolean
     f!txtRSCA = Null: f!txtTraitCount = Null: f!txtTraitSum = Null: f!txtSource = Null: f!txtAsOf = Null
     RSAddBaselineUI = True: Exit Function
 Failed:
-    Forms!frmUXSeniorEditor!lblStatus.Caption = Err.Description & " Pending baseline entries are retained."
+    Forms!frmUXSeniorEditor!lblStatus.Caption = SwiftErrorText() & " Pending baseline entries are retained."
 End Function
 Public Function RSUseSeniorInEditor() As Boolean
     Dim values As Object, key As Variant, id As Long
@@ -323,7 +323,7 @@ Public Function RSUseSeniorInEditor() As Boolean
     For Each key In RSSeniorKeys(): Call UXSurfaceSetValue(CStr(key), values(CStr(key))): Next
     Call UXEditorChanged: RSUseSeniorInEditor = True: Exit Function
 Failed:
-    Forms!frmEditor!uxError.Caption = Err.Description
+    Forms!frmEditor!uxError.Caption = SwiftErrorText()
 End Function
 Public Function RSOpenGroupCalculator(Optional ByVal groupID As Long = 0) As Boolean
     Dim id As Long
@@ -370,7 +370,7 @@ Public Function RSSaveGroupCalculation() As Boolean
     End With
     Call RSShowGroupCalculation: UXRefreshGroupSenior: RSSaveGroupCalculation = True: Exit Function
 Failed:
-    Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description
+    Forms!frmUXGroupRSCA!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function RSShowGroupCalculation() As Boolean
     Dim result As Object, loaded As DAO.Recordset
@@ -401,5 +401,5 @@ Public Function RSStageGroupSenior(Optional ByVal decision As VbMsgBoxResult = 0
     End If
     Exit Function
 Failed:
-    Forms!frmUXGroupRSCA!lblStatus.Caption = Err.Description & " No partial changes were saved."
+    Forms!frmUXGroupRSCA!lblStatus.Caption = SwiftErrorText() & " No partial changes were saved."
 End Function

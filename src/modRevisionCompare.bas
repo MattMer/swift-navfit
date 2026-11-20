@@ -93,7 +93,7 @@ Public Function CompareSelectedRevision() As Boolean
     CompareSelectedRevision = OpenRevisionComparison(Nz(Forms!frmEditor!txtReportID, 0), Nz(Forms!frmEditor!lstRevisions, 0))
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Compare revisions"
+    MsgBox SwiftErrorText(), vbExclamation, "Compare revisions"
 End Function
 
 Public Function RefreshComparisonFields() As Boolean
@@ -120,7 +120,7 @@ Public Function RefreshComparisonFields() As Boolean
     RefreshComparisonFields = True: Exit Function
 Failed:
     f!lstCompareFields.RowSource = "": f!txtOldValue = "": f!txtNewValue = ""
-    f!lblSummary.Caption = Err.Description
+    f!lblSummary.Caption = SwiftErrorText()
 End Function
 
 Private Function ComparisonFieldLabel(ByVal key As String) As String
@@ -170,7 +170,7 @@ Public Function LoadComparisonValues() As Boolean
     f!txtNewValue = DisplayValue(CLng(f!txtNewer), key)
     LoadComparisonValues = True: Exit Function
 Failed:
-    f!txtOldValue = "": f!txtNewValue = "": f!lblSummary.Caption = Err.Description
+    f!txtOldValue = "": f!txtNewValue = "": f!lblSummary.Caption = SwiftErrorText()
 End Function
 
 Public Function CloseRevisionComparison() As Boolean

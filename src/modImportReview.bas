@@ -102,7 +102,7 @@ Public Function ChooseReviewFile() As Boolean
     End With
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Open staging review"
+    MsgBox SwiftErrorText(), vbExclamation, "Open staging review"
 End Function
 
 Public Function ReviewReportFields() As Boolean
@@ -316,7 +316,7 @@ Public Function PreviewReconcileUI() As Boolean
     On Error GoTo Failed
     PreviewReconcileUI = PreviewIncomingNarrative(Nz(Forms!frmImportReview!lstImportReports, 0), Nz(Forms!frmImportReview!cboDestinationReport, 0)): Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Compare incoming narrative"
+    MsgBox SwiftErrorText(), vbExclamation, "Compare incoming narrative"
 End Function
 Public Function AcceptIncomingNarrative(ByVal externalID As Long, ByVal reportID As Long, ByVal expectedRevision As Long, ByVal expectedHash As String) As Long
     If reviewDb Is Nothing Then Err.Raise vbObjectError + 420, "modImportReview.AcceptIncomingNarrative", "Source review is closed."
@@ -333,7 +333,7 @@ Public Function AcceptIncomingUI() As Boolean
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then Call RefreshLibrary()
     AcceptIncomingUI = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Accept incoming narrative"
+    MsgBox SwiftErrorText(), vbExclamation, "Accept incoming narrative"
 End Function
 Public Function CloseReconcileUI() As Boolean
     DoCmd.Close acForm, "frmReconcile", acSaveNo

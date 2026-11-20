@@ -105,12 +105,12 @@ End Sub
 
 ' "" when the file is a Swift NAVFIT data file this version can use; otherwise why not.
 Public Function DataFileProblem(ByVal filePath As String) As String
-    Dim db As DAO.Database, r As DAO.Recordset, t As DAO.TableDef, found As Object, name As Variant, version As Long
+    Dim db As DAO.Database, r As DAO.Recordset, t As DAO.TableDef, found As Object, name As Variant, version As Long, upgradedBy As String
     On Error GoTo Failed
     If Len(filePath) = 0 Then DataFileProblem = "No data file was chosen.": Exit Function
     If Not FileFound(filePath) Then DataFileProblem = "The data file was not found: " & filePath: Exit Function
     If StrComp(filePath, CurrentProject.FullName, vbTextCompare) = 0 Then DataFileProblem = "That is the Swift NAVFIT application file, not a data file.": Exit Function
-    Set db = DBEngine.Workspaces(0).OpenDatabase(filePath, False, True)
+    Set db = SwiftOpenDataFile(filePath, True)
     Set found = CreateObject("Scripting.Dictionary"): found.CompareMode = vbTextCompare
     For Each t In db.TableDefs
         found(t.Name) = (Len(t.Connect) = 0)
@@ -119,8 +119,8 @@ Public Function DataFileProblem(ByVal filePath As String) As String
         DataFileProblem = "That file is not a Swift NAVFIT data file: " & filePath
         GoTo Done
     End If
-    Set r = db.OpenRecordset("SELECT SchemaVersion FROM AppMetadata", dbOpenSnapshot)
-    If Not r.EOF Then version = CLng(Nz(r!SchemaVersion, 0))
+    Set r = db.OpenRecordset("SELECT SchemaVersion, AppVersion FROM AppMetadata", dbOpenSnapshot)
+    If Not r.EOF Then version = CLng(Nz(r!SchemaVersion, 0)): upgradedBy = Nz(r!AppVersion, "")
     r.Close: Set r = Nothing
     'A whole workspace from an earlier version holds the application too; it is imported.
     If ApplicationObjects(db) > 0 Then
@@ -128,7 +128,7 @@ Public Function DataFileProblem(ByVal filePath As String) As String
         GoTo Done
     End If
     If version > SCHEMA_VERSION Then
-        DataFileProblem = "The data file is schema " & version & ", newer than this version of Swift NAVFIT (schema " & SCHEMA_VERSION & "). Use a newer Swift NAVFIT."
+        DataFileProblem = DataFileNewerText(upgradedBy)
         GoTo Done
     End If
     If version <> SCHEMA_VERSION Then
@@ -227,6 +227,8 @@ Public Function LinkDataFile(ByVal filePath As String) As Boolean
     stage = "Check data file"
     problem = DataFileProblem(filePath)
     If Len(problem) > 0 Then Err.Raise vbObjectError + 9802, "modDataLink.LinkDataFile", problem
+    'Open the new data file with record-level locking before the links reach it.
+    SwiftRowLockHold filePath
     Set db = CurrentDb: Set names = DataTableNames(db)
     If Len(db.TableDefs("Workspace").Connect) = 0 Then
         If Not LocalWorkspaceBlank() Then Err.Raise vbObjectError + 9803, "modDataLink.LinkDataFile", "This file already holds a workspace. Move it with Settings & Help > Import data from a previous Swift NAVFIT version."
@@ -417,7 +419,7 @@ Public Function UXOpenDataFile() As Boolean
     End If
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Swift NAVFIT data file"
+    MsgBox SwiftErrorText(), vbExclamation, "Swift NAVFIT data file"
 End Function
 
 ' True for a complete Swift NAVFIT workspace (tables with the application in one file),
@@ -518,7 +520,7 @@ Public Function UXNewDataFile() As Boolean
     UXNewDataFile = UXSetupDataPaint()
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Swift NAVFIT data file"
+    MsgBox SwiftErrorText(), vbExclamation, "Swift NAVFIT data file"
 End Function
 
 ' Unless this copy already uses a data file, make one in the setup folder and link to it.
@@ -547,7 +549,7 @@ Public Function UXCreateWorkspace() As Boolean
     UXCreateWorkspace = True
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Swift NAVFIT setup"
+    MsgBox SwiftErrorText(), vbExclamation, "Swift NAVFIT setup"
     UXSetupDataPaint
 End Function
 
@@ -559,7 +561,7 @@ Public Function UXSetupImport() As Boolean
     UXSetupImport = UXChooseSwiftWorkspace()
     Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Swift NAVFIT setup"
+    MsgBox SwiftErrorText(), vbExclamation, "Swift NAVFIT setup"
     UXSetupDataPaint
 End Function
 

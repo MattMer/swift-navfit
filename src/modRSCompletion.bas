@@ -51,6 +51,9 @@ Public Sub RSPostGroupCompletion(ByVal groupID As Long, ByVal policy As Object)
  Set p = RSGroupPSG(groupID)
  If Not p.Exists("GroupCount") Then Err.Raise vbObjectError + 4854, "modRSCompletion.RSPostGroupCompletion", "Cannot complete RSCA accounting: " & p("Reason")
  grade = CStr(DLookup("Paygrade", "SummaryGroup", "GroupID=" & groupID))
+ 'Two groups for the same reporting senior completed at once take turns: the second
+ 'then sees the first one's new baseline and is asked to select it.
+ CurrentDb.Execute "UPDATE ReportingSeniorRecord SET VersionCounter=VersionCounter WHERE SeniorID=" & CLng(p("SeniorID")), dbFailOnError
  latest = RSLatestBaseline(CLng(p("SeniorID")), grade)
  If latest <> CLng(p("BaselineID")) Then Err.Raise vbObjectError + 4855, "modRSCompletion.RSPostGroupCompletion", "Select the latest matching paygrade baseline before completing this group. Earlier observations remain in history."
  Set r = CurrentDb.OpenRecordset("SELECT r.* FROM Report AS r INNER JOIN GroupMember AS m ON r.ReportID=m.ReportID WHERE m.GroupID=" & groupID & " ORDER BY r.ReportID", dbOpenSnapshot): ids = "|"

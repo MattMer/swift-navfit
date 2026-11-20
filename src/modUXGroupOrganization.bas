@@ -44,7 +44,7 @@ Public Function UXEditorGroupChosen() As Boolean
     If CurrentProject.AllForms("frmLibrary").IsLoaded Then RefreshLibrary
     UXEditorGroupChosen = UXRefreshEditor(): Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Move report"
+    MsgBox SwiftErrorText(), vbInformation, "Move report"
 Revert:
     f!uxGroup = MajorScalar("SELECT Min(GroupID) FROM GroupMember WHERE ReportID=" & id)
     Call UXRefreshEditor
@@ -113,7 +113,7 @@ Public Function UXPreviewMoveGroup() As Boolean
     End If
     moveOwner = ActiveContributorID(): moveToken = MoveStamp(id, destination): UXEnable Forms!frmUXMoveGroup!cmdApply, True: UXPreviewMoveGroup = True: Exit Function
 Failed:
-    moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = Err.Description
+    moveToken = "": Forms!frmUXMoveGroup!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXApplyMoveGroup() As Boolean
     Dim committed As Boolean, message As String
@@ -155,5 +155,5 @@ Public Function UXSetGroupWorkflow(Optional ByVal decision As Long = 0) As Boole
     UXGroupList
     UXSetGroupWorkflow = True: Exit Function
 Failed:
-    Forms!frmUXGroups!uxLifecycleStatus.Caption = Err.Description
+    Forms!frmUXGroups!uxLifecycleStatus.Caption = SwiftErrorText()
 End Function

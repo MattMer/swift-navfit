@@ -143,7 +143,8 @@ End Function
 ' Keep the report write cursor alive through revision-pointer assignment to avoid DAO
 ' lock failures; invalidate editor context after a successful local save.
 Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, ByVal title As String, ByVal memberName As String, ByVal startDate As Variant, ByVal endDate As Variant, ByVal notes As String, Optional ByVal reason As String = "Draft save", Optional ByVal officialComments As Variant, Optional ByVal administration As Variant, Optional ByVal traits As Variant, Optional ByVal assessment As Variant, Optional ByVal promotionStatus As Variant, Optional ByVal reportingSenior As Variant, Optional ByVal reportContext As Variant, Optional ByVal memberDetails As Variant, Optional ByVal serviceDetails As Variant, _
-    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0, Optional ByVal syncDirectory As Boolean = True) As Long
+    Optional ByVal decisionDetails As Variant, Optional ByVal reportPeople As Variant, Optional ByVal partyNames As Variant, Optional ByVal commandEmployment As Variant, Optional ByVal additionalFields As Variant, Optional ByVal auditOperationID As Long = 0, Optional ByVal syncDirectory As Boolean = True, Optional ByVal expectedRevision As Long = 0) As Long
+    Dim step As String
     Dim w As DAO.Workspace, db As DAO.Database, r As DAO.Recordset, rev As DAO.Recordset, snapshotRows As DAO.Recordset, changeRows As DAO.Recordset
     Dim keys As Variant, previous() As Variant, current() As Variant, i As Long
     Dim revisionID As Long, seq As Long, parentID As Variant, pid As Long, changed As Boolean
@@ -228,8 +229,14 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         r.AddNew: r!ReportGuid = NewIdentity(): r!CreatedAt = Now(): r!WorkflowState = "Draft"
         r!IsArchived = False: changed = True: seq = 1: parentID = Null
     Else
+        step = "lock report"
         Set r = db.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & reportID, dbOpenDynaset)
         If r.EOF Then Err.Raise vbObjectError + 109, "modSwift.CommitDraft", "Report does not exist."
+        'Lock this report's row (a recordset edit locks the record; an UPDATE statement
+        'would lock a whole page and hold up people saving other reports). Two people
+        'saving the same report take turns, and the second sees the first one's revision.
+        r.Edit
+        If expectedRevision > 0 And Nz(r!CurrentRevisionID, 0) <> expectedRevision Then Err.Raise vbObjectError + 900, "modSwift.CommitDraft", "A newer revision exists. Checkpoint these edits, then recover them as a new draft to avoid overwriting it."
         If r!IsArchived Then Err.Raise vbObjectError + 110, "modSwift.CommitDraft", "Recover archived reports before editing."
         If r!WorkflowState <> "Draft" Then Err.Raise vbObjectError + 111, "modSwift.CommitDraft", "Reopen locked reports before editing."
         If r!formKind <> formKind Then Err.Raise vbObjectError + 112, "modSwift.CommitDraft", "Report type cannot change after creation."
@@ -296,14 +303,15 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
             'A different writer during an active route is a review context boundary:
             'keep its field ownership instead of assigning the bundle to the next writer.
             If CLng(MajorScalar("SELECT AuthorProfileID FROM ReportRevision WHERE RevisionID=" & oldHead)) <> pid And PersistenceCount("RouteRun", "ReportID=" & reportID & " AND RunState In ('Pending','Accepted')") > 0 Then
-                db.Execute "UPDATE RevisionRetention SET RetentionKind='Protected' WHERE RevisionID=" & oldHead, dbFailOnError
+                SwiftSetField db, "RevisionRetention", "RetentionKind", "Protected", "RevisionID=" & oldHead
             Else
                 parentID = MajorScalar("SELECT ParentRevisionID FROM ReportRevision WHERE RevisionID=" & oldHead)
             End If
         End If
+        step = "number revision"
         Set rev = db.OpenRecordset("SELECT Max(RevisionNumber) FROM ReportRevision WHERE ReportID=" & reportID, dbOpenSnapshot)
         seq = Nz(rev.Fields(0).Value, 0) + 1: rev.Close: Set rev = Nothing
-        r.Edit
+        If r.EditMode = dbEditNone Then r.Edit
     End If
     If reportID = 0 And Not IsMissing(additionalFields) Then
         For i = 79 To UBound(keys): current(i) = additionalFields(CStr(keys(i))): Next
@@ -311,12 +319,14 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     For i = 79 To UBound(keys)
         ValidateCatalogueField CStr(keys(i)), current(i): current(i) = FieldText(current(i))
     Next
+    step = "write report"
     r!FormKind = formKind: r!Title = title: r!MemberName = memberName
     r!PeriodStart = startDate: r!PeriodEnd = endDate: r!DraftNotes = notes: r!OfficialComments = current(6): r!ModifiedAt = Now()
     For i = 7 To UBound(keys): r.Fields(keys(i)) = current(i): Next
     r.Update: r.Bookmark = r.LastModified: reportID = r!ReportID
     If oldHead = 0 Then retention = "Checkpoint" Else If narrativeChanged Then retention = "Narrative" Else retention = "Working"
     If Not IsNull(parentID) Then Set historyBefore = RevisionFields(CLng(parentID))
+    step = "add revision"
     Set rev = db.OpenRecordset("ReportRevision", dbOpenDynaset)
     rev.AddNew: rev!ReportID = reportID: rev!RevisionNumber = seq: rev!ParentRevisionID = parentID
     rev!AuthorProfileID = pid: rev!CommittedAt = Now(): rev!Reason = Left$(reason, 255): rev!SnapshotSchema = SCHEMA_VERSION
@@ -326,6 +336,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     rev.Update: rev.Bookmark = rev.LastModified: revisionID = rev!RevisionID: rev.Close: Set rev = Nothing
     Set snapshotRows = db.OpenRecordset("RevisionValue", dbOpenDynaset, dbAppendOnly)
     Set changeRows = db.OpenRecordset("RevisionChange", dbOpenDynaset, dbAppendOnly)
+    step = "write values"
     SetRevisionRetention revisionID, retention, IIf(oldHead = 0, "Created", "")
     For i = 0 To UBound(keys)
         If Not historyBefore Is Nothing Then previous(i) = historyBefore(CStr(keys(i)))
@@ -342,17 +353,21 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
         End If
     Next
     snapshotRows.Close: Set snapshotRows = Nothing
+    step = "seal revision"
     SealRevision db, revisionID
     changeRows.Close: Set changeRows = Nothing
     'Keep the report write cursor alive through revision linking.
     'A second SQL update can contend with its uncommitted record lock.
     r.Edit: r!CurrentRevisionID = revisionID: r.Update
     r.Close: Set r = Nothing
+    step = "report head"
     SelectReportHead reportID, revisionID
     WriteRevisionFacts revisionID
     AssertReportCache reportID
+    step = "audit"
     AuditRecord "Revision", revisionID, auditOperationID
     If Not IsEmpty(parentID) And Not IsNull(parentID) Then RouteRecordSave db, reportID, revisionID, actualChangedKeys
+    step = "directory and retire"
     If syncDirectory Then SyncReportDirectory reportID
     RetireWorkingRevision oldHead
     w.CommitTrans
@@ -360,7 +375,7 @@ Public Function CommitDraft(ByVal reportID As Long, ByVal formKind As String, By
     Exit Function
 Failed:
     Dim swiftPrimary As Object
-    Set swiftPrimary = SwiftFailure("modSwift", "CommitDraft", "Execute", Err.number, Err.description, Err.source, "Unknown")
+    Set swiftPrimary = SwiftFailure("modSwift", "CommitDraft", "Execute: " & step, Err.number, Err.description, Err.source, "Unknown")
     Dim failure As Long, explanation As String
     failure = CLng(swiftPrimary("Number")): explanation = CStr(swiftPrimary("Description"))
     SwiftRollback w, swiftPrimary
@@ -464,7 +479,7 @@ Public Function OpenScreen(ByVal formName As String) As Boolean
     Forms(formName).SetFocus
     OpenScreen = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation
+    MsgBox SwiftErrorText(), vbExclamation
 End Function
 
 Public Function SaveSetup() As Boolean
@@ -472,7 +487,7 @@ Public Function SaveSetup() As Boolean
     ConfigureWorkspace Nz(Forms!frmSetup!txtCommand, ""), Nz(Forms!frmSetup!txtProfile, "")
     DoCmd.Close acForm, "frmSetup": DoCmd.OpenForm "frmHome": SaveSetup = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation
+    MsgBox SwiftErrorText(), vbExclamation
 End Function
 
 Public Function LoadHome() As Boolean
@@ -578,12 +593,13 @@ Public Function SaveEditor() As Boolean
     stage = "Capture and validate pending values"
     UXFlushSurface
     UXFormatTypedFields
+    SwiftFreshRead
     Call GuardEditorBaseline()
     If Nz(f!txtReportID, 0) > 0 Then oldRevision = CurrentRevision(CLng(f!txtReportID))
 TryAgain:
     Set w = DBEngine.Workspaces(0): w.BeginTrans: trans = True
     stage = "Write draft revision"
-    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value, EditorPendingFields())
+    id = CommitDraft(Nz(f!txtReportID, 0), Nz(f!cboKind, ""), Nz(f!txtTitle, ""), Nz(f!txtMember, ""), f!txtStart, f!txtEnd, Nz(f!txtNotes, ""), "Draft save", f!txtOfficialComments, AdministrationFromEditor(), TraitsFromEditor(), AssessmentFromEditor(), f!cboPromotionStatus.Value, ReportingSeniorFromEditor(), ReportContextFromEditor(), MemberDetailsFromEditor(), ServiceDetailsFromEditor(), DecisionDetailsFromEditor(), ReportPeopleFromEditor(), PartyNamesFromEditor(), f!txtCommandEmployment.Value, EditorPendingFields(), expectedRevision:=EditorBaseRevision())
     stage = "Clear committed checkpoint"
     Call DiscardEditorCheckpoint()
     If oldRevision > 0 And oldRevision <> CurrentRevision(id) Then RetireWorkingRevision oldRevision, True
@@ -600,13 +616,13 @@ TryAgain:
     SaveEditor = True: Exit Function
 Failed:
     'Another session saving the same records at the same moment: undo this attempt and
-    'try again a few times before reporting it.
-    If trans And Not committed And SwiftLockConflict(Err.Number) And attempt < 3 Then
+    'try again before reporting it. Each try re-checks that nobody saved this report first.
+    If trans And Not committed And SwiftLockConflict(Err.Number) And attempt < SWIFT_LOCK_TRIES Then
         On Error Resume Next
         w.Rollback
         On Error GoTo Failed
         trans = False: attempt = attempt + 1
-        SwiftPause 300 * attempt
+        SwiftLockWait attempt
         Resume TryAgain
     End If
     Dim swiftPrimary As Object
@@ -656,7 +672,7 @@ Public Function RestoreSelected() As Boolean
     DoCmd.OpenForm "frmEditor", , , , , , CStr(id)
     RestoreSelected = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation
+    MsgBox SwiftErrorText(), vbExclamation
 End Function
 
 Public Function LibraryAction(ByVal action As String) As Boolean
@@ -680,7 +696,7 @@ Public Function LibraryAction(ByVal action As String) As Boolean
     Call LoadLibrary()
     LibraryAction = True: Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation
+    MsgBox SwiftErrorText(), vbExclamation
 End Function
 
 Public Function LoadSupport() As Boolean
@@ -792,7 +808,7 @@ Public Function UXCommandDetailsSave() As Boolean
     End With
     Exit Function
 Failed:
-    Forms!frmUXCommandDetails!lblCommandStatus.Caption = Err.Description
+    Forms!frmUXCommandDetails!lblCommandStatus.Caption = SwiftErrorText()
 End Function
 
 Public Function UXCommandDetailsClose() As Boolean

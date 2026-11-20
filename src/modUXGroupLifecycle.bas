@@ -149,7 +149,7 @@ Public Function UXGroupAction(ByVal action As String) As Boolean
     End If
     UXGroupAction = True: Exit Function
 Failed:
-    Forms!frmUXGroups!uxLifecycleStatus.Caption = Err.Description
+    Forms!frmUXGroups!uxLifecycleStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXLoadRenameGroup() As Boolean
     With Forms!frmUXRenameGroup
@@ -169,7 +169,7 @@ Public Function UXSaveGroupName() As Boolean
     UXRefreshGroupWorkspace id
     UXSaveGroupName = True: Exit Function
 Failed:
-    Forms!frmUXRenameGroup!lblStatus.Caption = Err.Description
+    Forms!frmUXRenameGroup!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Sub UXRefreshGroupWorkspace(ByVal id As Long)
     If CurrentProject.AllForms("frmUXComparison").IsLoaded Then

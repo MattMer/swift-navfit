@@ -193,7 +193,7 @@ Public Function UXReviewAction(ByVal action As String) As Boolean
     Call UXWorkChanged
     UXReviewAction = True: Exit Function
 Failed:
-    UXReviewForm()!lblStatus.Caption = Err.Description
+    UXReviewForm()!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXGroupReview() As Boolean
     Dim i As Long, id As Long, f As Access.Form

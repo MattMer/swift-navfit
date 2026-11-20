@@ -131,5 +131,5 @@ Public Function UndoFolderBatchUI() As Boolean
     If MsgBox("Undo all folder moves in this operation? Any later report or folder move blocks the entire undo.", vbOKCancel + vbQuestion) <> vbOK Then Exit Function
     UndoFolderBatchUI = UndoFolderBatch(Nz(Forms!frmOperations!lstOperations, 0)): Call LoadOperations(): Exit Function
 Failed:
-    MsgBox Err.Description, vbExclamation, "Undo folder batch"
+    MsgBox SwiftErrorText(), vbExclamation, "Undo folder batch"
 End Function

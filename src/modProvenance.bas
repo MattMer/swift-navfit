@@ -25,7 +25,7 @@ Public Function ProvenanceFromOperations() As Boolean
     ProvenanceFromOperations = OpenImportProvenance(Nz(Forms!frmOperations!lstReceipts, 0))
     Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Import provenance"
+    MsgBox SwiftErrorText(), vbInformation, "Import provenance"
 End Function
 Public Function LoadProvenanceFields() As Boolean
     Dim sql As String, table As String, row As Variant, term As String, id As Long
@@ -55,7 +55,7 @@ Public Function FilterProvenanceUI() As Boolean
     On Error GoTo Failed
     FilterProvenanceUI = LoadProvenanceFields(): Exit Function
 Failed:
-    MsgBox Err.Description, vbInformation, "Import provenance"
+    MsgBox SwiftErrorText(), vbInformation, "Import provenance"
 End Function
 Public Function ShowProvenanceValue() As Boolean
     Dim r As DAO.Recordset, id As Long, receipt As Long, state As String

@@ -138,7 +138,7 @@ Public Function UXApplyFullNAVFIT() As Boolean
     UXApplyFullNAVFIT = True: Exit Function
 Failed:
     nativePreview.SourceID = 0: nativePreview.Hash = "": UXEnable Forms!frmImportReview!cmdImport, False
-    Forms!frmImportReview!uxState.Caption = Err.Description & " Preview again before retrying."
+    Forms!frmImportReview!uxState.Caption = SwiftErrorText() & " Preview again before retrying."
 End Function
 Public Function UXOpenFullNAVFITResult() As Boolean
     If nativePreview.Created = 0 Then Exit Function

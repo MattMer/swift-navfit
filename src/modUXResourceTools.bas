@@ -88,7 +88,7 @@ Public Function UXSaveTemplate() As Boolean
  End With
  UXSaveTemplate = True: Exit Function
 Failed:
- Forms!frmUXRouteTemplates!lblStatus.Caption = Err.Description & " Entries retained."
+ Forms!frmUXRouteTemplates!lblStatus.Caption = SwiftErrorText() & " Entries retained."
 End Function
 Public Function UXDeleteTemplate(Optional ByVal confirmed As Boolean = False) As Boolean
  Dim id As Long
@@ -105,7 +105,7 @@ Public Function UXDeleteTemplate(Optional ByVal confirmed As Boolean = False) As
  End With
  UXDeleteTemplate = True: Exit Function
 Failed:
- Forms!frmUXRouteTemplates!lblStatus.Caption = Err.Description
+ Forms!frmUXRouteTemplates!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXCloseTemplates() As Boolean
  DoCmd.Close acForm, "frmUXRouteTemplates", acSaveNo

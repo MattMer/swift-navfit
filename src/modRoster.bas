@@ -159,10 +159,11 @@ Public Sub ResolveDeparture(ByVal departureID As Long, ByVal expectedVersion As 
     If outcome = "Dismiss" And Len(Trim$(reason)) = 0 Then Err.Raise vbObjectError + 9703, "modRoster.ResolveDeparture", "Say why the member is not departing."
     Set r = CurrentDb.OpenRecordset("SELECT * FROM MemberDeparture WHERE DepartureID=" & departureID, dbOpenDynaset)
     If r.EOF Then r.Close: Err.Raise vbObjectError + 9704, "modRoster.ResolveDeparture", "Departure no longer exists."
+    'Lock the row before checking its version, so a save another session is finishing is seen.
+    r.Edit
     If r!VersionCounter <> expectedVersion Then r.Close: Err.Raise vbObjectError + 9705, "modRoster.ResolveDeparture", "This departure changed. Refresh and try again."
     If r!DepartureState <> "Pending" And Not (r!DepartureState = "Confirmed" And outcome = "Confirm") Then r.Close: Err.Raise vbObjectError + 9706, "modRoster.ResolveDeparture", "Only a pending departure can be resolved."
     operation = BeginOperation(outcome & " departure", "Departure " & departureID & ", member " & r!MemberID)
-    r.Edit
     If outcome = "Confirm" Then
         r!DepartureState = "Confirmed": r!ConfirmedDate = DateValue(detachDate): r!ExpectedDate = DateValue(detachDate)
     Else

@@ -88,7 +88,7 @@ Public Function UXCreateGroupUI() As Boolean
     If CurrentProject.AllForms("frmUXGroups").IsLoaded Then UXLoadGroups
     UXCreateGroupUI = True: Exit Function
 Failed:
-    Forms!frmUXNewGroup!lblStatus.Caption = Err.Description
+    Forms!frmUXNewGroup!lblStatus.Caption = SwiftErrorText()
 End Function
 Public Function UXOpenGroupReport() As Boolean
     Dim id As Long, selected As Variant
@@ -235,7 +235,7 @@ Public Function UXDashboardRefresh() As Boolean
     If UXHasControl(f, "uxUpdateNote") Then
         'Who else used this workspace lately comes first; the update reminder follows.
         PresenceTouch
-        f!uxUpdateNote.Caption = Trim$(PresenceOthersText() & "  " & UpdateReminderText(APP_RELEASE_DATE, Date))
+        f!uxUpdateNote.Caption = Trim$(Trim$(PresenceSameNameText() & "  " & PresenceOthersText()) & "  " & UpdateReminderText(APP_RELEASE_DATE, Date))
         f!uxUpdateNote.Visible = (Len(f!uxUpdateNote.Caption) > 0)
     End If
     f!uxReportCount.Caption = CStr(DCount("*", "Report", "IsArchived=False"))
@@ -305,7 +305,7 @@ Public Function UXDueCreateGroup() As Boolean
     Forms!frmHome!uxDueNote.Caption = "Created " & count & IIf(count = 1, " draft", " drafts") & " in " & groups.Count & IIf(groups.Count = 1, " summary group: ", " summary groups: ") & titles & ". Open them from Summary groups."
     UXDueCreateGroup = True: Exit Function
 Failed:
-    Forms!frmHome!uxDueNote.Caption = Err.Description
+    Forms!frmHome!uxDueNote.Caption = SwiftErrorText()
 End Function
 Public Function UXDueCreate() As Boolean
     Dim key As String, id As Long
@@ -320,7 +320,7 @@ Public Function UXDueCreate() As Boolean
     UXDueCreate = True
     Exit Function
 Failed:
-    Forms!frmHome!uxDueNote.Caption = Err.Description
+    Forms!frmHome!uxDueNote.Caption = SwiftErrorText()
 End Function
 Public Function UXDueDismiss() As Boolean
     Dim key As String
@@ -332,7 +332,7 @@ Public Function UXDueDismiss() As Boolean
     Forms!frmHome!uxDueNote.Caption = "Marked not required. " & Forms!frmHome!uxDueNote.Caption
     UXDueDismiss = True: Exit Function
 Failed:
-    Forms!frmHome!uxDueNote.Caption = Err.Description
+    Forms!frmHome!uxDueNote.Caption = SwiftErrorText()
 End Function
 Public Function UXDueDepartures() As Boolean
     If Not UXNavigate("frmMyWork") Then Exit Function

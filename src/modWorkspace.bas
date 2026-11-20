@@ -143,7 +143,7 @@ Public Function RefreshLibrary() As Boolean
     RefreshLibrary = True
     Exit Function
 Failed:
-    Forms!frmLibrary!lblCount.Caption = Err.Description
+    Forms!frmLibrary!lblCount.Caption = SwiftErrorText()
 End Function
 
 Public Function CloseHelp() As Boolean
