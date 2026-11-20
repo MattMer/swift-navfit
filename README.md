@@ -14,9 +14,9 @@ It is meant to replace the spreadsheets, emailed copies, repeated data entry, an
 
 The 63-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
-![A summary group's Members view: each member's trait marks, ITA and promotion recommendation on one row, with prior ITA for comparison](docs/images/summary-group-members.png)
+![A tour of Swift NAVFIT: the Overview, the Reports list, the report editor, validation findings with their citations, a summary group's member table, My Work, and the built-in EVALMAN](docs/images/swift-navfit-tour.gif)
 
-*Rack and stack a summary group: every member's marks and recommendations in one table. All screenshots show the Demo's made-up data.*
+*A tour of the main windows. All screenshots show the Demo's made-up data.*
 
 ## What Swift helps with
 
@@ -29,8 +29,6 @@ The 63-page user guide covers setup, drafting, notes, validation, summary groups
 - **Archive and recover:** move reports out of the active lists without losing their history.
 
 ### Coordinate review without a separate tracker
-
-![My Work: assigned reviews and route steps with due dates, status and the next action for each](docs/images/my-work.png)
 
 - **My Work:** one list of your assigned reviews, route steps, and reports ready for local approval, plus a tab for report notes.
 - **Review routes:** the report moves up your chain of command as one shared draft. Whoever holds it can edit it, then forward it or send it back; earlier reviewers can pull it back.
@@ -50,11 +48,7 @@ The 63-page user guide covers setup, drafting, notes, validation, summary groups
 - **Reports due:** the home screen lists members with periodic or detachment reports coming due, and clears each one once its draft exists.
 - **People from the directory:** fill the rater, senior rater and counselor from the member directory, add contributors from it, and remove contributors who leave.
 
-![Overview: recent reports and the Reports due list, showing overdue and upcoming periodic reports and a detachment report, with Create draft, Drafts + group, Departures and Dismiss](docs/images/overview-reports-due.png)
-
 ### Catch problems while drafting
-
-<img src="docs/images/report-editor.png" width="640" alt="The report editor's Front Page laid out like the printed EVAL form, with the ITA and group average, review actions and save status">
 
 - **Live findings with citations:** Swift checks values as you type, links each finding to the block it concerns, and opens the EVALMAN paragraph it cites.
 - **EVALMAN built in:** the whole of BUPERSINST 1610.10H, through CH-4, as searchable text. Press F1 in a report field to read that block's instructions.

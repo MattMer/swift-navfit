@@ -430,8 +430,13 @@ Public Function UXValidationLayout() As Boolean
     f!cmdDismissFinding.Top = height - 1300: f!cmdDismissFinding.Left = 550 + width * 0.36: f!cmdDismissFinding.Width = width * 0.2
     f!cmdAllowPhrase.Top = height - 1300: f!cmdAllowPhrase.Left = 650 + width * 0.56: f!cmdAllowPhrase.Width = width * 0.19
     f!cmdAllowedList.Top = height - 1300: f!cmdAllowedList.Left = 750 + width * 0.75: f!cmdAllowedList.Width = width * 0.25 - 350
+    'Open, EVALMAN and Close share the bottom row.
     f!cmdOpen.Top = height - 650: f!cmdBack.Top = height - 650
-    f!cmdOpen.Width = width \ 2 - 100: f!cmdBack.Left = 500 + width \ 2: f!cmdBack.Width = width \ 2 - 100
+    f!cmdOpen.Width = width \ 2 - 1900: f!cmdBack.Left = 500 + width \ 2: f!cmdBack.Width = width \ 2 - 100
+    If UXHasControl(f, "cmdEvalman") Then
+        f!cmdEvalman.Top = height - 650: f!cmdEvalman.Height = f!cmdOpen.Height
+        f!cmdEvalman.Left = f!cmdOpen.Left + f!cmdOpen.Width + 100: f!cmdEvalman.Width = 1700
+    End If
     f.Width = width + 800: f.Section(acDetail).Height = height: f.ScrollBars = 2
     UXValidationLayout = True
 Finished:

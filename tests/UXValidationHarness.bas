@@ -147,6 +147,7 @@ Public Function TestUXValidation() As String
         Check f!lstIssues.Top + f!lstIssues.Height < f!lblEvidence.Top, "Findings overlap evidence label"
         Check f!cmdWindowHelp.Left >= f!lblHeading.Left + f!lblHeading.Width, "Help overlaps validation heading"
         Check f!cmdBack.Left + f!cmdBack.Width <= f.Width, "Close validation action outside form"
+        Check f!cmdEvalman.Top = f!cmdOpen.Top And f!cmdEvalman.Left >= f!cmdOpen.Left + f!cmdOpen.Width And f!cmdEvalman.Left + f!cmdEvalman.Width <= f!cmdBack.Left, "EVALMAN is not between Open and Close: " & f!cmdEvalman.Left & "," & f!cmdEvalman.Top
         Check f!lstIssues.Controls("lblIssues").Caption = "&Findings", "Findings has no attached accessible label"
         Check f!txtEvidence.Controls("lblEvidence").Caption = "&Evidence and source", "Evidence has no attached accessible label"
         Check f!lstIssues.TabIndex < f!txtEvidence.TabIndex And f!txtEvidence.TabIndex < f!cmdOpen.TabIndex, "Validation tab sequence is not findings/evidence/action"
