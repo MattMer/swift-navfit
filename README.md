@@ -106,6 +106,8 @@ Download from the [0.59.0 release page](https://github.com/MattMer/swift-navfit/
 
 **Recommended:** download the zip, or email the zip to your Navy email, then save everything in it to one folder on the workstation where you will use it.
 
+**First run:** right-click the application file, choose **Properties**, tick **Unblock** and choose **OK**. Open it, choose **OK** if Access says the content is blocked, then choose **Enable Content** in the yellow bar. The [user guide](docs/Swift_NAVFIT_User_Guide.md#22-create-a-new-workspace) has the details.
+
 - **Swift_NAVFIT_0.59.0.zip:** everything below plus the user guide in one download.
 - **Swift_NAVFIT_0.59.0.accdb:** the application. On first use it makes your data file, `Swift NAVFIT data.accdb`, beside it. Start real work here.
 - **Swift_NAVFIT_Demo_0.59.0.accdb** with **Swift_NAVFIT_Demo_data_0.59.0.accdb:** made-up members, reports, and groups for practice. Save both in the same folder. Never put real data in them.

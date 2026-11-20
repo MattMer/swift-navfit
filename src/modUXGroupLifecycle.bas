@@ -129,9 +129,8 @@ Public Function UXGroupSelection() As Boolean
     On Error GoTo 0
     UXEnable f!cmdOpen, (id > 0): UXEnable f!uxRename, (id > 0 And Not archived)
     UXEnable f!uxArchive, (id > 0 And Not archived): UXEnable f!uxRecover, (id > 0 And archived)
-    f!uxLifecycleStatus.Caption = IIf(id = 0, "Choose a group. Archived groups keep members, defaults and history.", IIf(archived, "Archived group: inspect or recover. Member reports are not archived.", "Archiving hides this group; member reports remain available."))
-    f!uxLifecycleStatus.ControlTipText = "Group status is independent of member review and official submission."
-    f!uxLifecycleStatus.Caption = f!uxLifecycleStatus.Caption & " Group status is separate from member review and official submission."
+    f!uxLifecycleStatus.Caption = IIf(id = 0, "Choose a group.", IIf(archived, "Archived group. Recover it to work in it.", ""))
+    f!uxLifecycleStatus.ControlTipText = "Group status is separate from member review and official submission."
     UXGroupSelection = True
 End Function
 Public Function UXGroupAction(ByVal action As String) As Boolean

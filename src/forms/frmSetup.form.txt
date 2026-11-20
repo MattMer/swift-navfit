@@ -144,7 +144,7 @@ Begin Form
                     Left =400
                     Top =3810
                     Width =6900
-                    Height =650
+                    Height =850
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxDataFileLocation"
@@ -153,7 +153,7 @@ Begin Form
                     LayoutCachedLeft =400
                     LayoutCachedTop =3810
                     LayoutCachedWidth =7300
-                    LayoutCachedHeight =4460
+                    LayoutCachedHeight =4660
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End

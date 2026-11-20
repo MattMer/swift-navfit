@@ -134,11 +134,12 @@ Public Sub UXPositionGroupFooter(ByVal f As Access.Form)
             If c.Top + c.Height > bottom Then bottom = c.Top + c.Height
         End If
     Next
-    f!uxSeniorCaption.Top = bottom + 150
-    f!uxCurrentSenior.Top = bottom + 500: f!uxCurrentExport.Top = bottom + 500
-    If UXHasControl(f, "uxCurrentPDF") Then f!uxCurrentPDF.Top = bottom + 500
-    f!uxRefreshDirectory.Top = bottom + 1000
-    If f.Section(acDetail).Height < bottom + 1650 Then f.Section(acDetail).Height = bottom + 1650
+    'Two lines for the reporting senior line: with no senior it runs long at laptop width.
+    f!uxSeniorCaption.Top = bottom + 150: f!uxSeniorCaption.Height = 560
+    f!uxCurrentSenior.Top = bottom + 760: f!uxCurrentExport.Top = bottom + 760
+    If UXHasControl(f, "uxCurrentPDF") Then f!uxCurrentPDF.Top = bottom + 760
+    f!uxRefreshDirectory.Top = bottom + 1260
+    If f.Section(acDetail).Height < bottom + 1910 Then f.Section(acDetail).Height = bottom + 1910
 End Sub
 ' Open report creation from a saved group/default baseline, refusing pending cells,
 ' unapplied bulk changes or archived groups.

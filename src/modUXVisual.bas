@@ -72,6 +72,8 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
   Select Case c.ControlType
    Case acCommandButton
     UXButtonPaint f, c, active
+   Case acSubform
+    UXPaintSubform c
    Case acLabel
     UXVisualSet c, "ForeColor", UXColor("Ink")
     If key = "uxbrand" Or key = "uxnavcaption" Then UXVisualSet c, "ForeColor", UXColor("White")
@@ -185,6 +187,25 @@ Private Function UXOwningForm(ByVal c As Object) As Access.Form
  Loop
  Set UXOwningForm = p
 End Function
+' Every button on a form and in its subforms in the colors its state calls for.
+Public Sub UXPaintButtons(ByVal f As Access.Form)
+ Dim c As Access.Control, active As Long
+ On Error Resume Next
+ active = UXActiveNav(f.Name)
+ For Each c In f.Controls
+  If c.ControlType = acCommandButton Then
+   UXButtonPaint f, c, active
+  ElseIf c.ControlType = acSubform Then
+   UXPaintSubform c
+  End If
+ Next
+End Sub
+Private Sub UXPaintSubform(ByVal c As Access.Control)
+ Dim inner As Access.Form
+ On Error Resume Next
+ Set inner = c.Form
+ If Not inner Is Nothing Then UXPaintButtons inner
+End Sub
 ' Set Enabled through this, never directly: a button is repainted at once, so an
 ' available button never keeps the unavailable colors, or the reverse. New takes
 ' its role from Open, so Open's change repaints it too.

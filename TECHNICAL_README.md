@@ -47,7 +47,7 @@ Development source (*generated*):
 | VBA modules / forms | 128 / 78 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 120 / 120 |
+| Test cases / VBA test harnesses | 121 / 121 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -628,6 +628,7 @@ document history below for each substantive change.
 
 | Date | Change |
 | --- | --- |
+| 20 Nov 2026 | Development only, not in a release: layout audit (test-layout-audit in the core report-pages suite, LayoutAuditHarness): main windows, editor pages, the error list, Validation issues, EVALMAN, member history, group members, setup and the no-code screens, at two sizes; fails on controls outside the window, overlaps, captions that do not fit (DrawText), windows taller than their space and stale button colors, and must catch five planted defects. Fixes it found: buttons inside subforms now get the palette (UXPaintButtons, also after an editor page change); the setup data-file line fits; the group status line is shorter; the group reporting-senior line has two lines. The Enable Content screen loses its help button, which needs code that is blocked there. |
 | 19 Nov 2026 | Development only, not in a release: UXValidationLayout places the findings window's EVALMAN button between Open affected report block and Close; in 0.59.0 the resize left it inside the evidence box. |
 | 19 Nov 2026 | Release 0.59.0, schema 51: EVALMAN built in (reader, F1 and finding links), member-history continuity, Current RSCA beside PSG RSCA and the RSCA history workbook, the summary-group Ending year filter, an editor that fits its window, buttons repainted when Enabled changes, shorter notices and the data file notice. |
 | 19 Nov 2026 | a data file holds a code-free notice form, frmDataFileNotice, set as its StartupForm with the navigation pane hidden, so a data file opened by mistake points to the application. CreateDataFile adds it (AddDataFileNotice); existing data files get it when used (EnsureDataFileNotice, best effort). ApplicationObjects ignores the notice, so a data file is not taken for an earlier whole workspace. The report editor's page area is sized to the window (UXFixedResize), so the editor itself no longer scrolls. |

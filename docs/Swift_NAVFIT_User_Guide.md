@@ -184,15 +184,18 @@ Your workspace's **data file** holds your data, not the program. Always open it 
 
 ## 2.2 Create a new workspace
 
-1. Save the application file in your approved folder.
-2. Open it in Access. If Access shows a security bar, enable content.
-3. On the setup screen, read the line that says where the work will be kept. By default it is a new file, `Swift NAVFIT data.accdb`, in the same folder.
-4. To use another folder, choose **Change folder...** and pick it.
-5. Type the command name and your name.
-6. Type the command's **UIC** (unit identification code, up to 5 letters and digits), if you have it. New reports start with it in their UIC block.
-7. Choose **Create workspace**.
-8. Check the command name and your name at the top of the **Overview**.
-9. Make a backup (17.2) before you enter or import much data.
+Windows blocks the code in files that come from the internet or e-mail, so the first time takes three extra steps (1–3).
+
+1. Extract the zip to your approved folder. Right-click `Swift_NAVFIT_<version>.accdb`, choose **Properties**, tick **Unblock** and choose **OK**. Do the same for the Demo files if you use them.
+2. Open `Swift_NAVFIT_<version>.accdb`. If Access says the active content is blocked, choose **OK**.
+3. In the yellow security bar, choose **Enable Content**. If there is no yellow bar, close Access, check that the file is unblocked, and open it again. If it is still blocked, ask IT to trust the folder.
+4. On the setup screen, read the **New data file** line. By default it is `Swift NAVFIT data.accdb`, in the same folder.
+5. To use another folder, choose **Change folder...** and pick it.
+6. Type the command name and your name.
+7. Type the command's **UIC** (unit identification code, up to 5 letters and digits), if you have it. New reports start with it in their UIC block.
+8. Choose **Create workspace**.
+9. Check the command name and your name at the top of the **Overview**.
+10. Make a backup (17.2) before you enter or import much data.
 
 **Result:** the data file exists in the folder you chose, and **Overview** opens with no reports. You can later replace the application with a newer version without moving the data file.
 

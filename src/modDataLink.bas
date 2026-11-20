@@ -493,7 +493,7 @@ Public Function UXSetupDataText() As String
     If SwiftDataIsLinked() Then
         UXSetupDataText = "This workspace is kept in the data file " & SwiftDataPath() & "."
     Else
-        UXSetupDataText = "Your work will be kept in a new data file, " & NextDataFilePath(SetupDataFolder()) & ". This file stays the application, so a newer version can replace it without moving your data."
+        UXSetupDataText = "New data file: " & NextDataFilePath(SetupDataFolder()) & ". Newer versions of Swift NAVFIT keep using it."
     End If
 End Function
 

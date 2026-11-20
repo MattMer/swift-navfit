@@ -189,6 +189,7 @@ Public Function UXFixedSelect(ByVal section As Long) As Boolean
  stage = "Refresh review actions"
  If Not UXHeaderReviewState() Then GoTo Finished
  f!uxFieldSurface.Visible = (sheet < 8)
+ UXPaintButtons f
  UXFixedSelect = True
 Finished:
  If paintHeld Then

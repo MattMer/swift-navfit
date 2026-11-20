@@ -918,7 +918,11 @@ Startup's demo case also needs `-DemoPath <populated synthetic demo>`; without
 it the suite prints SKIP. Review-history takes `-SeedDemo` for a blank build
 (as develop and its registry extendedArgs supply), and optional `-FixturePath`
 for the report-notes output copy. Pages forwards `-EntryLabelsOnly`,
-`-InstallSource` and `-EditorReset` to the compatibility case.
+`-InstallSource` and `-EditorReset` to the compatibility case, and also runs the
+layout audit (`test-layout-audit`, tests/LayoutAuditHarness.bas). The audit
+measures captions with Windows' DrawText at the screen's DPI, writes any findings
+to `build/tests/layout-audit-*.findings.txt`, and checks itself by planting five
+known defects that it must catch.
 
 Extended-only suites run all build-only cases: `test-workspace-resources`
 (optional `-DisplayFaultOnly`), `test-workspace-presentation` (optional

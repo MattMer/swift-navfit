@@ -7,6 +7,7 @@ if($EntryLabelsOnly){$caseArgs+='-EntryLabelsOnly'}
 if($InstallSource){$caseArgs+='-InstallSource'}
 if($EditorReset){$caseArgs+='-EditorReset'}
 Invoke-CaseScript 'test-compat-pages' $caseArgs
+Invoke-CaseScript 'test-layout-audit' @('-BuildPath',$BuildPath)
 if($Tier -eq 'extended'){
 Invoke-CaseScript 'test-page-switch' @('-BuildPath',$BuildPath)
 Invoke-CaseScript 'test-page-width' @('-BuildPath',$BuildPath)

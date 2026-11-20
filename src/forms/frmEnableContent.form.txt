@@ -137,45 +137,6 @@ Begin Form
                     ThemeFontIndex =-1
                     ForeThemeColorIndex =-1
                 End
-                Begin CommandButton
-                    OverlapFlags =215
-                    Left =13000
-                    Top =150
-                    Width =500
-                    Height =400
-                    FontWeight =700
-                    ForeColor =8928611
-                    Name ="cmdWindowHelp"
-                    FontName ="Segoe UI"
-                    ThemeFontIndex =-1
-                    Caption ="?"
-                    OnClick ="=UXWindowHelp(\"frmEnableContent\")"
-                    ControlTipText ="Help for this window"
-
-                    LayoutCachedLeft =13000
-                    LayoutCachedTop =150
-                    LayoutCachedWidth =13500
-                    LayoutCachedHeight =550
-                    ForeThemeColorIndex =-1
-                    Gradient =0
-                    BackColor =16443630
-                    BackThemeColorIndex =-1
-                    BorderColor =13285543
-                    BorderThemeColorIndex =-1
-                    HoverColor =16443630
-                    HoverThemeColorIndex =-1
-                    PressedColor =16443630
-                    PressedThemeColorIndex =-1
-                    HoverForeColor =8928611
-                    HoverForeThemeColorIndex =-1
-                    PressedForeColor =8928611
-                    PressedForeThemeColorIndex =-1
-                    WebImagePaddingLeft =2
-                    WebImagePaddingTop =2
-                    WebImagePaddingRight =1
-                    WebImagePaddingBottom =1
-                    Overlaps =1
-                End
             End
         End
     End

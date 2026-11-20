@@ -187,7 +187,7 @@ Public Function TestSetupDefault(ByVal commandName As String, ByVal contributor 
     checks = 0
     expected = CurrentProject.Path & "\Swift NAVFIT data.accdb"
     Check CurrentProject.AllForms("frmSetup").IsLoaded And Not SwiftDataIsLinked(), "Setup is not open on an unlinked copy"
-    Check Forms!frmSetup!uxDataFileLocation.Caption Like "Your work will be kept in a new data file, " & expected & "*", "Setup line: " & Forms!frmSetup!uxDataFileLocation.Caption
+    Check Forms!frmSetup!uxDataFileLocation.Caption Like "New data file: " & expected & "*", "Setup line: " & Forms!frmSetup!uxDataFileLocation.Caption
     Check Forms!frmSetup!cmdNewDataFile.Enabled, "Change folder is not available before setup"
     'A missing name is refused before any data file is made (the message box is not opened here).
     Forms!frmSetup!txtCommand = commandName: Forms!frmSetup!txtProfile = contributor: Forms!frmSetup!txtCommandUIC = "n1234"

@@ -252,6 +252,13 @@ the checks you will run. Keep it brief.
   tier. `scripts/cases/test-build-plan.ps1` (run by `test-source-contracts`) fails if a runner or harness is missing from it or
   orphaned. Run `scripts/develop.ps1 -Action ExtendedTest -BuildPath <blank>`
   weekly; release-check runs it too.
+- The layout audit (`scripts/cases/test-layout-audit.ps1`, in the core
+  `test-report-pages` suite) opens the main windows in realistic states and two
+  window sizes. It fails on a control outside its window, two controls covering
+  each other, a caption that does not fit its box, a window taller than its space,
+  or a button whose colors do not match whether it is available. Add a scene to
+  `tests/LayoutAuditHarness.bas` for a new window, page or state that changes the
+  layout. Set a control's Enabled with `UXEnable`, never directly.
 
 ## Verification and reporting
 
