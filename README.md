@@ -67,7 +67,7 @@ The 63-page user guide covers setup, drafting, notes, validation, summary groups
 
 ## Swift NAVFIT compared with NAVFIT98A
 
-NAVFIT98A already provides report editing, folders and defaults, validation, import and export, summary calculations, and printing. Swift builds on those foundations; its main additions are the history, recovery, and review tools around each report.
+NAVFIT98A already provides report editing, folders and defaults, validation, import and export, summary calculations, and printing. Swift builds on those foundations; its main additions are the history, recovery, and review tools around each report, and command tools for members, rosters, counseling, and RSCA.
 
 | Capability | NAVFIT98A | Swift NAVFIT |
 | --- | --- | --- |
@@ -75,12 +75,16 @@ NAVFIT98A already provides report editing, folders and defaults, validation, imp
 | Unsaved-work recovery | - | Checkpoints for edits not yet saved. |
 | Review tracking | - | My Work, assignments, ordered steps, decision notes, and local approval. |
 | Report discussion | - | A running notes log inside each report. |
-| Member reuse and history | - | Command directory, batch report creation, prior evaluations, and duplicate merging. |
-| Reporting-senior averages | Summary and average calculations. | Reusable senior records and dated RSCA history per paygrade. |
+| Member reuse and history | - | Command directory, batch report creation, prior evaluations with possible gaps between reports marked, and duplicate merging. |
+| Rosters and reports due | - | NRRM or MNA roster import, departures to confirm, and periodic and detachment reports coming due. |
+| Midterm counseling | - | Who is due by paygrade, recorded sessions, and blocks 30–31 carried into the next report. |
+| Reporting-senior averages | Summary and average calculations. | Reusable senior records, dated RSCA history per paygrade with an Excel export, and each group's current RSCA beside its PSG RSCA. |
 | Shared group values | Folder defaults and common values. | Shows every affected report and asks before replacing values. |
-| Validation | Report and folder validation. | Live findings with citations and links to the field. Run NAVFIT98A validation after export as well. |
+| Validation | Report and folder validation. | Live findings with citations and links to the field, plus checks for comments the instruction prohibits. Run NAVFIT98A validation after export as well. |
+| Instruction reference | - | EVALMAN (BUPERSINST 1610.10H through CH-4) built in and searchable; F1 opens a block's instructions. |
+| Report import | Other NAVFIT98A databases. | NAVFIT98A databases and filled report PDFs, with a preview before anything changes. |
 | Returned-report reconciliation | - | Compares the exported, current, and returned versions of a report. |
-| Final printing | Built-in report, folder, and summary printing. | Print-ready PDFs; final printed fit is not yet confirmed. |
+| Final printing | Built-in report, folder, and summary printing. | Print-ready PDFs of each report, summary letter, and group packet; printed fit checked on paper. |
 
 The NAVFIT98A column is based on the [Navy user guide](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20Version%2030%20user%20guide.pdf), the [v33 FAQ](https://www.mynavyhr.navy.mil/Portals/55/Career/PerformanceEvaluation/NAVFIT98A%20v2.2.0.33%20Frequently%20Asked%20Question.pdf), and the v33 Patch 2 package. A **-** means no equivalent was found in that material; it is not a claim about every NAVFIT98A version.
 
