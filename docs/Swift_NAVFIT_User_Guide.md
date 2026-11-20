@@ -208,12 +208,12 @@ The setup and contributor screens show a yellow warning when the file is somewhe
 | Warning | What it means | What to do |
 | --- | --- | --- |
 | Open from a temporary folder | It was opened from a zip file or e-mail attachment. Windows can delete it, with your work. | Exit. Save the file to your approved folder and open it there. |
-| In a folder a sync service uploads | OneDrive, SharePoint or Dropbox can damage an open Access file or make conflicting copies. | Move the application and data file to a folder that is not synced. |
+| In a folder a sync service uploads | OneDrive, SharePoint, Teams or Dropbox can damage an open Access file or make conflicting copies. Each computer gets its own copy, so people sharing a synced folder never see each other's work. | Move the application and data file to a folder that is not synced. For several people, keep the data file on a mapped network drive (2.5). |
 | Read-only | Nothing can be saved. | Copy the files to a folder you can write to. |
-| Already open in another session | Someone else has the data file open. Only the second person to open it is warned. | Work on different reports (2.5), or ask them to close it. |
+| Your name is already in use on another computer | The contributor you chose is working on another computer. | Choose your own name, so your work and theirs stay apart (3.1). |
 | Another copy of this data file is beside it | A sync service made a copy because the file changed in two places. Work saved in the copy is not in your file. | Ask whoever made the copy before you delete it. |
 
-A network share is not flagged.
+A mapped network drive or server folder is not flagged. When others have the data file open, startup also shows an **Also open** line with how many people, each person's name and computer. That is normal when several people share the file (2.5).
 
 ## 2.4 When Swift NAVFIT cannot find its data file
 
@@ -232,19 +232,37 @@ The first-run setup screen has two more buttons, for an application that has no 
 
 An application that already has a workspace is never relinked by these buttons, so no saved data is lost.
 
-## 2.5 Two people on one data file
+## 2.5 Several people on one data file
 
-Swift NAVFIT is designed for one person at a time. Two people can share one data file if they work on **different reports**:
+Up to 10 people can work in one data file at the same time.
 
-1. Put the data file in a shared network folder (a mapped drive or server folder), not a synced folder. A synced folder gives each computer its own copy, and the copies never meet.
-2. Each person saves their own copy of the application and opens the shared data file with **Open an existing data file**.
+1. Put the data file in a shared folder on a mapped network drive (a Windows file share, such as `S:\Admin\Evals`) that everyone can write to.
+2. Each person saves their own copy of the application on their own computer, opens it and chooses **Open an existing data file** to pick the shared data file.
+3. Each person chooses their own name as the contributor (3.1). Never work under someone else's name, even for a moment. If two computers use the same name, Overview says so.
+4. Everyone uses the same version of Swift NAVFIT.
 
-While you share:
+> **Important:** A Teams, SharePoint or OneDrive folder synced to each computer does not work. Each computer gets its own copy of the data file, the copies never meet, and the sync can damage the file. Swift NAVFIT warns about a synced folder (2.3). Keep the shared data file on a mapped network drive.
 
-- **Overview** names everyone who used the workspace in the last 10 minutes, and their computer.
+**While you share:**
+
+- **Overview** names who else has the data file open, and their computer.
 - If you open a report someone else has open, the editor says who.
-- If they save first, your save is refused and your entries are kept. Reopen the report to see their change, then make yours again.
-- If two saves happen at the same moment, Swift NAVFIT tries again a few times, then says someone else was saving and keeps your entries.
+- If someone else saved the same report or record after you opened it, your save is refused and your entries are kept. Reopen the report to see their change, then make yours again (16.2).
+- If two saves happen at the same moment, the later one waits its turn: usually a few seconds, up to about 15 seconds when many people save at once. If it still cannot save, Swift NAVFIT says someone else was saving and keeps your entries; save again.
+- When you close Swift NAVFIT, your name leaves the Overview list at once. After a crash it leaves within 3 minutes.
+
+**Upgrade a shared data file:**
+
+1. The coordinator makes a backup (17.2) and gives everyone the new application.
+2. Everyone closes Swift NAVFIT. An upgrade is refused while anyone else has the data file open, and the message names who.
+3. The first person to open the new version upgrades the data file (17.4).
+4. Everyone else then opens the new version. An older copy of the application cannot open the upgraded data file; its message names the version to get from the coordinator.
+
+**Coordinator duties:**
+
+- Make backups on the command's schedule (17.1, 17.2). A backup can be made while others work. If they save during the copy, Swift NAVFIT tries again; if the copy still cannot be checked, it deletes the copy and asks you to try again later. No unchecked backup is left behind.
+- Once a month, when nobody else is connected, choose **Settings & Help > Compact data file** (17.7). A shared Access file grows with use; compacting keeps it small and healthy.
+- Keep the contributor list current, one name per person (3.1).
 
 ## 2.6 Continue from an older Swift NAVFIT workspace
 
@@ -276,7 +294,7 @@ Swift NAVFIT records your name as the **contributor** on everything you save, po
 
 **Result:** your name is shown on **My Work** and in the message box caption.
 
-Never switch to someone else's name to act for them. Each person keeps their own contributor even when two people share a data file.
+Never switch to someone else's name to act for them. Each person keeps their own contributor, even when several people share a data file.
 
 **Add a contributor (Coordinator).** Type a name in **New contributor name** and choose **Add contributor**. Or choose **Add from directory** and pick a command member; the contributor is then named like *LCDR JONES, PAUL A* and linked to that member.
 
@@ -1226,7 +1244,7 @@ From 0.56.0 on, the data file is separate, so an upgrade is a new application fi
 
 **Result:** the data file is upgraded, and a copy named `<data file name> before schema <N> <date-time>.accdb` is beside it. Keep the copy until the upgraded file has been used and backed up.
 
-If anything fails part way, Swift NAVFIT puts the data file back as it was. It refuses, and changes nothing, if the data file is from a newer version, too old to upgrade, or open in another session.
+If anything fails part way, Swift NAVFIT puts the data file back as it was. It refuses, and changes nothing, if the data file is from a newer version, too old to upgrade, or open in another session. When several people share the data file, everyone closes Swift NAVFIT first; the first person to open the new version upgrades it, and everyone else then uses that version (2.5).
 
 ## 17.5 Check for a newer version
 
@@ -1237,6 +1255,16 @@ If anything fails part way, Swift NAVFIT puts the data file back as it was. It r
 An Access file cannot grow past 2 GB. **Settings & Help** shows the data file's size, and warns in bold from 1.5 GB. A command at a normal pace has years of room: a test workspace with 4,700 reports was about 272 MB.
 
 When the warning appears, back up and start a new workspace for new reports. Keep the old one as the record. Members, reporting seniors and RSCA history are not copied into the new workspace; re-enter or import those you need.
+
+## 17.7 Compact the data file
+
+An Access data file grows as records are saved and deleted. The space is given back only when the file is compacted. Compact once a month.
+
+1. Ask everyone else to close Swift NAVFIT.
+2. Choose **Settings & Help > Compact data file**.
+3. Read the message and confirm.
+
+**Result:** Swift NAVFIT makes a verified backup beside the data file, closes your other windows, compacts the data file and checks that every table has the same number of rows. If the check fails, the original file is put back. If anyone else is connected, it refuses, names who, and changes nothing.
 
 ---
 
@@ -1249,12 +1277,15 @@ When the warning appears, back up and start a new workspace for new reports. Kee
 | Problem | What to do |
 | --- | --- |
 | Buttons do nothing at startup | Use desktop Access, not Runtime, and enable content. Read any message on screen. |
-| Yellow warning at startup | Move the files out of a temporary, synced or read-only folder, or ask the other person to close the file (2.3). |
+| Yellow warning at startup | Move the files out of a temporary, synced or read-only folder (2.3). For several people, keep the data file on a mapped network drive (2.5). |
 | "Swift NAVFIT cannot open its data file" | Choose **Find the data file...**, **Create a new data file...** or **Close Swift NAVFIT** (2.4). |
-| "Another Swift NAVFIT session on this workspace chose..." | Someone else has the file open. Close one session, then choose your contributor again. |
+| Your name is already in use on another computer | Each computer keeps its own contributor. Choose your own name, not one someone else is using (3.1). |
+| Others do not see my work, or I do not see theirs | The data file is in a synced Teams, SharePoint or OneDrive folder, so each computer has its own copy. Move it to a mapped network drive (2.5). |
 | Save failed | Fix the entry the message names and save again. Your entries are still there. |
 | Save refused because the report changed | Someone else saved it after you opened it. Your entries are in recovery. Reopen the report, then make your change again (16.2). |
-| "Someone else was saving to the same records" | Try again. Nothing was lost (2.5). |
+| "Someone else was saving to the same records" | Try again in a moment. Nothing was lost (2.5). |
+| Backup stopped because others are saving | No backup file was left behind. Try again later, or when fewer people are working (17.2). |
+| Compact refused | Someone else is connected. Ask everyone to close Swift NAVFIT, then try again (17.7). |
 | A field is read-only | The report is archived, locally approved or signed, or the cell is a prior value. |
 | Forward, Send back or Accept is disabled | Check the active contributor, who holds the report, and whether it is saved, archived or approved. |
 | Route needs a restart | The group's members changed. The requester chooses **Restart stale route**. |
@@ -1266,7 +1297,8 @@ When the warning appears, back up and start a new workspace for new reports. Kee
 | Import seems stuck | Read the progress log. Wait for success or failure; do not start another. |
 | Workspace import refused | Use a new, unused application. Check the old file's version. Keep the old file. |
 | Data file is from a newer version | Nothing changed. Use the newer Swift NAVFIT (17.4). |
-| Upgrade refused: file open elsewhere | Nothing changed. Close it in the other session and try again. |
+| Upgrade refused: file open elsewhere | Nothing changed. Everyone else closes Swift NAVFIT, then try again (2.5). |
+| "This data file was upgraded by Swift NAVFIT..." | Someone opened the data file with a newer version. Get that version from your coordinator (2.5). |
 | Messages not in the review list | Messages are separate. Use **My Work > Report notes**. |
 
 ## 18.2 Report a problem
@@ -1332,6 +1364,7 @@ Note the version, what you did, the report or group, and the full message. Use *
 | Block 20, physical readiness | 8.2 |
 | Block 44 | 8.3 |
 | Comments, line meter | 8.3 |
+| Compact the data file | 17.7 |
 | Content checks | 9.3 |
 | Contributors | 3.1 |
 | Counseling | 5.6, 8.2 |
@@ -1371,6 +1404,7 @@ Note the version, what you did, the report or group, and the full message. Use *
 | RSCA history | 5.7, 15.4 |
 | Save states | 8.5 |
 | Setup | 2.2 |
+| Several people, one data file | 2.5 |
 | Shared data file | 2.5 |
 | Snippets | 8.4 |
 | Spelling | 8.4 |
@@ -1381,7 +1415,7 @@ Note the version, what you did, the report or group, and the full message. Use *
 | Troubleshooting | 18 |
 | Undo | 16.1 |
 | Upgrade | 17.4 |
-| Workspace size | 17.6 |
+| Workspace size | 17.6, 17.7 |
 
 ---
 

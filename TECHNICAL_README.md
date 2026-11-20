@@ -44,10 +44,10 @@ Development source (*generated*):
 | Schema version | 51 |
 | Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
 | Tables / enforced relationships | 85 / 169 |
-| VBA modules / forms | 128 / 78 |
+| VBA modules / forms | 128 / 79 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 121 / 121 |
+| Test cases / VBA test harnesses | 123 / 122 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -72,8 +72,8 @@ connection, authenticates no one, and stores no credentials.
 
 **Users.** Command administrative staff, the reporting senior, and local
 reviewers (for example, division officers and department heads). Rated members
-never use it. One workspace file serves one command, used by one person at a
-time.
+never use it. One data file serves one command, used by up to 10 people at once
+from a mapped network drive, each with their own copy of the application.
 
 ## 3. Registration and approval considerations
 
@@ -89,7 +89,7 @@ assessment. The decisions belong to the command and its approvers.
 | National Security System questions | No intelligence, cryptologic, command-and-control or weapons function. No classified information. |
 | Mission criticality | Mission support. If Swift is unavailable, reports can still be prepared in NAVFIT98A. |
 | Interfaces to other systems | None. Data moves only through files the user chooses (section 4.3). |
-| Number of users | One workspace per command; one user at a time. |
+| Number of users | One workspace per command; up to 10 at once on a mapped network drive. |
 | Section 508 | Automated accessibility checks pass; attended screen-reader acceptance is not yet done (section 13). |
 | Contingency | Verified backups and restore (section 8). NAVFIT98A remains the fallback. |
 | Code signing | Not yet signed; a DoD PKI code-signing certificate is needed (section 6.7). |
@@ -110,9 +110,11 @@ assessment. The decisions belong to the command and its approvers.
 
 ### 4.2 Architecture
 
-Swift NAVFIT is a single-file desktop Access application: the user interface,
-code and data all live in one workspace `.accdb`. There is no separate front
-end and back end.
+Swift NAVFIT is a desktop Access application in two files: the application
+`.accdb` holds the user interface and code, and a separate data file `.accdb`
+holds the workspace's tables, with no code. The application works through links
+to the data file, which sits beside it or on a mapped network drive shared by up
+to 10 people, each with their own copy of the application.
 
 - **Source is text.** [src/](src/) holds the VBA modules, the forms as
   normalized Access text in [src/forms](src/forms), the `AutoExec` macro, JSON
@@ -298,10 +300,11 @@ their past work, cannot be selected, and are removed from review routes.
 
 Startup warns, without blocking, when the workspace is open from a temporary
 folder, sits in a sync-service folder (by path or cloud-file attribute), is
-read-only, or is already open in another session (from the Access lock file's
-connected-user roster, which gives computer names only). A session whose
-contributor another session changed is refused with that explanation; nothing
-is attributed to the other session's contributor.
+read-only, or beside a sync conflict copy. It lists who else has the data file
+open (from the Access lock file's connected-user roster and the session presence
+table), and warns when the chosen contributor is already active on another
+computer. Each session keeps its own contributor, so another session choosing a
+different contributor does not change yours.
 
 ### 6.3 Audit and accountability
 
@@ -391,7 +394,7 @@ assets, trust boundaries and interfaces. The main residual risks:
 | Risk | Status | Owner |
 | --- | --- | --- |
 | Someone with folder access reads or changes the workspace, or picks another contributor's name | Accepted by design; controlled by folder permissions | Command |
-| Two sessions open one file, or the file sits in a temporary or synced folder | Partly mitigated: startup warns and a changed contributor is refused; one person at a time remains a procedure | Command |
+| Several sessions save to one data file, or the file sits in a temporary or synced folder | Mitigated for up to 10 people on a mapped network drive: each session keeps its own contributor, a stale or conflicting save is refused with the user's entries kept, lock conflicts retry, and backup, compact and upgrade refuse rather than risk the file. Partly mitigated for synced folders: startup warns; keeping the file off them remains a procedure | Command |
 | The workspace or a backup is copied off approved storage | Command storage and handling controls | Command |
 | A modified copy of the release file circulates | Partly mitigated by published hashes; code signing planned | Maintainer and ISSM |
 | Direct table edits bypass Swift's rules | Partly mitigated by table rules and relationships; integrity hash optional | Maintainer |
@@ -548,9 +551,20 @@ alternative.
   - a NAVFIT98A print check of the narrative line meter;
   - screen readers (NVDA and JAWS), keyboard, and display scaling;
   - a workstation without Adobe Acrobat;
+  - several people on one data file on a real network share;
   - a Navy-managed workstation, normal-security launch and signing.
-- **Single user.** One workspace file per command, one person at a time.
-  Copies do not sync; shared storage (SharePoint Lists) is proposed, not built.
+- **Shared use.** One data file per command, up to 10 people at once on a
+  mapped network drive. A synced Teams/SharePoint/OneDrive folder does not work:
+  copies do not sync. Shared storage in SharePoint Lists is proposed, not built.
+  Saves to one data file take turns on the revision table. In the 8-session test
+  (`scripts/cases/test-shared-sessions.ps1`, data file on `\\localhost\D$`) a save
+  takes 2 to 6 seconds while the others work, and up to about 11 seconds when all
+  eight save in the same second. More people saving at once makes saves slower,
+  not lost: each save waits in place for up to about 12 seconds per try, and a
+  save that still cannot finish is refused with the entries kept. Every session
+  opens the data file with record-level locking (an ADO connection opened first);
+  an older copy of Swift NAVFIT that opens the file first gives page locking to
+  everyone, so everyone uses the same version.
 - **Validation is bounded** to the implemented rule packs. Dates outside their
   coverage produce a Needs-review finding rather than a verdict. NAVFIT98A
   validation is still required after export.

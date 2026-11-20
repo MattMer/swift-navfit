@@ -8,8 +8,9 @@ workbook is in `FORMS_REFERENCES_TEMPLATES/Architecture/`.
 It is part of the [architecture description](Swift_NAVFIT_Architecture_Description.md)
 (backlog M10, step 3).
 
-**Context for the tailoring:** Swift NAVFIT is a single-file Microsoft Access
-application:
+**Context for the tailoring:** Swift NAVFIT is a Microsoft Access application
+with a separate data file, which up to 10 people can share on a mapped network
+drive:
 - It has no server, cloud tenancy, network service, API or container.
 - One maintainer develops it in a git repository, with automated native tests
   run through Access COM.

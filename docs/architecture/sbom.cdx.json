@@ -138,6 +138,21 @@
                        },
                        {
                            "type":  "library",
+                           "bom-ref":  "com:ADODB.Connection",
+                           "name":  "ADODB.Connection",
+                           "supplier":  {
+                                            "name":  "Microsoft"
+                                        },
+                           "description":  "Opening the shared data file with record-level locking before the linked tables reach it",
+                           "properties":  [
+                                              {
+                                                  "name":  "swift:uses",
+                                                  "value":  "1"
+                                              }
+                                          ]
+                       },
+                       {
+                           "type":  "library",
                            "bom-ref":  "com:ADODB.Stream",
                            "name":  "ADODB.Stream",
                            "supplier":  {
@@ -192,7 +207,7 @@
                            "properties":  [
                                               {
                                                   "name":  "swift:uses",
-                                                  "value":  "12"
+                                                  "value":  "13"
                                               }
                                           ]
                        },

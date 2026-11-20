@@ -71,10 +71,21 @@ data file, Create a new data file and Close Swift NAVFIT. Open an existing data
 file brings a complete single-file workspace from 0.49.0 to 0.55.0 into a new
 data file beside it. Backup copies the data file and checks it row by row.
 Releases ship as `Swift_NAVFIT_<version>.accdb` plus the Demo pair
-(`scripts/package-release.ps1`). Two people can work on different reports in
-one data file from a network share (not fully supported): per-application
-contributor, save lock retry, presence on the Overview and in the editor
-(`SessionPresence`), and sync conflict copies named at startup.
+(`scripts/package-release.ps1`). Each application keeps its own contributor,
+saves retry on a lock, presence shows on the Overview and in the editor
+(`SessionPresence`), and sync conflict copies are named at startup.
+
+**Several people on one data file (0.60.0-dev).** Up to 10 people at once on a
+data file on a mapped network drive are supported; a synced
+Teams/SharePoint/OneDrive folder is not (each computer gets its own copy; M11
+covers shared storage in SharePoint Lists). A stale or conflicting save is
+refused with the entries kept, and lock conflicts retry. Startup lists who else
+is connected from the lock-file roster and warns when the chosen contributor is
+active on another computer; presence is cleared on exit. Backup retries, then
+refuses cleanly, while others save. A coordinator **Settings & Help > Compact
+data file** runs only when nobody else is connected. Upgrade refusals name who
+is connected, and an older copy on an upgraded file names the version to get.
+An automated test runs 8 sessions on one data file.
 
 **Attended checks (on a fresh 0.56.0 copy in an ordinary folder).** Checks 1, 2, 3 and 5
 passed (14 Nov). Check 4 (setup's **Restore a backup or import from a previous version**)
@@ -87,25 +98,31 @@ and check 8 passed (15 Nov). Open: 6 and 7.
    comes in and the 0.55.0 file is unchanged.
 4. Settings & Help backup on the data file.
 5. The Demo pair opens when both files are saved in the same folder.
-6. Two computers on one data file in a network share: the Overview names the
-   other person, the editor notice when both open one report, and a refused
-   save keeps the entries.
+6. Several computers (3 or more) on one data file on the command's mapped
+   drive: all open Swift NAVFIT at once; each works on their own report, then
+   two edit the same report (a refused save keeps the entries); two edit a
+   group's cells together; a backup is made while others work; after closing,
+   the Overview list clears. The README "Not yet tested" network-share item
+   stays until this passes.
 7. A data file in OneDrive with a forced conflict copy: startup names the copy.
 8. The upgrade message, at the next schema change (or on a copy whose
    `AppMetadata.SchemaVersion` is set back to 48).
 
 **Known limits:** a copy that is already linked cannot start a second data file
-(a new download can). A session closed without Exit stays listed for up to 10
-minutes. A change to a table validation rule set by `build.ps1` will need
+(a new download can). A session that ends without closing Access (a crash or power
+loss) stays listed for up to 3 minutes. A change to a table validation rule set by `build.ps1` will need
 upgrade-step support when it first happens.
 
 ## M11 — Optional SharePoint Lists workspace storage (planning only)
 
-**Status:** proposed and not scheduled. Today Swift NAVFIT is single-file and
-offline: one authoritative workspace `.accdb`, one contributor at a time
-([PROJECT_STATE.md](../PROJECT_STATE.md)), and no network interfaces
+**Status:** proposed and not scheduled. Today Swift NAVFIT is an application
+plus a separate data file, offline: one authoritative data file per command,
+used by up to 10 people at once on a mapped network drive, each with their own
+application copy and contributor ([PROJECT_STATE.md](../PROJECT_STATE.md)), and
+no network interfaces
 ([SV-1](../docs/architecture/views/SV-1.md)). Those statements stay true until
-this work ships. No other backlog item covers shared or multi-user storage.
+this work ships. No other backlog item covers shared storage beyond a mapped
+network drive.
 
 **Objective:** each command chooses a storage mode.
 - **Local mode (default):** reports and supporting data remain inside the Swift
@@ -143,13 +160,13 @@ revisions, routing, and NAVFIT98A import/export remain available in both modes.
 
 **Constraints of SharePoint Lists that the design must address:**
 
-| Area | Today (local `.accdb`) | With SharePoint Lists |
+| Area | Today (local or network-share `.accdb`) | With SharePoint Lists |
 | --- | --- | --- |
 | Transactions | A save, its revision, changes and receipt commit together | No transaction across lists or items. Needs an idempotent write protocol (a commit marker or journal per save) and reconciliation after interruption. |
 | Integrity rules | Table validation rules, required fields, unique indexes, enforced relationships | Not enforced the same way: limited unique columns, lookup relationships, no table-level rules. Swift must enforce them in its data layer and verify on read. |
 | Identity | AutoNumber IDs are referenced throughout | SharePoint assigns its own item IDs. Use Swift's existing GUIDs as stable keys and map IDs. |
 | Size and indexing | No practical row limit for a binder | List view threshold (5,000 items) and per-list index limits. Queries must stay on indexed columns, with archiving guidance. |
-| Concurrency | One contributor at a time | Several users at once. Optimistic concurrency on every write (extending the existing version counters, or using item versions) with clear conflict messages. |
+| Concurrency | Up to 10 people at once on a mapped network drive; stale saves refused, lock conflicts retried | Several users at once without a shared drive. Optimistic concurrency on every write (extending the existing version counters, or using item versions) with clear conflict messages. |
 | Attribution | Contributor choice; attribution only | SharePoint records an authenticated "Modified By". Decide whether the contributor follows the signed-in account. |
 | Performance | Local disk | Network latency. Batched reads and caching matter more. Define offline behavior. |
 | Security | Folder permissions on approved storage | SharePoint permissions, plus authorization of the tenant and site for PII/CUI. Decide whether SSNs are stored there at all. |

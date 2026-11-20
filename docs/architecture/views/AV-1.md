@@ -32,7 +32,7 @@ connection. Data enters and leaves only through files the user chooses.
 | Schema version | 51 |
 | Tables / enforced relationships | 85 / 169 |
 | Report fields in the catalogue | 101 |
-| VBA modules / forms | 128 / 78 |
+| VBA modules / forms | 128 / 79 |
 | Validation rule packs / pack rules / expanded rules | 2 / 6 / 10 |
 <!-- end generated:facts -->
 

@@ -24,7 +24,9 @@ import and print-ready PDF output.
 
 - Local approval is not an official signature or submission. NAVFIT98A remains
   the destination for native validation and final submission.
-- One authoritative workspace file, one contributor at a time. Contributor
+- One authoritative data file per command, used by up to 10 people at once on a
+  mapped network drive, each with their own copy of the application and their own
+  contributor. A synced Teams/SharePoint/OneDrive folder is not supported. Contributor
   profiles are attribution, not authentication (C03: every launch requires an
   explicit contributor choice).
 - **C01:** protection relies on Windows file/folder

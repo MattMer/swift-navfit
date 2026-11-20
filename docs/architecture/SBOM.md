@@ -33,10 +33,11 @@ Components Swift NAVFIT 0.60.0-dev uses at run time, from a fresh build and the 
 
 | Class | Uses | Purpose |
 | --- | --- | --- |
+| ADODB.Connection | 1 | Opening the shared data file with record-level locking before the linked tables reach it |
 | ADODB.Stream | 7 | UTF-8 and binary file reading and writing (backups, PDF output, RUAD CSV, NAVFIT template) |
 | MSXML2.DOMDocument.6.0 | 13 | XML parsing and writing (PDF form data and exchange) |
 | Scripting.Dictionary | 194 | In-memory keyed collections |
-| Scripting.FileSystemObject | 12 | File and folder checks |
+| Scripting.FileSystemObject | 13 | File and folder checks |
 
 ## Embedded data
 

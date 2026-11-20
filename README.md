@@ -12,7 +12,7 @@ Swift NAVFIT is a Windows application, built in Microsoft Access, for writing EV
 
 It is meant to replace the spreadsheets, emailed copies, repeated data entry, and manual tracking that usually surround report writing. Swift works alongside NAVFIT98A: you import from it and export to it, and NAVFIT98A remains the place for final native validation and submission.
 
-The 63-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
+The 65-page user guide covers setup, drafting, notes, validation, summary groups, RSCA, review, exchange with NAVFIT98A, recovery, and upgrades. It follows the procedure-based layout of the eNavFit guide.
 
 ![A tour of Swift NAVFIT: the Overview, the Reports list, the report editor, validation findings with their citations, a summary group's member table, My Work, and the built-in EVALMAN](docs/images/swift-navfit-tour.gif)
 
@@ -115,7 +115,7 @@ Download from the [0.59.0 release page](https://github.com/MattMer/swift-navfit/
 > **Not yet tested:**
 > 1. screen readers (NVDA and JAWS);
 > 2. a computer without Adobe Acrobat;
-> 3. two people on one data file from a network share.
+> 3. several people on one data file from a mapped network drive.
 >
 > Printed fit has been checked on paper for the EVAL, FITREP, CHIEFEVAL and summary letter, and on a Navy-managed workstation.
 >
@@ -138,7 +138,7 @@ Never copy a new application over an existing workspace.
 
 - Swift NAVFIT is an independent project, not an official Navy system. It does not replace governing instructions or human review.
 - **Local approval and Mark signed are not official submission, signature, or Navy approval.**
-- Use one data file per command. Two people can work at once on different reports from a shared network folder, but this is not fully supported; a OneDrive or other synced folder does not work for two people. Separate copies do not sync with each other.
+- Use one data file per command. Up to 10 people can work at once from a data file on a mapped network drive, each with their own copy of the application and their own contributor name. A OneDrive, SharePoint, Teams or other synced folder does not work for several people: each computer gets its own copy of the data file, and separate copies do not sync with each other.
 - Validation covers the checks Swift implements, not every policy. Always run NAVFIT98A validation after export.
 - Recovery checkpoints, saved versions, backups, and upgrades do different jobs. An upgrade copies an old workspace into a new one; it does not merge two populated workspaces.
 
