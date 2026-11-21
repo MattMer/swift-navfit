@@ -362,6 +362,7 @@ Swift NAVFIT is built to meet Section 508 (WCAG 2.0 Level AA) for desktop softwa
 | Esc | Undo typing in the current field. |
 | F7 | Check spelling in a narrative block. |
 | F1 | Open EVALMAN at the block you are in. |
+| Shift+F1 | Open the Block guide, which follows the field you are in. |
 
 **Screen readers.** Each field announces its label: the official block caption on report pages. Fields without a visible label still announce a name, such as "Trait 33" or "E5 RSCA". Status and save messages are text, so a screen reader can read them.
 
@@ -757,6 +758,16 @@ Text past the PDF's room prints on an added **additional text** page. Hover over
 **EVALMAN.** **Resources > EVALMAN (BUPERSINST 1610.10H)** holds the whole instruction as text, through CH-4 (22 Oct 2026), offline: the change transmittals, the basic instruction, both enclosures, all 19 chapters with every block, and the exhibits and tables. Choose a section under **Contents**, or type words or a "phrase in quotes" and choose **Find**. Results list each section with its number of matches; **Next match** and **Previous match** step through them, highlighted. The text was taken from the official PDF and checked against it; the PDF remains the authoritative copy.
 
 In a report, press **F1** in a field, or choose **EVALMAN** beside the page heading, to open the instructions for that block. In **Validation issues**, select a finding and choose **EVALMAN** to open the paragraph it cites.
+
+**Block guide.** Choose **Block guide** beside **EVALMAN**, or press **Shift+F1** in a field, to open a small window you can leave open beside the report. As you click or tab into a field, it shows:
+
+- the block's name and number on this report type, such as block 41 for FITREP comments
+- the field's current findings, as they change
+- one or two sample entries, for fields you type into. Check boxes and fixed lists have none. Sample names, units and numbers are invented; an entry marked *EVALMAN's example* is quoted from the instruction
+- the block's EVALMAN instruction, followed by its rules for this kind of report: Concurrent, Operational Commander, Not Observed or Inactive duty. On a trait, the trait's description and the meaning of the mark you chose come first
+- the block in other chapters. Choose one to read it; moving to another field shows that field again
+
+**Open in EVALMAN** opens the full reader at the section shown, and **Sample wording** opens the NavyWriter examples. The guide never takes the cursor out of the report.
 
 **Spelling.** Choose **Check spelling**, or press **F7** in any narrative block. It uses Microsoft Office's spelling checker on this computer and sends nothing anywhere. Words in all capitals are checked too. If Office's proofing tools are not installed, Swift NAVFIT says so.
 

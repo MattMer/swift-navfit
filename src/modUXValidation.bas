@@ -48,6 +48,8 @@ Public Function UXLivePaint() As Boolean
     Forms!frmEditor!uxDirty.ControlTipText = "Open validation: " & invalid & " invalid entries, " & policy & " policy issues, " & incomplete & " incomplete, " & review & " need review, " & information & " information."
     If EditorHasPending() Then recoveryDirty = True
     validationDirty = False: validationDate = Date
+    'The Block guide follows a changed report type, report situation or trait mark too.
+    Call UXBlockGuideRefresh()
     UXLivePaint = True
 Finished:
     UXApplyVisual Forms!frmEditor
@@ -55,6 +57,10 @@ Finished:
 Failed:
     Forms!frmEditor!uxDirty.Caption = "Validation unavailable - open issues"
     Resume Finished
+End Function
+' The latest live findings for the open report (Nothing before the first paint).
+Public Function UXLiveFindings() As Collection
+    Set UXLiveFindings = liveResult
 End Function
 ' Expose the validation-paint count for diagnostics without querying the database.
 Public Function UXLivePaintCount() As Long
@@ -115,6 +121,7 @@ Public Function UXLiveTimer() As Boolean
         nextCheckpoint = DateAdd("s", 30, Now())
     End If
     UXToolsTimer
+    UXBlockGuideTick
     UXLiveTimer = True
 End Function
 ' Open report or group findings using an explicit context; reset paging and selection.

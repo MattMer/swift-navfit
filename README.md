@@ -51,7 +51,7 @@ The 65-page user guide covers setup, drafting, notes, validation, summary groups
 ### Catch problems while drafting
 
 - **Live findings with citations:** Swift checks values as you type, links each finding to the block it concerns, and opens the EVALMAN paragraph it cites.
-- **EVALMAN built in:** the whole of BUPERSINST 1610.10H, through CH-4, as searchable text. Press F1 in a report field to read that block's instructions.
+- **EVALMAN built in:** the whole of BUPERSINST 1610.10H, through CH-4, as searchable text. Press F1 in a report field to read that block's instructions, or keep the Block guide open: it follows the field you are in with the instruction, sample entries and the field's findings.
 - **Different kinds of finding:** invalid entries, incomplete drafts, policy issues, and matters that need human judgement are kept apart.
 - **Drafts stay editable:** missing information never blocks saving a draft.
 - **Familiar report pages:** fixed Front and Back pages laid out like the official forms, all seven traits together, and help for the current window.

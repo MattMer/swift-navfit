@@ -28,6 +28,14 @@ Invoke-SuiteCase 'narratives' {
 }
 Invoke-HarnessCase 'narrative-layout' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeLayout()'
 Invoke-HarnessCase 'evalman' $BuildPath 'EvalmanHarness' 'TestEvalman()'
+Invoke-SuiteCase 'block-examples-current' {
+    # The examples module is generated from src/block-examples.json and must match it.
+    $python=Join-Path $root '.venv\Scripts\python.exe';if(-not (Test-Path -LiteralPath $python)){$python='python'}
+    $output=& $python (Join-Path $root 'scripts\generate-block-examples-module.py') --check 2>&1
+    if($LASTEXITCODE -ne 0){throw ([string]::Join(' ',$output))}
+    Write-Output ('PASS: '+[string]::Join(' ',$output))
+}
+Invoke-HarnessCase 'block-guide' $BuildPath 'BlockGuideHarness' 'TestBlockGuide()'
 Invoke-HarnessCase 'narrative-line-fit' $BuildPath 'NarrativeLayoutHarness' 'TestNarrativeLineFit()'
 Invoke-SuiteCase 'navfit-line-fit' {
     # Reference measurer: NAVFIT98A 2.2.0.332 prints each narrative with

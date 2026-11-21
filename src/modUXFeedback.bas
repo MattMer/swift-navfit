@@ -2,7 +2,7 @@ Attribute VB_Name = "modUXFeedback"
 Option Explicit
 Private snippetReport As Long
 Private gridReport As Long
-Private catalogFromSnippets As Boolean
+Private catalogFromSnippets As Boolean, catalogFromGuide As Boolean
 Private siblingGroup As Long, siblingOrder As Collection
 Public Function UXOpenReportSnippets() As Boolean
     On Error GoTo Failed
@@ -142,8 +142,18 @@ Public Function UXOpenSnippetSources() As Boolean
     Forms!frmUXNavyWriter!cmdBack.Caption = "Back to narrative snippets"
     UXOpenSnippetSources = True
 End Function
+' Sample wording from the Block guide: Back only closes the catalog, leaving the report open.
+Public Function UXOpenGuideWording() As Boolean
+    catalogFromGuide = True
+    DoCmd.OpenForm "frmUXNavyWriter"
+    Forms!frmUXNavyWriter!cmdBack.Caption = "Back to the report"
+    UXOpenGuideWording = True
+End Function
 Public Function UXReturnNarrativeSources() As Boolean
     DoCmd.Close acForm, "frmUXNavyWriter", acSaveNo
+    If catalogFromGuide Then
+        catalogFromGuide = False: UXReturnNarrativeSources = True: Exit Function
+    End If
     If catalogFromSnippets And CurrentProject.AllForms("frmSnippets").IsLoaded Then
         Forms!frmSnippets.SetFocus: LoadSnippets
     Else

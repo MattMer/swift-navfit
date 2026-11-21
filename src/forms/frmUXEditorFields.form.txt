@@ -243,6 +243,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Title"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Title\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -309,6 +310,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -376,6 +378,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:PeriodStart"
+                    OnGotFocus ="=UXBlockGuideFollow(\"PeriodStart\")"
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =200
@@ -444,6 +447,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:PeriodEnd"
+                    OnGotFocus ="=UXBlockGuideFollow(\"PeriodEnd\")"
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =200
@@ -513,6 +517,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:DraftNotes"
+                    OnGotFocus ="=UXBlockGuideFollow(\"DraftNotes\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -583,6 +588,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"OfficialComments\")"
                     OnMouseUp ="=UXNarrativeCaret(\"OfficialComments\")"
                     Tag ="SURF:OfficialComments"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OfficialComments\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -649,6 +655,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:OfficialName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OfficialName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -715,6 +722,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:RankRate"
+                    OnGotFocus ="=UXBlockGuideFollow(\"RankRate\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -781,6 +789,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Designator"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Designator\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -847,6 +856,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:UnitUIC"
+                    OnGotFocus ="=UXBlockGuideFollow(\"UnitUIC\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -913,6 +923,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ShipStation"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ShipStation\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -983,6 +994,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait33"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait33\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1053,6 +1065,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait34"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait34\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1123,6 +1136,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait35"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait35\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1193,6 +1207,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait36"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait36\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1263,6 +1278,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait37"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait37\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1333,6 +1349,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait38"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait38\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1403,6 +1420,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:Trait39"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait39\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1462,6 +1480,7 @@ Begin Form
                     Name ="cboObservationStatus"
                     AfterUpdate ="=UXSurfaceEdited(\"ObservationStatus\")"
                     Tag ="SURF:ObservationStatus"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ObservationStatus\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1527,6 +1546,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:PromotionRecommendation"
+                    OnGotFocus ="=UXBlockGuideFollow(\"PromotionRecommendation\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1596,6 +1616,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:PromotionStatus"
+                    OnGotFocus ="=UXBlockGuideFollow(\"PromotionStatus\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1662,6 +1683,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1728,6 +1750,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorGrade"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorGrade\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1794,6 +1817,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorDesignator"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorDesignator\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1860,6 +1884,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorTitle"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorTitle\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1926,6 +1951,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorUIC"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorUIC\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -1985,6 +2011,7 @@ Begin Form
                     Name ="txtOccasionPeriodic"
                     AfterUpdate ="=UXSurfaceEdited(\"OccasionPeriodic\")"
                     Tag ="SURF:OccasionPeriodic"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OccasionPeriodic\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2040,6 +2067,7 @@ Begin Form
                     Name ="txtOccasionDetachment"
                     AfterUpdate ="=UXSurfaceEdited(\"OccasionDetachment\")"
                     Tag ="SURF:OccasionDetachment"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OccasionDetachment\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2095,6 +2123,7 @@ Begin Form
                     Name ="txtOccasionFrocking"
                     AfterUpdate ="=UXSurfaceEdited(\"OccasionFrocking\")"
                     Tag ="SURF:OccasionFrocking"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OccasionFrocking\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2150,6 +2179,7 @@ Begin Form
                     Name ="txtOccasionSpecial"
                     AfterUpdate ="=UXSurfaceEdited(\"OccasionSpecial\")"
                     Tag ="SURF:OccasionSpecial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"OccasionSpecial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2205,6 +2235,7 @@ Begin Form
                     Name ="txtReportRegular"
                     AfterUpdate ="=UXSurfaceEdited(\"ReportRegular\")"
                     Tag ="SURF:ReportRegular"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportRegular\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2260,6 +2291,7 @@ Begin Form
                     Name ="txtReportConcurrent"
                     AfterUpdate ="=UXSurfaceEdited(\"ReportConcurrent\")"
                     Tag ="SURF:ReportConcurrent"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportConcurrent\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2315,6 +2347,7 @@ Begin Form
                     Name ="txtReportOperationalCommander"
                     AfterUpdate ="=UXSurfaceEdited(\"ReportOperationalCommander\")"
                     Tag ="SURF:ReportOperationalCommander"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportOperationalCommander\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2377,6 +2410,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:PrimaryDuty"
+                    OnGotFocus ="=UXBlockGuideFollow(\"PrimaryDuty\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2447,6 +2481,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"DutyDescription\")"
                     OnMouseUp ="=UXNarrativeCaret(\"DutyDescription\")"
                     Tag ="SURF:DutyDescription"
+                    OnGotFocus ="=UXBlockGuideFollow(\"DutyDescription\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2513,6 +2548,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberSSN"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberSSN\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2579,6 +2615,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberDoDID"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberDoDID\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2638,6 +2675,7 @@ Begin Form
                     Name ="txtComponentActive"
                     AfterUpdate ="=UXSurfaceEdited(\"ComponentActive\")"
                     Tag ="SURF:ComponentActive"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ComponentActive\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2693,6 +2731,7 @@ Begin Form
                     Name ="txtComponentTAR"
                     AfterUpdate ="=UXSurfaceEdited(\"ComponentTAR\")"
                     Tag ="SURF:ComponentTAR"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ComponentTAR\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2748,6 +2787,7 @@ Begin Form
                     Name ="txtComponentInactive"
                     AfterUpdate ="=UXSurfaceEdited(\"ComponentInactive\")"
                     Tag ="SURF:ComponentInactive"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ComponentInactive\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2803,6 +2843,7 @@ Begin Form
                     Name ="txtComponentATADSW"
                     AfterUpdate ="=UXSurfaceEdited(\"ComponentATADSW\")"
                     Tag ="SURF:ComponentATADSW"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ComponentATADSW\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -2866,6 +2907,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:DateReported"
+                    OnGotFocus ="=UXBlockGuideFollow(\"DateReported\")"
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =200
@@ -2935,6 +2977,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselingDate"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CounselingDate\")"
                     ControlTipText ="Enter YYYY-MM-DD, NOT REQ or NOT PERF; Calendar chooses a date."
 
 
@@ -3005,6 +3048,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselorName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CounselorName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3071,6 +3115,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReadinessSummary"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReadinessSummary\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3141,6 +3186,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReadinessDetail"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReadinessDetail\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3209,6 +3255,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReadinessDate"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReadinessDate\")"
                     ControlTipText ="Enter the month and year as MM/YY; Calendar chooses a date."
 
                     LayoutCachedLeft =200
@@ -3283,6 +3330,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:BilletSubcategory"
+                    OnGotFocus ="=UXBlockGuideFollow(\"BilletSubcategory\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3349,6 +3397,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:AssignmentRecommendationA"
+                    OnGotFocus ="=UXBlockGuideFollow(\"AssignmentRecommendationA\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3415,6 +3464,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:AssignmentRecommendationB"
+                    OnGotFocus ="=UXBlockGuideFollow(\"AssignmentRecommendationB\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3474,6 +3524,7 @@ Begin Form
                     Name ="txtRetentionYes"
                     AfterUpdate ="=UXSurfaceEdited(\"RetentionYes\")"
                     Tag ="SURF:RetentionYes"
+                    OnGotFocus ="=UXBlockGuideFollow(\"RetentionYes\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3529,6 +3580,7 @@ Begin Form
                     Name ="txtRetentionNo"
                     AfterUpdate ="=UXSurfaceEdited(\"RetentionNo\")"
                     Tag ="SURF:RetentionNo"
+                    OnGotFocus ="=UXBlockGuideFollow(\"RetentionNo\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3584,6 +3636,7 @@ Begin Form
                     Name ="txtStatementYes"
                     AfterUpdate ="=UXSurfaceEdited(\"StatementYes\")"
                     Tag ="SURF:StatementYes"
+                    OnGotFocus ="=UXBlockGuideFollow(\"StatementYes\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3639,6 +3692,7 @@ Begin Form
                     Name ="txtStatementNo"
                     AfterUpdate ="=UXSurfaceEdited(\"StatementNo\")"
                     Tag ="SURF:StatementNo"
+                    OnGotFocus ="=UXBlockGuideFollow(\"StatementNo\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3701,6 +3755,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorSSN"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorSSN\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3767,6 +3822,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorDoDID"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorDoDID\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3833,6 +3889,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorAddress1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorAddress1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3899,6 +3956,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorAddress2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorAddress2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -3965,6 +4023,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorCity"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorCity\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4031,6 +4090,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorState"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorState\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4097,6 +4157,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorZip"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorZip\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4163,6 +4224,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorPhone"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorPhone\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4229,6 +4291,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorDSN"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorDSN\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4298,6 +4361,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:RaterName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"RaterName\")"
                     UnicodeAccessKey =32
 
                     LayoutCachedLeft =200
@@ -4366,6 +4430,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:RaterDate"
+                    OnGotFocus ="=UXBlockGuideFollow(\"RaterDate\")"
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =200
@@ -4436,6 +4501,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:SeniorRaterName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"SeniorRaterName\")"
                     UnicodeAccessKey =32
 
                     LayoutCachedLeft =200
@@ -4504,6 +4570,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:SeniorRaterDate"
+                    OnGotFocus ="=UXBlockGuideFollow(\"SeniorRaterDate\")"
                     ControlTipText ="Choose a date from the calendar or enter YYYY-MM-DD."
 
                     LayoutCachedLeft =200
@@ -4571,6 +4638,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberFirstName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberFirstName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4637,6 +4705,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberMiddleInitial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberMiddleInitial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4703,6 +4772,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberLastName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberLastName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4769,6 +4839,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:MemberSuffix"
+                    OnGotFocus ="=UXBlockGuideFollow(\"MemberSuffix\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4835,6 +4906,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorLastName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorLastName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4901,6 +4973,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorFirstInitial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorFirstInitial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -4967,6 +5040,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:ReportingSeniorMiddleInitial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"ReportingSeniorMiddleInitial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5035,6 +5109,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselorLastName"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CounselorLastName\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5101,6 +5176,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselorFirstInitial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CounselorFirstInitial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5167,6 +5243,7 @@ Begin Form
                     FontName ="Segoe UI"
                     OnChange ="=UXLiveTyped()"
                     Tag ="SURF:CounselorMiddleInitial"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CounselorMiddleInitial\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5237,6 +5314,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"CommandEmployment\")"
                     OnMouseUp ="=UXNarrativeCaret(\"CommandEmployment\")"
                     Tag ="SURF:CommandEmployment"
+                    OnGotFocus ="=UXBlockGuideFollow(\"CommandEmployment\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5307,6 +5385,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment1\")"
                     Tag ="SURF:Trait33Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait33Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5377,6 +5456,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment2\")"
                     Tag ="SURF:Trait33Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait33Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5447,6 +5527,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait33Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait33Comment3\")"
                     Tag ="SURF:Trait33Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait33Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5517,6 +5598,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment1\")"
                     Tag ="SURF:Trait34Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait34Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5587,6 +5669,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment2\")"
                     Tag ="SURF:Trait34Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait34Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5657,6 +5740,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait34Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait34Comment3\")"
                     Tag ="SURF:Trait34Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait34Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5727,6 +5811,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment1\")"
                     Tag ="SURF:Trait35Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait35Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5797,6 +5882,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment2\")"
                     Tag ="SURF:Trait35Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait35Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5867,6 +5953,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait35Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait35Comment3\")"
                     Tag ="SURF:Trait35Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait35Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -5937,6 +6024,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment1\")"
                     Tag ="SURF:Trait36Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait36Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6007,6 +6095,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment2\")"
                     Tag ="SURF:Trait36Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait36Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6077,6 +6166,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait36Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait36Comment3\")"
                     Tag ="SURF:Trait36Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait36Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6147,6 +6237,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment1\")"
                     Tag ="SURF:Trait37Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait37Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6217,6 +6308,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment2\")"
                     Tag ="SURF:Trait37Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait37Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6287,6 +6379,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait37Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait37Comment3\")"
                     Tag ="SURF:Trait37Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait37Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6357,6 +6450,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment1\")"
                     Tag ="SURF:Trait38Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait38Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6427,6 +6521,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment2\")"
                     Tag ="SURF:Trait38Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait38Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6497,6 +6592,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait38Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait38Comment3\")"
                     Tag ="SURF:Trait38Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait38Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6567,6 +6663,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment1\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment1\")"
                     Tag ="SURF:Trait39Comment1"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait39Comment1\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6637,6 +6734,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment2\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment2\")"
                     Tag ="SURF:Trait39Comment2"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait39Comment2\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6707,6 +6805,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Trait39Comment3\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Trait39Comment3\")"
                     Tag ="SURF:Trait39Comment3"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Trait39Comment3\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -6777,6 +6876,7 @@ Begin Form
                     OnKeyUp ="=UXNarrativeCaret(\"Qualifications\")"
                     OnMouseUp ="=UXNarrativeCaret(\"Qualifications\")"
                     Tag ="SURF:Qualifications"
+                    OnGotFocus ="=UXBlockGuideFollow(\"Qualifications\")"
 
                     LayoutCachedLeft =200
                     LayoutCachedTop =200
@@ -7187,9 +7287,11 @@ Attribute VB_Exposed = False
 Option Compare Database
 
 ' F7 runs Swift's spell check so corrections reach the pending buffer and recovery.
-' F1 opens EVALMAN at the block of the field with focus, in place of Access help.
+' F1 opens EVALMAN at the block of the field with focus, in place of Access help;
+' Shift+F1 opens the Block guide, which follows the field with focus.
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
     If KeyCode = vbKeyF7 And Shift = 0 Then KeyCode = 0: UXSpellCheck True
     If KeyCode = vbKeyF1 And Shift = 0 Then KeyCode = 0: UXEditorEvalman True
+    If KeyCode = vbKeyF1 And Shift = acShiftMask Then KeyCode = 0: UXOpenBlockGuide
 
 End Sub

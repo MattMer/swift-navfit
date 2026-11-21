@@ -66,16 +66,21 @@ Public Function UXFixedResize(Optional ByVal height As Long = 0, Optional ByVal 
  For i = 0 To 3: Place f, CStr(names(i)), 250 + i * 3000, 2850, 2850, 400: Next
  'The Front Page heading shares its row with the reporting senior picker, so the
  'picker is in view without scrolling; other pages give the heading the full row.
- 'EVALMAN ends the row on the report pages (F1 does the same from a field).
- Place f, "uxSection", 250, 3280, IIf(sheet = 0, 3000, IIf(sheet < 8, 10300, 11800)), 410
+ 'Block guide and EVALMAN end the row on the report pages (Shift+F1 and F1 do the same
+ 'from a field).
+ Place f, "uxSection", 250, 3280, IIf(sheet = 0, 3000, IIf(sheet < 8, 8800, 11800)), 410
  If sheet = 0 Then
-  Place f, "uxSeniorRecord", 3400, 3280, 4100, 400
-  Place f, "uxUseSenior", 7650, 3280, 2900, 400
+  Place f, "uxSeniorRecord", 3400, 3280, 2650, 400
+  Place f, "uxUseSenior", 6200, 3280, 2850, 400
  End If
  If f!uxSeniorRecord.Visible <> (sheet = 0) Then f!uxSeniorRecord.Visible = (sheet = 0): f!uxUseSenior.Visible = (sheet = 0)
  If UXHasControl(f, "cmdEvalman") Then
   If sheet < 8 Then Place f, "cmdEvalman", 10700, 3280, 1350, 400
   If f!cmdEvalman.Visible <> (sheet < 8) Then f!cmdEvalman.Visible = (sheet < 8)
+ End If
+ If UXHasControl(f, "cmdBlockGuide") Then
+  If sheet < 8 Then Place f, "cmdBlockGuide", 9200, 3280, 1350, 400
+  If f!cmdBlockGuide.Visible <> (sheet < 8) Then f!cmdBlockGuide.Visible = (sheet < 8)
  End If
  Place f, "uxError", 250, 3690, 11800, 350
  f!uxErrorList.Left = 250 + ReportLeft: f!uxErrorList.Top = 4060: f!uxErrorList.Width = 11800: f!uxErrorList.Height = 500

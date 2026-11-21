@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "note": "Sample entries the Block guide shows for each block typed into a report. Names, units and numbers are invented. An example with source EVALMAN is quoted from the cited section of BUPERSINST 1610.10H CH-4 and is checked against it. Generate src/modBlockExamples.bas with scripts/generate-block-examples-module.py after any change.",
+  "examples": {
+    "OfficialName": {
+      "all": [
+        {"text": "Denney, John A", "source": "EVALMAN", "section": "Block 1:", "note": "Last name, comma, first name, middle initial."},
+        {"text": "STJohn, Melvin J II", "source": "EVALMAN", "section": "Block 1:", "note": "No spaces or punctuation inside a name. A suffix goes last."}
+      ]
+    },
+    "MemberLastName": {"all": [{"text": "SmithJones", "source": "Swift", "note": "No spaces or punctuation inside the name."}]},
+    "MemberFirstName": {"all": [{"text": "Ann", "source": "Swift"}]},
+    "MemberMiddleInitial": {"all": [{"text": "S", "source": "Swift", "note": "NMN when there is no middle name."}]},
+    "MemberSuffix": {"all": [{"text": "JR", "source": "Swift"}, {"text": "II", "source": "Swift"}]},
+    "RankRate": {
+      "EVAL": [
+        {"text": "CS2", "source": "EVALMAN", "section": "Block 2:", "note": "The rate worn on the report's end date."},
+        {"text": "BM1", "source": "EVALMAN", "section": "Block 2:"}
+      ],
+      "CHIEFEVAL": [
+        {"text": "EMCS", "source": "EVALMAN", "section": "Block 2:", "note": "The rate worn on the report's end date."},
+        {"text": "PSCM", "source": "EVALMAN", "section": "Block 2:"}
+      ],
+      "FITREP": [
+        {"text": "LCDR", "source": "EVALMAN", "section": "Block 2:", "note": "The grade worn on the report's end date."},
+        {"text": "CWO3", "source": "EVALMAN", "section": "Block 2:"}
+      ]
+    },
+    "Designator": {
+      "EVAL": [
+        {"text": "AW/PJ", "source": "EVALMAN", "section": "Block 3:", "note": "Up to two warfare designators, slash, no spaces. Blank if none."}
+      ],
+      "CHIEFEVAL": [
+        {"text": "SS/DV", "source": "EVALMAN", "section": "Block 3:", "note": "Up to two warfare designators, slash, no spaces. Blank if none."}
+      ],
+      "FITREP": [
+        {"text": "1110", "source": "Swift", "note": "The four-digit designator on the report's end date."},
+        {"text": "6410", "source": "Swift"}
+      ]
+    },
+    "MemberSSN": {"all": [{"text": "000000000", "source": "Swift", "note": "Type the 9 digits. The report prints them as 000-00-0000."}]},
+    "MemberDoDID": {"all": [{"text": "0000000000", "source": "Swift", "note": "Type the 10 digits."}]},
+    "UnitUIC": {
+      "all": [
+        {"text": "00000", "source": "Swift", "note": "Five zeros for an activity with no UIC."},
+        {"text": "3203A", "source": "Swift", "note": "The first four characters are numbers."}
+      ]
+    },
+    "ShipStation": {
+      "all": [
+        {"text": "USS EXAMPLE DDG 1", "source": "Swift", "note": "Abbreviated activity name. Use 1, not ONE."},
+        {"text": "NAVSTA EXAMPLE", "source": "Swift"}
+      ]
+    },
+    "DateReported": {"all": [{"text": "2026-03-16", "source": "Swift", "note": "The date the member reported to the block 7 command. It prints as 26MAR16."}]},
+    "PeriodStart": {"all": [{"text": "2025-11-16", "source": "Swift", "note": "The day after the end of the last Regular report. It prints as 25NOV16."}]},
+    "PeriodEnd": {"all": [{"text": "2026-11-15", "source": "Swift", "note": "The periodic end date for the member's paygrade. It prints as 26NOV15."}]},
+    "ReadinessSummary": {
+      "all": [
+        {"text": "PPP", "source": "EVALMAN", "section": "Block 20:", "note": "Passed three official PFAs. No spaces or slashes."},
+        {"text": "N", "source": "Swift", "note": "No official PFA in the period."}
+      ]
+    },
+    "ReadinessDate": {"all": [{"text": "2026-05-20", "source": "Swift", "note": "The date of the official PFA result chosen in block 20."}]},
+    "BilletSubcategory": {
+      "all": [
+        {"text": "NA", "source": "EVALMAN", "section": "Block 21:", "note": "Subcategories not used. Most reports. Never leave it blank."},
+        {"text": "APPROVED", "source": "EVALMAN", "section": "Block 21:", "note": "Approved separation, retirement or Fleet Reserve date."}
+      ]
+    },
+    "ReportingSeniorName": {"all": [{"text": "STJOHN, O F", "source": "EVALMAN", "section": "Block 22:", "note": "Last name, comma, initials. The same on every report in the group."}]},
+    "ReportingSeniorLastName": {"all": [{"text": "STJOHN", "source": "Swift"}]},
+    "ReportingSeniorFirstInitial": {"all": [{"text": "O", "source": "Swift"}]},
+    "ReportingSeniorMiddleInitial": {"all": [{"text": "F", "source": "Swift"}]},
+    "ReportingSeniorGrade": {
+      "all": [
+        {"text": "CDR", "source": "EVALMAN", "section": "Block 23:"},
+        {"text": "GS15", "source": "EVALMAN", "section": "Block 23:", "note": "A civilian reporting senior. No hyphens."}
+      ]
+    },
+    "ReportingSeniorDesignator": {
+      "all": [
+        {"text": "1110", "source": "Swift", "note": "The reporting senior's four-digit designator."},
+        {"text": "USMC", "source": "EVALMAN", "section": "Block 24:", "note": "Another Service. Blank for Navy enlisted or civilian."}
+      ]
+    },
+    "ReportingSeniorTitle": {
+      "all": [
+        {"text": "CO", "source": "EVALMAN", "section": "Block 25:", "note": "Always CO for a commanding officer, OIC for an officer in charge."},
+        {"text": "XO", "source": "EVALMAN", "section": "Block 25:", "note": "A delegated reporting senior gives the level of delegation."}
+      ]
+    },
+    "ReportingSeniorUIC": {"all": [{"text": "3203A", "source": "Swift", "note": "The reporting senior's command. The same on every report from the command."}]},
+    "ReportingSeniorSSN": {"all": [{"text": "000000000", "source": "Swift", "note": "Type the 9 digits. The OMPF copy needs the full SSN."}]},
+    "ReportingSeniorDoDID": {"all": [{"text": "0000000000", "source": "Swift", "note": "Type the 10 digits."}]},
+    "CommandEmployment": {
+      "all": [
+        {"text": "upkeep/Training-8; Deployed WESTPAC-3", "source": "EVALMAN", "section": "Block 28:", "note": "Operating forces: periods and months, unclassified."},
+        {"text": "Manage Navy personnel policies and functions.", "source": "EVALMAN", "section": "Block 28:", "note": "Shore activity: the command mission."}
+      ]
+    },
+    "PrimaryDuty": {
+      "all": [
+        {"text": "ADMIN LPO", "source": "Swift", "note": "14 characters or fewer: the most significant primary duty."},
+        {"text": "COMMO", "source": "Swift"}
+      ]
+    },
+    "DutyDescription": {
+      "all": [
+        {"text": "COMMUNICATIONS OFFICER-7; ASST COMM-3; MESS TREASURER-8; OOD UNDERWAY-3", "source": "EVALMAN", "section": "Block 29:", "note": "Duty titles with months, primary first, then collateral and watches."},
+        {"text": "responsible for base maintenance, supervising 15 military and 65 civilians, and managing $5 million", "source": "EVALMAN", "section": "Block 29:", "note": "An optional job scope statement."}
+      ]
+    },
+    "CounselingDate": {
+      "all": [
+        {"text": "2026-05-15", "source": "Swift", "note": "The date on the counseling worksheet. It prints as 26MAY15."},
+        {"text": "NOT REQ", "source": "EVALMAN", "section": "Block 30:", "note": "Counseling did not fall in this period. NOT PERF for any other reason."}
+      ]
+    },
+    "CounselorName": {
+      "all": [
+        {"text": "ROE, J M", "source": "Swift", "note": "The counselor's name from the counseling worksheet."},
+        {"text": "TEMADD", "source": "EVALMAN", "section": "Block 31:", "note": "When block 30 is NOT PERF: a brief reason, or SEE COMMENT."}
+      ]
+    },
+    "CounselorLastName": {"all": [{"text": "ROE", "source": "Swift"}]},
+    "CounselorFirstInitial": {"all": [{"text": "J", "source": "Swift"}]},
+    "CounselorMiddleInitial": {"all": [{"text": "M", "source": "Swift"}]},
+    "AssignmentRecommendationA": {
+      "EVAL": [
+        {"text": "RECRUITER", "source": "Swift", "note": "20 characters or fewer. NA or NONE when none fits."},
+        {"text": "LPO", "source": "Swift"}
+      ],
+      "CHIEFEVAL": [
+        {"text": "COMMAND MC", "source": "Swift", "note": "20 characters or fewer. NA or NONE when none fits."}
+      ],
+      "FITREP": [
+        {"text": "DEPT HEAD", "source": "Swift", "note": "The next significant career milestone first. 20 characters or fewer."}
+      ]
+    },
+    "AssignmentRecommendationB": {
+      "EVAL": [{"text": "INSTRUCTOR", "source": "Swift", "note": "Optional second recommendation."}],
+      "CHIEFEVAL": [{"text": "SEA DUTY", "source": "Swift", "note": "Optional second recommendation."}],
+      "FITREP": [{"text": "JOINT STAFF", "source": "Swift", "note": "Optional second recommendation."}]
+    },
+    "OfficialComments": {
+      "EVAL": [
+        {"text": "TOP PERFORMER - MY #1 OF 14 FIRST CLASS PETTY OFFICERS!", "source": "Swift", "note": "Open with the ranking or the reason for a Special report."},
+        {"text": "-Led 6 Sailors processing 1,200 personnel actions with zero errors.", "source": "Swift", "note": "Action, scope and result. See chapter 13 for what must and must not be said."}
+      ],
+      "CHIEFEVAL": [
+        {"text": "MY #1 OF 6 CHIEFS. Selfless leader who builds the next generation of Chiefs.", "source": "Swift", "note": "Open with the ranking or the reason for a Special report."},
+        {"text": "-Mentored 9 First Class Petty Officers; 4 advanced to Chief.", "source": "Swift", "note": "See chapter 13 for what must and must not be said."}
+      ],
+      "FITREP": [
+        {"text": "MY #1 OF 5 LIEUTENANTS. Ready for department head now.", "source": "Swift", "note": "Open with the ranking or the reason for a Special report."},
+        {"text": "-Led 40 Sailors through a 6-month deployment with zero mishaps.", "source": "Swift", "note": "See chapter 13 for what must and must not be said."}
+      ]
+    },
+    "Qualifications": {
+      "EVAL": [
+        {"text": "Enlisted Surface Warfare Specialist; Navy and Marine Corps Achievement Medal; 9 credit hours toward an AS degree.", "source": "Swift", "note": "Completed achievements only, not repeated from earlier reports."}
+      ]
+    },
+    "ReportingSeniorAddress1": {"all": [{"text": "COMMANDING OFFICER", "source": "Swift", "note": "Where NAVPERSCOM can reach the reporting senior about this report."}]},
+    "ReportingSeniorAddress2": {"all": [{"text": "100 EXAMPLE WAY", "source": "Swift"}]},
+    "ReportingSeniorCity": {"all": [{"text": "NORFOLK", "source": "Swift"}]},
+    "ReportingSeniorState": {"all": [{"text": "VA", "source": "Swift"}]},
+    "ReportingSeniorZip": {"all": [{"text": "235110000", "source": "Swift", "note": "Five or nine digits, without the hyphen."}]},
+    "ReportingSeniorPhone": {"all": [{"text": "7575550100", "source": "Swift", "note": "Ten digits, without punctuation."}]},
+    "ReportingSeniorDSN": {"all": [{"text": "5550100", "source": "Swift", "note": "Seven digits."}]},
+    "RaterName": {"EVAL": [{"text": "ROE, J M, YNC", "source": "Swift", "note": "Last name, initials, then grade or rate."}]},
+    "RaterDate": {"EVAL": [{"text": "2026-11-20", "source": "Swift", "note": "The date the rater signs."}]},
+    "SeniorRaterName": {
+      "EVAL": [
+        {"text": "LEE, K A, LT", "source": "Swift", "note": "Last name, initials, then grade or rate."},
+        {"text": "NONE AVAILABLE", "source": "EVALMAN", "section": "EVAL Block 49:", "note": "When there is no senior rater."}
+      ]
+    },
+    "SeniorRaterDate": {"EVAL": [{"text": "2026-11-21", "source": "Swift", "note": "The date the senior rater signs."}]},
+    "Trait33Comment1": {"CHIEFEVAL": [{"text": "Expert in all rating systems; qualified 12 junior Sailors.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait34Comment1": {"CHIEFEVAL": [{"text": "Command's go-to Chief for personnel policy.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait35Comment1": {"CHIEFEVAL": [{"text": "Sets the standard for appearance and conduct.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait36Comment1": {"CHIEFEVAL": [{"text": "Always does the right thing, seen or unseen.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait37Comment1": {"CHIEFEVAL": [{"text": "Owns every outcome in the division.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait38Comment1": {"CHIEFEVAL": [{"text": "Led 22 Sailors to 100% qualification.", "source": "Swift", "note": "A short line on this trait's performance."}]},
+    "Trait39Comment1": {"CHIEFEVAL": [{"text": "Unites divisions toward command goals.", "source": "Swift", "note": "A short line on this trait's performance."}]}
+  }
+}

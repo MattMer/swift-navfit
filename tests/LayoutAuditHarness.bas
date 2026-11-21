@@ -281,6 +281,11 @@ Public Function TestLayoutAudit(ByVal reportPath As String) As String
     failure = PlantedDefectsCaught()
     If Len(failure) > 0 Then Err.Raise vbObjectError + 9600, , "Auditor missed a planted defect: " & failure
     UXValidationClose
+    'The Block guide beside the report, showing a block with examples and findings.
+    stage = "block guide"
+    Call UXOpenBlockGuide: Call UXBlockGuideFollow("ReadinessSummary"): Call UXLivePaint
+    Scene "block guide", "frmUXBlockGuide"
+    DoCmd.Close acForm, "frmUXBlockGuide", acSaveNo
     UXLeaveEditor "Discard"
     'Screens that show while code is blocked are checked as designed: nothing lays them out.
     For Each item In Array("frmEnableContent", "frmDataFileNotice")
