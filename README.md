@@ -147,6 +147,7 @@ Never copy a new application over an existing workspace.
 - [User guide (PDF)](docs/Swift_NAVFIT_User_Guide.pdf) and the [online edition](docs/Swift_NAVFIT_User_Guide.md)
 - [Choosing your contributor at startup](docs/Contributor_Startup.md)
 - [Reviewing duplicate Sailors](docs/Duplicate_Sailor_Review.md)
+- [Which PERS-32 reject reasons Swift checks](docs/PERS32_Reject_Coverage.md)
 - [Accessibility](docs/Swift_NAVFIT_User_Guide.md#36-accessibility) and the [screen-reader test procedure](docs/Accessibility_Screen_Reader_Test.md)
 - Found a problem? [Open an issue](https://github.com/MattMer/swift-navfit/issues/new/choose) using made-up data only. Report security problems privately as described in [SECURITY.md](SECURITY.md).
 

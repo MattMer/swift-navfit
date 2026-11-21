@@ -46,3 +46,24 @@ From `src/modValidationReferences.bas`: BUPERSINST 1610.10H CH-2 (26 May 2026 co
 | VR-RETENTION | 1-22 | paragraph 1-2, EVAL block 47 |
 | VR-RS-DESIG | 1-10 | paragraph 1-2, blocks 23-24 |
 | VR-RS-NAME | 1-9 | paragraph 1-2, block 22 |
+
+## Rules from PERS-32 reject reasons
+
+From `src/modValidationRejects.bas`: each rule names the PERS-32 reject code it prevents and the section of the built-in EVALMAN (BUPERSINST 1610.10H CH-4) it cites. See `docs/PERS32_Reject_Coverage.md`.
+
+| Rule | PERS-32 code | EVALMAN section |
+| --- | --- | --- |
+| RJ-ADVERSE-SIGN | 46B, 49B, 51B | 14-4. |
+| RJ-DATE-REPORTED | NOTE 2/J | Block 9: |
+| RJ-DUPLICATE | NOTE 2/C | 3-2. |
+| RJ-ENS-SELECTED | 8A | 3-8. |
+| RJ-FROCK-OFFICER | 10-13G | 3-8. |
+| RJ-FROCK-STATUS | NOTE 2/I | 3-8. |
+| RJ-FUTURE-END | 14-15E | Blocks 14-15: |
+| RJ-OPS-CDR-MEMBER | 17-19C | 5-1. |
+| RJ-OPS-CDR-TITLE | 17-19B | 5-2. |
+| RJ-PFA-FAILURES | 43L, 46L | Block 20: |
+| RJ-PROGRESSING | 41D, 45D | 16-2. |
+| RJ-SPECIAL | 10-13C, 10-13D | 3-9. |
+| RJ-SUBCAT-BLANK | 21B | Block 21: |
+| RJ-SUBCAT-DUTY | 21D | Block 21: |

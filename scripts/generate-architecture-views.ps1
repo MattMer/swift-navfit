@@ -125,6 +125,9 @@ foreach($p in $packs){
 }
 $ov6a+='## Expanded rules with verified citations';$ov6a+='';$ov6a+='From `src/modValidationReferences.bas`: BUPERSINST 1610.10H CH-2 (26 May 2026 compilation), each matched against the fingerprinted source PDF.';$ov6a+=''
 $ov6a+=(Table @('Rule','Printed page','Locator') @($references|Sort-Object Code|ForEach-Object {,@($_.Code,$_.Page,$_.Locator)}))
+$rejects=@([regex]::Matches((ReadText 'src/modValidationRejects.bas'),'Case "(RJ-[A-Z-]+)": t = "([^"]+)": c = "([^"]+)"')|ForEach-Object {[pscustomobject]@{Code=$_.Groups[1].Value;Section=$_.Groups[2].Value;Reject=$_.Groups[3].Value}})
+$ov6a+='';$ov6a+='## Rules from PERS-32 reject reasons';$ov6a+='';$ov6a+='From `src/modValidationRejects.bas`: each rule names the PERS-32 reject code it prevents and the section of the built-in EVALMAN (BUPERSINST 1610.10H CH-4) it cites. See `docs/PERS32_Reject_Coverage.md`.';$ov6a+=''
+$ov6a+=(Table @('Rule','PERS-32 code','EVALMAN section') @($rejects|Sort-Object Code|ForEach-Object {,@($_.Code,$_.Reject,$_.Section)}))
 $out['OV-6a.md']=($ov6a -join $nl).TrimEnd()
 
 $sv8=@($generated,'','# SV-8 Systems Evolution','',('Schema history from `tests/historical-schemas/` and the current build. Each release imports workspaces from schema 35 (release 0.49.0) onward through the production import (`test-workspace-migration`); release 0.55.0 also imports schemas 1-34 and bridges older workspaces. Changes are additive: tables are added, never removed or renamed.'),'')

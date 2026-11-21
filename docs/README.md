@@ -4,6 +4,7 @@
 - [Online/editable guide](Swift_NAVFIT_User_Guide.md): the maintained source, currently version 3.1 for 0.59.0, the same as the PDF above.
 - [Architecture description](architecture/Swift_NAVFIT_Architecture_Description.md): DoDAF 2.02 fit-for-purpose views in the ISO/IEC/IEEE 42010 structure.
 - [Screen-reader test](Accessibility_Screen_Reader_Test.md): the attended NVDA/JAWS procedure.
+- [PERS-32 reject coverage](PERS32_Reject_Coverage.md): each reason PERS-32 rejects a report, and the check that catches it.
 
 The supplied eNavFit Version1.0 manual informed the procedure-based organization. The guide describes Swift's local application, not eNavFit's online account or submission services. Orientation tables are screen maps, not captured screenshots.
 

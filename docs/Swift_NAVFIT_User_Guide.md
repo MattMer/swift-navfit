@@ -807,6 +807,8 @@ To keep findings in view while you work, choose **Validation issues**, or **Pop 
 
 > **Note:** The checks cover only the rules built into Swift NAVFIT. An empty list does not mean the report meets every rule.
 
+Many checks follow the reasons PERS-32 gives for sending reports back, such as a blank billet subcategory (block 21), a Special report whose comments do not start with its reason, a Promotion/Frocking report without SELECTED in block 8, and a date reported after the end of the period. A finding's reference names the PERS-32 reason, and **EVALMAN** opens the paragraph behind it. Signatures cannot be checked: before mailing, make sure the reporting senior and the member have signed. On an adverse report the member must sign, and "Certified Copy Provided" is not allowed.
+
 ## 9.2 Kinds of finding
 
 | Finding | What to do |

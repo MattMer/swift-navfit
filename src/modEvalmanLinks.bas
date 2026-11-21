@@ -70,6 +70,8 @@ Public Function EvalmanSectionForFinding(ByVal code As String, ByVal key As Stri
         Case "VR-CONTINUITY": t = "3-2."
         Case "VR-PERIODIC": t = "3-4."
         Case "VR-OPS-COUNSEL": t = "5-6."
+        Case Else
+            If Left$(code, 3) = "RJ-" Then t = RejectRuleSection(code)
     End Select
     If Len(t) > 0 Then EvalmanSectionForFinding = EvalmanSectionByTitle(t) Else EvalmanSectionForFinding = EvalmanSectionForField(key)
 End Function

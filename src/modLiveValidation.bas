@@ -64,6 +64,7 @@ Public Sub VAdd(ByVal findings As Collection, ByVal f As Object, ByVal id As Lon
     item.Add "Message", message: item.Add "Reference", ValidationPolicyReference(code): findings.Add item
     If Left$(code, 3) = "RC-" Then item("Reference") = RestrictedReference(code)
     If code = "VR-PERIODIC" Then item("Reference") = PeriodicPolicyReference(f)
+    If Left$(code, 3) = "RJ-" Then item("Reference") = RejectPolicyReference(code)
     If code = "VR-APPLICABILITY" Then item("Reference") = "Policy coverage, not a report defect. " & PeriodicPolicyReference(f)
 End Sub
 Public Function IsValidPolicyUIC(ByVal value As String) As Boolean
@@ -104,10 +105,11 @@ Private Sub VPolicyDetails(ByVal findings As Collection, ByVal f As Object, ByVa
         value = VText(f, CStr(key)): title = UCase$(CatalogueTraitTitle(VText(f, "FormKind"), CLng(Mid$(CStr(key), 6))))
         If partial And value = "" Then VAdd findings, f, id, CStr(key), "Incomplete draft", "PARTIAL-NOB-MARKS", "Mark ungraded traits NOB on a partially graded observed report."
         If value = "1.0" Then justify = True: adverse = True: referral = True
-        If (value = "1.0" Or value = "2.0") And (InStr(title, "CLIMATE") > 0 Or InStr(title, "CHARACTER") > 0) Then justify = True: adverse = True
+        'EVALMAN's E-7 to E-9 Character trait is block 37, Accountability, on the current CHIEFEVAL.
+        If (value = "1.0" Or value = "2.0") And (InStr(title, "CLIMATE") > 0 Or InStr(title, "CHARACTER") > 0 Or (VText(f, "FormKind") = "CHIEFEVAL" And InStr(title, "ACCOUNTABILITY") > 0)) Then justify = True: adverse = True
         If value = "1.0" Or value = "2.0" Then
             If VText(f, "FormKind") = "CHIEFEVAL" Then
-                If InStr(title, "CHARACTER") > 0 Then referral = True
+                If InStr(title, "CHARACTER") > 0 Or InStr(title, "ACCOUNTABILITY") > 0 Then referral = True
             Else
                 If InStr(title, "CLIMATE") > 0 Then referral = True
             End If
@@ -215,6 +217,7 @@ Public Function ValidateLiveFields(ByVal f As Object, Optional ByVal reportID As
     End If
     VPolicyDetails findings, f, reportID, observed, graded, twos
     ExpandReportValidation findings, f, reportID
+    RejectChecks findings, f, reportID
     VNarrativeFit findings, f, reportID, kind
     VStarterMarkers findings, f, reportID, kind
     VRestrictedContent findings, f, reportID, kind, VNarrativeKeys(kind)

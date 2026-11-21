@@ -119,6 +119,7 @@
     "src/modValidation.bas",
     "src/modValidationExpansion.bas",
     "src/modValidationReferences.bas",
+    "src/modValidationRejects.bas",
     "src/modWorkspace.bas",
     "src/modWorkspaceImport.bas",
     "src/modWorkspaceSafety.bas",

@@ -104,7 +104,7 @@ Private Function Example(ByVal id As Long, ByVal kind As String) As Object
  If kind = "CHIEFEVAL" Then f("AssignmentRecommendationA") = Null
  f("RetentionYes") = "Yes": f("RetentionNo") = "No": f("OfficialComments") = "Synthetic comments."
  f("CounselingDate") = "2026-06-01": f("CounselorName") = "COUNSELOR, A": f("ReadinessSummary") = "P": f("ReadinessDate") = "2026-06-01"
- f("PrimaryDuty") = "TECHNICIAN": f("DutyDescription") = "Synthetic duty description.": f("CommandEmployment") = "Synthetic command employment."
+ f("BilletSubcategory") = "NA": f("PrimaryDuty") = "TECHNICIAN": f("DutyDescription") = "Synthetic duty description.": f("CommandEmployment") = "Synthetic command employment."
  f("ReportingSeniorAddress1") = "123 TEST ST": f("ReportingSeniorCity") = "TEST": f("ReportingSeniorState") = "CA": f("ReportingSeniorZip") = "12345": f("ReportingSeniorPhone") = "0000000000"
  f("RaterName") = "RATER, A, ITC": f("SeniorRaterName") = "NONE AVAILABLE"
  Set Example = f

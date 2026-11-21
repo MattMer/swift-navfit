@@ -44,10 +44,10 @@ Development source (*generated*):
 | Schema version | 51 |
 | Imports accepted | Workspaces of schema 35 to 51, into a target of schema 35 to 51 |
 | Tables / enforced relationships | 85 / 169 |
-| VBA modules / forms | 128 / 79 |
+| VBA modules / forms | 129 / 79 |
 | Report fields in the catalogue | 101 |
 | Test suites by tier | 8 core, 19 extended, 3 helper, 2 manual, 1 release |
-| Test cases / VBA test harnesses | 123 / 122 |
+| Test cases / VBA test harnesses | 124 / 123 |
 <!-- end generated:readme-facts -->
 
 ## 2. Purpose and use
@@ -567,7 +567,10 @@ alternative.
   everyone, so everyone uses the same version.
 - **Validation is bounded** to the implemented rule packs. Dates outside their
   coverage produce a Needs-review finding rather than a verdict. NAVFIT98A
-  validation is still required after export.
+  validation is still required after export. Checks drawn from PERS-32's published
+  reject reasons (`RJ-` codes, `modValidationRejects`) cite the built-in EVALMAN
+  CH-4; [PERS-32 reject coverage](docs/PERS32_Reject_Coverage.md) maps every reject
+  code to its check, or says why it cannot be checked (signatures, for example).
 - **Roster formats.** NRRM and MNA are supported. MNA lists no officer rank, so
   new officer profiles from MNA start without one.
 - **Intermittent test failures, root cause unknown** (backlog T05): a handful of

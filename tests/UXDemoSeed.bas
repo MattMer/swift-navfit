@@ -10,7 +10,7 @@ Private Function DemoReport(ByVal kind As String, ByVal member As String, ByVal 
     changes.Add "OfficialName", NavyNameFormat(member): changes.Add "RankRate", rank
     changes.Add "MemberSSN", "0000000" & Format$(number, "00")
     changes.Add "UnitUIC", "12345": changes.Add "ShipStation", "DEMO COMMAND"
-    changes.Add "DateReported", "2026-01-01": changes.Add "PromotionStatus", "REGULAR"
+    changes.Add "DateReported", "2026-01-01": changes.Add "PromotionStatus", "REGULAR": changes.Add "BilletSubcategory", "NA"
     changes.Add "ComponentActive", "Yes": changes.Add "ComponentTAR", "No": changes.Add "ComponentInactive", "No": changes.Add "ComponentATADSW", "No"
     changes.Add "OccasionPeriodic", "Yes": changes.Add "OccasionDetachment", "No": changes.Add "OccasionFrocking", "No": changes.Add "OccasionSpecial", "No"
     changes.Add "ReportRegular", "Yes": changes.Add "ReportConcurrent", "No": changes.Add "ReportOperationalCommander", "No"

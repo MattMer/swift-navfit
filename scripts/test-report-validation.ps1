@@ -7,6 +7,8 @@ Invoke-CaseScript 'test-rules' $caseArgs
 $caseArgs=@('-BuildPath',$BuildPath)
 Invoke-CaseScript 'test-readiness' $caseArgs
 $caseArgs=@('-BuildPath',$BuildPath)
+Invoke-CaseScript 'test-validation-rejects' $caseArgs
+$caseArgs=@('-BuildPath',$BuildPath)
 if($PSBoundParameters.ContainsKey('InstallSource')){if($InstallSource){$caseArgs+='-InstallSource'}}
 Invoke-CaseScript 'test-ux-validation' $caseArgs
 if($InstructionPath){
