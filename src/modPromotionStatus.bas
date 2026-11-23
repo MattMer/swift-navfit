@@ -12,6 +12,20 @@ Public Function ValidatePromotionStatus(ByVal value As Variant) As Variant
     End If
     ValidatePromotionStatus = value
 End Function
+' Block 8 as read from a NAVFIT98A file. NAVFIT98A stores whatever was typed, so case and
+' surrounding spaces are ignored; any other value comes in blank rather than stopping the
+' import (block 8 then shows as incomplete, and the import receipt keeps the original).
+Public Function ImportedPromotionStatus(ByVal value As Variant) As Variant
+    Dim s As String
+    ImportedPromotionStatus = Null
+    If IsNull(value) Then Exit Function
+    'An empty block 8 stays empty, so it goes back to NAVFIT98A exactly as it came.
+    If CStr(value) = "" Then ImportedPromotionStatus = "": Exit Function
+    s = UCase$(Trim$(CStr(value)))
+    Select Case s
+        Case "REGULAR", "FROCKED", "SELECTED", "SPOT": ImportedPromotionStatus = s
+    End Select
+End Function
 Public Function PromotionStatusFromRevision(ByVal revisionID As Long) As Variant
     Dim r As DAO.Recordset, value As Variant
     value = Null

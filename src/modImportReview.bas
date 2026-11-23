@@ -421,7 +421,13 @@ Public Function NAVFITReviewGroupChoices(Optional ByVal century As Long = 0, Opt
                     For Each field In folder.Fields
                         If field.Name = parts(1) Then exists = True: Exit For
                     Next
-                    If exists And Not discoverOnly Then defaults.Add parts(0), NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century)
+                    If exists And Not discoverOnly Then
+                        If parts(0) = "PromotionStatus" Then
+                            defaults.Add parts(0), ImportedPromotionStatus(NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century))
+                        Else
+                            defaults.Add parts(0), NAVFITDecode(folder.Fields(parts(1)).Value, parts(2), century)
+                        End If
+                    End If
                 End If
             Next
             item.Add "Defaults", defaults: item.Add "SourceHash", hash: groups.Add token, item: folder.Close

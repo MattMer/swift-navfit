@@ -7,7 +7,7 @@ Private Sub Check(ByVal condition As Boolean, ByVal message As String)
     If Not condition Then Err.Raise vbObjectError + 5200, , message
 End Sub
 Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath As String) As String
-    Dim blockSeen As Boolean
+    Dim blockSeen As Boolean, stage As String
     Dim source As DAO.Database, target As DAO.Database, r As DAO.Recordset, t As DAO.Recordset, values As Object, row As Variant, parts As Variant, k As Variant, n As Long, id As Long, incoming As Object, saved As Object, key As Variant
     On Error GoTo Failed
     checks = 0
@@ -64,7 +64,35 @@ Public Function TestNAVFITAdapter(ByVal sourcePath As String, ByVal outputPath A
     Next
     Call CloseReviewFile
     Check blockSeen, "No EVAL import checked block 44"
+    'Block 8 as NAVFIT98A stores it: any case and spacing is accepted; a value Swift does
+    'not list comes in blank instead of stopping the import, and the receipt keeps it.
+    stage = "block8 unit"
+    For Each k In Array(Array("REGULAR", "REGULAR"), Array("  regular ", "REGULAR"), Array("Frocked", "FROCKED"), Array("selected", "SELECTED"), Array("Spot", "SPOT"), Array("APPROVED", Null), Array("FROCK", Null), Array("   ", Null), Array("", ""))
+        Check SameFieldValue(ImportedPromotionStatus(k(0)), k(1)), "Block 8 import of '" & k(0) & "'"
+    Next
+    Check IsNull(ImportedPromotionStatus(Null)), "Blank block 8 import"
+    Dim oddPath As String, statuses As Variant
+    oddPath = Left$(outputPath, Len(outputPath) - 6) & "-block8.accdb"
+    stage = "block8 copy": FileCopy sourcePath, oddPath
+    statuses = Array("regular ", "APPROVED", "Frocked")
+    Set target = DBEngine.OpenDatabase(oddPath)
+    For n = 2 To 4
+        target.Execute "UPDATE Reports SET PromotionStatus='" & statuses(n - 2) & "' WHERE ReportID=" & n, dbFailOnError
+    Next
+    target.Close
+    stage = "block8 open": Call OpenReviewFile(oddPath, False)
+    For n = 2 To 4
+        stage = "block8 values " & n: Set incoming = FullNAVFITImportValues(n, 2000)
+        stage = "block8 import " & n: id = ImportReviewedReport(n, incoming("SourceHash"), 2000)
+        stage = "block8 saved " & n: Set saved = SavedFields(id)
+        Check SameFieldValue(saved("PromotionStatus"), ImportedPromotionStatus(statuses(n - 2))), "Imported block 8 for '" & statuses(n - 2) & "': " & Nz(saved("PromotionStatus"), "(blank)")
+        stage = "block8 receipt " & n
+        Set r = CurrentDb.OpenRecordset("SELECT Count(*) FROM ImportRawValue AS V INNER JOIN ImportReceipt AS R ON V.ImportReceiptID=R.ImportReceiptID WHERE R.ReportID=" & id & " AND V.SourceTable='Reports' AND V.FieldKey='PromotionStatus' AND V.RawValue='" & statuses(n - 2) & "'", dbOpenSnapshot)
+        Check r.Fields(0).Value >= 1, "Receipt lost the original block 8 '" & statuses(n - 2) & "'"
+        r.Close
+    Next
+    Call CloseReviewFile
     TestNAVFITAdapter = "PASS: " & checks & " NAVFIT adapter assertions": Exit Function
 Failed:
-    TestNAVFITAdapter = "FAIL: " & Err.Number & " " & Err.Description
+    TestNAVFITAdapter = "FAIL at " & stage & ": " & Err.Number & " " & Err.Description
 End Function

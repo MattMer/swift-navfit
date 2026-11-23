@@ -133,6 +133,7 @@ Public Function NAVFITReadFields(ByVal source As DAO.Recordset, Optional ByVal c
         parts = Split(row, "|"): key = parts(0)
         value = NAVFITDecode(source.Fields(parts(1)).Value, parts(2), century)
         If (key = "PeriodStart" Or key = "PeriodEnd") And Not IsNull(value) Then value = NAVFITEncode(value, "date")
+        If key = "PromotionStatus" Then value = ImportedPromotionStatus(value)
         result.Add key, value
     Next
     Set NAVFITReadFields = result
