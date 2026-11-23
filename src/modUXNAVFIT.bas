@@ -117,13 +117,13 @@ Public Function UXPreviewFullNAVFIT() As Boolean
     With Forms!frmImportReview
         !cmdPreview.SetFocus: !uxPreview.Visible = True: !uxPreview = text
         !lstImportFields.Visible = False: !txtFieldValue.Visible = False: !lblFieldColumns.Visible = False
-        UXEnable !cmdImport, True: !uxState.Caption = "3. Apply - review all mapped values before creating a report."
+        UXEnable !cmdImport, True: !uxState.Caption = "3. Apply: review all mapped values before creating a report."
     End With
     nativePreview.SourceID = id: nativePreview.Hash = values("SourceHash"): nativePreview.Century = century
     nativePreview.OwnerProfileID = ActiveContributorID()
     UXPreviewFullNAVFIT = True: Exit Function
 Failed:
-    UXEnable Forms!frmImportReview!cmdImport, False: Forms!frmImportReview!uxState.Caption = "2. Preview - " & Err.Description
+    UXEnable Forms!frmImportReview!cmdImport, False: Forms!frmImportReview!uxState.Caption = "2. Preview: " & Err.Description
 End Function
 Public Function UXApplyFullNAVFIT() As Boolean
     On Error GoTo Failed
@@ -133,7 +133,7 @@ Public Function UXApplyFullNAVFIT() As Boolean
     nativePreview.Created = ImportReviewedReport(nativePreview.SourceID, nativePreview.Hash, nativePreview.Century, nativePreview.Member): nativePreview.SourceID = 0: nativePreview.Hash = ""
     With Forms!frmImportReview
         !cmdPreview.SetFocus: UXEnable !cmdImport, False: UXEnable !cmdOpenResult, True
-        !uxState.Caption = "4. Results - created " & UXMemberLabel(nativePreview.Created) & "."
+        !uxState.Caption = "4. Results: created " & UXMemberLabel(nativePreview.Created) & "."
     End With
     UXApplyFullNAVFIT = True: Exit Function
 Failed:

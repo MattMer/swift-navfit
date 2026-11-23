@@ -204,7 +204,7 @@ Public Function UXGridLoad() As Boolean
         'Set the row ITA inside the cache transaction so the averages pass need not rewrite it.
         cacheRows!ITA = UXGridRowITA(cacheRows)
         cacheRows!RowStatus = UXGridLockReason(id, r!RevisionID)
-        If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable - saves automatically"
+        If Len(cacheRows!RowStatus) = 0 Then cacheRows!RowStatus = "Editable, saves automatically"
         cacheRows.Update: r.MoveNext
     Loop
     r.Close
@@ -260,25 +260,25 @@ Public Function UXGridLockReason(ByVal id As Long, ByVal revision As Long, Optio
     If authoritative Then
         Set db = CurrentDb
         Set r = db.OpenRecordset("SELECT CurrentRevisionID,IsArchived,WorkflowState FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
-        If r.EOF Then r.Close: UXGridLockReason = "Report removed - reopen members": Exit Function
+        If r.EOF Then r.Close: UXGridLockReason = "Report removed. Reopen members.": Exit Function
         state = Array(CBool(r!IsArchived), CStr(r!WorkflowState))
-        If Nz(r!CurrentRevisionID, 0) <> revision Then r.Close: UXGridLockReason = "Saved report changed - reopen comparison": Exit Function
+        If Nz(r!CurrentRevisionID, 0) <> revision Then r.Close: UXGridLockReason = "Saved report changed. Reopen comparison.": Exit Function
         r.Close
         If liveGroup > 0 Then
-            If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & liveGroup), True) Or DCount("*", "GroupMember", "GroupID=" & liveGroup & " AND ReportID=" & id) = 0 Then UXGridLockReason = "Group membership changed - reopen members": Exit Function
+            If Nz(DLookup("IsArchived", "SummaryGroup", "GroupID=" & liveGroup), True) Or DCount("*", "GroupMember", "GroupID=" & liveGroup & " AND ReportID=" & id) = 0 Then UXGridLockReason = "Group membership changed. Reopen members.": Exit Function
         Else
             snapshot = Nz(DLookup("GroupSnapshotID", "ComparisonSet", "SetID=" & Forms!frmUXComparison!txtMeeting), 0)
             groupID = Nz(DLookup("GroupID", "GroupSnapshot", "SnapshotID=" & snapshot), 0)
-            If Nz(DLookup("Stamp", "GroupSnapshot", "SnapshotID=" & snapshot), "") <> GroupStamp(groupID) Then UXGridLockReason = "Group changed - reopen comparison": Exit Function
+            If Nz(DLookup("Stamp", "GroupSnapshot", "SnapshotID=" & snapshot), "") <> GroupStamp(groupID) Then UXGridLockReason = "Group changed. Reopen comparison.": Exit Function
         End If
     Else
         If rowStates Is Nothing Then Exit Function
         If Not rowStates.Exists(CStr(id)) Then Exit Function
         state = rowStates(CStr(id))
-        If state(2) <> revision Then UXGridLockReason = "Saved report changed - reopen comparison": Exit Function
+        If state(2) <> revision Then UXGridLockReason = "Saved report changed. Reopen comparison.": Exit Function
     End If
-    If state(0) Then UXGridLockReason = "Archived - recover report to edit": Exit Function
-    If state(1) <> "Draft" And state(1) <> "Approved" And state(1) <> "Signed" Then UXGridLockReason = "Review lock - reopen report"
+    If state(0) Then UXGridLockReason = "Archived. Recover the report to edit.": Exit Function
+    If state(1) <> "Draft" And state(1) <> "Approved" And state(1) <> "Signed" Then UXGridLockReason = "Review lock. Reopen the report."
 End Function
 ' Apply cached row locks and contextual status on row focus; avoid whole-group queries.
 Public Function UXGridCurrent(Optional ByVal authoritative As Boolean = False) As Boolean
@@ -309,7 +309,7 @@ Public Function UXGridQueue(ByVal key As String) As Boolean
     identity = CStr(f!ReportID) & ":" & key
     queuedCells(identity) = Array(CLng(f!ReportID), key, f.Controls(key).Value, MajorAuthor())
     Forms!frmUXComparison.TimerInterval = 150
-    Forms!frmUXComparison!lblStatus.Caption = "Not saved yet - " & UXGridPendingCount() & " pending cells; saving automatically..."
+    Forms!frmUXComparison!lblStatus.Caption = "Not saved yet: " & UXGridPendingCount() & " pending cells; saving automatically..."
     UXGridPendingActions
     UXApplyVisual Forms!frmUXComparison
     UXGridQueue = True: Exit Function
@@ -345,7 +345,7 @@ Public Function UXGridDrain() As Boolean
     Else
         Set queuedCells = Nothing
         UXGridPendingActions
-        Forms!frmUXComparison!lblStatus.Caption = "Saved automatically - no pending cells. Local report revisions only."
+        Forms!frmUXComparison!lblStatus.Caption = "Saved automatically. No pending cells. Local report revisions only."
         UXApplyVisual Forms!frmUXComparison
     End If
     UXGridDrain = ok: Exit Function
@@ -363,7 +363,7 @@ Private Sub UXGridRetainPending(ByVal failure As String)
     For Each key In queuedCells.Keys
         cell = queuedCells(key): r.FindFirst "ReportID=" & cell(0)
         If Not r.NoMatch Then
-            r.Edit: r.Fields(CStr(cell(1))) = cell(2): r!RowStatus = "Not saved - retry or discard pending cells": r.Update
+            r.Edit: r.Fields(CStr(cell(1))) = cell(2): r!RowStatus = "Not saved. Retry or discard pending cells.": r.Update
         End If
     Next
     r.Close: Set r = Nothing
@@ -655,8 +655,8 @@ Private Sub UXGridHeading(ByVal heading As Access.Control, ByVal caption As Stri
     Dim words As Variant, i As Long, shown As String, word As String
     heading.ControlTipText = caption
     caption = Replace(Replace(caption, "  ", " "), "/", "/ ")
-    caption = Replace(caption, "Career Recommendations - first", "Career rec. 1")
-    caption = Replace(caption, "Career Recommendations - second", "Career rec. 2")
+    caption = Replace(caption, "Career Recommendations (first)", "Career rec. 1")
+    caption = Replace(caption, "Career Recommendations (second)", "Career rec. 2")
     words = Split(caption, " ")
     For i = 0 To UBound(words)
         word = words(i)

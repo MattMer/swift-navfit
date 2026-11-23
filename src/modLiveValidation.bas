@@ -46,7 +46,7 @@ Public Function ValidationPolicyReference(ByVal code As String) As String
         Case "REGULAR-LENGTH": page = "3-1": pdfPage = 70: locator = "paragraph 3-2": excerpt = "may not cover more than 15 months without PERS-32 approval."
         Case "COUNSEL-RECORD": page = "1-13": pdfPage = 42: locator = "paragraph 1-2, DATE COUNSELED, block 30": excerpt = "A mid-term counseling session should be documented only once on the report for the period in which it occurred."
         Case Else
-            If Left$(code, 4) = "APP-" Then ValidationPolicyReference = "Application rule - no Navy policy citation applies." Else ValidationPolicyReference = ExpandedPolicyReference(code)
+            If Left$(code, 4) = "APP-" Then ValidationPolicyReference = "Application rule. No Navy policy citation applies." Else ValidationPolicyReference = ExpandedPolicyReference(code)
             Exit Function
     End Select
     ValidationPolicyReference = "BUPERSINST 1610.10H CH-2 (26 May 2026 compilation)" & vbCrLf & "Enclosure (2), printed page " & page & "; " & locator & " (PDF page " & pdfPage & ")." & vbCrLf & "Excerpt: " & Chr$(34) & excerpt & Chr$(34) & vbCrLf & "Source SHA-256: " & NAVY_RULE_SOURCE_HASH

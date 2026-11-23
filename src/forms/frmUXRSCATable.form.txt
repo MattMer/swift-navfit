@@ -196,7 +196,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E1 - RSCA"
+                    ControlTipText ="E1 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =500
@@ -241,7 +241,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E1 - Previous graded traits"
+                    ControlTipText ="E1 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =500
@@ -286,7 +286,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E1 - Date verified / pulled from BOL"
+                    ControlTipText ="E1 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =500
@@ -368,7 +368,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E2 - RSCA"
+                    ControlTipText ="E2 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =890
@@ -413,7 +413,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E2 - Previous graded traits"
+                    ControlTipText ="E2 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =890
@@ -458,7 +458,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E2 - Date verified / pulled from BOL"
+                    ControlTipText ="E2 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =890
@@ -540,7 +540,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E3 - RSCA"
+                    ControlTipText ="E3 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =1280
@@ -585,7 +585,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E3 - Previous graded traits"
+                    ControlTipText ="E3 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =1280
@@ -630,7 +630,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E3 - Date verified / pulled from BOL"
+                    ControlTipText ="E3 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =1280
@@ -712,7 +712,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E4 - RSCA"
+                    ControlTipText ="E4 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =1670
@@ -757,7 +757,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E4 - Previous graded traits"
+                    ControlTipText ="E4 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =1670
@@ -802,7 +802,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E4 - Date verified / pulled from BOL"
+                    ControlTipText ="E4 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =1670
@@ -884,7 +884,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E5 - RSCA"
+                    ControlTipText ="E5 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =2060
@@ -929,7 +929,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E5 - Previous graded traits"
+                    ControlTipText ="E5 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =2060
@@ -974,7 +974,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E5 - Date verified / pulled from BOL"
+                    ControlTipText ="E5 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =2060
@@ -1056,7 +1056,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E6 - RSCA"
+                    ControlTipText ="E6 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =2450
@@ -1101,7 +1101,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E6 - Previous graded traits"
+                    ControlTipText ="E6 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =2450
@@ -1146,7 +1146,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E6 - Date verified / pulled from BOL"
+                    ControlTipText ="E6 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =2450
@@ -1228,7 +1228,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E7 - RSCA"
+                    ControlTipText ="E7 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =2840
@@ -1273,7 +1273,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E7 - Previous graded traits"
+                    ControlTipText ="E7 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =2840
@@ -1318,7 +1318,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E7 - Date verified / pulled from BOL"
+                    ControlTipText ="E7 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =2840
@@ -1400,7 +1400,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E8 - RSCA"
+                    ControlTipText ="E8 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =3230
@@ -1445,7 +1445,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E8 - Previous graded traits"
+                    ControlTipText ="E8 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =3230
@@ -1490,7 +1490,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E8 - Date verified / pulled from BOL"
+                    ControlTipText ="E8 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =3230
@@ -1572,7 +1572,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E9 - RSCA"
+                    ControlTipText ="E9 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =3620
@@ -1617,7 +1617,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E9 - Previous graded traits"
+                    ControlTipText ="E9 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =3620
@@ -1662,7 +1662,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="E9 - Date verified / pulled from BOL"
+                    ControlTipText ="E9 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =3620
@@ -1744,7 +1744,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W1 - RSCA"
+                    ControlTipText ="W1 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =4010
@@ -1789,7 +1789,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W1 - Previous graded traits"
+                    ControlTipText ="W1 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =4010
@@ -1834,7 +1834,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W1 - Date verified / pulled from BOL"
+                    ControlTipText ="W1 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =4010
@@ -1916,7 +1916,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W2 - RSCA"
+                    ControlTipText ="W2 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =4400
@@ -1961,7 +1961,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W2 - Previous graded traits"
+                    ControlTipText ="W2 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =4400
@@ -2006,7 +2006,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W2 - Date verified / pulled from BOL"
+                    ControlTipText ="W2 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =4400
@@ -2088,7 +2088,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W3 - RSCA"
+                    ControlTipText ="W3 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =4790
@@ -2133,7 +2133,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W3 - Previous graded traits"
+                    ControlTipText ="W3 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =4790
@@ -2178,7 +2178,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W3 - Date verified / pulled from BOL"
+                    ControlTipText ="W3 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =4790
@@ -2260,7 +2260,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W4 - RSCA"
+                    ControlTipText ="W4 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =5180
@@ -2305,7 +2305,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W4 - Previous graded traits"
+                    ControlTipText ="W4 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =5180
@@ -2350,7 +2350,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W4 - Date verified / pulled from BOL"
+                    ControlTipText ="W4 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =5180
@@ -2432,7 +2432,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W5 - RSCA"
+                    ControlTipText ="W5 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =5570
@@ -2477,7 +2477,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W5 - Previous graded traits"
+                    ControlTipText ="W5 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =5570
@@ -2522,7 +2522,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="W5 - Date verified / pulled from BOL"
+                    ControlTipText ="W5 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =5570
@@ -2604,7 +2604,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O1 - RSCA"
+                    ControlTipText ="O1 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =5960
@@ -2649,7 +2649,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O1 - Previous graded traits"
+                    ControlTipText ="O1 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =5960
@@ -2694,7 +2694,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O1 - Date verified / pulled from BOL"
+                    ControlTipText ="O1 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =5960
@@ -2776,7 +2776,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O2 - RSCA"
+                    ControlTipText ="O2 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =6350
@@ -2821,7 +2821,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O2 - Previous graded traits"
+                    ControlTipText ="O2 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =6350
@@ -2866,7 +2866,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O2 - Date verified / pulled from BOL"
+                    ControlTipText ="O2 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =6350
@@ -2948,7 +2948,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O3 - RSCA"
+                    ControlTipText ="O3 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =6740
@@ -2993,7 +2993,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O3 - Previous graded traits"
+                    ControlTipText ="O3 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =6740
@@ -3038,7 +3038,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O3 - Date verified / pulled from BOL"
+                    ControlTipText ="O3 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =6740
@@ -3120,7 +3120,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O4 - RSCA"
+                    ControlTipText ="O4 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =7130
@@ -3165,7 +3165,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O4 - Previous graded traits"
+                    ControlTipText ="O4 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =7130
@@ -3210,7 +3210,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O4 - Date verified / pulled from BOL"
+                    ControlTipText ="O4 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =7130
@@ -3292,7 +3292,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O5 - RSCA"
+                    ControlTipText ="O5 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =7520
@@ -3337,7 +3337,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O5 - Previous graded traits"
+                    ControlTipText ="O5 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =7520
@@ -3382,7 +3382,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O5 - Date verified / pulled from BOL"
+                    ControlTipText ="O5 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =7520
@@ -3464,7 +3464,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O6 - RSCA"
+                    ControlTipText ="O6 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =7910
@@ -3509,7 +3509,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O6 - Previous graded traits"
+                    ControlTipText ="O6 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =7910
@@ -3554,7 +3554,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O6 - Date verified / pulled from BOL"
+                    ControlTipText ="O6 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =7910
@@ -3636,7 +3636,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O7 - RSCA"
+                    ControlTipText ="O7 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =8300
@@ -3681,7 +3681,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O7 - Previous graded traits"
+                    ControlTipText ="O7 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =8300
@@ -3726,7 +3726,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O7 - Date verified / pulled from BOL"
+                    ControlTipText ="O7 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =8300
@@ -3808,7 +3808,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O8 - RSCA"
+                    ControlTipText ="O8 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =8690
@@ -3853,7 +3853,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O8 - Previous graded traits"
+                    ControlTipText ="O8 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =8690
@@ -3898,7 +3898,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O8 - Date verified / pulled from BOL"
+                    ControlTipText ="O8 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =8690
@@ -3980,7 +3980,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O9 - RSCA"
+                    ControlTipText ="O9 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =9080
@@ -4025,7 +4025,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O9 - Previous graded traits"
+                    ControlTipText ="O9 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =9080
@@ -4070,7 +4070,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O9 - Date verified / pulled from BOL"
+                    ControlTipText ="O9 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =9080
@@ -4152,7 +4152,7 @@ Begin Form
                     Format ="Fixed"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O10 - RSCA"
+                    ControlTipText ="O10 RSCA"
 
                     LayoutCachedLeft =1100
                     LayoutCachedTop =9470
@@ -4197,7 +4197,7 @@ Begin Form
                     Format ="0"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O10 - Previous graded traits"
+                    ControlTipText ="O10 previous graded traits"
 
                     LayoutCachedLeft =2400
                     LayoutCachedTop =9470
@@ -4242,7 +4242,7 @@ Begin Form
                     Format ="yyyy-mm-dd"
                     AfterUpdate ="=RSTableChanged()"
                     FontName ="Segoe UI"
-                    ControlTipText ="O10 - Date verified / pulled from BOL"
+                    ControlTipText ="O10 date verified / pulled from BOL"
 
                     LayoutCachedLeft =4600
                     LayoutCachedTop =9470

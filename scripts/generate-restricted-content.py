@@ -13,7 +13,7 @@ root = Path(__file__).resolve().parents[1]
 source = root / 'src/restricted-content.json'
 raw = source.read_bytes()
 data = json.loads(raw.decode('utf-8'))
-KINDS = {'words', 'marking', 'pii', 'caps'}
+KINDS = {'words', 'marking', 'pii'}
 SEVERITIES = {'Needs review', 'Information'}
 BLOCKS = {'OfficialComments', 'CommandEmployment', 'DutyDescription', 'Qualifications'}
 
@@ -53,8 +53,6 @@ def display(kind, match):
     terms = match['terms']
     if kind == 'marking':
         return '(' + '|'.join(re.escape(t) for t in terms) + ')  case-sensitive, not inside a word'
-    if kind == 'caps':
-        return r'(\b[A-Z]{2,}\b\W+){4,}  with 20 or more capital letters'
     text = rx_terms(terms) if terms else ''
     if kind == 'pii':
         text = r'\b\d{3}-?\d{2}-?\d{4}\b | \b\d{10}\b | \b\d{3}[-. ]\d{3}[-. ]\d{4}\b | \S+@\S+\.\w+ | ' + text

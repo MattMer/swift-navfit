@@ -72,7 +72,7 @@ Public Function UXHistoryLoad() As Boolean
     Set r = CurrentDb.OpenRecordset("SELECT r.ReportID,r.FormKind,r.PeriodStart,r.PeriodEnd,r.PromotionRecommendation,m.MatchState FROM Report AS r INNER JOIN MemberReport AS m ON r.ReportID=m.ReportID WHERE m.MemberID=" & historyMember, dbOpenSnapshot)
     Do While Not r.EOF
         id = r!ReportID
-        HistoryAdd keys, texts, n, Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & "|" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd"), CStr(-id) & ";Swift - " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, "")
+        HistoryAdd keys, texts, n, Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & "|" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd"), CStr(-id) & ";Swift: " & r!MatchState & ";" & r!FormKind & ";" & Format$(Nz(r!PeriodStart, ""), "yyyy-mm-dd") & " to " & Format$(Nz(r!PeriodEnd, ""), "yyyy-mm-dd") & ";" & swiftITAs(CStr(id)) & ";" & Nz(r!PromotionRecommendation, "")
         r.MoveNext
     Loop: r.Close
     Set gaps = MemberContinuityRows(historyMember)

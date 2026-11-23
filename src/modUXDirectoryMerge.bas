@@ -130,7 +130,7 @@ Public Function UXDirectoryMergePreview() As Boolean
     reviewedOwner = 0: a = Nz(f!cboSource, 0): b = Nz(f!cboTarget, 0)
     reviewedStamp = PreviewDirectoryMerge(a, b)
     reviewedOwner = ActiveContributorID()
-    f!txtPreview = MergeMemberSummary(a, "ORIGINAL - will be archived") & vbCrLf & MergeMemberSummary(b, "SURVIVOR - keeps profile") & vbCrLf & "All original report and prior links move to the survivor. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
+    f!txtPreview = MergeMemberSummary(a, "ORIGINAL (will be archived)") & vbCrLf & MergeMemberSummary(b, "SURVIVOR (keeps profile)") & vbCrLf & "All original report and prior links move to the survivor. Undo is available only while the affected data remains unchanged. Check that these are the same Sailor, then enter a reason and apply."
     UXEnable f!cmdApply, True: UXDirectoryMergePreview = True: Exit Function
 Failed:
     reviewedStamp = "": f!txtPreview = Err.Description

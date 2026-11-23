@@ -107,13 +107,13 @@ Public Function UXApplyVisual(ByVal f As Access.Form) As Boolean
   End Select
  Next
  If f.Name = "frmEditor" Then
-  If Left$(f!uxITA.Caption, 14) = "ITA - pending:" Then
+  If Left$(f!uxITA.Caption, 14) = "ITA (pending):" Then
    f!uxITA.ControlTipText = Left$(f!uxITA.Caption, 255)
-   f!uxITA.Caption = Replace(Split(f!uxITA.Caption, ";")(0), "ITA - pending: Numeric average:", "ITA (pending):")
+   f!uxITA.Caption = Replace(Split(f!uxITA.Caption, ";")(0), "ITA (pending): Numeric average:", "ITA (pending):")
   End If
-  If Left$(f!uxSGA.Caption, Len("Summary Group Average - saved values:")) = "Summary Group Average - saved values:" Then
+  If Left$(f!uxSGA.Caption, Len("Summary Group Average (saved values):")) = "Summary Group Average (saved values):" Then
    f!uxSGA.ControlTipText = Left$(f!uxSGA.Caption, 255)
-   f!uxSGA.Caption = Replace(Split(f!uxSGA.Caption, " (")(0), "Summary Group Average - saved values:", "Group average (saved):")
+   f!uxSGA.Caption = Replace(Split(f!uxSGA.Caption, " (")(0), "Summary Group Average (saved values):", "Group average (saved):")
   End If
  End If
  If f.Name = "frmUXEditorFields" Then UXDirectorySourceStyle

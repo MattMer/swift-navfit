@@ -834,7 +834,7 @@ A summary group also has group findings, such as grouping and promotion-limit re
 
 ## 9.3 Wording that should not be in a report
 
-Swift NAVFIT checks the comments and blocks 28, 29 and 44 for wording BUPERSINST 1610.10H says to leave out (enclosure 2, 13-5). Examples: a failure of selection, proceedings that are not concluded, a non-punitive letter of caution, marital or medical matters, an award not yet received, civilian employment, classification markings, and in block 44, achievements not yet complete. As Information only, it also notes protected characteristics, political activity, SSNs and text in all capitals.
+Swift NAVFIT checks the comments and blocks 28, 29 and 44 for wording BUPERSINST 1610.10H says to leave out (enclosure 2, 13-5). Examples: a failure of selection, proceedings that are not concluded, a non-punitive letter of caution, marital or medical matters, an award not yet received, civilian employment, classification markings, and in block 44, achievements not yet complete. As Information only, it also notes protected characteristics, political activity and SSNs.
 
 Each finding quotes the words it matched. Swift NAVFIT matches words, not meaning, so it can be wrong. When a finding is acceptable, type a reason, then:
 
@@ -844,7 +844,7 @@ Each finding quotes the words it matched. Swift NAVFIT matches words, not meanin
 **Content checks...** has two pages:
 
 - **Allowed and dismissed** lists every allowed phrase and dismissed finding, with who added it, when and why. Select one and choose **Remove or restore selected** to bring its findings back.
-- **Checks** lists the 24 checks, each with its pattern and why it exists. Select one and choose **Turn on/off**, or use **Turn all off** and **Turn all on**. A check that is off finds nothing in any report, and **Validation issues** says how many are off.
+- **Checks** lists the 23 checks, each with its pattern and why it exists. Select one and choose **Turn on/off**, or use **Turn all off** and **Turn all on**. A check that is off finds nothing in any report, and **Validation issues** says how many are off.
 
 Dismissing or allowing never changes the report, and both are logged. Turning checks on or off is not logged.
 

@@ -3492,7 +3492,7 @@ Begin Form
                     TabIndex =72
                     ForeColor =4205854
                     Name ="uxFocusedReview"
-                    Caption ="Review selected member - saved revision"
+                    Caption ="Review selected member (saved revision)"
                     OnClick ="=UXGroupReview()"
                     FontName ="Segoe UI"
                     Tag ="WBX:Review"

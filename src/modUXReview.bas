@@ -16,7 +16,7 @@ Public Function UXLoadReview(Optional ByVal reportID As Long = 0, Optional ByVal
     If id = 0 Then Exit Function
     Set r = CurrentDb.OpenRecordset("SELECT * FROM Report WHERE ReportID=" & id, dbOpenSnapshot)
     If r.EOF Then r.Close: Exit Function
-    f!lblHeading.Caption = "Review - " & UXMemberLabel(id)
+    f!lblHeading.Caption = "Review: " & UXMemberLabel(id)
     f!lblSaved.Caption = r!FormKind & " | " & Nz(r!PeriodStart, "No start date") & " to " & Nz(r!PeriodEnd, "No end date") & " | Current saved revision " & Nz(DLookup("RevisionNumber", "ReportRevision", "RevisionID=" & r!CurrentRevisionID), "?")
     r.Close
     f!cboTemplate.RowSource = "SELECT TemplateID,Title FROM RouteTemplate WHERE IsArchived=False ORDER BY Title"

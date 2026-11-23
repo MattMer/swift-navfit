@@ -727,7 +727,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxState"
-                    Caption ="2. Preview - select a source member and preview mapping."
+                    Caption ="2. Preview: select a source member and preview mapping."
                     FontName ="Segoe UI"
                     LayoutCachedLeft =400
                     LayoutCachedTop =910

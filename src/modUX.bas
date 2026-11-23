@@ -460,8 +460,8 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
     If Len(Trim$(Nz(f!txtMember, ""))) > 0 And Trim$(Nz(f!txtMember, "")) <> Trim$(Nz(f!txtOfficialName, "")) And Len(Trim$(Nz(f!txtOfficialName, ""))) > 0 Then f!uxAlias.Caption = "Local name: " & Replace(f!txtMember, "&", "&&")
     f!uxReport.Caption = Replace(memberLabel, "&", "&&") & vbCrLf & Nz(f!cboKind, "") & " | " & Nz(f!txtRankRate, "Grade / rate") & " | " & Nz(f!txtStart, "Start date") & " to " & Nz(f!txtEnd, "End date")
     If changedKey = "" Or IsTraitKey(changedKey) Or changedKey = "ObservationStatus" Then
-    f!uxITA.Caption = "ITA - pending: " & TraitSummary(TraitsFromEditor())
-    If Nz(f!cboObservationStatus, "") = "NOB" Then f!uxITA.Caption = "ITA - pending: NOB (whole report)"
+    f!uxITA.Caption = "ITA (pending): " & TraitSummary(TraitsFromEditor())
+    If Nz(f!cboObservationStatus, "") = "NOB" Then f!uxITA.Caption = "ITA (pending): NOB (whole report)"
     End If
     id = Nz(f!txtReportID, 0)
     If editorContextDirty Or editorContextReport <> id Or editorContextGroup <> Nz(f!uxGroup, 0) Then
@@ -488,7 +488,7 @@ Public Function UXRefreshEditor(Optional ByVal changedKey As String = "") As Boo
             r.MoveNext
         Loop
         r.Close
-        If count > 0 Then f!uxSGA.Caption = "Summary Group Average - saved values: " & Format$(total / count, "0.00") & " (" & count & " graded traits; arithmetic only)" Else f!uxSGA.Caption = "Summary Group Average: unavailable (no graded traits)"
+        If count > 0 Then f!uxSGA.Caption = "Summary Group Average (saved values): " & Format$(total / count, "0.00") & " (" & count & " graded traits; arithmetic only)" Else f!uxSGA.Caption = "Summary Group Average: unavailable (no graded traits)"
     Else
         f!uxSGA.Caption = "Summary Group Average: " & IIf(groups > 1, "choose the explicit group context", "not assigned to a group")
     End If
@@ -523,10 +523,10 @@ Public Function UXShowSaveError(ByVal message As String, Optional ByVal committe
     'available in its tooltip and SwiftLastFailure(), without resizing the editor.
     If committed Then
         f!uxError.Caption = "Saved; display refresh failed. Reopen the report. " & Left$(primary, 65)
-        f!uxDirty.Caption = "Saved - reopen report to refresh display"
+        f!uxDirty.Caption = "Saved. Reopen the report to refresh the display."
     Else
         f!uxError.Caption = "Not saved: " & Left$(primary, 80) & " Pending edits retained."
-        f!uxDirty.Caption = "Not saved - pending edits retained"
+        f!uxDirty.Caption = "Not saved. Pending edits retained."
     End If
     f!uxError.ControlTipText = Left$(detail, 255)
     UXShowSaveError = True
@@ -540,7 +540,7 @@ Public Function UXSaveEditor() As Boolean
     f!uxError.Caption = ""
     If UXSurfaceAvailable() Then
         If Not UXSurfaceCheckAll() Then
-            f!uxDirty.Caption = "Not saved - correct invalid entries; pending edits retained"
+            f!uxDirty.Caption = "Not saved. Correct invalid entries; pending edits retained."
             Exit Function
         End If
     End If

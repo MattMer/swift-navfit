@@ -877,7 +877,7 @@ Private Function PrintFieldLabel(ByVal key As String) As String
     Dim names As Variant
     If Left$(key, 6) = "@Count" Then
         names = Array("Significant Problems", "Progressing", "Promotable", "Must Promote", "Early Promote")
-        PrintFieldLabel = "Summary promotion distribution - " & names(CLng(Right$(key, 1))): Exit Function
+        PrintFieldLabel = "Summary promotion distribution: " & names(CLng(Right$(key, 1))): Exit Function
     End If
     If Left$(key, 6) = "@Grade" Then
         PrintFieldLabel = "Trait " & Mid$(key, 7, 2) & " performance grade explanation": Exit Function

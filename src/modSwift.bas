@@ -733,7 +733,7 @@ Public Function RefreshNarrativeLabel() As Boolean
         Case "FITREP": block = "41"
         Case Else: block = "?"
     End Select
-    Forms!frmEditor!lblOfficialComments.Caption = "Official narrative - block " & block & " (separate from draft notes)"
+    Forms!frmEditor!lblOfficialComments.Caption = "Official narrative, block " & block & " (separate from draft notes)"
     Forms!frmEditor!lblNarrativeCount.Caption = CStr(Len(Nz(Forms!frmEditor!txtOfficialComments, ""))) & " characters"
     RefreshNarrativeLabel = True
 End Function

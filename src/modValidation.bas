@@ -49,14 +49,14 @@ Public Function GroupPromotionSpread(ByVal groupID As Long) As String
     Loop
     r.Close
     If observed = 0 Then GroupPromotionSpread = "EP/MP: no observed recommendations yet": Exit Function
-    If (grade = "O1" Or grade = "O2") And ldo And nonLDO Then GroupPromotionSpread = "EP/MP: verify - LDO and other officers are separate summary groups": Exit Function
+    If (grade = "O1" Or grade = "O2") And ldo And nonLDO Then GroupPromotionSpread = "EP/MP: verify. LDO and other officers are separate summary groups.": Exit Function
     On Error Resume Next
     Set cap = PromotionCapacity(grade, observed, ldo)
     If cap Is Nothing Then GroupPromotionSpread = "EP/MP: verify the group paygrade": Exit Function
     On Error GoTo 0
     If cap("CombinedMaximum") = 0 Then
         text = "EP/MP: none allowed for " & grade
-        If ep + mp > 0 Then text = text & " (" & ep + mp & " used - over limit)"
+        If ep + mp > 0 Then text = text & " (" & ep + mp & " used, over limit)"
     Else
         text = "EP " & ep & " of " & cap("EarlyPromoteMaximum") & " | EP+MP " & ep + mp & " of " & cap("CombinedMaximum")
         If ep > cap("EarlyPromoteMaximum") Or ep + mp > cap("CombinedMaximum") Then text = text & " - over limit"

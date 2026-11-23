@@ -55,7 +55,7 @@ Finished:
     UXApplyVisual Forms!frmEditor
     busy = False: Exit Function
 Failed:
-    Forms!frmEditor!uxDirty.Caption = "Validation unavailable - open issues"
+    Forms!frmEditor!uxDirty.Caption = "Validation unavailable: open issues"
     Resume Finished
 End Function
 ' The latest live findings for the open report (Nothing before the first paint).

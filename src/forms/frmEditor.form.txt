@@ -4177,7 +4177,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxITA"
-                    Caption ="ITA - pending"
+                    Caption ="ITA (pending)"
                     FontName ="Segoe UI"
                     OnDblClick ="=UXEditorCalculationDetails()"
                     ControlTipText ="Double-click for pending and saved calculation counts and exclusions"
@@ -4198,7 +4198,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxSGA"
-                    Caption ="Summary Group Average - saved"
+                    Caption ="Summary Group Average (saved)"
                     FontName ="Segoe UI"
                     OnDblClick ="=UXEditorCalculationDetails()"
                     ControlTipText ="Double-click for group calculation counts and exclusions"
@@ -5857,7 +5857,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelReadinessDate"
-                    Caption ="20. Physical Readiness - date"
+                    Caption ="20. Physical Readiness (date)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =4999
@@ -5899,7 +5899,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelAssignmentRecommendationA"
-                    Caption ="41. Career Recommendations - first"
+                    Caption ="41. Career Recommendations (first)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =4999
@@ -5920,7 +5920,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelAssignmentRecommendationB"
-                    Caption ="41. Career Recommendations - second"
+                    Caption ="41. Career Recommendations (second)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =9028
@@ -6261,7 +6261,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelRaterName"
-                    Caption ="42. Signature of Rater - typed name & grade/rate"
+                    Caption ="42. Signature of Rater (typed name, grade/rate)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =9028
@@ -6282,7 +6282,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelRaterDate"
-                    Caption ="42. Signature of Rater - date"
+                    Caption ="42. Signature of Rater (date)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =4999
@@ -6303,7 +6303,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelSeniorRaterName"
-                    Caption ="49. Signature of Senior Rater - typed name & grade/rate"
+                    Caption ="49. Signature of Senior Rater (typed name, grade/rate)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =9028
@@ -6324,7 +6324,7 @@ Begin Form
                     FontSize =10
                     ForeColor =4205854
                     Name ="uxLabelSeniorRaterDate"
-                    Caption ="49. Signature of Senior Rater - date"
+                    Caption ="49. Signature of Senior Rater (date)"
                     FontName ="Segoe UI"
                     Tag ="BUFFER"
                     LayoutCachedLeft =4999

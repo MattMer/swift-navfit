@@ -13,7 +13,7 @@ Begin Form
     ItemSuffix =84
     Right =19725
     Bottom =13245
-    Caption ="My Work - local review assignments"
+    Caption ="My Work (local review assignments)"
     OnActivate ="=UXSortActivate(\"frmMyWork\")"
     OnResize ="=UXHelpResize(\"frmMyWork\",\"UXResizeWorkspace(\"\"frmMyWork\"\")\")"
     OnLoad ="=UXLoadMyWork()"

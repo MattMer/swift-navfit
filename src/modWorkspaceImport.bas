@@ -220,7 +220,7 @@ Public Sub WorkspaceImportProgress(ByVal message As String, Optional ByVal force
   Err.Clear
   On Error GoTo Failed
   If active = "txtProgress" Then !txtProgress.SelStart = Len(progressText)
-  !lblStatus.Caption = "Import in progress - " & DateDiff("s", importStarted, Now) & " seconds elapsed. Please wait; keep Access open."
+  !lblStatus.Caption = "Import in progress: " & DateDiff("s", importStarted, Now) & " seconds elapsed. Please wait; keep Access open."
   .Repaint
  End With
 PaintStatus:

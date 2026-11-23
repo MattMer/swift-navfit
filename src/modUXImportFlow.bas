@@ -40,7 +40,7 @@ Public Function UXPDFStart() As Boolean
     Call PDFClearPreview(False)
     pdfSignature = "": pdfCreated = 0
     UXEnable Forms!frmPDFImport!cmdImport, False: UXEnable Forms!frmPDFImport!cmdOpenResult, False
-    Forms!frmPDFImport!uxState.Caption = "1. Choose - select a supported structured PDF."
+    Forms!frmPDFImport!uxState.Caption = "1. Choose: select a supported structured PDF."
     Forms!frmPDFImport!cboTarget.RowSource = "SELECT ReportID, MemberName & ' | ' & FormKind & ' | ' & Nz(Format(PeriodEnd,'yyyy-mm-dd'),'No end date') AS Description FROM Report WHERE IsArchived=False AND WorkflowState='Draft' ORDER BY MemberName"
     Forms!frmPDFImport!lblStatus.Caption = PDFExtractionStatus()
     UXPDFStart = True
@@ -188,7 +188,7 @@ Public Function UXPreviewNarrativeImport() As Boolean
     Set values = NarrativeImportValues(id)
     narrativePreview.Member = Nz(Forms!frmImportReview!txtImportMember, "")
     If Len(narrativePreview.Member) > 120 Then Err.Raise vbObjectError + 411, "modUXImportFlow.UXPreviewNarrativeImport", "Local member display name exceeds 120 characters."
-    text = "NEW " & values("FormKind") & " DRAFT - source member " & ImportValue(values("SourceName")) & vbCrLf & "Narrative-only mapping. Official name, dates, traits, duties, senior blocks and folder links are unmapped. Full source values are retained in provenance." & vbCrLf & vbCrLf & UXFieldCaption("OfficialComments", values("FormKind")) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(values("OfficialComments")) & vbCrLf & vbCrLf & "Local member display name (separate from official name)" & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(narrativePreview.Member)
+    text = "NEW " & values("FormKind") & " DRAFT: source member " & ImportValue(values("SourceName")) & vbCrLf & "Narrative-only mapping. Official name, dates, traits, duties, senior blocks and folder links are unmapped. Full source values are retained in provenance." & vbCrLf & vbCrLf & UXFieldCaption("OfficialComments", values("FormKind")) & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(values("OfficialComments")) & vbCrLf & vbCrLf & "Local member display name (separate from official name)" & vbCrLf & "Before: [new draft / no prior value]" & vbCrLf & "After: " & ImportValue(narrativePreview.Member)
     Forms!frmImportReview!cmdPreview.SetFocus
     Forms!frmImportReview!uxPreview.Visible = True
     Forms!frmImportReview!lstImportFields.Visible = False

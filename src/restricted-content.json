@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source": "BUPERSINST 1610.10H CH-2 (26 May 2026 compilation), enclosure (2)",
-  "notes": "Reviewed patterns for possible prohibited or sensitive comments in narrative blocks. Matching is on whole lower-case words; '*' ends a word prefix; hyphens and punctuation separate words and a trailing 's is dropped. 'near' requires one of its terms within 'within' words of the match; 'unless' suppresses a match when one of its terms touches the match or its near term. Findings are review prompts (Needs review), never edits or blocks. Severity: 'Needs review' for BUPERSINST prohibitions, 'Information' for application checks (protected characteristics, political activity, personal identifiers, all capitals). An unless term starting with < counts only before the match, up to twice as far away (duty verbs: 'screened 400 Sailors for hypertension'). Each match group has a stable id (rule.suffix) used to turn it off in a workspace; 'why' is the plain-language reason shown in the Content checks window.",
+  "notes": "Reviewed patterns for possible prohibited or sensitive comments in narrative blocks. Matching is on whole lower-case words; '*' ends a word prefix; hyphens and punctuation separate words and a trailing 's is dropped. 'near' requires one of its terms within 'within' words of the match; 'unless' suppresses a match when one of its terms touches the match or its near term. Findings are review prompts (Needs review), never edits or blocks. Severity: 'Needs review' for BUPERSINST prohibitions, 'Information' for application checks (protected characteristics, political activity, personal identifiers). An unless term starting with < counts only before the match, up to twice as far away (duty verbs: 'screened 400 Sailors for hypertension'). Each match group has a stable id (rule.suffix) used to turn it off in a workspace; 'why' is the plain-language reason shown in the Content checks window.",
   "personal": [
     "his",
     "her",
@@ -1143,24 +1143,6 @@
       ],
       "severity": "Information",
       "why": "Identifiers belong in their own blocks; narrative text is copied and printed more widely."
-    },
-    {
-      "id": "RC-CAPS",
-      "title": "text in all capitals",
-      "cite": "block 43 caption (\"Use upper and lower case\")",
-      "page": "",
-      "pdfPage": 0,
-      "excerpt": "Comments must be verifiable. Font must be 10 or 12 pitch (10 to 12 point) only. Use upper and lower case.",
-      "kind": "caps",
-      "matches": [
-        {
-          "id": "RC-CAPS.all",
-          "label": "text in all capitals",
-          "terms": []
-        }
-      ],
-      "severity": "Information",
-      "why": "The comments block requires upper and lower case."
     },
     {
       "id": "RC-ANTICIPATED",

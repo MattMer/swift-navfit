@@ -181,7 +181,7 @@ Public Function UXToolsValidation() As Boolean
  For Each item In findings
   i = i + 1: f!lstFindings.AddItem i & ";" & FindingColumn(item("Label")) & ";" & FindingColumn(item("Severity")) & ";" & FindingColumn(Left$(item("Message"), 140))
  Next
- f!lblValidation.Caption = i & " findings - includes pending report edits. Save remains available for incomplete drafts."
+ f!lblValidation.Caption = i & " findings, including pending report edits. Save remains available for incomplete drafts."
  f!txtEvidence = "No findings from implemented checks."
  If UXHasControl(f, "cmdApplyCounseling") Then UXEnable f!cmdApplyCounseling, False
  If i > 0 Then f!lstFindings = 0 + f!lstFindings.ItemData(0): UXToolsFinding

@@ -272,28 +272,6 @@ Private Sub IdentifierHits(ByVal text As String, ByVal hits As Collection)
         End If
     Loop
 End Sub
-'Four or more consecutive all-capital words with at least 20 capital letters.
-Private Sub CapitalHits(ByVal text As String, ByRef words() As String, ByRef starts() As Long, ByRef lengths() As Long, ByVal hits As Collection)
-    Dim i As Long, run As Long, letters As Long, first As Long, original As String, upper As Boolean, k As Long, c As String
-    first = -1
-    For i = 0 To UBound(words) + 1
-        upper = False
-        If i <= UBound(words) Then
-            If Len(words(i)) > 0 Then
-                original = Mid$(text, starts(i), lengths(i)): upper = (original = UCase$(original) And original <> LCase$(original))
-            End If
-        End If
-        If upper Then
-            If first < 0 Then first = i: run = 0: letters = 0
-            run = run + 1
-            For k = 1 To Len(original): c = Mid$(original, k, 1): If c Like "[A-Z]" Then letters = letters + 1
-            Next
-        Else
-            If first >= 0 And run >= 4 And letters >= 20 Then AddRaw hits, text, starts(first), IIf(starts(i - 1) + lengths(i - 1) - starts(first) > 60, 60, starts(i - 1) + lengths(i - 1) - starts(first))
-            first = -1
-        End If
-    Next
-End Sub
 
 '--- Matching ----------------------------------------------------------------------------
 'Every match in one block as Array(rule ID, matched text, start, length), before
@@ -318,8 +296,6 @@ Private Function BlockMatches(ByVal kind As String, ByVal key As String, ByVal t
                 Case "marking"
                     Set raw = New Collection: MarkingHits groupTerms(g), text, raw
                     For Each item In raw: AddFound found, seen, ruleID, item(2), item(0), item(1): Next
-                Case "caps"
-                    Set raw = New Collection: CapitalHits text, words, starts, lengths, raw
                     For Each item In raw: AddFound found, seen, ruleID, item(2), item(0), item(1): Next
                 Case Else
                     If row(7) = "pii" And g = FirstGroup(groupRule(g)) Then
@@ -459,7 +435,7 @@ Public Function RestrictedCheckRows() As String
         row = ruleRows(groupRule(g))
         shown = groupShown(g): If Len(shown) > 160 Then shown = Left$(shown, 157) & "..."
         rows = rows & IIf(rows = "", "", ";") & UXListCell(groupID(g)) & ";" & UXListCell(IIf(checksOff.Exists(groupID(g)), "Off", "On")) & ";" & _
-            UXListCell(Capitalized(CStr(row(1))) & IIf(groupLabel(g) <> CStr(row(1)), " - " & groupLabel(g), "")) & ";" & UXListCell(shown) & ";" & UXListCell(CStr(row(9)))
+            UXListCell(Capitalized(CStr(row(1))) & IIf(groupLabel(g) <> CStr(row(1)), " (" & groupLabel(g) & ")", "")) & ";" & UXListCell(shown) & ";" & UXListCell(CStr(row(9)))
     Next
     RestrictedCheckRows = rows
 End Function
@@ -471,7 +447,7 @@ Public Function RestrictedCheckDetail(ByVal id As String) As String
     Dim g As Long, row As Variant
     g = CheckIndex(id): row = ruleRows(groupRule(g))
     If checksOff Is Nothing Then LoadChecksOff
-    RestrictedCheckDetail = Capitalized(CStr(row(1))) & " - " & groupLabel(g) & IIf(checksOff.Exists(id), " (turned off)", " (on)") & vbCrLf & vbCrLf & _
+    RestrictedCheckDetail = Capitalized(CStr(row(1))) & IIf(groupLabel(g) <> CStr(row(1)), " (" & groupLabel(g) & ")", "") & IIf(checksOff.Exists(id), " (turned off)", " (on)") & vbCrLf & vbCrLf & _
         "Pattern: " & groupShown(g) & vbCrLf & vbCrLf & "Why: " & row(9) & vbCrLf & vbCrLf & RestrictedReference(CStr(row(0)))
 End Function
 

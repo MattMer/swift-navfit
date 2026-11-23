@@ -3207,7 +3207,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelReadinessDetail"
-                            Caption ="Physical Readiness - result"
+                            Caption ="Physical Readiness (result)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -3277,7 +3277,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelReadinessDate"
-                            Caption ="Physical Readiness - date"
+                            Caption ="Physical Readiness (date)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -3418,7 +3418,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelAssignmentRecommendationA"
-                            Caption ="Career Recommendations - first"
+                            Caption ="Career Recommendations (first)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -3485,7 +3485,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelAssignmentRecommendationB"
-                            Caption ="Career Recommendations - second"
+                            Caption ="Career Recommendations (second)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -4383,7 +4383,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelRaterName"
-                            Caption ="Signature of Rater - typed name & grade/rate"
+                            Caption ="Signature of Rater (typed name, grade/rate)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -4452,7 +4452,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelRaterDate"
-                            Caption ="Signature of Rater - date"
+                            Caption ="Signature of Rater (date)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -4523,7 +4523,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelSeniorRaterName"
-                            Caption ="Signature of Senior Rater - typed name & grade/rate"
+                            Caption ="Signature of Senior Rater (typed name, grade/rate)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100
@@ -4592,7 +4592,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelSeniorRaterDate"
-                            Caption ="Signature of Senior Rater - date"
+                            Caption ="Signature of Senior Rater (date)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =100

@@ -993,7 +993,7 @@ Begin Form
                     AfterUpdate ="=UXBlockEdit(\"ReadinessDetail\")"
                     OnEnter ="=UXSharedScope(\"ReadinessDetail\")"
                     FontName ="Segoe UI"
-                    ControlTipText ="Physical Readiness - result"
+                    ControlTipText ="Physical Readiness (result)"
 
                     LayoutCachedLeft =150
                     LayoutCachedTop =500
@@ -1014,7 +1014,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelReadinessDetail"
-                            Caption ="Physical Readiness - result"
+                            Caption ="Physical Readiness (result)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =150
                             LayoutCachedTop =150
@@ -1064,7 +1064,7 @@ Begin Form
                             FontSize =10
                             ForeColor =4205854
                             Name ="labelReadinessDate"
-                            Caption ="Physical Readiness - date"
+                            Caption ="Physical Readiness (date)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =150
                             LayoutCachedTop =150

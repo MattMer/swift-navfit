@@ -223,7 +223,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblSource"
-                            Caption ="Original member - archive after moving links"
+                            Caption ="Original member: archive after moving links"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =300
                             LayoutCachedTop =3110
@@ -266,7 +266,7 @@ Begin Form
                             Height =350
                             FontSize =10
                             Name ="lblTarget"
-                            Caption ="Surviving member - keep this profile"
+                            Caption ="Surviving member: keep this profile"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =7500
                             LayoutCachedTop =3110

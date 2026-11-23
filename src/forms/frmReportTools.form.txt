@@ -296,7 +296,7 @@ Begin Form
                     Height =300
                     FontSize =10
                     Name ="lblConversations"
-                    Caption ="Conversations - all contributors"
+                    Caption ="Conversations (all contributors)"
                     FontName ="Segoe UI"
                     LayoutCachedLeft =200
                     LayoutCachedTop =760
@@ -427,7 +427,7 @@ Begin Form
                             Height =300
                             FontSize =10
                             Name ="lblDrafts"
-                            Caption ="Your unfinished notes - not posted"
+                            Caption ="Your unfinished notes (not posted)"
                             FontName ="Segoe UI"
                             LayoutCachedLeft =200
                             LayoutCachedTop =4010

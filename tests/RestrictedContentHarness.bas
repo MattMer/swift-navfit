@@ -39,7 +39,7 @@ Public Function TestRestrictedContent() As String
     Dim text As String, i As Long, id As Long, other As Long, changes As Object, dismissal As Long, exception As Long, started As Double, elapsed As Double, sweep As String, item As Variant, found As Boolean
     On Error GoTo Failed
     ConfigureWorkspace "SYNTHETIC RESTRICTED CONTENT", "Synthetic Reviewer"
-    Check RestrictedRuleCount() >= 19 And Len(RestrictedCatalogueHash()) = 64, "Rule catalogue missing"
+    Check RestrictedRuleCount() >= 18 And Len(RestrictedCatalogueHash()) = 64, "Rule catalogue missing"
 
     ' Each rule flags its synthetic examples.
     Flagged "RC-FOS", "Despite his previous failure of selection, he excelled as division officer."
@@ -87,7 +87,8 @@ Public Function TestRestrictedContent() As String
     Flagged "RC-POLITICAL", "Campaigned for a Republican candidate in his town."
     Flagged "RC-PII", "SSN 123-45-6789 is on file."
     Flagged "RC-PII", "Reach him at 555-123-4567 or john.doe@example.com."
-    Flagged "RC-CAPS", "LED THE DIVISION THROUGH A DEMANDING INSPECTION CYCLE WITH ZERO DISCREPANCIES."
+    'Capital letters are not a content check: block 28 and opening lines are often in capitals.
+    Check Flags("OPERATION NOBLE EAGLE/ENDURING FREEDOM; CART II; TSTA I, II, AND III", "CommandEmployment") = "", "All-capital text flagged"
     Flagged "RC-ANTICIPATED", "Will complete his associate degree in May.", "Qualifications"
     Flagged "RC-ANTICIPATED", "Currently enrolled in the CPO 365 course.", "Qualifications"
     Check InStr(Flags("Will complete his associate degree in May."), "RC-ANTICIPATED") = 0, "Block 44 rule ran outside block 44"
@@ -160,8 +161,8 @@ Public Function TestRestrictedContent() As String
     Check Flags("His wife attended fleet week.") = "RC-FAMILY", "All-rule phrase hid an unrelated word"
     RestrictedRemoveException exception
 
-    ' Checks: 24 groups, each with a pattern and a reason; turning one off stops only it.
-    Check RestrictedCheckCount() = 24 And RestrictedChecksOffCount() = 0, "Checks not all on by default"
+    ' Checks: 23 groups, each with a pattern and a reason; turning one off stops only it.
+    Check RestrictedCheckCount() = 23 And RestrictedChecksOffCount() = 0, "Checks not all on by default"
     Check InStr(RestrictedCheckDetail("RC-FOS.words"), "Pattern: \b(failure\s+of\s+selection") > 0 And InStr(RestrictedCheckDetail("RC-FOS.words"), "Why: ") > 0, "Check detail missing: " & RestrictedCheckDetail("RC-FOS.words")
     Check InStr(RestrictedCheckDetail("RC-MEDICAL.general"), "within 3 words of") > 0, "Near terms not described"
     RestrictedSetCheck "RC-MEDICAL.conditions", False
@@ -170,7 +171,7 @@ Public Function TestRestrictedContent() As String
     RestrictedSetCheck "RC-MEDICAL.conditions", True
     Check Flags("Despite her pregnancy, she qualified.") = "RC-MEDICAL" And PersistenceCount("RestrictedCheckOff", "True") = 0, "Check did not turn back on"
     RestrictedSetAllChecks False
-    Check RestrictedChecksOffCount() = 24 And Flags("Was passed over for LCDR, but recently married.") = "", "All off still found content"
+    Check RestrictedChecksOffCount() = 23 And Flags("Was passed over for LCDR, but recently married.") = "", "All off still found content"
     RestrictedSetAllChecks True
     Check RestrictedChecksOffCount() = 0 And Flags("Was passed over for LCDR, but recently married.") = "RC-FAMILY|RC-FOS", "All on did not restore checks"
     Check BadCheck("RC-NOT.a-check"), "Unknown check accepted"
@@ -178,14 +179,14 @@ Public Function TestRestrictedContent() As String
     DoCmd.OpenForm "frmUXRestrictedList"
     Check Forms!frmUXRestrictedList!lstItems.Visible And Not Forms!frmUXRestrictedList!lstChecks.Visible, "Window did not open on allowed phrases"
     Check UXRestrictedListPage(1) And Forms!frmUXRestrictedList!lstChecks.Visible And Not Forms!frmUXRestrictedList!lstItems.Visible, "Checks page not shown"
-    Check Forms!frmUXRestrictedList!lstChecks.ListCount = 25, "Checks list rows: " & Forms!frmUXRestrictedList!lstChecks.ListCount
+    Check Forms!frmUXRestrictedList!lstChecks.ListCount = 24, "Checks list rows: " & Forms!frmUXRestrictedList!lstChecks.ListCount
     Forms!frmUXRestrictedList!lstChecks = "RC-FOS.words": Call UXChecksSelect
     Check InStr(Forms!frmUXRestrictedList!txtCheckDetail, "Why: ") > 0, "Selected check detail missing"
     Check UXChecksToggle(), "Turn on/off failed: " & Forms!frmUXRestrictedList!lblCount.Caption
     Check Not RestrictedCheckIsOn("RC-FOS.words"), "Turn on/off did not turn the check off"
     Check CheckRowState("RC-FOS.words") = "Off", "List does not show the check as off: " & CheckRowState("RC-FOS.words")
-    Check UXChecksAll(False) And RestrictedChecksOffCount() = 24 And UXChecksAll(True) And RestrictedChecksOffCount() = 0, "Turn all off/on failed"
-    Check InStr(Forms!frmUXRestrictedList!lblCount.Caption, "24 of 24 checks on") > 0, "Count caption: " & Forms!frmUXRestrictedList!lblCount.Caption
+    Check UXChecksAll(False) And RestrictedChecksOffCount() = 23 And UXChecksAll(True) And RestrictedChecksOffCount() = 0, "Turn all off/on failed"
+    Check InStr(Forms!frmUXRestrictedList!lblCount.Caption, "23 of 23 checks on") > 0, "Count caption: " & Forms!frmUXRestrictedList!lblCount.Caption
     Check UXRestrictedListPage(0) And UXRestrictedListClose(), "Window close failed"
 
     ' A full pass over 5,000 characters is fast (cached passes are near free).
